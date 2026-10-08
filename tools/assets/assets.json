@@ -5,26 +5,41 @@
     {
       "id": "concept.ref_01",
       "class": "concept",
-      "prompt": "wide establishing view of a tiny tribal hill village diorama around a glowing stone hearth, thatched round huts, a few trees, a winding path",
+      "prompt": "Soft pastel toy diorama, plastic and felt toy feel, rounded friendly forms, gentle pastel-leaning warm palette, soft faceted shading. Scene: small curved planet diorama seen from a slight high angle, a primitive tribal village of round thatched dwellings around a central glowing hearth, tiny people in saturated azure, crimson, amber and jade clothing, water, banded terrain of sand, meadow, moss, rock and snow, golden-hour light",
       "refs": [],
       "provider": "gemini",
       "params": {
-        "aspect_ratio": "16:9",
+        "aspect_ratio": "4:3",
         "image_size": "1K",
-        "kind": "style_ref"
+        "kind": "style_ref",
+        "direction": "Soft pastel toy diorama"
       },
       "steps": {
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-08T22:04:54Z",
+          "finished": "2026-10-08T22:05:09Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/concept.ref_01/concept.jpg",
+          "sha256": "5d5406e612bc9d7392036525bd2315a1fbdf3836eca93e0dfd191b9b35e090dd",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 538362,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1200,
+              896
+            ]
+          },
+          "request_hash": "ba989ccde58a4aadf3dddf9dd1880b533209147fda0bec294dfbdc60249c4636"
         },
         "model": {
           "status": "skipped",
@@ -95,26 +110,41 @@
     {
       "id": "concept.ref_02",
       "class": "concept",
-      "prompt": "the Shaper, a robed tribal caster with a tall carved staff and a glowing ember charm, heroic proportions, big hands and feet",
+      "prompt": "Bold saturated papercraft, layered cut paper and folded card shapes, crisp paper edges with small cast shadows, vivid colors. Scene: small curved planet diorama seen from a slight high angle, a primitive tribal village of round thatched dwellings around a central glowing hearth, tiny people in saturated azure, crimson, amber and jade clothing, water, banded terrain of sand, meadow, moss, rock and snow, golden-hour light",
       "refs": [],
       "provider": "gemini",
       "params": {
-        "aspect_ratio": "1:1",
+        "aspect_ratio": "4:3",
         "image_size": "1K",
-        "kind": "style_ref"
+        "kind": "style_ref",
+        "direction": "Bold saturated papercraft"
       },
       "steps": {
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-08T22:05:09Z",
+          "finished": "2026-10-08T22:05:24Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/concept.ref_02/concept.jpg",
+          "sha256": "88ba187ce6f90f1cb0a58734995a895d7c0c1056a6a9e19b1db4f52f16d49e37",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 680550,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1200,
+              896
+            ]
+          },
+          "request_hash": "a1b1d4294bd877ee7b1fffadde7b9fea35a6a4d02b9dff0d6a7f0189f0d1c0b2"
         },
         "model": {
           "status": "skipped",
@@ -185,39 +215,41 @@
     {
       "id": "concept.ref_03",
       "class": "concept",
-      "prompt": "cluster of three stylized trees and two boulders on a small grassy mound, layered foliage shapes, rounded rocks",
+      "prompt": "Matte clay miniature, hand-sculpted modeling clay with soft thumbprint surfaces, stop-motion animation look, matte finish. Scene: small curved planet diorama seen from a slight high angle, a primitive tribal village of round thatched dwellings around a central glowing hearth, tiny people in saturated azure, crimson, amber and jade clothing, water, banded terrain of sand, meadow, moss, rock and snow, golden-hour light",
       "refs": [],
       "provider": "gemini",
       "params": {
-        "aspect_ratio": "1:1",
+        "aspect_ratio": "4:3",
         "image_size": "1K",
-        "kind": "style_ref"
+        "kind": "style_ref",
+        "direction": "Matte clay miniature"
       },
       "steps": {
         "concept": {
           "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": "2026-10-08T21:45:44Z",
-          "finished": "2026-10-08T21:46:00Z",
+          "started": "2026-10-08T22:05:24Z",
+          "finished": "2026-10-08T22:05:38Z",
           "cost": {
             "usd": 0.0336,
             "source": "computed"
           },
           "output_path": "tools/assets/raw/gemini/concept.ref_03/concept.jpg",
-          "sha256": "3a73cc7778bc1efcf25794d1b7d2d62215d4f5ab5ba91b9179c3a96d3d1c7bbb",
+          "sha256": "cf24457eef2c738dcf8628f3b7bd7847476cd029e4cd38f30c311d25f1a70062",
           "attempts": 1,
           "error": null,
           "meta": {
             "endpoint": "generateContent",
             "mime": "image/jpeg",
-            "bytes": 417788,
+            "bytes": 604966,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
             "size": [
-              1024,
-              1024
+              1200,
+              896
             ]
           },
-          "request_hash": "e8a9e7197b38875c9e7ddcd443b7f55a76412633c19c29ae62e47a8a6abfc236"
+          "request_hash": "a3af69bc2e15198995399f6966316df0e8d0672a4212a6f14ce5bd791b75dfb0"
         },
         "model": {
           "status": "skipped",
@@ -288,26 +320,41 @@
     {
       "id": "concept.ref_04",
       "class": "concept",
-      "prompt": "carved wooden totem pole beside a small stone shrine with offerings, painted bands in clay red and ochre",
+      "prompt": "Crisp flat-shaded polygon, sharp facets each a single flat color, clean hard edges, high-contrast low-poly game render. Scene: small curved planet diorama seen from a slight high angle, a primitive tribal village of round thatched dwellings around a central glowing hearth, tiny people in saturated azure, crimson, amber and jade clothing, water, banded terrain of sand, meadow, moss, rock and snow, golden-hour light",
       "refs": [],
       "provider": "gemini",
       "params": {
-        "aspect_ratio": "1:1",
+        "aspect_ratio": "4:3",
         "image_size": "1K",
-        "kind": "style_ref"
+        "kind": "style_ref",
+        "direction": "Crisp flat-shaded polygon"
       },
       "steps": {
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-08T22:05:38Z",
+          "finished": "2026-10-08T22:05:54Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/concept.ref_04/concept.jpg",
+          "sha256": "10e96210e000046251b404cd4b2317a54000572ddc9d10078ac55221cab0218c",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 601690,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1200,
+              896
+            ]
+          },
+          "request_hash": "2feb321ab4ac418d09c7a1bc31281414641b447f02bae0ac95ef4ad613ef3261"
         },
         "model": {
           "status": "skipped",
@@ -378,26 +425,41 @@
     {
       "id": "concept.ref_05",
       "class": "concept",
-      "prompt": "a stout log watchtower next to a timber warden lodge with a pointed roof and a banner, palisade fence",
+      "prompt": "Warm painterly low-poly, visible soft brushwork over faceted forms, glowing golden light, rich earthy gouache colors. Scene: small curved planet diorama seen from a slight high angle, a primitive tribal village of round thatched dwellings around a central glowing hearth, tiny people in saturated azure, crimson, amber and jade clothing, water, banded terrain of sand, meadow, moss, rock and snow, golden-hour light",
       "refs": [],
       "provider": "gemini",
       "params": {
-        "aspect_ratio": "1:1",
+        "aspect_ratio": "4:3",
         "image_size": "1K",
-        "kind": "style_ref"
+        "kind": "style_ref",
+        "direction": "Warm painterly low-poly"
       },
       "steps": {
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-08T22:05:54Z",
+          "finished": "2026-10-08T22:06:08Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/concept.ref_05/concept.jpg",
+          "sha256": "8d56cfe451c1929ea244a5a34987bedd8fd2466ace7baa420db246d81bb14795",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 563001,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1200,
+              896
+            ]
+          },
+          "request_hash": "1c34bd5f41cb39621a5b58c218e1c00251962164ba324baa6cfd2b7aa072ff98"
         },
         "model": {
           "status": "skipped",
@@ -468,26 +530,41 @@
     {
       "id": "concept.ref_06",
       "class": "concept",
-      "prompt": "a fire lodge with a red clay chimney and a bright orange fire glow at the door, sparks rising, stone base",
+      "prompt": "Tilt-shift tabletop miniature, real hand-painted tabletop game scenery photographed with shallow depth of field and a blurred foreground and background. Scene: small curved planet diorama seen from a slight high angle, a primitive tribal village of round thatched dwellings around a central glowing hearth, tiny people in saturated azure, crimson, amber and jade clothing, water, banded terrain of sand, meadow, moss, rock and snow, golden-hour light",
       "refs": [],
       "provider": "gemini",
       "params": {
-        "aspect_ratio": "1:1",
+        "aspect_ratio": "4:3",
         "image_size": "1K",
-        "kind": "style_ref"
+        "kind": "style_ref",
+        "direction": "Tilt-shift tabletop miniature"
       },
       "steps": {
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-08T22:06:08Z",
+          "finished": "2026-10-08T22:06:26Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/concept.ref_06/concept.jpg",
+          "sha256": "e69b83b7b3e6eca496613cde0ad7eceadb61824ad2fd0eef2b4a08d1d5e673fc",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 748661,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1200,
+              896
+            ]
+          },
+          "request_hash": "50529d1ff3d2d7cb8743ec3903f4530f78e85ab779fc60e751811e15cca9b56b"
         },
         "model": {
           "status": "skipped",

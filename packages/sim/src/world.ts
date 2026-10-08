@@ -98,7 +98,7 @@ export class World {
 
   kill(i: number, cause: string): void {
     const e = this.ents;
-    this.emit(cause === "drowned" ? "drowned" : "died", { id: e.idOf(i), cat: e.cat[i], kind: e.type[i], tribe: e.tribe[i], x: e.x[i], y: e.y[i] });
+    this.emit(cause, { id: e.idOf(i), cat: e.cat[i], kind: e.type[i], tribe: e.tribe[i], x: e.x[i], y: e.y[i] });
     e.free(e.idOf(i));
   }
 

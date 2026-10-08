@@ -112,13 +112,16 @@ export function generateMap(cfg: SimConfig, spec: MapSpec, seed: number): Genera
     let bin = 0;
     while (bin < 1023 && acc + hist[bin] < waterCount) acc += hist[bin++];
     const thr = (bin + 0.5) / 1024;
+    let vmax = thr;
+    for (let i = 0; i < n * n; i++) vmax = Math.max(vmax, v[i]);
+    const span = vmax > thr ? vmax - thr : 1;
     let landN = 0;
     for (let i = 0; i < n * n; i++) {
       const f = v[i];
       let h: number;
       if (f < thr) h = genMin + (cfg.sea - 2 - genMin) * (f / thr);
       else {
-        const u = (f - thr) / (1 - thr);
+        const u = (f - thr) / span;
         const curved = u * (1 - preset.peakiness) + u * u * preset.peakiness;
         h = cfg.sea + 2 + (genMax - cfg.sea - 2) * curved;
         landN++;
@@ -152,7 +155,7 @@ export function generateMap(cfg: SimConfig, spec: MapSpec, seed: number): Genera
       }
     }
     if (cands.length < tribes) {
-      lastErr = `only ${cands.length} hearth candidates`;
+      lastErr = `only ${cands.length} hearth candidates (largest walkable component ${comp.sizes[comp.largest] ?? 0} of ${landN} land vertices)`;
       continue;
     }
     const sites: number[] = [cands[rng.int("gen", cands.length)]];
@@ -190,7 +193,10 @@ export function generateMap(cfg: SimConfig, spec: MapSpec, seed: number): Genera
         const dens = tf.trees.densityByBand[bandOf(cfg, h)] * (cluster - tf.trees.clusterThreshold) / (1 - tf.trees.clusterThreshold) * 4;
         if (!rng.chance("gen", dens)) continue;
         if (hearths.some((hh) => torusDist2(n, x, y, hh.x, hh.y) < clear2)) continue;
-        trees.push({ x: wrap(x + 0.2 + rng.float("gen") * 0.6, n), y: wrap(y + 0.2 + rng.float("gen") * 0.6, n) });
+        const tx = wrap(x + 0.2 + rng.float("gen") * 0.6, n);
+        const ty = wrap(y + 0.2 + rng.float("gen") * 0.6, n);
+        if (t.heightAt(tx, ty) < cfg.sea + 4) continue;
+        trees.push({ x: tx, y: ty });
       }
     }
     // 4. wild people around each hearth on the main landmass

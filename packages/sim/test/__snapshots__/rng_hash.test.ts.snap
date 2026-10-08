@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`rng > golden: first outputs are fixed forever (changing them breaks every replay) 1`] = `
+[
+  927843564,
+  3516646430,
+  3684305257,
+]
+`;
+
+exports[`rng > golden: first outputs are fixed forever (changing them breaks every replay) 2`] = `99954211`;

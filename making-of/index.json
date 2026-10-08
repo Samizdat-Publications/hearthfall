@@ -50,6 +50,76 @@
       "when": "2026-10-08T21:56:58.437Z",
       "source": "reports/latest/assets_sheet.png",
       "bytes": 87389
+    },
+    {
+      "file": "a1/20261008-2206_style-ref-01.jpg",
+      "milestone": "A1",
+      "kind": "concept",
+      "caption": "Soft pastel toy diorama: candidate art direction 1 of 6",
+      "highlight": false,
+      "when": "2026-10-08T22:06:37.629Z",
+      "source": "tools/assets/raw/gemini/concept.ref_01/concept.jpg",
+      "bytes": 538362
+    },
+    {
+      "file": "a1/20261008-2206_style-ref-02.jpg",
+      "milestone": "A1",
+      "kind": "concept",
+      "caption": "Bold saturated papercraft: candidate art direction 2 of 6",
+      "highlight": false,
+      "when": "2026-10-08T22:06:37.907Z",
+      "source": "tools/assets/raw/gemini/concept.ref_02/concept.jpg",
+      "bytes": 680550
+    },
+    {
+      "file": "a1/20261008-2206_style-ref-03.jpg",
+      "milestone": "A1",
+      "kind": "concept",
+      "caption": "Matte clay miniature: candidate art direction 3 of 6",
+      "highlight": false,
+      "when": "2026-10-08T22:06:38.444Z",
+      "source": "tools/assets/raw/gemini/concept.ref_03/concept.jpg",
+      "bytes": 604966
+    },
+    {
+      "file": "a1/20261008-2206_style-ref-04.jpg",
+      "milestone": "A1",
+      "kind": "concept",
+      "caption": "Crisp flat-shaded polygon: candidate art direction 4 of 6",
+      "highlight": false,
+      "when": "2026-10-08T22:06:38.801Z",
+      "source": "tools/assets/raw/gemini/concept.ref_04/concept.jpg",
+      "bytes": 601690
+    },
+    {
+      "file": "a1/20261008-2206_style-ref-05.jpg",
+      "milestone": "A1",
+      "kind": "concept",
+      "caption": "Warm painterly low-poly: candidate art direction 5 of 6",
+      "highlight": false,
+      "when": "2026-10-08T22:06:39.011Z",
+      "source": "tools/assets/raw/gemini/concept.ref_05/concept.jpg",
+      "bytes": 563001
+    },
+    {
+      "file": "a1/20261008-2206_style-ref-06.jpg",
+      "milestone": "A1",
+      "kind": "concept",
+      "caption": "Tilt-shift tabletop miniature: candidate art direction 6 of 6",
+      "highlight": false,
+      "when": "2026-10-08T22:06:39.554Z",
+      "source": "tools/assets/raw/gemini/concept.ref_06/concept.jpg",
+      "bytes": 748661
+    },
+    {
+      "file": "a1/20261008-2206_style-refs-sheet.png",
+      "milestone": "A1",
+      "kind": "contact-sheet",
+      "caption": "The six candidate art directions generated in A1, before the pick",
+      "highlight": true,
+      "when": "2026-10-08T22:06:39.872Z",
+      "source": "reports/latest/style_refs_sheet.png",
+      "bytes": 2447700
     }
   ]
 }
