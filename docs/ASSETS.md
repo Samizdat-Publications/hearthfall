@@ -98,6 +98,7 @@ The pipeline stops a class when its cap is reached and logs the shortfall in PRO
 | Meshy meshy-t2 image-to-3D mesh only (`should_texture: false`, hearth, discarded) | 5 credits | 5 credits, 33 KB untextured GLB (building rows lacked `textured: true`, fixed) | 2026-10-08 |
 | Meshy meshy-t2 textured building (smart-topology, target 900 to 2200) | 15 credits | 15 credits each, 11 buildings plus 2 retries; ledger rate $0.02 per credit = $0.30 each; returned tris 643 to 2180 (target 900 gave 643 on the small dwelling, 1500 gave 1269) | 2026-10-08 |
 | Meshy meshy-t2 text-to-3D preview props (trees, rocks) | 5 credits | 5 credits each, 300 to 356 tris trees, 152 to 232 tris rocks | 2026-10-08 |
+| Meshy meshy-t2 textured image-to-3D, v1 units (smart-topology, target 1400) | 15 credits | 15 credits each, 6 models (4 new plus 2 redos), $0.30 each at the ledger rate; Gemini concept with ref_04 style reference $0.0336 each; returned tris 1394 to 1520 | 2026-10-08 |
 | Meshy rig / animation | 5 / 3 per action | | |
 | Tripo v3 image-to-3D + smart_low_poly | 30 to 40 credits | | |
 | Gemini 1K image with one reference image (unit concepts) | $0.034 | $0.0336 each, `generateContent` route again | 2026-10-08 |

@@ -13,7 +13,7 @@
           "wood": 3,
           "capacity": 3,
           "supply": 3,
-          "breedSeconds": 200
+          "breedSeconds": 50
         },
         {
           "level": 2,
@@ -21,7 +21,7 @@
           "upgradeWoodAtDoor": 3,
           "capacity": 4,
           "supply": 5,
-          "breedSeconds": 150
+          "breedSeconds": 80
         },
         {
           "level": 3,

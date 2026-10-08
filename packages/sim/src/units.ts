@@ -16,7 +16,12 @@ export class UnitSystem {
   /** FIFO of entity ids waiting for an A* path */
   queue: number[] = [];
   private flows = new Map<number, { field: Float32Array; version: number }>();
-  private lastVersion: number;
+  private flowBuildsThisTick = 0;
+  /** terrain version this system last reacted to (saved in snapshots) */
+  lastVersion: number;
+  /** index of the next request in queue (O(1) pop; compacted each tick) */
+  private qHead = 0;
+  private readonly dirtyMask: Uint8Array;
   expandedLastTick = 0;
   /** orders given since creation (metrics only, not hashed) */
   ordersIssued = 0;
@@ -27,6 +32,7 @@ export class UnitSystem {
     this.w = w;
     this.pf = new Pathfinder(w.terrain);
     this.hash = new SpatialHash(w.terrain.size);
+    this.dirtyMask = new Uint8Array(w.terrain.size * w.terrain.size);
     this.lastVersion = w.terrain.version;
   }
 
@@ -40,7 +46,7 @@ export class UnitSystem {
     const E = this.w.ents;
     const m = this.w.cfg.pack.balance.movement;
     this.pf.refresh();
-    const goalV = this.pf.nearestWalkable(this.vertexOf(gx, gy));
+    const goalV = this.pf.nearestWalkable(this.vertexOf(gx, gy), m.snapRadius);
     const useFlow = indices.length >= m.groupFlowMinUnits && goalV >= 0;
     this.ordersIssued += indices.length;
     for (const i of indices) {
@@ -67,12 +73,19 @@ export class UnitSystem {
     E.vy[i] = 0;
   }
 
-  private flowFor(goal: number): Float32Array {
+  /** Flow field for a goal, or null when this tick's build budget is spent (the unit waits a tick). */
+  private flowFor(goal: number): Float32Array | null {
     const t = this.w.terrain;
+    const m = this.w.cfg.pack.balance.movement;
     const f = this.flows.get(goal);
     if (f && f.version === t.version) return f.field;
+    if (this.flowBuildsThisTick >= m.maxFlowBuildsPerTick) return null;
+    this.flowBuildsThisTick++;
     const field = this.pf.flowField(goal);
+    this.flows.delete(goal);
     this.flows.set(goal, { field, version: t.version });
+    // keep the cache small: drop the oldest inserted goals (insertion order is deterministic)
+    while (this.flows.size > m.flowCacheSize) this.flows.delete(this.flows.keys().next().value!);
     return field;
   }
 
@@ -85,12 +98,38 @@ export class UnitSystem {
     const m = w.cfg.pack.balance.movement;
     const hz = w.cfg.tickHz;
     this.pf.refresh();
-    // terrain changed: every A* follower repaths, flow fields are rebuilt lazily
+    this.flowBuildsThisTick = 0;
+    // terrain changed: A* followers whose remaining route touches a changed area re-plan (all of
+    // them when the dirty history was trimmed); flow fields are rebuilt lazily
     if (t.version !== this.lastVersion) {
+      const rects = t.dirtySince(this.lastVersion);
       this.lastVersion = t.version;
       this.flows.clear();
+      // dirty mask: changed rects grown by 2 cells
+      const mask = this.dirtyMask;
+      mask.fill(0);
+      if (rects) for (const r of rects) for (let yy = -2; yy <= r.h + 2; yy++) for (let xx = -2; xx <= r.w + 2; xx++) mask[((r.x + xx + n) % n) + ((r.y + yy + n) % n) * n] = 1;
+      const hits = (x: number, y: number) => !rects || mask[((x % n) + n) % n + (((y % n) + n) % n) * n] === 1;
       for (let i = 0; i < E.hi; i++) {
-        if (E.alive[i] && E.cat[i] === CAT.unit && E.order[i] !== ORDER.none && E.flowGoal[i] < 0 && !E.waitPath[i]) {
+        if (!E.alive[i] || E.cat[i] !== CAT.unit || E.order[i] === ORDER.none || E.flowGoal[i] >= 0 || E.waitPath[i]) continue;
+        const p = this.paths[i];
+        let touched = !p || hits(E.x[i], E.y[i]);
+        if (p && !touched) {
+          // sample the remaining route (unit -> waypoints) every cell
+          let ax = E.x[i];
+          let ay = E.y[i];
+          for (let k = E.pathPos[i]; k < p.length && !touched; k++) {
+            const bx = p[k] % n;
+            const by = (p[k] - bx) / n;
+            const ddx = wrapD(bx - ax, n);
+            const ddy = wrapD(by - ay, n);
+            const steps = Math.max(1, Math.ceil(Math.max(Math.abs(ddx), Math.abs(ddy))));
+            for (let q = 1; q <= steps && !touched; q++) touched = hits(Math.round(ax + (ddx * q) / steps), Math.round(ay + (ddy * q) / steps));
+            ax = bx;
+            ay = by;
+          }
+        }
+        if (touched) {
           E.waitPath[i] = 1;
           this.queue.push(E.idOf(i));
         }
@@ -99,12 +138,12 @@ export class UnitSystem {
     // 4. path requests within the budget, FIFO
     let budget = m.pathBudgetPerTick;
     let expanded = 0;
-    while (this.queue.length && budget > 0) {
-      const id = this.queue.shift()!;
+    while (this.qHead < this.queue.length && budget > 0) {
+      const id = this.queue[this.qHead++];
       const i = E.index(id);
       if (i < 0 || E.order[i] === ORDER.none || !E.waitPath[i]) continue;
-      const start = this.pf.nearestWalkable(this.vertexOf(E.x[i], E.y[i]));
-      const goal = this.pf.nearestWalkable(this.vertexOf(E.gx[i], E.gy[i]));
+      const start = this.pf.nearestWalkable(this.vertexOf(E.x[i], E.y[i]), m.snapRadius);
+      const goal = this.pf.nearestWalkable(this.vertexOf(E.gx[i], E.gy[i]), m.snapRadius);
       E.waitPath[i] = 0;
       if (start < 0 || goal < 0) {
         w.emit("orderFailed", { id, reason: "no walkable start or goal" });
@@ -122,9 +161,11 @@ export class UnitSystem {
       this.paths[i] = r.waypoints;
       E.pathPos[i] = 0;
     }
+    this.queue = this.queue.slice(this.qHead);
+    this.qHead = 0;
     this.expandedLastTick = expanded;
     // 5. movement
-    this.hash.rebuild(E.hi, (i) => E.alive[i] === 1 && E.cat[i] === CAT.unit, E.x, E.y);
+    this.hash.rebuild(E.hi, (i) => E.alive[i] === 1 && E.cat[i] === CAT.unit && E.inside[i] < 0, E.x, E.y);
     const sepR = m.separationRadius;
     const sepR2 = sepR * sepR;
     const repath = secondsToTicks(m.repathSeconds, hz);
@@ -132,6 +173,11 @@ export class UnitSystem {
     const units = w.cfg.pack.units.units;
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.unit) continue;
+      if (E.inside[i] >= 0) {
+        E.px[i] = E.x[i];
+        E.py[i] = E.y[i];
+        continue;
+      }
       E.px[i] = E.x[i];
       E.py[i] = E.y[i];
       let dx = 0;
@@ -145,6 +191,7 @@ export class UnitSystem {
         const fg = E.flowGoal[i];
         if (fg >= 0) {
           const field = this.flowFor(fg);
+          if (!field) continue;
           const v = this.vertexOf(E.x[i], E.y[i]);
           const vx = v % n;
           const vy = (v - vx) / n;
@@ -167,7 +214,7 @@ export class UnitSystem {
             continue;
           }
           route = field[v];
-          if (best > 2) {
+          if (best > m.flowLookaheadCost) {
             tx = bx;
             ty = by;
           }
@@ -182,7 +229,7 @@ export class UnitSystem {
               const d2 = ddx * ddx + ddy * ddy;
               if (E.pathPos[i] >= p.length - 1) break;
               const close = d2 < m.waypointRadius * m.waypointRadius;
-              const sees = d2 < 9 && this.pf.lineWalkable(this.vertexOf(E.x[i], E.y[i]), p[E.pathPos[i] + 1]);
+              const sees = d2 < m.sightRadius * m.sightRadius && this.pf.lineWalkableFrom(E.x[i], E.y[i], p[E.pathPos[i] + 1]);
               if (!close && !sees) break;
               E.pathPos[i]++;
             }
@@ -217,13 +264,17 @@ export class UnitSystem {
           }
           // stuck bookkeeping: progress along the route (falls back to straight distance)
           const prog = route >= 0 ? route : gd;
-          if (prog < E.best[i] - 0.05) {
+          if (prog < E.best[i] - m.progressEpsilon) {
             E.best[i] = prog;
             E.stuck[i] = 0;
           } else {
             E.stuck[i]++;
             if (E.stuck[i] >= giveUp) {
-              w.emit("orderGaveUp", { id: E.idOf(i) });
+              // reachable 1 means the goal was in the unit's walkable component: a real stuck unit
+              const sv = this.pf.nearestWalkable(this.vertexOf(E.x[i], E.y[i]), 2);
+              const gv = this.pf.nearestWalkable(this.vertexOf(E.gx[i], E.gy[i]), 6);
+              const reachable = sv >= 0 && gv >= 0 && this.pf.comp[sv] === this.pf.comp[gv] ? 1 : 0;
+              w.emit("orderGaveUp", { id: E.idOf(i), reachable, dist: +gd.toFixed(2) });
               this.stop(i);
             } else if (E.stuck[i] % repath === 0 && E.flowGoal[i] < 0) {
               E.waitPath[i] = 1;
@@ -253,11 +304,11 @@ export class UnitSystem {
             if (d2 >= sepR2) continue;
             if (d2 < 1e-12) {
               // exact overlap: deterministic nudge by index order
-              sx += i < j ? 0.01 : -0.01;
+              sx += i < j ? m.overlapNudge : -m.overlapNudge;
               continue;
             }
             const d = Math.sqrt(d2);
-            const push = ((sepR - d) / sepR) * m.separationStrength * 0.1;
+            const push = ((sepR - d) / sepR) * m.separationStrength * m.separationScale;
             sx += (qx / d) * push;
             sy += (qy / d) * push;
           }
@@ -273,12 +324,25 @@ export class UnitSystem {
       // move with terrain sliding: never step onto an unwalkable vertex
       let nx = xi + dx;
       let ny = yi + dy;
-      if (!this.pf.walkable(this.vertexOf(nx, ny))) {
+      // a unit already on an unwalkable vertex (pushed, or placed at a door on a slope) may always step out
+      if (this.pf.walkable(this.vertexOf(xi, yi)) && !this.pf.walkable(this.vertexOf(nx, ny))) {
         if (this.pf.walkable(this.vertexOf(xi + dx, yi))) ny = yi;
         else if (this.pf.walkable(this.vertexOf(xi, yi + dy))) nx = xi;
         else {
-          nx = xi;
-          ny = yi;
+          // blocked on both axes: ease back toward the center of the current (walkable) vertex
+          const cx = Math.round(xi);
+          const cy = Math.round(yi);
+          const ex = cx - xi;
+          const ey = cy - yi;
+          const el = Math.sqrt(ex * ex + ey * ey);
+          const sp = Math.sqrt(dx * dx + dy * dy);
+          if (el > 1e-6) {
+            nx = xi + (ex / el) * Math.min(el, sp);
+            ny = yi + (ey / el) * Math.min(el, sp);
+          } else {
+            nx = xi;
+            ny = yi;
+          }
         }
       }
       nx = ((nx % n) + n) % n;
@@ -289,7 +353,7 @@ export class UnitSystem {
       E.y[i] = ny;
     }
     // drowning (units pushed or standing in deep water)
-    for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.cat[i] === CAT.unit && t.drowns(E.x[i], E.y[i])) w.kill(i, "drowned");
+    for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.cat[i] === CAT.unit && E.inside[i] < 0 && t.drowns(E.x[i], E.y[i])) w.kill(i, "drowned");
   }
 }
 

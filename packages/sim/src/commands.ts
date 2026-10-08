@@ -1,6 +1,8 @@
 // Commands: the only way players, AI, bots, replays and debug tools change the sim. Plain JSON:
 // {tick, tribe, type, args}. Handlers live in a registry so new commands never touch a switch.
 import type { TerrainOpSpec } from "./terrain.ts";
+import { CAT } from "./entities.ts";
+import { BSTATE } from "./economy.ts";
 import type { World } from "./world.ts";
 
 export interface Command {
@@ -102,6 +104,70 @@ registerCommand("stop", {
   },
   apply(w, c) {
     for (const i of w.selectUnits(c.args.units)) w.units.stop(i);
+  },
+});
+
+/** Place a building plan: args {building: id, at: [x, y]} (center of the footprint). */
+registerCommand("placePlan", {
+  validate(w, c) {
+    if (c.tribe < 0) return "plans need a tribe";
+    if (!isPoint(c.args.at)) return "placePlan needs at: [x, y]";
+    const type = w.cfg.buildingIndex.get(String(c.args.building));
+    if (type === undefined) return `unknown building ${String(c.args.building)}`;
+    let open = 0;
+    const E = w.ents;
+    for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.cat[i] === CAT.building && E.tribe[i] === c.tribe && E.state[i] !== BSTATE.done) open++;
+    if (open >= w.cfg.pack.balance.economy.maxOpenPlansPerTribe) return "too many open plans";
+    const [x, y] = c.args.at as [number, number];
+    return w.economy.planBlocker(type, x, y);
+  },
+  apply(w, c) {
+    const [x, y] = c.args.at as [number, number];
+    w.economy.placePlan(c.tribe, w.cfg.buildingIndex.get(String(c.args.building))!, x, y);
+  },
+});
+
+/** Cancel an unfinished plan of your own: args {id}. Delivered wood is lost. */
+registerCommand("cancelPlan", {
+  validate(w, c) {
+    const i = w.ents.index(Number(c.args.id));
+    if (i < 0 || w.ents.cat[i] !== CAT.building) return "no such plan";
+    if (w.ents.tribe[i] !== c.tribe && c.tribe !== -1) return "not your plan";
+    return w.ents.state[i] === BSTATE.done ? "already built" : null;
+  },
+  apply(w, c) {
+    w.kill(w.ents.index(Number(c.args.id)), "planCancelled");
+  },
+});
+
+/** Mana split slider: args {spellsPct: 0..100}. */
+registerCommand("setSplit", {
+  validate: (_w, c) => (c.tribe >= 0 && finite(c.args.spellsPct) && (c.args.spellsPct as number) >= 0 && (c.args.spellsPct as number) <= 100 ? null : "spellsPct 0..100 and a tribe"),
+  apply(w, c) {
+    w.tribes[c.tribe].eco.spellsPct = Math.round(c.args.spellsPct as number);
+  },
+});
+
+/** Toggle auto-charge for a spell: args {spell: id, on: bool}. */
+registerCommand("setAutoCharge", {
+  validate(w, c) {
+    const s = w.cfg.spellIndex.get(String(c.args.spell));
+    if (c.tribe < 0 || s === undefined) return "unknown spell or no tribe";
+    return w.tribes[c.tribe].eco.unlocked[s] ? null : "spell not unlocked";
+  },
+  apply(w, c) {
+    w.tribes[c.tribe].eco.auto[w.cfg.spellIndex.get(String(c.args.spell))!] = c.args.on ? 1 : 0;
+  },
+});
+
+/** Tribe-wide settler priorities: args {build, upgrade, breed} each 0..1. */
+registerCommand("setPriorities", {
+  validate: (_w, c) => (c.tribe >= 0 && ["build", "upgrade", "breed"].every((k) => finite(c.args[k]) && (c.args[k] as number) >= 0 && (c.args[k] as number) <= 1) ? null : "priorities 0..1 and a tribe"),
+  apply(w, c) {
+    const p = w.tribes[c.tribe].eco.priorities;
+    p.build = c.args.build as number;
+    p.upgrade = c.args.upgrade as number;
+    p.breed = c.args.breed as number;
   },
 });
 

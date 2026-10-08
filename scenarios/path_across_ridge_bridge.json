@@ -1,0 +1,81 @@
+{
+  "id": "path_across_ridge_bridge",
+  "description": "Settlers west of a deep channel would need about 42 cells to walk around the planet; after a ridgeLine bridge is raised and they are re-ordered they cross it (about 25 cells) and arrive in a time only the bridge route allows.",
+  "tags": [
+    "fast",
+    "pathing",
+    "terrain"
+  ],
+  "seed": 18,
+  "map": {
+    "generator": "flat_with_channel",
+    "size": 64,
+    "tribes": 1
+  },
+  "setup": [
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        8,
+        32
+      ],
+      "count": 3
+    }
+  ],
+  "commands": [
+    {
+      "tick": 1,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.settlers",
+        "to": [
+          30,
+          32
+        ]
+      }
+    },
+    {
+      "tick": 40,
+      "tribe": -1,
+      "type": "terrainOp",
+      "args": {
+        "op": "ridgeLine",
+        "x": 12,
+        "y": 32,
+        "x2": 24,
+        "y2": 32,
+        "width": 2,
+        "aboveSea": 24
+      }
+    },
+    {
+      "tick": 41,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.settlers",
+        "to": [
+          30,
+          32
+        ]
+      }
+    }
+  ],
+  "runTicks": 600,
+  "assert": [
+    {
+      "at": 39,
+      "expr": "count(tribe0.settlers, near([30,32], 4)) == 0 && terrain.minHeightAlong([12,32],[24,32]) < sea"
+    },
+    {
+      "at": 42,
+      "expr": "terrain.minHeightAlong([12,32],[24,32]) >= sea + 24"
+    },
+    {
+      "at": 420,
+      "expr": "count(tribe0.settlers, near([30,32], 2)) == 3 && events.count('drowned') == 0 && invariants() == 0"
+    }
+  ]
+}

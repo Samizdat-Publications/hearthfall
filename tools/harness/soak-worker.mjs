@@ -41,6 +41,7 @@ for (let k = 0; k < ticks; k++) {
     break;
   }
   const v = w.invariants();
+  for (const e of w.events) if (e.type === "orderGaveUp" && e.reachable === 1) v.push(`unit ${e.id & 0xffff} gave up ${e.dist} cells from a reachable goal`);
   if (v.length) {
     violations.push(...v.slice(0, 5).map((s) => `tick ${w.tick}: ${s}`));
     break;

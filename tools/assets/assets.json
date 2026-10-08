@@ -3911,8 +3911,10 @@
     {
       "id": "unit.shaper",
       "class": "units",
-      "prompt": "the Shaper, a tribal caster in a long hooded robe holding a tall carved staff topped with a glowing ember",
-      "refs": [],
+      "prompt": "the Shaper, a tall tribal caster standing relaxed and upright, long undyed linen robe with a wide bright azure blue cloth sash and azure trim at the hem, hood down, tall feathered headdress with curved horns, one hand holding a tall carved wooden staff topped with a glowing amber stone, other arm hanging loosely, bare forearms, simple sandals",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
       "provider": "meshy",
       "params": {
         "aspect_ratio": "1:1",
@@ -3924,35 +3926,58 @@
         "scheme": "sample",
         "default_color": "cloth",
         "pose": "relaxed_standing",
-        "bakeoff": [
-          "meshy",
-          "tripo"
-        ]
+        "textured": true,
+        "tribe_color": "azure"
       },
       "steps": {
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-08T23:07:02Z",
+          "finished": "2026-10-08T23:07:19Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/unit.shaper/concept.jpg",
+          "sha256": "69163de06ad2496032cbc9b6dcf923e1749b5916cf4ee8670991d7243665e3e1",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 371948,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "dabde1e2bfba43a11899cab6a0857ad3663bdb040cf8650c8b0766cb19afdc16"
         },
         "model": {
-          "status": "pending",
+          "status": "done",
           "provider": "meshy",
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "remote_id": "01a11dc5-9fb3-7108-950f-ad9cbbdfdbc0",
+          "started": "2026-10-08T23:07:19Z",
+          "finished": "2026-10-08T23:09:01Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/unit.shaper/model.glb",
+          "sha256": "a5379e326f03e5cc0eff601941200c52bbe4a488a16f20960ad37955aa4470f2",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "bytes": 3035772,
+            "progress": 100
+          },
+          "request_hash": "53ad4e1d5d7f3763e12db6573db95402aecf68a612bd059bdfa3d14df4867e6a"
         },
         "rig": {
           "status": "skipped",
@@ -3979,40 +4004,135 @@
           "error": null
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-08T23:09:10Z",
+          "finished": "2026-10-08T23:09:24Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/models/unit.shaper.glb",
+          "sha256": "16df1939d949c61f1fc5cb7990191e1603938b5bf001a9aedff64b071cbbbaed",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1520,
+            "tris_out": 1520,
+            "decimated": false,
+            "scale": 1.1,
+            "bounds_min": [
+              -0.2201,
+              -0.1677,
+              0.0
+            ],
+            "bounds_max": [
+              0.2201,
+              0.1677,
+              1.1
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "amber",
+              "azure",
+              "cloth",
+              "rock",
+              "rockDark",
+              "sand",
+              "scar",
+              "skin1",
+              "skin2",
+              "skin3",
+              "stone",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "sand": 6,
+              "rock": 8,
+              "rockDark": 71,
+              "wood": 49,
+              "woodDark": 207,
+              "thatch": 22,
+              "stone": 25,
+              "skin1": 364,
+              "skin2": 310,
+              "skin3": 113,
+              "cloth": 119,
+              "azure": 115,
+              "amber": 36,
+              "scar": 75
+            },
+            "tribe_faces": 151,
+            "tribe_names": [
+              "azure",
+              "amber"
+            ],
+            "tribe_height_range": [
+              0.1,
+              0.837
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "dbdb57352223c278958932cb6c45b372ff1bdf0933282ee14bec35e959562aac"
         },
         "thumb": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
           "started": null,
-          "finished": null,
+          "finished": "2026-10-08T23:10:51Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
+          "output_path": "assets/icons/unit.shaper.png",
+          "sha256": "1126e88bcb007bf67f56f99abb55d347b7ae78ecee902c3d97aafd3c70a87452",
+          "attempts": 1,
           "error": null
         }
       },
       "style_version": 1,
       "request_hash": null,
       "approved": false,
-      "qa": {}
+      "qa": {
+        "tris": 1520,
+        "verts": 4560,
+        "bounds": {
+          "min": [
+            -0.2201,
+            0.0,
+            -0.1677
+          ],
+          "max": [
+            0.2201,
+            1.1,
+            0.1677
+          ],
+          "size": [
+            0.4403,
+            1.1,
+            0.3353
+          ]
+        },
+        "bytes": 192872,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 151,
+        "tribe_height_range": [
+          0.1,
+          0.837
+        ],
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     },
     {
       "id": "unit.settler",
       "class": "units",
-      "prompt": "a tribal settler in a simple tunic with a woven carry basket on one hip",
-      "refs": [],
+      "prompt": "a humble tribal villager standing relaxed with arms hanging loosely at the sides, simple knee-length undyed linen tunic with a wide bright azure blue cloth band tied around the waist, bare arms and lower legs, simple sandals, short brown hair, carries nothing",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
       "provider": "meshy",
       "params": {
         "aspect_ratio": "1:1",
@@ -4024,35 +4144,62 @@
         "scheme": "sample",
         "default_color": "cloth",
         "pose": "relaxed_standing",
-        "bakeoff": [
-          "meshy",
-          "tripo"
-        ]
+        "tribe_color": "azure",
+        "textured": true
       },
       "steps": {
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-08T22:11:43Z",
+          "finished": "2026-10-08T22:11:56Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/unit.settler/concept.jpg",
+          "sha256": "b1b9771767f82e221b8f8e943774ac39f3853673970d6a6b5250c0a8f61b7fbb",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 345774,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ],
+            "reused_from": "unit.settler.bakeoff_b"
+          },
+          "request_hash": "059340e855fd1d86daeb23db0a2eab4b3bad2d97f2f22df51a12d0ff8d9e6299",
+          "reused_from": "unit.settler.bakeoff_b"
         },
         "model": {
-          "status": "pending",
+          "status": "done",
           "provider": "meshy",
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "remote_id": "01a11d92-e9ad-719e-a707-c5b6de625364",
+          "started": "2026-10-08T22:11:56Z",
+          "finished": "2026-10-08T22:12:51Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/unit.settler/model.glb",
+          "sha256": "9988637953885d6c6f70d74a480665ec54f007dd823f42871c7d0bd45e9d822b",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "progress": 100,
+            "bytes": 2249676,
+            "reused_from": "unit.settler.bakeoff_b"
+          },
+          "request_hash": "3ce1414fee3185dcb24b0bdea3f31cb8a5a82fb95df9d086a1d02ed1a641a8f1",
+          "reused_from": "unit.settler.bakeoff_b"
         },
         "rig": {
           "status": "skipped",
@@ -4079,40 +4226,132 @@
           "error": null
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-08T23:07:22Z",
+          "finished": "2026-10-08T23:07:38Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/models/unit.settler.glb",
+          "sha256": "656cb1216e4b3025f43b1b72b80040af33cbc26352698de636a66af77a722aaa",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1486,
+            "tris_out": 1486,
+            "decimated": false,
+            "scale": 0.9,
+            "bounds_min": [
+              -0.2022,
+              -0.0949,
+              0.0
+            ],
+            "bounds_max": [
+              0.2022,
+              0.0949,
+              0.9
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "cloth",
+              "rock",
+              "rockDark",
+              "sand",
+              "scar",
+              "skin1",
+              "skin2",
+              "skin3",
+              "stone",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "sand": 1,
+              "rock": 4,
+              "rockDark": 3,
+              "wood": 6,
+              "woodDark": 40,
+              "thatch": 1,
+              "stone": 7,
+              "skin1": 130,
+              "skin2": 782,
+              "skin3": 2,
+              "cloth": 156,
+              "azure": 89,
+              "scar": 265
+            },
+            "tribe_faces": 89,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.39,
+              0.596
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "16013c37cdf2b0c4f5fef1ed333fb74c28e9ee55bd5a8d33c6822cc3b332469c"
         },
         "thumb": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
           "started": null,
-          "finished": null,
+          "finished": "2026-10-08T23:10:51Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
+          "output_path": "assets/icons/unit.settler.png",
+          "sha256": "68267c5b52708a9be5b389db1a790d05e322c565851615262ae8b687b6a6110f",
+          "attempts": 1,
           "error": null
         }
       },
       "style_version": 1,
       "request_hash": null,
       "approved": false,
-      "qa": {}
+      "qa": {
+        "tris": 1486,
+        "verts": 4458,
+        "bounds": {
+          "min": [
+            -0.2022,
+            0.0,
+            -0.0949
+          ],
+          "max": [
+            0.2022,
+            0.9,
+            0.0949
+          ],
+          "size": [
+            0.4044,
+            0.9,
+            0.1898
+          ]
+        },
+        "bytes": 188592,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 89,
+        "tribe_height_range": [
+          0.39,
+          0.596
+        ],
+        "boundary_edges": 42,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     },
     {
       "id": "unit.warden",
       "class": "units",
-      "prompt": "a tribal warden in light wooden armor with a round shield on one arm and a short spear held upright",
-      "refs": [],
+      "prompt": "a sturdy tribal guard standing relaxed with both arms close to the body, broad shoulders, short leather jerkin with a bright azure blue cloth sash across the chest and an azure waist cloth, a short wooden club held pointing down along the right thigh, a round hide shield with a wooden rim strapped flat against the left forearm held close to the left side, bare arms, sturdy boots, compact narrow silhouette, nothing extends forward",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
       "provider": "meshy",
       "params": {
         "aspect_ratio": "1:1",
@@ -4124,35 +4363,60 @@
         "scheme": "sample",
         "default_color": "cloth",
         "pose": "relaxed_standing",
-        "bakeoff": [
-          "meshy",
-          "tripo"
-        ]
+        "tribe_color": "azure",
+        "side_color": "wood",
+        "torso_color": "thatch",
+        "textured": true
       },
       "steps": {
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-08T23:11:43Z",
+          "finished": "2026-10-08T23:12:00Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/unit.warden/concept.jpg",
+          "sha256": "baf8be89aaa42cf0e3e4468b964b1a53e6be465fdccdacaf76d436a88853bb75",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 375819,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "7107b7b0b49b13398d99b743f9db0203b3caf762f76751b7be966c4229af4f32"
         },
         "model": {
-          "status": "pending",
+          "status": "done",
           "provider": "meshy",
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "remote_id": "01a11dc9-e738-74f5-a58f-111412425de8",
+          "started": "2026-10-08T23:12:00Z",
+          "finished": "2026-10-08T23:12:37Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/unit.warden/model.glb",
+          "sha256": "f514badd80fe79a0171550c37fcbf472b99f43e61c5c1eac6f17f303d19fdedb",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "bytes": 2313164,
+            "progress": 100
+          },
+          "request_hash": "7a881c293450705c7407193f9c7cc0bdf5b2c73f13f819392bed501048a00848"
         },
         "rig": {
           "status": "skipped",
@@ -4179,240 +4443,128 @@
           "error": null
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-08T23:12:38Z",
+          "finished": "2026-10-08T23:12:51Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/models/unit.warden.glb",
+          "sha256": "bbc539732c91ba4257c4f1726328465282cef0d70f7235397435018d0fdffc9b",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1454,
+            "tris_out": 1454,
+            "decimated": false,
+            "scale": 1.0,
+            "bounds_min": [
+              -0.34,
+              -0.5,
+              0.0
+            ],
+            "bounds_max": [
+              0.34,
+              0.5,
+              1.0
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "rock",
+              "rockDark",
+              "scar",
+              "skin1",
+              "skin2",
+              "skin3",
+              "stone",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "rock": 1,
+              "rockDark": 6,
+              "wood": 26,
+              "woodDark": 351,
+              "thatch": 7,
+              "stone": 8,
+              "skin1": 481,
+              "skin2": 24,
+              "skin3": 24,
+              "azure": 202,
+              "scar": 324
+            },
+            "tribe_faces": 202,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.288,
+              0.868
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "4231c32a9549838a52a47b4138a0a5dde6986696a1c9f895f27e8c8a2cfacc7d"
         },
         "thumb": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
           "started": null,
-          "finished": null,
+          "finished": "2026-10-08T23:14:11Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
+          "output_path": "assets/icons/unit.warden.png",
+          "sha256": "74f9fdb222cf6c0f4eae7d91dcf6bd33b07cd701afb66803a6d35061758dd878",
+          "attempts": 1,
           "error": null
         }
       },
       "style_version": 1,
       "request_hash": null,
       "approved": false,
-      "qa": {}
+      "qa": {
+        "tris": 1454,
+        "verts": 4362,
+        "bounds": {
+          "min": [
+            -0.34,
+            0.0,
+            -0.5
+          ],
+          "max": [
+            0.34,
+            1.0,
+            0.5
+          ],
+          "size": [
+            0.68,
+            1.0,
+            1.0
+          ]
+        },
+        "bytes": 184508,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 202,
+        "tribe_height_range": [
+          0.288,
+          0.868
+        ],
+        "boundary_edges": 66,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     },
     {
       "id": "unit.firecaller",
       "class": "units",
-      "prompt": "a tribal firecaller in a red and orange robe holding a clay bowl of glowing embers",
-      "refs": [],
-      "provider": "meshy",
-      "params": {
-        "aspect_ratio": "1:1",
-        "image_size": "1K",
-        "route": "image",
-        "target_polycount": 1400,
-        "height": 1.05,
-        "budget_class": "unit",
-        "scheme": "sample",
-        "default_color": "cloth",
-        "pose": "relaxed_standing",
-        "bakeoff": [
-          "meshy",
-          "tripo"
-        ]
-      },
-      "steps": {
-        "concept": {
-          "status": "pending",
-          "provider": "gemini",
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
-        },
-        "model": {
-          "status": "pending",
-          "provider": "meshy",
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
-        },
-        "rig": {
-          "status": "skipped",
-          "provider": null,
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
-        },
-        "animate": {
-          "status": "skipped",
-          "provider": null,
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
-        },
-        "post": {
-          "status": "pending",
-          "provider": "local",
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
-        },
-        "thumb": {
-          "status": "pending",
-          "provider": "local",
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
-        }
-      },
-      "style_version": 1,
-      "request_hash": null,
-      "approved": false,
-      "qa": {}
-    },
-    {
-      "id": "unit.chanter",
-      "class": "units",
-      "prompt": "a tribal chanter in a long pale robe holding a small hand drum, mouth open mid song",
-      "refs": [],
-      "provider": "meshy",
-      "params": {
-        "aspect_ratio": "1:1",
-        "image_size": "1K",
-        "route": "image",
-        "target_polycount": 1400,
-        "height": 1.0,
-        "budget_class": "unit",
-        "scheme": "sample",
-        "default_color": "cloth",
-        "pose": "relaxed_standing",
-        "bakeoff": [
-          "meshy",
-          "tripo"
-        ]
-      },
-      "steps": {
-        "concept": {
-          "status": "pending",
-          "provider": "gemini",
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
-        },
-        "model": {
-          "status": "pending",
-          "provider": "meshy",
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
-        },
-        "rig": {
-          "status": "skipped",
-          "provider": null,
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
-        },
-        "animate": {
-          "status": "skipped",
-          "provider": null,
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
-        },
-        "post": {
-          "status": "pending",
-          "provider": "local",
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
-        },
-        "thumb": {
-          "status": "pending",
-          "provider": "local",
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
-        }
-      },
-      "style_version": 1,
-      "request_hash": null,
-      "approved": false,
-      "qa": {}
-    },
-    {
-      "id": "unit.wild_person",
-      "class": "units",
-      "prompt": "an unaligned wild person in a ragged fur wrap with messy hair and a wooden club resting on one shoulder",
-      "refs": [],
+      "prompt": "a tribal firecaller standing relaxed, light short undyed linen robe with a wide bright azure blue cloth sash across the chest and azure trim, one hand holding a round clay fire pot with glowing embers, other arm hanging loosely, bare arms and lower legs, sandals, short dark hair",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
       "provider": "meshy",
       "params": {
         "aspect_ratio": "1:1",
@@ -4424,35 +4576,58 @@
         "scheme": "sample",
         "default_color": "cloth",
         "pose": "relaxed_standing",
-        "bakeoff": [
-          "meshy",
-          "tripo"
-        ]
+        "textured": true,
+        "tribe_color": "azure"
       },
       "steps": {
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-08T23:07:52Z",
+          "finished": "2026-10-08T23:08:06Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/unit.firecaller/concept.jpg",
+          "sha256": "e28fceeb0f73dac2fd5f61394827f8d54d604621ce40a43f7aaf0c7094e47075",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 394378,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "8490775b6b96dfb6d208d05d0d8f5cd860193d39efc6cd0a8060e21330c6e9f6"
         },
         "model": {
-          "status": "pending",
+          "status": "done",
           "provider": "meshy",
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "remote_id": "01a11dc6-531b-75a5-b99c-ad7eceb422c5",
+          "started": "2026-10-08T23:08:06Z",
+          "finished": "2026-10-08T23:09:05Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/unit.firecaller/model.glb",
+          "sha256": "01cc9c20e8bdcdd215b4d7e986a1fec653d05729a0c01a0a8e125e672649a775",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "bytes": 2491700,
+            "progress": 100
+          },
+          "request_hash": "a37e54c7441ed00f57b76459217c7c98dc59bc958cdbb6cb3ffbfa0944b8efa7"
         },
         "rig": {
           "status": "skipped",
@@ -4479,8 +4654,199 @@
           "error": null
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-08T23:09:24Z",
+          "finished": "2026-10-08T23:09:39Z",
+          "cost": null,
+          "output_path": "assets/models/unit.firecaller.glb",
+          "sha256": "a1e83ac9375da6806bfda5272ea3b034b820392ba70940f757593d481c67e427",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1499,
+            "tris_out": 1499,
+            "decimated": false,
+            "scale": 0.95,
+            "bounds_min": [
+              -0.2125,
+              -0.1607,
+              0.0
+            ],
+            "bounds_max": [
+              0.2125,
+              0.1607,
+              0.95
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "cloth",
+              "rock",
+              "rockDark",
+              "sand",
+              "scar",
+              "skin1",
+              "skin2",
+              "skin3",
+              "stone",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "sand": 10,
+              "rock": 20,
+              "rockDark": 14,
+              "wood": 83,
+              "woodDark": 35,
+              "thatch": 1,
+              "stone": 8,
+              "skin1": 65,
+              "skin2": 586,
+              "skin3": 29,
+              "cloth": 281,
+              "azure": 141,
+              "scar": 226
+            },
+            "tribe_faces": 141,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.316,
+              0.831
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "7d882d63ce2867d22e3b65b0670edf66e63acf9b1c377123e8db5a93f2439b28"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-08T23:10:51Z",
+          "cost": null,
+          "output_path": "assets/icons/unit.firecaller.png",
+          "sha256": "5fbbe65d0be2a2ea3d03b1d7ada0dc00815a03195cc5cab0ff5b3ef7a8c99ab3",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 1499,
+        "verts": 4497,
+        "bounds": {
+          "min": [
+            -0.2125,
+            0.0,
+            -0.1607
+          ],
+          "max": [
+            0.2125,
+            0.95,
+            0.1607
+          ],
+          "size": [
+            0.4251,
+            0.95,
+            0.3214
+          ]
+        },
+        "bytes": 190224,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 141,
+        "tribe_height_range": [
+          0.316,
+          0.831
+        ],
+        "boundary_edges": 79,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "unit.chanter",
+      "class": "units",
+      "prompt": "a tribal chanter standing relaxed, long hooded plain pale cream linen robe down to the ankles with a smooth plain cream hood, a bright azure blue cloth tabard worn over the front of the robe from shoulders to knees and azure trim at the hem only, both hands held together in front at waist height holding a small hand drum, sandals",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1400,
+        "height": 1.0,
+        "budget_class": "unit",
+        "scheme": "sample",
+        "default_color": "cloth",
+        "pose": "relaxed_standing",
+        "tribe_color": "azure",
+        "textured": true
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-08T23:12:03Z",
+          "finished": "2026-10-08T23:12:26Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/unit.chanter/concept.jpg",
+          "sha256": "d0bff5508ecb30620f540e6092fa8b6e750bb31a765a26216b1528a33c562a63",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 352613,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "eb66d7abcaba8c7cc65347ab6ceedbd64b9b3c1b27e65ef0c4f1b4cb93160fdc"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a11dca-5b9c-7166-aa8d-c336ea3a53dd",
+          "started": "2026-10-08T23:12:28Z",
+          "finished": "2026-10-08T23:12:56Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/unit.chanter/model.glb",
+          "sha256": "5f37d05e51bc44944988e3f3e6369473feac8efe0decf4ca16169c2e0cb6adbd",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "progress": 100,
+            "bytes": 2364572
+          },
+          "request_hash": "50fad890c3545804588e163ec71cfd6437a29ea31c326e1d042c6a6c052ccd5d"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
           "remote_id": null,
           "started": null,
           "finished": null,
@@ -4490,9 +4856,9 @@
           "attempts": 0,
           "error": null
         },
-        "thumb": {
-          "status": "pending",
-          "provider": "local",
+        "animate": {
+          "status": "skipped",
+          "provider": null,
           "remote_id": null,
           "started": null,
           "finished": null,
@@ -4501,12 +4867,322 @@
           "sha256": null,
           "attempts": 0,
           "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-08T23:12:56Z",
+          "finished": "2026-10-08T23:13:03Z",
+          "cost": null,
+          "output_path": "assets/models/unit.chanter.glb",
+          "sha256": "caf932a25d55989177f1e86670b796ff57d3f7dafb20aa346cc63139010991a2",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1394,
+            "tris_out": 1394,
+            "decimated": false,
+            "scale": 1.0,
+            "bounds_min": [
+              -0.1862,
+              -0.1688,
+              0.0
+            ],
+            "bounds_max": [
+              0.1862,
+              0.1688,
+              1.0
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "cloth",
+              "rock",
+              "rockDark",
+              "sand",
+              "scar",
+              "skin1",
+              "skin2",
+              "skin3",
+              "stone",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "sand": 3,
+              "rock": 3,
+              "rockDark": 31,
+              "wood": 9,
+              "woodDark": 63,
+              "stone": 3,
+              "skin1": 530,
+              "skin2": 438,
+              "skin3": 61,
+              "cloth": 19,
+              "azure": 170,
+              "scar": 64
+            },
+            "tribe_faces": 170,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.077,
+              0.822
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "af381bb431daa3a5ec346be9d32ae88b3f5ff46931f9017c0a71d6267caaa03c"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-08T23:14:11Z",
+          "cost": null,
+          "output_path": "assets/icons/unit.chanter.png",
+          "sha256": "9f93743b36cba04c7e38e2580ff0383048ee96816d023a48ee0831004a652ebf",
+          "attempts": 1,
+          "error": null
         }
       },
       "style_version": 1,
       "request_hash": null,
       "approved": false,
-      "qa": {}
+      "qa": {
+        "tris": 1394,
+        "verts": 4182,
+        "bounds": {
+          "min": [
+            -0.1862,
+            0.0,
+            -0.1688
+          ],
+          "max": [
+            0.1862,
+            1.0,
+            0.1688
+          ],
+          "size": [
+            0.3725,
+            1.0,
+            0.3376
+          ]
+        },
+        "bytes": 176980,
+        "materials": 1,
+        "palette_delta": 0.0,
+        "palette_within": 1.0,
+        "tribe_faces": 170,
+        "tribe_height_range": [
+          0.077,
+          0.822
+        ],
+        "boundary_edges": 62,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "unit.wild_person",
+      "class": "units",
+      "prompt": "an untamed wild villager standing relaxed with arms hanging loosely, ragged brown fur wrap over the shoulders and hips with a few green leaves tied on, messy dark hair, bare arms and legs, bare feet, natural earth tones only, no blue or red cloth, carries nothing",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1400,
+        "height": 0.9,
+        "budget_class": "unit",
+        "scheme": "sample",
+        "default_color": "cloth",
+        "pose": "relaxed_standing",
+        "textured": true
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-08T23:08:31Z",
+          "finished": "2026-10-08T23:08:55Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/unit.wild_person/concept.jpg",
+          "sha256": "f9c5d4dcdf5945e9458a1ba8af19185fe2910986f1eb1c29555b47e8397e1ac1",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 337788,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "e8ee6a2bd41f252bfe59c80d208f42b37544af7a1fdba9295dab284ce210e7d7"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a11dc7-1503-70a8-ad9d-9a692a115886",
+          "started": "2026-10-08T23:08:55Z",
+          "finished": "2026-10-08T23:09:52Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/unit.wild_person/model.glb",
+          "sha256": "b66eb6ad88aa30844f42912ae98d141be0066731b14e27b6de24b8433dbee622",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "progress": 100,
+            "bytes": 2195700
+          },
+          "request_hash": "3496d5048d57391aef43e4f4c4cae51c5a49362a5345bbb58ebe850d1e6fab10"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-08T23:09:52Z",
+          "finished": "2026-10-08T23:10:02Z",
+          "cost": null,
+          "output_path": "assets/models/unit.wild_person.glb",
+          "sha256": "9654879ec221d0a45778c94364d2a67b0c174683fdf2e2cc06bd1dc0f1d689f4",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1504,
+            "tris_out": 1504,
+            "decimated": false,
+            "scale": 0.9,
+            "bounds_min": [
+              -0.2184,
+              -0.1376,
+              0.0
+            ],
+            "bounds_max": [
+              0.2184,
+              0.1376,
+              0.9
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "rock",
+              "rockDark",
+              "scar",
+              "skin1",
+              "skin2",
+              "skin3",
+              "stone",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "rock": 1,
+              "rockDark": 68,
+              "wood": 73,
+              "woodDark": 427,
+              "thatch": 583,
+              "stone": 1,
+              "skin1": 30,
+              "skin2": 88,
+              "skin3": 8,
+              "scar": 225
+            },
+            "tribe_faces": 0,
+            "tribe_names": [],
+            "tribe_height_range": null,
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "1f1809f13ab183480621c5ec72abc96ea405db29408767bfe0f5a0498f94ec0c"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-08T23:10:51Z",
+          "cost": null,
+          "output_path": "assets/icons/unit.wild_person.png",
+          "sha256": "e96af923dd0639680b43dd3f540da7e738b714f9bb98b24543f94f0797a3d341",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 1504,
+        "verts": 4512,
+        "bounds": {
+          "min": [
+            -0.2184,
+            0.0,
+            -0.1376
+          ],
+          "max": [
+            0.2184,
+            0.9,
+            0.1376
+          ],
+          "size": [
+            0.4368,
+            0.9,
+            0.2753
+          ]
+        },
+        "bytes": 190856,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "boundary_edges": 28,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     },
     {
       "id": "sfx.ui_click",

@@ -37,7 +37,39 @@
     "giveUpSeconds": 6,
     "pathBudgetPerTick": 6000,
     "maxExpandPerSearch": 20000,
-    "groupFlowMinUnits": 6
+    "groupFlowMinUnits": 6,
+    "flowLookaheadCost": 2,
+    "sightRadius": 3,
+    "progressEpsilon": 0.05,
+    "overlapNudge": 0.01,
+    "separationScale": 0.1,
+    "snapRadius": 6,
+    "maxFlowBuildsPerTick": 1,
+    "flowCacheSize": 16
+  },
+  "economy": {
+    "$comment": "Settler autonomy, construction and mana (M4). Seconds and cells; mana rates per unit live in units.json manaPerMin.",
+    "decideEverySeconds": 1,
+    "flattenStepPerWorkerSecond": 6,
+    "flattenMaxRange": 48,
+    "carryWood": 1,
+    "workRange": 1.6,
+    "keepOneOccupantForBreeding": true,
+    "maxOpenPlansPerTribe": 3,
+    "buildingGapCells": 1,
+    "defaultAutoCharge": [
+      "bolt",
+      "call"
+    ],
+    "skirmishSpells": "v1",
+    "wildWanderRadius": 6,
+    "wildWanderChancePerSecond": 0.15,
+    "doorOffset": 1.6,
+    "priorities": {
+      "build": 1,
+      "upgrade": 0.7,
+      "breed": 0.5
+    }
   },
   "breeding": {
     "formula": "base / (0.5 + 0.5 * occupants) * nearCapFactor",

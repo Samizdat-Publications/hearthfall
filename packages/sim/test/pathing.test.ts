@@ -74,3 +74,22 @@ describe("spatial hash", () => {
     expect(seen.sort((a, b) => a - b)).toEqual([0, 1, 3]);
   });
 });
+
+describe("torus ambiguity (M3 soak regression)", () => {
+  it("never produces a waypoint leg of half the map or more", () => {
+    const S = 32;
+    const t = flatTerrain(S, 160);
+    // wall the short way so the route must go around the long way
+    for (let y = 0; y < S; y++) t.heights[t.idx(10, y)] = 600;
+    const pf = new Pathfinder(t);
+    const r = pf.astar(t.idx(8, 5), t.idx(12, 5), 10000);
+    expect(r.ok).toBe(true);
+    let prev = t.idx(8, 5);
+    for (const v of r.waypoints) {
+      let dx = Math.abs((v % S) - (prev % S));
+      if (dx > S / 2) dx = S - dx;
+      expect(dx).toBeLessThan(S / 2 - 1);
+      prev = v;
+    }
+  });
+});

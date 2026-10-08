@@ -52,7 +52,8 @@ export type TerrainOpSpec =
   | { op: "ridgeLine"; x: number; y: number; x2: number; y2: number; width: number; aboveSea: number }
   | { op: "noiseScar"; x: number; y: number; r: number; depth: number; seed: number }
   | { op: "lowerTowardSea"; x: number; y: number; r: number; amount: number }
-  | { op: "scar"; x: number; y: number; r: number; seconds: number };
+  | { op: "scar"; x: number; y: number; r: number; seconds: number }
+  | { op: "flattenRect"; x: number; y: number; w: number; h: number; target: number; step: number };
 
 export class Terrain {
   readonly size: number;
@@ -348,6 +349,9 @@ export class Terrain {
         return this.lowerTowardSea(o.x, o.y, o.r, o.amount);
       case "scar":
         return this.scarDisc(o.x, o.y, o.r, o.seconds);
+      case "flattenRect":
+        this.flattenRect(o.x, o.y, o.w, o.h, o.target, o.step);
+        return;
     }
   }
 

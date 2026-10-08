@@ -119,3 +119,23 @@ describe("snapshot and restore", () => {
     expect(b.tick).toBe(600);
   });
 });
+
+describe("snapshot with moving units and terrain edits (M3 review regression)", () => {
+  it("restored world matches after a terrain op while units follow paths", async () => {
+    const { basePack } = await import("./helpers.ts");
+    const { World } = await import("../src/world.ts");
+    const p = basePack();
+    const init = { pack: p.files, packHash: p.hash, seed: 8, map: { generator: "flat_with_lake", size: 64, tribes: 1 } };
+    const a = new World(init);
+    for (let k = 0; k < 12; k++) a.spawnUnit("settler", 0, 8 + (k % 4), 10 + Math.floor(k / 4));
+    a.step([{ tick: 0, tribe: 0, type: "move", args: { units: "tribe0.settlers", to: [56, 54] } }]);
+    a.run(30);
+    a.step([{ tick: a.tick, tribe: -1, type: "terrainOp", args: { op: "noiseScar", x: 20, y: 20, r: 5, depth: 20, seed: 3 } }]);
+    const snap = a.snapshot();
+    const b = World.restore(init, snap);
+    expect(b.hash()).toEqual(a.hash());
+    a.run(200);
+    b.run(200);
+    expect(b.hash()).toEqual(a.hash());
+  });
+});

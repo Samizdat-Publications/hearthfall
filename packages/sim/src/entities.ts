@@ -8,7 +8,7 @@ export const NO_ENTITY = 0xffffffff;
 /** Entity categories. `type` indexes the matching data list (units, buildings) or 0. */
 export const CAT = { none: 0, tree: 1, building: 2, unit: 3, effect: 4 } as const;
 
-type Col = Int8Array | Uint8Array | Uint16Array | Int32Array | Float64Array;
+type Col = Int8Array | Uint8Array | Uint16Array | Int32Array | Uint32Array | Float64Array;
 type ColCtor = new (n: number) => Col;
 
 const COLUMNS: Record<string, ColCtor> = {
@@ -37,6 +37,16 @@ const COLUMNS: Record<string, ColCtor> = {
   waitPath: Uint8Array,
   stuck: Int32Array,
   best: Float64Array,
+  /** economy (M4): settler task, its target entity id, carried wood, building lived in (index, -1 outside) */
+  task: Uint8Array,
+  target: Uint32Array,
+  carry: Uint8Array,
+  inside: Int32Array,
+  /** buildings: construction or breed progress, flatten target height, dwelling level, occupants */
+  progress: Float64Array,
+  progress2: Float64Array,
+  level: Uint8Array,
+  occupants: Uint8Array,
 };
 export const COLUMN_NAMES = Object.keys(COLUMNS);
 
@@ -69,6 +79,14 @@ export class Entities {
   waitPath!: Uint8Array;
   stuck!: Int32Array;
   best!: Float64Array;
+  task!: Uint8Array;
+  target!: Uint32Array;
+  carry!: Uint8Array;
+  inside!: Int32Array;
+  progress!: Float64Array;
+  progress2!: Float64Array;
+  level!: Uint8Array;
+  occupants!: Uint8Array;
 
   constructor(cap = 1024) {
     this.cap = cap;
@@ -121,6 +139,14 @@ export class Entities {
     this.waitPath[i] = 0;
     this.stuck[i] = 0;
     this.best[i] = 0;
+    this.task[i] = 0;
+    this.target[i] = 0xffffffff;
+    this.carry[i] = 0;
+    this.inside[i] = -1;
+    this.progress[i] = 0;
+    this.progress2[i] = 0;
+    this.level[i] = 0;
+    this.occupants[i] = 0;
     this.count++;
     return (i | ((this.gen[i] & 0x7fff) << 16)) >>> 0;
   }

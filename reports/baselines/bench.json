@@ -1,7 +1,10 @@
 {
-  "units": 2017,
-  "tickAvgMs": 2.482,
-  "tickP99Ms": 2.106,
-  "terrainOpMs": 1.565,
-  "when": "2026-10-08T22:56:52.916Z"
+  "units": 2029,
+  "rawP99Ms": 24.737,
+  "afterTerrainOpMs": 4.966,
+  "groupOrdersMs": 7.1,
+  "tickAvgMs": 2.857,
+  "tickP99Ms": 2.366,
+  "terrainOpMs": 0.804,
+  "when": "2026-10-08T23:29:14.512Z"
 }

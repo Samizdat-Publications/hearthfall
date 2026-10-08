@@ -188,6 +188,41 @@
           "type": "integer",
           "exclusiveMinimum": 0,
           "maximum": 9007199254740991
+        },
+        "flowLookaheadCost": {
+          "type": "number",
+          "minimum": 0
+        },
+        "sightRadius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "progressEpsilon": {
+          "type": "number",
+          "minimum": 0
+        },
+        "overlapNudge": {
+          "type": "number",
+          "minimum": 0
+        },
+        "separationScale": {
+          "type": "number",
+          "minimum": 0
+        },
+        "snapRadius": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxFlowBuildsPerTick": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "flowCacheSize": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
         }
       },
       "required": [
@@ -200,7 +235,136 @@
         "giveUpSeconds",
         "pathBudgetPerTick",
         "maxExpandPerSearch",
-        "groupFlowMinUnits"
+        "groupFlowMinUnits",
+        "flowLookaheadCost",
+        "sightRadius",
+        "progressEpsilon",
+        "overlapNudge",
+        "separationScale",
+        "snapRadius",
+        "maxFlowBuildsPerTick",
+        "flowCacheSize"
+      ],
+      "additionalProperties": false
+    },
+    "economy": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "decideEverySeconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "flattenStepPerWorkerSecond": {
+          "type": "number",
+          "minimum": 0
+        },
+        "flattenMaxRange": {
+          "type": "number",
+          "minimum": 0
+        },
+        "carryWood": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "workRange": {
+          "type": "number",
+          "minimum": 0
+        },
+        "keepOneOccupantForBreeding": {
+          "type": "boolean"
+        },
+        "maxOpenPlansPerTribe": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "buildingGapCells": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "defaultAutoCharge": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          }
+        },
+        "skirmishSpells": {
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "v1"
+            },
+            {
+              "type": "string",
+              "const": "all"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*$"
+              }
+            }
+          ]
+        },
+        "wildWanderRadius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "wildWanderChancePerSecond": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "doorOffset": {
+          "type": "number",
+          "minimum": 0
+        },
+        "priorities": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "number",
+              "minimum": 0
+            },
+            "upgrade": {
+              "type": "number",
+              "minimum": 0
+            },
+            "breed": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "build",
+            "upgrade",
+            "breed"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "decideEverySeconds",
+        "flattenStepPerWorkerSecond",
+        "flattenMaxRange",
+        "carryWood",
+        "workRange",
+        "keepOneOccupantForBreeding",
+        "maxOpenPlansPerTribe",
+        "buildingGapCells",
+        "defaultAutoCharge",
+        "skirmishSpells",
+        "wildWanderRadius",
+        "wildWanderChancePerSecond",
+        "doorOffset",
+        "priorities"
       ],
       "additionalProperties": false
     },
@@ -308,6 +472,7 @@
     "sim",
     "terrain",
     "movement",
+    "economy",
     "breeding",
     "combat",
     "gates"

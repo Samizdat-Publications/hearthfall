@@ -102,6 +102,7 @@ export class Pathfinder {
   private cost: Float32Array;
   /** 8-connected walkable component label per vertex (0 = not walkable) */
   comp: Int32Array;
+  private readonly stack: Int32Array;
   private walkVersion = -1;
 
   readonly t: Terrain;
@@ -117,39 +118,103 @@ export class Pathfinder {
     this.walk = new Uint8Array(nn);
     this.cost = new Float32Array(nn);
     this.comp = new Int32Array(nn);
+    this.stack = new Int32Array(nn);
   }
 
-  /** Refresh the walkability and cost caches if the terrain changed. */
+  /** Refresh the walkability, cost and component caches if the terrain changed (tight loops). */
   refresh(): void {
     if (this.walkVersion === this.t.version) return;
     const n = this.n;
+    const H = this.t.heights;
+    const sea = this.t.sea;
+    const maxSlope = this.t.maxWalkSlope;
     for (let y = 0; y < n; y++) {
+      const row = y * n;
+      const up = (y === 0 ? n - 1 : y - 1) * n;
+      const dn = (y === n - 1 ? 0 : y + 1) * n;
       for (let x = 0; x < n; x++) {
-        const i = x + y * n;
-        const c = stepCost(this.t, x, y);
-        this.walk[i] = c === Infinity ? 0 : 1;
-        this.cost[i] = c === Infinity ? 0 : c;
+        const i = row + x;
+        const h = H[i];
+        const l = H[row + (x === 0 ? n - 1 : x - 1)];
+        const r = H[row + (x === n - 1 ? 0 : x + 1)];
+        const u = H[up + x];
+        const d = H[dn + x];
+        let sl = h > l ? h - l : l - h;
+        let q = h > r ? h - r : r - h;
+        if (q > sl) sl = q;
+        q = h > u ? h - u : u - h;
+        if (q > sl) sl = q;
+        q = h > d ? h - d : d - h;
+        if (q > sl) sl = q;
+        const ok = h >= sea && sl <= maxSlope;
+        this.walk[i] = ok ? 1 : 0;
+        this.cost[i] = ok ? 1 + sl / (maxSlope * 2) : 0;
       }
     }
-    // component labels (same 8-connectivity and corner rule as the search) so unreachable goals fail fast
+    // 8-connected component labels with the search's corner rule, so unreachable goals fail fast
     const comp = this.comp;
+    const walk = this.walk;
     comp.fill(0);
-    const stack: number[] = [];
+    const stack = this.stack;
     let label = 0;
     for (let s0 = 0; s0 < n * n; s0++) {
-      if (!this.walk[s0] || comp[s0]) continue;
+      if (!walk[s0] || comp[s0]) continue;
       comp[s0] = ++label;
-      stack.push(s0);
-      while (stack.length) {
-        const cur = stack.pop()!;
+      let top = 0;
+      stack[top++] = s0;
+      while (top > 0) {
+        const cur = stack[--top];
         const cx = cur % n;
         const cy = (cur - cx) / n;
-        for (let k = 0; k < 8; k++) {
-          const j = ((cx + DX[k] + n) % n) + ((cy + DY[k] + n) % n) * n;
-          if (!this.walk[j] || comp[j]) continue;
-          if (k >= 4 && (!this.walk[((cx + DX[k] + n) % n) + cy * n] || !this.walk[cx + ((cy + DY[k] + n) % n) * n])) continue;
+        const xl = cx === 0 ? n - 1 : cx - 1;
+        const xr = cx === n - 1 ? 0 : cx + 1;
+        const yu = (cy === 0 ? n - 1 : cy - 1) * n;
+        const yd = (cy === n - 1 ? 0 : cy + 1) * n;
+        const row = cy * n;
+        const L = row + xl;
+        const R = row + xr;
+        const U = yu + cx;
+        const D = yd + cx;
+        if (walk[L] && !comp[L]) {
+          comp[L] = label;
+          stack[top++] = L;
+        }
+        if (walk[R] && !comp[R]) {
+          comp[R] = label;
+          stack[top++] = R;
+        }
+        if (walk[U] && !comp[U]) {
+          comp[U] = label;
+          stack[top++] = U;
+        }
+        if (walk[D] && !comp[D]) {
+          comp[D] = label;
+          stack[top++] = D;
+        }
+        // diagonals only when both orthogonal neighbors are walkable (no corner cutting)
+        const wl = walk[L];
+        const wr = walk[R];
+        const wu = walk[U];
+        const wd = walk[D];
+        let j = yu + xl;
+        if (wl && wu && walk[j] && !comp[j]) {
           comp[j] = label;
-          stack.push(j);
+          stack[top++] = j;
+        }
+        j = yu + xr;
+        if (wr && wu && walk[j] && !comp[j]) {
+          comp[j] = label;
+          stack[top++] = j;
+        }
+        j = yd + xl;
+        if (wl && wd && walk[j] && !comp[j]) {
+          comp[j] = label;
+          stack[top++] = j;
+        }
+        j = yd + xr;
+        if (wr && wd && walk[j] && !comp[j]) {
+          comp[j] = label;
+          stack[top++] = j;
         }
       }
     }
@@ -253,7 +318,31 @@ export class Pathfinder {
     else if (dx < -n / 2) dx += n;
     if (dy > n / 2) dy -= n;
     else if (dy < -n / 2) dy += n;
-    const steps = Math.ceil(Math.max(Math.abs(dx), Math.abs(dy)) * 2);
+    // a segment of half the map or more is ambiguous on the torus (both directions are equally
+    // short), so it never counts as a straight line; this keeps every waypoint leg unambiguous
+    if (Math.max(Math.abs(dx), Math.abs(dy)) >= n / 2 - 1) return false;
+    // fine sampling: a moving unit occupies the vertex nearest its position, so the line must keep
+    // every point on walkable vertices (half-cell sampling missed diagonal corners)
+    const steps = Math.ceil(Math.max(Math.abs(dx), Math.abs(dy)) * 8);
+    for (let s = 1; s < steps; s++) {
+      const x = Math.round(ax + (dx * s) / steps);
+      const y = Math.round(ay + (dy * s) / steps);
+      if (!this.walk[((x % n) + n) % n + (((y % n) + n) % n) * n]) return false;
+    }
+    return true;
+  }
+
+  /** Like lineWalkable but from a continuous position (what a moving unit actually traverses). */
+  lineWalkableFrom(ax: number, ay: number, b: number): boolean {
+    const n = this.n;
+    let dx = (b % n) - ax;
+    let dy = Math.floor(b / n) - ay;
+    if (dx > n / 2) dx -= n;
+    else if (dx < -n / 2) dx += n;
+    if (dy > n / 2) dy -= n;
+    else if (dy < -n / 2) dy += n;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) >= n / 2 - 1) return false;
+    const steps = Math.ceil(Math.max(Math.abs(dx), Math.abs(dy)) * 8);
     for (let s = 1; s < steps; s++) {
       const x = Math.round(ax + (dx * s) / steps);
       const y = Math.round(ay + (dy * s) / steps);

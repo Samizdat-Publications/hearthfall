@@ -10,6 +10,7 @@ import { Rng } from "./rng.ts";
 import { cos, sin, TWO_PI } from "./dmath.ts";
 import type { Terrain, TerrainOpSpec } from "./terrain.ts";
 import { ORDER, UnitSystem } from "./units.ts";
+import { BSTATE, cloneEco, EconomySystem, newTribeEco, type TribeEco } from "./economy.ts";
 
 /** Deterministic in-sim decision maker (AI opponent or test bot); emits Commands at its cadence. */
 export interface Controller {
@@ -33,6 +34,7 @@ export interface Tribe {
   color: string;
   hearth: EntityId;
   alive: boolean;
+  eco: TribeEco;
 }
 
 export interface WorldInit {
@@ -65,6 +67,7 @@ export interface WorldSnapshot {
   eventCounts: [string, number][];
   paths: [number, Int32Array][];
   pathQueue: number[];
+  unitsTerrainVersion: number;
 }
 
 export class World {
@@ -83,6 +86,7 @@ export class World {
   /** sandbox and debug: any tribe may issue god-mode commands */
   godMode = false;
   units: UnitSystem;
+  economy: EconomySystem;
   controllers: Controller[] = [];
   readonly mapInfo: { generator: string; seedUsed: number; rerolls: number; landFraction: number };
 
@@ -95,8 +99,9 @@ export class World {
     this.rng = new Rng((gen.seedUsed || this.seed) ^ 0x5f3759df);
     this.mapInfo = { generator: init.map.generator, seedUsed: gen.seedUsed, rerolls: gen.rerolls, landFraction: gen.landFraction };
     this.units = new UnitSystem(this);
+    this.economy = new EconomySystem(this);
     const tribeCount = init.map.tribes ?? gen.hearths.length;
-    for (let t = 0; t < tribeCount; t++) this.tribes.push({ index: t, color: TRIBE_COLORS[t % 4], hearth: NO_ENTITY, alive: true });
+    for (let t = 0; t < tribeCount; t++) this.tribes.push({ index: t, color: TRIBE_COLORS[t % 4], hearth: NO_ENTITY, alive: true, eco: newTribeEco(this) });
     if (init.populate !== false) {
       gen.hearths.forEach((h, t) => this.spawnBuilding("hearth", t, h.x, h.y));
       gen.hearths.forEach((h, t) => this.spawnStartUnits(t, h.x, h.y));
@@ -144,6 +149,9 @@ export class World {
     if (type === undefined) throw new Error(`unknown building kind ${kind}`);
     const def = this.cfg.pack.buildings.buildings[type];
     const id = this.ents.alloc(CAT.building, type, tribe, x, y, def.hp ?? 1000);
+    const bi = this.ents.index(id);
+    this.ents.state[bi] = BSTATE.done;
+    if (def.levels) this.ents.level[bi] = 1;
     if (kind === "hearth" && tribe >= 0 && tribe < this.tribes.length) this.tribes[tribe].hearth = id;
     return id;
   }
@@ -152,6 +160,20 @@ export class World {
     const e = this.ents;
     this.units.paths[i] = null;
     if (e.cat[i] === CAT.tree) this.treeVersion++;
+    if (e.cat[i] === CAT.unit && e.inside[i] >= 0) {
+      const h = e.inside[i];
+      if (e.occupants[h] > 0) e.occupants[h]--;
+      e.inside[i] = -1;
+    }
+    if (e.cat[i] === CAT.building) {
+      // occupants walk out of a destroyed building
+      for (let k = 0; k < e.hi; k++) {
+        if (e.alive[k] && e.inside[k] === i) {
+          e.inside[k] = -1;
+          e.task[k] = 0;
+        }
+      }
+    }
     this.emit(cause, { id: e.idOf(i), cat: e.cat[i], kind: e.type[i], tribe: e.tribe[i], x: e.x[i], y: e.y[i] });
     e.free(e.idOf(i));
   }
@@ -173,7 +195,8 @@ export class World {
     for (const { c } of ordered) this.exec(c);
     // 2. AI controllers at their cadence (deterministic; not recorded in replays)
     for (const ctl of this.controllers) if (this.tick % ctl.every === ctl.offset) for (const c of ctl.decide(this)) this.exec({ ...c, tick: this.tick, tribe: ctl.tribe });
-    // 3. tasks and decisions: land in M4 to M6
+    // 3. tasks and decisions (settler autonomy)
+    this.economy.updateTasks();
     // 4-5. pathing requests (budgeted) and movement
     this.units.update();
     // 6. combat, projectiles, spells and effects: land in M5 and M6
@@ -183,7 +206,9 @@ export class World {
       this.terrainQueue = [];
       this.drownCheck();
     }
-    // 8-9. economy, worship, triggers: land in M4 to M9
+    // 8. economy: construction, dwellings, breeding, trees, mana
+    this.economy.update();
+    // 9. worship, triggers, objectives: land in M9
     // 10. periodic upkeep
     if (this.tick % this.cfg.tickHz === this.cfg.tickHz - 1) this.terrain.healScars();
     this.tick++;
@@ -232,11 +257,28 @@ export class World {
       if (!Number.isFinite(E.x[i]) || !Number.isFinite(E.y[i]) || !Number.isFinite(E.hp[i])) out.push(`entity ${i} has a non-finite column`);
       if (E.x[i] < 0 || E.x[i] >= this.terrain.size || E.y[i] < 0 || E.y[i] >= this.terrain.size) out.push(`entity ${i} outside the map`);
       if (E.cat[i] === CAT.unit) {
-        if (this.terrain.drowns(E.x[i], E.y[i])) out.push(`unit ${i} stands in deep water`);
+        if (E.inside[i] < 0 && this.terrain.drowns(E.x[i], E.y[i])) out.push(`unit ${i} stands in deep water`);
         if (E.order[i] !== ORDER.none && E.stuck[i] > stuckTicks) out.push(`unit ${i} stuck ${E.stuck[i]} ticks`);
       }
     }
     if (alive !== E.count) out.push(`alive ${alive} != count ${E.count}`);
+    const spells = this.cfg.pack.spells.spells;
+    for (const t of this.tribes) {
+      const e = t.eco;
+      for (let s = 0; s < spells.length; s++) {
+        if (e.charges[s] < 0 || e.charges[s] > spells[s].maxCharges) out.push(`tribe ${t.index} spell ${s} charges ${e.charges[s]} out of range`);
+        if (!(e.progress[s] >= 0) || e.progress[s] >= spells[s].cost) out.push(`tribe ${t.index} spell ${s} progress ${e.progress[s]} out of range`);
+      }
+      if (!(e.wasted >= 0) || !(e.trainMana >= 0)) out.push(`tribe ${t.index} mana negative`);
+      const pop = this.economy.followers(t.index);
+      const cap = this.economy.popCap(t.index);
+      if (pop > cap && this.eventCounts.get("born")) out.push(`tribe ${t.index} population ${pop} above cap ${cap}`);
+    }
+    for (let i = 0; i < E.hi; i++) {
+      if (!E.alive[i] || E.cat[i] !== CAT.unit || E.inside[i] < 0) continue;
+      const h = E.inside[i];
+      if (!E.alive[h] || E.cat[h] !== CAT.building) out.push(`unit ${i} inside a missing building`);
+    }
     if (E.freeList.length + E.count !== E.hi) out.push("free list inconsistent");
     return out;
   }
@@ -247,7 +289,7 @@ export class World {
     for (let i = 0; i < e.hi; i++) {
       if (!e.alive[i]) continue;
       const c = e.cat[i];
-      if ((c === CAT.unit || c === CAT.tree) && this.terrain.drowns(e.x[i], e.y[i])) this.kill(i, c === CAT.unit ? "drowned" : "flooded");
+      if ((c === CAT.unit || c === CAT.tree) && (c !== CAT.unit || e.inside[i] < 0) && this.terrain.drowns(e.x[i], e.y[i])) this.kill(i, c === CAT.unit ? "drowned" : "flooded");
     }
   }
 
@@ -271,7 +313,10 @@ export class World {
     const entities = ef.hex();
     const rng = new Fnv().bytes(this.rng.state).hex();
     const mf = new Fnv().u32(this.tick);
-    for (const t of this.tribes) mf.u32(t.hearth).u32(t.alive ? 1 : 0);
+    for (const t of this.tribes) {
+      mf.u32(t.hearth).u32(t.alive ? 1 : 0).f64(t.eco.wasted).f64(t.eco.spellsPct).u32(t.eco.cursor).f64(t.eco.trainMana);
+      mf.bytes(t.eco.charges).bytes(t.eco.progress).bytes(t.eco.auto).bytes(t.eco.unlocked);
+    }
     const meta = mf.hex();
     const all = new Fnv().u32(parseInt(terrain, 16)).u32(parseInt(entities, 16)).u32(parseInt(rng, 16)).u32(parseInt(meta, 16)).hex();
     return { all, terrain, entities, rng, meta };
@@ -293,10 +338,11 @@ export class World {
       terrainVersion: this.terrain.version,
       rng: this.rng.state.slice(),
       ents: { hi: this.ents.hi, count: this.ents.count, freeList: this.ents.freeList.slice(), columns },
-      tribes: this.tribes.map((t) => ({ ...t })),
+      tribes: this.tribes.map((t) => ({ ...t, eco: cloneEco(t.eco) })),
       eventCounts: [...this.eventCounts],
       paths: this.units.paths.map((p, i) => (p ? ([i, p.slice()] as [number, Int32Array]) : null)).filter((x): x is [number, Int32Array] => x !== null),
       pathQueue: this.units.queue.slice(),
+      unitsTerrainVersion: this.units.lastVersion,
     };
   }
 
@@ -315,10 +361,11 @@ export class World {
     e.hi = snap.ents.hi;
     e.count = snap.ents.count;
     e.freeList = snap.ents.freeList.slice();
-    w.tribes = snap.tribes.map((t) => ({ ...t }));
+    w.tribes = snap.tribes.map((t) => ({ ...t, eco: cloneEco(t.eco) }));
     w.eventCounts = new Map(snap.eventCounts);
     for (const [i, p] of snap.paths) w.units.paths[i] = p.slice();
     w.units.queue = snap.pathQueue.slice();
+    w.units.lastVersion = snap.unitsTerrainVersion;
     return w;
   }
 

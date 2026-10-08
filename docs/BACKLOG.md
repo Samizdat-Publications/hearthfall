@@ -52,6 +52,9 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 42. [S] packages/render unit tests: syncTerrain chunk selection from dirty rects, wrap placement, faceColor bands; an automated seam continuity check on the wrap_seam shot (M2 review).
 43. [S] VisionQA: hold out calibration samples (fit on half, score on half) before trusting ui_overlap; grow the set (M2 review).
 44. [S] Bump world.treeVersion when a tree wood value changes (chopping, M4) so the tree layer rescales (M2 review).
+45. [S] Player feedback when an order fails or gives up (orderFailed, orderGaveUp events): a short notification and a red marker at the target (M8 HUD v2, M3 review).
+46. [S] Before any network play: tribe -1 skips ownership and god-mode checks in move/stop/impulse, and the __game.command hook turns on with ?debug=1; gate both behind a host-only flag (M3 review).
+47. [S] Pathfinder refresh still rebuilds walkability and components for the whole map on any edit (about 4 ms at 128); make it incremental per dirty rect for 256+ maps (M3 review follow-up).
 36. [S] Spells that drown units need a readable lead-in (rumble, crack VFX, short delay) so players see cause and effect (M5, M1 review).
 
 ## Parking lot (ideas, unranked)

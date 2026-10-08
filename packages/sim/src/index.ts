@@ -8,6 +8,7 @@ export { generateMap, walkableComponents, type MapSpec, type GeneratedMap } from
 export { makeConfig, bandOf, secondsToTicks, type SimConfig, type BandName } from "./config.ts";
 export { COMMANDS, registerCommand, type Command, type CommandHandler } from "./commands.ts";
 export { ORDER, UnitSystem } from "./units.ts";
+export { BSTATE, TASK, EconomySystem, type TribeEco } from "./economy.ts";
 export { Pathfinder, SpatialHash, Heap } from "./pathing.ts";
 export { World, TRIBE_COLORS, type Controller, type SimEvent, type Tribe, type WorldInit, type HashParts, type WorldSnapshot } from "./world.ts";
 export { applySetup, createScenarioWorld, commandsByTick, type ScenarioDef, type SetupEntry, type BotFactory } from "./scenario.ts";

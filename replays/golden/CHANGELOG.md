@@ -21,3 +21,11 @@ Reason: M3: entity movement columns (prev pos, velocity, order, goal, path state
 ## 2026-10-08 23:01 UTC
 Reason: M3: populated worlds now spawn each tribe's Shaper and startPopulation settlers around the Hearth (DESIGN section 4)
 - terrain_ops_continents: final ed637462 -> a9287b42 (pack 98511ae5)
+
+## 2026-10-08 23:29 UTC
+Reason: M3 review + M4: economy state in tribe hash (mana, charges), economy entity columns, settler autonomy and tree regrowth, movement fixes (fine line of sight, blocked-step recovery, selective re-plan after terrain edits)
+- terrain_ops_continents: final a9287b42 -> ea078df0 (pack 87a15ca2)
+
+## 2026-10-08 23:31 UTC
+Reason: M3 soak fix: line of sight refuses torus-ambiguous half-map segments, changing smoothed paths
+- terrain_ops_continents: final ea078df0 -> ea078df0 (pack 87a15ca2)

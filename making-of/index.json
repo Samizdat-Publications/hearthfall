@@ -270,6 +270,26 @@
       "when": "2026-10-08T23:03:14.941Z",
       "source": "reports/latest/shots/units_select_move.png",
       "bytes": 270868
+    },
+    {
+      "file": "a2/20261008-2314_units-v1-sheet.png",
+      "milestone": "A2",
+      "kind": "asset-sheet",
+      "caption": "The six v1 tribe units as game models beside their Gemini concepts: shaper, settler, warden, firecaller, chanter and wild person, each about 1400 tris with azure cloth regions.",
+      "highlight": true,
+      "when": "2026-10-08T23:14:52.757Z",
+      "source": "reports/latest/assets_units_sheet.png",
+      "bytes": 738855
+    },
+    {
+      "file": "a2/20261008-2314_shaper-concept.jpg",
+      "milestone": "A2",
+      "kind": "concept",
+      "caption": "Concept art for the Shaper: a tall robed caster with a feathered horned headdress and a carved staff topped with a glowing stone.",
+      "highlight": false,
+      "when": "2026-10-08T23:14:53.711Z",
+      "source": "tools/assets/raw/gemini/unit.shaper/concept.jpg",
+      "bytes": 371948
     }
   ]
 }
