@@ -23,6 +23,7 @@ Project path on Stewart's PC: `C:\Users\stewa\Documents\Claude\Hearthfall`. Neve
 - **Git:** commit locally on every green checkpoint (`M<n>: <what>`), tag milestone exits `m<n>-done`. Never push, never change git config, never force, never `reset --hard` or `clean`. To revert: `git restore --source=<green-sha> --staged --worktree -- .` then commit.
 - **Docs current:** behavior, data shape, command or architecture changes update the matching doc in the same commit. `docs/DATA.md` is generated (`npm run data:docs`).
 - **Text style:** no em dashes or en dashes in docs, data, UI text (guard enforced).
+- **Making-of archive (Stewart's request):** every generated image worth keeping (doctor and shot captures, contact sheets, concept art, asset sheets, before and after pairs) goes into `making-of/` via `npm run making-of -- add ...` with a milestone tag and caption; mark chapter highlights. Storyboard and rules: `making-of/README.md`.
 
 ## Auto-mode etiquette (an unattended run must never hit a permission wall)
 - The shell is Git Bash. npm scripts run in cmd.exe: scripts call `node` only (no rm, cp, VAR=x, single quotes).

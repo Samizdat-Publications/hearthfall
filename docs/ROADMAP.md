@@ -13,7 +13,7 @@ The asset track (A0 to A4, `docs/ASSETS.md` section 5) runs in parallel via the 
 1. `npm run qa` until it prints PASS (layers that exist so far); soak where the milestone says so.
 2. `docs/PROGRESS.md` "Now" updated (shipped, cut, known issues, next 3); one dated line appended to `docs/PROGRESS_LOG.md`.
 3. `docs/DATA.md` regenerated; other docs touched by the change updated in the same commit.
-4. If the milestone changed visuals, view its contact sheet once and log up to 3 visual improvements.
+4. If the milestone changed visuals, view its contact sheet once and log up to 3 visual improvements. Archive that sheet plus the best single shot (as `--highlight`) with `npm run making-of -- add` (storyboard in `making-of/README.md`).
 5. Spawn `milestone-reviewer` with `git diff --stat` since the last tag plus at most 8 key files and the report paths (Opus at M3, M5, M7, M8, M11; Sonnet otherwise). Fix blockers, log the rest to BACKLOG.
 6. Commit, tag `m<n>-done`.
 

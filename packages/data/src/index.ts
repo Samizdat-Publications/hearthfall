@@ -42,12 +42,14 @@ const FILE_KEYS: Record<PackFileName, keyof PackFiles> = {
   "buildings.json": "buildings",
   "spells.json": "spells",
   "ai_personalities.json": "ai",
+  "terrain.json": "terrain",
 };
 
 /** Validate raw parsed JSON files of one pack. Returns issues (empty when valid) and the typed pack. */
 export function validatePack(raw: Partial<Record<string, unknown>>): { issues: PackIssue[]; pack?: ValidatedPack } {
   const issues: PackIssue[] = [];
   const out: Partial<Record<keyof PackFiles, unknown>> = {};
+  for (const name of Object.keys(raw)) if (!(name in PACK_FILES)) issues.push({ file: name, path: "", message: "unknown pack file (add a schema in packages/data/src/schemas.ts)" });
   for (const name of Object.keys(PACK_FILES) as PackFileName[]) {
     const value = raw[name];
     if (value === undefined) {

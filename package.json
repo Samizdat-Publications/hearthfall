@@ -33,7 +33,8 @@
     "data:docs": "node tools/harness/cli.mjs data-docs",
     "build": "node tools/harness/cli.mjs build",
     "build:test": "node tools/harness/cli.mjs build-test",
-    "dev": "vite --config apps/game/vite.config.ts"
+    "dev": "vite --config apps/game/vite.config.ts",
+    "making-of": "node tools/harness/cli.mjs making-of"
   },
   "devDependencies": {
     "@playwright/test": "1.64.0",

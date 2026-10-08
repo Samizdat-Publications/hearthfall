@@ -23,12 +23,13 @@
     "maxWalkSlope": 20,
     "maxBuildSlope": 6,
     "drownDepthHeightUnits": 8,
-    "skirmishRequiresConnectedLand": true
+    "skirmishRequiresConnectedLand": true,
+    "maxBuildRange": 48
   },
   "breeding": {
     "formula": "base / (0.5 + 0.5 * occupants) * nearCapFactor",
     "nearCapSlowdownStartPct": 70,
-    "nearCapFactorAtCap": 3.0
+    "nearCapFactorAtCap": 3
   },
   "combat": {
     "heightRangedBonusPctPerBand": 10,

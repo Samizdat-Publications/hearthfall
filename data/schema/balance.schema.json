@@ -113,6 +113,10 @@
           "type": "number",
           "minimum": 0
         },
+        "maxBuildRange": {
+          "type": "number",
+          "minimum": 0
+        },
         "drownDepthHeightUnits": {
           "type": "number",
           "minimum": 0
@@ -130,6 +134,7 @@
         "bands",
         "maxWalkSlope",
         "maxBuildSlope",
+        "maxBuildRange",
         "drownDepthHeightUnits",
         "skirmishRequiresConnectedLand"
       ],

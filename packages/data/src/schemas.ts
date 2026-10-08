@@ -28,6 +28,7 @@ export const BalanceSchema = z.strictObject({
     }),
     maxWalkSlope: pos,
     maxBuildSlope: pos,
+    maxBuildRange: pos,
     drownDepthHeightUnits: pos,
     skirmishRequiresConnectedLand: z.boolean(),
   }),
@@ -255,6 +256,33 @@ export const AiFileSchema = z.strictObject({
 });
 export type AiFile = z.infer<typeof AiFileSchema>;
 
+// ---------------------------------------------------------------- terrain.json (planet generator)
+const BandMap = z.strictObject({ shore: z.number(), lowland: z.number(), grass: z.number(), highland: z.number(), rock: z.number(), peak: z.number() });
+export const TerrainPresetSchema = z.strictObject({
+  ...comment,
+  id,
+  basePeriod: z.number().int().positive(),
+  octaves: z.number().int().min(1).max(8),
+  persistence: z.number().min(0).max(1),
+  landFraction: z.number().min(0.05).max(0.95),
+  peakiness: z.number().min(0).max(1),
+});
+export const TerrainFileSchema = z.strictObject({
+  ...comment,
+  presets: z.array(TerrainPresetSchema).min(1),
+  trees: z.strictObject({
+    densityByBand: BandMap,
+    clusterPeriod: z.number().int().positive(),
+    clusterThreshold: z.number().min(0).max(1),
+    clearRadiusAroundHearth: pos,
+    maxSlope: pos,
+  }),
+  hearth: z.strictObject({ flatRadius: pos, minHeightAboveSea: pos, maxSiteRange: pos, minSpacingFracOfSize: z.number().min(0).max(0.5) }),
+  wild: z.strictObject({ distance: range2 }),
+  maxRerolls: z.number().int().min(0).max(100),
+});
+export type TerrainFile = z.infer<typeof TerrainFileSchema>;
+
 // ---------------------------------------------------------------- manifest.json
 export const ManifestSchema = z.strictObject({
   ...comment,
@@ -273,6 +301,7 @@ export const PACK_FILES = {
   "buildings.json": BuildingsFileSchema,
   "spells.json": SpellsFileSchema,
   "ai_personalities.json": AiFileSchema,
+  "terrain.json": TerrainFileSchema,
 } as const;
 export type PackFileName = keyof typeof PACK_FILES;
 
@@ -284,4 +313,5 @@ export interface PackFiles {
   buildings: BuildingsFile;
   spells: SpellsFile;
   ai: AiFile;
+  terrain: TerrainFile;
 }

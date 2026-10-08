@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$comment": {
+      "type": "string"
+    },
+    "presets": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "$comment": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "basePeriod": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "octaves": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8
+          },
+          "persistence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "landFraction": {
+            "type": "number",
+            "minimum": 0.05,
+            "maximum": 0.95
+          },
+          "peakiness": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "id",
+          "basePeriod",
+          "octaves",
+          "persistence",
+          "landFraction",
+          "peakiness"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "trees": {
+      "type": "object",
+      "properties": {
+        "densityByBand": {
+          "type": "object",
+          "properties": {
+            "shore": {
+              "type": "number"
+            },
+            "lowland": {
+              "type": "number"
+            },
+            "grass": {
+              "type": "number"
+            },
+            "highland": {
+              "type": "number"
+            },
+            "rock": {
+              "type": "number"
+            },
+            "peak": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "shore",
+            "lowland",
+            "grass",
+            "highland",
+            "rock",
+            "peak"
+          ],
+          "additionalProperties": false
+        },
+        "clusterPeriod": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "clusterThreshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "clearRadiusAroundHearth": {
+          "type": "number",
+          "minimum": 0
+        },
+        "maxSlope": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "densityByBand",
+        "clusterPeriod",
+        "clusterThreshold",
+        "clearRadiusAroundHearth",
+        "maxSlope"
+      ],
+      "additionalProperties": false
+    },
+    "hearth": {
+      "type": "object",
+      "properties": {
+        "flatRadius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "minHeightAboveSea": {
+          "type": "number",
+          "minimum": 0
+        },
+        "maxSiteRange": {
+          "type": "number",
+          "minimum": 0
+        },
+        "minSpacingFracOfSize": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.5
+        }
+      },
+      "required": [
+        "flatRadius",
+        "minHeightAboveSea",
+        "maxSiteRange",
+        "minSpacingFracOfSize"
+      ],
+      "additionalProperties": false
+    },
+    "wild": {
+      "type": "object",
+      "properties": {
+        "distance": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
+        }
+      },
+      "required": [
+        "distance"
+      ],
+      "additionalProperties": false
+    },
+    "maxRerolls": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    }
+  },
+  "required": [
+    "presets",
+    "trees",
+    "hearth",
+    "wild",
+    "maxRerolls"
+  ],
+  "additionalProperties": false
+}

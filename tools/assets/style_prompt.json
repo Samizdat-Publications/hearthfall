@@ -1,0 +1,13 @@
+{
+  "$comment": "Prompt fragments shared by every provider. The main agent merges these into data/base/style.json later. Palette source: seed-data/style.json (data/base/style.json once it exists).",
+  "style_version": 1,
+  "suffix": "stylized low-poly diorama game asset, chunky readable shapes, warm earthy palette, flat shading, clean silhouette, plain neutral background, no text, no logo",
+  "negative": "photorealistic, noisy texture, text, watermark, thin spindly parts, modern objects",
+  "concept_camera": "single object centered in frame, three-quarter front view, soft even light from the upper left, plain flat neutral background, full object visible with margin",
+  "mesh_suffix": "stylized low-poly game asset, chunky readable shapes, flat colors, clean silhouette, no fine detail",
+  "unit_pose": "relaxed standing pose, arms slightly away from the body, feet shoulder width apart, never an A-pose or a T-pose, facing the camera",
+  "vfx_suffix": "on a pure black background, centered, glowing, soft falloff, no text",
+  "sfx_template": "{subject}, dry, no reverb, close perspective, clean game sound effect",
+  "music_template": "{subject}, instrumental, warm hand-played folk instruments and soft percussion, loop friendly, no vocals",
+  "triBudgets": {"unit": [600, 2000], "building": [800, 3000], "prop": [100, 800]}
+}

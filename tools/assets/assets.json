@@ -1,0 +1,4121 @@
+{
+  "schema_version": 1,
+  "style_version": 1,
+  "assets": [
+    {
+      "id": "concept.ref_01",
+      "class": "concept",
+      "prompt": "wide establishing view of a tiny tribal hill village diorama around a glowing stone hearth, thatched round huts, a few trees, a winding path",
+      "refs": [],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "16:9",
+        "image_size": "1K",
+        "kind": "style_ref"
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "concept.ref_02",
+      "class": "concept",
+      "prompt": "the Shaper, a robed tribal caster with a tall carved staff and a glowing ember charm, heroic proportions, big hands and feet",
+      "refs": [],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "style_ref"
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "concept.ref_03",
+      "class": "concept",
+      "prompt": "cluster of three stylized trees and two boulders on a small grassy mound, layered foliage shapes, rounded rocks",
+      "refs": [],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "style_ref"
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-08T21:45:44Z",
+          "finished": "2026-10-08T21:46:00Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/concept.ref_03/concept.jpg",
+          "sha256": "3a73cc7778bc1efcf25794d1b7d2d62215d4f5ab5ba91b9179c3a96d3d1c7bbb",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 417788,
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "e8a9e7197b38875c9e7ddcd443b7f55a76412633c19c29ae62e47a8a6abfc236"
+        },
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "concept.ref_04",
+      "class": "concept",
+      "prompt": "carved wooden totem pole beside a small stone shrine with offerings, painted bands in clay red and ochre",
+      "refs": [],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "style_ref"
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "concept.ref_05",
+      "class": "concept",
+      "prompt": "a stout log watchtower next to a timber warden lodge with a pointed roof and a banner, palisade fence",
+      "refs": [],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "style_ref"
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "concept.ref_06",
+      "class": "concept",
+      "prompt": "a fire lodge with a red clay chimney and a bright orange fire glow at the door, sparks rising, stone base",
+      "refs": [],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "style_ref"
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "building.hearth",
+      "class": "buildings",
+      "prompt": "tribal village hearth: a ring of stacked stones around a large glowing ember bowl on a raised round stone platform",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1800,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "stone",
+        "footprint": 2.6
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "building.dwelling_small",
+      "class": "buildings",
+      "prompt": "small round tribal dwelling with a thatched cone roof, wooden door, wattle walls",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 900,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "stone",
+        "footprint": 2.0
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "building.dwelling_medium",
+      "class": "buildings",
+      "prompt": "medium tribal longhouse with a thatched roof, a chimney hole, and a timber porch",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1400,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "stone",
+        "footprint": 2.5
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "building.dwelling_large",
+      "class": "buildings",
+      "prompt": "large tribal hall house with a double thatched roof, carved roof beams, and two doors",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 2000,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "stone",
+        "footprint": 3.0
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "building.watchtower",
+      "class": "buildings",
+      "prompt": "tall timber watchtower on stilts with a lookout platform and a small pointed roof, rope ladder",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1600,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "stone",
+        "footprint": 2.0
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "building.warden_lodge",
+      "class": "buildings",
+      "prompt": "sturdy timber warden lodge with a pointed roof, a banner pole, and a rack of spears at the door",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 2200,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "stone",
+        "footprint": 3.0
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "building.fire_lodge",
+      "class": "buildings",
+      "prompt": "fire lodge with a red clay chimney, stone base, glowing orange doorway, thatch and clay roof",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 2200,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "stone",
+        "footprint": 3.0
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "building.chant_house",
+      "class": "buildings",
+      "prompt": "open-sided chant house with a domed thatched roof on carved pillars, a ring of seats, hanging wind chimes",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 2200,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "stone",
+        "footprint": 3.0
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "building.shrine",
+      "class": "buildings",
+      "prompt": "small stone shrine: a stacked stone cairn under a little peaked roof with ribbons and a glowing gem",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1000,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "stone",
+        "footprint": 2.0
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "building.reliquary",
+      "class": "buildings",
+      "prompt": "stone reliquary vault: a squat round stone building with a carved door and a glowing crystal on top",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1800,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "stone",
+        "footprint": 2.0
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "building.totem",
+      "class": "buildings",
+      "prompt": "tall carved wooden totem pole with stacked animal faces, painted bands of clay red and ochre, small stone base",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 900,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "stone",
+        "height": 2.6
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "prop.tree_a",
+      "class": "props",
+      "prompt": "a small stylized low-poly broadleaf tree with a short brown trunk and a rounded, layered green canopy",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "route": "text",
+        "target_polycount": 400,
+        "height": 2.0,
+        "budget_class": "prop",
+        "scheme": "tree",
+        "default_color": "rock"
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a11d7e-72c4-7777-896f-61bf8c5c46b2",
+          "started": "2026-10-08T21:49:35Z",
+          "finished": "2026-10-08T21:49:53Z",
+          "cost": {
+            "credits": 5.0,
+            "usd": 0.1,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/prop.tree_a/model.glb",
+          "sha256": "71cf6c0e088b2363d4b30c2185f0bba369b84179ec7a3ce670c3cde3f7716e29",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "text",
+            "kind": "text",
+            "progress": 100,
+            "bytes": 7588
+          },
+          "request_hash": "c9954ff92c9d1daa780834215f04c86eaf842c30d8afc0180174724ac013eae2"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-08T21:53:07Z",
+          "finished": "2026-10-08T21:53:16Z",
+          "cost": null,
+          "output_path": "assets/models/prop.tree_a.glb",
+          "sha256": "41f141394c64b2801d4f60f3270277d3defb741c8958c5ddacd6709b55b5ec03",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 322,
+            "tris_out": 322,
+            "decimated": false,
+            "scale": 2.0,
+            "bounds_min": [
+              -0.6994,
+              -0.5657,
+              0.0
+            ],
+            "bounds_max": [
+              0.6994,
+              0.5657,
+              2.0
+            ],
+            "scheme": "tree",
+            "palette_used": [
+              "forest",
+              "moss",
+              "wood"
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "3dec4194c15e21f17658adde515e9bd03746bde927429c789509f4b9341e3c41"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-08T21:54:07Z",
+          "cost": null,
+          "output_path": "assets/icons/prop.tree_a.png",
+          "sha256": "6465f5b59c382173f9353cc3bf1d26230e24901804a1ba7964b76837730e5393",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 322,
+        "verts": 961,
+        "bounds": {
+          "min": [
+            -0.6994,
+            0.0,
+            -0.5657
+          ],
+          "max": [
+            0.6994,
+            2.0,
+            0.5657
+          ],
+          "size": [
+            1.3989,
+            2.0,
+            1.1314
+          ]
+        },
+        "bytes": 33860,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "boundary_edges": 14,
+        "nonmanifold_edges": 6,
+        "warnings": [
+          "6 non-manifold edges"
+        ]
+      }
+    },
+    {
+      "id": "prop.tree_b",
+      "class": "props",
+      "prompt": "a stylized low-poly pine tree with a slim trunk and three stacked cone-shaped green tiers",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "route": "text",
+        "target_polycount": 350,
+        "height": 2.4,
+        "budget_class": "prop",
+        "scheme": "tree",
+        "default_color": "rock"
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "prop.tree_c",
+      "class": "props",
+      "prompt": "a stylized low-poly old gnarled tree with a thick twisted trunk and a wide flat canopy",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "route": "text",
+        "target_polycount": 450,
+        "height": 1.8,
+        "budget_class": "prop",
+        "scheme": "tree",
+        "default_color": "rock"
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "prop.rock_a",
+      "class": "props",
+      "prompt": "a rounded stylized low-poly boulder with a few big flat facets",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "route": "text",
+        "target_polycount": 200,
+        "height": 0.7,
+        "budget_class": "prop",
+        "scheme": "rock",
+        "default_color": "rock"
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "prop.rock_b",
+      "class": "props",
+      "prompt": "a flat stylized low-poly stone slab with chunky chipped edges",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "route": "text",
+        "target_polycount": 180,
+        "height": 0.5,
+        "budget_class": "prop",
+        "scheme": "rock",
+        "default_color": "rock"
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "prop.rock_c",
+      "class": "props",
+      "prompt": "a tall stylized low-poly standing stone with angular facets, slightly leaning",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "route": "text",
+        "target_polycount": 220,
+        "height": 1.0,
+        "budget_class": "prop",
+        "scheme": "rock",
+        "default_color": "rock"
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "unit.shaper",
+      "class": "units",
+      "prompt": "the Shaper, a tribal caster in a long hooded robe holding a tall carved staff topped with a glowing ember",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1400,
+        "height": 1.1,
+        "budget_class": "unit",
+        "scheme": "sample",
+        "default_color": "cloth",
+        "pose": "relaxed_standing",
+        "bakeoff": [
+          "meshy",
+          "tripo"
+        ]
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "unit.settler",
+      "class": "units",
+      "prompt": "a tribal settler in a simple tunic with a woven carry basket on one hip",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1400,
+        "height": 0.9,
+        "budget_class": "unit",
+        "scheme": "sample",
+        "default_color": "cloth",
+        "pose": "relaxed_standing",
+        "bakeoff": [
+          "meshy",
+          "tripo"
+        ]
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "unit.warden",
+      "class": "units",
+      "prompt": "a tribal warden in light wooden armor with a round shield on one arm and a short spear held upright",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1400,
+        "height": 1.0,
+        "budget_class": "unit",
+        "scheme": "sample",
+        "default_color": "cloth",
+        "pose": "relaxed_standing",
+        "bakeoff": [
+          "meshy",
+          "tripo"
+        ]
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "unit.firecaller",
+      "class": "units",
+      "prompt": "a tribal firecaller in a red and orange robe holding a clay bowl of glowing embers",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1400,
+        "height": 1.05,
+        "budget_class": "unit",
+        "scheme": "sample",
+        "default_color": "cloth",
+        "pose": "relaxed_standing",
+        "bakeoff": [
+          "meshy",
+          "tripo"
+        ]
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "unit.chanter",
+      "class": "units",
+      "prompt": "a tribal chanter in a long pale robe holding a small hand drum, mouth open mid song",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1400,
+        "height": 1.0,
+        "budget_class": "unit",
+        "scheme": "sample",
+        "default_color": "cloth",
+        "pose": "relaxed_standing",
+        "bakeoff": [
+          "meshy",
+          "tripo"
+        ]
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "unit.wild_person",
+      "class": "units",
+      "prompt": "an unaligned wild person in a ragged fur wrap with messy hair and a wooden club resting on one shoulder",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1400,
+        "height": 0.95,
+        "budget_class": "unit",
+        "scheme": "sample",
+        "default_color": "cloth",
+        "pose": "relaxed_standing",
+        "bakeoff": [
+          "meshy",
+          "tripo"
+        ]
+      },
+      "steps": {
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "meshy",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.ui_click",
+      "class": "sfx",
+      "prompt": "a short soft wooden click",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 0.5,
+        "prompt_influence": 0.3,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.ui_confirm",
+      "class": "sfx",
+      "prompt": "a warm two-note wooden chime, confirming a choice",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.0,
+        "prompt_influence": 0.3,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-08T21:51:21Z",
+          "finished": "2026-10-08T21:51:24Z",
+          "cost": {
+            "usd": 0.002,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.ui_confirm/sfx.ui_confirm.mp3",
+          "sha256": "4f35c3d1bbc2aace3b97d224dc275910fadf8568e4b0e49d250e4ca312dd7c8c",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 17180,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "5"
+            }
+          },
+          "request_hash": "5a64f195c40c3c2e718292b5721d645e3c5a21b9eba9715112aecb7acaf2e0da"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-08T21:51:24Z",
+          "finished": "2026-10-08T21:51:25Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.ui_confirm.ogg",
+          "sha256": "25ee749e7336ee8bcb2e8cfc3508c3da5f0827b6b065fc1e15be08c44b5ffb5e",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 19975,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok"
+          },
+          "request_hash": "d50712d4842348fbb26a98b1450ea2056552510aba04ba7f65c4ed10143cd119"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.unit_select",
+      "class": "sfx",
+      "prompt": "a soft hand drum tap with a short rising hum",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 0.6,
+        "prompt_influence": 0.3,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.build_place",
+      "class": "sfx",
+      "prompt": "a heavy wooden thud with a little stone scrape, placing a building",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.2,
+        "prompt_influence": 0.3,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.build_complete",
+      "class": "sfx",
+      "prompt": "a bright rising chime with a soft wooden knock, construction finished",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.5,
+        "prompt_influence": 0.3,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.terrain_raise",
+      "class": "sfx",
+      "prompt": "a deep earth rumble with crumbling soil, ground rising",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 2.0,
+        "prompt_influence": 0.3,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.water_splash",
+      "class": "sfx",
+      "prompt": "a big splash of water with a short gurgle",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.2,
+        "prompt_influence": 0.3,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.fire_burst",
+      "class": "sfx",
+      "prompt": "a roaring whoosh of fire with crackling embers",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.5,
+        "prompt_influence": 0.3,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.lightning_strike",
+      "class": "sfx",
+      "prompt": "a sharp crack of lightning with a short rolling thunder tail",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.5,
+        "prompt_influence": 0.3,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.convert_chime",
+      "class": "sfx",
+      "prompt": "a gentle magical shimmer with a soft bell, a wild person joining the tribe",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.2,
+        "prompt_influence": 0.3,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.mana_pulse",
+      "class": "sfx",
+      "prompt": "a low warm pulsing hum, magical energy gathering",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.5,
+        "prompt_influence": 0.3,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "music.calm",
+      "class": "music",
+      "prompt": "calm peaceful village theme, slow tempo, soft flute and plucked strings, gentle drone",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "length_ms": 60000,
+        "model_id": "music_v2_5",
+        "force_instrumental": true,
+        "output_format": "mp3_44100_128",
+        "note": "needs a paid ElevenLabs plan; on a plan error skip and log it"
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "music.tension",
+      "class": "music",
+      "prompt": "rising tension theme, slow pulsing low drums, sparse minor-key strings, uneasy",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "length_ms": 60000,
+        "model_id": "music_v2_5",
+        "force_instrumental": true,
+        "output_format": "mp3_44100_128",
+        "note": "needs a paid ElevenLabs plan; on a plan error skip and log it"
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "music.battle",
+      "class": "music",
+      "prompt": "driving battle theme, fast hand drums, bold brass-like horns, urgent and heroic",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "length_ms": 60000,
+        "model_id": "music_v2_5",
+        "force_instrumental": true,
+        "output_format": "mp3_44100_128",
+        "note": "needs a paid ElevenLabs plan; on a plan error skip and log it"
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "$comment": "Procedural planet generator. Periods are lattice cells across the whole map (every octave tiles the torus). landFraction is the share of vertices above sea level. peakiness 0..1 bends land heights toward low plains with rarer peaks.",
+  "presets": [
+    { "id": "continents", "basePeriod": 3, "octaves": 5, "persistence": 0.5, "landFraction": 0.56, "peakiness": 0.55 },
+    { "id": "islands", "basePeriod": 6, "octaves": 5, "persistence": 0.55, "landFraction": 0.4, "peakiness": 0.45 }
+  ],
+  "trees": {
+    "densityByBand": { "shore": 0.0, "lowland": 0.05, "grass": 0.1, "highland": 0.06, "rock": 0.015, "peak": 0.0 },
+    "clusterPeriod": 10,
+    "clusterThreshold": 0.42,
+    "clearRadiusAroundHearth": 5,
+    "maxSlope": 14
+  },
+  "hearth": {
+    "flatRadius": 3,
+    "minHeightAboveSea": 16,
+    "maxSiteRange": 40,
+    "minSpacingFracOfSize": 0.28
+  },
+  "wild": { "distance": [8, 16] },
+  "maxRerolls": 12
+}

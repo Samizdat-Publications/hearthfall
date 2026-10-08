@@ -53,6 +53,10 @@ async function main() {
       const { qaFull } = await import("./qa.mjs");
       return qaFull(out, args);
     }
+    case "making-of": {
+      const { makingOfCmd } = await import("./makingof.mjs");
+      return makingOfCmd(out, args);
+    }
     case "doctor": {
       const { doctor } = await import("./doctor.mjs");
       return doctor(out, args);
