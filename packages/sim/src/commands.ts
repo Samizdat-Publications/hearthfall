@@ -1,0 +1,60 @@
+// Commands: the only way players, AI, bots, replays and debug tools change the sim. Plain JSON:
+// {tick, tribe, type, args}. Handlers live in a registry so new commands never touch a switch.
+import type { TerrainOpSpec } from "./terrain.ts";
+import type { World } from "./world.ts";
+
+export interface Command {
+  tick: number;
+  tribe: number;
+  type: string;
+  args: Record<string, unknown>;
+}
+
+export interface CommandHandler {
+  /** Return an error string to reject (logged as a commandRejected event), or null to accept. */
+  validate(w: World, c: Command): string | null;
+  apply(w: World, c: Command): void;
+}
+
+export const COMMANDS = new Map<string, CommandHandler>();
+
+export function registerCommand(type: string, h: CommandHandler): void {
+  COMMANDS.set(type, h);
+}
+
+const finite = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v);
+
+const TERRAIN_OP_FIELDS: Record<string, string[]> = {
+  raise: ["x", "y", "r", "amount"],
+  lower: ["x", "y", "r", "amount"],
+  set: ["x", "y", "r", "value"],
+  flattenToAverage: ["x", "y", "r"],
+  smooth: ["x", "y", "r", "strength"],
+  crater: ["x", "y", "r", "height"],
+  ridgeLine: ["x", "y", "x2", "y2", "width", "aboveSea"],
+  noiseScar: ["x", "y", "r", "depth"],
+  lowerTowardSea: ["x", "y", "r", "amount"],
+  scar: ["x", "y", "r", "seconds"],
+};
+
+/** God-mode terrain edit (sandbox, scenarios, map editor). Spells queue ops through effects instead. */
+registerCommand("terrainOp", {
+  validate(_w, c) {
+    const op = c.args.op;
+    if (typeof op !== "string" || !TERRAIN_OP_FIELDS[op]) return `unknown terrain op ${String(op)}`;
+    for (const f of TERRAIN_OP_FIELDS[op]) if (!finite(c.args[f])) return `terrainOp ${op} needs numeric ${f}`;
+    if (finite(c.args.r) && ((c.args.r as number) <= 0 || (c.args.r as number) > 64)) return "radius out of range";
+    return null;
+  },
+  apply(w, c) {
+    const spec = { ...c.args } as unknown as TerrainOpSpec;
+    if (spec.op === "noiseScar" && !finite((spec as { seed?: unknown }).seed)) (spec as { seed: number }).seed = w.rng.nextU32(0) | 0;
+    if (spec.op === "crater" && (spec as { shape?: unknown }).shape !== "bowl") (spec as { shape: string }).shape = "cone";
+    w.terrainQueue.push(spec);
+  },
+});
+
+registerCommand("noop", {
+  validate: () => null,
+  apply: () => {},
+});

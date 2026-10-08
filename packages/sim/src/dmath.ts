@@ -11,6 +11,8 @@ const INV_TWO_PI = 0.15915494309189535;
 export function sin(x: number): number {
   let t = x * INV_TWO_PI;
   t -= Math.floor(t);
+  // tiny negative inputs round t up to exactly 1.0; wrap so the table index stays in range
+  if (t >= 1) t = 0;
   const f = t * SIN_TABLE_N;
   const i = Math.floor(f);
   const a = SIN_TABLE[i];

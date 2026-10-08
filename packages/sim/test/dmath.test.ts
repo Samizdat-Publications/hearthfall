@@ -20,3 +20,19 @@ describe("dmath", () => {
     expect(atan2(0, 0)).toBe(0);
   });
 });
+
+describe("dmath edge cases (M0 review regression)", () => {
+  it("never returns NaN for tiny negatives or exact turns", () => {
+    for (const x of [-1e-17, -1e-20, -5e-324, -0, 0, 6.283185307179586, -6.283185307179586, 1e6 * 6.283185307179586, -1.5707963267948966]) {
+      expect(Number.isNaN(sin(x))).toBe(false);
+      expect(Number.isNaN(cos(x))).toBe(false);
+    }
+    expect(sin(-1e-17)).toBe(0);
+  });
+
+  it("golden values are bit exact (any change here breaks replays)", () => {
+    expect(sin(1)).toBe(0.841470594095792);
+    expect(cos(2.5)).toBe(-0.8011399050110692);
+    expect(atan2(3, -7)).toBe(2.736700903017609);
+  });
+});

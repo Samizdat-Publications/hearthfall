@@ -1,0 +1,227 @@
+// Procedural planet generator: seeded tileable fbm heights, Hearth sites on one connected walkable
+// landmass (DESIGN section 11), trees by height band and clusters, wild people near each Hearth.
+// Also the tiny handmade test maps used by scenarios (flat, flat_with_channel).
+import type { SimConfig } from "./config.ts";
+import { bandOf } from "./config.ts";
+import { cos, sin, TWO_PI } from "./dmath.ts";
+import { fbm, valueNoise } from "./noise.ts";
+import { Rng } from "./rng.ts";
+import { Terrain, wrap, wrapDelta } from "./terrain.ts";
+
+export interface MapSpec {
+  /** "continents" | "islands" (data presets) or a test map: "flat" | "flat_with_channel" */
+  generator: string;
+  size: number;
+  /** number of tribes needing Hearth sites (procedural maps only) */
+  tribes?: number;
+  /** flat maps: land height above sea (default 40) */
+  landAboveSea?: number;
+}
+
+export interface GeneratedMap {
+  terrain: Terrain;
+  seedUsed: number;
+  rerolls: number;
+  hearths: { x: number; y: number }[];
+  trees: { x: number; y: number }[];
+  wild: { tribe: number; x: number; y: number }[];
+  landFraction: number;
+}
+
+function newTerrain(cfg: SimConfig, size: number): Terrain {
+  return new Terrain({ size, seaLevel: cfg.sea, heightMax: cfg.heightMax, drownDepth: cfg.drownDepth, maxWalkSlope: cfg.maxWalkSlope, maxBuildSlope: cfg.maxBuildSlope });
+}
+
+function testMap(cfg: SimConfig, spec: MapSpec): GeneratedMap {
+  const t = newTerrain(cfg, spec.size);
+  const land = cfg.sea + (spec.landAboveSea ?? 40);
+  t.heights.fill(land);
+  if (spec.generator === "flat_with_channel") {
+    // a north-south channel of deep water at x in [size/4, size*5/16]
+    const x0 = Math.floor(spec.size / 4);
+    const x1 = Math.floor((spec.size * 5) / 16);
+    for (let y = 0; y < spec.size; y++) for (let x = x0; x <= x1; x++) t.heights[t.idx(x, y)] = cfg.sea - 40;
+  } else if (spec.generator !== "flat") throw new Error(`unknown map generator "${spec.generator}"`);
+  return { terrain: t, seedUsed: 0, rerolls: 0, hearths: [], trees: [], wild: [], landFraction: 1 };
+}
+
+/** Label 4-connected walkable components; returns labels (0 = not walkable) and the largest label. */
+export function walkableComponents(t: Terrain): { labels: Int32Array; largest: number; sizes: number[] } {
+  const n = t.size;
+  const labels = new Int32Array(n * n);
+  const sizes = [0];
+  const stack: number[] = [];
+  let next = 1;
+  for (let start = 0; start < n * n; start++) {
+    if (labels[start] || !t.walkable(start % n, Math.floor(start / n))) continue;
+    let count = 0;
+    labels[start] = next;
+    stack.push(start);
+    while (stack.length) {
+      const i = stack.pop()!;
+      count++;
+      const x = i % n;
+      const y = (i - x) / n;
+      const nb = [t.idx(x + 1, y), t.idx(x - 1, y), t.idx(x, y + 1), t.idx(x, y - 1)];
+      for (const j of nb) {
+        if (labels[j]) continue;
+        const jx = j % n;
+        if (!t.walkable(jx, (j - jx) / n)) continue;
+        labels[j] = next;
+        stack.push(j);
+      }
+    }
+    sizes.push(count);
+    next++;
+  }
+  let largest = 0;
+  for (let l = 1; l < sizes.length; l++) if (largest === 0 || sizes[l] > sizes[largest]) largest = l;
+  return { labels, largest, sizes };
+}
+
+function torusDist2(n: number, ax: number, ay: number, bx: number, by: number): number {
+  const dx = wrapDelta(bx - ax, n);
+  const dy = wrapDelta(by - ay, n);
+  return dx * dx + dy * dy;
+}
+
+export function generateMap(cfg: SimConfig, spec: MapSpec, seed: number): GeneratedMap {
+  const preset = cfg.pack.terrain.presets.find((p) => p.id === spec.generator);
+  if (!preset) return testMap(cfg, spec);
+  const tf = cfg.pack.terrain;
+  const [genMin, genMax] = cfg.pack.balance.terrain.generatorRange;
+  const n = spec.size;
+  const tribes = spec.tribes ?? 2;
+  let lastErr = "";
+  for (let attempt = 0; attempt <= tf.maxRerolls; attempt++) {
+    const s = (seed + Math.imul(attempt, 7919)) | 0;
+    const rng = new Rng(s);
+    const t = newTerrain(cfg, n);
+    // 1. heights from fbm, thresholded so landFraction of vertices are above sea
+    const v = new Float64Array(n * n);
+    const hist = new Int32Array(1024);
+    for (let y = 0; y < n; y++) {
+      for (let x = 0; x < n; x++) {
+        const f = fbm(x, y, n, preset.basePeriod, preset.octaves, preset.persistence, s);
+        v[x + y * n] = f;
+        hist[Math.min(1023, Math.floor(f * 1024))]++;
+      }
+    }
+    const waterCount = Math.round((1 - preset.landFraction) * n * n);
+    let acc = 0;
+    let bin = 0;
+    while (bin < 1023 && acc + hist[bin] < waterCount) acc += hist[bin++];
+    const thr = (bin + 0.5) / 1024;
+    let landN = 0;
+    for (let i = 0; i < n * n; i++) {
+      const f = v[i];
+      let h: number;
+      if (f < thr) h = genMin + (cfg.sea - 2 - genMin) * (f / thr);
+      else {
+        const u = (f - thr) / (1 - thr);
+        const curved = u * (1 - preset.peakiness) + u * u * preset.peakiness;
+        h = cfg.sea + 2 + (genMax - cfg.sea - 2) * curved;
+        landN++;
+      }
+      t.heights[i] = Math.round(h);
+    }
+    // 2. Hearth sites on the largest walkable component, spread by farthest-point sampling
+    const comp = walkableComponents(t);
+    const hp = tf.hearth;
+    const r = Math.ceil(hp.flatRadius);
+    const cands: number[] = [];
+    for (let y = 0; y < n; y += 2) {
+      for (let x = 0; x < n; x += 2) {
+        const i = x + y * n;
+        if (comp.labels[i] !== comp.largest || t.heights[i] < cfg.sea + hp.minHeightAboveSea) continue;
+        let lo = 1e9;
+        let hi = -1e9;
+        let ok = true;
+        for (let dy = -r; dy <= r && ok; dy++) {
+          for (let dx = -r; dx <= r; dx++) {
+            const k = t.idx(x + dx, y + dy);
+            if (comp.labels[k] !== comp.largest) {
+              ok = false;
+              break;
+            }
+            lo = Math.min(lo, t.heights[k]);
+            hi = Math.max(hi, t.heights[k]);
+          }
+        }
+        if (ok && hi - lo <= hp.maxSiteRange) cands.push(i);
+      }
+    }
+    if (cands.length < tribes) {
+      lastErr = `only ${cands.length} hearth candidates`;
+      continue;
+    }
+    const sites: number[] = [cands[rng.int("gen", cands.length)]];
+    while (sites.length < tribes) {
+      let best = -1;
+      let bestD = -1;
+      for (const c of cands) {
+        let m = 1e18;
+        for (const sIdx of sites) m = Math.min(m, torusDist2(n, c % n, Math.floor(c / n), sIdx % n, Math.floor(sIdx / n)));
+        if (m > bestD) {
+          bestD = m;
+          best = c;
+        }
+      }
+      sites.push(best);
+    }
+    const minSpacing = hp.minSpacingFracOfSize * n;
+    let spaced = true;
+    for (let a = 0; a < sites.length; a++) for (let b = a + 1; b < sites.length; b++) if (torusDist2(n, sites[a] % n, Math.floor(sites[a] / n), sites[b] % n, Math.floor(sites[b] / n)) < minSpacing * minSpacing) spaced = false;
+    if (tribes > 1 && !spaced) {
+      lastErr = "hearth sites too close";
+      continue;
+    }
+    const hearths = sites.map((i) => ({ x: i % n, y: Math.floor(i / n) }));
+    for (const h of hearths) t.flattenToAverage(h.x, h.y, hp.flatRadius + 1, hp.minHeightAboveSea);
+    // 3. trees: band density times a cluster mask, away from hearths, on gentle land
+    const trees: { x: number; y: number }[] = [];
+    const clear2 = tf.trees.clearRadiusAroundHearth * tf.trees.clearRadiusAroundHearth;
+    for (let y = 0; y < n; y++) {
+      for (let x = 0; x < n; x++) {
+        const h = t.get(x, y);
+        if (h < cfg.sea + 4 || t.slope(x, y) > tf.trees.maxSlope) continue;
+        const cluster = valueNoise((x / n) * tf.trees.clusterPeriod, (y / n) * tf.trees.clusterPeriod, tf.trees.clusterPeriod, s ^ 0x5bd1e995);
+        if (cluster < tf.trees.clusterThreshold) continue;
+        const dens = tf.trees.densityByBand[bandOf(cfg, h)] * (cluster - tf.trees.clusterThreshold) / (1 - tf.trees.clusterThreshold) * 4;
+        if (!rng.chance("gen", dens)) continue;
+        if (hearths.some((hh) => torusDist2(n, x, y, hh.x, hh.y) < clear2)) continue;
+        trees.push({ x: wrap(x + 0.2 + rng.float("gen") * 0.6, n), y: wrap(y + 0.2 + rng.float("gen") * 0.6, n) });
+      }
+    }
+    // 4. wild people around each hearth on the main landmass
+    const [wMin, wMax] = cfg.pack.units.units.find((u) => u.id === "wild")?.spawnPerTribe ?? [0, 0];
+    const [dMin, dMax] = tf.wild.distance;
+    const finalComp = walkableComponents(t);
+    if (hearths.some((h) => finalComp.labels[t.idx(h.x, h.y)] !== finalComp.labels[t.idx(hearths[0].x, hearths[0].y)] || finalComp.labels[t.idx(h.x, h.y)] === 0)) {
+      lastErr = "hearth sites not connected after flattening";
+      continue;
+    }
+    const home = finalComp.labels[t.idx(hearths[0].x, hearths[0].y)];
+    const wild: { tribe: number; x: number; y: number }[] = [];
+    hearths.forEach((h, ti) => {
+      const count = wMin + rng.int("gen", wMax - wMin + 1);
+      for (let k = 0; k < count; k++) {
+        for (let tryN = 0; tryN < 24; tryN++) {
+          const a = rng.float("gen") * TWO_PI;
+          const d = dMin + rng.float("gen") * (dMax - dMin);
+          const x = wrap(h.x + cos(a) * d, n);
+          const y = wrap(h.y + sin(a) * d, n);
+          const xi = Math.round(x);
+          const yi = Math.round(y);
+          if (finalComp.labels[t.idx(xi, yi)] !== home) continue;
+          wild.push({ tribe: ti, x, y });
+          break;
+        }
+      }
+    });
+    t.takeDirty();
+    t.version = 0;
+    return { terrain: t, seedUsed: s, rerolls: attempt, hearths, trees, wild, landFraction: landN / (n * n) };
+  }
+  throw new Error(`planet generator failed after ${tf.maxRerolls + 1} attempts: ${lastErr}`);
+}

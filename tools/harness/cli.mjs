@@ -74,7 +74,7 @@ async function main() {
     }
     case "visionqa-probe":
     case "visionqa": {
-      const { visionCmd } = await import("../visionqa/cli.mjs").catch(() => ({ visionCmd: null }));
+      const { visionCmd } = await import("../visionqa/cli.mjs").catch((e) => (e.code === "ERR_MODULE_NOT_FOUND" && e.message.includes("visionqa/cli.mjs") ? { visionCmd: null } : Promise.reject(e)));
       if (!visionCmd) return out.finish("SKIP", "VisionQA module not built yet (lands with the probe, M0 to M2)");
       return visionCmd(out, cmd, args);
     }
