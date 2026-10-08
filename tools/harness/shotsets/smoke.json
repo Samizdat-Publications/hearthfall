@@ -1,0 +1,12 @@
+{
+  "$comment": "Smoke shot set (docs/TESTING.md section 7). params become URL params (paused=1&fixedStep=1 are always added). steps run in the page in order. coverage ranges are fractions of the frame.",
+  "shots": [
+    { "id": "overview", "params": { "seed": 7, "level": "continents", "tribes": 2, "camera": "default" }, "kind": "world", "coverage": { "green": [0.05, 0.85], "blue": [0.03, 0.9] } },
+    { "id": "close", "params": { "seed": 7, "level": "continents", "tribes": 2, "camera": "close" }, "kind": "world", "coverage": { "green": [0.05, 0.98] } },
+    { "id": "wrap_seam", "params": { "seed": 7, "level": "continents", "tribes": 2 }, "steps": [{ "setCamera": { "x": 0, "z": 0, "zoom": 0.45, "yaw": 0.3 } }], "kind": "world", "coverage": { "green": [0.03, 0.9] } },
+    { "id": "globe", "params": { "seed": 7, "level": "continents", "tribes": 2, "camera": "globe" }, "kind": "world", "coverage": { "green": [0.02, 0.8], "blue": [0.05, 0.95] } },
+    { "id": "map_view", "params": { "seed": 7, "level": "continents", "tribes": 2, "camera": "map" }, "kind": "map", "coverage": { "green": [0.1, 0.9], "blue": [0.05, 0.9] } },
+    { "id": "islands", "params": { "seed": 3, "level": "islands", "tribes": 2, "camera": "mid" }, "kind": "world", "coverage": { "green": [0.03, 0.85], "blue": [0.05, 0.95] } },
+    { "id": "terrain_edit", "params": { "seed": 7, "level": "continents", "tribes": 2, "camera": "default" }, "steps": [{ "terrainAtFocus": { "op": "crater", "shape": "cone", "r": 6, "height": 140 } }, { "step": 1 }], "kind": "world", "coverage": { "green": [0.03, 0.9] }, "expectRemesh": [1, 4] }
+  ]
+}

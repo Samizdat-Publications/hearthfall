@@ -65,6 +65,12 @@ UNIT_PALETTE = ["sand", "rock", "rockDark", "wood", "woodDark", "thatch", "stone
                 "azure", "crimson", "amber", "jade", "scar"]
 
 
+# Buildings keep world, wood, stone, thatch and glow colors but drop the other tribe colors and all water colors, so the
+# only blue on a building is the tribe banner (azure) and fire-lodge clay or gems never read as crimson, amber or jade.
+BUILDING_PALETTE = ["sand", "meadow", "moss", "forest", "rock", "rockDark", "snow", "wood", "woodDark", "thatch", "stone",
+                    "skin1", "skin2", "skin3", "cloth", "azure", "fire", "lava", "lightning", "magic", "scar"]
+
+
 def normalize(inp, out, *, height=None, footprint=None, tri_min=0, tri_max=0, scheme="sample", default_color="stone", report=None,
               allow=None, tribe_color="azure", side_color="skin1", torso_color="cloth") -> dict:
     out = str(out)
@@ -92,7 +98,7 @@ def normalize_asset(a: dict) -> dict:
     out = C.OUT / "models" / f"{a['id']}.glb"
     rep = normalize(str(inp), out, height=p.get("height"), footprint=p.get("footprint"), tri_min=lo, tri_max=hi,
                     scheme=p.get("scheme", "sample"), default_color=p.get("default_color", "stone"),
-                    allow=UNIT_PALETTE if p.get("budget_class") == "unit" else None, tribe_color=p.get("tribe_color", "azure"),
+                    allow=UNIT_PALETTE if p.get("budget_class") == "unit" else (BUILDING_PALETTE if p.get("budget_class") == "building" else None), tribe_color=p.get("tribe_color", "azure"),
                     side_color=p.get("side_color", "skin1"), torso_color=p.get("torso_color", "cloth"))
     rep["output_path"] = C.rel(out)
     return rep
@@ -160,7 +166,7 @@ def main() -> int:
     if args.inp:
         WORK.mkdir(parents=True, exist_ok=True)
         jf = WORK / "thumb_jobs_adhoc.json"
-        C.save_json_atomic(jf, [{"in": args.inp, "out": args.out, "size": args.size}])
+        C.save_json_atomic(jf, [{"in": os.path.abspath(args.inp), "out": os.path.abspath(args.out), "size": args.size}])
         run_blender(BLENDER_DIR / "thumbs.py", ["--jobs", jf])
         log("RESULT: thumbs ok")
         return 0

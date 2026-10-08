@@ -28,9 +28,9 @@ export interface RigOutput {
 
 export function rigParams(s: CameraState): RigOutput {
   const z = Math.min(1, Math.max(0, s.zoom));
-  const distance = 9 + 190 * z * z + 25 * z;
+  const distance = 11 + 120 * z * z + 20 * z;
   const pitch = 0.6 + 0.8 * z;
-  const bendK = 0.0022 + 0.016 * z * z;
+  const bendK = 0.0022 + 0.02 * z * z;
   return { distance, pitch, bendK, fogNear: distance * 1.1, fogFar: distance * 2.6 + 40 + 400 * z * z };
 }
 
@@ -40,7 +40,7 @@ export function applyCamera(camera: THREE.PerspectiveCamera, s: CameraState, foc
   if (s.map) {
     const h = worldSize * 1.05 / Math.tan((camera.fov * Math.PI) / 360) / 2;
     camera.position.set(s.x, focusY + h, s.z + 0.001);
-    camera.up.set(-Math.sin(s.yaw), 0, -Math.cos(s.yaw));
+    camera.up.set(0, 0, -1);
     camera.lookAt(s.x, focusY, s.z);
     camera.far = h * 3;
     camera.updateProjectionMatrix();

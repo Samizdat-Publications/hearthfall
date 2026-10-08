@@ -35,23 +35,38 @@ function faceHash(i: number): number {
 }
 
 /** Color of one terrain triangle from its three vertex heights. */
-export function faceColor(p: TerrainPalette, sea: number, h0: number, h1: number, h2: number, scar: number, seed: number, out: THREE.Color): THREE.Color {
-  const avg = (h0 + h1 + h2) / 3;
-  const span = Math.max(h0, h1, h2) - Math.min(h0, h1, h2);
+export function faceColor(p: TerrainPalette, sea: number, h0: number, h1: number, h2: number, scar: number, seed: number, out: THREE.Color, cellSpan = -1): THREE.Color {
+  // slope is judged per cell (both triangles agree) so steep cones do not checker
+  const span = cellSpan >= 0 ? cellSpan : Math.max(h0, h1, h2) - Math.min(h0, h1, h2);
   const b = p.bands;
+  // dither the height used for banding so band borders break up into facets instead of hard lines
+  const avg = (h0 + h1 + h2) / 3 + (faceHash(seed * 3 + 7) - 0.5) * 22;
+  const stops: [number, THREE.Color][] = [
+    [sea, p.sand],
+    [b.shore, p.sand],
+    [b.shore + 14, tmp2.copy(p.meadow).lerp(p.sand, 0.3)],
+    [b.grass, p.meadow],
+    [b.highland, p.moss],
+    [b.rock - 30, p.forest],
+    [b.rock, p.rock],
+    [b.peak - 20, p.rock],
+    [b.peak + 10, p.snow],
+  ];
   if (avg < sea) out.copy(p.sandWet).lerp(p.water, Math.min(1, (sea - avg) / 60));
-  else if (avg < b.shore) out.copy(p.sand);
-  else if (avg < b.lowland) out.copy(p.meadow).lerp(p.sand, 0.15);
-  else if (avg < b.grass) out.copy(p.meadow);
-  else if (avg < b.highland) out.copy(p.moss);
-  else if (avg < b.rock) out.copy(p.forest).lerp(p.rock, 0.35);
-  else if (avg < b.peak) out.copy(p.rock);
-  else out.copy(p.snow);
-  // steep faces show layered rock strata
-  if (avg >= sea && span > p.maxWalkSlope * 0.9) {
-    const band = Math.floor(avg / 18) % 3;
-    tmp.copy(band === 0 ? p.rockDark : band === 1 ? p.rock : tmp2.copy(p.rock).lerp(p.sand, 0.35));
-    out.lerp(tmp, Math.min(1, (span - p.maxWalkSlope * 0.9) / (p.maxWalkSlope * 0.8)));
+  else if (avg >= stops[stops.length - 1][0]) out.copy(p.snow);
+  else {
+    let k = 1;
+    while (k < stops.length - 1 && avg >= stops[k][0]) k++;
+    const [h0s, c0] = stops[k - 1];
+    const [h1s, c1] = stops[k];
+    const f = h1s > h0s ? Math.min(1, Math.max(0, (avg - h0s) / (h1s - h0s))) : 1;
+    out.copy(c0).lerp(c1, f * f * (3 - 2 * f));
+  }
+  // steep faces turn to rock, with broad and subtle strata
+  if (avg >= sea && span > p.maxWalkSlope * 0.8) {
+    const strata = 0.92 + 0.12 * (Math.floor(avg / 36) % 2);
+    tmp.copy(p.rock).lerp(p.rockDark, 0.35).multiplyScalar(strata);
+    out.lerp(tmp, Math.min(0.85, (span - p.maxWalkSlope * 0.8) / p.maxWalkSlope));
   }
   if (scar > 0) out.lerp(p.scar, Math.min(0.85, scar / 60));
   const j = 0.93 + 0.12 * faceHash(seed);
@@ -118,21 +133,22 @@ export class TerrainChunk {
         const e = t.get(gx + 1, gz + 1);
         const sc = t.scar[t.idx(gx, gz)];
         const seed = gx * 7919 + gz * 104729;
+        const cs = Math.max(a, b, d, e) - Math.min(a, b, d, e);
         if (((gx + gz) & 1) === 0) {
-          faceColor(p, t.sea, a, d, b, sc, seed, c);
+          faceColor(p, t.sea, a, d, b, sc, seed, c, cs);
           put(x, z, a, c);
           put(x, z + 1, d, c);
           put(x + 1, z, b, c);
-          faceColor(p, t.sea, b, d, e, sc, seed + 1, c);
+          faceColor(p, t.sea, b, d, e, sc, seed + 1, c, cs);
           put(x + 1, z, b, c);
           put(x, z + 1, d, c);
           put(x + 1, z + 1, e, c);
         } else {
-          faceColor(p, t.sea, a, e, b, sc, seed, c);
+          faceColor(p, t.sea, a, e, b, sc, seed, c, cs);
           put(x, z, a, c);
           put(x + 1, z + 1, e, c);
           put(x + 1, z, b, c);
-          faceColor(p, t.sea, a, d, e, sc, seed + 1, c);
+          faceColor(p, t.sea, a, d, e, sc, seed + 1, c, cs);
           put(x, z, a, c);
           put(x, z + 1, d, c);
           put(x + 1, z + 1, e, c);

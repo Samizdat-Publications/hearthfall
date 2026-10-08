@@ -95,10 +95,10 @@ export function blankCheck(stats) {
   return { ok, reason: ok ? "" : `blank-ish: lumaStd ${stats.lumaStd}, dominant ${stats.dominantShare}, colors ${stats.colors}` };
 }
 
-export async function shotCmd(out, cmd) {
+export async function shotCmd(out, cmd, args) {
   if (!readFileSafe(ROOT + "tools/harness/shotsets/smoke.json")) return out.finish("SKIP", `${cmd} lands at M2 (no shot sets yet; doctor capture is reports/latest/doctor-shot.png)`);
   const { runShots } = await import("./shots.mjs");
-  return runShots(out, cmd);
+  return runShots(out, cmd, args);
 }
 
 function readFileSafe(p) {

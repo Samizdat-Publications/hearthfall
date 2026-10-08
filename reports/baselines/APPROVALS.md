@@ -1,0 +1,1 @@
+- 2026-10-08T22:31 set smoke (7 shots): M2: first renderer baselines after contact sheet review (faceted bands, trees, curved globe, seam)

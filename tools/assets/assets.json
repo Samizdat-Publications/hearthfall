@@ -635,8 +635,10 @@
     {
       "id": "building.hearth",
       "class": "buildings",
-      "prompt": "tribal village hearth: a ring of stacked stones around a large glowing ember bowl on a raised round stone platform",
-      "refs": [],
+      "prompt": "tribal village hearth: a ring of stacked stones around a large glowing orange ember bowl on a raised round stone platform, with a short pole carrying one clearly visible bright royal blue cloth banner or pennant hanging from a pole or the eaves (the only blue in the image)",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
       "provider": "meshy",
       "params": {
         "aspect_ratio": "1:1",
@@ -646,32 +648,59 @@
         "budget_class": "building",
         "scheme": "sample",
         "default_color": "stone",
-        "footprint": 2.6
+        "footprint": 1.9,
+        "tribe_color": "azure",
+        "textured": true
       },
       "steps": {
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-08T22:29:03Z",
+          "finished": "2026-10-08T22:29:22Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.hearth/concept.jpg",
+          "sha256": "c3118ab516980702f22cb6d2171b1244f87f5fb25ccad8fd6f277748d4a511bd",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 424288,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "317b33debd2c042008ff2966497b230a0af8a2532536ac81538ffa2c8a21783a"
         },
         "model": {
-          "status": "pending",
+          "status": "done",
           "provider": "meshy",
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "remote_id": "01a11da3-a550-7064-bde4-0aa5b76fedc7",
+          "started": "2026-10-08T22:30:12Z",
+          "finished": "2026-10-08T22:30:54Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.hearth/model.glb",
+          "sha256": "ebc56c730944bf6b68f5f6c2fc2157f3844ed5f6e0800cfc17a72fff1072afa3",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "progress": 100,
+            "bytes": 1945124
+          },
+          "request_hash": "ff3d6da1663ff73f6ad17990e1f61c0990318b32543c8c57be77649a6a7ddb7f"
         },
         "rig": {
           "status": "skipped",
@@ -698,40 +727,130 @@
           "error": null
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-08T22:30:54Z",
+          "finished": "2026-10-08T22:31:03Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/models/building.hearth.glb",
+          "sha256": "b8800b82694bf355ba84ada4ce3feb5fea4795d7e63d780f5a2390df07b20e9c",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1698,
+            "tris_out": 1698,
+            "decimated": false,
+            "scale": 1.9,
+            "bounds_min": [
+              -0.95,
+              -0.95,
+              0.0
+            ],
+            "bounds_max": [
+              0.95,
+              0.95,
+              1.4128
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "fire",
+              "lava",
+              "rock",
+              "rockDark",
+              "sand",
+              "scar",
+              "skin1",
+              "skin2",
+              "skin3",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "sand": 13,
+              "rock": 5,
+              "rockDark": 895,
+              "wood": 111,
+              "woodDark": 263,
+              "skin1": 3,
+              "skin2": 10,
+              "skin3": 33,
+              "azure": 48,
+              "fire": 60,
+              "lava": 66,
+              "scar": 191
+            },
+            "tribe_faces": 48,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.598,
+              0.962
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "1ffda64f55f65c06425f88254a8d94626697f3168b0650676e7555992c04bbd7"
         },
         "thumb": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
           "started": null,
-          "finished": null,
+          "finished": "2026-10-08T22:31:11Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
+          "output_path": "assets/icons/building.hearth.png",
+          "sha256": "7b114195d5571415975d3310204c75df2add1072188e8ccabef65979bc104c32",
+          "attempts": 1,
           "error": null
         }
       },
       "style_version": 1,
       "request_hash": null,
       "approved": false,
-      "qa": {}
+      "qa": {
+        "tris": 1698,
+        "verts": 5094,
+        "bounds": {
+          "min": [
+            -0.95,
+            0.0,
+            -0.95
+          ],
+          "max": [
+            0.95,
+            1.4128,
+            0.95
+          ],
+          "size": [
+            1.9,
+            1.4128,
+            1.9
+          ]
+        },
+        "bytes": 215296,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 48,
+        "tribe_height_range": [
+          0.598,
+          0.962
+        ],
+        "boundary_edges": 20,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     },
     {
       "id": "building.dwelling_small",
       "class": "buildings",
-      "prompt": "small round tribal dwelling with a thatched cone roof, wooden door, wattle walls",
-      "refs": [],
+      "prompt": "small round tribal dwelling with a thatched cone roof, wooden door, wattle walls, one clearly visible bright royal blue cloth banner or pennant hanging from a pole or the eaves (the only blue in the image)",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
       "provider": "meshy",
       "params": {
         "aspect_ratio": "1:1",
@@ -741,32 +860,52 @@
         "budget_class": "building",
         "scheme": "sample",
         "default_color": "stone",
-        "footprint": 2.0
+        "footprint": 1.8,
+        "tribe_color": "azure",
+        "textured": true
       },
       "steps": {
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-08T22:31:25Z",
+          "finished": "2026-10-08T22:31:39Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.dwelling_small/concept.jpg",
+          "sha256": "c757401f59929d551a23a390d14c7a9cd3339e606f5266ba0c9fab7ede16e85d",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 460185,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "dfb2e3f3dbc166013d586a79b69136799dacc772d9fa0e743c0b89594128e6bb"
         },
         "model": {
-          "status": "pending",
+          "status": "submitted",
           "provider": "meshy",
-          "remote_id": null,
-          "started": null,
+          "remote_id": "01a11da4-f5b8-776b-8df4-bf8cc53c6bb0",
+          "started": "2026-10-08T22:31:39Z",
           "finished": null,
           "cost": null,
           "output_path": null,
           "sha256": null,
-          "attempts": 0,
-          "error": null
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image"
+          }
         },
         "rig": {
           "status": "skipped",
@@ -825,8 +964,10 @@
     {
       "id": "building.dwelling_medium",
       "class": "buildings",
-      "prompt": "medium tribal longhouse with a thatched roof, a chimney hole, and a timber porch",
-      "refs": [],
+      "prompt": "medium tribal roundhouse with a larger thatched roof, a chimney hole, and a timber porch, one clearly visible bright royal blue cloth banner or pennant hanging from a pole or the eaves (the only blue in the image)",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
       "provider": "meshy",
       "params": {
         "aspect_ratio": "1:1",
@@ -836,32 +977,52 @@
         "budget_class": "building",
         "scheme": "sample",
         "default_color": "stone",
-        "footprint": 2.5
+        "footprint": 2.0,
+        "tribe_color": "azure",
+        "textured": true
       },
       "steps": {
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-08T22:31:41Z",
+          "finished": "2026-10-08T22:31:56Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.dwelling_medium/concept.jpg",
+          "sha256": "5c0b92c731564bbd6554c06e8b1597165fd6747e2008a700e14a523e90849c9f",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 406112,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "50bf510cf96675a83304fc0b237d989b69dcc036ff085006cbcc585c3ae5e33c"
         },
         "model": {
-          "status": "pending",
+          "status": "submitted",
           "provider": "meshy",
-          "remote_id": null,
-          "started": null,
+          "remote_id": "01a11da5-3864-72e5-8e65-f4eaf4d27514",
+          "started": "2026-10-08T22:31:56Z",
           "finished": null,
           "cost": null,
           "output_path": null,
           "sha256": null,
-          "attempts": 0,
-          "error": null
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image"
+          }
         },
         "rig": {
           "status": "skipped",
@@ -920,8 +1081,10 @@
     {
       "id": "building.dwelling_large",
       "class": "buildings",
-      "prompt": "large tribal hall house with a double thatched roof, carved roof beams, and two doors",
-      "refs": [],
+      "prompt": "large tribal hall house with a double-tier thatched roof, carved roof beams, and two doors, one clearly visible bright royal blue cloth banner or pennant hanging from a pole or the eaves (the only blue in the image)",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
       "provider": "meshy",
       "params": {
         "aspect_ratio": "1:1",
@@ -931,19 +1094,21 @@
         "budget_class": "building",
         "scheme": "sample",
         "default_color": "stone",
-        "footprint": 3.0
+        "footprint": 2.2,
+        "tribe_color": "azure",
+        "textured": true
       },
       "steps": {
         "concept": {
-          "status": "pending",
+          "status": "submitted",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
+          "started": "2026-10-08T22:31:58Z",
           "finished": null,
           "cost": null,
           "output_path": null,
           "sha256": null,
-          "attempts": 0,
+          "attempts": 1,
           "error": null
         },
         "model": {
@@ -1015,8 +1180,10 @@
     {
       "id": "building.watchtower",
       "class": "buildings",
-      "prompt": "tall timber watchtower on stilts with a lookout platform and a small pointed roof, rope ladder",
-      "refs": [],
+      "prompt": "tall slim timber watchtower on four stilts with a small square lookout platform and a pointed roof, rope ladder, one clearly visible bright royal blue cloth banner or pennant hanging from a pole or the eaves (the only blue in the image)",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
       "provider": "meshy",
       "params": {
         "aspect_ratio": "1:1",
@@ -1026,7 +1193,9 @@
         "budget_class": "building",
         "scheme": "sample",
         "default_color": "stone",
-        "footprint": 2.0
+        "footprint": 1.2,
+        "tribe_color": "azure",
+        "textured": true
       },
       "steps": {
         "concept": {
@@ -1110,8 +1279,10 @@
     {
       "id": "building.warden_lodge",
       "class": "buildings",
-      "prompt": "sturdy timber warden lodge with a pointed roof, a banner pole, and a rack of spears at the door",
-      "refs": [],
+      "prompt": "sturdy timber warden lodge with a pointed roof, a banner pole, and a rack of spears at the door, one clearly visible bright royal blue cloth banner or pennant hanging from a pole or the eaves (the only blue in the image)",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
       "provider": "meshy",
       "params": {
         "aspect_ratio": "1:1",
@@ -1121,7 +1292,9 @@
         "budget_class": "building",
         "scheme": "sample",
         "default_color": "stone",
-        "footprint": 3.0
+        "footprint": 2.9,
+        "tribe_color": "azure",
+        "textured": true
       },
       "steps": {
         "concept": {
@@ -1205,8 +1378,10 @@
     {
       "id": "building.fire_lodge",
       "class": "buildings",
-      "prompt": "fire lodge with a red clay chimney, stone base, glowing orange doorway, thatch and clay roof",
-      "refs": [],
+      "prompt": "fire lodge with an orange-brown clay chimney, stone base, glowing orange doorway, thatch and clay roof, one clearly visible bright royal blue cloth banner or pennant hanging from a pole or the eaves (the only blue in the image)",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
       "provider": "meshy",
       "params": {
         "aspect_ratio": "1:1",
@@ -1216,7 +1391,9 @@
         "budget_class": "building",
         "scheme": "sample",
         "default_color": "stone",
-        "footprint": 3.0
+        "footprint": 2.9,
+        "tribe_color": "azure",
+        "textured": true
       },
       "steps": {
         "concept": {
@@ -1300,8 +1477,10 @@
     {
       "id": "building.chant_house",
       "class": "buildings",
-      "prompt": "open-sided chant house with a domed thatched roof on carved pillars, a ring of seats, hanging wind chimes",
-      "refs": [],
+      "prompt": "open-sided chant house with a domed thatched roof on carved pillars, a ring of seats, hanging wind chimes, one clearly visible bright royal blue cloth banner or pennant hanging from a pole or the eaves (the only blue in the image)",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
       "provider": "meshy",
       "params": {
         "aspect_ratio": "1:1",
@@ -1311,7 +1490,9 @@
         "budget_class": "building",
         "scheme": "sample",
         "default_color": "stone",
-        "footprint": 3.0
+        "footprint": 2.9,
+        "tribe_color": "azure",
+        "textured": true
       },
       "steps": {
         "concept": {
@@ -1395,8 +1576,10 @@
     {
       "id": "building.shrine",
       "class": "buildings",
-      "prompt": "small stone shrine: a stacked stone cairn under a little peaked roof with ribbons and a glowing gem",
-      "refs": [],
+      "prompt": "small stone shrine: a stacked stone cairn under a little peaked roof with a glowing purple gem, with one clearly visible bright royal blue cloth banner or pennant hanging from a pole or the eaves (the only blue in the image)",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
       "provider": "meshy",
       "params": {
         "aspect_ratio": "1:1",
@@ -1406,7 +1589,9 @@
         "budget_class": "building",
         "scheme": "sample",
         "default_color": "stone",
-        "footprint": 2.0
+        "footprint": 1.5,
+        "tribe_color": "azure",
+        "textured": true
       },
       "steps": {
         "concept": {
@@ -1490,8 +1675,10 @@
     {
       "id": "building.reliquary",
       "class": "buildings",
-      "prompt": "stone reliquary vault: a squat round stone building with a carved door and a glowing crystal on top",
-      "refs": [],
+      "prompt": "stone reliquary vault: a squat round stone building with a carved door and a glowing purple crystal on top, with one clearly visible bright royal blue cloth banner or pennant hanging from a pole or the eaves (the only blue in the image)",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
       "provider": "meshy",
       "params": {
         "aspect_ratio": "1:1",
@@ -1501,7 +1688,9 @@
         "budget_class": "building",
         "scheme": "sample",
         "default_color": "stone",
-        "footprint": 2.0
+        "footprint": 1.8,
+        "tribe_color": "azure",
+        "textured": true
       },
       "steps": {
         "concept": {
@@ -1585,8 +1774,10 @@
     {
       "id": "building.totem",
       "class": "buildings",
-      "prompt": "tall carved wooden totem pole with stacked animal faces, painted bands of clay red and ochre, small stone base",
-      "refs": [],
+      "prompt": "tall carved wooden totem pole with stacked animal faces, painted bands of ochre and brown, small stone base, with one clearly visible bright royal blue cloth banner or pennant hanging from a pole or the eaves (the only blue in the image)",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
       "provider": "meshy",
       "params": {
         "aspect_ratio": "1:1",
@@ -1596,7 +1787,9 @@
         "budget_class": "building",
         "scheme": "sample",
         "default_color": "stone",
-        "height": 2.6
+        "height": 2.4,
+        "tribe_color": "azure",
+        "textured": true
       },
       "steps": {
         "concept": {
@@ -1838,13 +2031,13 @@
     {
       "id": "prop.tree_b",
       "class": "props",
-      "prompt": "a stylized low-poly pine tree with a slim trunk and three stacked cone-shaped green tiers",
+      "prompt": "a cluster of three stylized low-poly pine trees of different heights growing together from one small mound, stacked cone-shaped green tiers",
       "refs": [],
       "provider": "meshy",
       "params": {
         "route": "text",
         "target_polycount": 350,
-        "height": 2.4,
+        "height": 2.2,
         "budget_class": "prop",
         "scheme": "tree",
         "default_color": "rock"
@@ -1931,13 +2124,13 @@
     {
       "id": "prop.tree_c",
       "class": "props",
-      "prompt": "a stylized low-poly old gnarled tree with a thick twisted trunk and a wide flat canopy",
+      "prompt": "a tall slender stylized low-poly pine tree with a long bare trunk and narrow stacked cone-shaped green tiers",
       "refs": [],
       "provider": "meshy",
       "params": {
         "route": "text",
         "target_polycount": 450,
-        "height": 1.8,
+        "height": 3.0,
         "budget_class": "prop",
         "scheme": "tree",
         "default_color": "rock"

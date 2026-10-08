@@ -160,6 +160,46 @@
       "when": "2026-10-08T22:18:09.925Z",
       "source": "reports/latest/unit_bakeoff_sheet.png",
       "bytes": 294548
+    },
+    {
+      "file": "a1/20261008-2227_unit-bakeoff-fixed-thumbs.png",
+      "milestone": "A1",
+      "kind": "comparison",
+      "caption": "Unit bake-off re-rendered with vertex colors visible: text-to-3D untextured versus image-to-3D textured for Settler and Warden.",
+      "highlight": false,
+      "when": "2026-10-08T22:27:37.180Z",
+      "source": "reports/latest/unit_bakeoff_sheet.png",
+      "bytes": 560848
+    },
+    {
+      "file": "m2/20261008-2231_m2-smoke-sheet.png",
+      "milestone": "M2",
+      "kind": "contact-sheet",
+      "caption": "First renderer contact sheet: faceted torus planet with curved horizon, wrap seam, globe zoom, map view, islands and a raised cone",
+      "highlight": true,
+      "when": "2026-10-08T22:31:12.447Z",
+      "source": "reports/latest/sheet.png",
+      "bytes": 722377
+    },
+    {
+      "file": "m2/20261008-2231_overview.png",
+      "milestone": "M2",
+      "kind": "screenshot",
+      "caption": "Overview: placeholder pines and broadleaf trees on banded terrain with shoreline foam",
+      "highlight": false,
+      "when": "2026-10-08T22:31:13.046Z",
+      "source": "reports/latest/shots/overview.png",
+      "bytes": 438261
+    },
+    {
+      "file": "m2/20261008-2231_globe.png",
+      "milestone": "M2",
+      "kind": "screenshot",
+      "caption": "Globe zoom: the 128 cell torus reads as a small round planet thanks to the curved-world bend",
+      "highlight": true,
+      "when": "2026-10-08T22:31:13.628Z",
+      "source": "reports/latest/shots/globe.png",
+      "bytes": 325862
     }
   ]
 }

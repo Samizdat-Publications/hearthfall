@@ -7,6 +7,7 @@ import type { World } from "@hearthfall/sim";
 import { applyCamera, CAMERA_PRESETS, type CameraState } from "./camera.ts";
 import { bendMaterial, makeBendUniforms, type BendUniforms } from "./curve.ts";
 import { CHUNK, makeWaterMaterial, TerrainChunk, type TerrainPalette } from "./terrainMesh.ts";
+import { TreeLayer } from "./props.ts";
 
 export interface Renderer {
   setWorld(world: World): void;
@@ -52,6 +53,8 @@ export class ThreeRenderer implements Renderer {
   private readonly waterMat: THREE.ShaderMaterial;
   private readonly sky: THREE.Mesh;
   private readonly sun: THREE.DirectionalLight;
+  private readonly trees: TreeLayer;
+  private readonly propMat: THREE.MeshLambertMaterial;
 
   constructor(o: RendererOptions) {
     this.gl = new THREE.WebGLRenderer({ canvas: o.canvas, antialias: true, preserveDrawingBuffer: true, powerPreference: "high-performance" });
@@ -75,7 +78,7 @@ export class ThreeRenderer implements Renderer {
       waterShallow: C("waterShallow"),
       foam: C("foam"),
       bands: { shore: 0, lowland: 0, grass: 0, highland: 0, rock: 0, peak: 0 },
-      heightScale: (o.verticalScale ?? 1.6) / o.heightUnitsPerWorldUnit,
+      heightScale: (o.verticalScale ?? 2.0) / o.heightUnitsPerWorldUnit,
       maxWalkSlope: 20,
     };
     const L = o.style.lighting;
@@ -88,7 +91,11 @@ export class ThreeRenderer implements Renderer {
     this.scene.add(this.sun.target);
     this.terrainMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend);
     this.waterMat = makeWaterMaterial(this.palette, this.bend, this.time);
+    this.propMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend);
+    this.trees = new TreeLayer(this.propMat, pal);
+    for (const m of this.trees.meshes) this.scene.add(m);
     this.sky = makeSky(L.skyTop, L.skyHorizon);
+    this.gl.setClearColor(pal.water ?? "#2f7fb8", 1);
     this.scene.add(this.sky);
   }
 
@@ -186,10 +193,13 @@ export class ThreeRenderer implements Renderer {
       fog.near = r.fogNear;
       fog.far = r.fogFar;
       for (const c of this.chunks) c.place(this.cam.x, this.cam.z, size);
+      this.trees.update(w, this.cam.x, this.cam.z, this.palette.heightScale);
       this.sun.target.position.set(this.cam.x, 0, this.cam.z);
       this.sun.position.set(this.cam.x + 40, 80, this.cam.z + 25);
     }
+    this.sky.visible = !this.cam.map && this.scene.visible;
     this.sky.position.copy(this.camera.position);
+    this.sky.scale.setScalar((this.camera.far * 0.9) / 900);
     this.gl.render(this.scene, this.camera);
     this.frames++;
     this.stats.frames = this.frames;
@@ -204,6 +214,7 @@ export class ThreeRenderer implements Renderer {
       c.mesh.visible = !f.hideTerrain;
       c.water.visible = !f.hideTerrain;
     }
+    for (const m of this.trees.meshes) m.visible = !f.hideTerrain;
     this.sky.visible = !f.blackCanvas;
     this.scene.visible = !f.blackCanvas;
     if (f.blackCanvas) this.gl.setClearColor(0x000000, 1);
@@ -225,7 +236,7 @@ function makeSky(top: string, horizon: string): THREE.Mesh {
     uniforms: { uTop: { value: new THREE.Color(top) }, uHorizon: { value: new THREE.Color(horizon) } },
     vertexShader: /* glsl */ `varying vec3 vDir; void main() { vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
     fragmentShader: /* glsl */ `uniform vec3 uTop; uniform vec3 uHorizon; varying vec3 vDir;
-      void main() { float t = smoothstep(-0.15, 0.55, vDir.y); gl_FragColor = vec4(mix(uHorizon, uTop, t), 1.0);
+      void main() { float t = smoothstep(-0.02, 0.32, vDir.y); gl_FragColor = vec4(mix(uHorizon, uTop, t), 1.0);
       #include <tonemapping_fragment>
       #include <colorspace_fragment>
       }`,
