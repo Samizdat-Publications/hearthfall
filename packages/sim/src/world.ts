@@ -7,6 +7,7 @@ import { CAT, Entities, type EntityId, NO_ENTITY } from "./entities.ts";
 import { generateMap, type MapSpec } from "./generator.ts";
 import { Fnv } from "./hash.ts";
 import { Rng } from "./rng.ts";
+import { cos, sin, TWO_PI } from "./dmath.ts";
 import type { Terrain, TerrainOpSpec } from "./terrain.ts";
 import { ORDER, UnitSystem } from "./units.ts";
 
@@ -98,6 +99,7 @@ export class World {
     for (let t = 0; t < tribeCount; t++) this.tribes.push({ index: t, color: TRIBE_COLORS[t % 4], hearth: NO_ENTITY, alive: true });
     if (init.populate !== false) {
       gen.hearths.forEach((h, t) => this.spawnBuilding("hearth", t, h.x, h.y));
+      gen.hearths.forEach((h, t) => this.spawnStartUnits(t, h.x, h.y));
       for (const tr of gen.trees) this.spawnTree(tr.x, tr.y);
       for (const w of gen.wild) this.spawnUnit("wild", -1, w.x, w.y);
     }
@@ -112,6 +114,23 @@ export class World {
     const id = this.ents.alloc(CAT.tree, 0, -1, x, y, 1);
     this.ents.wood[this.ents.index(id)] = this.cfg.pack.buildings.trees.maxWood;
     return id;
+  }
+
+  /** The Shaper and startPopulation settlers on walkable ground in rings around a Hearth. */
+  spawnStartUnits(tribe: number, hx: number, hy: number): void {
+    const want = ["shaper", ...Array(this.cfg.pack.units.rules.startPopulation).fill("settler")];
+    const n = this.terrain.size;
+    let k = 0;
+    for (let ring = 2; ring < 8 && k < want.length; ring++) {
+      for (let a = 0; a < ring * 6 && k < want.length; a++) {
+        const ang = (a / (ring * 6)) * TWO_PI;
+        const x = (((hx + cos(ang) * ring) % n) + n) % n;
+        const y = (((hy + sin(ang) * ring) % n) + n) % n;
+        if (!this.terrain.walkable(Math.round(x), Math.round(y)) || this.terrain.drowns(x, y)) continue;
+        this.spawnUnit(want[k++], tribe, x, y);
+        a += 2;
+      }
+    }
   }
 
   spawnUnit(kind: string, tribe: number, x: number, y: number): EntityId {

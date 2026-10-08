@@ -250,6 +250,26 @@
       "when": "2026-10-08T22:44:43.593Z",
       "source": "tools/assets/raw/gemini/building.fire_lodge/concept.jpg",
       "bytes": 381196
+    },
+    {
+      "file": "m3/20261008-2303_first-people.png",
+      "milestone": "M3",
+      "kind": "screenshot",
+      "caption": "People appear: the Shaper with her staff, five azure settlers around the Hearth fire, wild people wandering nearby",
+      "highlight": true,
+      "when": "2026-10-08T23:03:14.796Z",
+      "source": "reports/latest/shots/close.png",
+      "bytes": 226272
+    },
+    {
+      "file": "m3/20261008-2303_select-and-move.png",
+      "milestone": "M3",
+      "kind": "screenshot",
+      "caption": "Box-selected settlers with selection rings walking to a right-click target on the curved surface",
+      "highlight": false,
+      "when": "2026-10-08T23:03:14.941Z",
+      "source": "reports/latest/shots/units_select_move.png",
+      "bytes": 270868
     }
   ]
 }

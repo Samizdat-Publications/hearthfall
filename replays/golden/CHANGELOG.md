@@ -17,3 +17,7 @@ Reason: M1 review: golden ridgeLine actually moved to cross water (92..105, y 0)
 ## 2026-10-08 22:40 UTC
 Reason: M3: entity movement columns (prev pos, velocity, order, goal, path state) and the unit movement system with separation change entity hashes; balance.movement added
 - terrain_ops_continents: final 9f543758 -> ed637462 (pack 968c9535)
+
+## 2026-10-08 23:01 UTC
+Reason: M3: populated worlds now spawn each tribe's Shaper and startPopulation settlers around the Hearth (DESIGN section 4)
+- terrain_ops_continents: final ed637462 -> a9287b42 (pack 98511ae5)

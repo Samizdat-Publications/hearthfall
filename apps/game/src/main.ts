@@ -39,6 +39,23 @@ if (__DEBUG_API__ || game.params.debug) {
     },
     setCamera: (c: string | Partial<CameraState>) => game.renderer.setCamera(c),
     loadScenario: (id: string) => game.load(id),
+    select: (ids: number[]) => {
+      game.selection = new Set(ids.map((id) => game.world.ents.index(id)).filter((i) => i >= 0));
+      game.onChange();
+    },
+    selectBox: (x0: number, y0: number, x1: number, y1: number) => game.selectBox(x0, y0, x1, y1, false),
+    getSelection: () => [...game.selection].map((i) => game.world.ents.idOf(i)),
+    pickTerrain: (px: number, py: number) => game.renderer.pickTerrain(px, py),
+    orderAt: (px: number, py: number) => game.orderAt(px, py),
+    unitPos: (id: number) => {
+      const i = game.world.ents.index(id);
+      return i >= 0 ? [game.world.ents.x[i], game.world.ents.y[i]] : null;
+    },
+    unitScreen: (id: number) => {
+      const i = game.world.ents.index(id);
+      const u = game.renderer.units;
+      return i >= 0 && u ? [u.screenX[i], u.screenY[i]] : null;
+    },
     setDebug: (f: DebugFlags) => game.setDebug(f),
     /** Run a scenario-style definition headless in this page (cross-engine determinism check). */
     runDef: (def: ScenarioDef, rawPack: Record<string, unknown>, every = 100) => {

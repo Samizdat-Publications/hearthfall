@@ -179,6 +179,45 @@
    },
    "expectDomIssue": "overlaps",
    "minHud": 2
+  },
+  {
+   "id": "units_select_move",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "default"
+   },
+   "steps": [
+    {
+     "setCamera": {
+      "zoom": 0.12
+     }
+    },
+    {
+     "eval": "__game.selectBox(0, 0, 1280, 720)"
+    },
+    {
+     "assert": "__game.getSelection().length === 6"
+    },
+    {
+     "eval": "window.__p0 = __game.getSelection().map((id) => __game.unitPos(id)); __game.orderAt(900, 420)"
+    },
+    {
+     "step": 60
+    },
+    {
+     "assert": "__game.getSelection().filter((id, k) => { const p = __game.unitPos(id); const q = window.__p0[k]; return Math.hypot(p[0] - q[0], p[1] - q[1]) > 1.5; }).length >= 5"
+    }
+   ],
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.03,
+     0.95
+    ]
+   },
+   "minHud": 3
   }
  ]
 }

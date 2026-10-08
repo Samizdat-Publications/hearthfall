@@ -8,6 +8,8 @@ import { applyCamera, CAMERA_PRESETS, type CameraState } from "./camera.ts";
 import { bendMaterial, makeBendUniforms, type BendUniforms } from "./curve.ts";
 import { CHUNK, makeWaterMaterial, TerrainChunk, type TerrainPalette } from "./terrainMesh.ts";
 import { TreeLayer } from "./props.ts";
+import { UnitLayer } from "./unitsLayer.ts";
+import { BuildingLayer } from "./buildingsLayer.ts";
 
 export interface Renderer {
   setWorld(world: World): void;
@@ -26,6 +28,7 @@ export interface RenderStats {
   drawCalls: number;
   triangles: number;
   cpuMs: number;
+  unitsDrawn: number;
 }
 
 export interface RendererOptions {
@@ -44,7 +47,7 @@ export class ThreeRenderer implements Renderer {
   readonly time = { value: 0 };
   cam: CameraState = { x: 0, z: 0, yaw: 0.6, zoom: 0.32, map: false };
   frames = 0;
-  stats: RenderStats = { frames: 0, chunks: 0, remeshTotal: 0, lastRemesh: 0, fullRebuilds: 0, drawCalls: 0, triangles: 0, cpuMs: 0 };
+  stats: RenderStats = { frames: 0, chunks: 0, remeshTotal: 0, lastRemesh: 0, fullRebuilds: 0, drawCalls: 0, triangles: 0, cpuMs: 0, unitsDrawn: 0 };
   private world: World | null = null;
   private chunks: TerrainChunk[] = [];
   private cursor = -1;
@@ -56,6 +59,15 @@ export class ThreeRenderer implements Renderer {
   private readonly sun: THREE.DirectionalLight;
   private readonly trees: TreeLayer;
   private readonly propMat: THREE.MeshLambertMaterial;
+  private readonly ringMat: THREE.MeshBasicMaterial;
+  private readonly pal: Record<string, string>;
+  units: UnitLayer | null = null;
+  buildings: BuildingLayer | null = null;
+  /** sim tick interpolation factor in [0, 1] and the selection to ring (entity indices) */
+  alpha = 1;
+  selected: ReadonlySet<number> = new Set();
+  private viewW = 1280;
+  private viewH = 720;
 
   constructor(o: RendererOptions) {
     this.gl = new THREE.WebGLRenderer({ canvas: o.canvas, antialias: true, preserveDrawingBuffer: true, powerPreference: "high-performance" });
@@ -92,7 +104,9 @@ export class ThreeRenderer implements Renderer {
     this.scene.add(this.sun.target);
     this.terrainMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend);
     this.waterMat = makeWaterMaterial(this.palette, this.bend, this.time);
+    this.pal = pal;
     this.propMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend);
+    this.ringMat = bendMaterial(new THREE.MeshBasicMaterial({ color: pal.foam ?? "#e6f4f8", transparent: true, opacity: 0.9, depthWrite: false }), this.bend);
     this.trees = new TreeLayer(this.propMat, pal);
     for (const m of this.trees.meshes) this.scene.add(m);
     this.sky = makeSky(L.skyTop, L.skyHorizon);
@@ -121,6 +135,12 @@ export class ThreeRenderer implements Renderer {
     }
     this.rebuildAll();
     this.stats.chunks = this.chunks.length;
+    if (this.units) this.scene.remove(this.units.group);
+    this.units = new UnitLayer(this.propMat, this.ringMat, world.cfg.pack.units.units.map((u) => u.id), this.pal, world.tribes.map((t) => t.color));
+    this.scene.add(this.units.group);
+    if (this.buildings) this.scene.remove(this.buildings.group);
+    this.buildings = new BuildingLayer(this.propMat, world.cfg.pack.buildings.buildings, this.pal, world.tribes.map((t) => t.color));
+    this.scene.add(this.buildings.group);
   }
 
   private rebuildAll(): void {
@@ -175,6 +195,8 @@ export class ThreeRenderer implements Renderer {
   }
 
   resize(w: number, h: number): void {
+    this.viewW = w;
+    this.viewH = h;
     this.gl.setSize(w, h, false);
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
@@ -200,6 +222,10 @@ export class ThreeRenderer implements Renderer {
       fog.far = r.fogFar;
       for (const c of this.chunks) c.place(this.cam.x, this.cam.z, size);
       this.trees.update(w, this.cam.x, this.cam.z, this.palette.heightScale);
+      this.buildings?.update(w, this.cam.x, this.cam.z, this.palette.heightScale);
+      this.camera.updateMatrixWorld();
+      this.units?.update(w, this.alpha, this.cam.x, this.cam.z, this.palette.heightScale, visualTime, this.bend.uFadeEnd.value, this.camera, this.bend.uBendK.value, this.viewW, this.viewH, this.selected);
+      this.stats.unitsDrawn = this.units?.drawn ?? 0;
       this.sun.target.position.set(this.cam.x, 0, this.cam.z);
       this.sun.position.set(this.cam.x + 40, 80, this.cam.z + 25);
     }
@@ -212,6 +238,54 @@ export class ThreeRenderer implements Renderer {
     this.stats.drawCalls = this.gl.info.render.calls;
     this.stats.triangles = this.gl.info.render.triangles;
     this.stats.cpuMs = performance.now() - t0;
+  }
+
+  /**
+   * Terrain point under a screen pixel: march the camera ray against the bent heightfield (the
+   * same bend as the shader) and refine by bisection. Water counts as a surface. Returns wrapped
+   * map coordinates or null when the ray misses the world.
+   */
+  pickTerrain(px: number, py: number): { x: number; z: number } | null {
+    const w = this.world;
+    if (!w) return null;
+    const t = w.terrain;
+    const n = t.size;
+    const s = this.palette.heightScale;
+    const ndc = new THREE.Vector2((px / this.viewW) * 2 - 1, 1 - (py / this.viewH) * 2);
+    const ray = new THREE.Raycaster();
+    ray.setFromCamera(ndc, this.camera);
+    const o = ray.ray.origin;
+    const d = ray.ray.direction;
+    const k = this.bend.uBendK.value;
+    const fx = this.bend.uBendFocus.value.x;
+    const fz = this.bend.uBendFocus.value.y;
+    const above = (dist: number) => {
+      const x = o.x + d.x * dist;
+      const z = o.z + d.z * dist;
+      const ground = Math.max(t.heightAt(((x % n) + n) % n, ((z % n) + n) % n), t.sea) * s;
+      const ddx = x - fx;
+      const ddz = z - fz;
+      return o.y + d.y * dist - (ground - k * (ddx * ddx + ddz * ddz));
+    };
+    const step = 0.4;
+    const maxDist = this.camera.far;
+    let prev = 0;
+    for (let dist = step; dist < maxDist; dist += step) {
+      if (above(dist) <= 0) {
+        let lo = prev;
+        let hi = dist;
+        for (let it = 0; it < 12; it++) {
+          const mid = (lo + hi) / 2;
+          if (above(mid) > 0) lo = mid;
+          else hi = mid;
+        }
+        const x = o.x + d.x * hi;
+        const z = o.z + d.z * hi;
+        return { x: ((x % n) + n) % n, z: ((z % n) + n) % n };
+      }
+      prev = dist;
+    }
+    return null;
   }
 
   /** Deliberate breakage for visual QA calibration (TESTING section 7, VISIONQA section 5). */

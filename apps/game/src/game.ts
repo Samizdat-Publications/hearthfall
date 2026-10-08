@@ -72,6 +72,13 @@ export class Game {
   private keys = new Set<string>();
   bookmarks: (CameraState | null)[] = [null, null, null, null];
   debugFlags: DebugFlags = {};
+  /** local player selection (entity indices, UI state only) and control groups of entity ids */
+  selection = new Set<number>();
+  groups: number[][] = Array.from({ length: 10 }, () => []);
+  attackMode = false;
+  /** box select rectangle in screen pixels while dragging (for the HUD overlay) */
+  box: { x0: number; y0: number; x1: number; y1: number } | null = null;
+  readonly localTribe = 0;
   onChange: () => void = () => {};
 
   readonly canvas: HTMLCanvasElement;
@@ -92,6 +99,7 @@ export class Game {
     if (scenarioId && !def) throw new Error(`unknown scenario ${scenarioId}`);
     this.world = def ? createScenarioWorld(def, p.files, p.hash) : new World({ pack: p.files, packHash: p.hash, seed: this.params.seed, map: { generator: this.params.level, size: this.params.size, tribes: this.params.tribes } });
     this.scenarioCmds = def ? commandsByTick(def.commands) : null;
+    this.selection.clear();
     this.renderer.setWorld(this.world);
     const home = this.world.tribes[0] ? this.world.ents.index(this.world.tribes[0].hearth) : -1;
     const size = this.world.terrain.size;
@@ -132,13 +140,128 @@ export class Game {
       if (n) this.onChange();
     }
     this.pollKeys(dt);
+    this.pruneSelection();
+    this.renderer.selected = this.selection;
+    this.renderer.alpha = this.paused ? 1 : Math.min(1, this.acc * this.world.cfg.tickHz);
     // fixedStep: visuals follow the sim tick, so re-rendering the same tick gives identical pixels
     const visualTime = this.params.fixedStep ? this.world.tick / this.world.cfg.tickHz : now / 1000;
     this.renderer.render(visualTime);
   }
 
+  // ---------------------------------------------------------------- selection and orders
+  private pruneSelection(): void {
+    const E = this.world.ents;
+    for (const i of [...this.selection]) if (!E.alive[i] || E.tribe[i] !== this.localTribe) this.selection.delete(i);
+  }
+
+  /** Own unit nearest to a screen point within 16 px, or -1. */
+  unitAt(px: number, py: number): number {
+    const u = this.renderer.units;
+    if (!u) return -1;
+    const E = this.world.ents;
+    let best = -1;
+    let bestD = 16 * 16;
+    for (let i = 0; i < E.hi; i++) {
+      const sx = u.screenX[i];
+      if (Number.isNaN(sx) || !E.alive[i] || E.tribe[i] !== this.localTribe) continue;
+      const d = (sx - px) * (sx - px) + (u.screenY[i] - py) * (u.screenY[i] - py);
+      if (d < bestD) {
+        bestD = d;
+        best = i;
+      }
+    }
+    return best;
+  }
+
+  selectBox(x0: number, y0: number, x1: number, y1: number, add: boolean): void {
+    const u = this.renderer.units;
+    if (!u) return;
+    if (!add) this.selection.clear();
+    const E = this.world.ents;
+    const [lx, hx] = x0 < x1 ? [x0, x1] : [x1, x0];
+    const [ly, hy] = y0 < y1 ? [y0, y1] : [y1, y0];
+    for (let i = 0; i < E.hi; i++) {
+      const sx = u.screenX[i];
+      if (Number.isNaN(sx) || !E.alive[i] || E.tribe[i] !== this.localTribe) continue;
+      if (sx >= lx && sx <= hx && u.screenY[i] >= ly && u.screenY[i] <= hy) this.selection.add(i);
+    }
+    this.onChange();
+  }
+
+  /** Order the selection to the terrain point under a screen pixel. */
+  orderAt(px: number, py: number, attack = false): boolean {
+    if (!this.selection.size) return false;
+    const p = this.renderer.pickTerrain(px, py);
+    if (!p) return false;
+    const E = this.world.ents;
+    this.command({ tribe: this.localTribe, type: "move", args: { units: [...this.selection].map((i) => E.idOf(i)), to: [p.x, p.z], attack } });
+    return true;
+  }
+
+  selectKind(kind: string, center = true): void {
+    const idx = this.world.selectUnits(`tribe${this.localTribe}.${kind}s`);
+    this.selection = new Set(idx);
+    if (center && idx.length) this.renderer.setCamera({ x: this.world.ents.x[idx[0]], z: this.world.ents.y[idx[0]] });
+    this.onChange();
+  }
+
   // ---------------------------------------------------------------- input
   private bindInput(): void {
+    let down: { x: number; y: number } | null = null;
+    this.canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+    this.canvas.addEventListener("mousedown", (e) => {
+      if (e.button === 0) down = { x: e.clientX, y: e.clientY };
+      if (e.button === 2) {
+        this.orderAt(e.clientX, e.clientY, this.attackMode);
+        this.attackMode = false;
+      }
+    });
+    window.addEventListener("mousemove", (e) => {
+      if (down && (Math.abs(e.clientX - down.x) > 4 || Math.abs(e.clientY - down.y) > 4)) {
+        this.box = { x0: down.x, y0: down.y, x1: e.clientX, y1: e.clientY };
+        this.onChange();
+      }
+    });
+    window.addEventListener("mouseup", (e) => {
+      if (e.button !== 0 || !down) return;
+      if (this.box) this.selectBox(this.box.x0, this.box.y0, this.box.x1, this.box.y1, e.shiftKey);
+      else if (this.attackMode) {
+        this.orderAt(e.clientX, e.clientY, true);
+        this.attackMode = false;
+      } else {
+        const i = this.unitAt(e.clientX, e.clientY);
+        if (!e.shiftKey) this.selection.clear();
+        if (i >= 0) {
+          if (e.shiftKey && this.selection.has(i)) this.selection.delete(i);
+          else this.selection.add(i);
+        }
+        this.onChange();
+      }
+      down = null;
+      this.box = null;
+      this.onChange();
+    });
+    window.addEventListener("keydown", (e) => {
+      const k = e.key.toLowerCase();
+      if (k === "escape") {
+        this.selection.clear();
+        this.attackMode = false;
+        this.onChange();
+      }
+      if (k === "a" && this.selection.size) this.attackMode = true;
+      if (k === "s" && !e.ctrlKey) this.selectKind("shaper");
+      if (/^[0-9]$/.test(k)) {
+        const g = Number(k);
+        const E = this.world.ents;
+        if (e.ctrlKey) {
+          e.preventDefault();
+          this.groups[g] = [...this.selection].map((i) => E.idOf(i));
+        } else {
+          this.selection = new Set(this.groups[g].map((id) => E.index(id)).filter((i) => i >= 0));
+          this.onChange();
+        }
+      }
+    });
     window.addEventListener("keydown", (e) => {
       this.keys.add(e.key.toLowerCase());
       const k = e.key;

@@ -1,0 +1,325 @@
+{
+  "$comment": "Cost in mana, range in cells from the Shaper, heights in height units (32 per world unit). Effects are compositions of primitives; parameter names are suggestions for the schema.",
+  "chargeRules": {
+    "startMana": 300,
+    "defaultSplitSpellsPct": 50,
+    "singleSinkGetsAll": true,
+    "killChargeStealPct": 25
+  },
+  "spells": [
+    {
+      "id": "bolt",
+      "tier": 1,
+      "cost": 100,
+      "maxCharges": 4,
+      "range": 6,
+      "v1": true,
+      "effects": [
+        {
+          "type": "damageRadius",
+          "radius": 1.5,
+          "damage": 350,
+          "downhillBonusPct": 30
+        },
+        {
+          "type": "knockback",
+          "radius": 2.0,
+          "force": 3.0
+        }
+      ]
+    },
+    {
+      "id": "call",
+      "tier": 1,
+      "cost": 100,
+      "maxCharges": 4,
+      "range": 16,
+      "v1": true,
+      "effects": [
+        {
+          "type": "convertRadius",
+          "radius": 2.5,
+          "max": 4,
+          "excludes": [
+            "shaper",
+            "chanter"
+          ],
+          "targets": [
+            "wild"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hornets",
+      "tier": 2,
+      "cost": 400,
+      "maxCharges": 4,
+      "range": 12,
+      "v1": true,
+      "effects": [
+        {
+          "type": "areaOverTime",
+          "radius": 3,
+          "seconds": 8,
+          "damagePerSecond": 20
+        },
+        {
+          "type": "statusApply",
+          "status": "panic",
+          "seconds": 8,
+          "radius": 3
+        }
+      ]
+    },
+    {
+      "id": "veil",
+      "tier": 2,
+      "cost": 500,
+      "maxCharges": 4,
+      "range": 8,
+      "effects": [
+        {
+          "type": "statusApply",
+          "status": "veil",
+          "seconds": 60,
+          "radius": 2,
+          "max": 10
+        }
+      ]
+    },
+    {
+      "id": "ward",
+      "tier": 2,
+      "cost": 600,
+      "maxCharges": 4,
+      "range": 8,
+      "effects": [
+        {
+          "type": "statusApply",
+          "status": "ward",
+          "seconds": 120,
+          "max": 6,
+          "poppedBy": [
+            "lightning"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "raise_land",
+      "tier": 2,
+      "cost": 650,
+      "maxCharges": 4,
+      "range": 10,
+      "v1": true,
+      "effects": [
+        {
+          "type": "terrainOp",
+          "op": "ridgeLine",
+          "from": "caster",
+          "width": 2,
+          "heightAboveSea": 24,
+          "length": 10
+        }
+      ]
+    },
+    {
+      "id": "lightning",
+      "tier": 2,
+      "cost": 800,
+      "maxCharges": 4,
+      "range": 12,
+      "v1": true,
+      "effects": [
+        {
+          "type": "damageRadius",
+          "radius": 0.6,
+          "damage": 2600,
+          "canKill": [
+            "shaper"
+          ]
+        },
+        {
+          "type": "statusApply",
+          "status": "burning",
+          "seconds": 3,
+          "radius": 1
+        }
+      ]
+    },
+    {
+      "id": "beguile",
+      "tier": 2,
+      "cost": 850,
+      "maxCharges": 3,
+      "range": 8,
+      "effects": [
+        {
+          "type": "statusApply",
+          "status": "beguiled",
+          "seconds": 40,
+          "radius": 2.5,
+          "max": 8,
+          "breaksOnCasterDeath": true
+        }
+      ]
+    },
+    {
+      "id": "whirlwind",
+      "tier": 2,
+      "cost": 900,
+      "maxCharges": 3,
+      "range": 8,
+      "effects": [
+        {
+          "type": "moverPath",
+          "entity": "whirlwind",
+          "seconds": 12,
+          "wander": true,
+          "flingForce": 4,
+          "damagesBuildings": true
+        }
+      ]
+    },
+    {
+      "id": "mire",
+      "tier": 3,
+      "cost": 1000,
+      "maxCharges": 3,
+      "range": 8,
+      "effects": [
+        {
+          "type": "spawnEntity",
+          "entity": "mire",
+          "radius": 2.5,
+          "killsFirst": 10,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "id": "flatten",
+      "tier": 3,
+      "cost": 1250,
+      "maxCharges": 3,
+      "range": 8,
+      "v1": true,
+      "effects": [
+        {
+          "type": "terrainOp",
+          "op": "flattenToAverage",
+          "radius": 5,
+          "minHeightAboveSea": 4
+        }
+      ]
+    },
+    {
+      "id": "quake",
+      "tier": 3,
+      "cost": 1750,
+      "maxCharges": 2,
+      "range": 8,
+      "v1": true,
+      "effects": [
+        {
+          "type": "terrainOp",
+          "op": "noiseScar",
+          "radius": 7,
+          "depth": 24
+        },
+        {
+          "type": "damageBuildingsRadius",
+          "radius": 7,
+          "damagePct": 70
+        },
+        {
+          "type": "statusApply",
+          "status": "panic",
+          "seconds": 5,
+          "radius": 7
+        }
+      ]
+    },
+    {
+      "id": "erode",
+      "tier": 3,
+      "cost": 2100,
+      "maxCharges": 2,
+      "range": 8,
+      "effects": [
+        {
+          "type": "terrainOp",
+          "op": "lowerTowardSea",
+          "radius": 6,
+          "seconds": 10
+        }
+      ]
+    },
+    {
+      "id": "firerain",
+      "tier": 4,
+      "cost": 4000,
+      "maxCharges": 2,
+      "range": 8,
+      "effects": [
+        {
+          "type": "projectileStorm",
+          "count": 30,
+          "radius": 6,
+          "seconds": 8,
+          "damage": 400,
+          "knockback": 2
+        }
+      ]
+    },
+    {
+      "id": "wraith",
+      "tier": 4,
+      "cost": 5100,
+      "maxCharges": 1,
+      "range": 6,
+      "effects": [
+        {
+          "type": "summon",
+          "entity": "wraith",
+          "seconds": 200,
+          "maxKills": 40
+        }
+      ]
+    },
+    {
+      "id": "volcano",
+      "tier": 4,
+      "cost": 8000,
+      "maxCharges": 1,
+      "range": 6,
+      "v1": true,
+      "effects": [
+        {
+          "type": "terrainOp",
+          "op": "crater",
+          "shape": "cone",
+          "radius": 7,
+          "height": 120
+        },
+        {
+          "type": "areaOverTime",
+          "radius": 4,
+          "seconds": 20,
+          "damagePerSecond": 150
+        },
+        {
+          "type": "scar",
+          "radius": 8,
+          "healSeconds": 600
+        },
+        {
+          "type": "spawnEntity",
+          "entity": "lava_rock",
+          "count": 12
+        }
+      ]
+    }
+  ]
+}

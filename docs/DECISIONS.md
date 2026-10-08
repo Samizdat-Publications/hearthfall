@@ -53,3 +53,11 @@ Append new ADRs at the bottom. Format: context, decision, consequences. Never re
 **Decision.** All TypeScript is written as erasable syntax only (`erasableSyntaxOnly`, `verbatimModuleSyntax`, `allowImportingTsExtensions`; no enums, namespaces or parameter properties) and relative imports carry the `.ts` extension. Node 24 strips types natively, so `tools/harness` imports `packages/*/src/*.ts` directly; Vite and Vitest consume the same files.
 
 **Consequences.** No `dist` for packages and no loader dependency. Workspace packages export `./src/index.ts`. If a future Node drops or changes stripping, fall back to running the harness under `vite-node` or a one-file esbuild bundle (reversible, harness only).
+
+## ADR-004: Pathfinding v1 is grid A* plus flow fields, hierarchical sectors deferred (10/08/2026)
+
+**Context.** ARCHITECTURE section 3 sketches hierarchical pathfinding (16x16 sectors with a portal graph) plus flow fields and steering. The default map is 128 x 128 (16k vertices) and the M3 gates are performance budgets and the no-stuck soak.
+
+**Decision.** v1 uses A* on the full vertex grid for individual orders (8-connected, no corner cutting, slope-weighted cost, octile heuristic with torus wrap, string-pulled waypoints), 8-connected component labels so unreachable goals fail in O(1), a per-tick node-expansion budget for fairness, and Dijkstra flow fields for group orders (cached until the terrain changes). Separation uses a torus spatial hash. Stuck detection measures progress along the route (remaining waypoint distance or flow-field value), repaths after `repathSeconds` and gives up after `giveUpSeconds`. All tunables live in `balance.json` `movement`.
+
+**Consequences.** Measured at M3: 2000 wandering units average about 3.3 ms per tick with an algorithmic p99 of about 2.2 ms; 8 seeds x 10 minutes x 1000 units soak clean. Maps of 256+ cells or many simultaneous long orders may need the sector and portal layer: add it behind `Pathfinder` (same API) when `npm run bench` warns. Fallback if A* cost grows: cap per-search expansions lower and resume searches across ticks.

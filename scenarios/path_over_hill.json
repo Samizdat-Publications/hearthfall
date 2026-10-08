@@ -1,0 +1,17 @@
+{
+  "id": "path_over_hill",
+  "description": "A broad walkable hill raised between settlers and their goal is crossed, not treated as a wall.",
+  "tags": ["fast", "pathing"],
+  "seed": 16,
+  "map": { "generator": "flat", "size": 64, "tribes": 1 },
+  "setup": [{ "spawn": "settler", "tribe": 0, "near": [20, 32], "count": 2 }],
+  "commands": [
+    { "tick": 0, "tribe": -1, "type": "terrainOp", "args": { "op": "raise", "x": 32, "y": 32, "r": 12, "amount": 120 } },
+    { "tick": 2, "tribe": 0, "type": "move", "args": { "units": "tribe0.settlers", "to": [44, 32] } }
+  ],
+  "runTicks": 500,
+  "assert": [
+    { "at": 2, "expr": "terrain.height([32,32]) >= sea + 150 && terrain.walkable([32,32]) && terrain.walkable([26,32])" },
+    { "at": 500, "expr": "count(tribe0.settlers, near([44,32], 2)) == 2 && invariants() == 0" }
+  ]
+}

@@ -66,6 +66,11 @@ async function runSteps(page, steps) {
     if (s.step) await page.evaluate((n) => window.__game.step(n), s.step);
     if (s.setDebug) await page.evaluate((d) => window.__game.setDebug(d), s.setDebug);
     if (s.command) await page.evaluate((c) => window.__game.command(c), s.command);
+    if (s.eval) await page.evaluate(s.eval);
+    if (s.assert) {
+      const ok = await page.evaluate(s.assert);
+      if (!ok) throw new Error(`assert failed: ${s.assert.slice(0, 120)}`);
+    }
     if (s.terrainAtFocus)
       await page.evaluate((a) => {
         const c = window.__game.getSummary().camera;

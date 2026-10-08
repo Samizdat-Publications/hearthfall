@@ -1,2 +1,3 @@
 - 2026-10-08T22:31 set smoke (7 shots): M2: first renderer baselines after contact sheet review (faceted bands, trees, curved globe, seam)
 - 2026-10-08T22:47 set smoke (8 shots): M2 review: fixedStep visuals now follow the sim tick (deterministic water and foam); added hud_overlap_negative
+- 2026-10-08T23:03 set smoke (9 shots): M3: units (Shaper, settlers, wild) and placeholder buildings render; HUD selection panel; units_select_move e2e
