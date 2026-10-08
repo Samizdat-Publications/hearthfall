@@ -77,6 +77,9 @@ export function makeCtx(w) {
       const dy = wrapDelta(E.y[i] - p[1], n);
       return dx * dx + dy * dy <= r * r;
     },
+    /** per-entity predicates for count(): standing in drowning-deep water, or on dry land */
+    inWater: (i) => t.drowns(E.x[i], E.y[i]),
+    onLand: (i) => t.heightAt(E.x[i], E.y[i]) >= t.sea,
     abs: Math.abs,
     min: Math.min,
     max: Math.max,
@@ -95,7 +98,11 @@ export function runScenario(def, pack) {
     for (const k of ["id", "seed", "map", "runTicks"]) if (def[k] === undefined) throw new Error(`missing "${k}"`);
     w = createScenarioWorld(def, pack.files, pack.hash);
     const asserts = (def.assert ?? []).map((a, idx) => ({ ...a, idx, ast: parse(a.expr) }));
-    for (const a of asserts) if (a.at > def.runTicks) throw new Error(`assert[${a.idx}] at ${a.at} is after runTicks ${def.runTicks}`);
+    if (!asserts.length) throw new Error("scenario has no assertions");
+    for (const a of asserts) {
+      if (!Number.isInteger(a.at) || a.at < 0) throw new Error(`assert[${a.idx}] at must be an integer tick >= 0`);
+      if (a.at > def.runTicks) throw new Error(`assert[${a.idx}] at ${a.at} is after runTicks ${def.runTicks}`);
+    }
     const cmds = commandsByTick(def.commands);
     const check = () => {
       for (const a of asserts) {

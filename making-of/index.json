@@ -130,6 +130,36 @@
       "when": "2026-10-08T22:07:11.904Z",
       "source": "tools/assets/raw/gemini/concept.ref_04/concept.jpg",
       "bytes": 601690
+    },
+    {
+      "file": "a1/20261008-2218_unit-settler-concept.jpg",
+      "milestone": "A1",
+      "kind": "concept",
+      "caption": "Gemini concept of the Settler (humble villager, azure waist band) generated with the chosen ref_04 faceted low-poly style as reference, input to the Meshy image-to-3D bake-off route.",
+      "highlight": false,
+      "when": "2026-10-08T22:18:08.301Z",
+      "source": "tools/assets/raw/gemini/unit.settler.bakeoff_b/concept.jpg",
+      "bytes": 345774
+    },
+    {
+      "file": "a1/20261008-2218_unit-warden-concept.jpg",
+      "milestone": "A1",
+      "kind": "concept",
+      "caption": "Gemini concept of the Warden (club, round hide shield, azure sash) in the chosen faceted low-poly style, input to the Meshy image-to-3D bake-off route.",
+      "highlight": false,
+      "when": "2026-10-08T22:18:09.157Z",
+      "source": "tools/assets/raw/gemini/unit.warden.bakeoff_b/concept.jpg",
+      "bytes": 331008
+    },
+    {
+      "file": "a1/20261008-2218_unit-bakeoff.png",
+      "milestone": "A1",
+      "kind": "comparison",
+      "caption": "Unit bake-off: Settler and Warden built two ways in Meshy meshy-t2, text-to-3D preview (route A) beside Gemini concept to image-to-3D (route B), with the two concepts below.",
+      "highlight": true,
+      "when": "2026-10-08T22:18:09.925Z",
+      "source": "reports/latest/unit_bakeoff_sheet.png",
+      "bytes": 294548
     }
   ]
 }

@@ -67,6 +67,8 @@ export class World {
   eventCounts = new Map<string, number>();
   recent: SimEvent[] = [];
   terrainQueue: TerrainOpSpec[] = [];
+  /** sandbox and debug: any tribe may issue god-mode commands */
+  godMode = false;
   readonly mapInfo: { generator: string; seedUsed: number; rerolls: number; landFraction: number };
 
   constructor(init: WorldInit) {
@@ -74,7 +76,8 @@ export class World {
     this.seed = init.seed | 0;
     const gen = generateMap(this.cfg, init.map, this.seed);
     this.terrain = gen.terrain;
-    this.rng = new Rng(gen.seedUsed || this.seed);
+    // distinct from the generator's private Rng so in-sim draws never replay generation numbers
+    this.rng = new Rng((gen.seedUsed || this.seed) ^ 0x5f3759df);
     this.mapInfo = { generator: init.map.generator, seedUsed: gen.seedUsed, rerolls: gen.rerolls, landFraction: gen.landFraction };
     const tribeCount = init.map.tribes ?? gen.hearths.length;
     for (let t = 0; t < tribeCount; t++) this.tribes.push({ index: t, color: TRIBE_COLORS[t % 4], hearth: NO_ENTITY, alive: true });
@@ -181,6 +184,7 @@ export class World {
    * WorldInit it was created from, restore() rebuilds an identical world (same future hashes).
    */
   snapshot(): WorldSnapshot {
+    if (this.terrainQueue.length) throw new Error("snapshot() must be taken between ticks (terrain queue not empty)");
     const cols = this.ents.columns();
     const columns: Record<string, ArrayBufferView> = {};
     for (const name of Object.keys(cols)) columns[name] = cols[name].slice();

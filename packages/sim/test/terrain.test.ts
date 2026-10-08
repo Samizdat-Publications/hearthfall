@@ -174,3 +174,67 @@ describe("terrain ops", () => {
     expect(t.dirty.length).toBe(0);
   });
 });
+
+describe("dirty cursor", () => {
+  it("readers get rects since their cursor and a null on gaps; reading never mutates", async () => {
+    const { DIRTY_KEEP } = await import("../src/terrain.ts");
+    const t = flatTerrain(S, 160);
+    t.raise(1, 1, 2, 5);
+    t.raise(9, 9, 2, 5);
+    expect(t.dirtySince(0)!.map((d) => d.seq)).toEqual([1, 2]);
+    expect(t.dirtySince(1)!.map((d) => d.seq)).toEqual([2]);
+    expect(t.dirtySince(2)).toEqual([]);
+    expect(t.dirty.length).toBe(2);
+    for (let k = 0; k < DIRTY_KEEP + 5; k++) t.raise(5, 5, 1, 1);
+    expect(t.dirtySince(1)).toBeNull();
+    expect(t.dirtySince(t.version - 1)!.length).toBe(1);
+  });
+});
+
+describe("every op is seam invariant", () => {
+  // Applying an op centered on the map corner must equal the same op centered mid-map, shifted.
+  // noiseScar hashes absolute coordinates by design, so it is compared by its affected footprint.
+  const ops = [
+    { op: "raise", r: 5, amount: 40 },
+    { op: "lower", r: 5, amount: 40 },
+    { op: "set", r: 4, value: 300 },
+    { op: "flattenToAverage", r: 5, minAboveSea: 2 },
+    { op: "smooth", r: 4, strength: 0.7 },
+    { op: "crater", r: 6, height: 90, shape: "cone" },
+    { op: "crater", r: 6, height: 60, shape: "bowl" },
+    { op: "lowerTowardSea", r: 5, amount: 30 },
+    { op: "scar", r: 4, seconds: 9 },
+  ] as const;
+  const bumpy = () => {
+    const t = flatTerrain(S, 200);
+    for (let y = 0; y < S; y++) for (let x = 0; x < S; x++) t.heights[t.idx(x, y)] = 200 + ((x * 3 + y) % 8) * 3; // period 8 divides the 16-cell shift and the map size
+    return t;
+  };
+  for (const o of ops) {
+    it(`${o.op}${"shape" in o ? " " + o.shape : ""}`, () => {
+      const a = bumpy();
+      const b = bumpy();
+      a.apply({ ...o, x: 0, y: 0 } as never);
+      b.apply({ ...o, x: 16, y: 16 } as never);
+      // compare the change pattern (after - before) around each center
+      const base = bumpy();
+      for (let dy = -8; dy <= 8; dy++) {
+        for (let dx = -8; dx <= 8; dx++) {
+          const da = a.get(dx, dy) - base.get(dx, dy) + (a.scar[a.idx(dx, dy)] << 12);
+          const db = b.get(16 + dx, 16 + dy) - base.get(16 + dx, 16 + dy) + (b.scar[b.idx(16 + dx, 16 + dy)] << 12);
+          expect(da, `${dx},${dy}`).toBe(db);
+        }
+      }
+    });
+  }
+  it("ridgeLine and noiseScar footprints cross the seam", () => {
+    const a = flatTerrain(S, 60);
+    a.ridgeLine(S - 4, 3, 4, 3, 2, 24);
+    for (let x = -4; x <= 4; x++) expect(a.get(x, 3)).toBe(a.sea + 24);
+    const q = flatTerrain(S, 300);
+    q.noiseScar(0, 0, 4, 30, 5);
+    expect(q.get(S - 2, S - 1)).toBeLessThan(300);
+    expect(q.get(2, 1)).toBeLessThan(300);
+    expect(q.get(S - 6, 0)).toBe(300);
+  });
+});

@@ -11,6 +11,14 @@ export interface Rect {
   h: number;
 }
 
+/** A dirty rect stamped with the terrain version after its op; readers keep their own cursor. */
+export interface DirtyRect extends Rect {
+  seq: number;
+}
+
+/** How many dirty rects the terrain keeps for cursor readers (renderer, pathing). */
+export const DIRTY_KEEP = 256;
+
 export interface TerrainParams {
   size: number;
   seaLevel: number;
@@ -56,7 +64,7 @@ export class Terrain {
   readonly heights: Int16Array;
   /** Seconds of scarring left per vertex (unbuildable while > 0). */
   readonly scar: Uint16Array;
-  dirty: Rect[] = [];
+  dirty: DirtyRect[] = [];
   version = 0;
   private scarred = 0;
 
@@ -150,8 +158,9 @@ export class Terrain {
   private mark(x0: number, y0: number, x1: number, y1: number): void {
     const w = Math.min(this.size, x1 - x0 + 1);
     const h = Math.min(this.size, y1 - y0 + 1);
-    this.dirty.push({ x: wrap(x0, this.size), y: wrap(y0, this.size), w, h });
     this.version++;
+    this.dirty.push({ x: wrap(x0, this.size), y: wrap(y0, this.size), w, h, seq: this.version });
+    if (this.dirty.length > DIRTY_KEEP) this.dirty.splice(0, this.dirty.length - DIRTY_KEEP);
   }
 
   /** Visit every vertex within radius r of (cx, cy); t = distance / r in [0, 1]. */
@@ -192,6 +201,7 @@ export class Terrain {
     });
     this.dirty.pop();
     this.version--;
+    // (measurement pass above must not count as an edit)
     const target = Math.max(n ? Math.round(sum / n) : this.sea, this.sea + minAboveSea);
     this.disc(cx, cy, r, (i, t) => {
       const h = this.heights[i];
@@ -338,7 +348,18 @@ export class Terrain {
     }
   }
 
-  takeDirty(): Rect[] {
+  /**
+   * Rects changed after version `since` (a reader's cursor). Returns null when older rects were
+   * already trimmed, meaning the reader must rebuild everything. Never mutates terrain state.
+   */
+  dirtySince(since: number): DirtyRect[] | null {
+    if (since >= this.version) return [];
+    const first = this.dirty.length ? this.dirty[0].seq : this.version + 1;
+    if (first > since + 1) return null;
+    return this.dirty.filter((d) => d.seq > since);
+  }
+
+  takeDirty(): DirtyRect[] {
     const d = this.dirty;
     this.dirty = [];
     return d;

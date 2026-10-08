@@ -4193,6 +4193,802 @@
       "request_hash": null,
       "approved": false,
       "qa": {}
+    },
+    {
+      "id": "unit.settler.bakeoff_a",
+      "class": "units",
+      "prompt": "a humble tribal villager standing relaxed with arms hanging loosely at the sides, simple knee-length undyed linen tunic with a wide bright azure blue cloth band tied around the waist, bare arms and lower legs, simple sandals, short brown hair, carries nothing",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "text",
+        "target_polycount": 1400,
+        "height": 0.9,
+        "budget_class": "unit",
+        "scheme": "unit",
+        "default_color": "cloth",
+        "pose": "relaxed_standing",
+        "bakeoff": "meshy_route_a",
+        "tribe_color": "azure"
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a11d92-aac0-7709-b27d-1c1f59aeb4e8",
+          "started": "2026-10-08T22:11:40Z",
+          "finished": "2026-10-08T22:12:36Z",
+          "cost": {
+            "credits": 5.0,
+            "usd": 0.1,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/unit.settler.bakeoff_a/model.glb",
+          "sha256": "2df74dc69aa87dad4d5891c2a61a7fb745ada098ab50bd970f06bb67ecee7589",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "text",
+            "kind": "text",
+            "progress": 100,
+            "bytes": 28272
+          },
+          "request_hash": "1d62156687cd17317502d0bf0718208e152b61d13bb7f074b2f11a4efd33a73d"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-08T22:14:45Z",
+          "finished": "2026-10-08T22:14:55Z",
+          "cost": null,
+          "output_path": "assets/models/unit.settler.bakeoff_a.glb",
+          "sha256": "33836275fec2810ae0ecb559dc41e5bbde27acb13621eff59c74211a73d78363",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1508,
+            "tris_out": 1508,
+            "decimated": false,
+            "scale": 0.90029,
+            "bounds_min": [
+              -0.1399,
+              -0.094,
+              0.0
+            ],
+            "bounds_max": [
+              0.1399,
+              0.094,
+              0.9
+            ],
+            "scheme": "unit",
+            "palette_used": [
+              "azure",
+              "cloth",
+              "skin1",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "woodDark": 294,
+              "skin1": 751,
+              "cloth": 413,
+              "azure": 50
+            },
+            "tribe_faces": 50,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.461,
+              0.55
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "9fe01fcbb82c6249110795120164c92035be13d10cf8e6c6c5d5472b32217ff3"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-08T22:16:07Z",
+          "cost": null,
+          "output_path": "assets/icons/unit.settler.bakeoff_a.png",
+          "sha256": "bac7ede1a000cc742880639aa69ee5eaaf4aaf4e4b557322feb41d7ee00dcad8",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 1508,
+        "verts": 4524,
+        "bounds": {
+          "min": [
+            -0.1399,
+            0.0,
+            -0.094
+          ],
+          "max": [
+            0.1399,
+            0.9,
+            0.094
+          ],
+          "size": [
+            0.2799,
+            0.9,
+            0.188
+          ]
+        },
+        "bytes": 155020,
+        "materials": 1,
+        "palette_delta": 0.0,
+        "palette_within": 1.0,
+        "tribe_faces": 50,
+        "tribe_height_range": [
+          0.461,
+          0.55
+        ],
+        "boundary_edges": 40,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "unit.settler.bakeoff_b",
+      "class": "units",
+      "prompt": "a humble tribal villager standing relaxed with arms hanging loosely at the sides, simple knee-length undyed linen tunic with a wide bright azure blue cloth band tied around the waist, bare arms and lower legs, simple sandals, short brown hair, carries nothing",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1400,
+        "height": 0.9,
+        "budget_class": "unit",
+        "scheme": "sample",
+        "default_color": "cloth",
+        "pose": "relaxed_standing",
+        "bakeoff": "meshy_route_b",
+        "tribe_color": "azure",
+        "textured": true
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-08T22:11:43Z",
+          "finished": "2026-10-08T22:11:56Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/unit.settler.bakeoff_b/concept.jpg",
+          "sha256": "b1b9771767f82e221b8f8e943774ac39f3853673970d6a6b5250c0a8f61b7fbb",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 345774,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "5f51bca59e7aee98e06fbe0b06d0c80ac23ebe42fbf4620293742094babff6a1"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a11d92-e9ad-719e-a707-c5b6de625364",
+          "started": "2026-10-08T22:11:56Z",
+          "finished": "2026-10-08T22:12:51Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/unit.settler.bakeoff_b/model.glb",
+          "sha256": "9988637953885d6c6f70d74a480665ec54f007dd823f42871c7d0bd45e9d822b",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "progress": 100,
+            "bytes": 2249676
+          },
+          "request_hash": "03fe2c4a03ee8014f13cd6f8c4f8fd466c0e1110614d6c78c5d2df1353fa26b7"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-08T22:14:56Z",
+          "finished": "2026-10-08T22:15:07Z",
+          "cost": null,
+          "output_path": "assets/models/unit.settler.bakeoff_b.glb",
+          "sha256": "656cb1216e4b3025f43b1b72b80040af33cbc26352698de636a66af77a722aaa",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1486,
+            "tris_out": 1486,
+            "decimated": false,
+            "scale": 0.9,
+            "bounds_min": [
+              -0.2022,
+              -0.0949,
+              0.0
+            ],
+            "bounds_max": [
+              0.2022,
+              0.0949,
+              0.9
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "cloth",
+              "rock",
+              "rockDark",
+              "sand",
+              "scar",
+              "skin1",
+              "skin2",
+              "skin3",
+              "stone",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "sand": 1,
+              "rock": 4,
+              "rockDark": 3,
+              "wood": 6,
+              "woodDark": 40,
+              "thatch": 1,
+              "stone": 7,
+              "skin1": 130,
+              "skin2": 782,
+              "skin3": 2,
+              "cloth": 156,
+              "azure": 89,
+              "scar": 265
+            },
+            "tribe_faces": 89,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.39,
+              0.596
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "3a116b5c664722a1b98a21e9357100af4172bad62e9f3725e5f9b773c3f95b59"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-08T22:16:07Z",
+          "cost": null,
+          "output_path": "assets/icons/unit.settler.bakeoff_b.png",
+          "sha256": "63619d453cde59d8e0497fa8d0adb100609a398473467d67f491a3893ea38d54",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 1486,
+        "verts": 4458,
+        "bounds": {
+          "min": [
+            -0.2022,
+            0.0,
+            -0.0949
+          ],
+          "max": [
+            0.2022,
+            0.9,
+            0.0949
+          ],
+          "size": [
+            0.4044,
+            0.9,
+            0.1898
+          ]
+        },
+        "bytes": 188592,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 89,
+        "tribe_height_range": [
+          0.39,
+          0.596
+        ],
+        "boundary_edges": 42,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "unit.warden.bakeoff_a",
+      "class": "units",
+      "prompt": "a sturdy tribal guard standing relaxed, broad shoulders, short leather jerkin with a bright azure blue cloth sash across the chest, a thick wooden club held down in the right hand and a round hide shield with a wooden rim strapped to the left forearm, bare arms, sturdy boots",
+      "refs": [],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "text",
+        "target_polycount": 1400,
+        "height": 1.0,
+        "budget_class": "unit",
+        "scheme": "unit",
+        "default_color": "cloth",
+        "pose": "relaxed_standing",
+        "bakeoff": "meshy_route_a",
+        "tribe_color": "azure",
+        "side_color": "wood",
+        "torso_color": "thatch"
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a11d92-efba-74e9-a84f-434fcded1b94",
+          "started": "2026-10-08T22:11:58Z",
+          "finished": "2026-10-08T22:12:53Z",
+          "cost": {
+            "credits": 5.0,
+            "usd": 0.1,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/unit.warden.bakeoff_a/model.glb",
+          "sha256": "b3a624653336ed61a7e0e2caf73c68d83336033b645de909bf3b56da9db155d6",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "text",
+            "kind": "text",
+            "progress": 100,
+            "bytes": 27756
+          },
+          "request_hash": "3bd7bb929d9197c7a1ac8a1a9c8f96989ca66b2d096ef56ee952becbce8b6e88"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-08T22:15:08Z",
+          "finished": "2026-10-08T22:15:20Z",
+          "cost": null,
+          "output_path": "assets/models/unit.warden.bakeoff_a.glb",
+          "sha256": "1047c04ba01e6af6ec6282274b2f35a294a9db18abccce1bca8c41020da5ce16",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1467,
+            "tris_out": 1467,
+            "decimated": false,
+            "scale": 1.0,
+            "bounds_min": [
+              -0.2499,
+              -0.1952,
+              0.0
+            ],
+            "bounds_max": [
+              0.2499,
+              0.1952,
+              1.0
+            ],
+            "scheme": "unit",
+            "palette_used": [
+              "azure",
+              "skin1",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "wood": 320,
+              "woodDark": 223,
+              "thatch": 403,
+              "skin1": 419,
+              "azure": 102
+            },
+            "tribe_faces": 102,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.461,
+              0.55
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "6216e604fb305c95951b62d9550e254a01d10a79a472cedaf7075a199d99e4a3"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-08T22:16:07Z",
+          "cost": null,
+          "output_path": "assets/icons/unit.warden.bakeoff_a.png",
+          "sha256": "77e7d52dc265b3e90172379fc4d98b16fd6e6c8d180665ea1fa986d1f331a9ba",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 1467,
+        "verts": 4397,
+        "bounds": {
+          "min": [
+            -0.2499,
+            0.0,
+            -0.1952
+          ],
+          "max": [
+            0.2499,
+            1.0,
+            0.1952
+          ],
+          "size": [
+            0.4997,
+            1.0,
+            0.3904
+          ]
+        },
+        "bytes": 150692,
+        "materials": 1,
+        "palette_delta": 0.0,
+        "palette_within": 1.0,
+        "tribe_faces": 102,
+        "tribe_height_range": [
+          0.461,
+          0.55
+        ],
+        "boundary_edges": 43,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "unit.warden.bakeoff_b",
+      "class": "units",
+      "prompt": "a sturdy tribal guard standing relaxed, broad shoulders, short leather jerkin with a bright azure blue cloth sash across the chest, a thick wooden club held down in the right hand and a round hide shield with a wooden rim strapped to the left forearm, bare arms, sturdy boots",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1400,
+        "height": 1.0,
+        "budget_class": "unit",
+        "scheme": "sample",
+        "default_color": "cloth",
+        "pose": "relaxed_standing",
+        "bakeoff": "meshy_route_b",
+        "tribe_color": "azure",
+        "textured": true,
+        "side_color": "wood",
+        "torso_color": "thatch"
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-08T22:12:01Z",
+          "finished": "2026-10-08T22:12:14Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/unit.warden.bakeoff_b/concept.jpg",
+          "sha256": "7945dd03f25fdcef9540fd8b646d3daa996fdb1a43900fd82ea9919ff1949197",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 331008,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "654bb5708618b7e5da1af813312b4e03bb39b2efbdf94ec00270843d7810f628"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a11d93-2e33-76c8-a592-0149a46f169f",
+          "started": "2026-10-08T22:12:14Z",
+          "finished": "2026-10-08T22:13:19Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/unit.warden.bakeoff_b/model.glb",
+          "sha256": "14a22a65200c64495d491dba53077f6b9b06d4cada6c3bf218c1b14193f6e530",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "progress": 100,
+            "bytes": 2160080
+          },
+          "request_hash": "e7f978e31954511ce9c7a4d5327bf802c71683f2fe79b63c654eaf7a75dc0eda"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-08T22:15:20Z",
+          "finished": "2026-10-08T22:15:28Z",
+          "cost": null,
+          "output_path": "assets/models/unit.warden.bakeoff_b.glb",
+          "sha256": "82ff9a8f592bfb90bb5d6aaca7234fb1de266978acc2eed2b64fdefeb5ee0f15",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1424,
+            "tris_out": 1424,
+            "decimated": false,
+            "scale": 1.0,
+            "bounds_min": [
+              -0.3321,
+              -0.37,
+              0.0
+            ],
+            "bounds_max": [
+              0.3321,
+              0.37,
+              1.0
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "rock",
+              "rockDark",
+              "scar",
+              "skin1",
+              "skin2",
+              "skin3",
+              "stone",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "rock": 1,
+              "rockDark": 2,
+              "wood": 62,
+              "woodDark": 346,
+              "thatch": 2,
+              "stone": 15,
+              "skin1": 13,
+              "skin2": 567,
+              "skin3": 32,
+              "azure": 50,
+              "scar": 334
+            },
+            "tribe_faces": 50,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.358,
+              0.855
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "6caf48c8904cbea8abc74dd13bdfad99000582397785648faa51b9cd7275b8b6"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-08T22:16:07Z",
+          "cost": null,
+          "output_path": "assets/icons/unit.warden.bakeoff_b.png",
+          "sha256": "42b12d46c5d43964f07122932958b349739d9bfdaae796e0396884309e554e3e",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 1424,
+        "verts": 4272,
+        "bounds": {
+          "min": [
+            -0.3321,
+            0.0,
+            -0.37
+          ],
+          "max": [
+            0.3321,
+            1.0,
+            0.37
+          ],
+          "size": [
+            0.6641,
+            1.0,
+            0.74
+          ]
+        },
+        "bytes": 180760,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 50,
+        "tribe_height_range": [
+          0.358,
+          0.855
+        ],
+        "boundary_edges": 112,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     }
   ]
 }

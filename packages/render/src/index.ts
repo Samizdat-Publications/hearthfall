@@ -1,1 +1,5 @@
-// @hearthfall/render public API (filled in by its milestone).
+// @hearthfall/render: three.js renderer. Reads sim state, never writes it.
+export { ThreeRenderer, type Renderer, type RenderStats, type RendererOptions } from "./renderer.ts";
+export { CAMERA_PRESETS, rigParams, type CameraState } from "./camera.ts";
+export { bendY, type BendUniforms } from "./curve.ts";
+export { CHUNK } from "./terrainMesh.ts";

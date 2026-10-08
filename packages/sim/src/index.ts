@@ -3,7 +3,7 @@ export * as dmath from "./dmath.ts";
 export { Rng, STREAMS, hash2 } from "./rng.ts";
 export { Fnv } from "./hash.ts";
 export { CAT, Entities, NO_ENTITY, type EntityId } from "./entities.ts";
-export { Terrain, wrap, wrapDelta, type Rect, type TerrainOpSpec } from "./terrain.ts";
+export { Terrain, wrap, wrapDelta, DIRTY_KEEP, type Rect, type DirtyRect, type TerrainOpSpec } from "./terrain.ts";
 export { generateMap, walkableComponents, type MapSpec, type GeneratedMap } from "./generator.ts";
 export { makeConfig, bandOf, secondsToTicks, type SimConfig, type BandName } from "./config.ts";
 export { COMMANDS, registerCommand, type Command, type CommandHandler } from "./commands.ts";

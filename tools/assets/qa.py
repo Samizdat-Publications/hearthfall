@@ -184,6 +184,11 @@ def qa_asset(a: dict, budgets=None) -> dict:
         qa["palette_within"] = round(float((d < PALETTE_WITHIN).mean()), 4)
         if qa["palette_within"] < 0.95:
             warnings.append(f"only {qa['palette_within'] * 100:.0f}% of vertex colors on palette")
+    pm = post.get("meta") or {}
+    if p.get("tribe_color") and "tribe_faces" in pm:
+        qa["tribe_faces"], qa["tribe_height_range"] = pm["tribe_faces"], pm.get("tribe_height_range")
+        if not pm["tribe_faces"]:
+            warnings.append("no tribe-color region (azure/crimson/amber/jade) after palette snap")
     boundary, nonman = edge_stats(pos, tris)
     qa["boundary_edges"], qa["nonmanifold_edges"] = boundary, nonman
     if nonman:

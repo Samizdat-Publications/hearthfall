@@ -39,11 +39,15 @@ const TERRAIN_OP_FIELDS: Record<string, string[]> = {
 
 /** God-mode terrain edit (sandbox, scenarios, map editor). Spells queue ops through effects instead. */
 registerCommand("terrainOp", {
-  validate(_w, c) {
+  validate(w, c) {
     const op = c.args.op;
     if (typeof op !== "string" || !TERRAIN_OP_FIELDS[op]) return `unknown terrain op ${String(op)}`;
     for (const f of TERRAIN_OP_FIELDS[op]) if (!finite(c.args[f])) return `terrainOp ${op} needs numeric ${f}`;
-    if (finite(c.args.r) && ((c.args.r as number) <= 0 || (c.args.r as number) > 64)) return "radius out of range";
+    const half = w.terrain.size / 2 - 1;
+    if (finite(c.args.r) && ((c.args.r as number) <= 0 || (c.args.r as number) >= half)) return "radius out of range";
+    if (op === "ridgeLine" && ((c.args.width as number) <= 0 || (c.args.width as number) > 16)) return "ridge width out of range";
+    if (op === "scar" && ((c.args.seconds as number) < 0 || (c.args.seconds as number) > 65535)) return "scar seconds out of range";
+    if (c.tribe !== -1 && !w.godMode) return "terrainOp is god mode only (tribe -1 or sandbox)";
     return null;
   },
   apply(w, c) {

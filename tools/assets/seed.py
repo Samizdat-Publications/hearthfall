@@ -108,6 +108,31 @@ def _units():
     return out
 
 
+def _bakeoff_units():
+    """A1 step 2: Meshy route A (text-to-3D preview, untextured) vs route B (Gemini concept -> image-to-3D, textured)."""
+    subjects = [
+        ("settler", 0.9, "a humble tribal villager standing relaxed with arms hanging loosely at the sides, simple knee-length undyed linen tunic with a wide bright azure blue cloth band tied around the waist, bare arms and lower legs, simple sandals, short brown hair, carries nothing"),
+        ("warden", 1.0, "a sturdy tribal guard standing relaxed, broad shoulders, short leather jerkin with a bright azure blue cloth sash across the chest, a thick wooden club held down in the right hand and a round hide shield with a wooden rim strapped to the left forearm, bare arms, sturdy boots"),
+    ]
+    out = []
+    for name, height, subject in subjects:
+        for route, letter in (("text", "a"), ("image", "b")):
+            steps = {"concept": new_step("skipped" if route == "text" else "pending", None if route == "text" else "gemini"),
+                     "model": new_step("pending", "meshy"), "rig": new_step("skipped"), "animate": new_step("skipped"),
+                     "post": new_step("pending", "local"), "thumb": new_step("pending", "local")}
+            params = {**CONCEPT_PARAMS, "route": route, "target_polycount": 1400, "height": height,
+                      "budget_class": "unit", "scheme": "unit" if route == "text" else "sample", "default_color": "cloth",
+                      "pose": "relaxed_standing", "bakeoff": f"meshy_route_{letter}", "tribe_color": "azure"}
+            if name == "warden":
+                params.update(side_color="wood", torso_color="thatch")
+            if route == "image":
+                params["textured"] = True
+            out.append({"id": f"unit.{name}.bakeoff_{letter}", "class": "units", "prompt": subject,
+                        "refs": ["tools/assets/raw/gemini/concept.ref_04/concept.jpg"] if route == "image" else [],
+                        "provider": "meshy", "params": params, "steps": steps})
+    return out
+
+
 def _sfx():
     rows = [
         ("sfx.ui_click", "a short soft wooden click", 0.5),
@@ -156,7 +181,7 @@ def _music():
 
 
 def v1_assets() -> list:
-    rows = _concepts() + _buildings() + _props() + _units() + _sfx() + _music()
+    rows = _concepts() + _buildings() + _props() + _units() + _bakeoff_units() + _sfx() + _music()
     for r in rows:
         r.setdefault("style_version", 1)
         r.setdefault("request_hash", None)

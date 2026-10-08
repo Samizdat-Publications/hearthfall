@@ -42,6 +42,9 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 31. [S] Tighten the spells terrainOp schema into a union discriminated by `op` with required params per op (M5, M0 review).
 32. [S] Shot blank and coverage checks sample the canvas region, not the whole page (M2, M0 review).
 33. [S] Add `visionqa:calibrate` and `visionqa:spend` npm scripts when calibration lands (VISIONQA.md names them).
+34. [S] Move tunable terrain and generator literals into data before spell tuning (M1 review): generator shoreline gaps (sea-2, sea+2), tree min height sea+4, tree density x4, jitter 0.2/0.6, wild tries 24, candidate stride 2; terrain buildable sea+2, lowerTowardSea floor drownDepth*2, flatten plateau 0.75, ridge taper 1.5, crater 0.15/0.25, noiseScar 0.85/0.8/0.4/0.6; world hp fallback 1000, RECENT_EVENTS 50, TRIBE_COLORS vs style palette.
+35. [S] Self-contained saves: embed WorldInit (seed, map spec, pack hash) in the snapshot; hash or compare eventCounts in the restore test; renderer treats a restore as a full rebuild (M1 review).
+36. [S] Spells that drown units need a readable lead-in (rumble, crack VFX, short delay) so players see cause and effect (M5, M1 review).
 
 ## Parking lot (ideas, unranked)
 - Wild people tribe that can be Called (converted) for growth.

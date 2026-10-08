@@ -4,7 +4,7 @@
 
 export const STREAMS = { terrain: 0, gen: 1, combat: 2, ai: 3, spawn: 4, weather: 5, misc: 6 } as const;
 export type StreamName = keyof typeof STREAMS;
-const N_STREAMS = 7;
+const N_STREAMS = Object.keys(STREAMS).length;
 
 function splitmix32(seed: number): () => number {
   let s = seed >>> 0;

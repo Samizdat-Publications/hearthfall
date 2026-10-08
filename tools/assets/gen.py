@@ -192,6 +192,24 @@ def cmd_status(args) -> int:
     return 0
 
 
+def cmd_repost(args) -> int:
+    """Reset the local post and thumb steps (free) so the next `run --only` re-runs Blender normalize, QA and thumbs."""
+    m = C.load_manifest()
+    n = 0
+    for a in selected(m, args.cls, args.only):
+        if a["steps"]["model"]["status"] != "done":
+            continue
+        for step in ("post", "thumb"):
+            st = a["steps"][step]
+            if st["status"] != "skipped":
+                st.update(status="pending", attempts=0, error=None)
+        n += 1
+    C.save_manifest(m)
+    log(f"reset post and thumb for {n} asset(s); now run: gen.py run --only ...")
+    log("RESULT: repost ok")
+    return 0
+
+
 def cmd_balance(args) -> int:
     for p in C.PROVIDERS:
         log(f"{p}: key {'present' if C.key_present(p) else 'missing'}")
@@ -352,8 +370,9 @@ class Runner:
             if route == "text":
                 rid = meshy.create_text_to_3d_preview(mesh_text_prompt(a), target_polycount=tris)
             else:
-                png = C.abspath(a["steps"]["concept"]["output_path"]).read_bytes()
-                uri = "data:image/png;base64," + base64.b64encode(png).decode("ascii")
+                ip = C.abspath(a["steps"]["concept"]["output_path"])
+                mime = "image/png" if ip.suffix.lower() == ".png" else "image/jpeg"
+                uri = f"data:{mime};base64," + base64.b64encode(ip.read_bytes()).decode("ascii")
                 rid = meshy.create_image_to_3d(uri, target_polycount=tris, textured=bool(a["params"].get("textured", False)))
         except ProviderError as e:
             self.budget.settle(prov, usd, 0.0)
@@ -550,6 +569,9 @@ def main() -> int:
     sub.add_parser("seed")
     sub.add_parser("status")
     sub.add_parser("balance")
+    rp = sub.add_parser("repost")
+    rp.add_argument("--class", dest="cls", choices=CLASSES)
+    rp.add_argument("--only", nargs="*")
     p = sub.add_parser("plan")
     p.add_argument("--class", dest="cls", choices=CLASSES)
     p.add_argument("--only", nargs="*")
@@ -559,7 +581,7 @@ def main() -> int:
     r.add_argument("--max-usd", type=float, default=None, help="spend cap for this invocation (also bounded by BUDGET_* in .env)")
     r.add_argument("--max-minutes", type=float, default=8.0)
     args = ap.parse_args()
-    return {"seed": cmd_seed, "plan": cmd_plan, "run": cmd_run, "status": cmd_status, "balance": cmd_balance}[args.cmd](args)
+    return {"seed": cmd_seed, "plan": cmd_plan, "run": cmd_run, "status": cmd_status, "balance": cmd_balance, "repost": cmd_repost}[args.cmd](args)
 
 
 if __name__ == "__main__":

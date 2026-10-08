@@ -59,13 +59,23 @@ def palette_file() -> str:
     return str(p)
 
 
-def normalize(inp, out, *, height=None, footprint=None, tri_min=0, tri_max=0, scheme="sample", default_color="stone", report=None) -> dict:
+# Units never show water, snow, foliage or fire colors: snapping to this subset keeps blues on the tribe color
+# (azure) instead of water, and reds/oranges/greens on crimson/amber/jade instead of lava, fire, meadow.
+UNIT_PALETTE = ["sand", "rock", "rockDark", "wood", "woodDark", "thatch", "stone", "skin1", "skin2", "skin3", "cloth",
+                "azure", "crimson", "amber", "jade", "scar"]
+
+
+def normalize(inp, out, *, height=None, footprint=None, tri_min=0, tri_max=0, scheme="sample", default_color="stone", report=None,
+              allow=None, tribe_color="azure", side_color="skin1", torso_color="cloth") -> dict:
     out = str(out)
     os.makedirs(os.path.dirname(out), exist_ok=True)
     WORK.mkdir(parents=True, exist_ok=True)
     report = str(report or (WORK / (os.path.basename(out) + ".report.json")))
     args = ["--in", inp, "--out", out, "--palette", palette_file(), "--report", report,
-            "--tri-min", tri_min, "--tri-max", tri_max, "--scheme", scheme, "--default-color", default_color]
+            "--tri-min", tri_min, "--tri-max", tri_max, "--scheme", scheme, "--default-color", default_color,
+            "--tribe-color", tribe_color, "--side-color", side_color, "--torso-color", torso_color]
+    if allow:
+        args += ["--allow", ",".join(allow)]
     if height:
         args += ["--height", height]
     if footprint:
@@ -81,7 +91,9 @@ def normalize_asset(a: dict) -> dict:
     inp = C.abspath(a["steps"]["model"]["output_path"])
     out = C.OUT / "models" / f"{a['id']}.glb"
     rep = normalize(str(inp), out, height=p.get("height"), footprint=p.get("footprint"), tri_min=lo, tri_max=hi,
-                    scheme=p.get("scheme", "sample"), default_color=p.get("default_color", "stone"))
+                    scheme=p.get("scheme", "sample"), default_color=p.get("default_color", "stone"),
+                    allow=UNIT_PALETTE if p.get("budget_class") == "unit" else None, tribe_color=p.get("tribe_color", "azure"),
+                    side_color=p.get("side_color", "skin1"), torso_color=p.get("torso_color", "cloth"))
     rep["output_path"] = C.rel(out)
     return rep
 

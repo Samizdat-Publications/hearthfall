@@ -32,6 +32,10 @@ def get_args():
     p.add_argument("--tri-max", type=int, default=0)
     p.add_argument("--scheme", default="sample")
     p.add_argument("--default-color", default="stone")
+    p.add_argument("--allow", default="", help="comma separated palette names the snap may use (default: all)")
+    p.add_argument("--tribe-color", default="azure")
+    p.add_argument("--side-color", default="skin1", help="unit scheme: color of parts beside the torso (arms, shield, club)")
+    p.add_argument("--torso-color", default="cloth", help="unit scheme: color of the torso garment")
     return p.parse_args(argv)
 
 
@@ -61,8 +65,10 @@ def hex_to_linear(h):
 
 
 class Palette:
-    def __init__(self, path):
+    def __init__(self, path, allow=None):
         d = json.load(open(path, encoding="utf-8"))
+        if allow:
+            d = {k: v for k, v in d.items() if k in allow}
         self.names = list(d.keys())
         self.lin = np.array([hex_to_linear(d[n]) for n in self.names])
         self.lab = linear_to_oklab(self.lin)
@@ -155,9 +161,47 @@ def vertex_bbox(mesh):
     return co.min(axis=0), co.max(axis=0)
 
 
+def unit_face_colors(mesh, pal, lo, hi, A):
+    """Region coloring for untextured humanoid units (Z up, height = z). Crude but deterministic:
+    feet, bare lower legs, torso garment with a tribe-colored band at the waist, arms/shield/club beside the
+    torso, head, hair. Returns per-face linear RGB."""
+    H = max(float(hi[2] - lo[2]), 1e-6)
+    cx = float(lo[0] + hi[0]) / 2
+    co = np.empty(len(mesh.vertices) * 3, dtype=np.float32)
+    mesh.vertices.foreach_get("co", co)
+    co = co.reshape(-1, 3)
+    zf_v = (co[:, 2] - lo[2]) / H
+    slab = np.abs(co[zf_v.__ge__(0.55) & zf_v.__le__(0.72), 0] - cx)
+    torso_half = float(np.median(slab)) * 1.1 if len(slab) else 0.1 * H
+    tribe, side, torso = (pal.color(n) for n in (A.tribe_color, A.side_color, A.torso_color))
+    skin, hair, boots = pal.color("skin1"), pal.color("woodDark"), pal.color("woodDark")
+    out = np.zeros((len(mesh.polygons), 3))
+    for i, p in enumerate(mesh.polygons):
+        c = p.center
+        zf = (c.z - lo[2]) / H
+        lateral = abs(c.x - cx)
+        if zf < 0.07:
+            col = boots
+        elif zf < 0.30:
+            col = skin
+        elif zf < 0.80:
+            if lateral > torso_half and zf > 0.34:
+                col = side
+            elif 0.46 <= zf < 0.55:
+                col = tribe
+            else:
+                col = torso
+        elif zf < 0.93:
+            col = skin
+        else:
+            col = hair
+        out[i] = col
+    return out
+
+
 def main():
     A = get_args()
-    pal = Palette(A.palette)
+    pal = Palette(A.palette, [n for n in A.allow.split(",") if n] or None)
     warnings = []
     bpy.ops.wm.read_factory_settings(use_empty=True)
     bpy.ops.import_scene.gltf(filepath=A.inp)
@@ -220,6 +264,8 @@ def main():
     nf = len(mesh.polygons)
     if A.scheme == "sample":
         face_lin = read_face_colors(mesh) if mesh.color_attributes.get("Col") else np.tile(default_lin, (nf, 1))
+    elif A.scheme == "unit":
+        face_lin = unit_face_colors(mesh, pal, lo, hi, A)
     else:
         face_lin = np.zeros((nf, 3))
         zrange = max(float(hi[2] - lo[2]), 1e-6)
@@ -279,10 +325,18 @@ def main():
         export_animations=False, export_cameras=False, export_lights=False)
 
     used = sorted(set(pal.names[i] for i in idx))
+    hist = {pal.names[i]: int((idx == i).sum()) for i in sorted(set(idx.tolist()))}
+    tribe_names = [n for n in ("azure", "crimson", "amber", "jade") if n in hist]
+    tribe_zr = None
+    if tribe_names:
+        tmask = np.isin(idx, [pal.names.index(n) for n in tribe_names])
+        zs = [(mesh.polygons[j].center.z - lo[2]) / max(float(hi[2] - lo[2]), 1e-6) for j in np.nonzero(tmask)[0]]
+        tribe_zr = [round(float(min(zs)), 3), round(float(max(zs)), 3)]
     rep = {
         "tris_in": tris_in, "tris_out": tri_count(mesh), "decimated": decimated, "scale": round(float(s), 5),
         "bounds_min": [round(float(v), 4) for v in lo], "bounds_max": [round(float(v), 4) for v in hi],
-        "scheme": A.scheme, "palette_used": used, "warnings": warnings,
+        "scheme": A.scheme, "palette_used": used, "palette_faces": hist,
+        "tribe_faces": int(sum(hist[n] for n in tribe_names)), "tribe_names": tribe_names, "tribe_height_range": tribe_zr, "warnings": warnings,
         "blender": bpy.app.version_string,
     }
     json.dump(rep, open(A.report, "w", encoding="utf-8"), indent=2)

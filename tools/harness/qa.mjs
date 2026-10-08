@@ -29,8 +29,12 @@ export async function qaFast(out) {
     s = { ok: last.startsWith("RESULT: PASS"), n: last.startsWith("RESULT: PASS") ? 0 : 1 };
     if (!s.ok) out.line(`scenarios(fast): ${last}`);
   }
-  const fails = [t, g, u, s].filter((x) => !x.ok).length;
-  out.line(`typecheck ${t.ok ? "ok" : "FAIL"} | guards ${g.ok ? "ok" : g.n} | unit ${u.ok ? "ok" : "FAIL"} | scenarios ${s.skipped ? "skip" : s.ok ? "ok" : "FAIL"} | ${((Date.now() - t0) / 1000).toFixed(0)}s`);
+  const rp = runNode(["tools/harness/cli.mjs", "replays"], { timeoutMs: 110000, log: "qa-fast-replays.log" });
+  const rl = rp.out.trim().split(String.fromCharCode(10)).pop()?.trim() ?? "";
+  const r = { ok: !rl.startsWith("RESULT: FAIL") && !rp.timedOut };
+  if (!r.ok) out.line(`replays: ${rl}`);
+  const fails = [t, g, u, s, r].filter((x) => !x.ok).length;
+  out.line(`typecheck ${t.ok ? "ok" : "FAIL"} | guards ${g.ok ? "ok" : g.n} | unit ${u.ok ? "ok" : "FAIL"} | scenarios ${s.skipped ? "skip" : s.ok ? "ok" : "FAIL"} | replays ${r.ok ? "ok" : "FAIL"} | ${((Date.now() - t0) / 1000).toFixed(0)}s`);
   return out.finish(fails ? "FAIL" : "PASS", fails ? `${fails} (see reports/latest/)` : "");
 }
 

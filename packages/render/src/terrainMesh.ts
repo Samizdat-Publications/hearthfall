@@ -1,0 +1,227 @@
+// Terrain and water chunks (32 x 32 cells). Terrain is non-indexed so every triangle carries its own
+// color: crisp faceted bands, stepped rock strata on steep faces, scar tint (art direction ref_04).
+// Only dirty chunks are rebuilt. Reads sim terrain, never writes it.
+import * as THREE from "three";
+import type { Terrain } from "@hearthfall/sim";
+import { BEND_FRAGMENT_FADE, BEND_FRAGMENT_PARS, BEND_PROJECT_VERTEX, BEND_VERTEX_PARS, type BendUniforms } from "./curve.ts";
+
+export const CHUNK = 32;
+
+export interface TerrainPalette {
+  sand: THREE.Color;
+  sandWet: THREE.Color;
+  meadow: THREE.Color;
+  moss: THREE.Color;
+  forest: THREE.Color;
+  rock: THREE.Color;
+  rockDark: THREE.Color;
+  snow: THREE.Color;
+  scar: THREE.Color;
+  water: THREE.Color;
+  waterShallow: THREE.Color;
+  foam: THREE.Color;
+  bands: { shore: number; lowland: number; grass: number; highland: number; rock: number; peak: number };
+  heightScale: number;
+  maxWalkSlope: number;
+}
+
+const tmp = new THREE.Color();
+const tmp2 = new THREE.Color();
+
+function faceHash(i: number): number {
+  let h = Math.imul(i ^ 0x9e3779b9, 0x85ebca6b);
+  h = Math.imul(h ^ (h >>> 13), 0xc2b2ae35);
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+}
+
+/** Color of one terrain triangle from its three vertex heights. */
+export function faceColor(p: TerrainPalette, sea: number, h0: number, h1: number, h2: number, scar: number, seed: number, out: THREE.Color): THREE.Color {
+  const avg = (h0 + h1 + h2) / 3;
+  const span = Math.max(h0, h1, h2) - Math.min(h0, h1, h2);
+  const b = p.bands;
+  if (avg < sea) out.copy(p.sandWet).lerp(p.water, Math.min(1, (sea - avg) / 60));
+  else if (avg < b.shore) out.copy(p.sand);
+  else if (avg < b.lowland) out.copy(p.meadow).lerp(p.sand, 0.15);
+  else if (avg < b.grass) out.copy(p.meadow);
+  else if (avg < b.highland) out.copy(p.moss);
+  else if (avg < b.rock) out.copy(p.forest).lerp(p.rock, 0.35);
+  else if (avg < b.peak) out.copy(p.rock);
+  else out.copy(p.snow);
+  // steep faces show layered rock strata
+  if (avg >= sea && span > p.maxWalkSlope * 0.9) {
+    const band = Math.floor(avg / 18) % 3;
+    tmp.copy(band === 0 ? p.rockDark : band === 1 ? p.rock : tmp2.copy(p.rock).lerp(p.sand, 0.35));
+    out.lerp(tmp, Math.min(1, (span - p.maxWalkSlope * 0.9) / (p.maxWalkSlope * 0.8)));
+  }
+  if (scar > 0) out.lerp(p.scar, Math.min(0.85, scar / 60));
+  const j = 0.93 + 0.12 * faceHash(seed);
+  return out.multiplyScalar(j);
+}
+
+export class TerrainChunk {
+  readonly mesh: THREE.Mesh;
+  readonly water: THREE.Mesh;
+  readonly cx: number;
+  readonly cz: number;
+  private readonly pos: Float32Array;
+  private readonly col: Float32Array;
+  private readonly wDepth: Float32Array;
+  private readonly wPos: Float32Array;
+
+  constructor(cx: number, cz: number, terrainMat: THREE.Material, waterMat: THREE.Material) {
+    this.cx = cx;
+    this.cz = cz;
+    const verts = CHUNK * CHUNK * 6;
+    this.pos = new Float32Array(verts * 3);
+    this.col = new Float32Array(verts * 3);
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(this.pos, 3));
+    g.setAttribute("color", new THREE.BufferAttribute(this.col, 3));
+    this.mesh = new THREE.Mesh(g, terrainMat);
+    this.mesh.frustumCulled = false;
+    // water: a tessellated grid (2 cells per segment) so it can bend
+    const seg = CHUNK / 2;
+    const wg = new THREE.PlaneGeometry(CHUNK, CHUNK, seg, seg);
+    wg.rotateX(-Math.PI / 2);
+    wg.translate(CHUNK / 2, 0, CHUNK / 2);
+    this.wPos = wg.getAttribute("position").array as Float32Array;
+    this.wDepth = new Float32Array(wg.getAttribute("position").count);
+    wg.setAttribute("aDepth", new THREE.BufferAttribute(this.wDepth, 1));
+    this.water = new THREE.Mesh(wg, waterMat);
+    this.water.frustumCulled = false;
+    this.water.renderOrder = 1;
+  }
+
+  /** Rebuild geometry and colors from the sim terrain. */
+  build(t: Terrain, p: TerrainPalette): void {
+    const s = p.heightScale;
+    const x0 = this.cx * CHUNK;
+    const z0 = this.cz * CHUNK;
+    let v = 0;
+    const put = (lx: number, lz: number, h: number, c: THREE.Color) => {
+      this.pos[v * 3] = lx;
+      this.pos[v * 3 + 1] = h * s;
+      this.pos[v * 3 + 2] = lz;
+      this.col[v * 3] = c.r;
+      this.col[v * 3 + 1] = c.g;
+      this.col[v * 3 + 2] = c.b;
+      v++;
+    };
+    const c = new THREE.Color();
+    for (let z = 0; z < CHUNK; z++) {
+      for (let x = 0; x < CHUNK; x++) {
+        const gx = x0 + x;
+        const gz = z0 + z;
+        const a = t.get(gx, gz);
+        const b = t.get(gx + 1, gz);
+        const d = t.get(gx, gz + 1);
+        const e = t.get(gx + 1, gz + 1);
+        const sc = t.scar[t.idx(gx, gz)];
+        const seed = gx * 7919 + gz * 104729;
+        if (((gx + gz) & 1) === 0) {
+          faceColor(p, t.sea, a, d, b, sc, seed, c);
+          put(x, z, a, c);
+          put(x, z + 1, d, c);
+          put(x + 1, z, b, c);
+          faceColor(p, t.sea, b, d, e, sc, seed + 1, c);
+          put(x + 1, z, b, c);
+          put(x, z + 1, d, c);
+          put(x + 1, z + 1, e, c);
+        } else {
+          faceColor(p, t.sea, a, e, b, sc, seed, c);
+          put(x, z, a, c);
+          put(x + 1, z + 1, e, c);
+          put(x + 1, z, b, c);
+          faceColor(p, t.sea, a, d, e, sc, seed + 1, c);
+          put(x, z, a, c);
+          put(x, z + 1, d, c);
+          put(x + 1, z + 1, e, c);
+        }
+      }
+    }
+    const g = this.mesh.geometry;
+    (g.getAttribute("position") as THREE.BufferAttribute).needsUpdate = true;
+    (g.getAttribute("color") as THREE.BufferAttribute).needsUpdate = true;
+    // water depth per vertex for shoreline foam and shallow color
+    for (let i = 0; i < this.wDepth.length; i++) {
+      const wx = this.wPos[i * 3];
+      const wz = this.wPos[i * 3 + 2];
+      this.wDepth[i] = t.sea - t.heightAt(x0 + wx, z0 + wz);
+      this.wPos[i * 3 + 1] = t.sea * s;
+    }
+    (this.water.geometry.getAttribute("aDepth") as THREE.BufferAttribute).needsUpdate = true;
+    (this.water.geometry.getAttribute("position") as THREE.BufferAttribute).needsUpdate = true;
+  }
+
+  /** Place this chunk at the wrapped copy nearest the focus (world units, one cell = one unit). */
+  place(focusX: number, focusZ: number, worldSize: number): void {
+    let ox = this.cx * CHUNK + CHUNK / 2 - focusX;
+    let oz = this.cz * CHUNK + CHUNK / 2 - focusZ;
+    ox -= Math.round(ox / worldSize) * worldSize;
+    oz -= Math.round(oz / worldSize) * worldSize;
+    const px = focusX + ox - CHUNK / 2;
+    const pz = focusZ + oz - CHUNK / 2;
+    this.mesh.position.set(px, 0, pz);
+    this.water.position.set(px, 0, pz);
+  }
+}
+
+export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: { value: number }): THREE.ShaderMaterial {
+  const mat = new THREE.ShaderMaterial({
+    transparent: true,
+    fog: true,
+    uniforms: THREE.UniformsUtils.merge([
+      THREE.UniformsLib.fog,
+      {
+        uDeep: { value: p.water.clone() },
+        uShallow: { value: p.waterShallow.clone() },
+        uFoam: { value: p.foam.clone() },
+        uSun: { value: new THREE.Vector3(0.45, 0.8, 0.35).normalize() },
+      },
+    ]),
+    vertexShader: /* glsl */ `
+      #include <fog_pars_vertex>
+      ${BEND_VERTEX_PARS}
+      uniform float uTime;
+      attribute float aDepth;
+      varying float vDepth;
+      varying vec3 vWorld;
+      void main() {
+        vec3 transformed = position;
+        vec4 w0 = modelMatrix * vec4(position, 1.0);
+        transformed.y += 0.06 * sin(w0.x * 0.9 + uTime * 1.3) * cos(w0.z * 0.7 - uTime * 1.1);
+        vDepth = aDepth;
+        ${BEND_PROJECT_VERTEX}
+        vWorld = hfWorld.xyz;
+        #include <fog_vertex>
+      }`,
+    fragmentShader: /* glsl */ `
+      #include <fog_pars_fragment>
+      ${BEND_FRAGMENT_PARS}
+      uniform vec3 uDeep;
+      uniform vec3 uShallow;
+      uniform vec3 uFoam;
+      uniform vec3 uSun;
+      uniform float uTime;
+      varying float vDepth;
+      varying vec3 vWorld;
+      void main() {
+        if (vDepth < -2.0) discard;
+        vec3 n = normalize(cross(dFdx(vWorld), dFdy(vWorld)));
+        float t = smoothstep(0.0, 70.0, vDepth);
+        vec3 col = mix(uShallow, uDeep, t);
+        col *= 0.82 + 0.25 * max(dot(n, uSun), 0.0);
+        float foam = (1.0 - smoothstep(0.0, 10.0, vDepth)) * (0.65 + 0.35 * sin(uTime * 2.2 + vDepth * 0.9));
+        col = mix(col, uFoam, clamp(foam, 0.0, 1.0) * 0.85);
+        float alpha = mix(0.72, 0.94, t);
+        gl_FragColor = vec4(col, alpha);
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+        #include <fog_fragment>
+        ${BEND_FRAGMENT_FADE}
+      }`,
+  });
+  // shared uniform objects (merge() clones, so attach the live ones afterwards)
+  Object.assign(mat.uniforms, bend, { uTime: time });
+  return mat;
+}

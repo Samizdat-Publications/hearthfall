@@ -48,7 +48,7 @@ describe("planet generator", () => {
 
 describe("world step", () => {
   it("runs deterministically with commands; hash parts pinpoint the changed component", () => {
-    const cmds = (tick: number) => (tick === 5 ? [{ tick, tribe: 0, type: "terrainOp", args: { op: "noiseScar", x: 20, y: 20, r: 6, depth: 30 } }] : []);
+    const cmds = (tick: number) => (tick === 5 ? [{ tick, tribe: -1, type: "terrainOp", args: { op: "noiseScar", x: 20, y: 20, r: 6, depth: 30 } }] : []);
     const a = world({ generator: "flat", size: 64, tribes: 1 }, 3);
     const b = world({ generator: "flat", size: 64, tribes: 1 }, 3);
     a.run(40, cmds);
@@ -80,7 +80,9 @@ describe("world step", () => {
     w.spawnUnit("wild", -1, 30, 30);
     w.spawnUnit("wild", -1, 50, 50);
     w.spawnTree(30.5, 30.5);
-    w.step([{ tick: 0, tribe: 0, type: "terrainOp", args: { op: "set", x: 30, y: 30, r: 3, value: 60 } }]);
+    w.step([{ tick: 0, tribe: -1, type: "terrainOp", args: { op: "set", x: 30, y: 30, r: 3, value: 60 } }]);
+    w.step([{ tick: 1, tribe: 0, type: "terrainOp", args: { op: "set", x: 50, y: 50, r: 3, value: 60 } }]);
+    expect(w.eventCounts.get("commandRejected")).toBe(1);
     expect(w.eventCounts.get("drowned")).toBe(1);
     expect(w.eventCounts.get("flooded")).toBe(1);
     expect(w.count((i) => w.ents.cat[i] === CAT.unit)).toBe(1);

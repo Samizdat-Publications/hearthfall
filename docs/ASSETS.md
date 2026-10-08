@@ -54,7 +54,7 @@ Rules (from the research file section 10): save `remote_id` right after the POST
 | `python tools/assets/gen.py plan` | dry run: lists pending steps and projected cost per provider |
 | `python tools/assets/gen.py run --class buildings --max-usd 5 --max-minutes 8` | submits, polls, downloads, records, respects caps; returns within 8 minutes and resumes in-flight jobs by remote_id on the next call |
 | `python tools/assets/gen.py status` | one-line-per-class summary |
-| `python tools/assets/blender_run.py normalize --in tools/assets/raw/x.glb --out assets/models/x.glb` (wraps `BLENDER_EXE --background --factory-startup -noaudio --python-exit-code 1 --python tools/assets/blender/normalize.py -- ...`) | decimate to budget, merge by distance, recalc normals, snap colors to palette into vertex colors, apply flat shading, set pivot and scale, export glTF with `export_vertex_color='ACTIVE'` (Blender 5.1.2 wrote all-white colors with `'MATERIAL'`, measured in A0) |
+| `python tools/assets/blender_run.py normalize --in tools/assets/raw/x.glb --out assets/models/x.glb` (wraps `BLENDER_EXE --background --factory-startup -noaudio --python-exit-code 1 --python tools/assets/blender/normalize.py -- ...`) | decimate to budget, merge by distance, recalc normals, snap colors to palette into vertex colors (units snap to a restricted subset without water, snow, foliage or fire colors, so blue cloth lands on `azure` and not `water`), apply flat shading, set pivot and scale, export glTF with `export_vertex_color='ACTIVE'` (Blender 5.1.2 wrote all-white colors with `'MATERIAL'`, measured in A0) |
 | `python tools/assets/blender_run.py thumbs --class buildings` | consistent 3/4 view thumbnails for icons and review sheets |
 | `python tools/assets/qa.py` | tri counts, bounds vs class size, palette distance, non-manifold count, file size; writes qa into manifest; builds `reports/latest/assets_sheet.png` |
 | `python tools/assets/audio_post.py` | trim silence, normalize loudness, convert to OGG |
@@ -90,9 +90,10 @@ The pipeline stops a class when its cap is reached and logs the shortfall in PRO
 |---|---|---|---|
 | Gemini 1K image | $0.034 | $0.0336 (1120 image output tokens; 1064 thought tokens also reported, billing of those unverified; route worked: `generateContent`, Interactions returned a 4xx) | 2026-10-08 |
 | Meshy meshy-t2 smart-topology untextured | 5 credits | 5 credits (`consumed_credits` 5.0 and balance 1136 to 1131), text-to-3D preview, 322 tris, done in about 15 s; USD per credit not published, ledger assumes $0.02 | 2026-10-08 |
-| Meshy meshy-t2 textured image-to-3D | 15 credits | | |
+| Meshy meshy-t2 textured image-to-3D (`image_url` data URI, `should_texture: true`, smart-topology, 1400 tris) | 15 credits | 15 credits each (`consumed_credits` 15.0, 2 models, balance 1131 to 1091 with the two 5-credit text previews), done in about 40 s, GLB 2.2 MB with embedded texture, 1424 and 1486 tris | 2026-10-08 |
 | Meshy rig / animation | 5 / 3 per action | | |
 | Tripo v3 image-to-3D + smart_low_poly | 30 to 40 credits | | |
+| Gemini 1K image with one reference image (unit concepts) | $0.034 | $0.0336 each, `generateContent` route again | 2026-10-08 |
 | ElevenLabs SFX per second | ~$0.002 | 1.0 s clip, 17 KB mp3_44100_128 accepted on this plan; USD computed at $0.12/min (response header `character-cost: 5`, not a USD figure) | 2026-10-08 |
 | ElevenLabs music per minute | ~$0.15 | | |
 

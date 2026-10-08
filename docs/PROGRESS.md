@@ -4,19 +4,20 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 
 ## Now
 - Run started: 2026-10-08T21:25:00Z
-- Milestone: M0 done (tag m0-done). Now M1: sim core and terrain.
-- M1 so far (committed, typechecked, mostly untested): rng.ts (sfc32 streams), hash.ts, entities.ts (SoA), terrain.ts (all ops), noise.ts, generator.ts (continents/islands/flat/flat_with_channel), config.ts, commands.ts (registry: terrainOp, noop), world.ts (step order, drowning, hash parts). Not yet: snapshot, scenario runner + DSL, golden replays, unit tests for terrain ops and wrap seams, PRNG/hash tests.
-- Screenshot mode: headless-shell + GPU args (ANGLE D3D11, RTX 5070 Ti Laptop), WebGPU adapter available headless. Stored in reports/doctor-env.json.
-- VisionQA provider: ON (decisions). 315 input tokens per 1280x720 low-detail shot (about $0.00003), p50 423 ms. docs/visionqa-calibration.md.
-- Asset track: A0 done (pipeline in tools/assets, Gemini/Meshy/ElevenLabs smoke ok, $0.14 spent). A1 next (style refs, unit bake-off; Tripo key missing so Meshy only). Blender 5.1.2 needs export_vertex_color ACTIVE.
-- Keys: Meshy, ElevenLabs, Gemini, OpenAI present. Tripo, PixelLab missing.
-- Making-of archive (Stewart's request): making-of/ + `npm run making-of -- add`; storyboard in making-of/README.md. Archive every kept image with a milestone tag.
-- Subagents: project agents in .claude/agents are not registered in this session; spawn general-purpose with the agent file's rules and model pasted in.
+- Milestone: M1 done (tag m1-done). Now M2: renderer v1 and capture pipeline.
+- M1 shipped: sfc32 rng streams, FNV hash parts, SoA entities, torus terrain with all ops + dirty cursor (dirtySince), tileable fbm generator (continents, islands, flat test maps) with connected Hearth sites, trees, wild people; Command registry (god-mode terrainOp is tribe -1 or godMode only); World step order, drowning, snapshot/restore; scenario runner + safe DSL (4 scenarios); golden replay with frozen pack (terrain_ops_continents). 66 unit tests. qa:fast now includes replays.
+- M2 in progress (uncommitted pieces committed with m1 tag are typechecked, not yet rendered): packages/render (curve.ts bend patch + radial horizon fade, terrainMesh.ts faceted chunks + water shader, camera.ts rig, renderer.ts), apps/game (game.ts wiring, debug API, HUD stub).
+- Screenshot mode: headless-shell + GPU args (RTX 5070 Ti Laptop). VisionQA provider ON (about $0.00003 per low shot).
+- Art direction: ref_04 crisp flat-shaded polygon + ref_05 golden-hour light (data/base/style.json `direction`).
+- Asset track: A1 bake-off done (4 Meshy units; route B image-to-3D recommended, 15 credits). Spend $1.17 of $30. Pick pending: view reports/latest/unit_bakeoff_sheet.png once.
+- Keys: Meshy, ElevenLabs, Gemini, OpenAI present; Tripo, PixelLab missing.
+- Making-of archive: making-of/ via `npm run making-of -- add`; storyboard in making-of/README.md.
+- Subagents: project agents not registered in this session; use general-purpose with the agent file's rules and model pasted in.
 
 ## Next 3 actions
-1. M1 unit tests: every terrain op incl. wrap seams, PRNG streams independence, hash stability, generator connectivity.
-2. Scenario runner with assertion DSL (tools/harness/scenarios.mjs) + 3 scenarios; snapshot().
-3. Golden replay record/compare + replays:rebless; then M1 exit ritual. Kick off A1 asset batch in parallel.
+1. M2: first render through `npm run shot` (shot sets smoke.json: overview, close, seam, globe, map, islands), pixel checks, contact sheet via a Playwright-rendered HTML grid, baselines.
+2. Tune the look against the chosen direction (one contact sheet view), archive it for making-of; DOM layout check scaffold; dirty-chunk debug counter assertion.
+3. VisionQA check catalog + calibration with setDebug breakage flags; then M2 exit ritual.
 
 ## Blocked
 (none)

@@ -1,14 +1,30 @@
 {
   "id": "planet_continents_populated",
-  "description": "A seeded 4-tribe continents planet has one Hearth per tribe, a forest, wild people near each Hearth, and dry Hearths.",
-  "tags": ["fast", "generator"],
+  "description": "A seeded 4-tribe continents planet has one Hearth per tribe on dry land, a forest, and wild people on land near each Hearth.",
+  "tags": [
+    "fast",
+    "generator"
+  ],
   "seed": 2026,
-  "map": { "generator": "continents", "size": 128, "tribes": 4 },
+  "map": {
+    "generator": "continents",
+    "size": 128,
+    "tribes": 4
+  },
   "populate": true,
   "runTicks": 40,
   "assert": [
-    { "at": 0, "expr": "count(tribe0.hearths) == 1 && count(tribe1.hearths) == 1 && count(tribe2.hearths) == 1 && count(tribe3.hearths) == 1" },
-    { "at": 0, "expr": "count(trees) > 150 && count(wild) >= 20 && count(wild) <= 40" },
-    { "at": 40, "expr": "count(buildings) == 4 && events.count('drowned') == 0" }
+    {
+      "at": 0,
+      "expr": "count(tribe0.hearths) == 1 && count(tribe1.hearths) == 1 && count(tribe2.hearths) == 1 && count(tribe3.hearths) == 1"
+    },
+    {
+      "at": 0,
+      "expr": "count(trees) > 150 && count(wild) >= 20 && count(wild) <= 40"
+    },
+    {
+      "at": 40,
+      "expr": "count(buildings) == 4 && count(buildings, onLand) == 4 && count(wild, inWater) == 0 && count(trees, onLand) == count(trees)"
+    }
   ]
 }
