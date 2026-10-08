@@ -100,6 +100,8 @@ export class Pathfinder {
   /** walkable cache by vertex (rebuilt when the terrain version changes) */
   private walk: Uint8Array;
   private cost: Float32Array;
+  /** 8-connected walkable component label per vertex (0 = not walkable) */
+  comp: Int32Array;
   private walkVersion = -1;
 
   readonly t: Terrain;
@@ -114,6 +116,7 @@ export class Pathfinder {
     this.closed = new Int32Array(nn);
     this.walk = new Uint8Array(nn);
     this.cost = new Float32Array(nn);
+    this.comp = new Int32Array(nn);
   }
 
   /** Refresh the walkability and cost caches if the terrain changed. */
@@ -126,6 +129,28 @@ export class Pathfinder {
         const c = stepCost(this.t, x, y);
         this.walk[i] = c === Infinity ? 0 : 1;
         this.cost[i] = c === Infinity ? 0 : c;
+      }
+    }
+    // component labels (same 8-connectivity and corner rule as the search) so unreachable goals fail fast
+    const comp = this.comp;
+    comp.fill(0);
+    const stack: number[] = [];
+    let label = 0;
+    for (let s0 = 0; s0 < n * n; s0++) {
+      if (!this.walk[s0] || comp[s0]) continue;
+      comp[s0] = ++label;
+      stack.push(s0);
+      while (stack.length) {
+        const cur = stack.pop()!;
+        const cx = cur % n;
+        const cy = (cur - cx) / n;
+        for (let k = 0; k < 8; k++) {
+          const j = ((cx + DX[k] + n) % n) + ((cy + DY[k] + n) % n) * n;
+          if (!this.walk[j] || comp[j]) continue;
+          if (k >= 4 && (!this.walk[((cx + DX[k] + n) % n) + cy * n] || !this.walk[cx + ((cy + DY[k] + n) % n) * n])) continue;
+          comp[j] = label;
+          stack.push(j);
+        }
       }
     }
     this.walkVersion = this.t.version;
@@ -174,7 +199,7 @@ export class Pathfinder {
     this.refresh();
     const n = this.n;
     const fail = (expanded: number): PathResult => ({ ok: false, waypoints: new Int32Array(0), expanded });
-    if (!this.walk[start] || !this.walk[goal]) return fail(0);
+    if (!this.walk[start] || !this.walk[goal] || this.comp[start] !== this.comp[goal]) return fail(0);
     if (start === goal) return { ok: true, waypoints: new Int32Array(0), expanded: 0 };
     const gen = ++this.gen;
     const heap = this.heap;

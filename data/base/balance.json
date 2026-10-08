@@ -35,7 +35,7 @@
     "crowdArriveRadius": 3,
     "repathSeconds": 2,
     "giveUpSeconds": 6,
-    "pathBudgetPerTick": 40000,
+    "pathBudgetPerTick": 6000,
     "maxExpandPerSearch": 20000,
     "groupFlowMinUnits": 6
   },

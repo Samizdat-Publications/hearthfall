@@ -27,7 +27,7 @@ for (let tr = 0; tr < spec.tribes; tr++) {
     w.spawnUnit("settler", tr, x, y);
     placed++;
   }
-  w.controllers.push(makeBot({ type: "wander", tribe: tr, every: 20, offset: tr, chance: 0.4 }));
+  w.controllers.push(makeBot({ type: "wander", tribe: tr, every: 1, offset: 0, spread: 20, chance: 0.4 }));
 }
 const ticks = Math.round(spec.minutes * 60 * w.cfg.tickHz);
 const violations = [];

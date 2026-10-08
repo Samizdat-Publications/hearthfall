@@ -237,22 +237,32 @@ export class UnitSystem {
       let sy = 0;
       const xi = E.x[i];
       const yi = E.y[i];
-      this.hash.near(xi, yi, (j) => {
-        if (j === i) return;
-        const ox = wrapD(xi - E.x[j], n);
-        const oy = wrapD(yi - E.y[j], n);
-        const d2 = ox * ox + oy * oy;
-        if (d2 >= sepR2) return;
-        if (d2 < 1e-12) {
-          // exact overlap: deterministic nudge by index order
-          sx += i < j ? 0.01 : -0.01;
-          return;
+      // inline 3x3 bucket scan (no closure: this loop runs for every unit every tick)
+      const H = this.hash;
+      const hc = H.cols;
+      const hbx = ((Math.floor(xi / H.bs) % hc) + hc) % hc;
+      const hby = ((Math.floor(yi / H.bs) % hc) + hc) % hc;
+      for (let oy = -1; oy <= 1; oy++) {
+        for (let ox = -1; ox <= 1; ox++) {
+          const bkt = ((hbx + ox + hc) % hc) + ((hby + oy + hc) % hc) * hc;
+          for (let j = H.head[bkt]; j !== -1; j = H.next[j]) {
+            if (j === i) continue;
+            const qx = wrapD(xi - E.x[j], n);
+            const qy = wrapD(yi - E.y[j], n);
+            const d2 = qx * qx + qy * qy;
+            if (d2 >= sepR2) continue;
+            if (d2 < 1e-12) {
+              // exact overlap: deterministic nudge by index order
+              sx += i < j ? 0.01 : -0.01;
+              continue;
+            }
+            const d = Math.sqrt(d2);
+            const push = ((sepR - d) / sepR) * m.separationStrength * 0.1;
+            sx += (qx / d) * push;
+            sy += (qy / d) * push;
+          }
         }
-        const d = Math.sqrt(d2);
-        const push = ((sepR - d) / sepR) * m.separationStrength * 0.1;
-        sx += (ox / d) * push;
-        sy += (oy / d) * push;
-      });
+      }
       dx += sx;
       dy += sy;
       if (dx === 0 && dy === 0) {

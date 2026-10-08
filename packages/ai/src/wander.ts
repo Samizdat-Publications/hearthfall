@@ -11,6 +11,8 @@ export interface WanderOptions {
   chance?: number;
   minDist?: number;
   maxDist?: number;
+  /** each unit is considered once every spread ticks (run the bot with every: 1) */
+  spread?: number;
 }
 
 export class WanderBot implements Controller {
@@ -20,6 +22,7 @@ export class WanderBot implements Controller {
   private readonly chance: number;
   private readonly minDist: number;
   private readonly maxDist: number;
+  private readonly spread: number;
 
   constructor(o: WanderOptions) {
     this.tribe = o.tribe;
@@ -28,6 +31,7 @@ export class WanderBot implements Controller {
     this.chance = o.chance ?? 0.5;
     this.minDist = o.minDist ?? 4;
     this.maxDist = o.maxDist ?? 18;
+    this.spread = Math.max(1, o.spread ?? 20);
   }
 
   decide(w: World): Command[] {
@@ -36,6 +40,8 @@ export class WanderBot implements Controller {
     const out: Command[] = [];
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] !== this.tribe || E.order[i] !== ORDER.none) continue;
+      // each unit decides on its own phase so orders spread evenly over ticks
+      if ((i + w.tick) % this.spread !== 0) continue;
       if (!w.rng.chance("ai", this.chance)) continue;
       const a = w.rng.float("ai") * dmath.TWO_PI;
       const d = this.minDist + w.rng.float("ai") * (this.maxDist - this.minDist);
