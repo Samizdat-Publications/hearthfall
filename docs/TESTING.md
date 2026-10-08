@@ -24,6 +24,8 @@ All commands are npm scripts that call `node tools/harness/...` with a hard inte
 | `npm run bench:render` | renderer CPU ms per frame in Playwright (measured inside the frame, not rAF intervals, which vsync caps) | 4 min |
 | `npm run shot -- --set smoke` | Playwright captures + pixel checks + baseline diff + DOM layout checks | 5 min |
 | `npm run visionqa -- --set smoke` | Decisions checks on the latest shots (no-op if provider is off) | 3 min |
+| `npm run visionqa:calibrate` | capture the labeled calibration set (good and broken variants), pick per-check thresholds | 5 min |
+| `npm run making-of -- add <file> ...` | archive an image for the making-of story (`making-of/README.md`) | 1 min |
 | `npm run qa` | resumable driver: runs the layers above (not soak) that have not passed for the current commit, stops before 8.5 min and prints `RESULT: PARTIAL, rerun npm run qa` if layers remain; state in `reports/qa-state.json` keyed by commit sha | 9 min per call |
 | `npm run doctor` | environment checks (section 9) | 3 min |
 
@@ -67,6 +69,8 @@ Assertion expressions use a tiny safe query DSL implemented in the harness (no `
 ## 4. Layer 3: golden replays
 
 `replays/golden/*.json` = seed + data pack hash + command log + expected hash every 100 ticks. At bless time the exact data pack is frozen to `replays/golden/pack/<hash>/`, and goldens always replay against their frozen pack, so balance tweaks in `data/base` never turn goldens red; only sim code changes need a rebless. `npm run test:replays` replays and compares. On mismatch the report names the first divergent tick and which hash component changed (terrain, entities, rng).
+
+`npm run test:replays -- --browser` replays every golden inside Chromium (test build, `window.__game.runDef`) and requires the Node hashes bit for bit: the cross-engine determinism check (part of `npm run qa`).
 
 When a change intentionally alters simulation results: run `npm run replays:rebless -- --reason "<why>"`, which rewrites expected hashes and appends the reason to `replays/golden/CHANGELOG.md`. Never rebless to make a red test green without a reason that matches an intended change.
 

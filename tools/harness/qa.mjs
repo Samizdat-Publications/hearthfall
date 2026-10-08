@@ -13,6 +13,7 @@ const LAYERS = [
   { id: "replays", cmd: ["replays"], timeoutMs: 180000 },
   { id: "bench", cmd: ["bench"], timeoutMs: 240000 },
   { id: "shot", cmd: ["shot", "--set", "smoke"], timeoutMs: 300000 },
+  { id: "replays-browser", cmd: ["replays", "--browser"], timeoutMs: 180000 },
   { id: "visionqa", cmd: ["visionqa", "--set", "smoke"], timeoutMs: 180000 },
 ];
 const BUDGET_MS = 8.5 * 60 * 1000;

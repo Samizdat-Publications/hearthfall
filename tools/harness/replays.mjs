@@ -118,6 +118,39 @@ function verify(out, args) {
   return out.finish(bad.length ? "FAIL" : "PASS", bad.length ? `${bad.length} (see reports/latest/replays.json)` : "");
 }
 
+/** Replay every golden inside Chromium (test build) and compare with the blessed Node hashes. */
+async function verifyBrowser(out, args) {
+  const { launch, openGame, shotMode, startPreview, viteBuild } = await import("./web.mjs");
+  const list = goldens(typeof args.id === "string" ? args.id : undefined);
+  if (!list.length) return out.finish("SKIP", "no golden replays yet");
+  await viteBuild("test");
+  const preview = await startPreview();
+  let browser;
+  const results = [];
+  try {
+    browser = await launch(shotMode());
+    const { page } = await openGame(browser, preview.url + "?paused=1&fixedStep=1&size=64&level=flat");
+    for (const { file, g } of list) {
+      const dir = `replays/golden/pack/${g.packHash}`;
+      const { raw } = readPackDir(dir);
+      const r = await page.evaluate(([def, pack, every]) => window.__game.runDef(def, pack, every), [g.def, raw, g.every ?? 100]);
+      const exp = new Map(g.checkpoints.map((c) => [c.tick, c.all]));
+      const bad = (r.checkpoints ?? []).find((c) => exp.get(c.tick) !== c.all);
+      const ok = !r.error && r.packHash === g.packHash && !bad && r.checkpoints.length === g.checkpoints.length;
+      results.push({ id: g.id, file, ok, error: r.error, divergedAt: bad?.tick });
+      if (!ok) out.line(`${file}: browser ${r.error ?? (bad ? "diverged at tick " + bad.tick : "pack or checkpoint mismatch")}`);
+    }
+  } finally {
+    if (browser) await browser.close().catch(() => {});
+    await preview.close();
+  }
+  writeReport("replays-browser.json", results);
+  const nbad = results.filter((r) => !r.ok).length;
+  out.line(`browser replays: ${results.length - nbad}/${results.length} match Node bit for bit`);
+  return out.finish(nbad ? "FAIL" : "PASS", nbad ? `${nbad}` : "");
+}
+
 export default async function replaysCmd(out, cmd, args) {
-  return cmd === "rebless" ? rebless(out, args) : verify(out, args);
+  if (cmd === "rebless") return rebless(out, args);
+  return args.browser ? verifyBrowser(out, args) : verify(out, args);
 }

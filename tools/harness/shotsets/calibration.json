@@ -1,0 +1,461 @@
+{
+ "$comment": "VisionQA calibration set: good and deliberately broken variants with ground-truth labels per check (docs/VISIONQA.md section 5).",
+ "shots": [
+  {
+   "id": "cal_overview_good",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "default"
+   },
+   "kind": "world",
+   "steps": [],
+   "labels": {
+    "not_blank": false,
+    "terrain_visible": true,
+    "ui_overlap": false,
+    "artifact_suspect": false,
+    "scene_kind": "world_view"
+   }
+  },
+  {
+   "id": "cal_overview_noterrain",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "default"
+   },
+   "kind": "world",
+   "steps": [
+    {
+     "setDebug": {
+      "hideTerrain": true
+     }
+    }
+   ],
+   "labels": {
+    "not_blank": false,
+    "terrain_visible": false,
+    "ui_overlap": false,
+    "artifact_suspect": false,
+    "scene_kind": "world_view"
+   }
+  },
+  {
+   "id": "cal_overview_black",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "default"
+   },
+   "kind": "world",
+   "steps": [
+    {
+     "setDebug": {
+      "blackCanvas": true
+     }
+    }
+   ],
+   "labels": {
+    "not_blank": true,
+    "terrain_visible": false,
+    "ui_overlap": false,
+    "artifact_suspect": false,
+    "scene_kind": "error_or_blank"
+   }
+  },
+  {
+   "id": "cal_overview_magenta",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "default"
+   },
+   "kind": "world",
+   "steps": [
+    {
+     "setDebug": {
+      "magentaMaterials": true
+     }
+    }
+   ],
+   "labels": {
+    "not_blank": false,
+    "terrain_visible": true,
+    "ui_overlap": false,
+    "artifact_suspect": true,
+    "scene_kind": "world_view"
+   }
+  },
+  {
+   "id": "cal_overview_overlap",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "default"
+   },
+   "kind": "world",
+   "steps": [
+    {
+     "setDebug": {
+      "overlapHud": true
+     }
+    }
+   ],
+   "labels": {
+    "not_blank": false,
+    "terrain_visible": true,
+    "ui_overlap": true,
+    "artifact_suspect": false,
+    "scene_kind": "world_view"
+   }
+  },
+  {
+   "id": "cal_globe_good",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "globe"
+   },
+   "kind": "world",
+   "steps": [],
+   "labels": {
+    "not_blank": false,
+    "terrain_visible": true,
+    "ui_overlap": false,
+    "artifact_suspect": false,
+    "scene_kind": "world_view"
+   }
+  },
+  {
+   "id": "cal_globe_noterrain",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "globe"
+   },
+   "kind": "world",
+   "steps": [
+    {
+     "setDebug": {
+      "hideTerrain": true
+     }
+    }
+   ],
+   "labels": {
+    "not_blank": false,
+    "terrain_visible": false,
+    "ui_overlap": false,
+    "artifact_suspect": false,
+    "scene_kind": "world_view"
+   }
+  },
+  {
+   "id": "cal_globe_black",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "globe"
+   },
+   "kind": "world",
+   "steps": [
+    {
+     "setDebug": {
+      "blackCanvas": true
+     }
+    }
+   ],
+   "labels": {
+    "not_blank": true,
+    "terrain_visible": false,
+    "ui_overlap": false,
+    "artifact_suspect": false,
+    "scene_kind": "error_or_blank"
+   }
+  },
+  {
+   "id": "cal_globe_magenta",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "globe"
+   },
+   "kind": "world",
+   "steps": [
+    {
+     "setDebug": {
+      "magentaMaterials": true
+     }
+    }
+   ],
+   "labels": {
+    "not_blank": false,
+    "terrain_visible": true,
+    "ui_overlap": false,
+    "artifact_suspect": true,
+    "scene_kind": "world_view"
+   }
+  },
+  {
+   "id": "cal_globe_overlap",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "globe"
+   },
+   "kind": "world",
+   "steps": [
+    {
+     "setDebug": {
+      "overlapHud": true
+     }
+    }
+   ],
+   "labels": {
+    "not_blank": false,
+    "terrain_visible": true,
+    "ui_overlap": true,
+    "artifact_suspect": false,
+    "scene_kind": "world_view"
+   }
+  },
+  {
+   "id": "cal_islands_good",
+   "params": {
+    "seed": 3,
+    "level": "islands",
+    "tribes": 2,
+    "camera": "mid"
+   },
+   "kind": "world",
+   "steps": [],
+   "labels": {
+    "not_blank": false,
+    "terrain_visible": true,
+    "ui_overlap": false,
+    "artifact_suspect": false,
+    "scene_kind": "world_view"
+   }
+  },
+  {
+   "id": "cal_islands_noterrain",
+   "params": {
+    "seed": 3,
+    "level": "islands",
+    "tribes": 2,
+    "camera": "mid"
+   },
+   "kind": "world",
+   "steps": [
+    {
+     "setDebug": {
+      "hideTerrain": true
+     }
+    }
+   ],
+   "labels": {
+    "not_blank": false,
+    "terrain_visible": false,
+    "ui_overlap": false,
+    "artifact_suspect": false,
+    "scene_kind": "world_view"
+   }
+  },
+  {
+   "id": "cal_islands_black",
+   "params": {
+    "seed": 3,
+    "level": "islands",
+    "tribes": 2,
+    "camera": "mid"
+   },
+   "kind": "world",
+   "steps": [
+    {
+     "setDebug": {
+      "blackCanvas": true
+     }
+    }
+   ],
+   "labels": {
+    "not_blank": true,
+    "terrain_visible": false,
+    "ui_overlap": false,
+    "artifact_suspect": false,
+    "scene_kind": "error_or_blank"
+   }
+  },
+  {
+   "id": "cal_islands_magenta",
+   "params": {
+    "seed": 3,
+    "level": "islands",
+    "tribes": 2,
+    "camera": "mid"
+   },
+   "kind": "world",
+   "steps": [
+    {
+     "setDebug": {
+      "magentaMaterials": true
+     }
+    }
+   ],
+   "labels": {
+    "not_blank": false,
+    "terrain_visible": true,
+    "ui_overlap": false,
+    "artifact_suspect": true,
+    "scene_kind": "world_view"
+   }
+  },
+  {
+   "id": "cal_islands_overlap",
+   "params": {
+    "seed": 3,
+    "level": "islands",
+    "tribes": 2,
+    "camera": "mid"
+   },
+   "kind": "world",
+   "steps": [
+    {
+     "setDebug": {
+      "overlapHud": true
+     }
+    }
+   ],
+   "labels": {
+    "not_blank": false,
+    "terrain_visible": true,
+    "ui_overlap": true,
+    "artifact_suspect": false,
+    "scene_kind": "world_view"
+   }
+  },
+  {
+   "id": "cal_map_good",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "map"
+   },
+   "kind": "map",
+   "steps": [],
+   "labels": {
+    "not_blank": false,
+    "terrain_visible": true,
+    "ui_overlap": false,
+    "artifact_suspect": false,
+    "scene_kind": "map_view"
+   }
+  },
+  {
+   "id": "cal_map_noterrain",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "map"
+   },
+   "kind": "map",
+   "steps": [
+    {
+     "setDebug": {
+      "hideTerrain": true
+     }
+    }
+   ],
+   "labels": {
+    "not_blank": false,
+    "terrain_visible": false,
+    "ui_overlap": false,
+    "artifact_suspect": false,
+    "scene_kind": "map_view"
+   }
+  },
+  {
+   "id": "cal_map_black",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "map"
+   },
+   "kind": "map",
+   "steps": [
+    {
+     "setDebug": {
+      "blackCanvas": true
+     }
+    }
+   ],
+   "labels": {
+    "not_blank": true,
+    "terrain_visible": false,
+    "ui_overlap": false,
+    "artifact_suspect": false,
+    "scene_kind": "error_or_blank"
+   }
+  },
+  {
+   "id": "cal_map_magenta",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "map"
+   },
+   "kind": "map",
+   "steps": [
+    {
+     "setDebug": {
+      "magentaMaterials": true
+     }
+    }
+   ],
+   "labels": {
+    "not_blank": false,
+    "terrain_visible": true,
+    "ui_overlap": false,
+    "artifact_suspect": true,
+    "scene_kind": "map_view"
+   }
+  },
+  {
+   "id": "cal_map_overlap",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "map"
+   },
+   "kind": "map",
+   "steps": [
+    {
+     "setDebug": {
+      "overlapHud": true
+     }
+    }
+   ],
+   "labels": {
+    "not_blank": false,
+    "terrain_visible": true,
+    "ui_overlap": true,
+    "artifact_suspect": false,
+    "scene_kind": "map_view"
+   }
+  }
+ ]
+}

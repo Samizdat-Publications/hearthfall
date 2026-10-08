@@ -34,7 +34,9 @@
     "build": "node tools/harness/cli.mjs build",
     "build:test": "node tools/harness/cli.mjs build-test",
     "dev": "vite --config apps/game/vite.config.ts",
-    "making-of": "node tools/harness/cli.mjs making-of"
+    "making-of": "node tools/harness/cli.mjs making-of",
+    "visionqa:calibrate": "node --env-file-if-exists=.env tools/harness/cli.mjs visionqa-calibrate",
+    "visionqa:spend": "node --env-file-if-exists=.env tools/harness/cli.mjs visionqa-spend"
   },
   "devDependencies": {
     "@playwright/test": "1.64.0",

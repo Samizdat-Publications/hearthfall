@@ -892,20 +892,27 @@
           "request_hash": "dfb2e3f3dbc166013d586a79b69136799dacc772d9fa0e743c0b89594128e6bb"
         },
         "model": {
-          "status": "submitted",
+          "status": "done",
           "provider": "meshy",
           "remote_id": "01a11da4-f5b8-776b-8df4-bf8cc53c6bb0",
           "started": "2026-10-08T22:31:39Z",
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
+          "finished": "2026-10-08T22:34:31Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.dwelling_small/model.glb",
+          "sha256": "f9cb18a3d0dc0f6ec739ff64e9467af46d47466bb135eb84a2a8cf5c79a897e6",
           "attempts": 1,
           "error": null,
           "meta": {
             "route": "image",
-            "kind": "image"
-          }
+            "kind": "image",
+            "bytes": 1997804,
+            "progress": 100
+          },
+          "request_hash": "1826418091b677bed9e2ffc9b3e6bde79c605705d68d38e9e3ca7e3f4ab84fee"
         },
         "rig": {
           "status": "skipped",
@@ -932,16 +939,68 @@
           "error": null
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-08T22:34:42Z",
+          "finished": "2026-10-08T22:34:49Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/models/building.dwelling_small.glb",
+          "sha256": "5ead04617c4d569e57161650a2c78212664930c29831786f093bb081a8a8cfde",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 661,
+            "tris_out": 643,
+            "decimated": false,
+            "scale": 1.80368,
+            "bounds_min": [
+              -0.8991,
+              -0.9,
+              0.0
+            ],
+            "bounds_max": [
+              0.8991,
+              0.9,
+              1.5667
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "fire",
+              "rockDark",
+              "scar",
+              "skin2",
+              "skin3",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "rockDark": 32,
+              "wood": 66,
+              "woodDark": 253,
+              "thatch": 7,
+              "skin2": 210,
+              "skin3": 45,
+              "azure": 12,
+              "fire": 1,
+              "scar": 17
+            },
+            "tribe_faces": 12,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.19,
+              0.438
+            ],
+            "warnings": [
+              "tris 643 below class minimum 800"
+            ],
+            "blender": "5.1.2"
+          },
+          "request_hash": "33b7a028dcafc3e2a0b47b60e23cdaca1d7436f294017ffae702461cbb2d6b74"
         },
         "thumb": {
           "status": "pending",
@@ -959,7 +1018,41 @@
       "style_version": 1,
       "request_hash": null,
       "approved": false,
-      "qa": {}
+      "qa": {
+        "tris": 643,
+        "verts": 1926,
+        "bounds": {
+          "min": [
+            -0.8991,
+            0.0,
+            -0.9
+          ],
+          "max": [
+            0.8991,
+            1.5667,
+            0.9
+          ],
+          "size": [
+            1.7982,
+            1.5667,
+            1.8
+          ]
+        },
+        "bytes": 82244,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 12,
+        "tribe_height_range": [
+          0.19,
+          0.438
+        ],
+        "boundary_edges": 231,
+        "nonmanifold_edges": 0,
+        "warnings": [
+          "tris 643 below budget min 800"
+        ]
+      }
     },
     {
       "id": "building.dwelling_medium",
@@ -1009,20 +1102,27 @@
           "request_hash": "50bf510cf96675a83304fc0b237d989b69dcc036ff085006cbcc585c3ae5e33c"
         },
         "model": {
-          "status": "submitted",
+          "status": "done",
           "provider": "meshy",
           "remote_id": "01a11da5-3864-72e5-8e65-f4eaf4d27514",
           "started": "2026-10-08T22:31:56Z",
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
+          "finished": "2026-10-08T22:34:34Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.dwelling_medium/model.glb",
+          "sha256": "74e53aa58035138e611fbc8cfc771b79251da2c65e034bf538faab301fc51ebe",
           "attempts": 1,
           "error": null,
           "meta": {
             "route": "image",
-            "kind": "image"
-          }
+            "kind": "image",
+            "bytes": 2011324,
+            "progress": 100
+          },
+          "request_hash": "1f5c3689a6931e9c11e7a1fc3d164812fb60a2cca1550d06f26e6494ae36fbb2"
         },
         "rig": {
           "status": "skipped",
@@ -1049,16 +1149,64 @@
           "error": null
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-08T22:34:50Z",
+          "finished": "2026-10-08T22:34:58Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/models/building.dwelling_medium.glb",
+          "sha256": "3a0388ba61e118156960fcb5901c75d40b2d181320b92dca30e8be9c47349d5c",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1349,
+            "tris_out": 1349,
+            "decimated": false,
+            "scale": 2.0,
+            "bounds_min": [
+              -1.0,
+              -1.0,
+              0.0
+            ],
+            "bounds_max": [
+              1.0,
+              1.0,
+              1.3468
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "rock",
+              "rockDark",
+              "scar",
+              "skin2",
+              "skin3",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "rock": 42,
+              "rockDark": 4,
+              "wood": 769,
+              "woodDark": 114,
+              "skin2": 99,
+              "skin3": 186,
+              "azure": 19,
+              "scar": 116
+            },
+            "tribe_faces": 19,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.258,
+              0.469
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "3d4bf9c4c1f0c6b803cac05219aff5aed77770b11ea5526fedbac014cf40d997"
         },
         "thumb": {
           "status": "pending",
@@ -1076,7 +1224,39 @@
       "style_version": 1,
       "request_hash": null,
       "approved": false,
-      "qa": {}
+      "qa": {
+        "tris": 1349,
+        "verts": 4044,
+        "bounds": {
+          "min": [
+            -1.0,
+            0.0,
+            -1.0
+          ],
+          "max": [
+            1.0,
+            1.3468,
+            1.0
+          ],
+          "size": [
+            2.0,
+            1.3468,
+            2.0
+          ]
+        },
+        "bytes": 171136,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 19,
+        "tribe_height_range": [
+          0.258,
+          0.469
+        ],
+        "boundary_edges": 53,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     },
     {
       "id": "building.dwelling_large",
@@ -1100,28 +1280,53 @@
       },
       "steps": {
         "concept": {
-          "status": "submitted",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
           "started": "2026-10-08T22:31:58Z",
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
+          "finished": "2026-10-08T22:32:21Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.dwelling_large/concept.jpg",
+          "sha256": "d382c62cf8db4c9112fb4c02efd8169304e83db6291002e377961d7f765fa500",
           "attempts": 1,
-          "error": null
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 431541,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "e99e23590fa7378d107ca8a0eabc4721f99e7158f2b6eb530a9ad0a06dafed14"
         },
         "model": {
-          "status": "pending",
+          "status": "done",
           "provider": "meshy",
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "remote_id": "01a11da5-98bb-743c-b09a-0efbe72ffb49",
+          "started": "2026-10-08T22:32:21Z",
+          "finished": "2026-10-08T22:34:36Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.dwelling_large/model.glb",
+          "sha256": "1526cae9d369a4be408a5853e34d0adefc36ef5f5a64091f05fde76ed0020295",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "bytes": 2052612,
+            "progress": 100
+          },
+          "request_hash": "55c4423f2e8944c1f1f5bde7fb6ab56d7c73dfbd996cf8b2d8777c7935180081"
         },
         "rig": {
           "status": "skipped",
@@ -1148,16 +1353,61 @@
           "error": null
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-08T22:34:58Z",
+          "finished": "2026-10-08T22:35:05Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/models/building.dwelling_large.glb",
+          "sha256": "f5fa58ca815104acafa611c90cf437128c9c910caa1fbc67c6c1446dfdca9180",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1584,
+            "tris_out": 1583,
+            "decimated": false,
+            "scale": 2.2,
+            "bounds_min": [
+              -0.9694,
+              -1.1,
+              0.0
+            ],
+            "bounds_max": [
+              0.9694,
+              1.1,
+              1.6086
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "rock",
+              "rockDark",
+              "scar",
+              "skin2",
+              "skin3",
+              "stone",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "rock": 5,
+              "rockDark": 18,
+              "wood": 208,
+              "woodDark": 374,
+              "thatch": 1,
+              "stone": 3,
+              "skin2": 247,
+              "skin3": 690,
+              "scar": 37
+            },
+            "tribe_faces": 0,
+            "tribe_names": [],
+            "tribe_height_range": null,
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "2bb15f1f8b2860ef2e8ecc8ae8c8ecbbedfe5c6a1cc6293bf7e861311e5c4e1b"
         },
         "thumb": {
           "status": "pending",
@@ -1175,7 +1425,38 @@
       "style_version": 1,
       "request_hash": null,
       "approved": false,
-      "qa": {}
+      "qa": {
+        "tris": 1583,
+        "verts": 4735,
+        "bounds": {
+          "min": [
+            -0.9694,
+            0.0,
+            -1.1
+          ],
+          "max": [
+            0.9694,
+            1.6086,
+            1.1
+          ],
+          "size": [
+            1.9388,
+            1.6086,
+            2.2
+          ]
+        },
+        "bytes": 200248,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 0,
+        "tribe_height_range": null,
+        "boundary_edges": 141,
+        "nonmanifold_edges": 0,
+        "warnings": [
+          "no tribe-color region (azure/crimson/amber/jade) after palette snap"
+        ]
+      }
     },
     {
       "id": "building.watchtower",
@@ -1199,28 +1480,53 @@
       },
       "steps": {
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-08T22:32:23Z",
+          "finished": "2026-10-08T22:32:36Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.watchtower/concept.jpg",
+          "sha256": "4087e630672737542720a6385c2b230b3ac6bba22a7c2cc678aee6824593059b",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 330310,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "f4c2911354b62cf17bf6fdf8789610a5334b47642c5fcba7a6f7cd63dd432285"
         },
         "model": {
-          "status": "pending",
+          "status": "done",
           "provider": "meshy",
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "remote_id": "01a11da5-d44e-7477-9149-0e7355393cb0",
+          "started": "2026-10-08T22:32:36Z",
+          "finished": "2026-10-08T22:34:39Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.watchtower/model.glb",
+          "sha256": "ef6122b497ea926af59bef0157cf3cf7f96437a4860b1507e1415609b25e1b62",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "bytes": 2041912,
+            "progress": 100
+          },
+          "request_hash": "7db95a7003e109ee04d920c60eb1e776dc08e8fe1987081567f0d091fe4b2de5"
         },
         "rig": {
           "status": "skipped",
@@ -1247,16 +1553,66 @@
           "error": null
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-08T22:35:05Z",
+          "finished": "2026-10-08T22:35:11Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/models/building.watchtower.glb",
+          "sha256": "ab1aa98619264605526b4323c96d788b1d8d77e25dc5643000db790bf620098d",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1610,
+            "tris_out": 1610,
+            "decimated": false,
+            "scale": 2.45538,
+            "bounds_min": [
+              -0.6,
+              -0.4804,
+              0.0
+            ],
+            "bounds_max": [
+              0.6,
+              0.4804,
+              2.4554
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "rockDark",
+              "scar",
+              "skin1",
+              "skin2",
+              "skin3",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "rockDark": 6,
+              "wood": 42,
+              "woodDark": 686,
+              "thatch": 29,
+              "skin1": 4,
+              "skin2": 387,
+              "skin3": 420,
+              "azure": 6,
+              "scar": 30
+            },
+            "tribe_faces": 6,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.653,
+              0.748
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "3c9025944c583744ce747cd4f94af6c6d1cf69848a2441f17e2ca897278236b2"
         },
         "thumb": {
           "status": "pending",
@@ -1274,7 +1630,39 @@
       "style_version": 1,
       "request_hash": null,
       "approved": false,
-      "qa": {}
+      "qa": {
+        "tris": 1610,
+        "verts": 4805,
+        "bounds": {
+          "min": [
+            -0.6,
+            0.0,
+            -0.4804
+          ],
+          "max": [
+            0.6,
+            2.4554,
+            0.4804
+          ],
+          "size": [
+            1.2,
+            2.4554,
+            0.9608
+          ]
+        },
+        "bytes": 203208,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 6,
+        "tribe_height_range": [
+          0.653,
+          0.748
+        ],
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     },
     {
       "id": "building.warden_lodge",
@@ -1298,28 +1686,53 @@
       },
       "steps": {
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-08T22:32:39Z",
+          "finished": "2026-10-08T22:32:53Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.warden_lodge/concept.jpg",
+          "sha256": "fc338f86398fa6cc94dc4e26ddbba6e0a4089582aadea5c21e27423cd89187a7",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 450579,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "a1844d61237191461f37e219d622fe9c3bdfb00b17673b56bddbc085fc076687"
         },
         "model": {
-          "status": "pending",
+          "status": "done",
           "provider": "meshy",
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "remote_id": "01a11da6-18f6-7190-b5a0-0ac252bc5956",
+          "started": "2026-10-08T22:32:53Z",
+          "finished": "2026-10-08T22:34:42Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.warden_lodge/model.glb",
+          "sha256": "80c6c39d0c1c1544f9efc730a6cbde5c1b473c87def8539df420aae89335ad87",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "bytes": 2217408,
+            "progress": 100
+          },
+          "request_hash": "de0245aba33fcb9983598d87abd279e9aa4cf76a1270747adc2527b53a4fcf60"
         },
         "rig": {
           "status": "skipped",
@@ -1346,16 +1759,72 @@
           "error": null
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-08T22:35:11Z",
+          "finished": "2026-10-08T22:35:18Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/models/building.warden_lodge.glb",
+          "sha256": "01d5d9c950f4e210b41c986da3428083be9151d672a69825c64dcf99419f7080",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1775,
+            "tris_out": 1718,
+            "decimated": false,
+            "scale": 2.9,
+            "bounds_min": [
+              -1.4484,
+              -1.45,
+              0.0
+            ],
+            "bounds_max": [
+              1.4484,
+              1.45,
+              1.9384
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "forest",
+              "moss",
+              "rock",
+              "rockDark",
+              "scar",
+              "skin2",
+              "skin3",
+              "stone",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "moss": 9,
+              "forest": 163,
+              "rock": 4,
+              "rockDark": 261,
+              "wood": 42,
+              "woodDark": 851,
+              "thatch": 16,
+              "stone": 1,
+              "skin2": 240,
+              "skin3": 33,
+              "azure": 11,
+              "scar": 87
+            },
+            "tribe_faces": 11,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.558,
+              0.763
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "418f2798c2a3074beb04c20bb67e4e5fbf7f34cf91fbd288fcb9d927e8147a3b"
         },
         "thumb": {
           "status": "pending",
@@ -1373,7 +1842,39 @@
       "style_version": 1,
       "request_hash": null,
       "approved": false,
-      "qa": {}
+      "qa": {
+        "tris": 1718,
+        "verts": 5131,
+        "bounds": {
+          "min": [
+            -1.4484,
+            0.0,
+            -1.45
+          ],
+          "max": [
+            1.4484,
+            1.9384,
+            1.45
+          ],
+          "size": [
+            2.8967,
+            1.9384,
+            2.9
+          ]
+        },
+        "bytes": 216900,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 11,
+        "tribe_height_range": [
+          0.558,
+          0.763
+        ],
+        "boundary_edges": 184,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     },
     {
       "id": "building.fire_lodge",
@@ -1397,28 +1898,46 @@
       },
       "steps": {
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-08T22:32:56Z",
+          "finished": "2026-10-08T22:33:15Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.fire_lodge/concept.jpg",
+          "sha256": "65075383aa63698d694d8d78e586b315bf95ea10fdc53cec2bba7cbb63de086a",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 381196,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "79ffafc788dff213e2055590ca2655aef2c8ad45af230952e1603745d449ff1b"
         },
         "model": {
-          "status": "pending",
+          "status": "submitted",
           "provider": "meshy",
-          "remote_id": null,
-          "started": null,
+          "remote_id": "01a11da8-4ef5-75b3-b776-516c1064d21f",
+          "started": "2026-10-08T22:35:18Z",
           "finished": null,
           "cost": null,
           "output_path": null,
           "sha256": null,
-          "attempts": 0,
-          "error": null
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image"
+          }
         },
         "rig": {
           "status": "skipped",
@@ -1496,28 +2015,46 @@
       },
       "steps": {
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-08T22:33:15Z",
+          "finished": "2026-10-08T22:33:37Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.chant_house/concept.jpg",
+          "sha256": "ba9cc99f5da3deaf34358c30341582f9afcc35304f9c01eea2489cf7e4d979a1",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 406256,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "6eb1cd847c2fc838c91497b8b48fc8ddf194525e329db9511f96aade5489fec8"
         },
         "model": {
-          "status": "pending",
+          "status": "submitted",
           "provider": "meshy",
-          "remote_id": null,
-          "started": null,
+          "remote_id": "01a11da8-57bc-703a-aca1-dd8b68235872",
+          "started": "2026-10-08T22:35:20Z",
           "finished": null,
           "cost": null,
           "output_path": null,
           "sha256": null,
-          "attempts": 0,
-          "error": null
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image"
+          }
         },
         "rig": {
           "status": "skipped",
@@ -1595,28 +2132,46 @@
       },
       "steps": {
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-08T22:33:37Z",
+          "finished": "2026-10-08T22:33:53Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.shrine/concept.jpg",
+          "sha256": "92c5494a2ed9600abe91df3c159437fe9e0b4fe9f5233fa7f144c0b466ef51f5",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 402598,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "38c9695ce2eea38a6db8adf296e1c405e7eb1c2ecf180bbd6a7202906de4b52d"
         },
         "model": {
-          "status": "pending",
+          "status": "submitted",
           "provider": "meshy",
-          "remote_id": null,
-          "started": null,
+          "remote_id": "01a11da8-61de-7173-bb8b-cc4c792642f0",
+          "started": "2026-10-08T22:35:23Z",
           "finished": null,
           "cost": null,
           "output_path": null,
           "sha256": null,
-          "attempts": 0,
-          "error": null
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image"
+          }
         },
         "rig": {
           "status": "skipped",
@@ -1694,28 +2249,46 @@
       },
       "steps": {
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-08T22:33:53Z",
+          "finished": "2026-10-08T22:34:11Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.reliquary/concept.jpg",
+          "sha256": "1ff918aa9a315ed0991526cb030c140936bdf78c24a48e59a14877e6cb06878b",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 422240,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "3176bf586305901f1d23cd42a2273c0e37b626049d154225b9276af13fb85d1c"
         },
         "model": {
-          "status": "pending",
+          "status": "submitted",
           "provider": "meshy",
-          "remote_id": null,
-          "started": null,
+          "remote_id": "01a11da8-6a6e-77d9-b026-128390b76ecf",
+          "started": "2026-10-08T22:35:25Z",
           "finished": null,
           "cost": null,
           "output_path": null,
           "sha256": null,
-          "attempts": 0,
-          "error": null
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image"
+          }
         },
         "rig": {
           "status": "skipped",
@@ -1793,28 +2366,46 @@
       },
       "steps": {
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-08T22:34:11Z",
+          "finished": "2026-10-08T22:34:28Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.totem/concept.jpg",
+          "sha256": "5e8b581571f2e52351357c3887ce808b521b5d40b0f5ad251cf4e370ef1248bc",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 350665,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "422e20db377a788ec7d4a7ce32307b8d9d46b1bdc666b76c24de781683bbdae5"
         },
         "model": {
-          "status": "pending",
+          "status": "submitted",
           "provider": "meshy",
-          "remote_id": null,
-          "started": null,
+          "remote_id": "01a11da8-7338-744e-a4bf-03274177d35e",
+          "started": "2026-10-08T22:35:28Z",
           "finished": null,
           "cost": null,
           "output_path": null,
           "sha256": null,
-          "attempts": 0,
-          "error": null
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image"
+          }
         },
         "rig": {
           "status": "skipped",

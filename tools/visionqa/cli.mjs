@@ -122,6 +122,16 @@ async function probe(out) {
 
 export async function visionCmd(out, cmd, args) {
   if (cmd === "visionqa-probe") return probe(out);
+  if (cmd === "visionqa-spend") {
+    const s = spend();
+    out.line(`visionqa spend: today ${s.today.toFixed(5)}, total ${s.total.toFixed(5)} (caps ${process.env.VISIONQA_DAILY_USD ?? 1} daily, ${process.env.VISIONQA_TOTAL_USD ?? 8} total)`);
+    return out.finish("PASS");
+  }
+  if (cmd === "visionqa-calibrate") {
+    if (provider() === "off") return out.finish("SKIP", "VisionQA provider is off");
+    const { calibrate } = await import("./run.mjs");
+    return calibrate(out);
+  }
   if (provider() === "off") return out.finish("SKIP", "VisionQA provider is off");
   if (!existsSync(ROOT + "reports/latest/shots.json")) return out.finish("SKIP", "no shots.json yet (shot sets land at M2)");
   const { runChecks } = await import("./run.mjs").catch((e) => (e.code === "ERR_MODULE_NOT_FOUND" && e.message.includes("run.mjs") ? { runChecks: null } : Promise.reject(e)));

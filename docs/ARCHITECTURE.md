@@ -126,7 +126,7 @@ Example (illustrative): Volcano = `terrainOp(crater cone up) + areaOverTime(lava
 
 ## 8. App and debug API (`apps/game`)
 
-URL params: `?seed=123&level=skirmish_small&scenario=<id>&camera=<preset>&paused=1&quality=low&debug=1&fixedStep=1`.
+URL params: `?seed=123&level=skirmish_small&scenario=<id>&camera=<preset>&paused=1&quality=low&debug=1&fixedStep=1`. As built (M2): `level` is a generator preset (`continents`, `islands`, or a test map), plus `size` and `tribes`; camera presets are `default, close, mid, globe, map` (`packages/render/src/camera.ts`).
 
 `window.__game` (always present in dev and test builds):
 
@@ -138,7 +138,8 @@ URL params: `?seed=123&level=skirmish_small&scenario=<id>&camera=<preset>&paused
 | `step(n)` | advance n ticks when paused (deterministic test mode) |
 | `setCamera(preset or {focus, yaw, zoom})` | for captures |
 | `frames()` | rendered frame counter, captures wait for `frames() >= n` not wall time |
-| `loadScenario(id)`, `setDebug(flags)` | test hooks, including deliberate breakage flags used to calibrate visual QA |
+| `loadScenario(id)`, `setDebug(flags)` | test hooks, including deliberate breakage flags used to calibrate visual QA (`hideTerrain, blackCanvas, magentaMaterials, overlapHud, freezeCamera`) |
+| `pause(bool)`, `runDef(def, rawPack)`, `webgl()` | pause toggle; run a scenario definition headless in the page (cross-engine determinism); WebGL renderer string |
 
 Agents read `getSummary()` and headless harness output first. Screenshots are the last resort.
 

@@ -1,0 +1,22 @@
+{
+  "$comment": "VisionQA check catalog (docs/VISIONQA.md section 4). appliesTo lists shot kinds. passWhen: below (probability must be under threshold), above, or choice. Thresholds come from thresholds.json after calibration (default 0.5).",
+  "checks": [
+    { "id": "not_blank", "type": "predicate", "appliesTo": ["world", "map", "hud", "menu"], "passWhen": "below", "instructions": "Is this frame essentially blank: black, white, or a single flat color with no scene content?" },
+    { "id": "terrain_visible", "type": "predicate", "appliesTo": ["world", "map"], "passWhen": "above", "instructions": "Is a landscape with land (green or brown ground) and water clearly visible?" },
+    { "id": "ui_overlap", "type": "predicate", "appliesTo": ["world", "map", "hud", "menu"], "passWhen": "below", "instructions": "Do any interface panels or text labels visibly overlap each other, clip, or run off the screen edge?" },
+    { "id": "artifact_suspect", "type": "predicate", "appliesTo": ["world", "map"], "passWhen": "below", "instructions": "Are there obvious rendering glitches: bright magenta or pink missing-texture surfaces, stretched polygons, holes, or z-fighting stripes?" },
+    { "id": "scene_kind", "type": "choice", "appliesTo": ["world", "map"], "passWhen": "choice", "instructions": "Which kind of screen is shown?", "choices": [
+      { "value": "world_view", "description": "A 3D perspective view of terrain, water or a small planet" },
+      { "value": "map_view", "description": "A flat top-down map of the whole world" },
+      { "value": "menu", "description": "A menu or dialog fills most of the frame" },
+      { "value": "error_or_blank", "description": "An empty, black or broken frame" },
+      { "value": "other", "description": "Anything else" }
+    ], "expectByKind": { "world": "world_view", "map": "map_view" } },
+    { "id": "visual_quality", "type": "score", "appliesTo": ["world"], "passWhen": "never", "instructions": "How polished does this game frame look?", "levels": [
+      { "label": "broken", "description": "Glitched or unreadable" },
+      { "label": "rough", "description": "Readable but crude placeholder look" },
+      { "label": "acceptable", "description": "Coherent stylized look, some rough edges" },
+      { "label": "polished", "description": "Charming, cohesive, release quality" }
+    ] }
+  ]
+}
