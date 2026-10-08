@@ -1,0 +1,17 @@
+{
+  "id": "path_repath_after_terrain_change",
+  "description": "A pond appears across a settler's planned straight route mid-walk; the path is invalidated, the settler walks around it and arrives dry.",
+  "tags": ["fast", "pathing", "terrain"],
+  "seed": 17,
+  "map": { "generator": "flat", "size": 64, "tribes": 1 },
+  "setup": [{ "spawn": "settler", "tribe": 0, "at": [10, 32] }],
+  "commands": [
+    { "tick": 1, "tribe": 0, "type": "move", "args": { "units": "tribe0.settlers", "to": [50, 32] } },
+    { "tick": 60, "tribe": -1, "type": "terrainOp", "args": { "op": "set", "x": 30, "y": 32, "r": 6, "value": 40 } }
+  ],
+  "runTicks": 900,
+  "assert": [
+    { "at": 61, "expr": "!terrain.isLand([30,32]) && count(tribe0.settlers, moving) == 1" },
+    { "at": 900, "expr": "count(tribe0.settlers, near([50,32], 1)) == 1 && events.count('drowned') == 0 && invariants() == 0" }
+  ]
+}
