@@ -1,0 +1,246 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$comment": {
+      "type": "string"
+    },
+    "sim": {
+      "type": "object",
+      "properties": {
+        "tickHz": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "hashEverySeconds": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "tickHz",
+        "hashEverySeconds"
+      ],
+      "additionalProperties": false
+    },
+    "terrain": {
+      "type": "object",
+      "properties": {
+        "defaultSize": {
+          "type": "integer",
+          "minimum": 64,
+          "maximum": 512
+        },
+        "heightMax": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "heightUnitsPerWorldUnit": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "seaLevel": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "generatorRange": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "bands": {
+          "type": "object",
+          "properties": {
+            "shore": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "lowland": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "grass": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "highland": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "rock": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "peak": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "shore",
+            "lowland",
+            "grass",
+            "highland",
+            "rock",
+            "peak"
+          ],
+          "additionalProperties": false
+        },
+        "maxWalkSlope": {
+          "type": "number",
+          "minimum": 0
+        },
+        "maxBuildSlope": {
+          "type": "number",
+          "minimum": 0
+        },
+        "drownDepthHeightUnits": {
+          "type": "number",
+          "minimum": 0
+        },
+        "skirmishRequiresConnectedLand": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "defaultSize",
+        "heightMax",
+        "heightUnitsPerWorldUnit",
+        "seaLevel",
+        "generatorRange",
+        "bands",
+        "maxWalkSlope",
+        "maxBuildSlope",
+        "drownDepthHeightUnits",
+        "skirmishRequiresConnectedLand"
+      ],
+      "additionalProperties": false
+    },
+    "breeding": {
+      "type": "object",
+      "properties": {
+        "formula": {
+          "type": "string"
+        },
+        "nearCapSlowdownStartPct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "nearCapFactorAtCap": {
+          "type": "number",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "formula",
+        "nearCapSlowdownStartPct",
+        "nearCapFactorAtCap"
+      ],
+      "additionalProperties": false
+    },
+    "combat": {
+      "type": "object",
+      "properties": {
+        "heightRangedBonusPctPerBand": {
+          "type": "number"
+        },
+        "stuckSeconds": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "heightRangedBonusPctPerBand",
+        "stuckSeconds"
+      ],
+      "additionalProperties": false
+    },
+    "gates": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "counterTriangleMinWinPct": {
+          "type": "number"
+        },
+        "maxPersonalityWinPct": {
+          "type": "number"
+        },
+        "medianMatchMinutes": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "unharassedPopulationAtMinute10": {
+          "type": "object",
+          "properties": {
+            "target": {
+              "type": "number"
+            },
+            "tolerancePct": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "target",
+            "tolerancePct"
+          ],
+          "additionalProperties": false
+        },
+        "maxStalematePct": {
+          "type": "number"
+        },
+        "aiEliminatesIdleMinutes": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "counterTriangleMinWinPct",
+        "maxPersonalityWinPct",
+        "medianMatchMinutes",
+        "unharassedPopulationAtMinute10",
+        "maxStalematePct",
+        "aiEliminatesIdleMinutes"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "sim",
+    "terrain",
+    "breeding",
+    "combat",
+    "gates"
+  ],
+  "additionalProperties": false
+}

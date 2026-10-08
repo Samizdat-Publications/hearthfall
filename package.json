@@ -1,0 +1,53 @@
+{
+  "name": "hearthfall",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Hearthfall: an original 3D god game with a mortal Shaper, population-powered mana and a deformable curved world.",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "typecheck": "node tools/harness/cli.mjs typecheck",
+    "check": "node tools/harness/cli.mjs check",
+    "doctor": "node --env-file-if-exists=.env tools/harness/cli.mjs doctor",
+    "test:unit": "node tools/harness/cli.mjs unit",
+    "test:scenarios": "node tools/harness/cli.mjs scenarios",
+    "test:replays": "node tools/harness/cli.mjs replays",
+    "replays:rebless": "node tools/harness/cli.mjs rebless",
+    "qa:fast": "node tools/harness/cli.mjs qa-fast",
+    "qa": "node --env-file-if-exists=.env tools/harness/cli.mjs qa",
+    "soak": "node tools/harness/cli.mjs soak",
+    "bench": "node tools/harness/cli.mjs bench",
+    "bench:render": "node tools/harness/cli.mjs bench-render",
+    "shot": "node tools/harness/cli.mjs shot",
+    "shot:approve": "node tools/harness/cli.mjs shot-approve",
+    "sheet": "node tools/harness/cli.mjs sheet",
+    "visionqa": "node --env-file-if-exists=.env tools/harness/cli.mjs visionqa",
+    "visionqa:probe": "node --env-file-if-exists=.env tools/harness/cli.mjs visionqa-probe",
+    "data:check": "node tools/harness/cli.mjs data-check",
+    "data:docs": "node tools/harness/cli.mjs data-docs",
+    "build": "node tools/harness/cli.mjs build",
+    "build:test": "node tools/harness/cli.mjs build-test",
+    "dev": "vite --config apps/game/vite.config.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.0",
+    "@preact/signals": "^2.11.3",
+    "@types/node": "^24.19.1",
+    "@types/pngjs": "^6.0.5",
+    "@types/three": "^0.186.0",
+    "pixelmatch": "^8.0.0",
+    "pngjs": "^7.0.0",
+    "preact": "^11.0.1",
+    "three": "0.186.1",
+    "typescript": "7.0.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.3",
+    "zod": "^4.6.5"
+  }
+}

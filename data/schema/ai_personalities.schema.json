@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$comment": {
+      "type": "string"
+    },
+    "personalities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "$comment": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "tribeColorDefault": {
+            "type": "string",
+            "enum": [
+              "azure",
+              "crimson",
+              "amber",
+              "jade"
+            ]
+          },
+          "economyTargetPop": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "armyMix": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*$"
+            },
+            "additionalProperties": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "aggression": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "firstAttackMinute": {
+            "type": "number",
+            "minimum": 0
+          },
+          "spellPrefs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*$"
+            }
+          },
+          "scouting": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "towerAffinity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "id",
+          "tribeColorDefault",
+          "economyTargetPop",
+          "armyMix",
+          "aggression",
+          "firstAttackMinute",
+          "spellPrefs",
+          "scouting",
+          "towerAffinity"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "difficulties": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "$comment": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "reactionSeconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "decisionNoise": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "resourceMultiplier": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          }
+        },
+        "required": [
+          "id",
+          "reactionSeconds",
+          "decisionNoise",
+          "resourceMultiplier"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "personalities",
+    "difficulties"
+  ],
+  "additionalProperties": false
+}

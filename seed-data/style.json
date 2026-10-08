@@ -1,0 +1,16 @@
+{
+  "$comment": "Starting palette (sRGB hex). The asset pipeline converts to OKLab for snapping. Bump styleVersion when the look changes.",
+  "styleVersion": 1,
+  "palette": {
+    "sand": "#E8D2A0", "meadow": "#8DBF5A", "moss": "#5E8C3A", "forest": "#3F6B2E", "rock": "#8A8378", "rockDark": "#5C564E", "snow": "#F4F1EA",
+    "water": "#2F7FB8", "waterShallow": "#58B4D6", "foam": "#E6F4F8",
+    "wood": "#8B5A2B", "woodDark": "#5E3A1A", "thatch": "#C9A65A", "stone": "#A9A196",
+    "skin1": "#E2B48C", "skin2": "#B98058", "skin3": "#7C4E33", "cloth": "#D9CBB0",
+    "azure": "#2E6FD8", "crimson": "#C8312E", "amber": "#E0A12A", "jade": "#2FA36B",
+    "fire": "#FF7A1A", "lava": "#FF3B10", "lightning": "#BFE8FF", "magic": "#B07CFF", "scar": "#3A2A22"
+  },
+  "lighting": {"keyColor": "#FFE2B0", "keyIntensity": 2.2, "skyTop": "#7FB6E8", "skyHorizon": "#F3D9B1", "fogColor": "#E9D8BC"},
+  "promptStyleSuffix": "stylized low-poly diorama game asset, chunky readable shapes, warm earthy palette, flat shading, clean silhouette, plain neutral background, no text, no logo",
+  "promptNegative": "photorealistic, noisy texture, text, watermark, thin spindly parts, modern objects",
+  "triBudgets": {"unit": [600, 2000], "building": [800, 3000], "prop": [100, 800]}
+}

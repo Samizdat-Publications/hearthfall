@@ -1,0 +1,277 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$comment": {
+      "type": "string"
+    },
+    "units": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "$comment": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "hp": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "speed": {
+            "type": "number",
+            "minimum": 0
+          },
+          "manaPerMin": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "melee": {
+            "type": "object",
+            "properties": {
+              "dps": {
+                "type": "number",
+                "minimum": 0
+              },
+              "range": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "dps",
+              "range"
+            ],
+            "additionalProperties": false
+          },
+          "ranged": {
+            "type": "object",
+            "properties": {
+              "damage": {
+                "type": "number",
+                "minimum": 0
+              },
+              "radius": {
+                "type": "number",
+                "minimum": 0
+              },
+              "range": {
+                "type": "number",
+                "minimum": 0
+              },
+              "cooldown": {
+                "type": "number",
+                "minimum": 0
+              },
+              "knockback": {
+                "type": "number",
+                "minimum": 0
+              },
+              "heightRangeBonusPerBand": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "damage",
+              "radius",
+              "range",
+              "cooldown",
+              "knockback",
+              "heightRangeBonusPerBand"
+            ],
+            "additionalProperties": false
+          },
+          "convert": {
+            "type": "object",
+            "properties": {
+              "radius": {
+                "type": "number",
+                "minimum": 0
+              },
+              "channelSeconds": {
+                "type": "number",
+                "minimum": 0
+              },
+              "maxPerChannel": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              "entrancedFreeze": {
+                "type": "boolean"
+              },
+              "cannotConvert": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]*$"
+                }
+              },
+              "interruptedBy": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "rangedDamage",
+                    "spell",
+                    "terrainChangeNear"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "radius",
+              "channelSeconds",
+              "maxPerChannel",
+              "entrancedFreeze",
+              "cannotConvert",
+              "interruptedBy"
+            ],
+            "additionalProperties": false
+          },
+          "sabotage": {
+            "type": "object",
+            "properties": {
+              "burnSeconds": {
+                "type": "number",
+                "minimum": 0
+              },
+              "disguise": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "burnSeconds",
+              "disguise"
+            ],
+            "additionalProperties": false
+          },
+          "isCaster": {
+            "type": "boolean"
+          },
+          "respawn": {
+            "type": "object",
+            "properties": {
+              "seconds": {
+                "type": "number",
+                "minimum": 0
+              },
+              "drownedSeconds": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "seconds",
+              "drownedSeconds"
+            ],
+            "additionalProperties": false
+          },
+          "trainableInto": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*$"
+            }
+          },
+          "prefersTarget": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*$"
+            }
+          },
+          "trainedAt": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "trainSeconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "trainMana": {
+            "type": "number",
+            "minimum": 0
+          },
+          "convertible": {
+            "type": "boolean"
+          },
+          "wanders": {
+            "type": "boolean"
+          },
+          "spawnPerTribe": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "items": false,
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "milestone": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "hp",
+          "speed",
+          "manaPerMin",
+          "convertible"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "rules": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "populationCap": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "startPopulation": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "spiritManaPerMin": {
+          "type": "number",
+          "minimum": 0
+        },
+        "popCapFormula": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "populationCap",
+        "startPopulation",
+        "spiritManaPerMin",
+        "popCapFormula"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "units",
+    "rules"
+  ],
+  "additionalProperties": false
+}

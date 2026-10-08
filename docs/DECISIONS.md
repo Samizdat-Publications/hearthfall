@@ -1,0 +1,55 @@
+# Decision records
+
+Append new ADRs at the bottom. Format: context, decision, consequences. Never rewrite an old ADR; supersede it.
+
+## ADR-001: Stack is a pure TypeScript simulation core + three.js WebGL renderer + Node test harness (10/08/2026)
+
+**Context.** Hearthfall's build runs autonomously for 24+ hours on Stewart's Windows 11 PC (RTX GPU) and then grows for weeks. The top criterion is how well Claude Code can verify its own work without a human; then extensibility, how reliably models write correct code for the stack, graphics and performance for 2000 units, and asset import. Candidates: Godot 4.7.2 (GDScript or C#), TypeScript + three.js r186 or Babylon 9, and a hybrid with an engine-agnostic sim core. Evidence was gathered by running each in a sandbox: `docs/research/stack_options.md`.
+
+**Decision.** TypeScript everywhere. Deterministic simulation in `packages/sim` with no DOM or renderer imports, run headless in Node for unit, scenario, replay, soak and perf tests. Rendering with three.js `0.186.1` **WebGLRenderer** behind a `Renderer` interface. Playwright `1.64.0` Chromium for screenshots and browser e2e, with the game exposing `window.__game` state JSON. Vite for dev and build. Electron for a desktop exe later.
+
+**Why.**
+- The whole sim, AI and bots run in plain Node: fastest and cheapest self-testing loop, verified deterministic, and roughly 6x faster than the same trivial sim in GDScript in the sandbox measurement.
+- Screenshots, state reads and DOM layout checks are all automatable from one tool (Playwright). Godot's `--headless` mode has no rendering at all (verified: image capture returns null), so Godot screenshots need a real window; workable on Windows but a weaker automation story.
+- TypeScript and three.js are the most heavily represented in model training data; Godot 4 GDScript tends to drift toward Godot 3 syntax.
+- Stewart's previous game builds were Node.js; web-first gives a shareable URL later, Electron gives an exe.
+- A renderer-agnostic sim keeps the engine choice reversible: if the visual ceiling ever demands Godot, the sim can be ported or driven over a socket.
+
+**Consequences.**
+- Graphics ceiling is lower than Godot's; acceptable for a stylized low-poly look; budget polish time for lighting, fog and VFX.
+- JavaScript is single threaded: SoA typed arrays, budgets and a Worker-ready snapshot API from day one.
+- WebGPU deferred (headless captures blank; drops `onBeforeCompile` used by the curved-world bend).
+- Pins on three and Playwright; no unprompted upgrades.
+- Runner-up if this fails: Godot 4.7.2 with strict typed GDScript, sim in `RefCounted` classes tested by GUT 9.7.1, windowed screenshot capture.
+
+## ADR-002: Exact tool versions installed at M0 (10/08/2026)
+
+**Context.** ARCHITECTURE section 1 pins three and Playwright and asks for the rest to be recorded.
+
+**Decision.** Installed and locked in `package-lock.json`:
+
+| Tool | Version | Note |
+|---|---|---|
+| Node | 24.19.0 | newer than the 22.18 floor in `engines`; Node type stripping is on by default |
+| npm | 11.17.0 | workspaces |
+| TypeScript | 7.0.2 (exact) | native compiler, `tsc -p tsconfig.json` |
+| Linter | none | tsc plus plain-script guards (ARCHITECTURE section 1) |
+| Vite | 8.3.4 | JSX via the built-in oxc transform (`importSource: preact`), no Babel plugin |
+| Vitest | 5.0.3 | |
+| three | 0.186.1 (exact) | @types/three 0.186.0 |
+| @playwright/test | 1.64.0 (exact) | chromium-headless-shell 156.0.8078.4 (build 1248) |
+| Preact / @preact/signals | 11.0.1 / 2.11.3 | |
+| zod | 4.6.5 | `z.toJSONSchema` generates data/schema |
+| pngjs / pixelmatch | 7.0.0 / 8.0.0 | pixel checks |
+| Python | 3.14.3 | project `.venv`, `tools/assets/requirements.txt` |
+| Blender | 5.1.2 | 5.2 LTS is not installed on this PC; the pipeline falls back to the 5.1 path |
+
+**Consequences.** Upgrades of pinned or major versions need their own commit, full QA and an ADR. Blender 5.1 vs 5.2 differences are watched by the asset track; if a 5.2-only API is needed, log it.
+
+## ADR-003: Node runs the TypeScript packages directly via type stripping (10/08/2026)
+
+**Context.** The harness (plain `.mjs`) must run the sim, data and AI headless without a build step or a transpiling loader.
+
+**Decision.** All TypeScript is written as erasable syntax only (`erasableSyntaxOnly`, `verbatimModuleSyntax`, `allowImportingTsExtensions`; no enums, namespaces or parameter properties) and relative imports carry the `.ts` extension. Node 24 strips types natively, so `tools/harness` imports `packages/*/src/*.ts` directly; Vite and Vitest consume the same files.
+
+**Consequences.** No `dist` for packages and no loader dependency. Workspace packages export `./src/index.ts`. If a future Node drops or changes stripping, fall back to running the harness under `vite-node` or a one-file esbuild bundle (reversible, harness only).

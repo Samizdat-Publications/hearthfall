@@ -1,0 +1,189 @@
+# HEARTHFALL: Game Design Document (living)
+
+Title: **Hearthfall** (codename `hearthfall`). The name comes from the core loop: your caster, the Shaper, falls and returns to the Hearth, and the great spells fall from the sky. An original god game inspired by the systems of the late-90s shaman-led tribal god games. We lift system relationships (population powers magic, a mortal avatar caster, deformable curved world, water kills), never names, art, audio, or level designs. Research backing every number: `docs/research/populous_mechanics.md`.
+
+This file is the source of truth for intent. Numbers here are starting values; the live values are in `data/base/*.json` and win any conflict. When you change a rule, update this file in the same commit.
+
+---
+
+## 1. Pillars
+
+1. **Shape the world, not just the army.** Terrain is the main weapon and the main puzzle. Raising, sinking, flattening and breaking land must feel physical and consequential.
+2. **Your people are your power.** Mana comes from followers living and working. Every soldier trained and every settler lost is felt in spell charge time.
+3. **The avatar is mortal.** One caster, limited range, dies and returns. Protecting and positioning her is the core skill.
+4. **Readable chaos.** Hundreds of units, big spells, but you can always tell who is who, what is charging, and why you lost a fight.
+5. **Built to grow.** Every unit, building, spell, AI personality and level is data. New content should rarely need new engine code.
+
+## 2. Fiction and naming (original)
+
+| Concept | Our name | Notes |
+|---|---|---|
+| Avatar caster | **the Shaper** | Sole spellcaster of a tribe. Directly controlled. |
+| Respawn point | **Hearth** | Shaper returns here after death. No Hearth and no followers means defeat. |
+| Worker | **Settler** | Builds, gathers wood, breeds, prays, can be trained. |
+| Melee troop | **Warden** | Tough, slow. Beats Firecallers. |
+| Ranged troop | **Firecaller** | Area fireballs, range bonus from height and towers. Beats Chanters. |
+| Converter | **Chanter** | Chants enemies (not Shapers or Chanters) to your side. Beats Wardens. |
+| Saboteur | **Shade** | Disguises as enemy color, burns buildings and trees. |
+| Housing | **Dwelling** (small/medium/large) | Holds settlers, breeds new ones. |
+| Defense | **Watchtower** | Garrison for range and protection. |
+| Training | **Warden Lodge, Fire Lodge, Chant House, Shade Den** | Convert a settler into a troop. |
+| One-shot reward | **Shrine** | Worship it to gain one-shot spells or a one-time building. |
+| Permanent unlock | **Reliquary** | Worship to permanently unlock a spell or building. |
+| Map trigger | **Totem** | Scripted map effects. |
+| Tribes | **Azure** (player default), **Crimson**, **Amber**, **Jade** | Colors only, no lore names yet. |
+| Currency | **Mana** | Generic term, kept. |
+
+Avoid anywhere in code, data, UI and assets: the original title, its tribe names, unit name set, building names, incantations, level names, sprites, music.
+
+## 3. Core loop
+
+Moment to moment: settlers chop trees, build and expand dwellings, which breed more settlers, which generate mana. Mana charges spells for the Shaper and pays for training troops. The Shaper walks to the front, casts within range, and the tribe fights over land, shrines and reliquaries. Terrain spells open routes (raise land across water), destroy bases (quake, erode, volcano) and kill by drowning.
+
+Match arc: settle (0 to 5 min), expand and claim shrines (5 to 15 min), war and terrain escalation (15+ min), collapse of a tribe.
+
+## 4. Win and loss
+
+- Starting state: a Hearth, the Shaper, 5 settlers, and a few wild people wandering nearby.
+- The **Hearth** has 4000 HP and can be destroyed by troops and spells. It never rebuilds in v1.
+- A tribe is **eliminated** when its Shaper is dead and either its Hearth is destroyed or it has zero settlers and troops.
+- Skirmish victory: last tribe (or alliance) standing. Optional victory variants in data: hold all reliquaries for N minutes, timed survival.
+- Shaper death: respawns at Hearth after `respawnSeconds` (start 35, 26 if drowned). The killing tribe gains `killChargeStealPct` (start 25 percent) of her stored charges as mana. Death throttles the economy because the Shaper is the single largest mana producer.
+
+## 5. Mana economy
+
+Per follower per minute (starting values, ratios lifted, scale ours):
+
+| State | Mana/min |
+|---|---|
+| Shaper alive | 66 |
+| Settler housed or working (building, chopping, praying) | 35 |
+| Trained troop moving or fighting | 11 |
+| Anyone idle | 9 |
+| Summoned or spectral units | 0 |
+
+Rules:
+- **No bank.** Income flows into active sinks: the spell currently charging and the training queue. Default split 50/50 when both are active; if only one sink is active it gets 100 percent (improvement over the original, which wasted the idle half). The split is a player slider (0 to 100) in the HUD.
+- Each spell has a cost and **max stored charges** (4 for cheap, 3, 2, 1 for ultimates). Charging cycles through spells the player has toggled "auto-charge"; the HUD shows ETA per spell and a waste warning when nothing can absorb income.
+- Start: 300 mana worth of charges (3 Bolts, or as level data says).
+- Training a settler into a troop costs mana from the training sink plus the settler, and cuts that follower's income to about a third. That trade-off is intended.
+
+## 6. Population
+
+- Start 5 settlers + Shaper. Population cap: `popCap = min(200, 5 + sum of dwelling supply)` (data).
+- Dwellings: capacity small 3, medium 4, large 5; supply contribution 3/5/7. Dwellings auto-upgrade when occupied and wood is available (upgrade needs 3 wood delivered, consumes 2).
+- Breeding: each dwelling has a progress bar. `breedSeconds = base / (0.5 + 0.5 * occupants) * nearCapFactor`, with base small 200 s, medium 150 s, large 100 s; `nearCapFactor` rises from 1 once population passes 70 percent of popCap. A dwelling with zero occupants does not breed. Tune in data with soak tests (target: an unharassed tribe reaches ~60 population at 10 minutes).
+
+## 7. Units
+
+Starting stats. Speed in cells per second (1 cell = 1 heightmap cell).
+
+| Unit | HP | Speed | Role and rules |
+|---|---|---|---|
+| Shaper | 2500 | 1.5 | Casts. Light melee. Can be shielded. Respawns. |
+| Settler | 1000 | 1.6 | Worker. Weak melee. Becomes any troop at a lodge. |
+| Warden | 1800 | 1.35 | Melee, kills ~6 settlers alone. Prefers attacking Firecallers. |
+| Firecaller | 700 | 1.25 | Ranged area fireball, knockback. +range on higher ground and in towers. |
+| Chanter | 1100 | 1.3 | Chants in a radius of 5: enemies inside are **entranced** (frozen, swaying) while the 4 s channel runs, then convert (up to 3 per channel). Interrupted by ranged damage, spells, and terrain change nearby. Cannot convert Shapers, Chanters, or units inside buildings. |
+| Shade | 600 | 1.5 | Disguise (enemy color), burns buildings and trees, reveals info. |
+
+Counter triangle (must be statistically verified by soak tests): Warden beats Firecaller, Firecaller beats Chanter, Chanter beats Warden. Height matters: units on higher ground deal +X percent ranged damage and Bolt knockback is stronger downhill.
+
+**Water is death:** any unit pushed or walking into water deeper than `drownDepthHeightUnits` drowns instantly (boats and later flyers exempt). Knockback into water is a core kill tool.
+
+## 8. Buildings
+
+| Building | Wood | Footprint | Notes |
+|---|---|---|---|
+| Dwelling (small) | 3 | 2x2 | Upgrades to medium, large |
+| Watchtower | 5 | 1x1 | Garrison 1 to 2, range bonus |
+| Warden Lodge / Fire Lodge / Chant House / Shade Den | 8 | 3x3 | Training queues |
+| Boathouse | 5 | 3x3 | Boats carry 5 (later milestone) |
+| Skyloft | 11 | 3x3 | Balloons carry 2, only Firecallers fire from vehicles (later) |
+
+Construction: player places a plan; settlers auto-assign, flatten the footprint toward its average height, deliver wood, build. Footprint must be above water and below a max slope after flattening. Plans blocked by trees or units resolve automatically (units step aside, trees get chopped first).
+
+Wood: trees hold up to 4 wood, regrow 1 wood per 68 s, regrow fully from a stump in 330 s. Forests spread slowly onto suitable land (data toggle).
+
+## 9. Spells
+
+Composable from effect primitives (see `docs/ARCHITECTURE.md` section 6). Range is measured from the Shaper. Cost in mana; charges = max stored.
+
+| Tier | Spell | Cost | Charges | Range | Effect |
+|---|---|---|---|---|---|
+| 1 | **Bolt** | 100 | 4 | 6 | Small blast, damage + knockback |
+| 1 | **Call** | 100 | 4 | 16 | Converts wild people in a small radius (v1); enemy settlers only via a later upgrade, if ever |
+| 2 | **Hornets** | 400 | 4 | 12 | Swarm that panics and scatters units |
+| 2 | **Veil** | 500 | 4 | 8 | Invisibility on a group |
+| 2 | **Ward** | 600 | 4 | 8 | Shield on up to 6 units for 120 s |
+| 2 | **Raise Land** | 650 | 4 | 10 | Ridge of land from Shaper toward target, bridges water |
+| 2 | **Lightning** | 800 | 4 | 12 | Single target heavy damage, can kill a Shaper |
+| 2 | **Beguile** | 850 | 3 | 8 | Units fight for you for 40 s |
+| 2 | **Whirlwind** | 900 | 3 | 8 | Moving vortex, flings units and buildings |
+| 3 | **Mire** | 1000 | 3 | 8 | Sinkhole bog that kills the first 10 units entering |
+| 3 | **Flatten** | 1250 | 3 | 8 | Levels a region |
+| 3 | **Quake** | 1750 | 2 | 8 | Cracks and lowers land, damages buildings |
+| 3 | **Erode** | 2100 | 2 | 8 | Sinks land toward water |
+| 4 | **Firerain** | 4000 | 2 | 8 | Meteor storm |
+| 4 | **Wraith** | 5100 | 1 | 6 | Summoned flying killer, 200 s or 40 kills |
+| 4 | **Volcano** | 8000 | 1 | 6 | Raises a cone, lava, leaves scarred unbuildable land that heals slowly |
+
+**v1 (first 24 h) must ship:** Bolt, Call, Lightning, Raise Land, Flatten, Quake, Hornets, Volcano. Others land through the backlog as pure data where possible.
+
+Anti-degenerate rules (fixes from the original's banned-spell meta): every powerful spell has a counter (Ward is popped by Lightning; Mire is visible; Beguile breaks when the caster dies), plus optional per-spell cooldowns in data.
+
+Spell UX: hover shows exact area preview on the curved terrain, range ring around the Shaper, red if out of range; right click or Esc cancels; a 1 s "undo" on misclick refunds the charge if the cast has not resolved.
+
+## 10. Worship objects
+
+- **Shrine:** needs N worshippers (1 to 8). Each missing worshipper halves prayer speed. Default prayer 37.5 s at full count. Grants one-shot spell charges or one building, then sinks.
+- **Reliquary:** same mechanic, grants a permanent spell or building unlock (campaign progression and skirmish objective).
+- **Totem:** level-scripted trigger (raise a land bridge, spawn wild people, reveal map).
+
+## 11. Terrain
+
+- Heightmap on a **torus** (wraps both axes), default 128 x 128 cells (data: 64 to 512). Height in integer units 0 to 1023 with 32 height units per world unit (one cell is one world unit across); sea level 120; the generator produces land between about 60 and 520. Rendered with a curved horizon so the world reads as a small planet.
+- **Skirmish maps are connected:** the generator flood-fills walkable land and rerolls the seed until every Hearth site shares one landmass (there are no boats in v1). Island maps exist only as handmade levels that hand out Raise Land.
+- All terrain edits are sim operations on integer heights with dirty-region tracking: raise, lower, set, flatten-to-average, smooth, crater, ridge-line, noise-scar. Spells, flattening for buildings, and erosion all use the same ops.
+- Rules: max walk slope, max build slope, water impassable (drowns), "scarred land" flag (unbuildable, heals over time), tree growth by height band.
+- Height bands drive visuals and rules: shore, lowland, grass, highland, rock, peak.
+- A flat top-down **map view** toggle for precise planning, and a minimap with curvature-aware markers.
+
+## 12. Camera and controls
+
+- Camera orbits a focus point on the surface: rotate 360 (Q/E or middle drag), zoom from close-up to globe view (wheel), pan with arrow keys, screen edge, or Ctrl + middle drag, double-tap a group key to jump. Four bookmark slots (F1 to F4). Map view toggle (M).
+- Selection: click, box select that works on the curved surface, double-click selects all of that type on screen, control groups 1 to 9, tab cycles unit types in selection.
+- Orders: right click move/attack/garrison/worship, attack-move (A), stances (aggressive, defensive, hold), formations for groups, rally points on lodges, queued orders (Shift), "retreat to nearest tower" (R).
+- Shaper: hotkey S selects and centers her. Spells on Z X C V B N M (in spell bar order) or click the HUD. No Alt chords (a lone Alt press steals focus in Chrome on Windows).
+- Settlers are mostly autonomous with a tribe-wide priority panel (build / chop / breed / pray), so the player manages intent, not individuals.
+
+## 13. AI opponents
+
+- Utility-based AI driven by **personality data**: aggressive (Crimson: early Warden rushes, Bolt harassment), sneaky (Amber: Chanters, Shades, Veil, skirmish raids), turtle (Jade: towers, Mire, Quake from range).
+- Same command API as the player. Spell preferences are filtered to spells the AI actually has unlocked. No hidden cheats by default; difficulty scales decision quality, reaction time and optional resource multipliers declared in data.
+- Must scout, contest shrines and reliquaries, adapt army composition to what it sees, and react to Shaper threats. Show AI intent subtly in-world (gathering banners before an attack) so losses feel fair.
+
+## 14. Modes
+
+1. **Skirmish** (primary for v1): 1 player vs 1 to 3 AI tribes on a seeded procedural planet or a handmade map.
+2. **Campaign** (data-driven levels): each level is a data file with map, tribes, objectives, triggers, unlocks. v1 ships 3 to 5 levels teaching the systems.
+3. **Sandbox/God mode** (dev and fun): free spells, spawn units, edit terrain. Also used by tests.
+4. Later: online multiplayer (lockstep, sim is already deterministic), co-op vs AI, a pre-match terraforming phase ("Forge" mode).
+
+## 15. Art direction
+
+Stylized low-poly, flat or soft-faceted shading, vertex colors from one shared palette (`data/base/style.json`), warm golden-hour key light, soft fog toward the horizon, saturated tribe colors on clothing and banners only so units read instantly. Terrain: banded colors (sand, meadow, moss, rock, snow) with subtle noise. Water: stylized, animated, with shoreline foam. Spells must be loud and readable (big silhouettes, color-coded by tier). Units are tiny on screen: silhouette and tribe color matter more than detail.
+
+Before any external asset arrives, everything renders with **procedural placeholder meshes** generated in code from the same palette, so the game is always playable and testable.
+
+## 16. Audio
+
+Short positional SFX for every action, spell cast and impact; tribal percussion music layers that intensify with combat; voice barks for the Shaper (wordless or invented-language chants, never real-language catchphrases from the original). Generated via ElevenLabs (see `docs/ASSETS.md`).
+
+## 17. UI
+
+DOM overlay HUD: spell bar with charge rings and ETA, mana income breakdown and split slider, population and supply, selected unit panel, minimap, objectives, notifications (Shaper under attack, shrine claimed). Must stay readable at 1280x720 and scale to 4K. No overlaps (automated check).
+
+## 18. Out of scope for v1
+
+Online multiplayer, vehicles (boats, balloons), Shade unit, full campaign, mod browser, achievements, localization. All are in `docs/BACKLOG.md`.

@@ -1,0 +1,515 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$comment": {
+      "type": "string"
+    },
+    "chargeRules": {
+      "type": "object",
+      "properties": {
+        "startMana": {
+          "type": "number",
+          "minimum": 0
+        },
+        "defaultSplitSpellsPct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "singleSinkGetsAll": {
+          "type": "boolean"
+        },
+        "killChargeStealPct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "startMana",
+        "defaultSplitSpellsPct",
+        "singleSinkGetsAll",
+        "killChargeStealPct"
+      ],
+      "additionalProperties": false
+    },
+    "spells": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "$comment": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "tier": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4
+          },
+          "cost": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "maxCharges": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "range": {
+            "type": "number",
+            "minimum": 0
+          },
+          "v1": {
+            "type": "boolean"
+          },
+          "effects": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "damageRadius"
+                    },
+                    "radius": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "damage": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "downhillBonusPct": {
+                      "type": "number"
+                    },
+                    "canKill": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_]*$"
+                      }
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "radius",
+                    "damage"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "knockback"
+                    },
+                    "radius": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "force": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "radius",
+                    "force"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "convertRadius"
+                    },
+                    "radius": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "max": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "excludes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_]*$"
+                      }
+                    },
+                    "targets": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_]*$"
+                      }
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "radius",
+                    "max"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "areaOverTime"
+                    },
+                    "radius": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "seconds": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "damagePerSecond": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "radius",
+                    "seconds",
+                    "damagePerSecond"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "statusApply"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ward",
+                        "veil",
+                        "beguiled",
+                        "burning",
+                        "panic",
+                        "entranced"
+                      ]
+                    },
+                    "seconds": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "radius": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "max": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "poppedBy": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_]*$"
+                      }
+                    },
+                    "breaksOnCasterDeath": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "status",
+                    "seconds"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "terrainOp"
+                    },
+                    "op": {
+                      "type": "string",
+                      "enum": [
+                        "raise",
+                        "lower",
+                        "set",
+                        "flattenToAverage",
+                        "smooth",
+                        "crater",
+                        "ridgeLine",
+                        "noiseScar",
+                        "lowerTowardSea",
+                        "scar"
+                      ]
+                    },
+                    "from": {
+                      "type": "string",
+                      "enum": [
+                        "caster",
+                        "target"
+                      ]
+                    },
+                    "width": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "heightAboveSea": {
+                      "type": "number"
+                    },
+                    "length": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "radius": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "minHeightAboveSea": {
+                      "type": "number"
+                    },
+                    "depth": {
+                      "type": "number"
+                    },
+                    "seconds": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "shape": {
+                      "type": "string"
+                    },
+                    "height": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "op"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "moverPath"
+                    },
+                    "entity": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]*$"
+                    },
+                    "seconds": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "wander": {
+                      "type": "boolean"
+                    },
+                    "flingForce": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "damagesBuildings": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "entity",
+                    "seconds"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "spawnEntity"
+                    },
+                    "entity": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]*$"
+                    },
+                    "radius": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "killsFirst": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "visible": {
+                      "type": "boolean"
+                    },
+                    "count": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "entity"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "damageBuildingsRadius"
+                    },
+                    "radius": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "damagePct": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "radius",
+                    "damagePct"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "projectileStorm"
+                    },
+                    "count": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "radius": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "seconds": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "damage": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "knockback": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "count",
+                    "radius",
+                    "seconds",
+                    "damage"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "summon"
+                    },
+                    "entity": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]*$"
+                    },
+                    "seconds": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "maxKills": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "entity",
+                    "seconds"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "scar"
+                    },
+                    "radius": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "healSeconds": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "radius",
+                    "healSeconds"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "tier",
+          "cost",
+          "maxCharges",
+          "range",
+          "effects"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "chargeRules",
+    "spells"
+  ],
+  "additionalProperties": false
+}

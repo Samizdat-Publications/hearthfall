@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$comment": {
+      "type": "string"
+    },
+    "styleVersion": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "maximum": 9007199254740991
+    },
+    "palette": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^#[0-9A-Fa-f]{6}$"
+      }
+    },
+    "lighting": {
+      "type": "object",
+      "properties": {
+        "keyColor": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "keyIntensity": {
+          "type": "number",
+          "minimum": 0
+        },
+        "skyTop": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "skyHorizon": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "fogColor": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        }
+      },
+      "required": [
+        "keyColor",
+        "keyIntensity",
+        "skyTop",
+        "skyHorizon",
+        "fogColor"
+      ],
+      "additionalProperties": false
+    },
+    "promptStyleSuffix": {
+      "type": "string"
+    },
+    "promptNegative": {
+      "type": "string"
+    },
+    "triBudgets": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "array",
+        "prefixItems": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "number"
+          }
+        ],
+        "items": false,
+        "minItems": 2,
+        "maxItems": 2
+      }
+    }
+  },
+  "required": [
+    "styleVersion",
+    "palette",
+    "lighting",
+    "promptStyleSuffix",
+    "promptNegative",
+    "triBudgets"
+  ],
+  "additionalProperties": false
+}

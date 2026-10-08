@@ -1,0 +1,11 @@
+.env
+node_modules/
+dist/
+.venv/
+__pycache__/
+reports/*
+!reports/baselines/
+tools/assets/raw/
+*.log
+STOP
+dist-test/
