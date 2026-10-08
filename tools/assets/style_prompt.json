@@ -1,13 +1,10 @@
 {
-  "$comment": "Prompt fragments shared by every provider. The main agent merges these into data/base/style.json later. Palette source: seed-data/style.json (data/base/style.json once it exists).",
-  "style_version": 1,
-  "suffix": "stylized low-poly diorama game asset, chunky readable shapes, warm earthy palette, flat shading, clean silhouette, plain neutral background, no text, no logo",
-  "negative": "photorealistic, noisy texture, text, watermark, thin spindly parts, modern objects",
+  "$comment": "Per-class prompt fragments only. The shared style suffix, the negative cues, styleVersion, palette and triBudgets live in data/base/style.json (single source of truth, read by tools/assets/common.py).",
   "concept_camera": "single object centered in frame, three-quarter front view, soft even light from the upper left, plain flat neutral background, full object visible with margin",
-  "mesh_suffix": "stylized low-poly game asset, chunky readable shapes, flat colors, clean silhouette, no fine detail",
-  "unit_pose": "relaxed standing pose, arms slightly away from the body, feet shoulder width apart, never an A-pose or a T-pose, facing the camera",
+  "mesh_suffix": "stylized low-poly game asset, crisp flat-shaded facets, chunky readable shapes, flat colors, clean silhouette, no fine detail",
+  "style_ref_note": "Match the art style of the attached reference image (crisp faceted flat-shaded low-poly look, chunky shapes, warm earthy palette), but depict only the subject described here, not the scene in the reference.",
+  "unit_pose": "single character, full body visible from head to feet, relaxed standing pose, arms slightly away from the body, feet shoulder width apart, never an A-pose or a T-pose",
   "vfx_suffix": "on a pure black background, centered, glowing, soft falloff, no text",
   "sfx_template": "{subject}, dry, no reverb, close perspective, clean game sound effect",
-  "music_template": "{subject}, instrumental, warm hand-played folk instruments and soft percussion, loop friendly, no vocals",
-  "triBudgets": {"unit": [600, 2000], "building": [800, 3000], "prop": [100, 800]}
+  "music_template": "{subject}, instrumental, warm hand-played folk instruments and soft percussion, loop friendly, no vocals"
 }

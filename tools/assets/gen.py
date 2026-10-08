@@ -40,7 +40,10 @@ def concept_prompt(a: dict) -> str:
     if a["params"].get("kind") != "style_ref":
         parts.append(sp["concept_camera"])
     parts.append(sp["suffix"])
-    return ", ".join(parts) + f". Avoid: {sp['negative']}."
+    text = ", ".join(parts) + f". Avoid: {sp['negative']}."
+    if a.get("refs") and sp.get("style_ref_note"):
+        text += " " + sp["style_ref_note"]
+    return text
 
 
 def mesh_text_prompt(a: dict) -> str:
@@ -62,7 +65,10 @@ def est_cost(a: dict, step: str):
     if prov == "gemini":
         return "gemini", P["gemini_image_usd"][a["params"].get("image_size", "1K")], "1 image"
     if prov == "meshy":
-        key = "text_preview_t2" if a["params"].get("route") == "text" else "image_mesh_t2"
+        if a["params"].get("route") == "text":
+            key = "text_preview_t2"
+        else:
+            key = "image_textured_t2" if a["params"].get("textured") else "image_mesh_t2"
         cr = P["meshy_credits"][key]
         return "meshy", cr * P["meshy_usd_per_credit"], f"{cr} credits"
     if prov == "tripo":
@@ -348,7 +354,7 @@ class Runner:
             else:
                 png = C.abspath(a["steps"]["concept"]["output_path"]).read_bytes()
                 uri = "data:image/png;base64," + base64.b64encode(png).decode("ascii")
-                rid = meshy.create_image_to_3d(uri, target_polycount=tris, textured=False)
+                rid = meshy.create_image_to_3d(uri, target_polycount=tris, textured=bool(a["params"].get("textured", False)))
         except ProviderError as e:
             self.budget.settle(prov, usd, 0.0)
             C.ledger_append({"provider": "meshy", "asset": a["id"], "step": "model", "attempt": st["attempts"], "kind": "failed", "usd": 0.0, "note": e.message[:160]})

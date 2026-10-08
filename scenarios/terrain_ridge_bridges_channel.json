@@ -1,0 +1,17 @@
+{
+  "id": "terrain_ridge_bridges_channel",
+  "description": "A god-mode ridgeLine across a deep channel raises a walkable land bridge above sea level.",
+  "tags": ["fast", "terrain"],
+  "seed": 7,
+  "map": { "generator": "flat_with_channel", "size": 64 },
+  "commands": [
+    { "tick": 1, "tribe": -1, "type": "terrainOp", "args": { "op": "ridgeLine", "x": 10, "y": 32, "x2": 22, "y2": 32, "width": 2, "aboveSea": 24 } }
+  ],
+  "runTicks": 20,
+  "assert": [
+    { "at": 0, "expr": "terrain.minHeightAlong([10,32],[22,32]) < sea" },
+    { "at": 2, "expr": "terrain.minHeightAlong([10,32],[22,32]) >= sea + 24" },
+    { "at": 2, "expr": "terrain.walkable([18,32]) && !terrain.isLand([18,40])" },
+    { "at": 20, "expr": "terrain.version == 1 && events.count('commandRejected') == 0" }
+  ]
+}

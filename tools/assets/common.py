@@ -142,16 +142,27 @@ def total_cap_usd() -> float:
 
 
 # --------------------------------------------------------------- style files
-def style_prompt() -> dict:
-    return load_json(STYLE_PROMPT, {})
-
-
 def style_json() -> dict:
-    """Palette source: main agent's data/base/style.json when present, else the seed."""
+    """Single source of truth: data/base/style.json when present, else the seed copy.
+    Provides palette, triBudgets, styleVersion, promptStyleSuffix and promptNegative."""
     for p in (ROOT / "data" / "base" / "style.json", ROOT / "seed-data" / "style.json"):
         if p.exists():
             return json.loads(p.read_text(encoding="utf-8"))
     return {}
+
+
+def style_prompt() -> dict:
+    """Prompt text for every provider. `suffix`, `negative` and `style_version` come from style.json
+    (promptStyleSuffix, promptNegative, styleVersion); style_prompt.json only adds per-class fragments
+    (concept_camera, mesh_suffix, unit_pose, templates). A style.json key always wins over style_prompt.json."""
+    sp = dict(load_json(STYLE_PROMPT, {}))
+    sj = style_json()
+    if sj.get("promptStyleSuffix"):
+        sp["suffix"] = sj["promptStyleSuffix"]
+    if sj.get("promptNegative"):
+        sp["negative"] = sj["promptNegative"]
+    sp["style_version"] = sj.get("styleVersion", sp.get("style_version", 1))
+    return sp
 
 
 def palette_hex() -> dict:
@@ -200,6 +211,7 @@ def request_hash(asset: dict, step_name: str, upstream: list[str]) -> str:
         "prompt": asset["prompt"],
         "params": asset.get("params", {}),
         "style_version": asset.get("style_version"),
+        "style_json_version": sp.get("style_version"),
         "style_text": [sp.get("suffix"), sp.get("negative"), sp.get("mesh_suffix")],
         "upstream": upstream,
         "refs": [sha256_file(abspath(r)) for r in asset.get("refs", []) if abspath(r).exists()],

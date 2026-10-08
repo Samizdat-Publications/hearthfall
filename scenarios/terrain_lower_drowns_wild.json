@@ -1,0 +1,23 @@
+{
+  "id": "terrain_lower_drowns_wild",
+  "description": "Sinking the ground under a group of wild people drowns exactly that group; invalid commands are rejected, not applied.",
+  "tags": ["fast", "terrain", "drowning"],
+  "seed": 3,
+  "map": { "generator": "flat", "size": 64, "tribes": 1 },
+  "setup": [
+    { "spawn": "wild", "near": [30, 30], "count": 5, "spacing": 0.7 },
+    { "spawn": "wild", "near": [50, 50], "count": 3 },
+    { "spawn": "tree", "at": [31, 31] }
+  ],
+  "commands": [
+    { "tick": 5, "tribe": 0, "type": "terrainOp", "args": { "op": "explode", "x": 30, "y": 30, "r": 4 } },
+    { "tick": 10, "tribe": 0, "type": "terrainOp", "args": { "op": "set", "x": 30, "y": 30, "r": 4, "value": 60 } }
+  ],
+  "runTicks": 30,
+  "assert": [
+    { "at": 9, "expr": "count(wild) == 8 && events.count('commandRejected') == 1" },
+    { "at": 11, "expr": "events.count('drowned') == 5 && count(wild) == 3" },
+    { "at": 11, "expr": "count(wild, near([50,50], 3)) == 3 && count(trees) == 0" },
+    { "at": 30, "expr": "events.count('drowned') == 5" }
+  ]
+}

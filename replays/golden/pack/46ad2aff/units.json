@@ -1,0 +1,158 @@
+{
+  "$comment": "Starting values. Speeds in cells/second, times in seconds, mana per minute. Reshape fields to fit the zod schema, keep the values unless soak data says otherwise.",
+  "units": [
+    {
+      "id": "shaper",
+      "hp": 2500,
+      "speed": 1.5,
+      "manaPerMin": {
+        "active": 66,
+        "idle": 66
+      },
+      "melee": {
+        "dps": 40,
+        "range": 0.8
+      },
+      "isCaster": true,
+      "respawn": {
+        "seconds": 35,
+        "drownedSeconds": 26
+      },
+      "convertible": false
+    },
+    {
+      "id": "settler",
+      "hp": 1000,
+      "speed": 1.6,
+      "manaPerMin": {
+        "housedOrWorking": 35,
+        "idle": 9
+      },
+      "melee": {
+        "dps": 25,
+        "range": 0.7
+      },
+      "trainableInto": [
+        "warden",
+        "firecaller",
+        "chanter",
+        "shade"
+      ],
+      "convertible": true
+    },
+    {
+      "id": "warden",
+      "hp": 1800,
+      "speed": 1.35,
+      "manaPerMin": {
+        "moving": 11,
+        "idle": 9
+      },
+      "melee": {
+        "dps": 120,
+        "range": 0.9
+      },
+      "prefersTarget": [
+        "firecaller"
+      ],
+      "trainedAt": "warden_lodge",
+      "trainSeconds": 12,
+      "trainMana": 150,
+      "convertible": true
+    },
+    {
+      "id": "firecaller",
+      "hp": 700,
+      "speed": 1.25,
+      "manaPerMin": {
+        "moving": 11,
+        "idle": 9
+      },
+      "ranged": {
+        "damage": 220,
+        "radius": 1.5,
+        "range": 7,
+        "cooldown": 2.5,
+        "knockback": 1.2,
+        "heightRangeBonusPerBand": 1.0
+      },
+      "prefersTarget": [
+        "chanter"
+      ],
+      "trainedAt": "fire_lodge",
+      "trainSeconds": 14,
+      "trainMana": 180,
+      "convertible": true
+    },
+    {
+      "id": "chanter",
+      "hp": 1100,
+      "speed": 1.3,
+      "manaPerMin": {
+        "moving": 11,
+        "idle": 9
+      },
+      "convert": {
+        "radius": 5,
+        "channelSeconds": 4,
+        "maxPerChannel": 3,
+        "entrancedFreeze": true,
+        "cannotConvert": [
+          "shaper",
+          "chanter"
+        ],
+        "interruptedBy": [
+          "rangedDamage",
+          "spell",
+          "terrainChangeNear"
+        ]
+      },
+      "prefersTarget": [
+        "warden"
+      ],
+      "trainedAt": "chant_house",
+      "trainSeconds": 14,
+      "trainMana": 180,
+      "convertible": false
+    },
+    {
+      "id": "shade",
+      "hp": 600,
+      "speed": 1.5,
+      "manaPerMin": {
+        "moving": 11,
+        "idle": 9
+      },
+      "sabotage": {
+        "burnSeconds": 8,
+        "disguise": true
+      },
+      "trainedAt": "shade_den",
+      "trainSeconds": 16,
+      "trainMana": 200,
+      "convertible": true,
+      "milestone": "backlog"
+    },
+    {
+      "id": "wild",
+      "hp": 800,
+      "speed": 1.2,
+      "manaPerMin": {
+        "idle": 0
+      },
+      "wanders": true,
+      "convertible": true,
+      "spawnPerTribe": [
+        6,
+        10
+      ]
+    }
+  ],
+  "rules": {
+    "populationCap": 200,
+    "startPopulation": 5,
+    "spiritManaPerMin": 0,
+    "popCapFormula": "min(populationCap, startPopulation + sum(dwelling supply))",
+    "$comment": "Drown depth lives in balance.json terrain.drownDepthHeightUnits."
+  }
+}

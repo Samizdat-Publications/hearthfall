@@ -295,6 +295,11 @@ export class Terrain {
     });
   }
 
+  recountScars(): void {
+    this.scarred = 0;
+    for (let i = 0; i < this.scar.length; i++) if (this.scar[i] > 0) this.scarred++;
+  }
+
   /** Called once per sim second: every scar heals by one second. */
   healScars(): void {
     if (this.scarred === 0) return;

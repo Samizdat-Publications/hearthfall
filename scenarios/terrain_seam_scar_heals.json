@@ -1,0 +1,19 @@
+{
+  "id": "terrain_seam_scar_heals",
+  "description": "A quake and a scar centered on the map corner affect all four wrapped corners; scarred land is unbuildable and heals after its seconds.",
+  "tags": ["fast", "terrain", "wrap"],
+  "seed": 5,
+  "map": { "generator": "flat", "size": 64, "landAboveSea": 100 },
+  "commands": [
+    { "tick": 1, "tribe": -1, "type": "terrainOp", "args": { "op": "noiseScar", "x": 0, "y": 0, "r": 5, "depth": 24, "seed": 77 } },
+    { "tick": 1, "tribe": -1, "type": "terrainOp", "args": { "op": "scar", "x": 0, "y": 0, "r": 3, "seconds": 2 } }
+  ],
+  "runTicks": 60,
+  "assert": [
+    { "at": 0, "expr": "terrain.buildable([62,62],2,2)" },
+    { "at": 2, "expr": "terrain.height([0,0]) < sea + 100 && terrain.height([63,63]) < sea + 100 && terrain.height([1,63]) < sea + 100" },
+    { "at": 2, "expr": "terrain.scar([63,0]) > 0 && terrain.scar([0,63]) > 0 && !terrain.buildable([62,62],2,2)" },
+    { "at": 2, "expr": "terrain.height([8,8]) == sea + 100" },
+    { "at": 60, "expr": "terrain.scar([63,0]) == 0 && terrain.scar([0,0]) == 0" }
+  ]
+}

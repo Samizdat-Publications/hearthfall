@@ -50,6 +50,11 @@ export class Entities {
     for (const name of COLUMN_NAMES) (this as unknown as Record<string, Col>)[name] = new COLUMNS[name](cap);
   }
 
+  /** Grow capacity until at least n slots exist. */
+  reserve(n: number): void {
+    while (this.cap < n) this.grow();
+  }
+
   private grow(): void {
     const next = Math.min(65536, this.cap * 2);
     if (next === this.cap) throw new Error("entity capacity exhausted (65536)");

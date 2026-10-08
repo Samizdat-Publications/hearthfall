@@ -43,6 +43,17 @@ export interface HashParts {
 
 const RECENT_EVENTS = 50;
 
+export interface WorldSnapshot {
+  tick: number;
+  heights: Int16Array;
+  scar: Uint16Array;
+  terrainVersion: number;
+  rng: Uint32Array;
+  ents: { hi: number; count: number; freeList: number[]; columns: Record<string, ArrayBufferView> };
+  tribes: Tribe[];
+  eventCounts: [string, number][];
+}
+
 export class World {
   readonly cfg: SimConfig;
   readonly seed: number;
@@ -163,6 +174,46 @@ export class World {
     const meta = mf.hex();
     const all = new Fnv().u32(parseInt(terrain, 16)).u32(parseInt(entities, 16)).u32(parseInt(rng, 16)).u32(parseInt(meta, 16)).hex();
     return { all, terrain, entities, rng, meta };
+  }
+
+  /**
+   * Snapshot between ticks: typed arrays are copies (transferable to a Worker). Together with the
+   * WorldInit it was created from, restore() rebuilds an identical world (same future hashes).
+   */
+  snapshot(): WorldSnapshot {
+    const cols = this.ents.columns();
+    const columns: Record<string, ArrayBufferView> = {};
+    for (const name of Object.keys(cols)) columns[name] = cols[name].slice();
+    return {
+      tick: this.tick,
+      heights: this.terrain.heights.slice(),
+      scar: this.terrain.scar.slice(),
+      terrainVersion: this.terrain.version,
+      rng: this.rng.state.slice(),
+      ents: { hi: this.ents.hi, count: this.ents.count, freeList: this.ents.freeList.slice(), columns },
+      tribes: this.tribes.map((t) => ({ ...t })),
+      eventCounts: [...this.eventCounts],
+    };
+  }
+
+  static restore(init: WorldInit, snap: WorldSnapshot): World {
+    const w = new World({ ...init, populate: false });
+    w.tick = snap.tick;
+    w.terrain.heights.set(snap.heights);
+    w.terrain.scar.set(snap.scar);
+    w.terrain.version = snap.terrainVersion;
+    w.terrain.recountScars();
+    w.rng.state.set(snap.rng);
+    const e = w.ents;
+    while (e.cap < snap.ents.hi) e.reserve(snap.ents.hi);
+    const self = e as unknown as Record<string, { set(a: ArrayBufferView): void }>;
+    for (const name of Object.keys(snap.ents.columns)) self[name].set(snap.ents.columns[name]);
+    e.hi = snap.ents.hi;
+    e.count = snap.ents.count;
+    e.freeList = snap.ents.freeList.slice();
+    w.tribes = snap.tribes.map((t) => ({ ...t }));
+    w.eventCounts = new Map(snap.eventCounts);
+    return w;
   }
 
   /** Counts per category and tribe, for summaries and scenario assertions. */

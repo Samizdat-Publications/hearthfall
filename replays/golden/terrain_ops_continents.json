@@ -1,0 +1,226 @@
+{
+ "id": "terrain_ops_continents",
+ "description": "Seeded continents planet, every god-mode terrain op including an rng-seeded quake, drowning of wild people, 900 ticks.",
+ "every": 100,
+ "def": {
+  "id": "terrain_ops_continents",
+  "seed": 4242,
+  "map": {
+   "generator": "continents",
+   "size": 128,
+   "tribes": 3
+  },
+  "populate": true,
+  "setup": [
+   {
+    "spawn": "wild",
+    "near": [
+     64,
+     64
+    ],
+    "count": 6
+   }
+  ],
+  "commands": [
+   {
+    "tick": 10,
+    "tribe": -1,
+    "type": "terrainOp",
+    "args": {
+     "op": "raise",
+     "x": 20,
+     "y": 20,
+     "r": 6,
+     "amount": 60
+    }
+   },
+   {
+    "tick": 50,
+    "tribe": -1,
+    "type": "terrainOp",
+    "args": {
+     "op": "noiseScar",
+     "x": 64,
+     "y": 64,
+     "r": 7,
+     "depth": 24
+    }
+   },
+   {
+    "tick": 120,
+    "tribe": -1,
+    "type": "terrainOp",
+    "args": {
+     "op": "ridgeLine",
+     "x": 120,
+     "y": 5,
+     "x2": 10,
+     "y2": 9,
+     "width": 2,
+     "aboveSea": 24
+    }
+   },
+   {
+    "tick": 200,
+    "tribe": -1,
+    "type": "terrainOp",
+    "args": {
+     "op": "crater",
+     "x": 90,
+     "y": 40,
+     "r": 7,
+     "height": 120,
+     "shape": "cone"
+    }
+   },
+   {
+    "tick": 200,
+    "tribe": -1,
+    "type": "terrainOp",
+    "args": {
+     "op": "scar",
+     "x": 90,
+     "y": 40,
+     "r": 8,
+     "seconds": 20
+    }
+   },
+   {
+    "tick": 300,
+    "tribe": -1,
+    "type": "terrainOp",
+    "args": {
+     "op": "flattenToAverage",
+     "x": 40,
+     "y": 100,
+     "r": 5,
+     "minAboveSea": 4
+    }
+   },
+   {
+    "tick": 400,
+    "tribe": -1,
+    "type": "terrainOp",
+    "args": {
+     "op": "set",
+     "x": 64,
+     "y": 64,
+     "r": 5,
+     "value": 40
+    }
+   },
+   {
+    "tick": 500,
+    "tribe": -1,
+    "type": "terrainOp",
+    "args": {
+     "op": "smooth",
+     "x": 0,
+     "y": 0,
+     "r": 6,
+     "strength": 0.5
+    }
+   },
+   {
+    "tick": 600,
+    "tribe": -1,
+    "type": "terrainOp",
+    "args": {
+     "op": "lowerTowardSea",
+     "x": 100,
+     "y": 100,
+     "r": 6,
+     "amount": 30
+    }
+   },
+   {
+    "tick": 700,
+    "tribe": -1,
+    "type": "terrainOp",
+    "args": {
+     "op": "noiseScar",
+     "x": 127,
+     "y": 127,
+     "r": 6,
+     "depth": 30
+    }
+   }
+  ],
+  "runTicks": 900
+ },
+ "packHash": "46ad2aff",
+ "checkpoints": [
+  {
+   "tick": 100,
+   "all": "caa68cd0",
+   "terrain": "c3d42a1e",
+   "entities": "b6961533",
+   "rng": "5a6f5ee0",
+   "meta": "997f1c23"
+  },
+  {
+   "tick": 200,
+   "all": "bca61708",
+   "terrain": "c3d42a1e",
+   "entities": "b6961533",
+   "rng": "5a6f5ee0",
+   "meta": "ce5882cf"
+  },
+  {
+   "tick": 300,
+   "all": "e8cdf4b7",
+   "terrain": "ff0dc4a7",
+   "entities": "b6961533",
+   "rng": "5a6f5ee0",
+   "meta": "40a9a55c"
+  },
+  {
+   "tick": 400,
+   "all": "4b198256",
+   "terrain": "0678237b",
+   "entities": "b6961533",
+   "rng": "5a6f5ee0",
+   "meta": "75830c08"
+  },
+  {
+   "tick": 500,
+   "all": "8985db66",
+   "terrain": "f2cbd330",
+   "entities": "b6961533",
+   "rng": "5a6f5ee0",
+   "meta": "5fc5c424"
+  },
+  {
+   "tick": 600,
+   "all": "adc46e96",
+   "terrain": "24aa0b44",
+   "entities": "b6961533",
+   "rng": "5a6f5ee0",
+   "meta": "8ce9c105"
+  },
+  {
+   "tick": 700,
+   "all": "52cb5fa9",
+   "terrain": "3b2a545f",
+   "entities": "b6961533",
+   "rng": "5a6f5ee0",
+   "meta": "772c7921"
+  },
+  {
+   "tick": 800,
+   "all": "23a6a21e",
+   "terrain": "203f5ea7",
+   "entities": "b6961533",
+   "rng": "088e5175",
+   "meta": "1f1f4346"
+  },
+  {
+   "tick": 900,
+   "all": "0df1bbfc",
+   "terrain": "203f5ea7",
+   "entities": "b6961533",
+   "rng": "088e5175",
+   "meta": "8332c2e2"
+  }
+ ]
+}

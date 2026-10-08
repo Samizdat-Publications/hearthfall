@@ -97,3 +97,23 @@ describe("world step", () => {
     expect(id2).not.toBe(id);
   });
 });
+
+describe("snapshot and restore", () => {
+  it("a restored world produces the same future hashes", async () => {
+    const { basePack } = await import("./helpers.ts");
+    const { World } = await import("../src/world.ts");
+    const p = basePack();
+    const init = { pack: p.files, packHash: p.hash, seed: 21, map: { generator: "continents", size: 128, tribes: 2 } };
+    const cmds = (tick: number) => (tick % 97 === 0 ? [{ tick, tribe: -1, type: "terrainOp", args: { op: "noiseScar", x: tick % 128, y: (tick * 7) % 128, r: 5, depth: 20 } }] : []);
+    const a = new World(init);
+    a.spawnTree(3, 3);
+    a.run(300, cmds);
+    const snap = a.snapshot();
+    const b = World.restore(init, snap);
+    expect(b.hash()).toEqual(a.hash());
+    a.run(300, cmds);
+    b.run(300, cmds);
+    expect(b.hash()).toEqual(a.hash());
+    expect(b.tick).toBe(600);
+  });
+});
