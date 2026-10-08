@@ -27,6 +27,8 @@ tools/visionqa/
   calibrate.ts           threshold calibration from synthetic labeled shots (section 5)
 ```
 
+As built (M0): the module is plain ESM in `tools/visionqa/` (`decisions.mjs` provider, ledger and budget; `cli.mjs` probe and check runner) rather than the `.ts` layout above. The ledger lives at `reports/visionqa/ledger.jsonl` (machine local). Provider precedence: a `VISIONQA_PROVIDER` value other than `off` wins (`disabled` forces it off); with `off` or unset, the verdict the probe wrote to `tools/visionqa/state.json` decides. Measured costs: `docs/visionqa-calibration.md`.
+
 Config in `.env`: `VISIONQA_PROVIDER=decisions|responses|off` (default `off` until the probe has run successfully), `VISIONQA_DETAIL=low`, budget caps. Retries: 2 with backoff on 429 and 5xx, then `skipped` with reason. A provider error never fails QA by itself; it marks the check `unavailable`.
 
 ## 3. First task: measure the real per-screenshot cost (`npm run visionqa:probe`)
