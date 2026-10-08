@@ -120,6 +120,16 @@
       "when": "2026-10-08T22:06:39.872Z",
       "source": "reports/latest/style_refs_sheet.png",
       "bytes": 2447700
+    },
+    {
+      "file": "a1/20261008-2207_chosen-direction-ref-04.jpg",
+      "milestone": "A1",
+      "kind": "concept",
+      "caption": "The chosen art direction: crisp flat-shaded polygon (ref_04), lit with the warm golden-hour haze of ref_05",
+      "highlight": true,
+      "when": "2026-10-08T22:07:11.904Z",
+      "source": "tools/assets/raw/gemini/concept.ref_04/concept.jpg",
+      "bytes": 601690
     }
   ]
 }

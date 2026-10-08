@@ -53,6 +53,30 @@
       ],
       "additionalProperties": false
     },
+    "direction": {
+      "type": "object",
+      "properties": {
+        "primaryRef": {
+          "type": "string"
+        },
+        "lightingRef": {
+          "type": "string"
+        },
+        "chosen": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "primaryRef",
+        "lightingRef",
+        "chosen",
+        "notes"
+      ],
+      "additionalProperties": false
+    },
     "promptStyleSuffix": {
       "type": "string"
     },

@@ -63,6 +63,7 @@ export const StyleSchema = z.strictObject({
     skyHorizon: hex,
     fogColor: hex,
   }),
+  direction: z.strictObject({ primaryRef: z.string(), lightingRef: z.string(), chosen: z.string(), notes: z.string() }).optional(),
   promptStyleSuffix: z.string(),
   promptNegative: z.string(),
   triBudgets: z.record(z.string(), range2),
