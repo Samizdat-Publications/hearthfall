@@ -157,7 +157,8 @@ export class EconomySystem {
     const [fw, fh] = def.footprint;
     const x0 = Math.round(cx - fw / 2);
     const y0 = Math.round(cy - fh / 2);
-    const id = w.spawnBuilding(def.id, tribe, x0 + fw / 2, y0 + fh / 2);
+    const n = w.terrain.size;
+    const id = w.spawnBuilding(def.id, tribe, (((x0 + fw / 2) % n) + n) % n, (((y0 + fh / 2) % n) + n) % n);
     const i = E.index(id);
     E.state[i] = BSTATE.plan;
     E.hp[i] = 1;
@@ -165,9 +166,9 @@ export class EconomySystem {
     E.progress[i] = 0;
     // flatten target: footprint average, at least shore height
     let sum = 0;
-    let n = 0;
-    for (let y = 0; y <= fh; y++) for (let x = 0; x <= fw; x++, n++) sum += w.terrain.get(x0 + x, y0 + y);
-    E.progress2[i] = Math.max(Math.round(sum / n), w.terrain.sea + 4);
+    let cells = 0;
+    for (let y = 0; y <= fh; y++) for (let x = 0; x <= fw; x++, cells++) sum += w.terrain.get(x0 + x, y0 + y);
+    E.progress2[i] = Math.max(Math.round(sum / cells), w.terrain.sea + 4);
     for (let k = 0; k < E.hi; k++) {
       if (!E.alive[k] || E.cat[k] !== CAT.tree) continue;
       const dx = wrapDelta(E.x[k] - (x0 + fw / 2), w.terrain.size);
@@ -479,7 +480,15 @@ export class EconomySystem {
           this.jobs.wood.set(E.idOf(s), (this.jobs.wood.get(E.idOf(s)) ?? 0) + 1);
         }
         if (doomed.length) continue;
-        const need = this.woodCost(s) - E.wood[s] - this.inbound(s, [TASK.toTree, TASK.chop, TASK.haul]);
+        let need = this.woodCost(s) - E.wood[s] - this.inbound(s, [TASK.toTree, TASK.chop, TASK.haul]);
+        // settlers already carrying wood (starting supplies) deliver it first
+        for (const i of [...free]) {
+          if (need <= 0) break;
+          if (E.carry[i] <= 0) continue;
+          free.splice(free.indexOf(i), 1);
+          this.goTo(i, s, TASK.haul);
+          need -= E.carry[i];
+        }
         for (let k = 0; k < need; k++) {
           const i = take(s);
           if (i < 0) return;

@@ -1,0 +1,17 @@
+{
+  "id": "eco_dwelling_upgrade",
+  "description": "A full dwelling collects wood at the door and upgrades to medium and then large, raising the population cap.",
+  "tags": ["economy"],
+  "seed": 23,
+  "map": { "generator": "flat", "size": 64, "tribes": 1 },
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [32, 32] },
+    { "spawn": "dwelling", "tribe": 0, "at": [38, 32] },
+    { "spawn": "settler", "tribe": 0, "near": [34, 30], "count": 5 },
+    { "spawn": "tree", "near": [40, 40], "count": 12, "spacing": 1.2 }
+  ],
+  "runTicks": 6000,
+  "assert": [
+    { "at": 6000, "expr": "events.count('dwellingUpgraded') == 2 && count(tribe0.settlers) > 8 && invariants() == 0" }
+  ]
+}

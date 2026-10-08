@@ -13,7 +13,7 @@
           "wood": 3,
           "capacity": 3,
           "supply": 3,
-          "breedSeconds": 50
+          "breedSeconds": 40
         },
         {
           "level": 2,
@@ -115,13 +115,13 @@
   "construction": {
     "flattenToAverage": true,
     "workersPerSite": 4,
-    "buildSecondsPerWood": 4
+    "buildSecondsPerWood": 2.5
   },
   "trees": {
     "maxWood": 4,
     "regrowSecondsPerWood": 68,
     "regrowFromStumpSeconds": 330,
-    "chopSecondsPerWood": 5,
+    "chopSecondsPerWood": 3,
     "spread": {
       "enabled": true,
       "chancePerMinute": 0.02

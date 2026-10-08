@@ -139,3 +139,15 @@ describe("snapshot with moving units and terrain edits (M3 review regression)", 
     expect(b.hash()).toEqual(a.hash());
   });
 });
+
+describe("plans on the seam (M4 soak regression)", () => {
+  it("a plan centered on the wrap seam stays inside the map", async () => {
+    const { world } = await import("./helpers.ts");
+    const w = world({ generator: "flat", size: 64, tribes: 1 });
+    const id = w.economy.placePlan(0, w.cfg.buildingIndex.get("dwelling")!, 64, 10);
+    const i = w.ents.index(id);
+    expect(w.ents.x[i]).toBeGreaterThanOrEqual(0);
+    expect(w.ents.x[i]).toBeLessThan(64);
+    expect(w.invariants()).toEqual([]);
+  });
+});

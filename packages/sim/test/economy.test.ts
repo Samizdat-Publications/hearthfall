@@ -1,0 +1,96 @@
+import { describe, expect, it } from "vitest";
+import { TASK } from "../src/economy.ts";
+import { world } from "./helpers.ts";
+
+const flat = () => {
+  const w = world({ generator: "flat", size: 64, tribes: 1 });
+  return w;
+};
+
+describe("mana economy", () => {
+  it("start mana becomes Bolt charges (DESIGN section 5)", () => {
+    const w = flat();
+    const bolt = w.cfg.spellIndex.get("bolt")!;
+    expect(w.tribes[0].eco.charges[bolt]).toBe(3);
+  });
+
+  it("income follows follower state: Shaper 66, idle settler 9, housed or working 35", () => {
+    const w = flat();
+    w.spawnUnit("shaper", 0, 10, 10);
+    const s = [0, 1, 2].map((k) => w.ents.index(w.spawnUnit("settler", 0, 12 + k, 10)));
+    w.step([]);
+    expect(w.tribes[0].eco.incomePerMin).toBe(66 + 3 * 9);
+    w.ents.task[s[0]] = TASK.chop;
+    w.ents.inside[s[1]] = 0;
+    expect(w.economy.manaRate(s[0])).toBe(35);
+    expect(w.economy.manaRate(s[1])).toBe(35);
+    expect(w.economy.manaRate(s[2])).toBe(9);
+    w.ents.inside[s[1]] = -1;
+  });
+
+  it("a single active sink gets all income; both sinks split by the slider; none is wasted", () => {
+    const w = flat();
+    w.spawnUnit("shaper", 0, 10, 10);
+    const e = w.tribes[0].eco;
+    const total = () => e.progress.reduce((a, b) => a + b, 0);
+    const p0 = total();
+    w.step([]);
+    const perTick = 66 / (60 * w.cfg.tickHz);
+    expect(total() - p0).toBeCloseTo(perTick, 12);
+    e.trainDemand = 1;
+    const before = total();
+    const t0 = e.trainMana;
+    w.step([{ tick: w.tick, tribe: 0, type: "setSplit", args: { spellsPct: 25 } }]);
+    expect(total() - before).toBeCloseTo(perTick * 0.25, 12);
+    expect(e.trainMana - t0).toBeCloseTo(perTick * 0.75, 12);
+    e.trainDemand = 0;
+    for (const id of ["bolt", "call"]) w.step([{ tick: w.tick, tribe: 0, type: "setAutoCharge", args: { spell: id, on: false } }]);
+    const wasted = e.wasted;
+    w.step([]);
+    expect(e.wasted - wasted).toBeCloseTo(perTick, 12);
+  });
+
+  it("charging cycles through auto spells, never exceeds max charges, keeps progress below cost", () => {
+    const w = flat();
+    for (let k = 0; k < 30; k++) w.spawnUnit("settler", 0, 10 + (k % 6), 10 + Math.floor(k / 6));
+    w.spawnUnit("shaper", 0, 20, 20);
+    const e = w.tribes[0].eco;
+    const bolt = w.cfg.spellIndex.get("bolt")!;
+    const call = w.cfg.spellIndex.get("call")!;
+    w.run(20 * 60 * 2);
+    expect(e.charges[bolt]).toBe(4);
+    expect(e.charges[call]).toBe(4);
+    expect(e.wasted).toBeGreaterThan(0);
+    expect(w.invariants()).toEqual([]);
+  });
+
+  it("validates economy commands", () => {
+    const w = flat();
+    w.step([
+      { tick: 0, tribe: 0, type: "setSplit", args: { spellsPct: 120 } },
+      { tick: 0, tribe: 0, type: "setAutoCharge", args: { spell: "wraith", on: true } },
+      { tick: 0, tribe: 0, type: "setPriorities", args: { build: 2, upgrade: 0, breed: 0 } },
+      { tick: 0, tribe: 0, type: "placePlan", args: { building: "hearth", at: [30, 30] } },
+      { tick: 0, tribe: 0, type: "placePlan", args: { building: "dwelling", at: [30, 30] } },
+      { tick: 0, tribe: 0, type: "placePlan", args: { building: "dwelling", at: [30.5, 30.5] } },
+    ]);
+    expect(w.eventCounts.get("commandRejected")).toBe(5);
+    expect(w.eventCounts.get("planPlaced")).toBe(1);
+  });
+});
+
+describe("trees", () => {
+  it("regrow one wood per regrowSecondsPerWood and fully from a stump", () => {
+    const w = flat();
+    const tr = w.cfg.pack.buildings.trees;
+    const a = w.ents.index(w.spawnTree(5, 5));
+    const b = w.ents.index(w.spawnTree(9, 9));
+    w.ents.wood[a] = 2;
+    w.ents.wood[b] = 0;
+    w.run(Math.round(tr.regrowSecondsPerWood * w.cfg.tickHz));
+    expect(w.ents.wood[a]).toBe(3);
+    expect(w.ents.wood[b]).toBe(0);
+    w.run(Math.round((tr.regrowFromStumpSeconds - tr.regrowSecondsPerWood) * w.cfg.tickHz));
+    expect(w.ents.wood[b]).toBe(tr.maxWood);
+  });
+});

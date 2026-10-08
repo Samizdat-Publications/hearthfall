@@ -1,0 +1,20 @@
+{
+  "id": "eco_breeding_under_cap",
+  "description": "Settlers move into a ready dwelling and breed up to the population cap (5 start + 3 supply), never beyond it.",
+  "tags": ["fast", "economy"],
+  "seed": 22,
+  "map": { "generator": "flat", "size": 64, "tribes": 1 },
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [32, 32] },
+    { "spawn": "dwelling", "tribe": 0, "at": [38, 32] },
+    { "spawn": "settler", "tribe": 0, "near": [34, 30], "count": 5 }
+  ],
+  "commands": [
+    { "tick": 0, "tribe": 0, "type": "setPriorities", "args": { "build": 0, "upgrade": 0, "breed": 1 } }
+  ],
+  "runTicks": 3600,
+  "assert": [
+    { "at": 100, "expr": "count(tribe0.settlers, onLand) <= 5" },
+    { "at": 3600, "expr": "count(tribe0.settlers) == 8 && events.count('born') == 3 && invariants() == 0" }
+  ]
+}

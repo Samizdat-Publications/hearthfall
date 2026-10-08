@@ -29,3 +29,7 @@ Reason: M3 review + M4: economy state in tribe hash (mana, charges), economy ent
 ## 2026-10-08 23:31 UTC
 Reason: M3 soak fix: line of sight refuses torus-ambiguous half-map segments, changing smoothed paths
 - terrain_ops_continents: final ea078df0 -> ea078df0 (pack 87a15ca2)
+
+## 2026-10-08 23:51 UTC
+Reason: M4: starting settlers carry startWoodPerSettler and deliver it first; spawns wrap positions; economy data schema grew
+- terrain_ops_continents: final ea078df0 -> 1fea2859 (pack 52b4ba78)

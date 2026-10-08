@@ -1,0 +1,79 @@
+{
+  "id": "eco_build_dwelling",
+  "description": "A tribe with a Hearth, the Shaper and five settlers chops wood, flattens the footprint and builds a planned dwelling, then moves settlers in.",
+  "tags": [
+    "fast",
+    "economy"
+  ],
+  "seed": 21,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 1
+  },
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        32,
+        32
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        30,
+        30
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        34,
+        30
+      ],
+      "count": 5
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        20,
+        22
+      ],
+      "count": 10,
+      "spacing": 1.2
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": 0,
+      "type": "placePlan",
+      "args": {
+        "building": "dwelling",
+        "at": [
+          38,
+          32
+        ]
+      }
+    }
+  ],
+  "runTicks": 1600,
+  "assert": [
+    {
+      "at": 1,
+      "expr": "count(tribe0.dwellings) == 1 && events.count('planPlaced') == 1"
+    },
+    {
+      "at": 1600,
+      "expr": "events.count('buildingDone') == 1 && events.count('woodDelivered') >= 3"
+    },
+    {
+      "at": 1600,
+      "expr": "invariants() == 0"
+    }
+  ]
+}

@@ -132,19 +132,26 @@ export class World {
         const x = (((hx + cos(ang) * ring) % n) + n) % n;
         const y = (((hy + sin(ang) * ring) % n) + n) % n;
         if (!this.terrain.walkable(Math.round(x), Math.round(y)) || this.terrain.drowns(x, y)) continue;
-        this.spawnUnit(want[k++], tribe, x, y);
+        const id = this.spawnUnit(want[k++], tribe, x, y);
+        if (want[k - 1] === "settler") this.ents.carry[this.ents.index(id)] = this.cfg.pack.balance.economy.startWoodPerSettler;
         a += 2;
       }
     }
   }
 
   spawnUnit(kind: string, tribe: number, x: number, y: number): EntityId {
+    const n = this.terrain.size;
+    x = ((x % n) + n) % n;
+    y = ((y % n) + n) % n;
     const type = this.cfg.unitIndex.get(kind);
     if (type === undefined) throw new Error(`unknown unit kind ${kind}`);
     return this.ents.alloc(CAT.unit, type, tribe, x, y, this.cfg.pack.units.units[type].hp);
   }
 
   spawnBuilding(kind: string, tribe: number, x: number, y: number): EntityId {
+    const n = this.terrain.size;
+    x = ((x % n) + n) % n;
+    y = ((y % n) + n) % n;
     const type = this.cfg.buildingIndex.get(kind);
     if (type === undefined) throw new Error(`unknown building kind ${kind}`);
     const def = this.cfg.pack.buildings.buildings[type];

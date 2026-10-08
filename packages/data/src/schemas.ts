@@ -59,6 +59,7 @@ export const BalanceSchema = z.strictObject({
     flattenStepPerWorkerSecond: pos,
     flattenMaxRange: pos,
     carryWood: z.number().int().positive(),
+    startWoodPerSettler: z.number().int().nonnegative(),
     workRange: pos,
     keepOneOccupantForBreeding: z.boolean(),
     maxOpenPlansPerTribe: z.number().int().positive(),

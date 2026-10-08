@@ -21,7 +21,7 @@ export default async function soakCmd(out, _cmd, args) {
   const seeds = Number(args.seeds ?? 8);
   const minutes = Number(args.minutes ?? 10);
   const jobs = args.jobs && args.jobs !== "auto" ? Number(args.jobs) : Math.max(1, availableParallelism() - 2);
-  const base = { minutes, units: Number(args.units ?? 1000), map: args.map ?? "continents", size: Number(args.size ?? 128), tribes: Number(args.tribes ?? 2), deadlineMs: 8 * 60 * 1000 - 20000 };
+  const base = { mode: typeof args.mode === "string" ? args.mode : "wander", minutes, units: Number(args.units ?? 1000), map: args.map ?? "continents", size: Number(args.size ?? 128), tribes: Number(args.tribes ?? 2), deadlineMs: 8 * 60 * 1000 - 20000 };
   const t0 = Date.now();
   const specs = Array.from({ length: seeds }, (_, k) => ({ ...base, seed: 1000 + k, startMs: t0 }));
   const results = [];
@@ -46,6 +46,13 @@ export default async function soakCmd(out, _cmd, args) {
   for (const r of bad) out.line(`seed ${r.seed}: ${(r.violations ?? []).slice(0, 2).join("; ")}`.slice(0, 200));
   out.line(`soak: ${results.length - bad.length}/${results.length} seeds clean | ${metrics.units} units x ${minutes} min | wall ${metrics.wallSec}s | avg tick ${metrics.avgTickMs} ms | max stuck ${metrics.maxStuckSec}s`);
   out.line(`orders ${metrics.moves}, failed ${metrics.orderFailed}, gave up ${metrics.orderGaveUp}, drowned ${metrics.drowned}`);
+  if (base.mode === "economy") {
+    const finals = results.flatMap((r) => (r.metrics?.popByMinute ?? []).map((h) => h[h.length - 1])).sort((a, b) => a - b);
+    metrics.popAtEnd = finals;
+    metrics.popMedian = finals[Math.floor(finals.length / 2)];
+    out.line(`economy: population at minute ${minutes} median ${metrics.popMedian} (min ${finals[0]}, max ${finals[finals.length - 1]}), soft target 60 +-20%`);
+    writeReport("soak.json", { metrics, results });
+  }
   const partial = results.some((r) => r.partial);
   if (bad.length) return out.finish("FAIL", `${bad.length} (repros in reports/latest/repro/)`);
   return out.finish(partial ? "PARTIAL" : "PASS", partial ? "deadline hit before all ticks ran (reduce --minutes or --units)" : "");

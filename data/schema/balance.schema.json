@@ -270,6 +270,11 @@
           "exclusiveMinimum": 0,
           "maximum": 9007199254740991
         },
+        "startWoodPerSettler": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
         "workRange": {
           "type": "number",
           "minimum": 0
@@ -355,6 +360,7 @@
         "flattenStepPerWorkerSecond",
         "flattenMaxRange",
         "carryWood",
+        "startWoodPerSettler",
         "workRange",
         "keepOneOccupantForBreeding",
         "maxOpenPlansPerTribe",
