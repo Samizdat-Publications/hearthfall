@@ -30,7 +30,11 @@ export interface ScenarioDef {
   commands?: Command[];
   runTicks: number;
   assert?: { at: number; expr: string }[];
+  /** controllers to attach, built by the caller's factory (packages/ai makeBot) */
+  bots?: { type: string; tribe: number; [k: string]: unknown }[];
 }
+
+export type BotFactory = (spec: { type: string; tribe: number; [k: string]: unknown }) => import("./world.ts").Controller;
 
 const GOLDEN_ANGLE = 2.399963229728653;
 
@@ -60,9 +64,13 @@ export function applySetup(w: World, setup: readonly SetupEntry[]): void {
   }
 }
 
-export function createScenarioWorld(def: ScenarioDef, pack: PackFiles, packHash: string): World {
+export function createScenarioWorld(def: ScenarioDef, pack: PackFiles, packHash: string, makeBot?: BotFactory): World {
   const w = new World({ pack, packHash, seed: def.seed, map: def.map, populate: def.populate ?? false });
   applySetup(w, def.setup ?? []);
+  if (def.bots?.length) {
+    if (!makeBot) throw new Error("scenario has bots but no bot factory was given");
+    for (const b of def.bots) w.controllers.push(makeBot(b));
+  }
   return w;
 }
 

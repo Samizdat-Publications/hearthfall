@@ -7,5 +7,7 @@ export { Terrain, wrap, wrapDelta, DIRTY_KEEP, type Rect, type DirtyRect, type T
 export { generateMap, walkableComponents, type MapSpec, type GeneratedMap } from "./generator.ts";
 export { makeConfig, bandOf, secondsToTicks, type SimConfig, type BandName } from "./config.ts";
 export { COMMANDS, registerCommand, type Command, type CommandHandler } from "./commands.ts";
-export { World, TRIBE_COLORS, type SimEvent, type Tribe, type WorldInit, type HashParts, type WorldSnapshot } from "./world.ts";
-export { applySetup, createScenarioWorld, commandsByTick, type ScenarioDef, type SetupEntry } from "./scenario.ts";
+export { ORDER, UnitSystem } from "./units.ts";
+export { Pathfinder, SpatialHash, Heap } from "./pathing.ts";
+export { World, TRIBE_COLORS, type Controller, type SimEvent, type Tribe, type WorldInit, type HashParts, type WorldSnapshot } from "./world.ts";
+export { applySetup, createScenarioWorld, commandsByTick, type ScenarioDef, type SetupEntry, type BotFactory } from "./scenario.ts";

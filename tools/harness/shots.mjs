@@ -9,7 +9,7 @@ import { blankCheck, launch, openGame, pixelStats, shotMode, startPreview, viteB
 
 const SHOT_DIR = LATEST + "shots/";
 const BASE_DIR = (set) => ROOT + `reports/baselines/shots/${set}/`;
-const DIFF_MAX = 0.01;
+const DIFF_MAX = 0.002;
 
 function loadSet(set) {
   const p = ROOT + `tools/harness/shotsets/${set}.json`;
@@ -110,7 +110,11 @@ export async function captureSet(set, { onlyIds } = {}) {
         const path = SHOT_DIR + shot.id + ".png";
         await page.screenshot({ path });
         res.checks.dom = await page.evaluate(domCheckFn);
-        for (const i of res.checks.dom.issues) fail(`dom: ${i}`);
+        const domIssues = res.checks.dom.issues;
+        if (res.checks.dom.count < (shot.minHud ?? 1)) fail(`dom: only ${res.checks.dom.count} HUD elements`);
+        if (shot.expectDomIssue) {
+          if (!domIssues.some((x) => x.includes(shot.expectDomIssue))) fail(`dom: expected an issue matching "${shot.expectDomIssue}" (negative check did not fire)`);
+        } else for (const i of domIssues) fail(`dom: ${i}`);
         res.checks.console = opened.consoleErrors.slice(0, 5);
         if (opened.consoleErrors.length) fail(`console: ${opened.consoleErrors[0].slice(0, 120)}`);
         const stats = pixelStats(path);

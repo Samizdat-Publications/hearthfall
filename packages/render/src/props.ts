@@ -64,7 +64,7 @@ export class TreeLayer {
   update(w: World, focusX: number, focusZ: number, heightScale: number): void {
     const E = w.ents;
     const n = w.terrain.size;
-    const key = `${focusX.toFixed(2)}|${focusZ.toFixed(2)}|${w.terrain.version}|${E.count}|${E.hi}`;
+    const key = `${focusX.toFixed(2)}|${focusZ.toFixed(2)}|${w.terrain.version}|${w.treeVersion}`;
     if (key === this.lastKey) return;
     this.lastKey = key;
     const counts = [0, 0];

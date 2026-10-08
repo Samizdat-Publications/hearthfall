@@ -856,7 +856,7 @@
         "aspect_ratio": "1:1",
         "image_size": "1K",
         "route": "image",
-        "target_polycount": 900,
+        "target_polycount": 1500,
         "budget_class": "building",
         "scheme": "sample",
         "default_color": "stone",
@@ -889,30 +889,30 @@
               1024
             ]
           },
-          "request_hash": "dfb2e3f3dbc166013d586a79b69136799dacc772d9fa0e743c0b89594128e6bb"
+          "request_hash": "2ee9c4ad27d9d28929c6c9dec7d6bd6c39fc8867532b8cac06998c012a530c66"
         },
         "model": {
           "status": "done",
           "provider": "meshy",
-          "remote_id": "01a11da4-f5b8-776b-8df4-bf8cc53c6bb0",
-          "started": "2026-10-08T22:31:39Z",
-          "finished": "2026-10-08T22:34:31Z",
+          "remote_id": "01a11dac-95be-7034-a26f-9ffa63b88834",
+          "started": "2026-10-08T22:39:59Z",
+          "finished": "2026-10-08T22:42:08Z",
           "cost": {
             "credits": 15.0,
             "usd": 0.3,
             "source": "consumed_credits"
           },
           "output_path": "tools/assets/raw/meshy/building.dwelling_small/model.glb",
-          "sha256": "f9cb18a3d0dc0f6ec739ff64e9467af46d47466bb135eb84a2a8cf5c79a897e6",
+          "sha256": "fa3189048c7990ad33ac5bfb89a5116c49d7fcecdb0b7f7d824b91dc44bb6ac1",
           "attempts": 1,
           "error": null,
           "meta": {
             "route": "image",
             "kind": "image",
-            "bytes": 1997804,
-            "progress": 100
+            "progress": 100,
+            "bytes": 2020332
           },
-          "request_hash": "1826418091b677bed9e2ffc9b3e6bde79c605705d68d38e9e3ca7e3f4ab84fee"
+          "request_hash": "720731cbd78ce323dc554a383e6d0eae670342f365ca8335a68dddb6b26d3cc8"
         },
         "rig": {
           "status": "skipped",
@@ -942,32 +942,34 @@
           "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-08T22:34:42Z",
-          "finished": "2026-10-08T22:34:49Z",
+          "started": "2026-10-08T22:42:09Z",
+          "finished": "2026-10-08T22:42:22Z",
           "cost": null,
           "output_path": "assets/models/building.dwelling_small.glb",
-          "sha256": "5ead04617c4d569e57161650a2c78212664930c29831786f093bb081a8a8cfde",
+          "sha256": "acc00c4dd37758ddcda951763da6208f20339aa55ab033aa81b652fae9ad0574",
           "attempts": 1,
           "error": null,
           "meta": {
-            "tris_in": 661,
-            "tris_out": 643,
+            "tris_in": 1269,
+            "tris_out": 1267,
             "decimated": false,
-            "scale": 1.80368,
+            "scale": 1.8,
             "bounds_min": [
-              -0.8991,
               -0.9,
+              -0.8943,
               0.0
             ],
             "bounds_max": [
-              0.8991,
               0.9,
-              1.5667
+              0.8943,
+              1.5002
             ],
             "scheme": "sample",
             "palette_used": [
               "azure",
               "fire",
+              "forest",
+              "rock",
               "rockDark",
               "scar",
               "skin2",
@@ -977,41 +979,41 @@
               "woodDark"
             ],
             "palette_faces": {
-              "rockDark": 32,
-              "wood": 66,
-              "woodDark": 253,
+              "forest": 1,
+              "rock": 1,
+              "rockDark": 103,
+              "wood": 193,
+              "woodDark": 527,
               "thatch": 7,
-              "skin2": 210,
-              "skin3": 45,
-              "azure": 12,
+              "skin2": 245,
+              "skin3": 106,
+              "azure": 29,
               "fire": 1,
-              "scar": 17
+              "scar": 54
             },
-            "tribe_faces": 12,
+            "tribe_faces": 29,
             "tribe_names": [
               "azure"
             ],
             "tribe_height_range": [
-              0.19,
-              0.438
+              0.144,
+              0.458
             ],
-            "warnings": [
-              "tris 643 below class minimum 800"
-            ],
+            "warnings": [],
             "blender": "5.1.2"
           },
-          "request_hash": "33b7a028dcafc3e2a0b47b60e23cdaca1d7436f294017ffae702461cbb2d6b74"
+          "request_hash": "ff361f38007970e1e5308cd855c7c806f1d6d84ccb3cdb37bf5b0655d66b8f86"
         },
         "thumb": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
           "started": null,
-          "finished": null,
+          "finished": "2026-10-08T22:43:26Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
+          "output_path": "assets/icons/building.dwelling_small.png",
+          "sha256": "d95181064b5c0f8a6d3dc2f276bf72712feacf1c0d9d0f92865557e9e0bd7f85",
+          "attempts": 1,
           "error": null
         }
       },
@@ -1019,39 +1021,37 @@
       "request_hash": null,
       "approved": false,
       "qa": {
-        "tris": 643,
-        "verts": 1926,
+        "tris": 1267,
+        "verts": 3799,
         "bounds": {
           "min": [
-            -0.8991,
+            -0.9,
             0.0,
-            -0.9
+            -0.8943
           ],
           "max": [
-            0.8991,
-            1.5667,
-            0.9
+            0.9,
+            1.5002,
+            0.8943
           ],
           "size": [
-            1.7982,
-            1.5667,
-            1.8
+            1.8,
+            1.5002,
+            1.7887
           ]
         },
-        "bytes": 82244,
+        "bytes": 160912,
         "materials": 1,
         "palette_delta": 1e-05,
         "palette_within": 1.0,
-        "tribe_faces": 12,
+        "tribe_faces": 29,
         "tribe_height_range": [
-          0.19,
-          0.438
+          0.144,
+          0.458
         ],
-        "boundary_edges": 231,
+        "boundary_edges": 301,
         "nonmanifold_edges": 0,
-        "warnings": [
-          "tris 643 below budget min 800"
-        ]
+        "warnings": []
       }
     },
     {
@@ -1209,15 +1209,15 @@
           "request_hash": "3d4bf9c4c1f0c6b803cac05219aff5aed77770b11ea5526fedbac014cf40d997"
         },
         "thumb": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
           "started": null,
-          "finished": null,
+          "finished": "2026-10-08T22:37:40Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
+          "output_path": "assets/icons/building.dwelling_medium.png",
+          "sha256": "977a434d19b3f685e54fe926cc6af08f0b28844ca186f1523c468872c3a12921",
+          "attempts": 1,
           "error": null
         }
       },
@@ -1261,7 +1261,7 @@
     {
       "id": "building.dwelling_large",
       "class": "buildings",
-      "prompt": "large tribal hall house with a double-tier thatched roof, carved roof beams, and two doors, one clearly visible bright royal blue cloth banner or pennant hanging from a pole or the eaves (the only blue in the image)",
+      "prompt": "large tribal hall house with a double-tier thatched roof, carved roof beams, and two doors, a tall pole beside the door flying a large prominent bright royal blue cloth banner (the only blue in the image)",
       "refs": [
         "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
       ],
@@ -1283,50 +1283,50 @@
           "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": "2026-10-08T22:31:58Z",
-          "finished": "2026-10-08T22:32:21Z",
+          "started": "2026-10-08T22:40:01Z",
+          "finished": "2026-10-08T22:40:16Z",
           "cost": {
             "usd": 0.0336,
             "source": "computed"
           },
           "output_path": "tools/assets/raw/gemini/building.dwelling_large/concept.jpg",
-          "sha256": "d382c62cf8db4c9112fb4c02efd8169304e83db6291002e377961d7f765fa500",
+          "sha256": "b09163ee4bfedcec472b97291d3c26a48c3ec6a556238bc1f0c2170b6e673d92",
           "attempts": 1,
           "error": null,
           "meta": {
             "endpoint": "generateContent",
             "mime": "image/jpeg",
-            "bytes": 431541,
+            "bytes": 437052,
             "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
             "size": [
               1024,
               1024
             ]
           },
-          "request_hash": "e99e23590fa7378d107ca8a0eabc4721f99e7158f2b6eb530a9ad0a06dafed14"
+          "request_hash": "130d5d810a2189df0ece25bf4900e9db519e35e2d8b7fe3695c97fd881e42b6d"
         },
         "model": {
           "status": "done",
           "provider": "meshy",
-          "remote_id": "01a11da5-98bb-743c-b09a-0efbe72ffb49",
-          "started": "2026-10-08T22:32:21Z",
-          "finished": "2026-10-08T22:34:36Z",
+          "remote_id": "01a11dac-d75c-77f3-af66-eb9cfc4812af",
+          "started": "2026-10-08T22:40:16Z",
+          "finished": "2026-10-08T22:42:26Z",
           "cost": {
             "credits": 15.0,
             "usd": 0.3,
             "source": "consumed_credits"
           },
           "output_path": "tools/assets/raw/meshy/building.dwelling_large/model.glb",
-          "sha256": "1526cae9d369a4be408a5853e34d0adefc36ef5f5a64091f05fde76ed0020295",
+          "sha256": "77bd6732d734cec3e3e4b124dfbaa1df237f16aa33cba1fdd08768d0294e853d",
           "attempts": 1,
           "error": null,
           "meta": {
             "route": "image",
             "kind": "image",
-            "bytes": 2052612,
-            "progress": 100
+            "progress": 100,
+            "bytes": 2398116
           },
-          "request_hash": "55c4423f2e8944c1f1f5bde7fb6ab56d7c73dfbd996cf8b2d8777c7935180081"
+          "request_hash": "195c464e30818e1b282c4fae58db7f0bbdc8629f82cba5b6deaff89d67ccae8b"
         },
         "rig": {
           "status": "skipped",
@@ -1356,33 +1356,35 @@
           "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-08T22:34:58Z",
-          "finished": "2026-10-08T22:35:05Z",
+          "started": "2026-10-08T22:42:26Z",
+          "finished": "2026-10-08T22:42:39Z",
           "cost": null,
           "output_path": "assets/models/building.dwelling_large.glb",
-          "sha256": "f5fa58ca815104acafa611c90cf437128c9c910caa1fbc67c6c1446dfdca9180",
+          "sha256": "63301350e83027b5d9533f8c0d6992f7f14c8634a5476af85601643c169e7bd2",
           "attempts": 1,
           "error": null,
           "meta": {
-            "tris_in": 1584,
-            "tris_out": 1583,
+            "tris_in": 1717,
+            "tris_out": 1716,
             "decimated": false,
             "scale": 2.2,
             "bounds_min": [
-              -0.9694,
+              -0.9068,
               -1.1,
               0.0
             ],
             "bounds_max": [
-              0.9694,
+              0.9068,
               1.1,
-              1.6086
+              1.48
             ],
             "scheme": "sample",
             "palette_used": [
+              "azure",
               "rock",
               "rockDark",
               "scar",
+              "skin1",
               "skin2",
               "skin3",
               "stone",
@@ -1391,34 +1393,41 @@
               "woodDark"
             ],
             "palette_faces": {
-              "rock": 5,
-              "rockDark": 18,
-              "wood": 208,
-              "woodDark": 374,
-              "thatch": 1,
-              "stone": 3,
-              "skin2": 247,
-              "skin3": 690,
-              "scar": 37
+              "rock": 1,
+              "rockDark": 17,
+              "wood": 212,
+              "woodDark": 379,
+              "thatch": 467,
+              "stone": 1,
+              "skin1": 6,
+              "skin2": 181,
+              "skin3": 122,
+              "azure": 17,
+              "scar": 313
             },
-            "tribe_faces": 0,
-            "tribe_names": [],
-            "tribe_height_range": null,
+            "tribe_faces": 17,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.304,
+              0.689
+            ],
             "warnings": [],
             "blender": "5.1.2"
           },
-          "request_hash": "2bb15f1f8b2860ef2e8ecc8ae8c8ecbbedfe5c6a1cc6293bf7e861311e5c4e1b"
+          "request_hash": "6fe910fd5de1426cba476ffffe57f1293186d588ced8b8030412b26d2cf258bc"
         },
         "thumb": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
           "started": null,
-          "finished": null,
+          "finished": "2026-10-08T22:43:26Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
+          "output_path": "assets/icons/building.dwelling_large.png",
+          "sha256": "661b2ca2ab0b71a5395c964dd80f4790b0bb6fce04c8a43229852b68ed2d5afa",
+          "attempts": 1,
           "error": null
         }
       },
@@ -1426,36 +1435,37 @@
       "request_hash": null,
       "approved": false,
       "qa": {
-        "tris": 1583,
-        "verts": 4735,
+        "tris": 1716,
+        "verts": 5129,
         "bounds": {
           "min": [
-            -0.9694,
+            -0.9068,
             0.0,
             -1.1
           ],
           "max": [
-            0.9694,
-            1.6086,
+            0.9068,
+            1.48,
             1.1
           ],
           "size": [
-            1.9388,
-            1.6086,
+            1.8136,
+            1.48,
             2.2
           ]
         },
-        "bytes": 200248,
+        "bytes": 216804,
         "materials": 1,
         "palette_delta": 1e-05,
         "palette_within": 1.0,
-        "tribe_faces": 0,
-        "tribe_height_range": null,
-        "boundary_edges": 141,
+        "tribe_faces": 17,
+        "tribe_height_range": [
+          0.304,
+          0.689
+        ],
+        "boundary_edges": 70,
         "nonmanifold_edges": 0,
-        "warnings": [
-          "no tribe-color region (azure/crimson/amber/jade) after palette snap"
-        ]
+        "warnings": []
       }
     },
     {
@@ -1615,15 +1625,15 @@
           "request_hash": "3c9025944c583744ce747cd4f94af6c6d1cf69848a2441f17e2ca897278236b2"
         },
         "thumb": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
           "started": null,
-          "finished": null,
+          "finished": "2026-10-08T22:37:40Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
+          "output_path": "assets/icons/building.watchtower.png",
+          "sha256": "b8939c3d231b3ac44466eed8dc98f2d47da6fc59f0d44e75aeb2aa1b34b3b919",
+          "attempts": 1,
           "error": null
         }
       },
@@ -1827,15 +1837,15 @@
           "request_hash": "418f2798c2a3074beb04c20bb67e4e5fbf7f34cf91fbd288fcb9d927e8147a3b"
         },
         "thumb": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
           "started": null,
-          "finished": null,
+          "finished": "2026-10-08T22:37:40Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
+          "output_path": "assets/icons/building.warden_lodge.png",
+          "sha256": "442cf28ddcc33109edbd99b1463c3cdf725386f09522ba942c4439f1763f89b6",
+          "attempts": 1,
           "error": null
         }
       },
@@ -1924,20 +1934,27 @@
           "request_hash": "79ffafc788dff213e2055590ca2655aef2c8ad45af230952e1603745d449ff1b"
         },
         "model": {
-          "status": "submitted",
+          "status": "done",
           "provider": "meshy",
           "remote_id": "01a11da8-4ef5-75b3-b776-516c1064d21f",
           "started": "2026-10-08T22:35:18Z",
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
+          "finished": "2026-10-08T22:36:52Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.fire_lodge/model.glb",
+          "sha256": "2f943595c2996cc3e0dee4f335418e1cc1c5d7ff1e2b7f40df76db8b2f28d26c",
           "attempts": 1,
           "error": null,
           "meta": {
             "route": "image",
-            "kind": "image"
-          }
+            "kind": "image",
+            "progress": 100,
+            "bytes": 2404440
+          },
+          "request_hash": "63c6e1b1b1d599d485492e34b8af5fe9c0dd955fb549428f975abd78cfc37811"
         },
         "rig": {
           "status": "skipped",
@@ -1964,34 +1981,122 @@
           "error": null
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-08T22:37:00Z",
+          "finished": "2026-10-08T22:37:06Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/models/building.fire_lodge.glb",
+          "sha256": "fbd203bcd6022799614944789af8dd697740e5ae05d654920eff2eabf0b875ed",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1962,
+            "tris_out": 1962,
+            "decimated": false,
+            "scale": 2.9,
+            "bounds_min": [
+              -1.45,
+              -1.4474,
+              0.0
+            ],
+            "bounds_max": [
+              1.45,
+              1.4474,
+              2.2186
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "fire",
+              "lava",
+              "rockDark",
+              "sand",
+              "scar",
+              "skin1",
+              "skin2",
+              "skin3",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "sand": 1,
+              "rockDark": 356,
+              "wood": 575,
+              "woodDark": 100,
+              "thatch": 110,
+              "skin1": 14,
+              "skin2": 306,
+              "skin3": 146,
+              "azure": 32,
+              "fire": 4,
+              "lava": 22,
+              "scar": 296
+            },
+            "tribe_faces": 32,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.468,
+              0.727
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "66f597a28ad4d08ad6186e65b587eba22db616e6a88086788f0077ba7d69a094"
         },
         "thumb": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
           "started": null,
-          "finished": null,
+          "finished": "2026-10-08T22:37:40Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
+          "output_path": "assets/icons/building.fire_lodge.png",
+          "sha256": "4ab59bb16a492a23783a33e8eca3cd085c7771863b18a994930c59fb43c758ef",
+          "attempts": 1,
           "error": null
         }
       },
       "style_version": 1,
       "request_hash": null,
       "approved": false,
-      "qa": {}
+      "qa": {
+        "tris": 1962,
+        "verts": 5879,
+        "bounds": {
+          "min": [
+            -1.45,
+            0.0,
+            -1.4474
+          ],
+          "max": [
+            1.45,
+            2.2186,
+            1.4474
+          ],
+          "size": [
+            2.9,
+            2.2186,
+            2.8947
+          ]
+        },
+        "bytes": 248284,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 32,
+        "tribe_height_range": [
+          0.468,
+          0.727
+        ],
+        "boundary_edges": 4,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     },
     {
       "id": "building.chant_house",
@@ -2041,20 +2146,27 @@
           "request_hash": "6eb1cd847c2fc838c91497b8b48fc8ddf194525e329db9511f96aade5489fec8"
         },
         "model": {
-          "status": "submitted",
+          "status": "done",
           "provider": "meshy",
           "remote_id": "01a11da8-57bc-703a-aca1-dd8b68235872",
           "started": "2026-10-08T22:35:20Z",
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
+          "finished": "2026-10-08T22:36:55Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.chant_house/model.glb",
+          "sha256": "5b106b3d7949cfd75441737e09ac73ba164f4e1b62fce9ac62a3c72d8d7723b3",
           "attempts": 1,
           "error": null,
           "meta": {
             "route": "image",
-            "kind": "image"
-          }
+            "kind": "image",
+            "progress": 100,
+            "bytes": 1818112
+          },
+          "request_hash": "188b4273d718ccc71b97d9cab890ddfc1e813e9aefa4c29ba88a5a83f1033709"
         },
         "rig": {
           "status": "skipped",
@@ -2081,34 +2193,120 @@
           "error": null
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-08T22:37:06Z",
+          "finished": "2026-10-08T22:37:12Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/models/building.chant_house.glb",
+          "sha256": "432a9f7a42f80e59fce45522cbed7d3deb4f2a89a3cb2c8f7996064ac5c0a701",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 2180,
+            "tris_out": 2178,
+            "decimated": false,
+            "scale": 2.9,
+            "bounds_min": [
+              -1.45,
+              -1.45,
+              0.0
+            ],
+            "bounds_max": [
+              1.45,
+              1.45,
+              2.04
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "rock",
+              "rockDark",
+              "scar",
+              "skin1",
+              "skin2",
+              "skin3",
+              "stone",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "rock": 11,
+              "rockDark": 203,
+              "wood": 786,
+              "woodDark": 317,
+              "thatch": 28,
+              "stone": 11,
+              "skin1": 11,
+              "skin2": 459,
+              "skin3": 330,
+              "azure": 6,
+              "scar": 16
+            },
+            "tribe_faces": 6,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.329,
+              0.513
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "2f00d73049c39a8cd1c48296b170a4daa52014824a6fa968e4489e409d801019"
         },
         "thumb": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
           "started": null,
-          "finished": null,
+          "finished": "2026-10-08T22:37:40Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
+          "output_path": "assets/icons/building.chant_house.png",
+          "sha256": "58af9d6380583baf9898d0915b73549b1522eb67a1c7111d731d2d8795274ec6",
+          "attempts": 1,
           "error": null
         }
       },
       "style_version": 1,
       "request_hash": null,
       "approved": false,
-      "qa": {}
+      "qa": {
+        "tris": 2178,
+        "verts": 6527,
+        "bounds": {
+          "min": [
+            -1.45,
+            0.0,
+            -1.45
+          ],
+          "max": [
+            1.45,
+            2.04,
+            1.45
+          ],
+          "size": [
+            2.9,
+            2.04,
+            2.9
+          ]
+        },
+        "bytes": 275500,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 6,
+        "tribe_height_range": [
+          0.329,
+          0.513
+        ],
+        "boundary_edges": 108,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     },
     {
       "id": "building.shrine",
@@ -2158,20 +2356,27 @@
           "request_hash": "38c9695ce2eea38a6db8adf296e1c405e7eb1c2ecf180bbd6a7202906de4b52d"
         },
         "model": {
-          "status": "submitted",
+          "status": "done",
           "provider": "meshy",
           "remote_id": "01a11da8-61de-7173-bb8b-cc4c792642f0",
           "started": "2026-10-08T22:35:23Z",
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
+          "finished": "2026-10-08T22:36:57Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.shrine/model.glb",
+          "sha256": "7e246aa8bd2f6a7365a2bf14889c6ea5e7accfe7e6d7f5ee7348695df9f9bfb9",
           "attempts": 1,
           "error": null,
           "meta": {
             "route": "image",
-            "kind": "image"
-          }
+            "kind": "image",
+            "progress": 100,
+            "bytes": 1978576
+          },
+          "request_hash": "b5033d1d0a9122944098b2016aefe5268a203204a00d3e0e550cc8c149fac430"
         },
         "rig": {
           "status": "skipped",
@@ -2198,34 +2403,116 @@
           "error": null
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-08T22:37:12Z",
+          "finished": "2026-10-08T22:37:20Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/models/building.shrine.glb",
+          "sha256": "eb44110990cd4db61993b49a5e3696872940b369509f2584cf3b55d5f63b4a0c",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 972,
+            "tris_out": 972,
+            "decimated": false,
+            "scale": 1.75195,
+            "bounds_min": [
+              -0.75,
+              -0.6195,
+              0.0
+            ],
+            "bounds_max": [
+              0.75,
+              0.6195,
+              1.7499
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "magic",
+              "rock",
+              "rockDark",
+              "scar",
+              "skin2",
+              "skin3",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "rock": 91,
+              "rockDark": 261,
+              "wood": 58,
+              "woodDark": 384,
+              "skin2": 68,
+              "skin3": 59,
+              "azure": 14,
+              "magic": 12,
+              "scar": 25
+            },
+            "tribe_faces": 14,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.28,
+              0.639
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "92492ad605dff237cc0551f68a3778615ec2919ca22a254deffdc84b76fe036b"
         },
         "thumb": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
           "started": null,
-          "finished": null,
+          "finished": "2026-10-08T22:37:40Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
+          "output_path": "assets/icons/building.shrine.png",
+          "sha256": "9dba430a86dae0e25c0f19f72e49b2e70fc104aa558fcdf3d99bc9034567b7c9",
+          "attempts": 1,
           "error": null
         }
       },
       "style_version": 1,
       "request_hash": null,
       "approved": false,
-      "qa": {}
+      "qa": {
+        "tris": 972,
+        "verts": 2907,
+        "bounds": {
+          "min": [
+            -0.75,
+            0.0,
+            -0.6195
+          ],
+          "max": [
+            0.75,
+            1.7499,
+            0.6195
+          ],
+          "size": [
+            1.5,
+            1.7499,
+            1.2391
+          ]
+        },
+        "bytes": 123448,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 14,
+        "tribe_height_range": [
+          0.28,
+          0.639
+        ],
+        "boundary_edges": 12,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     },
     {
       "id": "building.reliquary",
@@ -2275,20 +2562,27 @@
           "request_hash": "3176bf586305901f1d23cd42a2273c0e37b626049d154225b9276af13fb85d1c"
         },
         "model": {
-          "status": "submitted",
+          "status": "done",
           "provider": "meshy",
           "remote_id": "01a11da8-6a6e-77d9-b026-128390b76ecf",
           "started": "2026-10-08T22:35:25Z",
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
+          "finished": "2026-10-08T22:37:00Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.reliquary/model.glb",
+          "sha256": "ca67074cc9e2c79b5ee163adc501f1d16d5bab2061cb8d259433678aefe49761",
           "attempts": 1,
           "error": null,
           "meta": {
             "route": "image",
-            "kind": "image"
-          }
+            "kind": "image",
+            "progress": 100,
+            "bytes": 1825280
+          },
+          "request_hash": "f9ad8d03b80fa579099dbb2373b049907059050b316a254b366c05d54a171a15"
         },
         "rig": {
           "status": "skipped",
@@ -2315,34 +2609,114 @@
           "error": null
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-08T22:37:20Z",
+          "finished": "2026-10-08T22:37:26Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/models/building.reliquary.glb",
+          "sha256": "c1806b0a5ce314f093b51dae86bd363e0592b19d5abe61e8f6a22c2f995b7ecf",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1580,
+            "tris_out": 1558,
+            "decimated": false,
+            "scale": 1.8,
+            "bounds_min": [
+              -0.9,
+              -0.9,
+              0.0
+            ],
+            "bounds_max": [
+              0.9,
+              0.9,
+              1.7468
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "magic",
+              "rock",
+              "rockDark",
+              "skin2",
+              "skin3",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "rock": 78,
+              "rockDark": 1185,
+              "wood": 177,
+              "woodDark": 24,
+              "skin2": 47,
+              "skin3": 23,
+              "azure": 10,
+              "magic": 14
+            },
+            "tribe_faces": 10,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.285,
+              0.552
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "ad0308559fbcc9191db3141486fb9dcec3b1ea7d863cb9d1b7b73b381bb3d1ad"
         },
         "thumb": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
           "started": null,
-          "finished": null,
+          "finished": "2026-10-08T22:37:40Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
+          "output_path": "assets/icons/building.reliquary.png",
+          "sha256": "38b659b701bee690bd9abcc1b064e186327ce4843615d3bbb5ac51d6a488d58c",
+          "attempts": 1,
           "error": null
         }
       },
       "style_version": 1,
       "request_hash": null,
       "approved": false,
-      "qa": {}
+      "qa": {
+        "tris": 1558,
+        "verts": 4660,
+        "bounds": {
+          "min": [
+            -0.9,
+            0.0,
+            -0.9
+          ],
+          "max": [
+            0.9,
+            1.7468,
+            0.9
+          ],
+          "size": [
+            1.8,
+            1.7468,
+            1.8
+          ]
+        },
+        "bytes": 197100,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 10,
+        "tribe_height_range": [
+          0.285,
+          0.552
+        ],
+        "boundary_edges": 302,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     },
     {
       "id": "building.totem",
@@ -2392,20 +2766,27 @@
           "request_hash": "422e20db377a788ec7d4a7ce32307b8d9d46b1bdc666b76c24de781683bbdae5"
         },
         "model": {
-          "status": "submitted",
+          "status": "done",
           "provider": "meshy",
           "remote_id": "01a11da8-7338-744e-a4bf-03274177d35e",
           "started": "2026-10-08T22:35:28Z",
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
+          "finished": "2026-10-08T22:36:43Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.totem/model.glb",
+          "sha256": "09cf470ac561119057c2c2bea1649a908acfc39b64a0e932613e812476e8f597",
           "attempts": 1,
           "error": null,
           "meta": {
             "route": "image",
-            "kind": "image"
-          }
+            "kind": "image",
+            "progress": 100,
+            "bytes": 2819600
+          },
+          "request_hash": "0bcb892258f70fbc1253c057c230284aa16c8468e76fc01f7e83859b511c7b3c"
         },
         "rig": {
           "status": "skipped",
@@ -2432,34 +2813,126 @@
           "error": null
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-08T22:36:43Z",
+          "finished": "2026-10-08T22:36:50Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/models/building.totem.glb",
+          "sha256": "b79febd69ea648e583a89d022f03d38cf8b8e25347f253c2c565ce2da8466443",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 902,
+            "tris_out": 902,
+            "decimated": false,
+            "scale": 2.4,
+            "bounds_min": [
+              -0.7777,
+              -0.5448,
+              0.0
+            ],
+            "bounds_max": [
+              0.7777,
+              0.5448,
+              2.4
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "fire",
+              "lava",
+              "rock",
+              "rockDark",
+              "sand",
+              "scar",
+              "skin1",
+              "skin2",
+              "skin3",
+              "stone",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "sand": 1,
+              "rock": 15,
+              "rockDark": 60,
+              "wood": 233,
+              "woodDark": 23,
+              "thatch": 20,
+              "stone": 1,
+              "skin1": 29,
+              "skin2": 77,
+              "skin3": 130,
+              "azure": 75,
+              "fire": 50,
+              "lava": 18,
+              "scar": 170
+            },
+            "tribe_faces": 75,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.529,
+              0.911
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "cc1892254f499e16c3d9adfb1c12f68b9b38d0ef821bef3104ac8297992e07b6"
         },
         "thumb": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
           "started": null,
-          "finished": null,
+          "finished": "2026-10-08T22:37:40Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
+          "output_path": "assets/icons/building.totem.png",
+          "sha256": "edd778308e1640ec30d61835f0bc498f405a094b3c17f7e06608b43e74cbd751",
+          "attempts": 1,
           "error": null
         }
       },
       "style_version": 1,
       "request_hash": null,
       "approved": false,
-      "qa": {}
+      "qa": {
+        "tris": 902,
+        "verts": 2706,
+        "bounds": {
+          "min": [
+            -0.7777,
+            0.0,
+            -0.5448
+          ],
+          "max": [
+            0.7777,
+            2.4,
+            0.5448
+          ],
+          "size": [
+            1.5554,
+            2.4,
+            1.0896
+          ]
+        },
+        "bytes": 115000,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 75,
+        "tribe_height_range": [
+          0.529,
+          0.911
+        ],
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     },
     {
       "id": "prop.tree_a",
@@ -2647,16 +3120,27 @@
           "error": null
         },
         "model": {
-          "status": "pending",
+          "status": "done",
           "provider": "meshy",
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "remote_id": "01a11daa-a045-70d7-a406-2bdb4f9f2fb7",
+          "started": "2026-10-08T22:37:50Z",
+          "finished": "2026-10-08T22:38:46Z",
+          "cost": {
+            "credits": 5.0,
+            "usd": 0.1,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/prop.tree_b/model.glb",
+          "sha256": "daba1a63ff842653193687fd7e021550f9724b89f66ea7eccbac0d101e96269f",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "text",
+            "kind": "text",
+            "progress": 100,
+            "bytes": 6708
+          },
+          "request_hash": "ea1069ca0424290ac5477312936c8b95776ddbb060dbf276b0f4b1d065cd800b"
         },
         "rig": {
           "status": "skipped",
@@ -2683,34 +3167,94 @@
           "error": null
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-08T22:38:52Z",
+          "finished": "2026-10-08T22:38:58Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/models/prop.tree_b.glb",
+          "sha256": "5e8dd6b27218eb4894eb8e025a4724902f7f61b308299686652a2098b39ac469",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 300,
+            "tris_out": 300,
+            "decimated": false,
+            "scale": 2.20528,
+            "bounds_min": [
+              -0.9341,
+              -0.8564,
+              0.0
+            ],
+            "bounds_max": [
+              0.9341,
+              0.8564,
+              2.2
+            ],
+            "scheme": "tree",
+            "palette_used": [
+              "forest",
+              "moss",
+              "wood"
+            ],
+            "palette_faces": {
+              "moss": 12,
+              "forest": 208,
+              "wood": 80
+            },
+            "tribe_faces": 0,
+            "tribe_names": [],
+            "tribe_height_range": null,
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "a36ce0f1d1ef6837c277d0327fd11430949cfe291639f1480e1bb469c516e739"
         },
         "thumb": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
           "started": null,
-          "finished": null,
+          "finished": "2026-10-08T22:39:31Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
+          "output_path": "assets/icons/prop.tree_b.png",
+          "sha256": "6b586c66979f95e80148d153ff51b72e8489de2f3575d5d0d7aaf7321f57dc1c",
+          "attempts": 1,
           "error": null
         }
       },
       "style_version": 1,
       "request_hash": null,
       "approved": false,
-      "qa": {}
+      "qa": {
+        "tris": 300,
+        "verts": 900,
+        "bounds": {
+          "min": [
+            -0.9341,
+            0.0,
+            -0.8564
+          ],
+          "max": [
+            0.9341,
+            2.2,
+            0.8564
+          ],
+          "size": [
+            1.8683,
+            2.2,
+            1.7129
+          ]
+        },
+        "bytes": 31792,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     },
     {
       "id": "prop.tree_c",
@@ -2740,16 +3284,27 @@
           "error": null
         },
         "model": {
-          "status": "pending",
+          "status": "done",
           "provider": "meshy",
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "remote_id": "01a11daa-aadf-7476-9dd0-d250ba3e0f95",
+          "started": "2026-10-08T22:37:53Z",
+          "finished": "2026-10-08T22:38:48Z",
+          "cost": {
+            "credits": 5.0,
+            "usd": 0.1,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/prop.tree_c/model.glb",
+          "sha256": "d41058ccf6b98ee8eecc099ee686243ccf72d72b5ab902740c99ccaf59702127",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "text",
+            "kind": "text",
+            "progress": 100,
+            "bytes": 8232
+          },
+          "request_hash": "c5a34c999f2a8cde377d57708f28f737dd01789d41b6d11fb79b03836c19c9cb"
         },
         "rig": {
           "status": "skipped",
@@ -2776,34 +3331,96 @@
           "error": null
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-08T22:38:58Z",
+          "finished": "2026-10-08T22:39:04Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/models/prop.tree_c.glb",
+          "sha256": "cde30c3a4a79c81d71e465089cef3831ab832bbf3149b724fb60d1e2ea6570b0",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 356,
+            "tris_out": 356,
+            "decimated": false,
+            "scale": 3.01599,
+            "bounds_min": [
+              -0.324,
+              -0.3371,
+              0.0
+            ],
+            "bounds_max": [
+              0.324,
+              0.3371,
+              3.0
+            ],
+            "scheme": "tree",
+            "palette_used": [
+              "forest",
+              "moss",
+              "wood"
+            ],
+            "palette_faces": {
+              "moss": 71,
+              "forest": 233,
+              "wood": 52
+            },
+            "tribe_faces": 0,
+            "tribe_names": [],
+            "tribe_height_range": null,
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "1b03ec51942748505d353ee61c3a96f1f46cbc3b87a8d4270440d776d22d24c8"
         },
         "thumb": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
           "started": null,
-          "finished": null,
+          "finished": "2026-10-08T22:39:31Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
+          "output_path": "assets/icons/prop.tree_c.png",
+          "sha256": "725c6f905c839509bbbcfa660097b3d0e83d40fbbc844c4ed9d7aa2b50978c92",
+          "attempts": 1,
           "error": null
         }
       },
       "style_version": 1,
       "request_hash": null,
       "approved": false,
-      "qa": {}
+      "qa": {
+        "tris": 356,
+        "verts": 1061,
+        "bounds": {
+          "min": [
+            -0.324,
+            0.0,
+            -0.3371
+          ],
+          "max": [
+            0.324,
+            3.0,
+            0.3371
+          ],
+          "size": [
+            0.648,
+            3.0,
+            0.6742
+          ]
+        },
+        "bytes": 37272,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "boundary_edges": 9,
+        "nonmanifold_edges": 3,
+        "warnings": [
+          "3 non-manifold edges"
+        ]
+      }
     },
     {
       "id": "prop.rock_a",
@@ -2833,16 +3450,27 @@
           "error": null
         },
         "model": {
-          "status": "pending",
+          "status": "done",
           "provider": "meshy",
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "remote_id": "01a11daa-b5e3-71ae-a568-8c9aed010cd2",
+          "started": "2026-10-08T22:37:56Z",
+          "finished": "2026-10-08T22:39:10Z",
+          "cost": {
+            "credits": 5.0,
+            "usd": 0.1,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/prop.rock_a/model.glb",
+          "sha256": "a28ba1b72ce661986253f28af032697bbcc6166a7318271df35754c6567bd2d2",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "text",
+            "kind": "text",
+            "progress": 100,
+            "bytes": 3984
+          },
+          "request_hash": "915e1bdf664e677599aa55034ab4d7adfd8d55138fd0170d2c8d3f3964b38909"
         },
         "rig": {
           "status": "skipped",
@@ -2869,34 +3497,92 @@
           "error": null
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-08T22:39:12Z",
+          "finished": "2026-10-08T22:39:17Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/models/prop.rock_a.glb",
+          "sha256": "47cb2a96063c98ce116adae66fababbfe30b3a88e67ecb28f2ba3159f4f684d4",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 152,
+            "tris_out": 152,
+            "decimated": false,
+            "scale": 0.88097,
+            "bounds_min": [
+              -0.4253,
+              -0.4389,
+              0.0
+            ],
+            "bounds_max": [
+              0.4253,
+              0.4389,
+              0.7
+            ],
+            "scheme": "rock",
+            "palette_used": [
+              "rock",
+              "rockDark"
+            ],
+            "palette_faces": {
+              "rock": 59,
+              "rockDark": 93
+            },
+            "tribe_faces": 0,
+            "tribe_names": [],
+            "tribe_height_range": null,
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "def3f2c3c015e028e0ffde58ff905d15f23699fdba14d365731f3b1162d3cb69"
         },
         "thumb": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
           "started": null,
-          "finished": null,
+          "finished": "2026-10-08T22:39:31Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
+          "output_path": "assets/icons/prop.rock_a.png",
+          "sha256": "fb5a1cbb47008778ae783be2975de0e4e81322458ae13942639e53f2911614be",
+          "attempts": 1,
           "error": null
         }
       },
       "style_version": 1,
       "request_hash": null,
       "approved": false,
-      "qa": {}
+      "qa": {
+        "tris": 152,
+        "verts": 456,
+        "bounds": {
+          "min": [
+            -0.4253,
+            0.0,
+            -0.4389
+          ],
+          "max": [
+            0.4253,
+            0.7,
+            0.4389
+          ],
+          "size": [
+            0.8506,
+            0.7,
+            0.8779
+          ]
+        },
+        "bytes": 16696,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "boundary_edges": 18,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     },
     {
       "id": "prop.rock_b",
@@ -2926,16 +3612,27 @@
           "error": null
         },
         "model": {
-          "status": "pending",
+          "status": "done",
           "provider": "meshy",
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "remote_id": "01a11daa-bff8-75ee-ad3d-007c73727b8e",
+          "started": "2026-10-08T22:37:59Z",
+          "finished": "2026-10-08T22:38:51Z",
+          "cost": {
+            "credits": 5.0,
+            "usd": 0.1,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/prop.rock_b/model.glb",
+          "sha256": "0262532b92f7b4cd8c5d4a109fbaf61661651900676362a19708f626bdbda173",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "text",
+            "kind": "text",
+            "progress": 100,
+            "bytes": 4132
+          },
+          "request_hash": "cf00511a410103b5952e109913a71a85aae103524227965aba00be05cec5913c"
         },
         "rig": {
           "status": "skipped",
@@ -2962,34 +3659,92 @@
           "error": null
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-08T22:39:04Z",
+          "finished": "2026-10-08T22:39:09Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/models/prop.rock_b.glb",
+          "sha256": "e74fc756942f0e510b792e1fb2c6cd8fa42ce67c2b0f24feaa25d4980ae2c267",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 182,
+            "tris_out": 182,
+            "decimated": false,
+            "scale": 1.87529,
+            "bounds_min": [
+              -0.9115,
+              -0.9376,
+              0.0
+            ],
+            "bounds_max": [
+              0.9115,
+              0.9376,
+              0.5
+            ],
+            "scheme": "rock",
+            "palette_used": [
+              "rock",
+              "rockDark"
+            ],
+            "palette_faces": {
+              "rock": 42,
+              "rockDark": 140
+            },
+            "tribe_faces": 0,
+            "tribe_names": [],
+            "tribe_height_range": null,
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "a69726f6255a727bb23837f747e6df69975db15994c681ca4b84689a1c254193"
         },
         "thumb": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
           "started": null,
-          "finished": null,
+          "finished": "2026-10-08T22:39:31Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
+          "output_path": "assets/icons/prop.rock_b.png",
+          "sha256": "af224f7ae9468834cd8b6b7d0345ae9a23668ad7b95cbfd0bfb57a9bd57fd360",
+          "attempts": 1,
           "error": null
         }
       },
       "style_version": 1,
       "request_hash": null,
       "approved": false,
-      "qa": {}
+      "qa": {
+        "tris": 182,
+        "verts": 546,
+        "bounds": {
+          "min": [
+            -0.9115,
+            0.0,
+            -0.9376
+          ],
+          "max": [
+            0.9115,
+            0.5,
+            0.9376
+          ],
+          "size": [
+            1.8231,
+            0.5,
+            1.8753
+          ]
+        },
+        "bytes": 19740,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     },
     {
       "id": "prop.rock_c",
@@ -3019,16 +3774,27 @@
           "error": null
         },
         "model": {
-          "status": "pending",
+          "status": "done",
           "provider": "meshy",
-          "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "remote_id": "01a11daa-cb97-7053-a038-fed368ca0f2a",
+          "started": "2026-10-08T22:38:01Z",
+          "finished": "2026-10-08T22:39:12Z",
+          "cost": {
+            "credits": 5.0,
+            "usd": 0.1,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/prop.rock_c/model.glb",
+          "sha256": "b1318d22570883ba17d64cf66d8d0810999226e07f71b6ac95dfaf1b9d024b0c",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "text",
+            "kind": "text",
+            "progress": 100,
+            "bytes": 4964
+          },
+          "request_hash": "a3729a81c0deeae199c1ac33a450845583a81ee9c1de500933f1e6ea67812274"
         },
         "rig": {
           "status": "skipped",
@@ -3055,34 +3821,92 @@
           "error": null
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-08T22:39:17Z",
+          "finished": "2026-10-08T22:39:23Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/models/prop.rock_c.glb",
+          "sha256": "37a4c380120e91726669ad9d853a9c8b44213c313601294b541219c5498a15de",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 232,
+            "tris_out": 232,
+            "decimated": false,
+            "scale": 1.0,
+            "bounds_min": [
+              -0.1268,
+              -0.1234,
+              0.0
+            ],
+            "bounds_max": [
+              0.1268,
+              0.1234,
+              1.0
+            ],
+            "scheme": "rock",
+            "palette_used": [
+              "rock",
+              "rockDark"
+            ],
+            "palette_faces": {
+              "rock": 14,
+              "rockDark": 218
+            },
+            "tribe_faces": 0,
+            "tribe_names": [],
+            "tribe_height_range": null,
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "386d94f83a519ef8769fcbe89d2c6d07bf7e380aa62b36159d18bc5996321321"
         },
         "thumb": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
           "started": null,
-          "finished": null,
+          "finished": "2026-10-08T22:39:31Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
+          "output_path": "assets/icons/prop.rock_c.png",
+          "sha256": "f8d2c770e24d2b8edeb7c334b1153b1e0e27beafc9ec2342f02720b224928763",
+          "attempts": 1,
           "error": null
         }
       },
       "style_version": 1,
       "request_hash": null,
       "approved": false,
-      "qa": {}
+      "qa": {
+        "tris": 232,
+        "verts": 686,
+        "bounds": {
+          "min": [
+            -0.1268,
+            0.0,
+            -0.1234
+          ],
+          "max": [
+            0.1268,
+            1.0,
+            0.1234
+          ],
+          "size": [
+            0.2536,
+            1.0,
+            0.2469
+          ]
+        },
+        "bytes": 24520,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     },
     {
       "id": "unit.shaper",

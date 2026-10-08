@@ -132,7 +132,8 @@ export class Game {
       if (n) this.onChange();
     }
     this.pollKeys(dt);
-    const visualTime = this.params.fixedStep ? this.renderer.frames / 60 : now / 1000;
+    // fixedStep: visuals follow the sim tick, so re-rendering the same tick gives identical pixels
+    const visualTime = this.params.fixedStep ? this.world.tick / this.world.cfg.tickHz : now / 1000;
     this.renderer.render(visualTime);
   }
 

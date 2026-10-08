@@ -47,6 +47,11 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 37. [S] Map view: orthographic camera with straight edges and a grid, fitted to the window (M2 sheet review).
 38. [S] Sky: more blue above the horizon and a few faceted clouds; golden haze only near the horizon (M2 sheet review).
 39. [M] Close-up detail: grass tufts, small rocks and flowers as instanced props by band; islands preset reads too sandy in lowlands (M2 sheet review).
+40. [S] Map view still renders as a distorted pillow with ragged corners: verify bend is 0 in map mode, switch to an orthographic camera (pairs with 37) (M2 review).
+41. [S] Render tunables into data (style.json render block): camera distance/pitch/bend curve, verticalScale, fog and fade, water wave constants, tree size formulas (M2 review).
+42. [S] packages/render unit tests: syncTerrain chunk selection from dirty rects, wrap placement, faceColor bands; an automated seam continuity check on the wrap_seam shot (M2 review).
+43. [S] VisionQA: hold out calibration samples (fit on half, score on half) before trusting ui_overlap; grow the set (M2 review).
+44. [S] Bump world.treeVersion when a tree wood value changes (chopping, M4) so the tree layer rescales (M2 review).
 36. [S] Spells that drown units need a readable lead-in (rumble, crack VFX, short delay) so players see cause and effect (M5, M1 review).
 
 ## Parking lot (ideas, unranked)

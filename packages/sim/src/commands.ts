@@ -58,6 +58,53 @@ registerCommand("terrainOp", {
   },
 });
 
+const isPoint = (v: unknown): v is [number, number] => Array.isArray(v) && v.length === 2 && finite(v[0]) && finite(v[1]);
+
+/** Move (or attack-move) units to a point. units: entity ids or a selector like "tribe0.settlers". */
+registerCommand("move", {
+  validate(w, c) {
+    if (!isPoint(c.args.to)) return "move needs to: [x, y]";
+    const idx = w.selectUnits(c.args.units);
+    if (!idx.length) return "no units selected";
+    if (c.tribe !== -1 && idx.some((i) => w.ents.tribe[i] !== c.tribe)) return "units belong to another tribe";
+    return null;
+  },
+  apply(w, c) {
+    const [x, y] = c.args.to as [number, number];
+    const n = w.terrain.size;
+    w.units.order(w.selectUnits(c.args.units), ((x % n) + n) % n, ((y % n) + n) % n, c.args.attack ? 2 : 1);
+  },
+});
+
+/** God-mode displacement (knockback precursor, tests): units pushed into deep water drown. */
+registerCommand("impulse", {
+  validate(w, c) {
+    if (c.tribe !== -1 && !w.godMode) return "impulse is god mode only";
+    if (!isPoint(c.args.by)) return "impulse needs by: [dx, dy]";
+    return w.selectUnits(c.args.units).length ? null : "no units selected";
+  },
+  apply(w, c) {
+    const [dx, dy] = c.args.by as [number, number];
+    const n = w.terrain.size;
+    for (const i of w.selectUnits(c.args.units)) {
+      w.ents.x[i] = (((w.ents.x[i] + dx) % n) + n) % n;
+      w.ents.y[i] = (((w.ents.y[i] + dy) % n) + n) % n;
+    }
+  },
+});
+
+registerCommand("stop", {
+  validate(w, c) {
+    const idx = w.selectUnits(c.args.units);
+    if (!idx.length) return "no units selected";
+    if (c.tribe !== -1 && idx.some((i) => w.ents.tribe[i] !== c.tribe)) return "units belong to another tribe";
+    return null;
+  },
+  apply(w, c) {
+    for (const i of w.selectUnits(c.args.units)) w.units.stop(i);
+  },
+});
+
 registerCommand("noop", {
   validate: () => null,
   apply: () => {},

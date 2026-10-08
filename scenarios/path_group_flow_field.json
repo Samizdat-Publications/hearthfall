@@ -1,0 +1,14 @@
+{
+  "id": "path_group_flow_field",
+  "description": "A group of 24 settlers shares one flow field around a lake and gathers at the far side without anyone getting stuck.",
+  "tags": ["fast", "pathing"],
+  "seed": 14,
+  "map": { "generator": "flat_with_lake", "size": 64, "tribes": 1 },
+  "setup": [{ "spawn": "settler", "tribe": 0, "near": [12, 32], "count": 24, "spacing": 0.8 }],
+  "commands": [{ "tick": 1, "tribe": 0, "type": "move", "args": { "units": "tribe0.settlers", "to": [52, 32] } }],
+  "runTicks": 1200,
+  "assert": [
+    { "at": 1200, "expr": "count(tribe0.settlers, near([52,32], 4)) == 24 && count(tribe0.settlers, idle) == 24" },
+    { "at": 1200, "expr": "events.count('drowned') == 0 && events.count('orderGaveUp') == 0 && invariants() == 0" }
+  ]
+}

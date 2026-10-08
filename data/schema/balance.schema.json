@@ -140,6 +140,70 @@
       ],
       "additionalProperties": false
     },
+    "movement": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "separationRadius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "separationStrength": {
+          "type": "number",
+          "minimum": 0
+        },
+        "waypointRadius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "arriveRadius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "crowdArriveRadius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "repathSeconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "giveUpSeconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "pathBudgetPerTick": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxExpandPerSearch": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "groupFlowMinUnits": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "separationRadius",
+        "separationStrength",
+        "waypointRadius",
+        "arriveRadius",
+        "crowdArriveRadius",
+        "repathSeconds",
+        "giveUpSeconds",
+        "pathBudgetPerTick",
+        "maxExpandPerSearch",
+        "groupFlowMinUnits"
+      ],
+      "additionalProperties": false
+    },
     "breeding": {
       "type": "object",
       "properties": {
@@ -243,6 +307,7 @@
   "required": [
     "sim",
     "terrain",
+    "movement",
     "breeding",
     "combat",
     "gates"

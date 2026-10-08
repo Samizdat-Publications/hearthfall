@@ -1,0 +1,15 @@
+{
+  "id": "path_through_wall_gap",
+  "description": "Cliffs too steep to climb block both ways around the torus except a 5 cell gap; a squad of 4 finds the gap and arrives.",
+  "tags": ["fast", "pathing", "wrap"],
+  "seed": 12,
+  "map": { "generator": "flat_with_wall", "size": 64, "tribes": 1 },
+  "setup": [{ "spawn": "settler", "tribe": 0, "near": [16, 8], "count": 4 }],
+  "commands": [{ "tick": 1, "tribe": 0, "type": "move", "args": { "units": "tribe0.settlers", "to": [48, 8] } }],
+  "runTicks": 1400,
+  "assert": [
+    { "at": 0, "expr": "!terrain.walkable([32,8]) && !terrain.walkable([0,8]) && terrain.walkable([32,32])" },
+    { "at": 1400, "expr": "count(tribe0.settlers, near([48,8], 3)) == 4" },
+    { "at": 1400, "expr": "events.count('orderFailed') == 0 && events.count('orderGaveUp') == 0 && invariants() == 0" }
+  ]
+}

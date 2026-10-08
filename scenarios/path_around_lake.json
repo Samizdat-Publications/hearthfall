@@ -1,0 +1,16 @@
+{
+  "id": "path_around_lake",
+  "description": "A single settler ordered straight across a lake walks around it (A*), arrives, and never gets wet.",
+  "tags": ["fast", "pathing"],
+  "seed": 11,
+  "map": { "generator": "flat_with_lake", "size": 64, "tribes": 1 },
+  "setup": [{ "spawn": "settler", "tribe": 0, "at": [16, 32] }],
+  "commands": [{ "tick": 1, "tribe": 0, "type": "move", "args": { "units": "tribe0.settlers", "to": [48, 32] } }],
+  "runTicks": 800,
+  "assert": [
+    { "at": 0, "expr": "!terrain.isLand([32,32]) && terrain.isLand([16,32]) && terrain.isLand([48,32])" },
+    { "at": 120, "expr": "count(tribe0.settlers, moving) == 1 && events.count('orderFailed') == 0" },
+    { "at": 800, "expr": "count(tribe0.settlers, near([48,32], 1)) == 1 && count(tribe0.settlers, idle) == 1" },
+    { "at": 800, "expr": "events.count('drowned') == 0 && invariants() == 0" }
+  ]
+}

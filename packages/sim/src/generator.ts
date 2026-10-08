@@ -41,6 +41,20 @@ function testMap(cfg: SimConfig, spec: MapSpec): GeneratedMap {
     const x0 = Math.floor(spec.size / 4);
     const x1 = Math.floor((spec.size * 5) / 16);
     for (let y = 0; y < spec.size; y++) for (let x = x0; x <= x1; x++) t.heights[t.idx(x, y)] = cfg.sea - 40;
+  } else if (spec.generator === "flat_with_lake") {
+    // a round deep lake of radius size/6 in the middle
+    const c = spec.size / 2;
+    const r = spec.size / 6;
+    for (let y = 0; y < spec.size; y++) for (let x = 0; x < spec.size; x++) if ((x - c) * (x - c) + (y - c) * (y - c) <= r * r) t.heights[t.idx(x, y)] = cfg.sea - 40;
+  } else if (spec.generator === "flat_with_wall") {
+    // unwalkable cliffs at x = 0 and x = size/2 (2 cells thick); the middle one has a 5 cell gap
+    const mid = spec.size / 2;
+    for (let y = 0; y < spec.size; y++) {
+      for (const x0 of [0, mid]) {
+        if (x0 === mid && Math.abs(y - mid) <= 2) continue;
+        for (let x = x0; x < x0 + 2; x++) t.heights[t.idx(x, y)] = land + 300;
+      }
+    }
   } else if (spec.generator !== "flat") throw new Error(`unknown map generator "${spec.generator}"`);
   return { terrain: t, seedUsed: 0, rerolls: 0, hearths: [], trees: [], wild: [], landFraction: 1 };
 }

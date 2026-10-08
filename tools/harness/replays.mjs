@@ -9,6 +9,7 @@ import { createScenarioWorld, commandsByTick } from "../../packages/sim/src/scen
 import { loadBasePack, readPackDir } from "./datapack.mjs";
 import { validatePack } from "../../packages/data/src/index.ts";
 import { ROOT, writeReport } from "./lib.mjs";
+import { makeBot } from "../../packages/ai/src/index.ts";
 
 const DIR = ROOT + "replays/golden/";
 const PARTS = ["terrain", "entities", "rng", "meta"];
@@ -41,7 +42,7 @@ function freeze(pack) {
 
 /** Run a golden definition, calling onCheckpoint(tick, hashParts) every `every` ticks and at the end. */
 function play(g, pack, onCheckpoint) {
-  const w = createScenarioWorld(g.def, pack.files, pack.hash);
+  const w = createScenarioWorld(g.def, pack.files, pack.hash, makeBot);
   const cmds = commandsByTick(g.def.commands);
   const every = g.every ?? 100;
   while (w.tick < g.def.runTicks) {

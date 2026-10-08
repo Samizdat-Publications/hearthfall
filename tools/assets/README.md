@@ -13,6 +13,7 @@ Run everything with the project venv: `.venv/Scripts/python tools/assets/<script
 | `gen.py status` | one line per class, plus spend versus caps |
 | `gen.py repost --only ID ...` | reset the free local post and thumb steps (after changing normalize.py), then `gen.py run --only ID ...` |
 | `bakeoff_sheet.py` | A1 unit bake-off sheet `reports/latest/unit_bakeoff_sheet.png` (2x2 renders plus the Gemini concepts) |
+| `class_sheets.py --class X [--concepts] [--cols N]` | labeled per-class contact sheet `reports/latest/assets_<class>_sheet.png` (id, tris, size, tribe faces) |
 | `gen.py balance` | key presence per provider (never values) and the Meshy credit balance |
 | `blender_run.py normalize --in raw.glb --out assets/models/x.glb [--height H \| --footprint F]` | Blender normalize pass |
 | `blender_run.py thumbs --class X` | 256 px and 128 px thumbnails for finished models |

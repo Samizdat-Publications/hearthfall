@@ -1,0 +1,19 @@
+{
+  "id": "drown_on_push",
+  "description": "Settlers shoved off the shore into the deep channel drown at once; the ones shoved along dry land survive.",
+  "tags": ["fast", "drowning"],
+  "seed": 15,
+  "map": { "generator": "flat_with_channel", "size": 64, "tribes": 1 },
+  "setup": [
+    { "spawn": "settler", "tribe": 0, "near": [13, 20], "count": 3 },
+    { "spawn": "settler", "tribe": 0, "near": [8, 40], "count": 3 }
+  ],
+  "commands": [
+    { "tick": 5, "tribe": -1, "type": "impulse", "args": { "units": "tribe0.settlers", "by": [4, 0] } }
+  ],
+  "runTicks": 10,
+  "assert": [
+    { "at": 5, "expr": "count(tribe0.settlers) == 6" },
+    { "at": 6, "expr": "events.count('drowned') == 3 && count(tribe0.settlers, near([12,40], 3)) == 3" }
+  ]
+}

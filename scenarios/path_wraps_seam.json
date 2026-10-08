@@ -1,0 +1,13 @@
+{
+  "id": "path_wraps_seam",
+  "description": "Settlers at x 4 ordered to x 60 take the 8 cell route across the wrap seam, not the 56 cell route; only the seam route can arrive in time.",
+  "tags": ["fast", "pathing", "wrap"],
+  "seed": 13,
+  "map": { "generator": "flat", "size": 64, "tribes": 1 },
+  "setup": [{ "spawn": "settler", "tribe": 0, "near": [4, 20], "count": 3 }],
+  "commands": [{ "tick": 1, "tribe": 0, "type": "move", "args": { "units": "tribe0.settlers", "to": [60, 20] } }],
+  "runTicks": 200,
+  "assert": [
+    { "at": 200, "expr": "count(tribe0.settlers, near([60,20], 2.5)) == 3 && invariants() == 0" }
+  ]
+}

@@ -66,6 +66,8 @@ export class Terrain {
   readonly scar: Uint16Array;
   dirty: DirtyRect[] = [];
   version = 0;
+  /** bumps once per heal pass (readers re-tint scarred areas; not part of the edit version) */
+  scarVersion = 0;
   private scarred = 0;
 
   constructor(p: TerrainParams, heights?: Int16Array, scar?: Uint16Array) {
@@ -313,6 +315,7 @@ export class Terrain {
   /** Called once per sim second: every scar heals by one second. */
   healScars(): void {
     if (this.scarred === 0) return;
+    this.scarVersion++;
     const s = this.scar;
     for (let i = 0; i < s.length; i++) {
       if (s[i] > 0) {

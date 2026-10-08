@@ -24,6 +24,19 @@ const COLUMNS: Record<string, ColCtor> = {
   /** generic per-kind state machine value and its timer (ticks) */
   state: Uint8Array,
   timer: Int32Array,
+  /** movement (M3): previous position for render interpolation, velocity, order and goal */
+  px: Float64Array,
+  py: Float64Array,
+  vx: Float64Array,
+  vy: Float64Array,
+  order: Uint8Array,
+  gx: Float64Array,
+  gy: Float64Array,
+  pathPos: Int32Array,
+  flowGoal: Int32Array,
+  waitPath: Uint8Array,
+  stuck: Int32Array,
+  best: Float64Array,
 };
 export const COLUMN_NAMES = Object.keys(COLUMNS);
 
@@ -44,6 +57,18 @@ export class Entities {
   wood!: Uint8Array;
   state!: Uint8Array;
   timer!: Int32Array;
+  px!: Float64Array;
+  py!: Float64Array;
+  vx!: Float64Array;
+  vy!: Float64Array;
+  order!: Uint8Array;
+  gx!: Float64Array;
+  gy!: Float64Array;
+  pathPos!: Int32Array;
+  flowGoal!: Int32Array;
+  waitPath!: Uint8Array;
+  stuck!: Int32Array;
+  best!: Float64Array;
 
   constructor(cap = 1024) {
     this.cap = cap;
@@ -84,6 +109,18 @@ export class Entities {
     this.wood[i] = 0;
     this.state[i] = 0;
     this.timer[i] = 0;
+    this.px[i] = x;
+    this.py[i] = y;
+    this.vx[i] = 0;
+    this.vy[i] = 0;
+    this.order[i] = 0;
+    this.gx[i] = x;
+    this.gy[i] = y;
+    this.pathPos[i] = 0;
+    this.flowGoal[i] = -1;
+    this.waitPath[i] = 0;
+    this.stuck[i] = 0;
+    this.best[i] = 0;
     this.count++;
     return (i | ((this.gen[i] & 0x7fff) << 16)) >>> 0;
   }

@@ -78,6 +78,8 @@ export class TerrainChunk {
   readonly water: THREE.Mesh;
   readonly cx: number;
   readonly cz: number;
+  /** true when the last build saw any scarred vertex (re-tinted as scars heal) */
+  hasScar = false;
   private readonly pos: Float32Array;
   private readonly col: Float32Array;
   private readonly wDepth: Float32Array;
@@ -123,6 +125,7 @@ export class TerrainChunk {
       v++;
     };
     const c = new THREE.Color();
+    this.hasScar = false;
     for (let z = 0; z < CHUNK; z++) {
       for (let x = 0; x < CHUNK; x++) {
         const gx = x0 + x;
@@ -132,6 +135,7 @@ export class TerrainChunk {
         const d = t.get(gx, gz + 1);
         const e = t.get(gx + 1, gz + 1);
         const sc = t.scar[t.idx(gx, gz)];
+        if (sc > 0) this.hasScar = true;
         const seed = gx * 7919 + gz * 104729;
         const cs = Math.max(a, b, d, e) - Math.min(a, b, d, e);
         if (((gx + gz) & 1) === 0) {

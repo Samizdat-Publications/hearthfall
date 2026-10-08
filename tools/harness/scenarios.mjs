@@ -4,6 +4,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { CAT } from "../../packages/sim/src/entities.ts";
 import { commandsByTick, createScenarioWorld } from "../../packages/sim/src/scenario.ts";
 import { wrapDelta } from "../../packages/sim/src/terrain.ts";
+import { makeBot } from "../../packages/ai/src/index.ts";
 import { loadBasePack } from "./datapack.mjs";
 import { evaluate, parse } from "./dsl.mjs";
 import { ROOT, writeReport } from "./lib.mjs";
@@ -79,6 +80,9 @@ export function makeCtx(w) {
     },
     /** per-entity predicates for count(): standing in drowning-deep water, or on dry land */
     inWater: (i) => t.drowns(E.x[i], E.y[i]),
+    moving: (i) => E.order[i] !== 0,
+    idle: (i) => E.order[i] === 0,
+    invariants: () => w.invariants().length,
     onLand: (i) => t.heightAt(E.x[i], E.y[i]) >= t.sea,
     abs: Math.abs,
     min: Math.min,
@@ -96,7 +100,7 @@ export function runScenario(def, pack) {
   let w;
   try {
     for (const k of ["id", "seed", "map", "runTicks"]) if (def[k] === undefined) throw new Error(`missing "${k}"`);
-    w = createScenarioWorld(def, pack.files, pack.hash);
+    w = createScenarioWorld(def, pack.files, pack.hash, makeBot);
     const asserts = (def.assert ?? []).map((a, idx) => ({ ...a, idx, ast: parse(a.expr) }));
     if (!asserts.length) throw new Error("scenario has no assertions");
     for (const a of asserts) {

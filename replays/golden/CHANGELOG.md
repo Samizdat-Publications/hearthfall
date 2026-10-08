@@ -13,3 +13,7 @@ Reason: M1 review: world rng seeded apart from the generator rng; golden ridgeLi
 ## 2026-10-08 22:20 UTC
 Reason: M1 review: golden ridgeLine actually moved to cross water (92..105, y 0); the previous rebless did not apply the coordinate change
 - terrain_ops_continents: final 3de2299d -> 9f543758 (pack 46ad2aff)
+
+## 2026-10-08 22:40 UTC
+Reason: M3: entity movement columns (prev pos, velocity, order, goal, path state) and the unit movement system with separation change entity hashes; balance.movement added
+- terrain_ops_continents: final 9f543758 -> ed637462 (pack 968c9535)

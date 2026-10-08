@@ -48,6 +48,7 @@ export class ThreeRenderer implements Renderer {
   private world: World | null = null;
   private chunks: TerrainChunk[] = [];
   private cursor = -1;
+  private scarCursor = -1;
   private readonly palette: TerrainPalette;
   private readonly terrainMat: THREE.MeshLambertMaterial;
   private readonly waterMat: THREE.ShaderMaterial;
@@ -136,6 +137,11 @@ export class ThreeRenderer implements Renderer {
     const w = this.world;
     if (!w) return 0;
     const t = w.terrain;
+    if (t.scarVersion !== this.scarCursor) {
+      // heal pass: re-tint only chunks that hold scars
+      this.scarCursor = t.scarVersion;
+      for (const c of this.chunks) if (c.hasScar) c.build(t, this.palette);
+    }
     const rects = t.dirtySince(this.cursor);
     if (rects === null) {
       this.rebuildAll();
@@ -217,10 +223,13 @@ export class ThreeRenderer implements Renderer {
     for (const m of this.trees.meshes) m.visible = !f.hideTerrain;
     this.sky.visible = !f.blackCanvas;
     this.scene.visible = !f.blackCanvas;
-    if (f.blackCanvas) this.gl.setClearColor(0x000000, 1);
+    this.gl.setClearColor(f.blackCanvas ? 0x000000 : this.palette.water, 1);
     this.terrainMat.vertexColors = !f.magentaMaterials;
     this.terrainMat.color.set(f.magentaMaterials ? "#ff00ff" : "#ffffff");
     this.terrainMat.needsUpdate = true;
+    this.propMat.vertexColors = !f.magentaMaterials;
+    this.propMat.color.set(f.magentaMaterials ? "#ff00ff" : "#ffffff");
+    this.propMat.needsUpdate = true;
   }
 
   dispose(): void {

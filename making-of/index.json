@@ -200,6 +200,56 @@
       "when": "2026-10-08T22:31:13.628Z",
       "source": "reports/latest/shots/globe.png",
       "bytes": 325862
+    },
+    {
+      "file": "a2/20261008-2244_buildings-sheet.png",
+      "milestone": "A2",
+      "kind": "asset-sheet",
+      "caption": "All eleven village buildings as textured image-to-3D models snapped to the palette, each next to its Gemini concept, with a blue tribe banner region.",
+      "highlight": true,
+      "when": "2026-10-08T22:44:39.728Z",
+      "source": "reports/latest/assets_buildings_sheet.png",
+      "bytes": 1280163
+    },
+    {
+      "file": "a2/20261008-2244_props-sheet.png",
+      "milestone": "A2",
+      "kind": "asset-sheet",
+      "caption": "Three trees and three rocks from untextured text-to-3D previews, colored by height and facing with the palette.",
+      "highlight": false,
+      "when": "2026-10-08T22:44:40.601Z",
+      "source": "reports/latest/assets_props_sheet.png",
+      "bytes": 204001
+    },
+    {
+      "file": "a2/20261008-2244_concept-hearth.jpg",
+      "milestone": "A2",
+      "kind": "concept",
+      "caption": "Gemini concept for the village hearth: stacked stones around an ember bowl with a blue banner pole.",
+      "highlight": false,
+      "when": "2026-10-08T22:44:41.454Z",
+      "source": "tools/assets/raw/gemini/building.hearth/concept.jpg",
+      "bytes": 424288
+    },
+    {
+      "file": "a2/20261008-2244_concept-dwelling-small.jpg",
+      "milestone": "A2",
+      "kind": "concept",
+      "caption": "Gemini concept for the small round thatched dwelling in the ref_04 low-poly style.",
+      "highlight": false,
+      "when": "2026-10-08T22:44:42.524Z",
+      "source": "tools/assets/raw/gemini/building.dwelling_small/concept.jpg",
+      "bytes": 460185
+    },
+    {
+      "file": "a2/20261008-2244_concept-fire-lodge.jpg",
+      "milestone": "A2",
+      "kind": "concept",
+      "caption": "Gemini concept for the fire lodge with a glowing doorway and clay chimney.",
+      "highlight": false,
+      "when": "2026-10-08T22:44:43.593Z",
+      "source": "tools/assets/raw/gemini/building.fire_lodge/concept.jpg",
+      "bytes": 381196
     }
   ]
 }

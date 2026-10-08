@@ -26,6 +26,19 @@
     "skirmishRequiresConnectedLand": true,
     "maxBuildRange": 48
   },
+  "movement": {
+    "$comment": "Unit movement and pathing (M3). Distances in cells, times in seconds. Budgets are per sim tick.",
+    "separationRadius": 0.6,
+    "separationStrength": 0.3,
+    "waypointRadius": 0.4,
+    "arriveRadius": 0.5,
+    "crowdArriveRadius": 3,
+    "repathSeconds": 2,
+    "giveUpSeconds": 6,
+    "pathBudgetPerTick": 40000,
+    "maxExpandPerSearch": 20000,
+    "groupFlowMinUnits": 6
+  },
   "breeding": {
     "formula": "base / (0.5 + 0.5 * occupants) * nearCapFactor",
     "nearCapSlowdownStartPct": 70,
