@@ -29,3 +29,6 @@
 - 2026-10-09T09:28 set spells (8 shots): M10: real GLB unit models; contact sheet reviewed
 - 2026-10-09T09:29 set combat (3 shots): M10: real GLB unit models; contact sheet reviewed
 - 2026-10-09T09:30 set levels (2 shots): M10: real GLB worship site and unit models; contact sheet reviewed
+- 2026-10-09T12:23 set smoke (12 shots): M11: tribe discs under units, larger Shaper, lighter tree models; contact sheet reviewed
+- 2026-10-09T12:27 set spells (8 shots): M11: tribe discs under units, larger Shaper; contact sheet reviewed
+- 2026-10-09T12:31 set combat (3 shots): M11: tribe discs under units, larger Shaper; contact sheet reviewed

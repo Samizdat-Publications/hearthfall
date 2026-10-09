@@ -70,8 +70,6 @@ async function main() {
       const { build } = await import("./web.mjs");
       return build(out, cmd === "build-test" ? "test" : "production");
     }
-    case "shot":
-    case "shot-approve":
     case "serve": {
       const { serveCmd } = await import("./serve.mjs");
       return serveCmd(out);
@@ -80,6 +78,8 @@ async function main() {
       const { prodCmd } = await import("./serve.mjs");
       return prodCmd(out);
     }
+    case "shot":
+    case "shot-approve":
     case "sheet": {
       const { shotCmd } = await import("./web.mjs");
       return shotCmd(out, cmd, args);
