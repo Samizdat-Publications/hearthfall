@@ -10,7 +10,7 @@
     "size": 96,
     "landAboveSea": 30,
     "paint": [
-      { "shape": "disc", "at": [42, 48], "r": 5, "aboveSea": 46, "falloff": 6 },
+      { "shape": "disc", "at": [34, 48], "r": 5, "aboveSea": 46, "falloff": 6 },
       { "shape": "disc", "at": [48, 20], "r": 9, "aboveSea": -30, "falloff": 4 },
       { "shape": "disc", "at": [48, 78], "r": 9, "aboveSea": -30, "falloff": 4 }
     ]
@@ -24,10 +24,10 @@
     { "spawn": "settler", "tribe": 0, "near": [25, 51], "count": 8 },
     { "spawn": "hearth", "tribe": 1, "at": [78, 48] },
     { "spawn": "shaper", "tribe": 1, "at": [75, 46] },
-    { "spawn": "settler", "tribe": 1, "near": [75, 51], "count": 8 },
+    { "spawn": "settler", "tribe": 1, "near": [75, 51], "count": 6 },
     { "spawn": "tree", "near": [16, 38], "count": 10, "spacing": 1.2 },
     { "spawn": "tree", "near": [84, 58], "count": 10, "spacing": 1.2 },
-    { "spawn": "shrine", "at": [42, 48], "site": { "tag": "hill_shrine", "worshippers": 4, "prayerSeconds": 30, "rewards": [{ "type": "unlockSpell", "spell": "lightning" }, { "type": "charges", "spell": "lightning", "n": 1 }, { "type": "message", "text": "Lightning is yours." }] } }
+    { "spawn": "shrine", "at": [34, 48], "site": { "tag": "hill_shrine", "worshippers": 4, "prayerSeconds": 45, "rewards": [{ "type": "unlockSpell", "spell": "lightning" }, { "type": "charges", "spell": "lightning", "n": 1 }, { "type": "message", "text": "Lightning is yours." }] } }
   ],
   "objectives": [{ "type": "worship", "site": "hill_shrine", "text": "Claim the hill shrine before the rival tribe" }],
   "lose": [{ "type": "siteLost", "site": "hill_shrine" }],

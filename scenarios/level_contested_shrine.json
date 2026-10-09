@@ -1,13 +1,13 @@
 {
   "id": "level_contested_shrine",
-  "description": "Campaign level 2 is completable: four followers and the Shaper claim the hill shrine before the rival tribe, which also sends worshippers.",
+  "description": "Campaign level 2 is completable at a human pace: the followers are only sent after a minute and still claim the hill shrine before the rival tribe.",
   "tags": ["fast", "levels"],
   "level": "contested_shrine",
   "commands": [
-    { "tick": 1, "tribe": 0, "type": "worship", "args": { "units": "tribe0.settlers", "site": "hill_shrine" } }
+    { "tick": 1200, "tribe": 0, "type": "worship", "args": { "units": "tribe0.settlers", "site": "hill_shrine" } }
   ],
-  "runTicks": 1600,
+  "runTicks": 2400,
   "assert": [
-    { "at": 1600, "expr": "level.won && site('hill_shrine').by == 0 && !level.lost && invariants() == 0" }
+    { "at": 2400, "expr": "level.won && site('hill_shrine').by == 0 && !level.lost && invariants() == 0" }
   ]
 }

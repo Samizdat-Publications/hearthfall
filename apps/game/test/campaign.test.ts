@@ -37,20 +37,23 @@ describe("campaign (M9)", () => {
     expect(loadProgress(kv)).toEqual([]);
   });
 
-  it("a campaign level saves and loads with the same hash and future, opponents and level state included", () => {
-    const def = levels.find((l) => l.tribes.some((t) => t.ai))!;
+  it("a campaign level saved mid-play loads with the same hash and future, opponents and level state included", () => {
+    const def = levels.find((l) => l.id === "contested_shrine")!;
     const P = campaignParams(def, { spells: ["raise_land"] });
     const a = createSkirmish(pack, P);
     expect(a.level?.def.id).toBe(def.id);
-    a.run(60 * 20);
+    a.run(20 * 20);
+    expect(a.level!.outcome).toBe(OUTCOME.none);
     const save = decodeSave(encodeSave(makeSave(a, P, [], [], "2026-10-09T00:00:00Z")));
     expect(save.params.campaign?.def.id).toBe(def.id);
     const b = restoreSave(pack, save);
     expect(b.hash().all).toBe(a.hash().all);
-    a.run(60 * 20);
-    b.run(60 * 20);
+    // an idle player loses the shrine race in both worlds, on the same tick
+    a.run(150 * 20);
+    b.run(150 * 20);
     expect(b.hash().all).toBe(a.hash().all);
-    expect(b.level!.outcome).toBe(a.level!.outcome);
-    expect([OUTCOME.none, OUTCOME.won, OUTCOME.lost]).toContain(b.level!.outcome);
+    expect(a.level!.outcome).toBe(OUTCOME.lost);
+    expect(b.level!.outcome).toBe(OUTCOME.lost);
+    expect(b.level!.endedAt).toBe(a.level!.endedAt);
   });
 });

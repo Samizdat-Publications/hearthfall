@@ -79,6 +79,7 @@ export class LevelRuntime {
     if (!w.tribes[PLAYER].alive) return "eliminated";
     for (const l of this.def.lose ?? []) {
       if (l.type === "timeLimit" && w.tick + 1 >= Math.round(l.seconds * w.cfg.tickHz)) return "timeLimit";
+      if (l.type === "hearthLost" && w.ents.index(w.tribes[PLAYER].hearth) < 0) return "hearthLost";
       if (l.type === "siteLost") {
         const by = this.siteBy(l.site);
         if (by >= 0 && by !== PLAYER) return "siteLost";
@@ -117,12 +118,16 @@ export class LevelRuntime {
           y = w.ents.y[si];
         }
       }
-      // anchor for rewards without `at`: the site, else the player's Hearth
+      // anchor for rewards without `at`: the site, else the player's Hearth, else the Shaper, else the map center
       if (when.type !== "worship") {
-        const h = w.ents.index(w.tribes[PLAYER].hearth);
+        let h = w.ents.index(w.tribes[PLAYER].hearth);
+        if (h < 0) h = w.ents.index(w.tribes[PLAYER].shaper);
         if (h >= 0) {
           x = w.ents.x[h];
           y = w.ents.y[h];
+        } else {
+          x = w.terrain.size / 2;
+          y = w.terrain.size / 2;
         }
       }
       this.fired[k] = 1;

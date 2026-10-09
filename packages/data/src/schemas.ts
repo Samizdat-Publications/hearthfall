@@ -557,6 +557,8 @@ export const LoseSchema = z.discriminatedUnion("type", [
   z.strictObject({ type: z.literal("timeLimit"), seconds: pos }),
   /** a rival completes this site first */
   z.strictObject({ type: z.literal("siteLost"), site: id }),
+  /** the player's Hearth is destroyed (the tribe may live on through its Shaper) */
+  z.strictObject({ type: z.literal("hearthLost") }),
 ]);
 export type LoseCondition = z.infer<typeof LoseSchema>;
 

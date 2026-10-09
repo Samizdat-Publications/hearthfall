@@ -1,0 +1,14 @@
+{
+  "id": "level_hold_the_line_abandoned_loses",
+  "description": "Campaign level 3 can be lost: a player who pulls the wardens back to the far shore on a passive stance watches the war band burn the Hearth, and the level ends on hearthLost.",
+  "tags": ["fast", "levels"],
+  "level": "hold_the_line",
+  "commands": [
+    { "tick": 1, "tribe": 0, "type": "setStance", "args": { "units": "tribe0.wardens", "stance": "passive" } },
+    { "tick": 1, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [12, 36] } }
+  ],
+  "runTicks": 6000,
+  "assert": [
+    { "at": 6000, "expr": "level.lost && !level.won && events.count('levelLost') == 1" }
+  ]
+}

@@ -77,6 +77,16 @@ describe("campaign levels", () => {
     expect(w.eventCounts.get("levelWon")).toBe(1);
   });
 
+  it("hearthLost loses the level when the player's Hearth falls", () => {
+    const w = make(level({ lose: [{ type: "hearthLost" }] }));
+    w.run(5);
+    expect(w.level!.outcome).toBe(OUTCOME.none);
+    w.kill(w.ents.index(w.tribes[0].hearth), "destroyed");
+    w.step();
+    expect(w.level!.outcome).toBe(OUTCOME.lost);
+    expect(w.events).toContainEqual(expect.objectContaining({ type: "levelLost", why: "hearthLost" }));
+  });
+
   it("a time limit loses the level", () => {
     const w = make(level({ lose: [{ type: "timeLimit", seconds: 3 }] }));
     w.run(3 * w.cfg.tickHz + 5);

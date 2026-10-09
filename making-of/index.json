@@ -540,6 +540,36 @@
       "when": "2026-10-09T06:40:46.343Z",
       "source": "external:2560x1440-main.png",
       "bytes": 760862
+    },
+    {
+      "file": "m9/20261009-0747_m9-campaign-sheet.png",
+      "milestone": "M9",
+      "kind": "contact-sheet",
+      "caption": "M9 campaign: level select (levels open in order), the first teaching level, the level-won screen, and placeholder shrines (a rival tribe in red praying at the contested hill shrine)",
+      "highlight": false,
+      "when": "2026-10-09T07:47:44.855Z",
+      "source": "external:m9_campaign_sheet.png",
+      "bytes": 1271917
+    },
+    {
+      "file": "m9/20261009-0748_contested-shrine-hill.png",
+      "milestone": "M9",
+      "kind": "screenshot",
+      "caption": "The Contested Shrine: the rival tribe reaches the hill shrine first and its prayers tint the orb red",
+      "highlight": true,
+      "when": "2026-10-09T07:48:02.283Z",
+      "source": "external:contested_shrine_hill.png",
+      "bytes": 162989
+    },
+    {
+      "file": "m9/20261009-0807_contested-shrine-hill.png",
+      "milestone": "M9",
+      "kind": "screenshot",
+      "caption": "The Contested Shrine after the M9 review: the hill shrine moved closer to the Hearth so a late start can still win",
+      "highlight": false,
+      "when": "2026-10-09T08:07:44.270Z",
+      "source": "external:contested_shrine_hill.png",
+      "bytes": 163432
     }
   ]
 }

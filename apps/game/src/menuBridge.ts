@@ -19,6 +19,7 @@ const LOST_WHY: Record<string, string> = {
   eliminated: "Your tribe is no more.",
   timeLimit: "Time ran out.",
   siteLost: "A rival tribe claimed the site first.",
+  hearthLost: "Your Hearth has fallen.",
 };
 
 /** generator limit: TRIBE_COLORS has four entries */
@@ -92,7 +93,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
             ...(w.level
               ? {
                   title: game.ended.won ? "Level won" : "Level lost",
-                  tag: game.ended.won ? `${w.level.def.name} is yours.` : (LOST_WHY[game.ended.why ?? ""] ?? "Your tribe is no more."),
+                  tag: game.ended.won ? `${w.level.def.name} is yours.${game.nextLevelId() ? "" : " The campaign is complete."}` : (LOST_WHY[game.ended.why ?? ""] ?? "Your tribe is no more."),
                 }
               : {}),
             lines: [

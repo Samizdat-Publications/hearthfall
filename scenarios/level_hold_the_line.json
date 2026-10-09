@@ -1,6 +1,6 @@
 {
   "id": "level_hold_the_line",
-  "description": "Campaign level 3 is completable: a defensive opponent AI plays the player and holds the isthmus against the early war band for five minutes.",
+  "description": "Campaign level 3 is completable: a defensive opponent AI plays the player and keeps the Hearth standing against both war bands for five minutes.",
   "tags": ["fast", "levels"],
   "level": "hold_the_line",
   "bots": [{ "type": "opponent", "tribe": 0, "personality": "turtle", "difficulty": "normal", "offset": 1 }],

@@ -86,6 +86,7 @@ function levelObjectives(game: Game): ObjectiveView[] {
   });
   (lv.def.lose ?? []).forEach((l, k) => {
     if (l.type === "timeLimit") out.push({ text: `Time left: ${left(l.seconds)}`, done: false, part: `lose-${k}` });
+    if (l.type === "hearthLost") out.push({ text: "Keep your Hearth standing", done: false, part: `lose-${k}` });
     if (l.type === "siteLost") out.push({ text: `Do not let a rival claim the ${words(l.site)}`, done: false, part: `lose-${k}` });
   });
   return out;
