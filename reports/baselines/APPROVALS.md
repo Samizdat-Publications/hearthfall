@@ -63,3 +63,5 @@
 - 2026-10-09T18:49 set levels (2 shots): BACKLOG 4: shorter help line (double-click, control groups)
 - 2026-10-09T19:15 set combat (5 shots): BACKLOG 5: procedural unit animation; anim_gallery pose shot added; formation shot idle breathing
 - 2026-10-09T19:24 set smoke (12 shots): BACKLOG 5: procedural unit animation (walking legs in units_select_move)
+- 2026-10-09T20:59 set spells2 (9 shots): BACKLOG 5 unit poses (procedural animation) on units in beguile, mire, firerain; diffs only on unit bodies
+- 2026-10-09T21:00 set spells (8 shots): BACKLOG 5 unit poses (procedural animation) on units in bolt, quake, hornets; diffs only on unit bodies
