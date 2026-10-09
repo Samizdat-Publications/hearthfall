@@ -104,6 +104,39 @@ export class VfxLayer {
       } else if (e.type === "castBegun" && Number.isFinite(x)) {
         const col = new THREE.Color(SPELL_COLORS[String(e.spell)] ?? "#b07cff");
         this.fx.push({ kind: "ring", x, z: y, y: ground(x, y) + 0.12, t0: now, dur: 1, size: 1.2, color: col });
+      } else if (e.type === "fireball" && Number.isFinite(x)) {
+        // M6: a short arc of sparks from the Firecaller to the target, then a splash flash and ring
+        const fx = Number(e.fx ?? x);
+        const fy = Number(e.fy ?? y);
+        const col = new THREE.Color("#ff7a2e");
+        const n = w.terrain.size;
+        let dx = x - fx;
+        let dy = y - fy;
+        if (dx > n / 2) dx -= n;
+        else if (dx < -n / 2) dx += n;
+        if (dy > n / 2) dy -= n;
+        else if (dy < -n / 2) dy += n;
+        const steps = 6;
+        const flight = 0.3;
+        for (let k = 1; k <= steps; k++) {
+          const q = k / steps;
+          const px = fx + dx * q;
+          const pz = fy + dy * q;
+          const lift = 1.6 * 4 * q * (1 - q);
+          this.fx.push({ kind: "spark", x: px, z: pz, y: ground(px, pz) + 0.5 + lift, t0: now + q * flight, dur: 0.14, size: 0.28, color: col });
+        }
+        this.fx.push({ kind: "flash", x, z: y, y: ground(x, y) + 0.4, t0: now + flight, dur: 0.35, size: 1, color: col });
+        this.fx.push({ kind: "ring", x, z: y, y: ground(x, y) + 0.1, t0: now + flight, dur: 0.6, size: 1.2, color: col });
+      } else if (e.type === "chantBegun" && Number.isFinite(x)) {
+        // M6: pulsing rings for the length of the channel (balance-free: 4 pulses over about 4 s)
+        const col = new THREE.Color("#c39bff");
+        for (let k = 0; k < 4; k++) this.fx.push({ kind: "ring", x, z: y, y: ground(x, y) + 0.1, t0: now + k, dur: 1, size: 3, color: col });
+      } else if (e.type === "chantInterrupted" || e.type === "melee") {
+        const id = Number(e.id ?? NaN);
+        const i = e.type === "melee" ? -1 : Number.isFinite(id) ? w.ents.index(id) : -1;
+        const px = i >= 0 ? w.ents.x[i] : x;
+        const pz = i >= 0 ? w.ents.y[i] : y;
+        if (Number.isFinite(px)) this.fx.push({ kind: "spark", x: px, z: pz, y: ground(px, pz) + 0.5, t0: now, dur: 0.2, size: e.type === "melee" ? 0.22 : 0.4, color: new THREE.Color(e.type === "melee" ? "#f2e6c8" : "#8a8378") });
       } else if ((e.type === "drowned" || e.type === "flooded") && Number.isFinite(x)) {
         this.fx.push({ kind: "ring", x, z: y, y: t.sea * heightScale + 0.05, t0: now, dur: 1.2, size: 1.2, color: new THREE.Color("#e6f4f8") });
         this.fx.push({ kind: "flash", x, z: y, y: t.sea * heightScale + 0.2, t0: now, dur: 0.4, size: 0.5, color: new THREE.Color("#e6f4f8") });

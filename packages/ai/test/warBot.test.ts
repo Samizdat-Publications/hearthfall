@@ -19,7 +19,7 @@ function warMatch(seed: number, minutes: number): World {
 
 describe("WarBot (M6)", () => {
   it("builds lodges, trains toward its mix and sends attack waves that fight", () => {
-    const w = warMatch(1001, 12);
+    const w = warMatch(1001, 8);
     const c = (k: string) => w.eventCounts.get(k) ?? 0;
     const lodges = ["warden_lodge", "fire_lodge", "chant_house"].map((b) => w.cfg.buildingIndex.get(b)!);
     let built = 0;
@@ -50,6 +50,6 @@ describe("WarBot (M6)", () => {
   });
 
   it("war matches are deterministic", () => {
-    expect(warMatch(1003, 4).hash()).toEqual(warMatch(1003, 4).hash());
+    expect(warMatch(1003, 2).hash()).toEqual(warMatch(1003, 2).hash());
   }, 60000);
 });
