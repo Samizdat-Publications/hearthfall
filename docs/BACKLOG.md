@@ -75,6 +75,8 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 61. [S] Chanter reach `r -= 0.5` in combat.ts acquire is a literal: move it to a per-unit data field (M6 review).
 62. [S] A cast queued out of range at a target the Shaper cannot path to (raise land over water, an island) fails at once with castFailed unreachable: walk her to the nearest reachable point within range instead (the AI works around it by walking to the shore first, M7).
 63. [S] Economy retries: a settler whose work site or home lies on another landmass is now skipped at assignment, but a trip already underway when terrain splits still fails once per retry; about 145 orderFailed per 12 ai-idle matches remain (M7).
+64. [M] Personality balance: sneaky wins 8 of 8 in the ai soak, turtle 0. Traced causes: sneaky out-grows the turtle (46 vs 38 followers at minute 10; the turtle spends wood and settlers on towers and lodges early) and converts wild people with cheap Call; the turtle dies around minute 12 to 14 before its first wave. Try: turtle builds towers only after its economy target is half met, spell choice by matchup rather than affordability (opponent.ts castScore), a growth-aware utility for buildLodge (M7).
+65. [M] Counter triangle stomps (follows 60): with the variance probes, Firecaller 6 v Chanter 10 and Chanter 6 v Warden 10 still win 100 percent; Chanter maxPerChannel 3 to 2 did not change it (tried and reverted M7). Look at entranced freeze (wardens frozen while channelled) and the ranged interrupt making chants unwinnable (M7).
 36. [S] Spells that drown units need a readable lead-in (rumble, crack VFX, short delay) so players see cause and effect (M5, M1 review).
 
 ## Parking lot (ideas, unranked)

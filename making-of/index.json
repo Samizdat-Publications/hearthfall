@@ -490,6 +490,26 @@
       "when": "2026-10-09T04:59:15.451Z",
       "source": "external:hud_troops.png",
       "bytes": 166338
+    },
+    {
+      "file": "m7/20261009-0536_ai-first-raid.png",
+      "milestone": "M7",
+      "kind": "screenshot",
+      "caption": "First raid: the aggressive opponent AI's warden wave reaches an idle player's Hearth at minute 9 and has already killed the Shaper (back in 30 s)",
+      "highlight": true,
+      "when": "2026-10-09T05:36:23.064Z",
+      "source": "external:ai_first_raid.png",
+      "bytes": 167893
+    },
+    {
+      "file": "m7/20261009-0536_ai-sheet.png",
+      "milestone": "M7",
+      "kind": "contact-sheet",
+      "caption": "M7 ai shot set contact sheet (review only, not in npm run qa)",
+      "highlight": false,
+      "when": "2026-10-09T05:36:23.919Z",
+      "source": "external:sheet.png",
+      "bytes": 162829
     }
   ]
 }

@@ -1,0 +1,16 @@
+{
+ "$comment": "M7 opponent AI: a continents skirmish with an aggressive opponent and an idle local tribe, stepped until the first raid kills someone at home, then framed on the local Hearth. Not part of npm run qa (making-of and review only).",
+ "shots": [
+  {
+   "id": "ai_first_raid",
+   "params": { "seed": 1001, "ai": "aggressive", "camera": "default" },
+   "steps": [
+    { "eval": "window.__hit = false; const u0 = __game.getSummary().tribes[0].units; for (let k = 0; k < 900 && !window.__hit; k++) { __game.step(20); const s = __game.getSummary(); window.__hit = s.tribes[0].units < u0 - 2; } const h = __game.getSummary().tribes[0].hearth; __game.setCamera({ x: h[0] + 2, z: h[1] + 2, zoom: 0.15, yaw: 0.6 });" },
+    { "step": 2 },
+    { "assert": "window.__hit === true" }
+   ],
+   "kind": "world",
+   "coverage": { "green": [0.02, 0.99] }
+  }
+ ]
+}
