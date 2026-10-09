@@ -36,10 +36,26 @@ describe("OpponentAI (M7)", () => {
     expect(t.decisions).toBeGreaterThan(a.decisions);
   }, 60000);
 
-  it("difficulty sets the decision cadence from reactionSeconds", () => {
-    expect(new OpponentAI({ tribe: 0, personality: "turtle", difficulty: "easy" }).every).toBe(120);
-    expect(new OpponentAI({ tribe: 0, personality: "turtle" }).every).toBe(60);
-    expect(new OpponentAI({ tribe: 0, personality: "turtle", difficulty: "hard" }).every).toBe(30);
+  it("difficulty sets the decision cadence from reactionSeconds in data", () => {
+    const w = world({ generator: "flat", size: 32, tribes: 2 });
+    for (const d of w.cfg.pack.ai.difficulties) {
+      const ai = new OpponentAI({ tribe: 0, personality: "turtle", difficulty: d.id });
+      ai.decide(w);
+      expect(ai.period).toBe(Math.round(d.reactionSeconds * w.cfg.tickHz));
+    }
+    expect(w.cfg.pack.ai.difficulties.map((d) => d.id)).toContain("brutal");
+    // decisions land only on tick % period === offset
+    const ai = new OpponentAI({ tribe: 0, personality: "turtle", difficulty: "hard", offset: 3 });
+    w.spawnBuilding("hearth", 0, 8, 8);
+    w.spawnUnit("shaper", 0, 10, 10);
+    const ran: number[] = [];
+    for (let k = 0; k < 70; k++) {
+      const before = ai.stats.decisions;
+      ai.decide(w);
+      if (ai.stats.decisions > before) ran.push(w.tick);
+      w.step([]);
+    }
+    expect(ran).toEqual([3, 33, 63]);
   });
 
   it("opponent matches are deterministic", () => {
@@ -91,7 +107,7 @@ describe("OpponentAI (M7)", () => {
     for (let k = 0; k < 3; k++) w.spawnUnit("warden", 0, 14 + k, 28);
     w.step([]);
     w.ents.hp[s] = 10;
-    const ai = new OpponentAI({ tribe: 0, personality: "turtle" });
+    const ai = new OpponentAI({ tribe: 0, personality: "turtle", every: 1 });
     const out = ai.decide(w);
     const moves = out.filter((c) => c.type === "move");
     expect(moves.some((c) => (c.args.units as number[]).includes(w.ents.idOf(s)) && !c.args.attack)).toBe(true);
@@ -108,7 +124,7 @@ describe("OpponentAI (M7)", () => {
     const tower = w.ents.index(w.spawnBuilding("watchtower", 0, 16, 32));
     for (let k = 0; k < 4; k++) w.spawnUnit("warden", 0, 14 + k, 28);
     w.step([]);
-    const ai = new OpponentAI({ tribe: 0, personality: "turtle", difficulty: "hard" });
+    const ai = new OpponentAI({ tribe: 0, personality: "turtle", difficulty: "hard", every: 1 });
     const garrisons = () => ai.decide(w).filter((c) => c.type === "garrison");
     const calm = garrisons();
     expect(calm.length).toBe(1);

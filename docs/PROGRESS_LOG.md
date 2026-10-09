@@ -40,3 +40,11 @@ One line per entry: `MM/DD/YYYY HH:MM  M<n>  what happened`. Never read this fil
 - ai soak: sneaky dominates (6 of 7), turtle never wins: playtest-analyst pass next.
 - Analyst pass (2 passes, ai_personalities.json only): sneaky firstAttack 8 to 10, mix .35/.3/.35, aggression .45, spell order; turtle pop 55, mix .45/.45/.1, firstAttack 12, lightning first. Then code: emergency training floor, garrison action (sentinel per tower, full under threat). Final ai soak 12 seeds: sneaky 8, aggressive 3, turtle 0, unfinished 1, median 14.1 (BACKLOG 64). Chanter cap 3 to 2 tried and reverted (no effect on probes, BACKLOG 65).
 - Skirmish opponents in the app: opponents.ts with ?ai= and ?difficulty=. Full npm run qa PASS. ai shot set and making-of m7 images (first raid highlight).
+
+## 2026-10-09 M7 review fixes (Opus milestone-reviewer: FIX FIRST)
+- Blocker: `soak --mode bots --minutes 30` was 6/8 (give-ups 7 and 64 cells from reachable goals). Probe (tools/harness/probe-giveup.mjs) showed a move into the sea: the goal snaps to the nearest walkable vertex, the unit reached it but arrival was measured to the raw point. Fix in units.ts: steer to and arrive at the snapped vertex (flow goal or last waypoint) when it differs from the raw goal. Regression: units.test.ts (A* and flow cases).
+- The fix shifted the ai soak and exposed a second give-up (seed 1005 turtle v aggressive): a quake rebuilt a group's flow field with a longer route but flow units kept their old best progress. Fix: terrain changes reset best for flow-field units too. Regression: units.test.ts detour test. Replays unchanged.
+- OpponentAI cadence now comes from difficulty reactionSeconds (controller runs every tick, gates itself to the period on its offset phase); test loops all difficulties.
+- soak.mjs: ai-idle counts an elimination only within gates.aiEliminatesIdleMinutes; repro files carry the full spec including ais (named seed-label).
+- Docs: nine actions and the data-driven cadence (ARCHITECTURE, ADR-007), movement note, TESTING ai-idle wording. Review items 6 to 11 logged as BACKLOG 66 to 71.
+- Soaks: ai-idle 12/12 (8.8 to 15.8 min), ai 12/12 x 40 (sneaky 8, aggressive 2, turtle 2, median 13.4, 0 unfinished), bots 8/8 x 30 (0 give-ups), war 8/8.

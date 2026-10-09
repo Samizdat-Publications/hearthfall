@@ -6,7 +6,7 @@ describe("skirmish opponents (M7)", () => {
   it("cycle personalities over the non-local tribes with the chosen difficulty", () => {
     const cs = opponentsFor(4, 0, { ai: ["aggressive", "sneaky", "turtle"], difficulty: "hard" });
     expect(cs.map((c) => c.tribe)).toEqual([1, 2, 3]);
-    expect(cs.every((c) => c instanceof OpponentAI && c.every === 30)).toBe(true);
+    expect(cs.every((c) => c instanceof OpponentAI && c.difficulty === "hard")).toBe(true);
   });
 
   it("accept economy and none, and cycle a short list", () => {

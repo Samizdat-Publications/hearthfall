@@ -125,7 +125,13 @@ export class UnitSystem {
       if (rects) for (const r of rects) for (let yy = -2; yy <= r.h + 2; yy++) for (let xx = -2; xx <= r.w + 2; xx++) mask[((r.x + xx + n) % n) + ((r.y + yy + n) % n) * n] = 1;
       const hits = (x: number, y: number) => !rects || mask[((x % n) + n) % n + (((y % n) + n) % n) * n] === 1;
       for (let i = 0; i < E.hi; i++) {
-        if (!E.alive[i] || E.cat[i] !== CAT.unit || E.order[i] === ORDER.none || E.flowGoal[i] >= 0 || E.waitPath[i]) continue;
+        if (!E.alive[i] || E.cat[i] !== CAT.unit || E.order[i] === ORDER.none || E.waitPath[i]) continue;
+        if (E.flowGoal[i] >= 0) {
+          // flow fields were all dropped above and rebuild from the new terrain: the route may be
+          // longer now, so progress restarts against it
+          E.best[i] = 1e9;
+          continue;
+        }
         const p = this.paths[i];
         let touched = !p || hits(E.x[i], E.y[i]);
         if (p && !touched) {
@@ -236,11 +242,21 @@ export class UnitSystem {
       let dy = 0;
       if (E.order[i] !== ORDER.none && !E.waitPath[i]) {
         const speed = units[E.type[i]].speed / hz;
-        let tx = E.gx[i];
-        let ty = E.gy[i];
+        const fg = E.flowGoal[i];
+        // effective goal: a goal off the walkable land (sea, cliff) was snapped to the nearest walkable
+        // vertex (the flow goal or the path's last waypoint); steer to and arrive at that vertex
+        let ex = E.gx[i];
+        let ey = E.gy[i];
+        const p0 = this.paths[i];
+        const snapped = fg >= 0 ? fg : p0 && p0.length ? p0[p0.length - 1] : -1;
+        if (snapped >= 0 && snapped !== this.vertexOf(ex, ey)) {
+          ex = snapped % n;
+          ey = (snapped - ex) / n;
+        }
+        let tx = ex;
+        let ty = ey;
         /** remaining route length, the progress measure for stuck detection */
         let route = -1;
-        const fg = E.flowGoal[i];
         if (fg >= 0) {
           const field = this.flowFor(fg);
           if (!field) continue;
@@ -300,8 +316,8 @@ export class UnitSystem {
             }
           }
         }
-        const gdx = wrapD(E.gx[i] - E.x[i], n);
-        const gdy = wrapD(E.gy[i] - E.y[i], n);
+        const gdx = wrapD(ex - E.x[i], n);
+        const gdy = wrapD(ey - E.y[i], n);
         const gd = Math.sqrt(gdx * gdx + gdy * gdy);
         if (gd < m.arriveRadius || (gd < m.crowdArriveRadius && E.stuck[i] > hz)) {
           this.stop(i);

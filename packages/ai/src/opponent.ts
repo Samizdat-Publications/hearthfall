@@ -23,10 +23,10 @@ export interface OpponentOptions {
   /** personality id from ai_personalities.json, or an inline personality (test bots) */
   personality: string | Personality;
   difficulty?: string;
+  /** decision period in ticks; default is the difficulty's reactionSeconds from data */
   every?: number;
+  /** decision phase within the period (spreads tribes over ticks) */
   offset?: number;
-  /** sim tick rate, for reactionSeconds (balance.sim.tickHz) */
-  hz?: number;
 }
 
 /** What the controller did, for soak logs and tests (lives outside the sim, never hashed). */
@@ -65,11 +65,15 @@ const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
 export class OpponentAI implements Controller {
   readonly tribe: number;
-  readonly every: number;
-  readonly offset: number;
+  /** World calls the controller every tick; it decides only when tick % period === phase */
+  readonly every = 1;
+  readonly offset = 0;
   readonly stats: OpponentStats = { decisions: 0, actions: {}, casts: {}, waves: 0, mixedWaves: 0, bridges: 0, scoutedAtTick: -1 };
   private readonly spec: string | Personality;
-  private readonly difficulty: string;
+  readonly difficulty: string;
+  private readonly phase: number;
+  private readonly periodOverride: number | undefined;
+  private periodTicks = 0;
   private p!: Personality;
   private noise = 0;
   private eco: EconomyBot;
@@ -82,12 +86,10 @@ export class OpponentAI implements Controller {
     this.tribe = o.tribe;
     this.spec = o.personality;
     this.difficulty = o.difficulty ?? "normal";
-    this.offset = o.offset ?? 0;
-    // reaction time sets the cadence; resolved against data at the first decision for the noise
-    const reaction: Record<string, number> = { easy: 6, normal: 3, hard: 1.5 };
-    this.every = o.every ?? Math.max(1, Math.round((reaction[this.difficulty] ?? 3) * (o.hz ?? 20)));
-    if (this.offset >= this.every) throw new Error("offset must be below every");
-    this.eco = new EconomyBot({ tribe: o.tribe, every: this.every, offset: this.offset });
+    this.phase = o.offset ?? 0;
+    this.periodOverride = o.every;
+    // the EconomyBot is called directly at our cadence, so its own every/offset are unused
+    this.eco = new EconomyBot({ tribe: o.tribe });
     this.actions = [
       { id: "protectShaper", score: (c) => this.protectScore(c), act: (c, out) => this.protect(c, out) },
       { id: "defend", score: (c) => (c.threats.length ? 0.9 : 0), act: (c, out) => this.defend(c, out) },
@@ -105,6 +107,11 @@ export class OpponentAI implements Controller {
     return this.p;
   }
 
+  /** decision period in ticks (resolved from data on the first call; 0 before) */
+  get period(): number {
+    return this.periodTicks;
+  }
+
   private init(w: World): void {
     const ai = w.cfg.pack.ai;
     if (typeof this.spec === "string") {
@@ -115,13 +122,16 @@ export class OpponentAI implements Controller {
     const d = ai.difficulties.find((x) => x.id === this.difficulty);
     if (!d) throw new Error(`unknown difficulty ${this.difficulty}`);
     this.noise = d.decisionNoise;
+    this.periodTicks = this.periodOverride ?? Math.max(1, Math.round(d.reactionSeconds * w.cfg.tickHz));
+    if (this.phase >= this.periodTicks) throw new Error("offset must be below the decision period");
     this.ready = true;
   }
 
   decide(w: World): Command[] {
+    if (!this.ready) this.init(w);
+    if (w.tick % this.periodTicks !== this.phase) return [];
     const tr = w.tribes[this.tribe];
     if (!tr?.alive) return [];
-    if (!this.ready) this.init(w);
     const c = this.census(w);
     if (!c) return [];
     const out = this.eco.decide(w);

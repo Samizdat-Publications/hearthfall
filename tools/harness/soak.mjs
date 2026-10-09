@@ -12,8 +12,9 @@ const WORKER = new URL("./soak-worker.mjs", import.meta.url);
 function runSeed(spec) {
   return new Promise((resolve) => {
     const w = new Worker(WORKER, { workerData: spec });
-    w.once("message", resolve);
-    w.once("error", (e) => resolve({ seed: spec.seed, ok: false, violations: [`worker crashed: ${String(e.message).slice(0, 200)}`] }));
+    // the spec rides along so a repro can replay ai and bots seeds (their controllers live in spec.ais)
+    w.once("message", (m) => resolve({ ...m, spec }));
+    w.once("error", (e) => resolve({ seed: spec.seed, spec, ok: false, violations: [`worker crashed: ${String(e.message).slice(0, 200)}`] }));
   });
 }
 
@@ -81,7 +82,7 @@ function aiSpecs(base, args, seeds, t0) {
 }
 
 /** Gate and soft metrics for the ai modes: eliminations, spell types, mixed waves, win spread. */
-function aiReport(mode, results, minutes) {
+function aiReport(mode, results, minutes, idleGate) {
   const lines = [];
   const all = results.flatMap((r) => r.ai?.ais ?? []);
   const casts = {};
@@ -106,7 +107,8 @@ function aiReport(mode, results, minutes) {
       const p = r.ai?.ais[0]?.personality ?? "?";
       per[p] ??= { won: 0, n: 0, minutes: [] };
       per[p].n++;
-      if (r.ai && !r.ai.alive.includes(1)) {
+      // gate: eliminated within gates.aiEliminatesIdleMinutes, whatever --minutes ran
+      if (r.ai && !r.ai.alive.includes(1) && r.ai.endMinute <= idleGate) {
         per[p].won++;
         per[p].minutes.push(r.ai.endMinute);
       }
@@ -114,7 +116,7 @@ function aiReport(mode, results, minutes) {
     metrics.idle = per;
     for (const [p, v] of Object.entries(per)) {
       lines.push(`ai-idle ${p}: eliminated the idle tribe on ${v.won}/${v.n} seeds (minutes ${v.minutes.join(", ")})`);
-      if (v.won < v.n) fails.push(`${p} left the idle tribe alive on ${v.n - v.won} seeds within ${minutes} min`);
+      if (v.won < v.n) fails.push(`${p} left the idle tribe alive on ${v.n - v.won} seeds within the ${idleGate} min gate`);
     }
   } else if (mode === "bots") {
     const rows = results.map((r) => `${r.ai?.ais.map((a) => a.personality ?? a.type).join(" v ")}: ${r.ai?.alive.length === 1 ? "won by " + (r.ai.ais.find((a) => a.tribe === r.ai.alive[0])?.personality ?? r.ai.ais.find((a) => a.tribe === r.ai.alive[0])?.type) : "unfinished"} at ${r.ai?.endMinute} min`);
@@ -163,7 +165,11 @@ export default async function soakCmd(out, _cmd, args) {
   const bad = results.filter((r) => !r.ok);
   if (bad.length) {
     mkdirSync(LATEST + "repro", { recursive: true });
-    for (const r of bad) writeFileSync(LATEST + `repro/soak-seed-${r.seed}.json`, JSON.stringify({ spec: { ...base, seed: r.seed }, violations: r.violations?.slice(0, 20), tick: r.tick }, null, 2));
+    for (const r of bad) {
+      const { startMs: _s, deadlineMs: _d, ...spec } = r.spec ?? { ...base, seed: r.seed };
+      const tag = spec.ais ? `-${spec.ais.map((a) => (a ? (a.personality ?? a.type) : "idle")).join("-v-")}` : "";
+      writeFileSync(LATEST + `repro/soak-seed-${r.seed}${tag}.json`, JSON.stringify({ spec, violations: r.violations?.slice(0, 20), tick: r.tick }, null, 2));
+    }
   }
   const sum = (k) => results.reduce((a, r) => a + (r.metrics?.[k] ?? 0), 0);
   const metrics = { seeds, minutes, units: base.units, wallSec: +((Date.now() - t0) / 1000).toFixed(1), drowned: sum("drowned"), orderFailed: sum("orderFailed"), orderGaveUp: sum("orderGaveUp"), moves: sum("moves"), maxStuckSec: Math.max(...results.map((r) => r.metrics?.maxStuckSec ?? 0)), avgTickMs: +(results.reduce((a, r) => a + (r.metrics?.avgTickMs ?? 0), 0) / results.length).toFixed(2) };
@@ -188,7 +194,8 @@ export default async function soakCmd(out, _cmd, args) {
     writeReport("soak.json", { metrics, results });
   }
   if (base.mode === "ai-idle" || base.mode === "ai" || base.mode === "bots") {
-    const r = aiReport(base.mode, results, minutes);
+    const { loadBasePack } = await import("./datapack.mjs");
+    const r = aiReport(base.mode, results, minutes, loadBasePack().pack.files.balance.gates.aiEliminatesIdleMinutes);
     Object.assign(metrics, r.metrics);
     for (const l of r.lines) out.line(l);
     writeReport("soak.json", { metrics, results });
