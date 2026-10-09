@@ -1,6 +1,9 @@
 // @hearthfall/audio public API. M6: event hooks that turn sim events into audio cues through the
-// style.json `audio.cues` table. Playback is a sink the app supplies (Web Audio lands with A4 in
-// M10); cues whose asset is not available are counted as silent stubs, never errors.
+// style.json `audio.cues` table (and `audio.alias`, cue to the asset that serves it). Playback is a
+// sink the app supplies (M10: WebAudioPlayer in player.ts); cues whose asset is not available are
+// counted as silent stubs, never errors.
+export { busGain, busOf, spatial, MusicDirector, type Bus, type DirectorEvent, type Listener, type Stem, type Volumes } from "./mix.ts";
+export { WebAudioPlayer, type PlayerStats } from "./player.ts";
 
 export interface CueRule {
   cue: string;
@@ -42,11 +45,13 @@ export class AudioHooks {
   private readonly rules: Readonly<Record<string, CueRule>>;
   private readonly available: ReadonlySet<string>;
   private readonly sink: (p: CuePlay) => void;
+  private readonly alias: Readonly<Record<string, string>>;
 
-  constructor(rules: Readonly<Record<string, CueRule>>, available: ReadonlySet<string>, sink: (p: CuePlay) => void = () => {}) {
+  constructor(rules: Readonly<Record<string, CueRule>>, available: ReadonlySet<string>, sink: (p: CuePlay) => void = () => {}, alias: Readonly<Record<string, string>> = {}) {
     this.rules = rules;
     this.available = available;
     this.sink = sink;
+    this.alias = alias;
   }
 
   /** Map one batch of events (any number of ticks, in order) to cue plays. */
@@ -66,7 +71,8 @@ export class AudioHooks {
         continue;
       }
       this.perTick.set(e.type, n + 1);
-      const cue = r.cue.replace(FIELD, (_, f: string) => String(e[f] ?? ""));
+      const named = r.cue.replace(FIELD, (_, f: string) => String(e[f] ?? ""));
+      const cue = this.alias[named] ?? named;
       const silent = !this.available.has(cue);
       const p: CuePlay = { cue, event: e.type, tick: e.tick, silent };
       if (typeof e.x === "number" && typeof e.y === "number") {

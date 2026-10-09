@@ -31,6 +31,10 @@ body.debug-overlap-hud .hud-overlap { display: block; }
 .hud-resources { left: 108px; top: 10px; width: 240px; display: flex; flex-direction: column; gap: 4px; padding: 6px 8px; pointer-events: auto; }
 .bar { display: flex; align-items: center; gap: 6px; }
 .bar-glyph { width: 14px; text-align: center; font-size: 14px; }
+.bar-icon { width: 18px; height: 18px; margin: -2px -2px; image-rendering: pixelated; }
+.build-icon { width: 22px; height: 22px; margin: -4px 6px -4px -4px; vertical-align: middle; image-rendering: pixelated; }
+.spell image.icon { image-rendering: pixelated; }
+.build-btn.locked .build-icon { filter: grayscale(1) opacity(0.5); }
 .bar-mana .bar-glyph { color: #58b4d6; }
 .bar-pop .bar-glyph { color: #e0a12a; }
 .bar-track { position: relative; flex: 1; height: 16px; background: #120c08; border: 2px solid #2b1d13; box-shadow: inset 0 0 0 1px #5c564e; overflow: hidden; }

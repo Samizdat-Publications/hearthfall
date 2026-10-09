@@ -13,6 +13,15 @@ import { BuildingLayer } from "./buildingsLayer.ts";
 import { WorshipLayer } from "./worshipLayer.ts";
 import { VfxLayer } from "./vfx.ts";
 import { RetroPass } from "./retro.ts";
+import { loadModels, type ModelLoadReport, type ModelParts } from "./models.ts";
+
+/** Real model state (M10): pending while loading; `drawn` lists the model ids the current layers use. */
+export interface ModelStatus {
+  pending: boolean;
+  loaded: string[];
+  failed: string[];
+  drawn: string[];
+}
 
 export interface Renderer {
   setWorld(world: World): void;
@@ -60,7 +69,10 @@ export class ThreeRenderer implements Renderer {
   private readonly waterMat: THREE.ShaderMaterial;
   private readonly sky: THREE.Mesh;
   private readonly sun: THREE.DirectionalLight;
-  private readonly trees: TreeLayer;
+  private trees: TreeLayer;
+  private models: Map<string, ModelParts> | null = null;
+  private modelReport: ModelLoadReport | null = null;
+  private modelsPending = false;
   private readonly propMat: THREE.MeshLambertMaterial;
   private readonly ringMat: THREE.MeshBasicMaterial;
   private readonly pal: Record<string, string>;
@@ -177,15 +189,49 @@ export class ThreeRenderer implements Renderer {
     }
     this.rebuildAll();
     this.stats.chunks = this.chunks.length;
+    this.buildLayers(world);
+  }
+
+  /** (Re)create the entity layers for a world, with the real models when they are loaded. */
+  private buildLayers(world: World): void {
+    const colors = world.tribes.map((t) => t.color);
     if (this.units) disposeGroup(this.scene, this.units.group);
-    this.units = new UnitLayer(this.propMat, this.ringMat, world.cfg.pack.units.units.map((u) => u.id), this.pal, world.tribes.map((t) => t.color));
+    this.units = new UnitLayer(this.propMat, this.ringMat, world.cfg.pack.units.units.map((u) => u.id), this.pal, colors, this.models);
     this.scene.add(this.units.group);
     if (this.buildings) disposeGroup(this.scene, this.buildings.group);
-    this.buildings = new BuildingLayer(this.propMat, world.cfg.pack.buildings.buildings, this.pal, world.tribes.map((t) => t.color));
+    this.buildings = new BuildingLayer(this.propMat, world.cfg.pack.buildings.buildings, this.pal, colors, this.models);
     this.scene.add(this.buildings.group);
     if (this.worship) disposeGroup(this.scene, this.worship.group);
-    this.worship = new WorshipLayer(this.propMat, world.cfg.pack.buildings.worship.kinds ?? [], this.pal, world.tribes.map((t) => t.color));
+    this.worship = new WorshipLayer(this.propMat, world.cfg.pack.buildings.worship.kinds ?? [], this.pal, colors, this.models);
     this.scene.add(this.worship.group);
+  }
+
+  /**
+   * Load the real GLB models (id to URL) and swap them in for the placeholders. The game never waits:
+   * placeholders draw until this resolves, and an id that fails to load keeps its placeholder.
+   */
+  async loadModels(urls: Readonly<Record<string, string>>, fetchBytes?: (url: string) => Promise<ArrayBuffer>): Promise<ModelStatus> {
+    this.modelsPending = true;
+    try {
+      const { models, report } = await loadModels(urls, this.pal.azure ?? "#2e6fd8", fetchBytes);
+      this.models = models;
+      this.modelReport = report;
+      for (const m of this.trees.meshes) {
+        this.scene.remove(m);
+        m.dispose();
+      }
+      this.trees = new TreeLayer(this.propMat, this.pal, this.models);
+      for (const m of this.trees.meshes) this.scene.add(m);
+      if (this.world) this.buildLayers(this.world);
+    } finally {
+      this.modelsPending = false;
+    }
+    return this.modelStatus();
+  }
+
+  modelStatus(): ModelStatus {
+    const drawn = [...this.trees.modelIds, ...(this.units?.modelIds ?? []), ...(this.buildings?.modelIds ?? []), ...(this.worship?.modelIds ?? [])];
+    return { pending: this.modelsPending, loaded: this.modelReport?.loaded ?? [], failed: this.modelReport?.failed ?? [], drawn: [...new Set(drawn)].sort() };
   }
 
   private rebuildAll(): void {

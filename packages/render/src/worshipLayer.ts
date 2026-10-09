@@ -1,10 +1,15 @@
-// Placeholder worship objects (M9) until real assets land: per kind an untinted stone structure and a
-// tinted crown (the color of the tribe leading the prayer, else the last tribe to finish it, else a
-// pale glow). A spent site goes grey. Static between sim ticks, so no interpolation.
+// Worship objects (M9): per kind an untinted structure and a tinted part (the color of the tribe
+// leading the prayer, else the last tribe to finish it, else a pale glow). A spent site goes grey.
+// Real GLB models (M10) replace the placeholders, scaled up to the prayer ring, with a banner when the
+// model has no marker color. Static between sim ticks, so no interpolation.
 import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { CAT, type World } from "@hearthfall/sim";
 import { colored } from "./buildingsLayer.ts";
+import { withBanner, worshipModelId, type ModelParts } from "./models.ts";
+
+/** worship models are drawn larger than their building-sized source so the site reads as a landmark */
+const WORSHIP_MODEL_SCALE = 1.5;
 
 function worshipGeometry(id: string, pal: Record<string, string>): { body: THREE.BufferGeometry; tint: THREE.BufferGeometry } {
   const C = (k: string, d: string) => new THREE.Color(pal[k] ?? d);
@@ -41,7 +46,9 @@ function worshipGeometry(id: string, pal: Record<string, string>): { body: THREE
 
 export class WorshipLayer {
   readonly group = new THREE.Group();
-  private kinds: { body: THREE.InstancedMesh; tint: THREE.InstancedMesh }[] = [];
+  private kinds: { body: THREE.InstancedMesh; tint: THREE.InstancedMesh; scale: number }[] = [];
+  /** model ids drawn by this layer (the rest are placeholders) */
+  readonly modelIds: string[] = [];
   private tribeColors: THREE.Color[];
   private readonly glow: THREE.Color;
   private readonly spent = new THREE.Color("#6f6a64");
@@ -50,11 +57,14 @@ export class WorshipLayer {
   private readonly s = new THREE.Vector3(1, 1, 1);
   private readonly p = new THREE.Vector3();
 
-  constructor(material: THREE.Material, kinds: { id: string }[], pal: Record<string, string>, tribeColorNames: string[], cap = 64) {
+  constructor(material: THREE.Material, kinds: { id: string }[], pal: Record<string, string>, tribeColorNames: string[], models: ReadonlyMap<string, ModelParts> | null = null, cap = 64) {
     this.tribeColors = tribeColorNames.map((c) => new THREE.Color(pal[c] ?? "#ffffff"));
     this.glow = new THREE.Color(pal.lightning ?? "#bfe8ff");
     for (const k of kinds) {
-      const g = worshipGeometry(k.id, pal);
+      const src = models?.get(worshipModelId(k.id));
+      if (src) this.modelIds.push(worshipModelId(k.id));
+      const m = src ? withBanner(src, new THREE.Color(pal.wood ?? "#8b5a2b")) : null;
+      const g = m ? { body: m.body!, tint: m.tint! } : worshipGeometry(k.id, pal);
       const body = new THREE.InstancedMesh(g.body, material, cap);
       const tint = new THREE.InstancedMesh(g.tint, material, cap);
       tint.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(cap * 3), 3);
@@ -63,7 +73,7 @@ export class WorshipLayer {
         im.count = 0;
         this.group.add(im);
       }
-      this.kinds.push({ body, tint });
+      this.kinds.push({ body, tint, scale: m ? WORSHIP_MODEL_SCALE : 1 });
     }
   }
 
@@ -83,7 +93,7 @@ export class WorshipLayer {
       const y = Math.max(w.terrain.heightAt(E.x[i], E.y[i]), w.terrain.sea) * heightScale;
       this.p.set(focusX + ox, y - 0.05, focusZ + oz);
       this.q.setFromAxisAngle(THREE.Object3D.DEFAULT_UP, ((i * 2654435761) >>> 0) / 4294967296 * Math.PI * 2);
-      this.m.compose(this.p, this.q, this.s);
+      this.m.compose(this.p, this.q, this.s.setScalar(kind.scale));
       let lead = -1;
       let best = 0;
       site.progress.forEach((v, t) => {

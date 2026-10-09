@@ -12,12 +12,18 @@ import { actionFor, spellSlot, type KeyAction, type Screen } from "@hearthfall/u
 import { LOG_TAIL, campaignParams, createSkirmish, type SaveGame, type SkirmishParams } from "./session.ts";
 import { campaignCarry, levelOpen, loadProgress, nextLevel, ordered, recordWin } from "./campaign.ts";
 import { QUALITY_SCALE, browserKV, loadSettings, type KV, type Settings } from "./storage.ts";
-import { AudioHooks } from "@hearthfall/audio";
+import { AudioHooks, MusicDirector, WebAudioPlayer } from "@hearthfall/audio";
 import { buildingAt, siteAt, troopCommand, type TroopIntent } from "./troops.ts";
 
 const packFiles = import.meta.glob("../../../data/base/*.json", { eager: true, import: "default" });
 const scenarioFiles = import.meta.glob("../../../scenarios/*.json", { eager: true, import: "default" });
 const levelFiles = import.meta.glob("../../../data/levels/*.json", { eager: true, import: "default" });
+// M10: real GLB models by id (assets/models/<id>.glb); bake-off candidates are not game content
+const modelFiles = import.meta.glob(["../../../assets/models/*.glb", "!../../../assets/models/*bakeoff*"], { eager: true, query: "?url", import: "default" }) as Record<string, string>;
+// M10: audio clips by id (assets/audio/<id>.ogg, indexed in assets/audio/index.json)
+const audioFiles = import.meta.glob("../../../assets/audio/*.ogg", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
+export const AUDIO_URLS: Record<string, string> = Object.fromEntries(Object.entries(audioFiles).map(([p, u]) => [p.split("/").pop()!.replace(/\.ogg$/, ""), u]));
+export const MODEL_URLS: Record<string, string> = Object.fromEntries(Object.entries(modelFiles).map(([p, u]) => [p.split("/").pop()!.replace(/\.glb$/, ""), u]));
 
 export function loadPack(): ValidatedPack {
   const raw: Record<string, unknown> = {};
@@ -62,6 +68,8 @@ export interface GameParams {
   difficulty: string;
   /** M9: boot straight into this campaign level (shots and debugging; ignores campaign progress) */
   campaign: string | null;
+  /** M10: load the real GLB models (models=0 keeps the procedural placeholders) */
+  models: boolean;
 }
 
 export function parseParams(search: string): GameParams {
@@ -82,6 +90,7 @@ export function parseParams(search: string): GameParams {
     ai: q.get("ai") ? q.get("ai")!.split(",").filter(Boolean) : DEFAULT_AI,
     difficulty: q.get("difficulty") ?? "normal",
     campaign: q.get("campaign"),
+    models: q.get("models") !== "0",
   };
 }
 
@@ -138,8 +147,14 @@ export class Game {
   selectedBuilding = -1;
   pointing: string | null = null;
   private events: SimEvent[] = [];
-  /** combat and world events to audio cues; no playback sink until A4 (M10), so every cue is a silent stub */
+  /** combat and world events to audio cues, played by `player` (cues without a clip are silent stubs) */
   readonly audio: AudioHooks;
+  /** M10 Web Audio playback; silent until the first user gesture (browser autoplay rules) */
+  readonly player: WebAudioPlayer;
+  private readonly music = new MusicDirector();
+  private selKey = "";
+  private ackFlip = 0;
+  private lastCastVoice = -1e9;
   onChange: () => void = () => {};
 
   readonly canvas: HTMLCanvasElement;
@@ -175,11 +190,15 @@ export class Game {
     this.params = params;
     this.paused = params.paused || params.fixedStep;
     this.renderer = new ThreeRenderer({ canvas, style: this.pack.files.style, heightUnitsPerWorldUnit: this.pack.files.balance.terrain.heightUnitsPerWorldUnit });
-    this.audio = new AudioHooks(this.pack.files.style.audio?.cues ?? {}, new Set());
+    // the game never waits for models: placeholders draw until they arrive
+    if (params.models) void this.renderer.loadModels(MODEL_URLS).then(() => this.onChange());
     const store = browserKV();
     this.kv = store.kv;
     this.persistent = store.persistent;
     this.settings = loadSettings(this.kv);
+    this.player = new WebAudioPlayer(new Map(Object.entries(AUDIO_URLS)), this.settings);
+    const st = this.pack.files.style.audio;
+    this.audio = new AudioHooks(st?.cues ?? {}, new Set(Object.keys(AUDIO_URLS)), (p) => this.player.play(p.cue, p.x, p.y), st?.alias ?? {});
     this.campaignWon = loadProgress(this.kv);
     this.applyQuality();
     if (params.campaign && !params.scenario) this.playLevel(params.campaign, true);
@@ -355,6 +374,7 @@ export class Game {
       const won = lv.outcome === OUTCOME.won;
       if (won && !recordWin(this.kv, lv.def.id, this.campaignWon)) this.notify("progress", "Campaign progress could not be stored in this browser.", "info");
       this.ended = { won, why: [...this.world.events].reverse().find((e) => e.type === "levelLost")?.why as string | undefined };
+      if (won) this.player.play("voice.shaper.victory");
       this.cancelModes();
       this.screen = "end";
       this.backStack = [];
@@ -367,6 +387,7 @@ export class Game {
     const rivalsOut = ts.every((t) => t.index === this.localTribe || !t.alive);
     if (me?.alive && !rivalsOut) return;
     this.ended = { won: Boolean(me?.alive) };
+    if (this.ended.won) this.player.play("voice.shaper.victory");
     this.cancelModes();
     this.screen = "end";
     this.backStack = [];
@@ -399,6 +420,7 @@ export class Game {
         else if (e.by === this.localTribe && typeof e.tribe === "number" && e.tribe >= 0) this.stats.kills++;
       }
       this.noteFor(e);
+      this.cueFor(e);
     }
     const si = shaperIndex(this.world, this.localTribe);
     const E = this.world.ents;
@@ -414,6 +436,23 @@ export class Game {
     if (last !== undefined && t - last < throttleSec * hz) return;
     this.noteLast.set(key, t);
     this.notes = [...this.notes.filter((n) => n.until > t), { id: ++this.noteSeq, text, kind, until: t + NOTE_SECONDS * hz }].slice(-MAX_NOTES);
+  }
+
+  /** Player-facing voice and UI cues the sim cue table does not cover (own tribe only). */
+  private cueFor(e: SimEvent): void {
+    if (e.tribe !== this.localTribe) return;
+    if (e.type === "commandRejected") this.player.play("sfx.ui_error");
+    else if (e.type === "spellCast" && this.world.tick - this.lastCastVoice > 20 * this.world.cfg.tickHz) {
+      this.lastCastVoice = this.world.tick;
+      this.player.play("voice.shaper.casting");
+    }
+  }
+
+  /** Order feedback: a move click, and the Shaper's acknowledgement when the Shaper is in the order. */
+  private orderSound(): void {
+    this.player.play("sfx.order_move");
+    const si = shaperIndex(this.world, this.localTribe);
+    if (si >= 0 && this.selection.has(si)) this.player.play(this.ackFlip++ % 2 ? "voice.shaper.acknowledged_b" : "voice.shaper.acknowledged");
   }
 
   private noteFor(e: SimEvent): void {
@@ -505,13 +544,23 @@ export class Game {
     if (this.screen === "main" && !this.params.fixedStep && !this.debugFlags.freezeCamera) this.renderer.setCamera({ yaw: this.renderer.cam.yaw + 0.04 * dt });
     this.pollKeys(dt);
     this.pruneSelection();
+    const sk = this.selection.size ? `${this.selection.size}:${this.selection.values().next().value}` : "";
+    if (sk !== this.selKey) {
+      if (sk) this.player.play("sfx.unit_selected");
+      this.selKey = sk;
+    }
     this.renderer.selected = this.selection;
+    // positional audio hears around the camera focus; the radius grows as the camera pulls out
+    const cam = this.renderer.cam;
+    this.player.listener = { x: cam.x, z: cam.z, size: this.world.terrain.size, radius: cam.map ? 0 : 24 + 96 * cam.zoom };
+    this.player.yaw = cam.yaw;
     this.renderer.alpha = this.paused ? 1 : Math.min(1, this.acc * this.world.cfg.tickHz);
     if (this.events.length) {
       const hz = this.world.cfg.tickHz;
       const wall = now / 1000;
       this.renderer.consumeEvents(this.events, this.params.fixedStep ? (e) => (e.tick + 1) / hz : () => wall);
       this.audio.consume(this.events);
+      this.player.setStem(this.music.update(this.world.tick / hz, this.events, this.player.listener, this.localTribe));
       this.events = [];
     }
     // fixedStep: visuals follow the sim tick, so re-rendering the same tick gives identical pixels
@@ -594,6 +643,7 @@ export class Game {
       return true;
     }
     this.command({ tribe: this.localTribe, type: "move", args: { units: [...this.selection].map((i) => E.idOf(i)), to: [p.x, p.z], attack } });
+    this.orderSound();
     return true;
   }
 
@@ -698,6 +748,13 @@ export class Game {
   // ---------------------------------------------------------------- input
   private bindInput(): void {
     let down: { x: number; y: number } | null = null;
+    // audio may only start from a user gesture; every button click (menus and HUD) clicks
+    const unlock = () => this.player.unlock();
+    window.addEventListener("pointerdown", unlock, true);
+    window.addEventListener("keydown", unlock, true);
+    document.addEventListener("click", (e) => {
+      if ((e.target as Element | null)?.closest?.("button")) this.player.play("sfx.ui_click");
+    }, true);
     this.canvas.addEventListener("contextmenu", (e) => e.preventDefault());
     this.canvas.addEventListener("mousedown", (e) => {
       if (this.placing) {

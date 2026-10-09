@@ -1,8 +1,12 @@
-// Placeholder props until real GLB assets land (A2/M10): faceted procedural trees as InstancedMesh,
-// colored from the style palette, placed at the wrapped copy nearest the focus by instance origin.
+// Trees as InstancedMesh, placed at the wrapped copy nearest the focus by instance origin. Real GLB
+// tree models (M10, models.ts) when loaded, else faceted procedural placeholders from the palette.
 import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { CAT, type World } from "@hearthfall/sim";
+import { TREE_MODELS, trimBase, type ModelParts } from "./models.ts";
+
+/** tree models are 2 to 3 units tall; this brings them to the placeholder scale the sim spacing expects */
+const TREE_MODEL_SCALE = 0.72;
 
 function colored(g: THREE.BufferGeometry, c: THREE.Color): THREE.BufferGeometry {
   const ng = g.index ? g.toNonIndexed() : g;
@@ -40,6 +44,9 @@ const hashf = (i: number, salt: number) => {
 
 export class TreeLayer {
   readonly meshes: THREE.InstancedMesh[];
+  /** model ids drawn by this layer (empty: placeholders) */
+  readonly modelIds: string[] = [];
+  private readonly unit: number;
   private cap: number;
   private lastKey = "";
   private readonly m = new THREE.Matrix4();
@@ -49,9 +56,12 @@ export class TreeLayer {
   private readonly up = new THREE.Vector3(0, 1, 0);
   private readonly c = new THREE.Color();
 
-  constructor(material: THREE.Material, pal: Record<string, string>, cap = 8192) {
+  constructor(material: THREE.Material, pal: Record<string, string>, models: ReadonlyMap<string, ModelParts> | null = null, cap = 8192) {
     this.cap = cap;
-    this.meshes = [pineGeometry(pal), broadleafGeometry(pal)].map((g) => {
+    const real = models && TREE_MODELS.every((id) => models.has(id)) ? TREE_MODELS.map((id) => trimBase(models.get(id)!.body!, models.get(id)!.size.y, 0.2, 0.45)) : null;
+    if (real) this.modelIds.push(...TREE_MODELS);
+    this.unit = real ? TREE_MODEL_SCALE : 1;
+    this.meshes = (real ?? [pineGeometry(pal), broadleafGeometry(pal)]).map((g) => {
       const im = new THREE.InstancedMesh(g, material, cap);
       im.frustumCulled = false;
       im.count = 0;
@@ -67,10 +77,11 @@ export class TreeLayer {
     const key = `${focusX.toFixed(2)}|${focusZ.toFixed(2)}|${w.terrain.version}|${w.treeVersion}`;
     if (key === this.lastKey) return;
     this.lastKey = key;
-    const counts = [0, 0];
+    const counts = this.meshes.map(() => 0);
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.tree) continue;
-      const kind = hashf(i, 0x51) < 0.6 ? 0 : 1;
+      const h = hashf(i, 0x51);
+      const kind = this.meshes.length === 2 ? (h < 0.6 ? 0 : 1) : Math.min(this.meshes.length - 1, Math.floor(h * this.meshes.length));
       const k = counts[kind];
       if (k >= this.cap) continue;
       let x = E.x[i] - focusX;
@@ -78,7 +89,7 @@ export class TreeLayer {
       x -= Math.round(x / n) * n;
       z -= Math.round(z / n) * n;
       const y = w.terrain.heightAt(E.x[i], E.y[i]) * heightScale;
-      const sc = (0.8 + 0.5 * hashf(i, 0x77)) * (0.6 + (0.4 * E.wood[i]) / 4);
+      const sc = this.unit * (0.8 + 0.5 * hashf(i, 0x77)) * (0.6 + (0.4 * E.wood[i]) / 4);
       this.q.setFromAxisAngle(this.up, hashf(i, 0x33) * 6.283);
       this.s.set(sc, sc * (0.9 + 0.3 * hashf(i, 0x99)), sc);
       this.p.set(focusX + x, y - 0.05, focusZ + z);

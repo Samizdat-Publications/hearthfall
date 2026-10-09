@@ -6,6 +6,7 @@ import type { Game } from "./game.ts";
 import { drawMinimap } from "./minimap.ts";
 import { troopView } from "./troops.ts";
 import { etaLabel, spellEtas } from "./eta.ts";
+import { buildingIcon, resourceIcon, spellIcon } from "./icons.ts";
 
 /** build tool hotkeys (the rest of the build column is click only) */
 const BUILD_KEYS: Record<string, string> = { dwelling: "D", watchtower: "T" };
@@ -25,7 +26,7 @@ export function hudFor(game: Game): HudModel {
     spells.forEach((s, i) => {
       // M9: a locked spell shows while it holds charges from a shrine or a level reward
       if (!e.unlocked[i] && e.charges[i] <= 0) return;
-      sv.push({ id: s.id, name: title(s.id), tier: s.tier, cost: s.cost, charges: e.charges[i], max: s.maxCharges, progress: e.progress[i] / s.cost, auto: e.auto[i] === 1, charging: cursor === i, hotkey: SPELL_KEYS[k++] ?? "", eta: etaLabel(etas[i]) });
+      sv.push({ id: s.id, name: title(s.id), tier: s.tier, cost: s.cost, charges: e.charges[i], max: s.maxCharges, progress: e.progress[i] / s.cost, auto: e.auto[i] === 1, charging: cursor === i, hotkey: SPELL_KEYS[k++] ?? "", eta: etaLabel(etas[i]), icon: spellIcon(s.id) });
     });
   }
   const bdefs = w.cfg.pack.buildings.buildings;
@@ -50,7 +51,8 @@ export function hudFor(game: Game): HudModel {
     placing: game.placing,
     placeBlocked: game.placeBlocked,
     targeting: game.targeting,
-    buildable: bdefs.filter((b) => b.buildable !== false && b.milestone !== "backlog").map((b) => ({ id: b.id, name: title(b.id), wood: b.levels?.[0]?.wood ?? b.wood ?? 0, key: BUILD_KEYS[b.id] ?? "", locked: tr ? w.economy.buildingLock(tr.index, w.cfg.buildingIndex.get(b.id)!) : null })),
+    buildable: bdefs.filter((b) => b.buildable !== false && b.milestone !== "backlog").map((b) => ({ id: b.id, name: title(b.id), wood: b.levels?.[0]?.wood ?? b.wood ?? 0, key: BUILD_KEYS[b.id] ?? "", locked: tr ? w.economy.buildingLock(tr.index, w.cfg.buildingIndex.get(b.id)!) : null, icon: buildingIcon(b.id) })),
+    icons: { mana: resourceIcon("mana"), pop: resourceIcon("population") },
     objectives: objectivesFor(game, nextTier ? { name: title(nextTier.id), followers: nextTier.followers, opens: nextTier.buildings.map(title) } : null),
     notes: game.notes.filter((n) => n.until > w.tick).map((n) => ({ id: n.id, text: n.text, kind: n.kind })),
     box: game.box,

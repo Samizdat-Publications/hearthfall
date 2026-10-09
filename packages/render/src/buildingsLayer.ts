@@ -1,9 +1,11 @@
-// Placeholder buildings until real GLB assets land (M10): per building kind an instanced tinted
-// part (banner or cloth, tribe color) and an untinted structure, scaled to the footprint and placed
-// at the wrapped copy nearest the focus. Static between sim ticks, so no interpolation.
+// Buildings: per building kind (and per level for dwellings) an instanced tinted part (banner or
+// cloth, tribe color) and an untinted structure, placed at the wrapped copy nearest the focus. Real
+// GLB models (M10, models.ts) replace the procedural placeholders by id; a kind without a model keeps
+// its placeholder scaled to the footprint. Static between sim ticks, so no interpolation.
 import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { CAT, type World } from "@hearthfall/sim";
+import { buildingModelIds, withBanner, type ModelParts } from "./models.ts";
 
 export function colored(g: THREE.BufferGeometry, c: THREE.Color): THREE.BufferGeometry {
   const ng = g.index ? g.toNonIndexed() : g;
@@ -62,9 +64,21 @@ function buildingGeometry(id: string, pal: Record<string, string>): { body: THRE
   }
 }
 
+interface Variant {
+  body: THREE.InstancedMesh;
+  tint: THREE.InstancedMesh;
+  /** uniform scale: footprint based for placeholders, 1 for models (already in world units) */
+  scale: number;
+  /** placeholders grow with the dwelling level; models have a variant per level instead */
+  grows: boolean;
+}
+
 export class BuildingLayer {
   readonly group = new THREE.Group();
-  private kinds: { body: THREE.InstancedMesh; tint: THREE.InstancedMesh; scale: number }[] = [];
+  /** per building type, one variant per level (one for buildings without levels) */
+  private kinds: Variant[][] = [];
+  /** model ids drawn by this layer (the rest are placeholders) */
+  readonly modelIds: string[] = [];
   private tribeColors: THREE.Color[];
   private readonly neutral: THREE.Color;
   private lastKey = "";
@@ -73,20 +87,42 @@ export class BuildingLayer {
   private readonly s = new THREE.Vector3();
   private readonly p = new THREE.Vector3();
 
-  constructor(material: THREE.Material, buildings: { id: string; footprint: [number, number] }[], pal: Record<string, string>, tribeColorNames: string[], cap = 2048) {
+  constructor(
+    material: THREE.Material,
+    buildings: { id: string; footprint: [number, number]; levels?: unknown[] }[],
+    pal: Record<string, string>,
+    tribeColorNames: string[],
+    models: ReadonlyMap<string, ModelParts> | null = null,
+    cap = 2048,
+  ) {
     this.tribeColors = tribeColorNames.map((c) => new THREE.Color(pal[c] ?? "#ffffff"));
     this.neutral = new THREE.Color(pal.cloth ?? "#d9cbb0");
-    for (const b of buildings) {
-      const g = buildingGeometry(b.id, pal);
-      const body = new THREE.InstancedMesh(g.body, material, cap);
-      const tint = new THREE.InstancedMesh(g.tint, material, cap);
-      tint.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(cap * 3), 3);
-      for (const im of [body, tint]) {
+    const wood = new THREE.Color(pal.wood ?? "#8b5a2b");
+    const make = (body: THREE.BufferGeometry, tintG: THREE.BufferGeometry, scale: number, grows: boolean): Variant => {
+      const b = new THREE.InstancedMesh(body, material, cap);
+      const t = new THREE.InstancedMesh(tintG, material, cap);
+      t.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(cap * 3), 3);
+      for (const im of [b, t]) {
         im.frustumCulled = false;
         im.count = 0;
         this.group.add(im);
       }
-      this.kinds.push({ body, tint, scale: Math.max(b.footprint[0], b.footprint[1]) / 2 });
+      return { body: b, tint: t, scale, grows };
+    };
+    for (const b of buildings) {
+      const ids = buildingModelIds(b.id, b.levels?.length ?? 0);
+      if (models && ids.every((id) => models.has(id))) {
+        this.kinds.push(
+          ids.map((id) => {
+            const m = withBanner(models.get(id)!, wood);
+            this.modelIds.push(id);
+            return make(m.body!, m.tint!, 1, false);
+          }),
+        );
+        continue;
+      }
+      const g = buildingGeometry(b.id, pal);
+      this.kinds.push([make(g.body, g.tint, (Math.max(b.footprint[0], b.footprint[1]) / 2) * 1.15, true)]);
     }
   }
 
@@ -95,12 +131,14 @@ export class BuildingLayer {
     const n = w.terrain.size;
     // buildings are few; rebuild every frame so plans, construction progress and levels stay current
     void this.lastKey;
-    const counts = new Int32Array(this.kinds.length);
+    const counts = this.kinds.map((v) => new Int32Array(v.length));
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.building) continue;
       const k = E.type[i];
-      const kind = this.kinds[k];
-      if (!kind) continue;
+      const vs = this.kinds[k];
+      if (!vs) continue;
+      const vi = Math.min(vs.length - 1, Math.max(0, E.level[i] - 1));
+      const kind = vs[vi];
       let ox = E.x[i] - focusX;
       let oz = E.y[i] - focusZ;
       ox -= Math.round(ox / n) * n;
@@ -112,21 +150,23 @@ export class BuildingLayer {
       const def = w.cfg.pack.buildings.buildings[k];
       const total = (def.wood ?? def.levels?.[0]?.wood ?? 1) * w.cfg.pack.buildings.construction.buildSecondsPerWood;
       const rise = st === 3 ? 1 : st === 2 ? 0.25 + 0.75 * Math.min(1, E.progress[i] / total) : 0.12;
-      const lv = def.levels ? 1 + 0.16 * Math.max(0, E.level[i] - 1) : 1;
-      this.s.set(kind.scale * 1.15 * lv, kind.scale * 1.15 * lv * rise, kind.scale * 1.15 * lv);
+      const lv = def.levels && kind.grows ? 1 + 0.16 * Math.max(0, E.level[i] - 1) : 1;
+      this.s.set(kind.scale * lv, kind.scale * lv * rise, kind.scale * lv);
       this.q.setFromAxisAngle(THREE.Object3D.DEFAULT_UP, ((i * 2654435761) >>> 0) / 4294967296 * Math.PI * 2);
       this.m.compose(this.p, this.q, this.s);
-      const c = counts[k]++;
+      const c = counts[k][vi]++;
       kind.body.setMatrixAt(c, this.m);
       kind.tint.setMatrixAt(c, this.m);
       kind.tint.setColorAt(c, E.tribe[i] >= 0 ? this.tribeColors[E.tribe[i] % this.tribeColors.length] : this.neutral);
     }
-    this.kinds.forEach((kind, k) => {
-      kind.body.count = counts[k];
-      kind.tint.count = counts[k];
-      kind.body.instanceMatrix.needsUpdate = true;
-      kind.tint.instanceMatrix.needsUpdate = true;
-      if (kind.tint.instanceColor) kind.tint.instanceColor.needsUpdate = true;
-    });
+    this.kinds.forEach((vs, k) =>
+      vs.forEach((kind, vi) => {
+        kind.body.count = counts[k][vi];
+        kind.tint.count = counts[k][vi];
+        kind.body.instanceMatrix.needsUpdate = true;
+        kind.tint.instanceMatrix.needsUpdate = true;
+        if (kind.tint.instanceColor) kind.tint.instanceColor.needsUpdate = true;
+      }),
+    );
   }
 }

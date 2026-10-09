@@ -198,6 +198,8 @@ export const StyleSchema = z.strictObject({
           where: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
         }),
       ),
+      /** M10: cue id to the asset id that serves it (one clip for several cues) */
+      alias: z.record(z.string(), z.string().min(1)).optional(),
     })
     .optional(),
   promptStyleSuffix: z.string(),

@@ -4,6 +4,7 @@
 // bob while moving and face their velocity. Also keeps screen positions for picking and selection.
 import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
+import { unitModelId, type ModelParts } from "./models.ts";
 import { CAT, type World } from "@hearthfall/sim";
 
 function colored(g: THREE.BufferGeometry, c: THREE.Color): THREE.BufferGeometry {
@@ -64,6 +65,8 @@ function kindGeometry(id: string, pal: Record<string, string>): KindGeo {
 export class UnitLayer {
   readonly group = new THREE.Group();
   private kinds: { body: THREE.InstancedMesh; detail: THREE.InstancedMesh }[] = [];
+  /** model ids drawn by this layer (the rest are placeholders) */
+  readonly modelIds: string[] = [];
   private ring: THREE.InstancedMesh;
   private readonly cap: number;
   private tribeColors: THREE.Color[];
@@ -81,12 +84,16 @@ export class UnitLayer {
   private readonly up = new THREE.Vector3(0, 1, 0);
   private readonly v = new THREE.Vector3();
 
-  constructor(material: THREE.Material, ringMaterial: THREE.Material, unitIds: string[], pal: Record<string, string>, tribeColorNames: string[], cap = 8192) {
+  constructor(material: THREE.Material, ringMaterial: THREE.Material, unitIds: string[], pal: Record<string, string>, tribeColorNames: string[], models: ReadonlyMap<string, ModelParts> | null = null, cap = 8192) {
     this.cap = cap;
     this.tribeColors = tribeColorNames.map((c) => new THREE.Color(pal[c] ?? "#ffffff"));
     this.wildColor = new THREE.Color(pal.cloth ?? "#d9cbb0");
+    const empty = () => new THREE.BufferGeometry().setAttribute("position", new THREE.Float32BufferAttribute([], 3));
     for (const id of unitIds) {
-      const g = kindGeometry(id, pal);
+      // a model's tribe-color triangles are the tinted body, the rest is the untinted detail
+      const m = models?.get(unitModelId(id));
+      if (m) this.modelIds.push(unitModelId(id));
+      const g = m ? { body: m.tint ?? empty(), detail: m.body ?? empty() } : kindGeometry(id, pal);
       const body = new THREE.InstancedMesh(g.body, material, cap);
       body.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(cap * 3), 3);
       const detail = new THREE.InstancedMesh(g.detail, material, cap);

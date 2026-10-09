@@ -212,6 +212,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
     setSetting: (p) => {
       game.settings = { ...game.settings, ...p } as typeof game.settings;
       if (p.quality) game.applyQuality();
+      game.player.setVolumes(game.settings);
       settingsMsg = null;
       saveSettings();
       refresh();

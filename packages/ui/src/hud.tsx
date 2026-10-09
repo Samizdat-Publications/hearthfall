@@ -20,6 +20,8 @@ export interface SpellView {
   hotkey: string;
   /** time to the next charge ("12s", "3m"), "" when full, manual or without income */
   eta: string;
+  /** M10: icon URL (the two-letter glyph shows without one) */
+  icon?: string;
 }
 
 /** M6 troop panel: what the selection can be told to do. */
@@ -74,7 +76,9 @@ export interface HudModel {
   placeBlocked: string | null;
   targeting: string | null;
   /** build tools; `locked` says what progression still needs ("needs 10 followers") */
-  buildable: { id: string; name: string; wood: number; key: string; locked: string | null }[];
+  buildable: { id: string; name: string; wood: number; key: string; locked: string | null; icon?: string }[];
+  /** M10: resource icons for the mana and follower bars (text glyphs without them) */
+  icons?: { mana?: string; pop?: string };
   /** next progression tier: name, followers needed and what it opens; null when all are open */
   /** M8: objectives panel (rivals left, Hearth, next tier) and event notifications, newest last */
   objectives: ObjectiveView[];
@@ -183,9 +187,13 @@ function SpellButton({ s, act }: { s: SpellView; act: HudActions }) {
       <svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true">
         <circle cx="22" cy="22" r="17" class="ring-bg" />
         <circle cx="22" cy="22" r="17" class="ring" style={{ strokeDasharray: `${ring * (full ? 1 : s.progress)} ${ring}` }} transform="rotate(-90 22 22)" />
-        <text x="22" y="27" text-anchor="middle" class="glyph">
-          {s.name.slice(0, 2)}
-        </text>
+        {s.icon ? (
+          <image href={s.icon} x="10" y="10" width="24" height="24" class="icon" />
+        ) : (
+          <text x="22" y="27" text-anchor="middle" class="glyph">
+            {s.name.slice(0, 2)}
+          </text>
+        )}
       </svg>
       <span class="charges">{s.charges}</span>
       {s.eta ? <span class="eta">{s.eta}</span> : null}
@@ -217,10 +225,10 @@ function Portrait() {
   );
 }
 
-function Bar({ kind, frac, label }: { kind: "mana" | "pop"; frac: number; label: string }) {
+function Bar({ kind, frac, label, icon }: { kind: "mana" | "pop"; frac: number; label: string; icon?: string }) {
   return (
     <div class={"bar bar-" + kind} title={label}>
-      <span class="bar-glyph" aria-hidden="true">{kind === "mana" ? "◆" : "✚"}</span>
+      {icon ? <img class="bar-icon" src={icon} alt="" /> : <span class="bar-glyph" aria-hidden="true">{kind === "mana" ? "◆" : "✚"}</span>}
       <span class="bar-track">
         <span class="bar-fill" style={{ width: Math.round(Math.min(1, Math.max(0, frac)) * 100) + "%" }} />
         <span class="bar-text">{label}</span>
@@ -267,8 +275,8 @@ function Hud({ act }: { act: HudActions }) {
         <span class="shaper-hp" style={{ width: Math.round(m.shaper.hpFrac * 100) + "%" }} />
       </div>
       <div data-hud="resources" class="hud-panel hud-resources">
-        <Bar kind="mana" frac={m.manaFrac} label={`Mana ${Math.round(m.manaPerMin)}/min`} />
-        <Bar kind="pop" frac={m.cap > 0 ? m.pop / m.cap : 0} label={`Followers ${m.pop}/${m.cap}`} />
+        <Bar kind="mana" frac={m.manaFrac} label={`Mana ${Math.round(m.manaPerMin)}/min`} icon={m.icons?.mana} />
+        <Bar kind="pop" frac={m.cap > 0 ? m.pop / m.cap : 0} label={`Followers ${m.pop}/${m.cap}`} icon={m.icons?.pop} />
         {m.wasting ? <span class="waste" title="No spell or training can absorb mana: toggle auto-charge on a spell">mana wasting: auto-charge a spell</span> : null}
         <label class="res-row split">
           <span class="res-label">Spells {m.spellsPct}%</span>
@@ -291,6 +299,7 @@ function Hud({ act }: { act: HudActions }) {
       <div data-hud="build" class="hud-panel hud-build">
         {m.buildable.map((bd) => (
           <button key={bd.id} class={"build-btn" + (m.placing === bd.id ? " active" : "") + (bd.locked ? " locked" : "")} disabled={bd.locked !== null} onClick={() => (m.placing === bd.id ? act.cancel() : act.startPlacing(bd.id))} title={`${bd.name}: ${bd.wood} wood${bd.key ? ` (${bd.key})` : ""}${bd.locked ? `, locked: ${bd.locked}` : ""}`}>
+            {bd.icon ? <img class="build-icon" src={bd.icon} alt="" /> : null}
             {bd.name} {bd.key ? <span class="hotkey">{bd.key}</span> : null}
           </button>
         ))}

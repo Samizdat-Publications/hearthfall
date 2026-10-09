@@ -68,7 +68,7 @@
     "foamStrokes": 0.55
   },
   "audio": {
-    "$comment": "sim event type to audio cue; cues without an asset are silent stubs until A4 (M10)",
+    "$comment": "sim event type to audio cue; alias maps a cue to the asset that serves it; cues without an asset are silent stubs",
     "cues": {
       "melee": { "cue": "sfx.melee_hit", "maxPerTick": 4 },
       "fireball": { "cue": "sfx.fireball", "maxPerTick": 3 },
@@ -87,6 +87,25 @@
       "woodDelivered": { "cue": "sfx.wood_delivered", "maxPerTick": 1 },
       "charged": { "cue": "sfx.charged", "maxPerTick": 1 },
       "planPlaced": { "cue": "sfx.plan_placed", "maxPerTick": 1 }
+    },
+    "alias": {
+      "sfx.hornets_cast": "sfx.hornets",
+      "sfx.raise_land_cast": "sfx.raise_land",
+      "sfx.flatten_cast": "sfx.flatten",
+      "sfx.quake_cast": "sfx.quake",
+      "sfx.volcano_cast": "sfx.volcano",
+      "sfx.lightning_cast": "sfx.lightning_impact",
+      "sfx.fireball": "sfx.bolt_impact",
+      "sfx.melee_hit": "sfx.chop",
+      "sfx.building_down": "sfx.quake",
+      "sfx.firerain_cast": "sfx.volcano",
+      "sfx.whirlwind_cast": "sfx.hornets",
+      "sfx.erode_cast": "sfx.flatten",
+      "sfx.mire_cast": "sfx.flatten",
+      "sfx.veil_cast": "sfx.call_cast",
+      "sfx.ward_cast": "sfx.call_cast",
+      "sfx.beguile_cast": "sfx.call_cast",
+      "sfx.wraith_cast": "sfx.bolt_cast"
     }
   },
   "promptStyleSuffix": "stylized low-poly game asset, crisp flat-shaded facets, chunky readable shapes, warm earthy palette, warm golden-hour lighting, clean silhouette, plain neutral background, no text, no logo",
