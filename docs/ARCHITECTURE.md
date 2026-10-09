@@ -105,6 +105,8 @@ Cost field per cell from slope and water. Hierarchical: 16x16 cell sectors with 
 
 Controllers implement `decide(view: SimView, rng) -> Command[]` and run inside the sim step at their own cadence, so they are deterministic and replays need no AI commands recorded. Opponent AI = utility scoring over considerations declared in `ai_personalities.json` (economy target, army mix, aggression curve, spell preferences, scouting). Test bots reuse the same framework with scripted personalities (rusher, turtle, spell spammer, random legal). An **external** controller (human, the optional Decisions move-picker) is recorded into the command log because it is not deterministic.
 
+As built (M6): `packages/ai` registers controllers by type (`wander`, `economy`, `war`). The WarBot wraps the economy bot (its public `findSpot` places lodges and towers too) and issues only ordinary commands (placePlan, train, setRally, move with `attack`). The movement layer's `orderGaveUp` event carries `reachable` and `chase` so harnesses can tell a stuck unit from a chase combat abandons.
+
 ## 6. Spells and effects as composition
 
 A spell in data is a list of effect primitives with parameters:

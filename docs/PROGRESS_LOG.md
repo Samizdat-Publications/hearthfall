@@ -19,3 +19,8 @@ One line per entry: `MM/DD/YYYY HH:MM  M<n>  what happened`. Never read this fil
 - 2026-10-09T01:57Z look v2 committed (8ab91b5); M6 started (data: stances, combat radii, Shaper regen, lodge queues).
 - 2026-10-09T02:40Z M6 combat core green (qa:fast, 25 scenarios, browser replays identical after rebless). Fixes on the way: leash reacquire loop, trainees heading home were skipped, new orders now cancel lodge and tower walks, fixtures without a Hearth keep their units on elimination. ADR-006.
 - 2026-10-09T03:20Z BACKLOG 54 closed: castFailed for unreachable queued casts, statusApply max counts enemies and unimplemented statuses throw, effect fields required by a pack cross-check (no sim fallbacks), building hp required, knockback edgeFalloff as data, STREAMS.terrain, SPELL_KEYS (Shift+M fixed, Shift+N for the 8th spell), spells.test.ts (elimination, respawn without Hearth, double elimination, mid-cast snapshot), expectVfx on spell shots (8/8), spell storm bench 23 ms worst tick on a busy PC (warn only).
+
+## 2026-10-09 M6 war gate
+- WarBot (packages/ai/src/warBot.ts): economy bot plus lodges, a watchtower, training toward a mix, rally, attack-move waves. Tests in packages/ai/test/warBot.test.ts.
+- soak --mode war: 8/8 seeds x 20 min clean. Fixes on the way: path invalidation resets progress (regression scenario path_long_detour_after_terrain_change); orderGaveUp now carries chase (1 when combat re-aimed the unit at a moving target), the soak counts only reachable non-chase give-ups (regression test in combat.test.ts, seed 1006).
+- New per-tick invariants: hp range, wild units neutral, tower and lodge occupancy, inside units share the building's tribe.

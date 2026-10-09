@@ -1,0 +1,134 @@
+{
+  "id": "path_long_detour_after_terrain_change",
+  "description": "A long water wall appears across a settler's route 10 cells from the goal; the new route is a long detour that first walks away from the goal. The settler must not give up (route progress restarts after an invalidation). Regression from the M6 war soak, seed 1001.",
+  "tags": [
+    "fast",
+    "pathing",
+    "terrain"
+  ],
+  "seed": 17,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 1
+  },
+  "setup": [
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "at": [
+        30,
+        32
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "tick": 1,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.settlers",
+        "to": [
+          50,
+          32
+        ]
+      }
+    },
+    {
+      "tick": 125,
+      "tribe": -1,
+      "type": "terrainOp",
+      "args": {
+        "op": "set",
+        "x": 45,
+        "y": 14,
+        "r": 4,
+        "value": 40
+      }
+    },
+    {
+      "tick": 125,
+      "tribe": -1,
+      "type": "terrainOp",
+      "args": {
+        "op": "set",
+        "x": 45,
+        "y": 20,
+        "r": 4,
+        "value": 40
+      }
+    },
+    {
+      "tick": 125,
+      "tribe": -1,
+      "type": "terrainOp",
+      "args": {
+        "op": "set",
+        "x": 45,
+        "y": 26,
+        "r": 4,
+        "value": 40
+      }
+    },
+    {
+      "tick": 125,
+      "tribe": -1,
+      "type": "terrainOp",
+      "args": {
+        "op": "set",
+        "x": 45,
+        "y": 32,
+        "r": 4,
+        "value": 40
+      }
+    },
+    {
+      "tick": 125,
+      "tribe": -1,
+      "type": "terrainOp",
+      "args": {
+        "op": "set",
+        "x": 45,
+        "y": 38,
+        "r": 4,
+        "value": 40
+      }
+    },
+    {
+      "tick": 125,
+      "tribe": -1,
+      "type": "terrainOp",
+      "args": {
+        "op": "set",
+        "x": 45,
+        "y": 44,
+        "r": 4,
+        "value": 40
+      }
+    },
+    {
+      "tick": 125,
+      "tribe": -1,
+      "type": "terrainOp",
+      "args": {
+        "op": "set",
+        "x": 45,
+        "y": 50,
+        "r": 4,
+        "value": 40
+      }
+    }
+  ],
+  "runTicks": 1300,
+  "assert": [
+    {
+      "at": 126,
+      "expr": "!terrain.isLand([45,32]) && count(tribe0.settlers, moving) == 1"
+    },
+    {
+      "at": 1300,
+      "expr": "events.count('orderGaveUp') == 0 && count(tribe0.settlers, near([50,32], 1.5)) == 1 && events.count('drowned') == 0 && invariants() == 0"
+    }
+  ]
+}

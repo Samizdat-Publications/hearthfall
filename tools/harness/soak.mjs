@@ -44,8 +44,13 @@ export default async function soakCmd(out, _cmd, args) {
   const metrics = { seeds, minutes, units: base.units, wallSec: +((Date.now() - t0) / 1000).toFixed(1), drowned: sum("drowned"), orderFailed: sum("orderFailed"), orderGaveUp: sum("orderGaveUp"), moves: sum("moves"), maxStuckSec: Math.max(...results.map((r) => r.metrics?.maxStuckSec ?? 0)), avgTickMs: +(results.reduce((a, r) => a + (r.metrics?.avgTickMs ?? 0), 0) / results.length).toFixed(2) };
   writeReport("soak.json", { metrics, results });
   for (const r of bad) out.line(`seed ${r.seed}: ${(r.violations ?? []).slice(0, 2).join("; ")}`.slice(0, 200));
-  out.line(`soak (${base.mode}): ${results.length - bad.length}/${results.length} seeds clean | ${base.mode === "economy" ? "economy bots" : metrics.units + " units"} x ${minutes} min | wall ${metrics.wallSec}s | avg tick ${metrics.avgTickMs} ms | max stuck ${metrics.maxStuckSec}s`);
+  out.line(`soak (${base.mode}): ${results.length - bad.length}/${results.length} seeds clean | ${base.mode === "economy" || base.mode === "war" ? base.mode + " bots" : metrics.units + " units"} x ${minutes} min | wall ${metrics.wallSec}s | avg tick ${metrics.avgTickMs} ms | max stuck ${metrics.maxStuckSec}s`);
   out.line(`orders ${metrics.moves}, failed ${metrics.orderFailed}, gave up ${metrics.orderGaveUp}, drowned ${metrics.drowned}`);
+  if (base.mode === "war") {
+    for (const k of ["trained", "killed", "converted", "fireballs", "eliminated"]) metrics[k] = sum(k);
+    out.line(`war: trained ${metrics.trained}, killed ${metrics.killed}, converted ${metrics.converted}, fireballs ${metrics.fireballs}, tribes eliminated ${metrics.eliminated}`);
+    writeReport("soak.json", { metrics, results });
+  }
   if (base.mode === "economy") {
     const finals = results.flatMap((r) => (r.metrics?.popByMinute ?? []).map((h) => h[h.length - 1])).sort((a, b) => a - b);
     metrics.popAtEnd = finals;

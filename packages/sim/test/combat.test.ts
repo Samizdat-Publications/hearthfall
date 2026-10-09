@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CAT } from "../src/entities.ts";
+import { CAT, NO_ENTITY } from "../src/entities.ts";
 import { ORDER } from "../src/units.ts";
 import { BSTATE, TASK } from "../src/economy.ts";
 import { CMODE, STANCE } from "../src/combat.ts";
@@ -66,6 +66,29 @@ describe("combat (M6)", () => {
     w.run(20 * 20);
     expect(w.ents.alive[s]).toBe(1);
     expect(Math.abs(w.ents.x[a] - 20)).toBeLessThan(2);
+  });
+
+  it("an attack-move chase that cannot close on a same-speed runner is a chase give-up, not a stuck unit (regression, war soak seed 1006)", () => {
+    const w = arena();
+    const g = w.spawnUnit("warden", 0, 8, 40);
+    const s = w.spawnUnit("settler", 1, 13, 40);
+    const E = w.ents;
+    E.stance[E.index(s)] = STANCE.passive;
+    w.step(cmd(0, "move", { units: [g], to: [44, 40], attack: true }));
+    // the runner keeps exactly Warden speed ahead of it for 15 s
+    const per = w.cfg.pack.units.units[E.type[E.index(g)]].speed / w.cfg.tickHz;
+    const gave: typeof w.events = [];
+    for (let t = 0; t < 15 * 20; t++) {
+      E.x[E.index(s)] += per;
+      w.step([]);
+      gave.push(...w.events.filter((e) => e.type === "orderGaveUp"));
+    }
+    expect(gave.length).toBeGreaterThan(0);
+    expect(gave.filter((e) => e.reachable === 1 && !e.chase)).toEqual([]);
+    expect(gave.every((e) => e.chase === 1)).toBe(true);
+    // combat dropped the hopeless chase each time and the Warden kept its attack-move
+    expect(E.order[E.index(g)] === ORDER.attackMove || E.atk[E.index(g)] !== NO_ENTITY).toBe(true);
+    expect(w.invariants()).toEqual([]);
   });
 
   it("an explicit attack order chases any distance until the target dies", () => {

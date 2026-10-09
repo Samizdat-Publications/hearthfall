@@ -41,18 +41,18 @@ export class EconomyBot implements Controller {
     const pop = w.economy.followers(this.tribe);
     const cap = w.economy.popCap(this.tribe);
     if (cap - pop >= this.slack + open * 3) return [];
-    const spot = this.findSpot(w, E.x[h], E.y[h]);
+    const spot = this.findSpot(w, "dwelling", E.x[h], E.y[h]);
     return spot ? [{ tick: w.tick, tribe: this.tribe, type: "placePlan", args: { building: "dwelling", at: spot } }] : [];
   }
 
-  /** First buildable, tree-free dwelling spot on rings around the Hearth (deterministic order). */
-  private findSpot(w: World, hx: number, hy: number): [number, number] | null {
+  /** First buildable, tree-free spot for a building on rings around the Hearth (deterministic order). */
+  findSpot(w: World, building: string, hx: number, hy: number): [number, number] | null {
     // prefer tree-free ground; fall back to wooded spots (trees in a footprint are chopped out first)
-    return this.scan(w, hx, hy, true) ?? this.scan(w, hx, hy, false);
+    return this.scan(w, building, hx, hy, true) ?? this.scan(w, building, hx, hy, false);
   }
 
-  private scan(w: World, hx: number, hy: number, treeFree: boolean): [number, number] | null {
-    const type = w.cfg.buildingIndex.get("dwelling")!;
+  private scan(w: World, building: string, hx: number, hy: number, treeFree: boolean): [number, number] | null {
+    const type = w.cfg.buildingIndex.get(building)!;
     const [fw, fh] = w.cfg.pack.buildings.buildings[type].footprint;
     const n = w.terrain.size;
     const E = w.ents;

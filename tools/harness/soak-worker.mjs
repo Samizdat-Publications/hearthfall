@@ -15,9 +15,15 @@ const t = w.terrain;
 const n = t.size;
 const comp = walkableComponents(t);
 const economyMode = spec.mode === "economy";
+// war (M6 gate): every tribe runs a WarBot (economy, lodges, training, attack waves)
+const warMode = spec.mode === "war";
 const place = new Rng(spec.seed ^ 0x51ed);
-const perTribe = economyMode ? 0 : Math.floor(spec.units / spec.tribes);
+const perTribe = economyMode || warMode ? 0 : Math.floor(spec.units / spec.tribes);
 for (let tr = 0; tr < spec.tribes; tr++) {
+  if (warMode) {
+    w.controllers.push(makeBot({ type: "war", tribe: tr, offset: tr }));
+    continue;
+  }
   if (economyMode) {
     w.controllers.push(makeBot({ type: "economy", tribe: tr, offset: tr }));
     continue;
@@ -48,7 +54,7 @@ for (let k = 0; k < ticks; k++) {
     break;
   }
   const v = w.invariants();
-  for (const e of w.events) if (e.type === "orderGaveUp" && e.reachable === 1) v.push(`unit ${e.id & 0xffff} gave up ${e.dist} cells from a reachable goal`);
+  for (const e of w.events) if (e.type === "orderGaveUp" && e.reachable === 1 && !e.chase) v.push(`unit ${e.id & 0xffff} gave up ${e.dist} cells from a reachable goal`);
   if (v.length) {
     violations.push(...v.slice(0, 5).map((s) => `tick ${w.tick}: ${s}`));
     break;
@@ -72,5 +78,5 @@ parentPort.postMessage({
   partial,
   tick: w.tick,
   violations,
-  metrics: { ticks: w.tick, avgTickMs: +(ms / Math.max(1, w.tick)).toFixed(3), drowned: ec("drowned"), orderFailed: ec("orderFailed"), orderGaveUp: ec("orderGaveUp"), moves: w.units.ordersIssued, maxStuckSec: +(maxStuck / w.cfg.tickHz).toFixed(1), units: w.count((i) => w.ents.cat[i] === 3), popByMinute, born: ec("born"), buildings: ec("buildingDone") },
+  metrics: { ticks: w.tick, avgTickMs: +(ms / Math.max(1, w.tick)).toFixed(3), drowned: ec("drowned"), orderFailed: ec("orderFailed"), orderGaveUp: ec("orderGaveUp"), moves: w.units.ordersIssued, maxStuckSec: +(maxStuck / w.cfg.tickHz).toFixed(1), units: w.count((i) => w.ents.cat[i] === 3), popByMinute, born: ec("born"), buildings: ec("buildingDone"), trained: ec("trained"), killed: ec("killed"), converted: ec("converted"), fireballs: ec("fireball"), eliminated: ec("tribeEliminated"), alive: w.tribes.filter((t) => t.alive).length },
 });

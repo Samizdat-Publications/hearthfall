@@ -304,6 +304,8 @@ export class World {
       if (E.cat[i] === CAT.unit) {
         if (E.inside[i] < 0 && this.terrain.drowns(E.x[i], E.y[i])) out.push(`unit ${i} stands in deep water`);
         if (E.order[i] !== ORDER.none && E.stuck[i] > stuckTicks) out.push(`unit ${i} stuck ${E.stuck[i]} ticks`);
+        if (!(E.hp[i] > 0) || E.hp[i] > this.cfg.pack.units.units[E.type[i]].hp + 1e-6) out.push(`unit ${i} hp ${E.hp[i]} out of range`);
+        if (E.tribe[i] < 0 && (E.mode[i] !== 0 || E.chant[i] > 0)) out.push(`wild unit ${i} still fighting`);
       }
     }
     if (alive !== E.count) out.push(`alive ${alive} != count ${E.count}`);
@@ -324,11 +326,16 @@ export class World {
       const occ = inside.get(i) ?? 0;
       if (E.occupants[i] !== occ) out.push(`building ${i} occupants ${E.occupants[i]} != units inside ${occ}`);
       if (E.type[i] === this.economy.typeDwelling && E.state[i] === BSTATE.done && occ > this.economy.dwellingLevel(i).capacity) out.push(`dwelling ${i} over capacity`);
+      const slots = this.combat.garrisonOf(E.type[i]);
+      if (slots > 0 && occ > slots) out.push(`tower ${i} holds ${occ} > ${slots}`);
+      const qmax = this.cfg.pack.buildings.buildings[E.type[i]].queueMax;
+      if (qmax !== undefined && occ > qmax) out.push(`lodge ${i} holds ${occ} > queue ${qmax}`);
     }
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.unit || E.inside[i] < 0) continue;
       const h = E.inside[i];
       if (!E.alive[h] || E.cat[h] !== CAT.building) out.push(`unit ${i} inside a missing building`);
+      else if (E.tribe[h] !== E.tribe[i]) out.push(`unit ${i} of tribe ${E.tribe[i]} inside building ${h} of tribe ${E.tribe[h]}`);
     }
     if (E.freeList.length + E.count !== E.hi) out.push("free list inconsistent");
     return out;

@@ -1,7 +1,7 @@
 // Unit movement system (system order steps 4 and 5): path requests under a per-tick budget, flow
 // fields for group orders, waypoint following, separation via the spatial hash, terrain sliding,
 // stuck detection with repath and give-up, drowning. Numbers come from balance.json `movement`.
-import { CAT } from "./entities.ts";
+import { CAT, NO_ENTITY } from "./entities.ts";
 import { Pathfinder, SpatialHash } from "./pathing.ts";
 import { secondsToTicks } from "./config.ts";
 import { cos as cosT, sin as sinT } from "./dmath.ts";
@@ -145,6 +145,9 @@ export class UnitSystem {
         }
         if (touched) {
           E.waitPath[i] = 1;
+          // the map changed under the route: progress restarts against the new (maybe longer) route
+          E.best[i] = 1e9;
+          E.stuck[i] = 0;
           this.queue.push(E.idOf(i));
         }
       }
@@ -319,11 +322,13 @@ export class UnitSystem {
           } else {
             E.stuck[i]++;
             if (E.stuck[i] >= giveUp) {
-              // reachable 1 means the goal was in the unit's walkable component: a real stuck unit
+              // reachable 1 means the goal was in the unit's walkable component: a real stuck unit,
+              // unless chase 1 (combat re-aims the goal at a moving target it could not close on)
               const sv = this.pf.nearestWalkable(this.vertexOf(E.x[i], E.y[i]), 2);
               const gv = this.pf.nearestWalkable(this.vertexOf(E.gx[i], E.gy[i]), 6);
               const reachable = sv >= 0 && gv >= 0 && this.pf.comp[sv] === this.pf.comp[gv] ? 1 : 0;
-              w.emit("orderGaveUp", { id: E.idOf(i), reachable, dist: +gd.toFixed(2) });
+              const chase = E.atk[i] !== NO_ENTITY ? 1 : 0;
+              w.emit("orderGaveUp", { id: E.idOf(i), reachable, chase, dist: +gd.toFixed(2) });
               this.stop(i);
             } else if (E.stuck[i] % repath === 0 && E.flowGoal[i] < 0) {
               E.waitPath[i] = 1;
