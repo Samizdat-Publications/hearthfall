@@ -95,8 +95,10 @@ export class TreeLayer {
       this.p.set(focusX + x, y - 0.05, focusZ + z);
       this.m.compose(this.p, this.q, this.s);
       this.meshes[kind].setMatrixAt(k, this.m);
-      const tint = 0.85 + 0.3 * hashf(i, 0x13);
-      this.c.setRGB(tint, tint, tint * 0.95);
+      // real tree models read as dark blobs from afar (M10 sheet), so they are lifted and nudged toward the meadow
+      const tint = (this.unit < 1 ? 1.35 : 0.85) + 0.3 * hashf(i, 0x13);
+      if (this.unit < 1) this.c.setRGB(tint * 0.95, tint * 1.1, tint * 0.8);
+      else this.c.setRGB(tint, tint, tint * 0.95);
       this.meshes[kind].setColorAt(k, this.c);
       counts[kind]++;
     }

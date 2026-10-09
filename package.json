@@ -32,6 +32,7 @@
     "data:check": "node tools/harness/cli.mjs data-check",
     "data:docs": "node tools/harness/cli.mjs data-docs",
     "build": "node tools/harness/cli.mjs build",
+    "serve": "node tools/harness/cli.mjs serve",
     "build:test": "node tools/harness/cli.mjs build-test",
     "dev": "vite --config apps/game/vite.config.ts",
     "making-of": "node tools/harness/cli.mjs making-of",

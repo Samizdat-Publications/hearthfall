@@ -13,6 +13,25 @@ const VIEWPORTS = [
 ];
 const DIR = LATEST + "e2e/";
 
+/** M11: a startup failure shows the fatal panel with the reason instead of a blank page. */
+async function bootFailure(browser, url) {
+  const res = { viewport: "startup failure", ok: true, screens: [], problems: [] };
+  const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+  try {
+    await page.goto(url + "?scenario=__missing_scenario__", { waitUntil: "load", timeout: 30000 });
+    await page.waitForFunction(() => getComputedStyle(document.getElementById("fatal")).display !== "none", null, { timeout: 15000 });
+    const msg = await page.evaluate(() => document.getElementById("fatal-msg").textContent);
+    if (!/unknown scenario/.test(msg)) res.problems.push(`fatal panel reason: ${msg}`);
+    res.screens.push("fatal");
+  } catch (e) {
+    res.problems.push(`fatal panel never showed: ${String(e.message).split("\n")[0]}`);
+  } finally {
+    await page.close().catch(() => {});
+  }
+  res.ok = res.problems.length === 0;
+  return res;
+}
+
 async function flow(browser, url, vp) {
   const tag = `${vp.width}x${vp.height}`;
   const res = { viewport: tag, ok: true, screens: [], problems: [] };
@@ -22,6 +41,9 @@ async function flow(browser, url, vp) {
     res.problems.push(s);
   };
   const screenIs = (s) => page.waitForFunction((x) => window.__game.screen() === x, s, { timeout: 15000 });
+  // M11 boot screen: gone once the first frame is drawn and the models are in
+  const bootShown = await page.evaluate(() => getComputedStyle(document.getElementById("boot")).display !== "none");
+  if (bootShown) problem("boot screen still showing after the models loaded");
   const click = (ui) => page.click(`[data-ui="${ui}"]`, { timeout: 10000 });
   const settle = async () => {
     const f0 = await page.evaluate(() => window.__game.frames());
@@ -178,6 +200,7 @@ export default async function e2eCmd(out) {
   try {
     browser = await launch(shotMode());
     for (const vp of VIEWPORTS) results.push(await flow(browser, preview.url, vp));
+    results.push(await bootFailure(browser, preview.url));
   } finally {
     if (browser) await browser.close();
     await preview.close();

@@ -2,6 +2,8 @@
 // the tribe color through instanceColor) plus an untinted head/detail mesh. Positions interpolate
 // between the previous and current sim tick, wrap by instance origin to the copy nearest the focus,
 // bob while moving and face their velocity. Also keeps screen positions for picking and selection.
+// M11 readability: real models carry little tribe color (a loincloth), so every tribe unit stands on a
+// small disc in its tribe color, and the Shaper is drawn larger on a larger disc.
 import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { unitModelId, type ModelParts } from "./models.ts";
@@ -62,12 +64,21 @@ function kindGeometry(id: string, pal: Record<string, string>): KindGeo {
   }
 }
 
+/** tribe disc radius under each unit (before the readability scale), and the Shaper's extra sizes */
+export const DISC_RADIUS = 0.26;
+const SHAPER_SCALE = 1.2;
+const SHAPER_DISC = 1.5;
+
 export class UnitLayer {
   readonly group = new THREE.Group();
   private kinds: { body: THREE.InstancedMesh; detail: THREE.InstancedMesh }[] = [];
   /** model ids drawn by this layer (the rest are placeholders) */
   readonly modelIds: string[] = [];
   private ring: THREE.InstancedMesh;
+  /** tribe discs under units (instance color = tribe), public for tests */
+  readonly disc: THREE.InstancedMesh;
+  /** per kind draw scale (the Shaper stands out) */
+  private kindScale: number[] = [];
   private readonly cap: number;
   private tribeColors: THREE.Color[];
   private wildColor: THREE.Color;
@@ -81,6 +92,7 @@ export class UnitLayer {
   /** readability scale: units are tiny on screen, silhouette and tribe color matter most */
   private readonly s = new THREE.Vector3(1.3, 1.3, 1.3);
   private readonly p = new THREE.Vector3();
+  private readonly sk = new THREE.Vector3();
   private readonly up = new THREE.Vector3(0, 1, 0);
   private readonly v = new THREE.Vector3();
 
@@ -103,7 +115,14 @@ export class UnitLayer {
         this.group.add(im);
       }
       this.kinds.push({ body, detail });
+      this.kindScale.push(id === "shaper" ? SHAPER_SCALE : 1);
     }
+    const discGeo = colored(new THREE.CircleGeometry(DISC_RADIUS, 12).rotateX(-Math.PI / 2), new THREE.Color("#ffffff"));
+    this.disc = new THREE.InstancedMesh(discGeo, material, cap);
+    this.disc.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(cap * 3), 3);
+    this.disc.frustumCulled = false;
+    this.disc.count = 0;
+    this.group.add(this.disc);
     const ringGeo = new THREE.RingGeometry(0.32, 0.42, 16).rotateX(-Math.PI / 2);
     this.ring = new THREE.InstancedMesh(ringGeo, ringMaterial, 2048);
     this.ring.frustumCulled = false;
@@ -128,6 +147,7 @@ export class UnitLayer {
     this.screenX.fill(NaN);
     const counts = new Int32Array(this.kinds.length);
     let rings = 0;
+    let discs = 0;
     this.drawn = 0;
     const fade2 = fadeEnd * fadeEnd;
     for (let i = 0; i < E.hi; i++) {
@@ -155,13 +175,23 @@ export class UnitLayer {
       const bob = moving ? Math.abs(Math.sin(phase)) * 0.07 : 0;
       this.p.set(focusX + ox, ground + bob, focusZ + oz);
       this.q.setFromAxisAngle(this.up, this.facing[i]);
-      this.m.compose(this.p, this.q, this.s);
+      const ks = this.kindScale[k];
+      this.sk.copy(this.s).multiplyScalar(ks);
+      this.m.compose(this.p, this.q, this.sk);
       const c = counts[k]++;
       if (c >= this.cap) continue;
       const kind = this.kinds[k];
       kind.body.setMatrixAt(c, this.m);
       kind.detail.setMatrixAt(c, this.m);
       kind.body.setColorAt(c, E.tribe[i] >= 0 ? this.tribeColors[E.tribe[i] % this.tribeColors.length] : this.wildColor);
+      if (E.tribe[i] >= 0 && discs < this.cap) {
+        this.p.y = ground + 0.02;
+        this.sk.setScalar(this.s.x * (ks > 1 ? SHAPER_DISC : 1));
+        this.m.compose(this.p, this.q, this.sk);
+        this.disc.setMatrixAt(discs, this.m);
+        this.disc.setColorAt(discs++, this.tribeColors[E.tribe[i] % this.tribeColors.length]);
+        this.p.y = ground + bob;
+      }
       if (selected.has(i) && rings < 2048) {
         this.p.y = ground + 0.03;
         this.m.compose(this.p, this.q.identity(), this.s);
@@ -185,5 +215,8 @@ export class UnitLayer {
     });
     this.ring.count = rings;
     this.ring.instanceMatrix.needsUpdate = true;
+    this.disc.count = discs;
+    this.disc.instanceMatrix.needsUpdate = true;
+    if (this.disc.instanceColor) this.disc.instanceColor.needsUpdate = true;
   }
 }

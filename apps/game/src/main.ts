@@ -10,7 +10,37 @@ import { validatePack } from "@hearthfall/data";
 import { commandsByTick, createScenarioWorld, type ScenarioDef } from "@hearthfall/sim";
 
 const canvas = document.getElementById("view") as HTMLCanvasElement;
-const game = new Game(canvas, parseParams(location.search));
+const bootEl = document.getElementById("boot");
+const noticeEl = document.getElementById("notice");
+
+/** M11: a startup failure (no WebGL, a broken pack, an unknown scenario) shows a readable panel. */
+function fatal(e: unknown): never {
+  if (bootEl) bootEl.style.display = "none";
+  const f = document.getElementById("fatal");
+  if (f) f.style.display = "flex";
+  const m = document.getElementById("fatal-msg");
+  if (m) m.textContent = String((e as Error)?.message ?? e).slice(0, 300);
+  throw e;
+}
+
+/** M11: a short non-blocking notice (frame errors, lost graphics context). */
+let noticeTimer = 0;
+function notice(text: string, ms = 6000): void {
+  if (!noticeEl) return;
+  noticeEl.textContent = text;
+  noticeEl.style.display = "block";
+  clearTimeout(noticeTimer);
+  if (ms > 0) noticeTimer = window.setTimeout(() => (noticeEl.style.display = "none"), ms);
+}
+
+let game: Game;
+try {
+  game = new Game(canvas, parseParams(location.search));
+} catch (e) {
+  fatal(e);
+}
+canvas.addEventListener("webglcontextlost", () => notice("Graphics context lost; restoring...", 0));
+canvas.addEventListener("webglcontextrestored", () => notice("Graphics restored.", 3000));
 const hudEl = document.getElementById("hud")!;
 const hud = mountGameHud(hudEl, game);
 const menus = mountGameMenus(document.getElementById("menus")!, game);
@@ -35,8 +65,20 @@ resize();
 // a camera move redraws the HUD (minimap footprint) on the next frame, also while paused, so captures
 // taken a few frames after setCamera never show the previous view
 let camKey = "";
+let frameErrors = 0;
+const bootStart = performance.now();
 function frame(now: number) {
-  game.frame(now);
+  try {
+    game.frame(now);
+  } catch (e) {
+    // keep the loop alive; report the first error and every 100th after it
+    if (frameErrors++ % 100 === 0) {
+      console.error("frame error", e);
+      notice("Something went wrong in this frame; the game keeps running. Details are in the browser console (F12).");
+    }
+  }
+  // the boot screen stays until the first frame is drawn and the models are in (or 6 s have passed)
+  if (bootEl && bootEl.style.display !== "none" && game.renderer.frames > 0 && (!game.renderer.modelStatus().pending || now - bootStart > 6000)) bootEl.style.display = "none";
   const c = game.renderer.cam;
   const k = `${c.x} ${c.z} ${c.yaw} ${c.zoom} ${c.map}`;
   if (k !== camKey && game.screen === "none") {

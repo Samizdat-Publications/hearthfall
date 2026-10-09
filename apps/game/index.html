@@ -8,12 +8,25 @@
       html, body { margin: 0; height: 100%; overflow: hidden; background: #7fb6e8; font-family: system-ui, sans-serif; }
       #view { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
       #hud { position: fixed; inset: 0; pointer-events: none; }
+      /* M11: boot screen until the first frame and the models are in; fatal panel; non-blocking notice */
+      #boot, #fatal { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: radial-gradient(circle at 50% 40%, #2b2440 0%, #120f1c 70%); color: #f1e4c8; z-index: 20; }
+      #boot h1, #fatal h1 { margin: 0; font: 700 44px/1 Georgia, serif; letter-spacing: 3px; color: #f6c76a; text-shadow: 0 3px 0 #5a3412; }
+      #boot p, #fatal p { margin: 0; font-size: 15px; opacity: 0.85; max-width: 560px; text-align: center; }
+      #boot .bar { width: 220px; height: 8px; border: 2px solid #8a6a3c; border-radius: 6px; overflow: hidden; background: #2a2016; }
+      #boot .bar i { display: block; height: 100%; width: 40%; background: #f6c76a; animation: boot 1.2s ease-in-out infinite alternate; }
+      @keyframes boot { from { margin-left: 0; } to { margin-left: 60%; } }
+      #fatal { display: none; z-index: 30; }
+      #fatal code { font-size: 13px; color: #ffb59a; max-width: 720px; word-break: break-word; text-align: center; }
+      #notice { position: fixed; left: 50%; bottom: 60px; transform: translateX(-50%); display: none; padding: 8px 14px; background: #2a2016ee; border: 2px solid #8a6a3c; border-radius: 6px; color: #f1e4c8; font-size: 14px; z-index: 25; }
     </style>
   </head>
   <body>
     <canvas id="view"></canvas>
     <div id="hud"></div>
     <div id="menus"></div>
+    <div id="boot"><h1>HEARTHFALL</h1><p>Shaping the world...</p><div class="bar"><i></i></div></div>
+    <div id="fatal"><h1>HEARTHFALL</h1><p>The game could not start. It needs a browser with WebGL 2 (a recent Chrome, Edge or Firefox) and hardware acceleration turned on.</p><code id="fatal-msg"></code></div>
+    <div id="notice"></div>
     <script type="module" src="./src/main.ts"></script>
   </body>
 </html>

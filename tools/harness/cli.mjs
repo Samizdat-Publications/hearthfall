@@ -72,6 +72,14 @@ async function main() {
     }
     case "shot":
     case "shot-approve":
+    case "serve": {
+      const { serveCmd } = await import("./serve.mjs");
+      return serveCmd(out);
+    }
+    case "prod": {
+      const { prodCmd } = await import("./serve.mjs");
+      return prodCmd(out);
+    }
     case "sheet": {
       const { shotCmd } = await import("./web.mjs");
       return shotCmd(out, cmd, args);
@@ -97,7 +105,7 @@ async function main() {
       return mod.default(out, cmd, args);
     }
     default:
-      console.log("usage: node tools/harness/cli.mjs <typecheck|check|unit|qa-fast|qa|e2e|doctor|data-check|data-docs|build|build-test|shot|shot-approve|sheet|visionqa|visionqa-probe|scenarios|replays|rebless|soak|bench|bench-render>");
+      console.log("usage: node tools/harness/cli.mjs <typecheck|check|unit|qa-fast|qa|e2e|doctor|data-check|data-docs|build|build-test|shot|shot-approve|sheet|visionqa|visionqa-probe|scenarios|replays|rebless|soak|bench|bench-render|prod|serve>");
       console.log("RESULT: FAIL 1 (unknown command)");
       return 1;
   }
