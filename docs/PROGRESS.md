@@ -4,6 +4,7 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 
 ## Now
 - Run started: 2026-10-08T21:25:00Z
+- Full npm run qa PASS at e4183f0 (2026-10-09T21:15Z) after the battle bench perf fix (5.2 ms) and spells and spells2 re-approval for unit poses; soaks PASS: economy median 61, ai-idle 12/12, ai (sneaky 4, aggressive 1, turtle 1, 2 unfinished, median 14.3 min, 10 spell types), bots, difficulty.
 - BACKLOG 6 DONE: difficulty levels: handicap command applies resourceMultiplier through the sim (eco.incomeMult), easy retuned (8 s reaction, 0.7x income), soak --mode difficulty gate (easy 0.13, hard 0.88, brutal 0.88 v normal); campaign level 2 rival now claims the shrine at 195 s (tests widened).
 - BACKLOG 5 DONE (ADR-012): procedural unit animation in the vertex shader (aRig per vertex, instanceAnim pose per instance; walk, work, attack, shoot, cast, pray, panic, idle from sim state; toppling and drowning death ghosts), pose gallery shot, render bench 3.7 ms; rigged clips left as BACKLOG 5a.
 - BACKLOG 4 DONE: command UX polish: box formations for player group moves (sim `move` formation arg, slots ranked melee front to Shaper back, balance.movement.formation), double-click type select, control group jump, spell preview counts, Backspace undo countdown; smoke, combat, spells, spells2 and levels re-approved (help line). Stewart's art note (10/09): tilt-shift miniature ref making-of/a1 style-ref-06 is a second reference (trees, huts, water, tilt-shift), BACKLOG 14a.
@@ -26,8 +27,8 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 - Subagents: project agents are registered again (milestone-reviewer, qa-runner, ...); call them by type.
 
 ## Next 3 actions
-1. Full npm run qa (due), full soak (economy, ai-idle, ai, bots) and all shot sets (due after 6); then BACKLOG P1 8 (accessibility).
-2. Full npm run qa at least every 4 hours (last PASS after BACKLOG 3, about 18:24Z); then P2 from 9, with 14a (tilt-shift look) early.
+1. BACKLOG P1 8 (accessibility: colorblind-safe tribe palettes, UI scale, remappable keys, bark subtitles); then P2 from 9 with 14a (tilt-shift) early.
+2. Full npm run qa at least every 4 hours (last PASS 21:15Z, next by about 01:15Z).
 3. Re-run the full soak and shot sets every 3 backlog items (next after 6).
 
 ## Blocked
