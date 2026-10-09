@@ -660,6 +660,16 @@
       "when": "2026-10-09T14:54:53.172Z",
       "source": "external:assets_icons_sheet.png",
       "bytes": 1101098
+    },
+    {
+      "file": "b1/20261009-1647_econ-pair.png",
+      "milestone": "B1",
+      "kind": "comparison",
+      "caption": "BACKLOG 0a: a village before (left) and after (right): building models at 1.3x, tall conifers and the grove ring around the Hearth",
+      "highlight": false,
+      "when": "2026-10-09T16:47:59.243Z",
+      "source": "external:econ_pair.png",
+      "bytes": 44004
     }
   ]
 }
