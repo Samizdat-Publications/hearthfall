@@ -600,6 +600,46 @@
       "when": "2026-10-09T09:56:10.721Z",
       "source": "external:m10_smoke_sheet.png",
       "bytes": 1619735
+    },
+    {
+      "file": "m11/20261009-1323_chant-m10-before.png",
+      "milestone": "M11",
+      "kind": "comparison",
+      "caption": "Before M11: chant pulse washed out to white, crimson units stand on nothing, the Shaper the same size as her followers",
+      "highlight": false,
+      "when": "2026-10-09T13:23:13.437Z",
+      "source": "external:chant_m10_before.png",
+      "bytes": 161522
+    },
+    {
+      "file": "m11/20261009-1323_chant-m11-after.png",
+      "milestone": "M11",
+      "kind": "comparison",
+      "caption": "After M11: violet chant halo, tribe rings under every unit, a larger Shaper on a larger ring",
+      "highlight": true,
+      "when": "2026-10-09T13:23:20.065Z",
+      "source": "external:chant_m11_after.png",
+      "bytes": 162250
+    },
+    {
+      "file": "m11/20261009-1323_close.png",
+      "milestone": "M11",
+      "kind": "screenshot",
+      "caption": "M11 close view of a starting village: tribe rings, the Hearth model and real settler models in the retro pass",
+      "highlight": false,
+      "when": "2026-10-09T13:23:25.305Z",
+      "source": "external:close.png",
+      "bytes": 180312
+    },
+    {
+      "file": "m11/20261009-1324_m11-combat-sheet.png",
+      "milestone": "M11",
+      "kind": "contact-sheet",
+      "caption": "M11 combat contact sheet: fireball glow trail, violet chant halo, melee dust, tribe rings",
+      "highlight": false,
+      "when": "2026-10-09T13:24:19.499Z",
+      "source": "external:m11_combat_sheet.png",
+      "bytes": 367893
     }
   ]
 }
