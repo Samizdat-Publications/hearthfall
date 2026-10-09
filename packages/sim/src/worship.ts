@@ -285,6 +285,19 @@ export function applyReward(w: World, tribe: number, r: Reward, x: number, y: nu
       w.emit("rewardSpawn", { tribe: owner, unit: r.unit, n: r.n });
       return;
     }
+    case "raid": {
+      const E = w.ents;
+      const units = w.cfg.pack.units.units;
+      const ids: number[] = [];
+      for (let i = 0; i < E.hi; i++) {
+        if (!E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] !== r.tribe || E.inside[i] >= 0 || !units[E.type[i]].trainedAt) continue;
+        w.combat.clear(i);
+        ids.push(i);
+      }
+      if (ids.length) w.units.order(ids, r.to[0], r.to[1], ORDER.attackMove);
+      w.emit("raid", { tribe: r.tribe, n: ids.length });
+      return;
+    }
     case "message":
       w.emit("levelMessage", { tribe, text: r.text });
       return;

@@ -193,6 +193,7 @@ export function validateLevel(raw: unknown, pack: PackFiles, file = "level"): { 
     if (r.type === "unlockBuilding" && !buildings.has(r.building)) bad(path, `unknown building ${r.building}`);
     if (r.type === "spawn" && !units.has(r.unit)) bad(path, `unknown unit ${r.unit}`);
     if (r.type === "spawn" && r.tribe !== undefined && r.tribe >= lv.tribes.length) bad(path, `no tribe ${r.tribe}`);
+    if (r.type === "raid" && r.tribe >= lv.tribes.length) bad(path, `no tribe ${r.tribe}`);
   };
   const tags = new Set<string>();
   const hearths = new Set<number>();

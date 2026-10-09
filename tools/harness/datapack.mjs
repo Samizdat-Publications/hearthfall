@@ -1,8 +1,8 @@
 // Node-side data pack access: read pack folders from disk, validate, generate docs/DATA.md and
 // data/schema/*.json. Imports the TypeScript data package directly (Node type stripping).
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { z } from "zod";
-import { PACK_FILES, validatePack } from "../../packages/data/src/index.ts";
+import { PACK_FILES, validateLevel, validatePack } from "../../packages/data/src/index.ts";
 import { ROOT } from "../guards/lib.mjs";
 
 export function readPackDir(dir = "data/base") {
@@ -23,6 +23,37 @@ export function loadBasePack() {
   const { raw, parseErrors } = readPackDir();
   if (parseErrors.length) return { issues: parseErrors };
   return validatePack(raw);
+}
+
+/** M9 campaign levels: data/levels/*.json validated against the pack, sorted by campaign order. */
+export function loadLevels(packFiles) {
+  const dir = ROOT + "data/levels/";
+  const levels = [];
+  const issues = [];
+  if (!existsSync(dir)) return { levels, issues };
+  for (const f of readdirSync(dir).filter((x) => x.endsWith(".json")).sort()) {
+    const file = `data/levels/${f}`;
+    let raw;
+    try {
+      raw = JSON.parse(readFileSync(dir + f, "utf8"));
+    } catch (e) {
+      issues.push({ file, path: "", message: String(e.message).split("\n")[0] });
+      continue;
+    }
+    const res = validateLevel(raw, packFiles, file);
+    issues.push(...res.issues);
+    if (res.level) {
+      if (f !== `${res.level.id}.json`) issues.push({ file, path: "id", message: `file name must be ${res.level.id}.json` });
+      levels.push(res.level);
+    }
+  }
+  const orders = new Set();
+  for (const l of levels) {
+    if (orders.has(l.order)) issues.push({ file: `data/levels/${l.id}.json`, path: "order", message: `duplicate campaign order ${l.order}` });
+    orders.add(l.order);
+  }
+  levels.sort((a, b) => a.order - b.order);
+  return { levels, issues };
 }
 
 export function jsonSchemas() {

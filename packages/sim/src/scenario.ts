@@ -1,6 +1,6 @@
 // Scenario definitions (JSON in scenarios/) and deterministic setup. Shared by the headless runner,
 // golden replays and the game's loadScenario debug hook.
-import type { PackFiles } from "@hearthfall/data";
+import type { PackFiles, SiteSpec } from "@hearthfall/data";
 import type { Command } from "./commands.ts";
 import { cos, sin } from "./dmath.ts";
 import type { MapSpec } from "./generator.ts";
@@ -16,6 +16,8 @@ export interface SetupEntry {
   near?: [number, number];
   count?: number;
   spacing?: number;
+  /** worship kinds (shrine, reliquary, totem): the site's tag, worshippers, uses and rewards */
+  site?: SiteSpec;
 }
 
 export interface ScenarioDef {
@@ -30,6 +32,9 @@ export interface ScenarioDef {
   commands?: Command[];
   runTicks: number;
   assert?: { at: number; expr: string }[];
+  /** M9: play a campaign level (data/levels/<id>.json) instead of seed/map; setup and bots are added on top */
+  level?: string;
+  carry?: { spells?: string[]; buildings?: string[] };
   /** controllers to attach, built by the caller's factory (packages/ai makeBot) */
   bots?: { type: string; tribe: number; [k: string]: unknown }[];
 }
@@ -59,6 +64,7 @@ export function applySetup(w: World, setup: readonly SetupEntry[]): void {
       if (s.spawn === "tree") w.spawnTree(x, y);
       else if (w.cfg.unitIndex.has(s.spawn)) w.spawnUnit(s.spawn, tribe, x, y);
       else if (w.cfg.buildingIndex.has(s.spawn)) w.spawnBuilding(s.spawn, tribe, x, y);
+      else if (w.worship.kindIndex(s.spawn) >= 0) w.worship.addSite(s.spawn, x, y, s.site ?? { rewards: [] });
       else throw new Error(`unknown spawn kind ${s.spawn}`);
     }
   }

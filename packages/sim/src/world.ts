@@ -15,6 +15,7 @@ import { isShaper, onShaperDeath, updateSpells, type CastState, type PendingCast
 import { updateEffects } from "./effects.ts";
 import { CombatSystem } from "./combat.ts";
 import { WorshipSystem, type WorshipState } from "./worship.ts";
+import { LevelRuntime, type LevelInit, type LevelSaved } from "./level.ts";
 
 /** Deterministic in-sim decision maker (AI opponent or test bot); emits Commands at its cadence. */
 export interface Controller {
@@ -56,6 +57,8 @@ export interface WorldInit {
   map: MapSpec;
   /** spawn generated hearths, trees and wild people (default true) */
   populate?: boolean;
+  /** M9 campaign level (createLevelWorld): objectives, lose conditions and triggers run in step 9 */
+  level?: LevelInit;
 }
 
 export interface HashParts {
@@ -82,6 +85,7 @@ export interface WorldSnapshot {
   unitsTerrainVersion: number;
   /** M9: present only when the world has worship sites or granted buildings */
   worship?: WorshipState;
+  level?: LevelSaved;
 }
 
 export class World {
@@ -103,6 +107,8 @@ export class World {
   economy: EconomySystem;
   combat: CombatSystem;
   worship: WorshipSystem;
+  /** null outside campaign levels */
+  level: LevelRuntime | null;
   controllers: Controller[] = [];
   readonly mapInfo: { generator: string; seedUsed: number; rerolls: number; landFraction: number };
 
@@ -118,6 +124,7 @@ export class World {
     this.economy = new EconomySystem(this);
     this.combat = new CombatSystem(this);
     this.worship = new WorshipSystem(this);
+    this.level = init.level ? new LevelRuntime(this, init.level.def) : null;
     const tribeCount = init.map.tribes ?? gen.hearths.length;
     for (let t = 0; t < tribeCount; t++) this.tribes.push({ index: t, color: TRIBE_COLORS[t % 4], hearth: NO_ENTITY, alive: true, eco: newTribeEco(this), shaper: NO_ENTITY, respawnAt: -1, casting: null, pending: null });
     if (init.populate !== false) {
@@ -256,8 +263,9 @@ export class World {
     this.flushTerrain();
     // 8. economy: construction, dwellings, breeding, trees, mana
     this.economy.update();
-    // 9. worship (rewards may queue terrain ops: applied in the same tick so snapshots stay legal)
+    // 9. worship, then level triggers, objectives and outcome (rewards may queue terrain ops: applied in the same tick so snapshots stay legal)
     this.worship.update();
+    this.level?.update();
     this.flushTerrain();
     // 10. periodic upkeep
     if (this.tick % this.cfg.tickHz === this.cfg.tickHz - 1) this.terrain.healScars();
@@ -412,6 +420,7 @@ export class World {
       mf.bytes(t.eco.charges).bytes(t.eco.progress).bytes(t.eco.auto).bytes(t.eco.unlocked);
     }
     this.worship.hashInto(mf);
+    this.level?.hashInto(mf);
     const meta = mf.hex();
     const all = new Fnv().u32(parseInt(terrain, 16)).u32(parseInt(entities, 16)).u32(parseInt(rng, 16)).u32(parseInt(meta, 16)).hex();
     return { all, terrain, entities, rng, meta };
@@ -439,6 +448,7 @@ export class World {
       pathQueue: this.units.queue.slice(),
       unitsTerrainVersion: this.units.lastVersion,
       ...(this.worship.sites.length || this.worship.granted.some((g) => g.length) ? { worship: this.worship.save() } : {}),
+      ...(this.level ? { level: this.level.save() } : {}),
     };
   }
 
@@ -463,6 +473,7 @@ export class World {
     w.units.queue = snap.pathQueue.slice();
     w.units.lastVersion = snap.unitsTerrainVersion;
     if (snap.worship) w.worship.load(snap.worship);
+    if (snap.level && w.level) w.level.load(snap.level);
     return w;
   }
 

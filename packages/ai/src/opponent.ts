@@ -4,7 +4,7 @@
 // difficulty noise from the world's "ai" rng stream, and runs the best ones (score >= 0.5, at most
 // three) through ordinary Commands. Dwelling upkeep is delegated to the EconomyBot. Deterministic:
 // entity index order, arrays only, the ai rng stream for noise and picks.
-import { BSTATE, CAT, NO_ENTITY, wrapDelta, type Command, type Controller, type World } from "@hearthfall/sim";
+import { BSTATE, CAT, NO_ENTITY, TASK, wrapDelta, type Command, type Controller, type World } from "@hearthfall/sim";
 import { EconomyBot } from "./economyBot.ts";
 
 export interface Personality {
@@ -106,6 +106,8 @@ export class OpponentAI implements Controller {
       { id: "train", score: (c) => this.trainScore(c), act: (c, out) => this.train(c, out) },
       { id: "attack", score: (c) => this.attackScore(c), act: (c, out) => this.attack(c, out) },
       { id: "cast", score: (c) => this.castScore(c), act: (c, out) => this.cast(c, out) },
+      // M9: only scored on maps with worship sites, so worlds without them draw the same noise as before
+      { id: "worship", score: (c) => this.worshipScore(c), act: (c, out) => this.worship(c, out) },
     ];
   }
 
@@ -156,7 +158,8 @@ export class OpponentAI implements Controller {
     const out = this.eco.decide(w);
     this.stats.decisions++;
     if (this.stats.decisions === 1) this.setup(w, out);
-    const scored = this.actions.map((a, k) => ({ a, k, s: a.score(c) + (w.rng.float("ai") - 0.5) * 2 * this.noise }));
+    const acts = w.worship.sites.length ? this.actions : this.actions.filter((a) => a.id !== "worship");
+    const scored = acts.map((a, k) => ({ a, k, s: a.score(c) + (w.rng.float("ai") - 0.5) * 2 * this.noise }));
     scored.sort((x, y) => y.s - x.s || x.k - y.k);
     let ran = 0;
     for (const { a, s } of scored) {
@@ -317,6 +320,59 @@ export class OpponentAI implements Controller {
       if (dx * dx + dy * dy < 30 * 30) ids.push(E.idOf(i));
     }
     if (ids.length) out.push(this.cmd(c.w, "move", { units: ids, to: [E.x[t], E.y[t]], attack: true }));
+  }
+
+  /** nearest reachable worship site still giving, with how many own units already pray there */
+  private worshipTarget(c: Census): { tag: string; si: number; need: number; have: number } | null {
+    const w = c.w;
+    const E = w.ents;
+    const n = w.terrain.size;
+    const home = this.comp(w, E.x[c.h], E.y[c.h]);
+    const kinds = w.cfg.pack.buildings.worship.kinds ?? [];
+    let best: { tag: string; si: number; need: number; have: number } | null = null;
+    let bd = Infinity;
+    for (const s of w.worship.sites) {
+      const si = E.index(s.ent);
+      // totems are level scripting for the player's Shaper
+      if (si < 0 || s.usesLeft <= 0 || kinds[s.kind]?.shaperOnly) continue;
+      if (this.comp(w, E.x[si], E.y[si]) !== home) continue;
+      let have = 0;
+      for (const i of c.settlers) if ((E.task[i] === TASK.toWorship || E.task[i] === TASK.worship) && E.index(E.target[i]) === si) have++;
+      if (have >= s.need) continue;
+      const dx = wrapDelta(E.x[si] - E.x[c.h], n);
+      const dy = wrapDelta(E.y[si] - E.y[c.h], n);
+      const d = dx * dx + dy * dy;
+      if (d < bd) {
+        bd = d;
+        best = { tag: s.tag, si, need: s.need, have };
+      }
+    }
+    return best;
+  }
+
+  private worshipScore(c: Census): number {
+    if (c.threats.length) return 0;
+    const t = this.worshipTarget(c);
+    // keep a working economy at home
+    return t && c.settlers.length >= t.need - t.have + 4 ? 0.75 : 0;
+  }
+
+  private worship(c: Census, out: Command[]): void {
+    const t = this.worshipTarget(c);
+    if (!t) return;
+    const E = c.w.ents;
+    const n = c.w.terrain.size;
+    const free = c.settlers
+      .filter((i) => E.task[i] !== TASK.toWorship && E.task[i] !== TASK.worship && E.inside[i] < 0)
+      .map((i) => {
+        const dx = wrapDelta(E.x[i] - E.x[t.si], n);
+        const dy = wrapDelta(E.y[i] - E.y[t.si], n);
+        return [dx * dx + dy * dy, i] as const;
+      })
+      .sort((a, b) => a[0] - b[0] || a[1] - b[1])
+      .slice(0, t.need - t.have)
+      .map(([, i]) => E.idOf(i));
+    if (free.length) out.push(this.cmd(c.w, "worship", { units: free, site: t.tag }));
   }
 
   private scoutScore(c: Census): number {

@@ -1,0 +1,33 @@
+{
+  "$comment": "Teaching level 1: Raise Land. The shrine sits on an islet across a strait; the Shaper must lift a ridge to reach it.",
+  "id": "narrow_water",
+  "name": "The Narrow Water",
+  "order": 1,
+  "description": "A shrine waits on the islet across the strait. Walk your Shaper to the shore and Raise Land toward it, then send three followers to pray.",
+  "seed": 101,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "landAboveSea": -30,
+    "paint": [
+      { "shape": "disc", "at": [18, 32], "r": 11, "aboveSea": 40, "falloff": 4 },
+      { "shape": "disc", "at": [46, 32], "r": 8, "aboveSea": 40, "falloff": 4 }
+    ]
+  },
+  "tribes": [{}],
+  "spells": ["raise_land"],
+  "buildings": ["dwelling"],
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [14, 32] },
+    { "spawn": "shaper", "tribe": 0, "at": [17, 30] },
+    { "spawn": "settler", "tribe": 0, "near": [17, 35], "count": 6 },
+    { "spawn": "tree", "near": [12, 24], "count": 8, "spacing": 1.2 },
+    { "spawn": "tree", "near": [22, 40], "count": 6, "spacing": 1.2 },
+    { "spawn": "shrine", "at": [46, 32], "site": { "tag": "far_shrine", "worshippers": 3, "rewards": [{ "type": "charges", "spell": "bolt", "n": 2 }, { "type": "message", "text": "The shrine answers: two Bolts are yours to cast." }] } }
+  ],
+  "objectives": [{ "type": "worship", "site": "far_shrine", "text": "Pray at the shrine across the strait" }],
+  "triggers": [
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "charges", "spell": "raise_land", "n": 2 }, { "type": "message", "text": "Walk the Shaper to the eastern shore and Raise Land toward the islet." }] }
+  ],
+  "unlocks": { "spells": ["raise_land"] }
+}

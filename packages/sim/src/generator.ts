@@ -16,6 +16,43 @@ export interface MapSpec {
   tribes?: number;
   /** flat maps: land height above sea (default 40) */
   landAboveSea?: number;
+  /** flat maps (levels, M9): shapes painted over the base height in order */
+  paint?: PaintSpec[];
+}
+
+/** A disc (r) or rectangle (size) set to sea + aboveSea, blended into its surroundings over `falloff` cells. */
+export interface PaintSpec {
+  shape: "disc" | "rect";
+  at: [number, number];
+  r?: number;
+  size?: [number, number];
+  aboveSea: number;
+  falloff?: number;
+}
+
+function paintShape(t: Terrain, sea: number, p: PaintSpec): void {
+  const n = t.size;
+  const fall = p.falloff ?? 3;
+  const target = sea + p.aboveSea;
+  const hx = p.shape === "disc" ? (p.r ?? 4) : (p.size?.[0] ?? 8) / 2;
+  const hy = p.shape === "disc" ? (p.r ?? 4) : (p.size?.[1] ?? 8) / 2;
+  const reach = Math.ceil(Math.max(hx, hy) + fall) + 1;
+  for (let dy = -reach; dy <= reach; dy++) {
+    for (let dx = -reach; dx <= reach; dx++) {
+      const x = Math.round(p.at[0]) + dx;
+      const y = Math.round(p.at[1]) + dy;
+      const ox = x - p.at[0];
+      const oy = y - p.at[1];
+      // distance outside the shape (0 inside)
+      const out = p.shape === "disc" ? Math.sqrt(ox * ox + oy * oy) - hx : Math.max(Math.abs(ox) - hx, Math.abs(oy) - hy, 0);
+      const i = t.idx(wrap(x, n), wrap(y, n));
+      if (out <= 0) t.heights[i] = target;
+      else if (out < fall) {
+        const k = 1 - out / fall;
+        t.heights[i] = Math.round(t.heights[i] + (target - t.heights[i]) * k);
+      }
+    }
+  }
 }
 
 export interface GeneratedMap {
@@ -56,6 +93,7 @@ function testMap(cfg: SimConfig, spec: MapSpec): GeneratedMap {
       }
     }
   } else if (spec.generator !== "flat") throw new Error(`unknown map generator "${spec.generator}"`);
+  for (const p of spec.paint ?? []) paintShape(t, cfg.sea, p);
   return { terrain: t, seedUsed: 0, rerolls: 0, hearths: [], trees: [], wild: [], landFraction: 1 };
 }
 

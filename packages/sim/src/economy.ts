@@ -101,6 +101,8 @@ export class EconomySystem {
     const id = this.w.cfg.pack.buildings.buildings[type].id;
     // M9: a worship reward opens a building regardless of tier
     if (this.w.worship.isGranted(tribe, type)) return null;
+    const lv = this.w.level;
+    if (lv?.allowed && !lv.allowed.has(type)) return "not available in this level";
     const tiers = this.w.cfg.pack.balance.progression.tiers;
     const k = tiers.findIndex((x) => x.buildings.includes(id));
     return k > t.eco.tier ? `needs ${tiers[k].followers} followers` : null;

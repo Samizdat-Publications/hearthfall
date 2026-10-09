@@ -2,10 +2,11 @@
 // their assertions with the DSL. Report: reports/latest/scenarios.json.
 import { readFileSync, readdirSync } from "node:fs";
 import { CAT } from "../../packages/sim/src/entities.ts";
-import { commandsByTick, createScenarioWorld } from "../../packages/sim/src/scenario.ts";
+import { applySetup, commandsByTick, createScenarioWorld } from "../../packages/sim/src/scenario.ts";
+import { OUTCOME, createLevelWorld } from "../../packages/sim/src/level.ts";
 import { wrapDelta } from "../../packages/sim/src/terrain.ts";
 import { makeBot } from "../../packages/ai/src/index.ts";
-import { loadBasePack } from "./datapack.mjs";
+import { loadBasePack, loadLevels } from "./datapack.mjs";
 import { evaluate, parse } from "./dsl.mjs";
 import { ROOT, writeReport } from "./lib.mjs";
 
@@ -87,6 +88,16 @@ export function makeCtx(w) {
     effects: sel((i) => E.cat[i] === CAT.effect),
     charges: (tribe, spell) => w.tribes[tribe]?.eco.charges[w.cfg.spellIndex.get(spell)] ?? -1,
     alive: (tribe) => w.tribes[tribe]?.alive ?? false,
+    /** M9: campaign level state and worship sites by tag */
+    level: {
+      won: w.level?.outcome === OUTCOME.won,
+      lost: w.level?.outcome === OUTCOME.lost,
+      objectivesDone: w.level ? w.level.done.filter((d) => d).length : 0,
+    },
+    site: (tag) => {
+      const s = w.worship.find(tag);
+      return { by: s ? s.lastBy : -2, usesLeft: s ? s.usesLeft : -1, progress: s ? Math.max(...s.progress) / s.prayTicks : 0 };
+    },
     abs: Math.abs,
     min: Math.min,
     max: Math.max,
@@ -102,8 +113,16 @@ export function runScenario(def, pack) {
   const failures = [];
   let w;
   try {
-    for (const k of ["id", "seed", "map", "runTicks"]) if (def[k] === undefined) throw new Error(`missing "${k}"`);
-    w = createScenarioWorld(def, pack.files, pack.hash, makeBot);
+    for (const k of def.level ? ["id", "runTicks"] : ["id", "seed", "map", "runTicks"]) if (def[k] === undefined) throw new Error(`missing "${k}"`);
+    if (def.level) {
+      // a campaign level (data/levels) played by the scenario's bots and commands
+      const { levels, issues } = loadLevels(pack.files);
+      const lv = levels.find((l) => l.id === def.level);
+      if (!lv) throw new Error(issues.find((i) => i.file.endsWith(`/${def.level}.json`))?.message ?? `no level ${def.level}`);
+      w = createLevelWorld({ def: lv, carry: def.carry }, pack.files, pack.hash, makeBot);
+      applySetup(w, def.setup ?? []);
+      for (const b of def.bots ?? []) w.controllers.push(makeBot(b));
+    } else w = createScenarioWorld(def, pack.files, pack.hash, makeBot);
     const asserts = (def.assert ?? []).map((a, idx) => ({ ...a, idx, ast: parse(a.expr) }));
     if (!asserts.length) throw new Error("scenario has no assertions");
     for (const a of asserts) {

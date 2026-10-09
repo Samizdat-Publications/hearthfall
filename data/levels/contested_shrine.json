@@ -1,0 +1,38 @@
+{
+  "$comment": "Teaching level 2: worship races. A rival tribe wants the same shrine; whoever finishes the prayer first takes its gift.",
+  "id": "contested_shrine",
+  "name": "The Contested Shrine",
+  "order": 2,
+  "description": "A shrine stands on the hill between you and a rival tribe. Four worshippers pray at full speed; each one missing halves it. Claim it before they do.",
+  "seed": 202,
+  "map": {
+    "generator": "flat",
+    "size": 96,
+    "landAboveSea": 30,
+    "paint": [
+      { "shape": "disc", "at": [42, 48], "r": 5, "aboveSea": 46, "falloff": 6 },
+      { "shape": "disc", "at": [48, 20], "r": 9, "aboveSea": -30, "falloff": 4 },
+      { "shape": "disc", "at": [48, 78], "r": 9, "aboveSea": -30, "falloff": 4 }
+    ]
+  },
+  "tribes": [{}, { "ai": "turtle", "difficulty": "easy" }],
+  "spells": ["bolt", "raise_land"],
+  "buildings": ["dwelling", "watchtower"],
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [22, 48] },
+    { "spawn": "shaper", "tribe": 0, "at": [25, 46] },
+    { "spawn": "settler", "tribe": 0, "near": [25, 51], "count": 8 },
+    { "spawn": "hearth", "tribe": 1, "at": [78, 48] },
+    { "spawn": "shaper", "tribe": 1, "at": [75, 46] },
+    { "spawn": "settler", "tribe": 1, "near": [75, 51], "count": 8 },
+    { "spawn": "tree", "near": [16, 38], "count": 10, "spacing": 1.2 },
+    { "spawn": "tree", "near": [84, 58], "count": 10, "spacing": 1.2 },
+    { "spawn": "shrine", "at": [42, 48], "site": { "tag": "hill_shrine", "worshippers": 4, "prayerSeconds": 30, "rewards": [{ "type": "unlockSpell", "spell": "lightning" }, { "type": "charges", "spell": "lightning", "n": 1 }, { "type": "message", "text": "Lightning is yours." }] } }
+  ],
+  "objectives": [{ "type": "worship", "site": "hill_shrine", "text": "Claim the hill shrine before the rival tribe" }],
+  "lose": [{ "type": "siteLost", "site": "hill_shrine" }],
+  "triggers": [
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Select four followers and order them to worship the hill shrine." }] }
+  ],
+  "unlocks": { "spells": ["lightning"] }
+}

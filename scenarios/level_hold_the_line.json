@@ -1,0 +1,12 @@
+{
+  "id": "level_hold_the_line",
+  "description": "Campaign level 3 is completable: a defensive opponent AI plays the player and holds the isthmus against the early war band for five minutes.",
+  "tags": ["fast", "levels"],
+  "level": "hold_the_line",
+  "bots": [{ "type": "opponent", "tribe": 0, "personality": "turtle", "difficulty": "normal", "offset": 1 }],
+  "runTicks": 6000,
+  "assert": [
+    { "at": 3600, "expr": "events.count('triggerFired') == 4 && events.count('raid') == 2 && !level.won" },
+    { "at": 6000, "expr": "level.won && alive(0) && invariants() == 0" }
+  ]
+}

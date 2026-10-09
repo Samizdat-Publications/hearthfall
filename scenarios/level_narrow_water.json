@@ -1,0 +1,17 @@
+{
+  "id": "level_narrow_water",
+  "description": "Campaign level 1 is completable: the Shaper raises a ridge across the strait and three followers pray at the far shrine.",
+  "tags": ["fast", "levels"],
+  "level": "narrow_water",
+  "commands": [
+    { "tick": 2, "tribe": 0, "type": "move", "args": { "units": "tribe0.shapers", "to": [29, 32] } },
+    { "tick": 260, "tribe": 0, "type": "cast", "args": { "spell": "raise_land", "target": [38, 32] } },
+    { "tick": 420, "tribe": 0, "type": "worship", "args": { "units": "tribe0.settlers", "site": "far_shrine" } }
+  ],
+  "runTicks": 2400,
+  "assert": [
+    { "at": 20, "expr": "charges(0, 'raise_land') == 2 && !level.won" },
+    { "at": 420, "expr": "terrain.minHeightAlong([29,32],[38,32]) >= sea" },
+    { "at": 2400, "expr": "level.won && site('far_shrine').by == 0 && charges(0, 'bolt') == 2 && events.count('levelWon') == 1 && invariants() == 0" }
+  ]
+}

@@ -515,6 +515,8 @@ export const RewardSchema = z.discriminatedUnion("type", [
   z.strictObject({ type: z.literal("spell"), spell: id, at: point.optional() }),
   /** units for the rewarded tribe (or `tribe`, -1 for wild people) near a point (the site by default) */
   z.strictObject({ type: z.literal("spawn"), unit: id, n: z.number().int().min(1).max(50), tribe: z.number().int().min(-1).optional(), at: point.optional() }),
+  /** level scripting: every trained troop of `tribe` attack-moves to `to` (a war band crossing) */
+  z.strictObject({ type: z.literal("raid"), tribe: z.number().int().min(0), to: point }),
   /** a message for the player (HUD notification) */
   z.strictObject({ type: z.literal("message"), text: z.string().min(1).max(160) }),
 ]);
@@ -577,7 +579,24 @@ export const LevelSchema = z.strictObject({
   order: z.number().int().min(1),
   description: z.string().min(1).max(300),
   seed: z.number().int(),
-  map: z.strictObject({ generator: z.string(), size: z.number().int().min(32).multipleOf(32), landAboveSea: z.number().optional() }),
+  /** a handmade map: the flat generator at landAboveSea (negative for open sea) with painted islands, straits and hills */
+  map: z.strictObject({
+    generator: z.string(),
+    size: z.number().int().min(32).multipleOf(32),
+    landAboveSea: z.number().optional(),
+    paint: z
+      .array(
+        z.strictObject({
+          shape: z.enum(["disc", "rect"]),
+          at: point,
+          r: pos.optional(),
+          size: point.optional(),
+          aboveSea: z.number(),
+          falloff: z.number().min(0).optional(),
+        }),
+      )
+      .optional(),
+  }),
   /** tribe 0 is the player; the others are AI opponents by personality */
   tribes: z.array(z.strictObject({ ai: id.optional(), difficulty: id.optional() })).min(1).max(4),
   /** spells unlocked at the start for every tribe (campaign unlocks are added for the player) */
