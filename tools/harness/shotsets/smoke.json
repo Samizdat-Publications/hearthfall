@@ -201,7 +201,7 @@
      "assert": "__game.getSelection().length === 6"
     },
     {
-     "eval": "window.__p0 = __game.getSelection().map((id) => __game.unitPos(id)); __game.orderAt(900, 420)"
+     "eval": "window.__p0 = __game.getSelection().map((id) => __game.unitPos(id)); __game.orderAt(1100, 420)"
     },
     {
      "step": 60
