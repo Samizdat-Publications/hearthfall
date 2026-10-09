@@ -17,7 +17,35 @@ function runSeed(spec) {
   });
 }
 
+/**
+ * --mode triangle (M6 gate): the fixed counter triangle matchup (TESTING section 5) over N seeds per
+ * pair, in process. Hard: every match produces a winner. Soft: the counter wins at least
+ * gates.counterTriangleMinWinPct percent of its seeds.
+ */
+async function triangle(out, seeds) {
+  const { loadBasePack } = await import("./datapack.mjs");
+  const { runMatchup } = await import("../../packages/sim/src/matchup.ts");
+  const p = loadBasePack().pack;
+  const target = p.files.balance.gates.counterTriangleMinWinPct;
+  const t0 = Date.now();
+  const pairs = [];
+  for (const [a, b] of [["warden", "firecaller"], ["firecaller", "chanter"], ["chanter", "warden"]]) {
+    const rs = Array.from({ length: seeds }, (_, k) => runMatchup(p.files, p.hash, a, b, 1 + k));
+    const wins = rs.filter((r) => r.winner === "a").length;
+    const draws = rs.filter((r) => r.winner === "draw").length;
+    pairs.push({ counter: a, victim: b, wins, draws, winPct: Math.round((wins * 100) / seeds), avgEndSec: +(rs.reduce((x, r) => x + r.endTick, 0) / seeds / p.files.balance.sim.tickHz).toFixed(1), results: rs });
+  }
+  const softMet = pairs.every((q) => q.winPct >= target);
+  const draws = pairs.reduce((x, q) => x + q.draws, 0);
+  const metrics = { mode: "triangle", seeds, wallSec: +((Date.now() - t0) / 1000).toFixed(1), softTargetPct: target, softMet, draws, pairs: pairs.map(({ results: _r, ...q }) => q) };
+  writeReport("soak.json", { metrics, pairs });
+  for (const q of pairs) out.line(`${q.counter} vs ${q.victim}: ${q.wins}/${seeds} (${q.winPct}%), draws ${q.draws}, avg ${q.avgEndSec}s`);
+  out.line(`triangle soft target ${target}% ${softMet ? "met" : "missed"}`);
+  return draws ? out.finish("FAIL", `${draws} matchups ended without a winner`) : out.finish("PASS", "");
+}
+
 export default async function soakCmd(out, _cmd, args) {
+  if (args.mode === "triangle") return triangle(out, Number(args.seeds ?? 10));
   const seeds = Number(args.seeds ?? 8);
   const minutes = Number(args.minutes ?? 10);
   const jobs = args.jobs && args.jobs !== "auto" ? Number(args.jobs) : Math.max(1, availableParallelism() - 2);
