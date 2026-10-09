@@ -32,3 +32,9 @@ One line per entry: `MM/DD/YYYY HH:MM  M<n>  what happened`. Never read this fil
 - WarBot waves only target enemy Hearths reachable on foot (test). orderFailed in war soak rose to 95 (melee chases across water): BACKLOG 55.
 - 2026-10-09T05:20Z M6 done: combat core, WarBot and war soak 8/8 x 20 min clean, triangle 10/10 each pair, battle bench in budget, AudioHooks stubs, combat VFX and combat shot set, HUD troop panel; full qa PASS; Sonnet review TAG (3 fixes, BACKLOG 58-61 logged). Tag m6-done.
 - 2026-10-09T05:50Z BACKLOG 0b done: progression tiers by followers gate the Watchtower and lodges (data, eco.tier hashed, placePlan lock, WarBot skips, HUD greyed buttons and next-unlock line); replays reblessed, baselines reapproved; war soak 8/8 x 20 min clean. Second resource split to 0c.
+
+## 2026-10-09 M7: opponent AI and test bots
+- OpponentAI in packages/ai/src/opponent.ts (ADR-007): census, 8 scored actions, difficulty noise from the ai stream, spell targets by `aiTarget`; Shaper escorts waves; bridge walks her to the shore before casting raise land (a cast aimed over water fails at once, BACKLOG 62).
+- Test bots in testBots.ts; makeBot types opponent, rusher, turtleBot, spellSpammer, randomLegal. Tests: opponent.test.ts (6), testBots.test.ts (3).
+- Soak modes ai-idle, ai, bots. First ai-idle run had 33074 orderFailed: combat chased targets across quake cliffs every tick, and economy sent settlers to homes on another landmass. Fixed with regression tests in combat.test.ts and economy.test.ts; 145 remain (BACKLOG 63). War soak numbers unchanged; replays unchanged.
+- ai soak: sneaky dominates (6 of 7), turtle never wins: playtest-analyst pass next.

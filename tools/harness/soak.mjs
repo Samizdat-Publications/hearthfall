@@ -44,6 +44,91 @@ async function triangle(out, seeds) {
   return draws ? out.finish("FAIL", `${draws} matchups ended without a winner`) : out.finish("PASS", "");
 }
 
+const PERSONALITIES = ["aggressive", "sneaky", "turtle"];
+
+/**
+ * --mode ai-idle (M7 gate): each personality against an idle tribe, --seeds seeds each (default 4).
+ * --mode ai: personality pairs rotated over the seeds (aggressive v sneaky, sneaky v turtle, turtle v
+ * aggressive), equal difficulty (--difficulty, default normal).
+ * --mode bots: the test bots (rusher, turtleBot, spellSpammer, randomLegal) against the personalities;
+ * the gate is invariants only.
+ */
+function aiSpecs(base, args, seeds, t0) {
+  const difficulty = typeof args.difficulty === "string" ? args.difficulty : "normal";
+  const ai = (personality) => ({ type: "opponent", personality, difficulty });
+  if (base.mode === "ai-idle") {
+    const n = Number(args.seeds ?? 4);
+    return PERSONALITIES.flatMap((p, j) => Array.from({ length: n }, (_, k) => ({ ...base, tribes: 2, seed: 1000 + k, startMs: t0, ais: [ai(p), null], label: p, key: j * 1000 + k })));
+  }
+  if (base.mode === "bots") {
+    const bots = ["rusher", "turtleBot", "spellSpammer", "randomLegal"];
+    return Array.from({ length: seeds }, (_, k) => ({ ...base, tribes: 2, seed: 1000 + k, startMs: t0, ais: [{ type: bots[k % 4], difficulty }, ai(PERSONALITIES[k % 3])] }));
+  }
+  if (base.mode === "ai") return Array.from({ length: seeds }, (_, k) => ({ ...base, tribes: 2, seed: 1000 + k, startMs: t0, ais: [ai(PERSONALITIES[k % 3]), ai(PERSONALITIES[(k + 1) % 3])] }));
+  return null;
+}
+
+/** Gate and soft metrics for the ai modes: eliminations, spell types, mixed waves, win spread. */
+function aiReport(mode, results, minutes) {
+  const lines = [];
+  const all = results.flatMap((r) => r.ai?.ais ?? []);
+  const casts = {};
+  let waves = 0;
+  let mixed = 0;
+  let bridges = 0;
+  for (const a of all) {
+    for (const [k, v] of Object.entries(a.stats?.casts ?? {})) casts[k] = (casts[k] ?? 0) + v;
+    waves += a.stats?.waves ?? 0;
+    mixed += a.stats?.mixedWaves ?? 0;
+    bridges += a.stats?.bridges ?? 0;
+  }
+  const spellTypes = Object.keys(casts).length;
+  const metrics = { casts, spellTypes, waves, mixedWaves: mixed, bridges };
+  lines.push(`ai: spells cast by type ${JSON.stringify(casts)} (${spellTypes} types), waves ${waves} (mixed ${mixed}), bridges ${bridges}`);
+  const fails = [];
+  if (mode !== "bots" && spellTypes < 3) fails.push(`only ${spellTypes} spell types cast`);
+  if (mode !== "bots" && mixed < 1) fails.push("no mixed-troop wave");
+  if (mode === "ai-idle") {
+    const per = {};
+    for (const r of results) {
+      const p = r.ai?.ais[0]?.personality ?? "?";
+      per[p] ??= { won: 0, n: 0, minutes: [] };
+      per[p].n++;
+      if (r.ai && !r.ai.alive.includes(1)) {
+        per[p].won++;
+        per[p].minutes.push(r.ai.endMinute);
+      }
+    }
+    metrics.idle = per;
+    for (const [p, v] of Object.entries(per)) {
+      lines.push(`ai-idle ${p}: eliminated the idle tribe on ${v.won}/${v.n} seeds (minutes ${v.minutes.join(", ")})`);
+      if (v.won < v.n) fails.push(`${p} left the idle tribe alive on ${v.n - v.won} seeds within ${minutes} min`);
+    }
+  } else if (mode === "bots") {
+    const rows = results.map((r) => `${r.ai?.ais.map((a) => a.personality ?? a.type).join(" v ")}: ${r.ai?.alive.length === 1 ? "won by " + (r.ai.ais.find((a) => a.tribe === r.ai.alive[0])?.personality ?? r.ai.ais.find((a) => a.tribe === r.ai.alive[0])?.type) : "unfinished"} at ${r.ai?.endMinute} min`);
+    metrics.matches = rows;
+    lines.push(`bots: ${rows.join("; ")}`.slice(0, 600));
+  } else {
+    const wins = {};
+    const lengths = [];
+    let stalemates = 0;
+    for (const r of results) {
+      if (!r.ai) continue;
+      if (r.ai.alive.length === 1) {
+        const p = r.ai.ais.find((a) => a.tribe === r.ai.alive[0])?.personality ?? "?";
+        wins[p] = (wins[p] ?? 0) + 1;
+        lengths.push(r.ai.endMinute);
+      } else stalemates++;
+    }
+    lengths.sort((a, b) => a - b);
+    metrics.wins = wins;
+    metrics.stalemates = stalemates;
+    metrics.medianMinutes = lengths.length ? lengths[Math.floor(lengths.length / 2)] : null;
+    lines.push(`ai: wins ${JSON.stringify(wins)}, unfinished at ${minutes} min ${stalemates}/${results.length}, median match ${metrics.medianMinutes ?? "n/a"} min`);
+  }
+  return { metrics, lines, fail: fails.join("; ") };
+}
+
 export default async function soakCmd(out, _cmd, args) {
   if (args.mode === "triangle") return triangle(out, Number(args.seeds ?? 10));
   const seeds = Number(args.seeds ?? 8);
@@ -51,7 +136,7 @@ export default async function soakCmd(out, _cmd, args) {
   const jobs = args.jobs && args.jobs !== "auto" ? Number(args.jobs) : Math.max(1, availableParallelism() - 2);
   const base = { mode: typeof args.mode === "string" ? args.mode : "wander", minutes, units: Number(args.units ?? 1000), map: args.map ?? "continents", size: Number(args.size ?? 128), tribes: Number(args.tribes ?? 2), deadlineMs: 8 * 60 * 1000 - 20000 };
   const t0 = Date.now();
-  const specs = Array.from({ length: seeds }, (_, k) => ({ ...base, seed: 1000 + k, startMs: t0 }));
+  const specs = aiSpecs(base, args, seeds, t0) ?? Array.from({ length: seeds }, (_, k) => ({ ...base, seed: 1000 + k, startMs: t0 }));
   const results = [];
   let next = 0;
   await Promise.all(
@@ -72,7 +157,7 @@ export default async function soakCmd(out, _cmd, args) {
   const metrics = { seeds, minutes, units: base.units, wallSec: +((Date.now() - t0) / 1000).toFixed(1), drowned: sum("drowned"), orderFailed: sum("orderFailed"), orderGaveUp: sum("orderGaveUp"), moves: sum("moves"), maxStuckSec: Math.max(...results.map((r) => r.metrics?.maxStuckSec ?? 0)), avgTickMs: +(results.reduce((a, r) => a + (r.metrics?.avgTickMs ?? 0), 0) / results.length).toFixed(2) };
   writeReport("soak.json", { metrics, results });
   for (const r of bad) out.line(`seed ${r.seed}: ${(r.violations ?? []).slice(0, 2).join("; ")}`.slice(0, 200));
-  out.line(`soak (${base.mode}): ${results.length - bad.length}/${results.length} seeds clean | ${base.mode === "economy" || base.mode === "war" ? base.mode + " bots" : metrics.units + " units"} x ${minutes} min | wall ${metrics.wallSec}s | avg tick ${metrics.avgTickMs} ms | max stuck ${metrics.maxStuckSec}s`);
+  out.line(`soak (${base.mode}): ${results.length - bad.length}/${results.length} seeds clean | ${base.mode === "economy" || base.mode === "war" || base.mode === "bots" ? "test bots" : base.mode.startsWith("ai") ? base.mode + " bots" : metrics.units + " units"} x ${minutes} min | wall ${metrics.wallSec}s | avg tick ${metrics.avgTickMs} ms | max stuck ${metrics.maxStuckSec}s`);
   out.line(`orders ${metrics.moves}, failed ${metrics.orderFailed}, gave up ${metrics.orderGaveUp}, drowned ${metrics.drowned}`);
   if (base.mode === "war") {
     for (const k of ["trained", "killed", "converted", "fireballs", "eliminated"]) metrics[k] = sum(k);
@@ -89,6 +174,13 @@ export default async function soakCmd(out, _cmd, args) {
     metrics.softMet = Math.abs(metrics.popMedian - g.target) <= (g.target * g.tolerancePct) / 100;
     out.line(`economy: population at minute ${minutes} median ${metrics.popMedian} (min ${finals[0]}, max ${finals[finals.length - 1]}), soft target ${g.target} +-${g.tolerancePct}% ${metrics.softMet ? "met" : "missed"}`);
     writeReport("soak.json", { metrics, results });
+  }
+  if (base.mode === "ai-idle" || base.mode === "ai" || base.mode === "bots") {
+    const r = aiReport(base.mode, results, minutes);
+    Object.assign(metrics, r.metrics);
+    for (const l of r.lines) out.line(l);
+    writeReport("soak.json", { metrics, results });
+    if (!bad.length && r.fail) return out.finish("FAIL", r.fail);
   }
   const partial = results.some((r) => r.partial);
   if (bad.length) return out.finish("FAIL", `${bad.length} (repros in reports/latest/repro/)`);

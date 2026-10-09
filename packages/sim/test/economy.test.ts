@@ -135,4 +135,24 @@ describe("plans and trees (M4 review regressions)", () => {
     w.run(20 * 20);
     expect(w.eventCounts.get("woodDelivered") ?? 0).toBeGreaterThanOrEqual(3);
   });
+
+  it("settlers only take homes and work on their own landmass (regression, M7 ai-idle soak)", () => {
+    const w = flat();
+    const t = w.terrain;
+    // a sea channel splits the map: the dwelling and a plan sit east of it, the settler west
+    for (let y = 0; y < 64; y++) for (const x of [30, 31, 32, 62, 63, 0]) t.heights[t.idx(x, y)] = 0;
+    t.version++;
+    w.spawnBuilding("hearth", 0, 10, 10);
+    w.spawnUnit("shaper", 0, 12, 12);
+    w.spawnBuilding("dwelling", 0, 45, 20);
+    const s = w.ents.index(w.spawnUnit("settler", 0, 20, 20));
+    w.step([{ tick: 0, tribe: 0, type: "placePlan", args: { building: "dwelling", at: [48, 40] } }]);
+    let failed = 0;
+    for (let k = 0; k < 20 * 20; k++) {
+      w.step([]);
+      failed += w.events.filter((e) => e.type === "orderFailed").length;
+    }
+    expect(failed).toBe(0);
+    expect([TASK.toHome, TASK.toWork, TASK.haul, TASK.toTree].includes(w.ents.task[s] as never)).toBe(false);
+  });
 });

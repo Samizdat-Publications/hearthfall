@@ -91,6 +91,27 @@ describe("combat (M6)", () => {
     expect(w.invariants()).toEqual([]);
   });
 
+  it("units do not chase an enemy they cannot reach on foot (regression, M7 ai-idle soak: quake cliffs split the enemy base)", () => {
+    const w = arena();
+    const t = w.terrain;
+    // a moat two cells wide around a small island holding an enemy settler
+    for (let y = 26; y <= 34; y++) for (let x = 30; x <= 38; x++) if (Math.max(Math.abs(x - 34), Math.abs(y - 30)) >= 2 && Math.max(Math.abs(x - 34), Math.abs(y - 30)) <= 3) t.heights[t.idx(x, y)] = 0;
+    t.version++;
+    const E = w.ents;
+    const g = E.index(w.spawnUnit("warden", 0, 27, 30));
+    const s = E.index(w.spawnUnit("settler", 1, 34, 30));
+    E.stance[s] = 0;
+    let failed = 0;
+    for (let k = 0; k < 10 * 20; k++) {
+      w.step([]);
+      failed += w.events.filter((e) => e.type === "orderFailed").length;
+    }
+    expect(E.alive[s]).toBe(1);
+    expect(failed).toBeLessThanOrEqual(1);
+    expect(E.atk[g]).toBe(NO_ENTITY);
+    expect(w.invariants()).toEqual([]);
+  });
+
   it("an explicit attack order chases any distance until the target dies", () => {
     const w = arena();
     const a = w.ents.index(w.spawnUnit("warden", 0, 10, 30));

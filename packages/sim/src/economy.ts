@@ -222,13 +222,13 @@ export class EconomySystem {
     return dx * dx + dy * dy;
   }
 
-  /** Walkable component of the vertex nearest an entity (0 when none is walkable nearby). */
-  private compOf(i: number): number {
+  /** Walkable component of the vertex nearest an entity (0 when none is walkable nearby); r 2 for units, snapRadius for buildings. */
+  private compOf(i: number, r = 2): number {
     const pf = this.w.units.pf;
     pf.refresh();
     const n = this.w.terrain.size;
     const E = this.w.ents;
-    const v = pf.nearestWalkable((((Math.round(E.x[i]) % n) + n) % n) + (((Math.round(E.y[i]) % n) + n) % n) * n, 2);
+    const v = pf.nearestWalkable((((Math.round(E.x[i]) % n) + n) % n) + (((Math.round(E.y[i]) % n) + n) % n) * n, r);
     return v < 0 ? 0 : pf.comp[v];
   }
 
@@ -459,11 +459,22 @@ export class EconomySystem {
       if (E.task[i] === TASK.idle && E.order[i] === ORDER.none && E.mode[i] === 0) free.push(i);
       else if (E.task[i] === TASK.home) housed.push(i);
     }
+    // walkable components: a settler only takes work or a home on its own landmass (M7 regression:
+    // spells and cliffs split a base and settlers retried unreachable homes every few seconds)
+    const snap = w.cfg.pack.balance.movement.snapRadius;
+    const comps = new Map<number, number>();
+    const compAt = (i: number, r: number) => {
+      let c = comps.get(i);
+      if (c === undefined) comps.set(i, (c = this.compOf(i, r)));
+      return c;
+    };
     const take = (near: number): number => {
       let best = -1;
       let bd = Infinity;
       let fromHome = false;
+      const nc = compAt(near, E.cat[near] === CAT.building ? snap : 2);
       for (const i of free) {
+        if (compAt(i, 2) !== nc) continue;
         const d = this.dist2(i, near);
         if (d < bd) {
           bd = d;
@@ -474,6 +485,7 @@ export class EconomySystem {
         for (const i of housed) {
           const h = E.inside[i];
           if (eco.keepOneOccupantForBreeding && E.occupants[h] <= 1) continue;
+          if (compAt(h, snap) !== nc) continue;
           const d = this.dist2(h, near);
           if (d < bd) {
             bd = d;
@@ -564,7 +576,7 @@ export class EconomySystem {
         let bd = Infinity;
         for (const d of homes) {
           const space = this.dwellingLevel(d).capacity - E.occupants[d] - this.inbound(d, [TASK.toHome]);
-          if (space <= 0) continue;
+          if (space <= 0 || compAt(d, snap) !== compAt(i, 2)) continue;
           const dd = this.dist2(i, d);
           if (dd < bd) {
             bd = dd;

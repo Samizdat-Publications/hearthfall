@@ -73,6 +73,8 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 59. [S] Soak chase exclusion can hide a unit truly stuck while holding a target (M6 review): count chase give-ups per unit and fail past a threshold, or require the target to have moved since the last give-up.
 60. [M] Counter triangle is a stomp, not a contest (10/10 every pair, Chanter doubles its army by converting): widen matchup variance (formation jitter, 6 vs 10 counts), add a mixed-army matchup, then tune toward the 65 to 80 percent band (M6 review; pairs with the playtest-analyst pass at M7).
 61. [S] Chanter reach `r -= 0.5` in combat.ts acquire is a literal: move it to a per-unit data field (M6 review).
+62. [S] A cast queued out of range at a target the Shaper cannot path to (raise land over water, an island) fails at once with castFailed unreachable: walk her to the nearest reachable point within range instead (the AI works around it by walking to the shore first, M7).
+63. [S] Economy retries: a settler whose work site or home lies on another landmass is now skipped at assignment, but a trip already underway when terrain splits still fails once per retry; about 145 orderFailed per 12 ai-idle matches remain (M7).
 36. [S] Spells that drown units need a readable lead-in (rumble, crack VFX, short delay) so players see cause and effect (M5, M1 review).
 
 ## Parking lot (ideas, unranked)

@@ -343,6 +343,8 @@ export const SpellSchema = z.strictObject({
   maxCharges: z.number().int().positive(),
   range: pos,
   v1: z.boolean().optional(),
+  /** opponent AI targeting hint (M7): enemy unit clusters, enemy buildings, wild people, or a land bridge toward an enemy */
+  aiTarget: z.enum(["units", "buildings", "wild", "bridge", "none"]).optional(),
   effects: z.array(Effect).min(1),
 });
 export const SpellsFileSchema = z.strictObject({

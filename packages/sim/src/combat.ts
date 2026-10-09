@@ -154,6 +154,21 @@ export class CombatSystem {
     return c === CAT.building;
   }
 
+  /** Walkable component under (x, y) (snapped like orders are), -1 when there is no walkable cell near. */
+  private compAt(x: number, y: number): number {
+    const w = this.w;
+    const n = w.terrain.size;
+    const v = w.units.pf.nearestWalkable((((Math.round(x) % n) + n) % n) + (((Math.round(y) % n) + n) % n) * n, w.cfg.pack.balance.movement.snapRadius);
+    return v < 0 ? -1 : w.units.pf.comp[v];
+  }
+
+  /** Could unit i get within reach of j: already in reach, or on the same landmass? (M7 regression: no chase across water or cliffs) */
+  private canReach(i: number, j: number, d: number): boolean {
+    const E = this.w.ents;
+    if (E.inside[i] >= 0 || d <= this.reachOf(i, j)) return true;
+    return this.compAt(E.x[i], E.y[i]) === this.compAt(E.x[j], E.y[j]);
+  }
+
   /** Best target for unit i within radius r (and at least minRange away): units first (preferred types count as closer), then buildings. */
   private acquire(i: number, r: number): number {
     const minR = this.minRange[this.w.ents.type[i]];
@@ -184,7 +199,7 @@ export class CombatSystem {
           const dx = wrapDelta(E.x[j] - x, n);
           const dy = wrapDelta(E.y[j] - y, n);
           const d = Math.sqrt(dx * dx + dy * dy);
-          if (d > r || d < minR || !this.validTarget(i, j)) continue;
+          if (d > r || d < minR || !this.validTarget(i, j) || !this.canReach(i, j, d)) continue;
           const s = d - (pref.has(E.type[j]) ? bonus : 0);
           if (s < bestScore || (s === bestScore && j < best)) {
             bestScore = s;
@@ -197,7 +212,7 @@ export class CombatSystem {
     for (const j of this.buildings) {
       if (!E.alive[j] || !this.validTarget(i, j)) continue;
       const d = this.dist(i, E.x[j], E.y[j]) - this.halfSize(j);
-      if (d <= r && d < bestScore) {
+      if (d <= r && d < bestScore && this.canReach(i, j, d + this.halfSize(j))) {
         bestScore = d;
         best = j;
       }
@@ -396,7 +411,11 @@ export class CombatSystem {
       if (d <= this.reachOf(i, t)) {
         if (E.order[i] !== ORDER.none) w.units.stop(i);
         if (E.cd[i] === 0) this.strike(i, t);
-      } else if (!inTower) this.chase(i, E.x[t], E.y[t], E.mode[i] === CMODE.attackMove ? ORDER.attackMove : ORDER.move);
+      } else if (!inTower) {
+        // a fresh path only when the target is still on our landmass (terrain can split it mid-chase)
+        if (E.order[i] === ORDER.none && !this.canReach(i, t, d)) this.disengage(i, false);
+        else this.chase(i, E.x[t], E.y[t], E.mode[i] === CMODE.attackMove ? ORDER.attackMove : ORDER.move);
+      }
       else if (E.mode[i] !== CMODE.forced) E.atk[i] = NO_ENTITY;
     }
   }

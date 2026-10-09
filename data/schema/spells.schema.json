@@ -77,6 +77,16 @@
           "v1": {
             "type": "boolean"
           },
+          "aiTarget": {
+            "type": "string",
+            "enum": [
+              "units",
+              "buildings",
+              "wild",
+              "bridge",
+              "none"
+            ]
+          },
           "effects": {
             "minItems": 1,
             "type": "array",
