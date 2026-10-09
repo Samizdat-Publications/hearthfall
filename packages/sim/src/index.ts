@@ -14,3 +14,5 @@ export { shaperIndex, type CastState, type PendingCast } from "./spells.ts";
 export { Pathfinder, SpatialHash, Heap } from "./pathing.ts";
 export { World, TRIBE_COLORS, type Controller, type SimEvent, type Tribe, type WorldInit, type HashParts, type WorldSnapshot } from "./world.ts";
 export { applySetup, createScenarioWorld, commandsByTick, type ScenarioDef, type SetupEntry, type BotFactory } from "./scenario.ts";
+export { CombatSystem, STANCE, STANCE_NAMES, CMODE } from "./combat.ts";
+export { runMatchup, type MatchupResult } from "./matchup.ts";

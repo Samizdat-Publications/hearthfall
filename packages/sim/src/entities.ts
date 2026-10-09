@@ -54,6 +54,18 @@ const COLUMNS: Record<string, ColCtor> = {
   panic: Int32Array,
   burn: Int32Array,
   lastHit: Int8Array,
+  // combat (M6): attack target id, swing or shot cooldown ticks, stance, combat mode (CMODE),
+  // resume point (guard anchor or attack-move goal; a lodge's rally point), entranced ticks,
+  // chant channel ticks left, tick of the last damage taken (Shaper regeneration)
+  atk: Uint32Array,
+  cd: Int32Array,
+  stance: Uint8Array,
+  mode: Uint8Array,
+  ax: Float64Array,
+  ay: Float64Array,
+  trance: Int32Array,
+  chant: Int32Array,
+  hitTick: Int32Array,
 };
 export const COLUMN_NAMES = Object.keys(COLUMNS);
 
@@ -100,6 +112,15 @@ export class Entities {
   panic!: Int32Array;
   burn!: Int32Array;
   lastHit!: Int8Array;
+  atk!: Uint32Array;
+  cd!: Int32Array;
+  stance!: Uint8Array;
+  mode!: Uint8Array;
+  ax!: Float64Array;
+  ay!: Float64Array;
+  trance!: Int32Array;
+  chant!: Int32Array;
+  hitTick!: Int32Array;
 
   constructor(cap = 1024) {
     this.cap = cap;
@@ -166,6 +187,15 @@ export class Entities {
     this.panic[i] = 0;
     this.burn[i] = 0;
     this.lastHit[i] = -1;
+    this.atk[i] = 0xffffffff;
+    this.cd[i] = 0;
+    this.stance[i] = 0;
+    this.mode[i] = 0;
+    this.ax[i] = x;
+    this.ay[i] = y;
+    this.trance[i] = 0;
+    this.chant[i] = 0;
+    this.hitTick[i] = 0;
     this.count++;
     return (i | ((this.gen[i] & 0x7fff) << 16)) >>> 0;
   }

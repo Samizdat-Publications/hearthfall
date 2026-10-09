@@ -54,7 +54,7 @@ Tone: traditional tribal villagers and a Shaper in feathers and hides, not a glo
 
 - Starting state: a Hearth, the Shaper, 5 settlers (each carrying 1 wood of starting supplies, `balance.economy.startWoodPerSettler`), and a few wild people wandering nearby.
 - The **Hearth** has 4000 HP and can be destroyed by troops and spells. It never rebuilds in v1.
-- A tribe is **eliminated** when its Shaper is dead and either its Hearth is destroyed or it has zero settlers and troops.
+- A tribe is **eliminated** when its Shaper is dead and either its Hearth is destroyed or it has zero settlers and troops. Its surviving people walk out of every building and become wild, free to be converted by anyone.
 - Skirmish victory: last tribe (or alliance) standing. Optional victory variants in data: hold all reliquaries for N minutes, timed survival.
 - Shaper death: respawns at Hearth after `respawnSeconds` (start 35, 26 if drowned). The killing tribe gains `killChargeStealPct` (start 25 percent) of her stored charges as mana. Death throttles the economy because the Shaper is the single largest mana producer.
 
@@ -90,10 +90,14 @@ Starting stats. Speed in cells per second (1 cell = 1 heightmap cell).
 |---|---|---|---|
 | Shaper | 2500 | 1.5 | Casts. Light melee. Can be shielded. Respawns. |
 | Settler | 1000 | 1.6 | Worker. Weak melee. Becomes any troop at a lodge. |
-| Warden | 1800 | 1.35 | Melee, kills ~6 settlers alone. Prefers attacking Firecallers. |
-| Firecaller | 700 | 1.25 | Ranged area fireball, knockback. +range on higher ground and in towers. |
+| Warden | 2000 | 1.6 | Melee, kills ~6 settlers alone. Prefers attacking Firecallers. |
+| Firecaller | 700 | 1.25 | Ranged area fireball (range 7, min range 2, splash falls off from the center), knockback. +range per height band and in towers. |
 | Chanter | 1100 | 1.3 | Chants in a radius of 5: enemies inside are **entranced** (frozen, swaying) while the 4 s channel runs, then convert (up to 3 per channel). Interrupted by ranged damage, spells, and terrain change nearby. Cannot convert Shapers, Chanters, or units inside buildings. |
 | Shade | 600 | 1.5 | Disguise (enemy color), burns buildings and trees, reveals info. |
+
+Stances (M6): aggressive units acquire enemies within `combat.acquireRadius` and chase up to `leashRadius` from where they stood, defensive units only answer threats within a few cells, passive units never start fights. Troops default to aggressive, the Shaper to defensive, settlers and Shades to passive. Explicit attack orders chase any distance; attack-move fights on the way and then resumes. A unit just knocked back is immune to further knockback for `knockbackImmuneSeconds`, so massed fire cannot pin a target forever. Troop damage can kill the Shaper; out of combat she regenerates `shaperRegenPerSecond` after `shaperRegenDelaySeconds`. Conversion ignores the population cap (the cap only gates breeding).
+
+Training: a settler walks to a lodge (queue of `queueMax`, walkers included), pays the unit's `trainMana` from the training sink, trains for `trainSeconds`, and walks out to the lodge's rally point. A new move or stop order cancels the walk; a move order brings trainees and garrisons back out (a trainee that leaves after paying loses that mana).
 
 Counter triangle (must be statistically verified by soak tests): Warden beats Firecaller, Firecaller beats Chanter, Chanter beats Warden. Height matters: units on higher ground deal +X percent ranged damage and Bolt knockback is stronger downhill.
 

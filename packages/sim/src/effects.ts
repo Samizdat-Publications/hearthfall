@@ -70,35 +70,45 @@ registerEffect("damageRadius", (c, e) => {
   }
 });
 
-registerEffect("knockback", (c, e) => {
-  if (e.type !== "knockback") return;
-  const w = c.w;
+/**
+ * Push a unit `travel` cells along (dx, dy) over knockbackTicks with decay (ignores walkability:
+ * cliffs and water are the point). Stops its order and breaks a chant (spell interruption).
+ */
+export function knockUnit(w: World, i: number, dx: number, dy: number, travel: number): void {
   const E = w.ents;
-  const n = w.terrain.size;
   const ticks = w.cfg.pack.balance.combat.knockbackTicks;
   const decay = w.cfg.pack.balance.combat.knockbackDecay;
-  // total travel = v0 * (1 - decay^ticks) / (1 - decay); solve v0 for a travel of force * falloff
+  // total travel = v0 * (1 - decay^ticks) / (1 - decay); solve v0 for the wanted travel
   let sum = 0;
   let f = 1;
   for (let k = 0; k < ticks; k++) {
     sum += f;
     f *= decay;
   }
+  let d = Math.sqrt(dx * dx + dy * dy);
+  if (d < 1e-6) {
+    dx = 1;
+    dy = 0;
+    d = 1e-6;
+  }
+  E.kvx[i] = (dx / Math.max(d, 1e-6)) * (travel / sum);
+  E.kvy[i] = (dy / Math.max(d, 1e-6)) * (travel / sum);
+  E.ktick[i] = ticks;
+  w.units.stop(i);
+  if (E.chant[i] > 0) w.combat.interruptChant(i, "knockback");
+}
+
+registerEffect("knockback", (c, e) => {
+  if (e.type !== "knockback") return;
+  const w = c.w;
+  const E = w.ents;
+  const n = w.terrain.size;
   for (const i of within(w, CAT.unit, c.x, c.y, e.radius)) {
     if (E.tribe[i] === c.tribe) continue;
-    let dx = wrapDelta(E.x[i] - c.x, n);
-    let dy = wrapDelta(E.y[i] - c.y, n);
-    let d = Math.sqrt(dx * dx + dy * dy);
-    if (d < 1e-6) {
-      dx = 1;
-      dy = 0;
-      d = 1e-6;
-    }
-    const travel = e.force * (1 - Math.min(1, d / e.radius) * 0.6);
-    E.kvx[i] = (dx / Math.max(d, 1e-6)) * (travel / sum);
-    E.kvy[i] = (dy / Math.max(d, 1e-6)) * (travel / sum);
-    E.ktick[i] = ticks;
-    w.units.stop(i);
+    const dx = wrapDelta(E.x[i] - c.x, n);
+    const dy = wrapDelta(E.y[i] - c.y, n);
+    const d = Math.sqrt(dx * dx + dy * dy);
+    knockUnit(w, i, dx, dy, e.force * (1 - Math.min(1, d / e.radius) * 0.6));
   }
 });
 

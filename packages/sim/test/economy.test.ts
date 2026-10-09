@@ -37,17 +37,24 @@ describe("mana economy", () => {
     w.step([]);
     const perTick = 66 / (60 * w.cfg.tickHz);
     expect(total() - p0).toBeCloseTo(perTick, 12);
-    e.trainDemand = 1;
+    // a real training order (a settler walking to a lodge) opens the training sink
+    const lodge = w.spawnBuilding("warden_lodge", 0, 20, 20);
+    const settler = w.spawnUnit("settler", 0, 50, 50);
+    w.step([{ tick: w.tick, tribe: 0, type: "train", args: { building: lodge, units: [settler] } }]);
+    expect(e.trainDemand).toBeGreaterThan(0);
     const before = total();
     const t0 = e.trainMana;
     w.step([{ tick: w.tick, tribe: 0, type: "setSplit", args: { spellsPct: 25 } }]);
-    expect(total() - before).toBeCloseTo(perTick * 0.25, 12);
-    expect(e.trainMana - t0).toBeCloseTo(perTick * 0.75, 12);
-    e.trainDemand = 0;
+    const toSpells = total() - before;
+    const toTrain = e.trainMana - t0;
+    expect(toSpells + toTrain).toBeGreaterThan(0);
+    expect(toSpells / (toSpells + toTrain)).toBeCloseTo(0.25, 12);
+    w.step([{ tick: w.tick, tribe: 0, type: "stop", args: { units: [settler] } }]);
+    expect(e.trainDemand).toBe(0);
     for (const id of ["bolt", "call"]) w.step([{ tick: w.tick, tribe: 0, type: "setAutoCharge", args: { spell: id, on: false } }]);
     const wasted = e.wasted;
     w.step([]);
-    expect(e.wasted - wasted).toBeCloseTo(perTick, 12);
+    expect(e.wasted - wasted).toBeCloseTo(e.incomePerMin / (60 * w.cfg.tickHz), 12);
   });
 
   it("charging cycles through auto spells, never exceeds max charges, keeps progress below cost", () => {

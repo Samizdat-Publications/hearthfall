@@ -18,7 +18,8 @@
         "seconds": 35,
         "drownedSeconds": 26
       },
-      "convertible": false
+      "convertible": false,
+      "stance": "defensive"
     },
     {
       "id": "settler",
@@ -38,12 +39,13 @@
         "chanter",
         "shade"
       ],
-      "convertible": true
+      "convertible": true,
+      "stance": "passive"
     },
     {
       "id": "warden",
-      "hp": 1800,
-      "speed": 1.35,
+      "hp": 2000,
+      "speed": 1.6,
       "manaPerMin": {
         "moving": 11,
         "idle": 9
@@ -58,7 +60,8 @@
       "trainedAt": "warden_lodge",
       "trainSeconds": 12,
       "trainMana": 150,
-      "convertible": true
+      "convertible": true,
+      "stance": "aggressive"
     },
     {
       "id": "firecaller",
@@ -69,12 +72,13 @@
         "idle": 9
       },
       "ranged": {
-        "damage": 220,
-        "radius": 1.5,
+        "damage": 160,
+        "radius": 1.0,
         "range": 7,
-        "cooldown": 2.5,
-        "knockback": 1.2,
-        "heightRangeBonusPerBand": 1.0
+        "cooldown": 3,
+        "knockback": 0.8,
+        "heightRangeBonusPerBand": 1,
+        "minRange": 2
       },
       "prefersTarget": [
         "chanter"
@@ -82,7 +86,8 @@
       "trainedAt": "fire_lodge",
       "trainSeconds": 14,
       "trainMana": 180,
-      "convertible": true
+      "convertible": true,
+      "stance": "aggressive"
     },
     {
       "id": "chanter",
@@ -105,7 +110,8 @@
           "rangedDamage",
           "spell",
           "terrainChangeNear"
-        ]
+        ],
+        "cooldownSeconds": 3
       },
       "prefersTarget": [
         "warden"
@@ -113,7 +119,8 @@
       "trainedAt": "chant_house",
       "trainSeconds": 14,
       "trainMana": 180,
-      "convertible": false
+      "convertible": false,
+      "stance": "aggressive"
     },
     {
       "id": "shade",
@@ -131,7 +138,8 @@
       "trainSeconds": 16,
       "trainMana": 200,
       "convertible": true,
-      "milestone": "backlog"
+      "milestone": "backlog",
+      "stance": "passive"
     },
     {
       "id": "wild",
@@ -145,7 +153,8 @@
       "spawnPerTribe": [
         6,
         10
-      ]
+      ],
+      "stance": "passive"
     }
   ],
   "rules": {

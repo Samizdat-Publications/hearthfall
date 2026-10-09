@@ -64,6 +64,19 @@ export class UnitSystem {
     }
   }
 
+  /** Short chase in the open: head straight for (gx, gy) without a path (combat re-aims it each tick). */
+  steer(i: number, gx: number, gy: number, kind: number = ORDER.move): void {
+    const E = this.w.ents;
+    if (E.order[i] === ORDER.none) E.best[i] = 1e9;
+    E.order[i] = kind;
+    E.gx[i] = gx;
+    E.gy[i] = gy;
+    E.pathPos[i] = 0;
+    E.flowGoal[i] = -1;
+    E.waitPath[i] = 0;
+    this.paths[i] = null;
+  }
+
   stop(i: number): void {
     const E = this.w.ents;
     E.order[i] = ORDER.none;
@@ -181,9 +194,18 @@ export class UnitSystem {
       }
       E.px[i] = E.x[i];
       E.py[i] = E.y[i];
-      // knockback: displacement that ignores walkability (cliffs and water are the point)
+      // entranced by a chant: frozen in place (knockback below still moves them)
+      if (E.trance[i] > 0 && E.ktick[i] <= 0) {
+        E.vx[i] = 0;
+        E.vy[i] = 0;
+        continue;
+      }
+      // knockback: displacement that ignores walkability (cliffs and water are the point); a
+      // negative ktick counts up through the troop knockback immunity window
+      if (E.ktick[i] < 0) E.ktick[i]++;
       if (E.ktick[i] > 0) {
         E.ktick[i]--;
+        if (E.ktick[i] === 0) E.ktick[i] = -secondsToTicks(w.cfg.pack.balance.combat.knockbackImmuneSeconds, hz);
         const kx = E.kvx[i];
         const ky = E.kvy[i];
         E.kvx[i] *= w.cfg.pack.balance.combat.knockbackDecay;

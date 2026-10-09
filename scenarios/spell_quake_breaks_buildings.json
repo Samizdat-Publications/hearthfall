@@ -86,11 +86,11 @@
   "assert": [
     {
       "at": 1,
-      "expr": "hp(tribe1.dwellings) == 1000"
+      "expr": "hp(tribe1.dwellings) == 1200"
     },
     {
       "at": 25,
-      "expr": "hp(tribe1.dwellings) == 300 && terrain.height([32,32]) < sea + 80 && count(tribe1.settlers, moving) == 3"
+      "expr": "hp(tribe1.dwellings) == 360 && terrain.height([32,32]) < sea + 80 && count(tribe1.settlers, moving) == 3"
     },
     {
       "at": 60,

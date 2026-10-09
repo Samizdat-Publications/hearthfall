@@ -8,7 +8,8 @@ import { wrapDelta } from "./terrain.ts";
 import type { World } from "./world.ts";
 
 /** Settler task states. */
-export const TASK = { idle: 0, toTree: 1, chop: 2, haul: 3, toWork: 4, work: 5, toHome: 6, home: 7, wander: 8 } as const;
+/** Unit tasks. 9 to 12 (training and garrison) are driven by the combat system (M6). */
+export const TASK = { idle: 0, toTree: 1, chop: 2, haul: 3, toWork: 4, work: 5, toHome: 6, home: 7, wander: 8, toTrain: 9, training: 10, toGarrison: 11, garrison: 12 } as const;
 /** Building states (state column). */
 export const BSTATE = { plan: 0, flatten: 1, build: 2, done: 3 } as const;
 /** Tree state: 0 normal, 1 doomed (inside a plan footprint, removed when chopped out). */
@@ -442,7 +443,7 @@ export class EconomySystem {
     const housed: number[] = [];
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] !== tribe || E.type[i] !== this.typeSettler) continue;
-      if (E.task[i] === TASK.idle && E.order[i] === ORDER.none) free.push(i);
+      if (E.task[i] === TASK.idle && E.order[i] === ORDER.none && E.mode[i] === 0) free.push(i);
       else if (E.task[i] === TASK.home) housed.push(i);
     }
     const take = (near: number): number => {

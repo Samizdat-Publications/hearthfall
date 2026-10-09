@@ -78,6 +78,10 @@
               },
               "heightRangeBonusPerBand": {
                 "type": "number"
+              },
+              "minRange": {
+                "type": "number",
+                "minimum": 0
               }
             },
             "required": [
@@ -126,6 +130,10 @@
                     "terrainChangeNear"
                   ]
                 }
+              },
+              "cooldownSeconds": {
+                "type": "number",
+                "minimum": 0
               }
             },
             "required": [
@@ -134,7 +142,8 @@
               "maxPerChannel",
               "entrancedFreeze",
               "cannotConvert",
-              "interruptedBy"
+              "interruptedBy",
+              "cooldownSeconds"
             ],
             "additionalProperties": false
           },
@@ -205,6 +214,14 @@
           "convertible": {
             "type": "boolean"
           },
+          "stance": {
+            "type": "string",
+            "enum": [
+              "aggressive",
+              "defensive",
+              "passive"
+            ]
+          },
           "wanders": {
             "type": "boolean"
           },
@@ -231,7 +248,8 @@
           "hp",
           "speed",
           "manaPerMin",
-          "convertible"
+          "convertible",
+          "stance"
         ],
         "additionalProperties": false
       }

@@ -2,7 +2,7 @@
 // {tick, tribe, type, args}. Handlers live in a registry so new commands never touch a switch.
 import type { TerrainOpSpec } from "./terrain.ts";
 import { CAT } from "./entities.ts";
-import { BSTATE } from "./economy.ts";
+import { BSTATE, TASK } from "./economy.ts";
 import type { World } from "./world.ts";
 
 export interface Command {
@@ -76,6 +76,11 @@ registerCommand("move", {
     const n = w.terrain.size;
     const idx = w.selectUnits(c.args.units);
     for (const t of w.tribes) if (t.pending && idx.includes(w.ents.index(t.shaper))) t.pending = null;
+    for (const i of idx) {
+      // a move order walks trainees and garrisons back out
+      if (w.ents.inside[i] >= 0 && (w.ents.task[i] === TASK.training || w.ents.task[i] === TASK.garrison)) w.combat.leave(i);
+      w.combat.clear(i);
+    }
     w.units.order(idx, ((x % n) + n) % n, ((y % n) + n) % n, c.args.attack ? 2 : 1);
   },
 });
@@ -105,7 +110,10 @@ registerCommand("stop", {
     return null;
   },
   apply(w, c) {
-    for (const i of w.selectUnits(c.args.units)) w.units.stop(i);
+    for (const i of w.selectUnits(c.args.units)) {
+      w.combat.clear(i);
+      w.units.stop(i);
+    }
   },
 });
 

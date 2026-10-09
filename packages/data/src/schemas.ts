@@ -76,7 +76,40 @@ export const BalanceSchema = z.strictObject({
     nearCapSlowdownStartPct: z.number().min(0).max(100),
     nearCapFactorAtCap: z.number().min(1),
   }),
-  combat: z.strictObject({ heightRangedBonusPctPerBand: z.number(), stuckSeconds: pos, knockbackTicks: z.number().int().positive(), knockbackDecay: z.number().min(0).max(1), shaperMinHpFromNonLethal: pos }),
+  combat: z.strictObject({
+    ...comment,
+    heightRangedBonusPctPerBand: z.number(),
+    stuckSeconds: pos,
+    knockbackTicks: z.number().int().positive(),
+    knockbackDecay: z.number().min(0).max(1),
+    shaperMinHpFromNonLethal: pos,
+    /** M6: troops scan for enemies inside acquireRadius every retargetSeconds and drop targets past leashRadius */
+    acquireRadius: pos,
+    leashRadius: pos,
+    retargetSeconds: pos,
+    chaseRepathSeconds: pos,
+    /** body radius added to attack ranges on both sides */
+    unitRadius: z.number().nonnegative(),
+    /** elevation per ranged bonus band (height units) and the most bands that count */
+    heightBandUnits: pos,
+    maxHeightBands: z.number().int().nonnegative(),
+    shaperRegenPerSecond: z.number().nonnegative(),
+    shaperRegenDelaySeconds: z.number().nonnegative(),
+    /** what the units of an eliminated tribe turn into */
+    eliminatedUnitsBecome: z.enum(["wild"]),
+    buildingDamageFactor: z.number().nonnegative(),
+    /** melee lands as swings of dps x meleeSwingSeconds (one audio hook per swing) */
+    meleeSwingSeconds: pos,
+    /** ranged area damage falls off linearly to (1 - this) at the edge of the blast */
+    rangedSplashFalloff: z.number().min(0).max(1),
+    /** after a troop knockback ends, further troop knockbacks are ignored this long (spells still push) */
+    knockbackImmuneSeconds: z.number().nonnegative(),
+    /** cells subtracted from a preferred target's distance when choosing whom to attack */
+    preferTargetBonus: z.number().nonnegative(),
+    /** defensive stance: acquire only this close, never chase farther than the leash from where it stood */
+    defensiveAcquireRadius: pos,
+    defensiveLeashRadius: pos,
+  }),
   statuses: z.strictObject({
     ...comment,
     panic: z.strictObject({ fleeDistance: pos, repickSeconds: pos }),
@@ -140,6 +173,8 @@ const Ranged = z.strictObject({
   cooldown: pos,
   knockback: pos,
   heightRangeBonusPerBand: z.number(),
+  /** M6: cannot fire at units closer than this (melee troops that reach a Firecaller pin it) */
+  minRange: z.number().nonnegative().optional(),
 });
 const Convert = z.strictObject({
   radius: pos,
@@ -148,6 +183,7 @@ const Convert = z.strictObject({
   entrancedFreeze: z.boolean(),
   cannotConvert: z.array(id),
   interruptedBy: z.array(z.enum(["rangedDamage", "spell", "terrainChangeNear"])),
+  cooldownSeconds: pos,
 });
 export const UnitSchema = z.strictObject({
   ...comment,
@@ -167,6 +203,8 @@ export const UnitSchema = z.strictObject({
   trainSeconds: pos.optional(),
   trainMana: pos.optional(),
   convertible: z.boolean(),
+  /** default combat stance (M6): aggressive acquires and chases, defensive fights in reach, passive never auto-fights */
+  stance: z.enum(["aggressive", "defensive", "passive"]),
   wanders: z.boolean().optional(),
   spawnPerTribe: range2.optional(),
   milestone: z.string().optional(),
@@ -204,6 +242,8 @@ export const BuildingSchema = z.strictObject({
   garrison: z.number().int().nonnegative().optional(),
   rangeBonus: z.number().optional(),
   trains: id.optional(),
+  /** training queue length per lodge (M6) */
+  queueMax: z.number().int().positive().optional(),
   respawnPoint: z.boolean().optional(),
   buildable: z.boolean().optional(),
   hp: pos.optional(),

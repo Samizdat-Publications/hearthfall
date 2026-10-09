@@ -31,7 +31,8 @@
           "supply": 7,
           "breedSeconds": 100
         }
-      ]
+      ],
+      "hp": 1200
     },
     {
       "id": "watchtower",
@@ -41,7 +42,8 @@
       ],
       "wood": 5,
       "garrison": 2,
-      "rangeBonus": 3
+      "rangeBonus": 3,
+      "hp": 1500
     },
     {
       "id": "warden_lodge",
@@ -50,7 +52,9 @@
         3
       ],
       "wood": 8,
-      "trains": "warden"
+      "trains": "warden",
+      "hp": 2000,
+      "queueMax": 5
     },
     {
       "id": "fire_lodge",
@@ -59,7 +63,9 @@
         3
       ],
       "wood": 8,
-      "trains": "firecaller"
+      "trains": "firecaller",
+      "hp": 2000,
+      "queueMax": 5
     },
     {
       "id": "chant_house",
@@ -68,7 +74,9 @@
         3
       ],
       "wood": 8,
-      "trains": "chanter"
+      "trains": "chanter",
+      "hp": 2000,
+      "queueMax": 5
     },
     {
       "id": "shade_den",
@@ -78,7 +86,9 @@
       ],
       "wood": 8,
       "trains": "shade",
-      "milestone": "backlog"
+      "milestone": "backlog",
+      "hp": 2000,
+      "queueMax": 5
     },
     {
       "id": "boathouse",
@@ -87,7 +97,8 @@
         3
       ],
       "wood": 5,
-      "milestone": "backlog"
+      "milestone": "backlog",
+      "hp": 1500
     },
     {
       "id": "skyloft",
@@ -96,7 +107,8 @@
         3
       ],
       "wood": 11,
-      "milestone": "backlog"
+      "milestone": "backlog",
+      "hp": 1500
     },
     {
       "id": "hearth",

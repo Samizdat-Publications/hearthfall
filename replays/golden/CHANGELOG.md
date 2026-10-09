@@ -49,3 +49,8 @@ Reason: M5: new golden replay covering all v1 spells, Shaper death and respawn, 
 ## 2026-10-09 01:24 UTC
 Reason: M5 review: charge steal takes a percentage of the total stored charge value (was per spell, rounding to zero)
 - spells_duel: final 97ada597 -> 97ada597 (pack 4b2a6a53)
+
+## 2026-10-09 02:25 UTC
+Reason: M6 combat core: new entity columns (atk, cd, stance, mode, anchor, trance, chant, hitTick) are hashed; units now acquire and fight by stance; combat block added to the balance schema
+- spells_duel: final 97ada597 -> a7157576 (pack c7c5f12d)
+- terrain_ops_continents: final 7e6e82ec -> 911ea2a2 (pack c7c5f12d)

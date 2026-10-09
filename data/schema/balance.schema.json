@@ -400,6 +400,9 @@
     "combat": {
       "type": "object",
       "properties": {
+        "$comment": {
+          "type": "string"
+        },
         "heightRangedBonusPctPerBand": {
           "type": "number"
         },
@@ -420,6 +423,78 @@
         "shaperMinHpFromNonLethal": {
           "type": "number",
           "minimum": 0
+        },
+        "acquireRadius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "leashRadius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "retargetSeconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "chaseRepathSeconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "unitRadius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "heightBandUnits": {
+          "type": "number",
+          "minimum": 0
+        },
+        "maxHeightBands": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "shaperRegenPerSecond": {
+          "type": "number",
+          "minimum": 0
+        },
+        "shaperRegenDelaySeconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "eliminatedUnitsBecome": {
+          "type": "string",
+          "enum": [
+            "wild"
+          ]
+        },
+        "buildingDamageFactor": {
+          "type": "number",
+          "minimum": 0
+        },
+        "meleeSwingSeconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "rangedSplashFalloff": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "knockbackImmuneSeconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "preferTargetBonus": {
+          "type": "number",
+          "minimum": 0
+        },
+        "defensiveAcquireRadius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "defensiveLeashRadius": {
+          "type": "number",
+          "minimum": 0
         }
       },
       "required": [
@@ -427,7 +502,24 @@
         "stuckSeconds",
         "knockbackTicks",
         "knockbackDecay",
-        "shaperMinHpFromNonLethal"
+        "shaperMinHpFromNonLethal",
+        "acquireRadius",
+        "leashRadius",
+        "retargetSeconds",
+        "chaseRepathSeconds",
+        "unitRadius",
+        "heightBandUnits",
+        "maxHeightBands",
+        "shaperRegenPerSecond",
+        "shaperRegenDelaySeconds",
+        "eliminatedUnitsBecome",
+        "buildingDamageFactor",
+        "meleeSwingSeconds",
+        "rangedSplashFalloff",
+        "knockbackImmuneSeconds",
+        "preferTargetBonus",
+        "defensiveAcquireRadius",
+        "defensiveLeashRadius"
       ],
       "additionalProperties": false
     },

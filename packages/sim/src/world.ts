@@ -13,6 +13,7 @@ import { ORDER, UnitSystem } from "./units.ts";
 import { BSTATE, cloneEco, EconomySystem, newTribeEco, type TribeEco } from "./economy.ts";
 import { isShaper, onShaperDeath, updateSpells, type CastState, type PendingCast } from "./spells.ts";
 import { updateEffects } from "./effects.ts";
+import { CombatSystem } from "./combat.ts";
 
 /** Deterministic in-sim decision maker (AI opponent or test bot); emits Commands at its cadence. */
 export interface Controller {
@@ -94,6 +95,7 @@ export class World {
   godMode = false;
   units: UnitSystem;
   economy: EconomySystem;
+  combat: CombatSystem;
   controllers: Controller[] = [];
   readonly mapInfo: { generator: string; seedUsed: number; rerolls: number; landFraction: number };
 
@@ -107,6 +109,7 @@ export class World {
     this.mapInfo = { generator: init.map.generator, seedUsed: gen.seedUsed, rerolls: gen.rerolls, landFraction: gen.landFraction };
     this.units = new UnitSystem(this);
     this.economy = new EconomySystem(this);
+    this.combat = new CombatSystem(this);
     const tribeCount = init.map.tribes ?? gen.hearths.length;
     for (let t = 0; t < tribeCount; t++) this.tribes.push({ index: t, color: TRIBE_COLORS[t % 4], hearth: NO_ENTITY, alive: true, eco: newTribeEco(this), shaper: NO_ENTITY, respawnAt: -1, casting: null, pending: null });
     if (init.populate !== false) {
@@ -153,19 +156,23 @@ export class World {
     const type = this.cfg.unitIndex.get(kind);
     if (type === undefined) throw new Error(`unknown unit kind ${kind}`);
     const id = this.ents.alloc(CAT.unit, type, tribe, x, y, this.cfg.pack.units.units[type].hp);
+    this.ents.stance[this.ents.index(id)] = this.combat.defaultStance(type);
     if (this.cfg.pack.units.units[type].isCaster && tribe >= 0 && tribe < this.tribes.length) this.tribes[tribe].shaper = id;
     return id;
   }
 
   /**
    * Damage a unit or building. Shapers only die to effects allowed to kill them (lethal); other
-   * damage leaves them at least shaperMinHpFromNonLethal. Units inside buildings are safe.
+   * damage leaves them at least shaperMinHpFromNonLethal. Units inside buildings are safe. Any
+   * damage but a melee swing breaks a chant (ranged hits and spells interrupt Chanters).
    */
-  damage(i: number, amount: number, fromTribe: number, lethal: boolean): void {
+  damage(i: number, amount: number, fromTribe: number, lethal: boolean, melee = false): void {
     const E = this.ents;
     if (!E.alive[i] || amount <= 0) return;
     if (E.cat[i] === CAT.unit && E.inside[i] >= 0) return;
     if (fromTribe >= 0) E.lastHit[i] = fromTribe;
+    E.hitTick[i] = this.tick;
+    if (!melee && E.chant[i] > 0) this.combat.interruptChant(i, "hit");
     let hp = E.hp[i] - amount;
     if (E.cat[i] === CAT.unit && isShaper(this, i) && !lethal) hp = Math.max(hp, this.cfg.pack.balance.combat.shaperMinHpFromNonLethal);
     E.hp[i] = hp;
@@ -232,11 +239,14 @@ export class World {
     this.economy.updateTasks();
     // 4-5. pathing requests (budgeted) and movement
     this.units.update();
-    // 6. spells (queued and resolving casts, respawns, elimination) and persistent effects; combat in M6
+    // 6. spells (queued and resolving casts, respawns, elimination) and persistent effects
     updateSpells(this);
     updateEffects(this);
-    // 7. terrain ops, then drowning
+    // 6b. combat: targeting, swings and shots, chants, training queues, garrisons, Shaper regen
+    this.combat.update();
+    // 7. terrain ops (breaking nearby chants), then drowning
     if (this.terrainQueue.length) {
+      this.combat.onTerrainOps(this.terrainQueue);
       for (const op of this.terrainQueue) this.terrain.apply(op);
       this.terrainQueue = [];
       this.drownCheck();

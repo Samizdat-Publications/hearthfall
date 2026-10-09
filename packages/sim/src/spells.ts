@@ -157,6 +157,8 @@ export function updateSpells(w: World): void {
         t.casting = null;
         t.respawnAt = -1;
         w.emit("tribeEliminated", { tribe: t.index });
+        // a tribe that never had a Hearth (test fixtures) keeps its units
+        if (t.hearth !== NO_ENTITY) w.combat.releaseTribe(t.index);
       }
     }
   }

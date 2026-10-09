@@ -16,3 +16,5 @@ One line per entry: `MM/DD/YYYY HH:MM  M<n>  what happened`. Never read this fil
 10/08/2026 20:48  M5  spells v1 complete; A3 assets landed
 10/08/2026 21:02  M5  gates pass; art direction v2 decided with Stewart (ADR-005: 3D + retro render pass, benchmark retro-candidate-3); session handoff prepared
 10/08/2026 21:28  M5  review fixes (charge steal, making-of paths), retro render pass v1 with re-approved baselines, Stewart's pick recorded as target; tagged m5-done; run paused by Stewart
+- 2026-10-09T01:57Z look v2 committed (8ab91b5); M6 started (data: stances, combat radii, Shaper regen, lodge queues).
+- 2026-10-09T02:40Z M6 combat core green (qa:fast, 25 scenarios, browser replays identical after rebless). Fixes on the way: leash reacquire loop, trainees heading home were skipped, new orders now cancel lodge and tower walks, fixtures without a Hearth keep their units on elimination. ADR-006.
