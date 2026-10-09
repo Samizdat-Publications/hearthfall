@@ -81,12 +81,12 @@ export class WarBot implements Controller {
       let want: string | null = null;
       for (const [unit] of this.mix) {
         const lodge = units[w.cfg.unitIndex.get(unit)!].trainedAt;
-        if (lodge && !lodges.has(lodge)) {
+        if (lodge && !lodges.has(lodge) && !w.economy.buildingLock(this.tribe, w.cfg.buildingIndex.get(lodge)!)) {
           want = lodge;
           break;
         }
       }
-      if (!want && this.tower && towers === 0) want = "watchtower";
+      if (!want && this.tower && towers === 0 && !w.economy.buildingLock(this.tribe, w.cfg.buildingIndex.get("watchtower")!)) want = "watchtower";
       if (want) {
         const spot = this.eco.findSpot(w, want, E.x[h], E.y[h]);
         if (spot) cmd("placePlan", { building: want, at: spot });

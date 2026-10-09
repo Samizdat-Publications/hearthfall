@@ -18,7 +18,13 @@ describe("data pack", () => {
     expect(validatePack(raw).issues.length).toBeGreaterThan(0);
     const raw2 = loadBase();
     (raw2["ai_personalities.json"] as { personalities: { spellPrefs: string[] }[] }).personalities[0].spellPrefs.push("nope");
-    expect(validatePack(raw2).issues.some((i) => i.message.includes("nope"))).toBe(true);
+    expect(validatePack(raw2).issues.some((i) => i.message.includes("nope"))).toBe(true);    type Tiers = { progression: { tiers: { followers: number; buildings: string[] }[] } };
+    const raw3 = loadBase();
+    (raw3["balance.json"] as Tiers).progression.tiers[1].buildings.push("castle");
+    expect(validatePack(raw3).issues.some((i) => i.message.includes("castle"))).toBe(true);
+    const raw4 = loadBase();
+    (raw4["balance.json"] as Tiers).progression.tiers[2].followers = 1;
+    expect(validatePack(raw4).issues.some((i) => i.message.includes("must increase"))).toBe(true);
   });
 
   it("canonical json ignores key order", () => {

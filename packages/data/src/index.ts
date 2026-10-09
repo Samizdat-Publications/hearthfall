@@ -106,6 +106,11 @@ function crossCheck(p: PackFiles): PackIssue[] {
     for (const t of u.trainableInto ?? []) need("units.json", `${u.id}.trainableInto`, units, t, "unit");
     for (const t of u.convert?.cannotConvert ?? []) need("units.json", `${u.id}.convert.cannotConvert`, units, t, "unit");
   }
+  p.balance.progression.tiers.forEach((t, k, all) => {
+    for (const b of t.buildings) need("balance.json", `progression.tiers.${t.id}.buildings`, buildings, b, "building");
+    if (k === 0 && t.followers !== 0) issues.push({ file: "balance.json", path: `progression.tiers.${t.id}`, message: "the first tier must need 0 followers" });
+    if (k > 0 && t.followers <= all[k - 1].followers) issues.push({ file: "balance.json", path: `progression.tiers.${t.id}`, message: "tier follower thresholds must increase" });
+  });
   for (const b of p.buildings.buildings) if (b.trains) need("buildings.json", `${b.id}.trains`, units, b.trains, "unit");
   for (const u of p.units.units) if (u.isCaster && !u.respawn) issues.push({ file: "units.json", path: `${u.id}.respawn`, message: "the caster needs respawn timings" });
   // effect fields the sim reads without a fallback (packages/sim/src/effects.ts)

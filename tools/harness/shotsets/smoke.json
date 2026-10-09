@@ -302,6 +302,9 @@
     },
     {
      "assert": "__game.troop({ kind: 'train', n: 1 }) === false && __game.troop({ kind: 'retreat' }) === true"
+    },
+    {
+     "assert": "document.querySelector('[data-hud-part=next-unlock]') !== null && document.querySelectorAll('.build-btn.locked').length === 4 && (__game.placeAtScreen('warden_lodge', 760, 400), __game.getSummary().tribes[0].buildings === 1)"
     }
    ],
    "kind": "hud",

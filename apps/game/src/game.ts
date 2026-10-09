@@ -251,6 +251,9 @@ export class Game {
   }
 
   startPlacing(building: string): void {
+    const type = this.world.cfg.buildingIndex.get(building);
+    // progression: a locked building cannot be picked (god mode sandboxes ignore locks)
+    if (type !== undefined && !this.world.godMode && this.world.economy.buildingLock(this.localTribe, type)) return;
     this.placing = building;
     this.attackMode = false;
     this.onChange();

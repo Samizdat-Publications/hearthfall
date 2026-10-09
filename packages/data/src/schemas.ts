@@ -117,6 +117,13 @@ export const BalanceSchema = z.strictObject({
     panic: z.strictObject({ fleeDistance: pos, repickSeconds: pos }),
     burning: z.strictObject({ damagePerSecond: pos }),
   }),
+  progression: z.strictObject({
+    ...comment,
+    /** in-match unlock tiers (DESIGN 3a): a tier opens once the tribe's followers reach `followers` (peak, never lost) */
+    tiers: z
+      .array(z.strictObject({ ...comment, id: z.string(), followers: z.number().int().min(0), buildings: z.array(z.string()) }))
+      .min(1),
+  }),
   gates: z.strictObject({
     ...comment,
     counterTriangleMinWinPct: z.number(),

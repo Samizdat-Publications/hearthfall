@@ -125,6 +125,8 @@ registerCommand("placePlan", {
     if (!isPoint(c.args.at)) return "placePlan needs at: [x, y]";
     const type = w.cfg.buildingIndex.get(String(c.args.building));
     if (type === undefined) return `unknown building ${String(c.args.building)}`;
+    const lock = w.godMode ? null : w.economy.buildingLock(c.tribe, type);
+    if (lock) return `locked: ${lock}`;
     let open = 0;
     const E = w.ents;
     for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.cat[i] === CAT.building && E.tribe[i] === c.tribe && E.state[i] !== BSTATE.done) open++;

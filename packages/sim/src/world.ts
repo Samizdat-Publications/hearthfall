@@ -393,7 +393,7 @@ export class World {
     const mf = new Fnv().u32(this.tick);
     for (const t of this.tribes) {
       mf.u32(t.hearth).u32(t.alive ? 1 : 0).f64(t.eco.wasted).f64(t.eco.spellsPct).u32(t.eco.cursor).f64(t.eco.trainMana);
-      mf.u32(t.shaper).f64(t.respawnAt).f64(t.eco.priorities.build).f64(t.eco.priorities.upgrade).f64(t.eco.priorities.breed);
+      mf.u32(t.shaper).f64(t.respawnAt).f64(t.eco.priorities.build).f64(t.eco.priorities.upgrade).f64(t.eco.priorities.breed).u32(t.eco.tier);
       if (t.casting) mf.u32(t.casting.spell).f64(t.casting.x).f64(t.casting.y).u32(t.casting.startedAt).u32(t.casting.resolveAt);
       if (t.pending) mf.u32(t.pending.spell + 1000).f64(t.pending.x).f64(t.pending.y).f64(t.pending.best);
       mf.bytes(t.eco.charges).bytes(t.eco.progress).bytes(t.eco.auto).bytes(t.eco.unlocked);

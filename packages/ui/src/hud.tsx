@@ -56,7 +56,10 @@ export interface HudModel {
   placing: string | null;
   placeBlocked: string | null;
   targeting: string | null;
-  buildable: { id: string; name: string; wood: number; key: string }[];
+  /** build tools; `locked` says what progression still needs ("needs 10 followers") */
+  buildable: { id: string; name: string; wood: number; key: string; locked: string | null }[];
+  /** next progression tier: name, followers needed and what it opens; null when all are open */
+  nextUnlock: { name: string; followers: number; opens: string[] } | null;
   box: { x0: number; y0: number; x1: number; y1: number } | null;
   showHelp: boolean;
   priorities: { build: number; upgrade: number; breed: number };
@@ -242,6 +245,11 @@ function Hud({ act }: { act: HudActions }) {
           <input type="range" min="0" max="100" step="5" value={m.spellsPct} onInput={(e) => act.setSplit(Number((e.target as HTMLInputElement).value))} aria-label="Mana split between spells and training" />
           <span class="res-label">Training</span>
         </label>
+        {m.nextUnlock ? (
+          <span data-hud-part="next-unlock" class="next-unlock" title={`Reach ${m.nextUnlock.followers} followers to open ${m.nextUnlock.opens.join(", ")}`}>
+            Next: {m.nextUnlock.name} at {m.nextUnlock.followers} followers ({m.nextUnlock.opens.join(", ")})
+          </span>
+        ) : null}
         <div class="res-row priorities" title="What idle settlers do on their own">
           {(["build", "upgrade", "breed"] as const).map((k) => (
             <button key={k} class={"prio" + (m.priorities[k] > 0 ? " on" : "")} onClick={() => act.togglePriority(k)}>
@@ -257,7 +265,7 @@ function Hud({ act }: { act: HudActions }) {
       </div>
       <div data-hud="build" class="hud-panel hud-build">
         {m.buildable.map((bd) => (
-          <button key={bd.id} class={"build-btn" + (m.placing === bd.id ? " active" : "")} onClick={() => (m.placing === bd.id ? act.cancel() : act.startPlacing(bd.id))} title={`${bd.name}: ${bd.wood} wood${bd.key ? ` (${bd.key})` : ""}`}>
+          <button key={bd.id} class={"build-btn" + (m.placing === bd.id ? " active" : "") + (bd.locked ? " locked" : "")} disabled={bd.locked !== null} onClick={() => (m.placing === bd.id ? act.cancel() : act.startPlacing(bd.id))} title={`${bd.name}: ${bd.wood} wood${bd.key ? ` (${bd.key})` : ""}${bd.locked ? `, locked: ${bd.locked}` : ""}`}>
             {bd.name} {bd.key ? <span class="hotkey">{bd.key}</span> : null}
           </button>
         ))}

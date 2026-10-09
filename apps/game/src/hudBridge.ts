@@ -25,6 +25,7 @@ export function hudFor(game: Game): HudModel {
     });
   }
   const bdefs = w.cfg.pack.buildings.buildings;
+  const nextTier = tr ? w.cfg.pack.balance.progression.tiers[tr.eco.tier + 1] : undefined;
   const si = tr ? shaperIndex(w, tr.index) : -1;
   const cursor = tr ? w.economy.nextSpell(tr.eco) : -1;
   const shaperHp = si >= 0 ? w.ents.hp[si] / Math.max(1, w.cfg.pack.units.units[w.ents.type[si]].hp) : 0;
@@ -45,7 +46,8 @@ export function hudFor(game: Game): HudModel {
     placing: game.placing,
     placeBlocked: game.placeBlocked,
     targeting: game.targeting,
-    buildable: bdefs.filter((b) => b.buildable !== false && b.milestone !== "backlog").map((b) => ({ id: b.id, name: title(b.id), wood: b.levels?.[0]?.wood ?? b.wood ?? 0, key: BUILD_KEYS[b.id] ?? "" })),
+    buildable: bdefs.filter((b) => b.buildable !== false && b.milestone !== "backlog").map((b) => ({ id: b.id, name: title(b.id), wood: b.levels?.[0]?.wood ?? b.wood ?? 0, key: BUILD_KEYS[b.id] ?? "", locked: tr ? w.economy.buildingLock(tr.index, w.cfg.buildingIndex.get(b.id)!) : null })),
+    nextUnlock: nextTier ? { name: title(nextTier.id), followers: nextTier.followers, opens: nextTier.buildings.map(title) } : null,
     box: game.box,
     showHelp: game.showHelp,
     priorities: tr ? { ...tr.eco.priorities } : { build: 1, upgrade: 1, breed: 1 },

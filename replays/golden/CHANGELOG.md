@@ -64,3 +64,8 @@ Reason: BACKLOG 54: knockback edgeFalloff and building hp now required in the sc
 Reason: M6 battle perf: idleAcquireSeconds throttle for unengaged units, A* straight-line shortcut on open ground
 - spells_duel: final a7157576 -> 623c6efc (pack 7a5c1f56)
 - terrain_ops_continents: final 911ea2a2 -> 911ea2a2 (pack 7a5c1f56)
+
+## 2026-10-09 05:07 UTC
+Reason: progression tiers: balance.progression in the pack, eco.tier hashed
+- spells_duel: final 623c6efc -> 6ff81161 (pack d811a61b)
+- terrain_ops_continents: final 911ea2a2 -> 73828506 (pack d811a61b)

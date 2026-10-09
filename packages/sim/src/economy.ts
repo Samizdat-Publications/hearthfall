@@ -31,6 +31,8 @@ export interface TribeEco {
   trainMana: number;
   trainDemand: number;
   priorities: { build: number; upgrade: number; breed: number };
+  /** highest progression tier reached (balance.progression.tiers index; never goes down) */
+  tier: number;
 }
 
 export function newTribeEco(w: World): TribeEco {
@@ -49,6 +51,7 @@ export function newTribeEco(w: World): TribeEco {
     trainMana: 0,
     trainDemand: 0,
     priorities: { ...eco.priorities },
+    tier: 0,
   };
   spells.spells.forEach((s, i) => {
     const sel = eco.skirmishSpells;
@@ -91,6 +94,16 @@ export class EconomySystem {
   }
 
   // ---------------------------------------------------------------- queries
+  /** Why a building type is locked for a tribe by progression ("needs N followers"), else null. */
+  buildingLock(tribe: number, type: number): string | null {
+    const t = this.w.tribes[tribe];
+    if (!t) return null;
+    const id = this.w.cfg.pack.buildings.buildings[type].id;
+    const tiers = this.w.cfg.pack.balance.progression.tiers;
+    const k = tiers.findIndex((x) => x.buildings.includes(id));
+    return k > t.eco.tier ? `needs ${tiers[k].followers} followers` : null;
+  }
+
   followers(tribe: number): number {
     const E = this.w.ents;
     let n = 0;
@@ -609,6 +622,14 @@ export class EconomySystem {
     // dwellings: breeding and upgrades
     const pops = w.tribes.map((t) => this.followers(t.index));
     const caps = w.tribes.map((t) => this.popCap(t.index));
+    // progression: open every tier the follower count reaches (peak based)
+    const tiers = w.cfg.pack.balance.progression.tiers;
+    for (const t of w.tribes) {
+      while (t.alive && t.eco.tier + 1 < tiers.length && pops[t.index] >= tiers[t.eco.tier + 1].followers) {
+        t.eco.tier++;
+        w.emit("tierReached", { tribe: t.index, tier: t.eco.tier, id: tiers[t.eco.tier].id });
+      }
+    }
     const breed = w.cfg.pack.balance.breeding;
     for (let d = 0; d < E.hi; d++) {
       if (!E.alive[d] || E.cat[d] !== CAT.building || E.type[d] !== this.typeDwelling || E.state[d] !== BSTATE.done) continue;

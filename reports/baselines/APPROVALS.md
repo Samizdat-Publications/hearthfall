@@ -15,3 +15,6 @@
 - 2026-10-09T04:46 set smoke (12 shots): M6 HUD: build column lists Watchtower and the three lodges; new troop panel shot hud_troops
 - 2026-10-09T04:54 set spells (8 shots): M6 HUD: build column lists Watchtower and the three lodges (same change as smoke)
 - 2026-10-09T04:59 set combat (3 shots): M6 combat VFX: fireball arc and splash, chant pulse, melee spark
+- 2026-10-09T05:08 set smoke (12 shots): progression: locked build buttons and a next-unlock line in the resources panel; help panel moved down
+- 2026-10-09T05:08 set spells (8 shots): progression: locked build buttons and a next-unlock line in the resources panel; help panel moved down
+- 2026-10-09T05:08 set combat (3 shots): progression: locked build buttons and a next-unlock line in the resources panel; help panel moved down

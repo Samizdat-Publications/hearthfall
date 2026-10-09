@@ -572,6 +572,50 @@
       ],
       "additionalProperties": false
     },
+    "progression": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "tiers": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "$comment": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "followers": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "buildings": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "id",
+              "followers",
+              "buildings"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "tiers"
+      ],
+      "additionalProperties": false
+    },
     "gates": {
       "type": "object",
       "properties": {
@@ -640,6 +684,7 @@
     "breeding",
     "combat",
     "statuses",
+    "progression",
     "gates"
   ],
   "additionalProperties": false

@@ -51,9 +51,11 @@ body.debug-overlap-hud .hud-overlap { display: block; }
 .hud-title { left: 12px; bottom: 12px; display: flex; gap: 10px; align-items: baseline; padding: 4px 10px; }
 .hud-name { font-weight: 800; font-size: 14px; letter-spacing: 0.5px; }
 .hud-sub { font-size: 11px; opacity: 0.85; }
-.hud-help { left: 12px; top: 132px; max-width: 320px; white-space: normal; line-height: 1.5; font-size: 11px; }
+.hud-help { left: 12px; top: 176px; max-width: 320px; white-space: normal; line-height: 1.5; font-size: 11px; }
 .hud-selection { left: 50%; bottom: 12px; transform: translateX(-50%); font-weight: 600; }
 .hud-troops { left: 50%; bottom: 64px; transform: translateX(-50%); display: flex; flex-direction: column; gap: 4px; padding: 6px 8px; pointer-events: auto; min-width: 260px; }
 .troops-label { font-weight: 600; font-size: 12px; }
 .troops-row { display: flex; gap: 4px; }
 .prio:disabled { opacity: 0.45; cursor: default; }
+.build-btn.locked { opacity: 0.5; cursor: default; filter: grayscale(0.6); }
+.next-unlock { font-size: 11px; color: #e8d9b0; white-space: normal; line-height: 1.3; }

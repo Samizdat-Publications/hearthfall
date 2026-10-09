@@ -103,6 +103,14 @@
     "defensiveAcquireRadius": 3,
     "defensiveLeashRadius": 4
   },
+  "progression": {
+    "$comment": "In-match unlock tiers (DESIGN 3a). A tier opens when the tribe first reaches its follower count and stays open. Buildings not listed in any tier are always available. Spells unlock by worship (M9).",
+    "tiers": [
+      { "id": "camp", "followers": 0, "buildings": ["dwelling"] },
+      { "id": "village", "followers": 10, "buildings": ["watchtower", "warden_lodge"] },
+      { "id": "town", "followers": 18, "buildings": ["fire_lodge", "chant_house"] }
+    ]
+  },
   "gates": {
     "counterTriangleMinWinPct": 65,
     "maxPersonalityWinPct": 70,

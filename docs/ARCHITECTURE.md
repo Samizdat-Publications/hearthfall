@@ -93,6 +93,9 @@ Cost field per cell from slope and water. Hierarchical: 16x16 cell sectors with 
 ### Economy (M4)
 `packages/sim/src/economy.ts`: settler job state machine and per-tribe assignment (system step 3: chop, haul, flatten, build, move home; one occupant stays to breed), construction sites and dwellings with occupancy, auto-upgrade and breeding under the population cap, tree regrowth and spread, mana income by follower state into the spell and training sinks with the split slider (step 8). Tribe economy state (`TribeEco`) is part of the hash and snapshots. The economy bot (`packages/ai/src/economyBot.ts`) only places dwelling plans; everything else is autonomy.
 
+### Progression (BACKLOG 0b)
+`balance.progression.tiers` (data) lists follower thresholds and the buildings each tier opens; buildings not in any tier are always open. `economy.update` raises `eco.tier` (hashed, snapshotted) when the tribe's followers first reach the next threshold and emits `tierReached`; tiers never close. `EconomySystem.buildingLock(tribe, type)` returns "needs N followers" or null; `placePlan` rejects locked buildings (`locked: ...`) except in god mode, WarBot skips them, and the HUD greys locked build buttons and shows the next tier in the resources panel. Spell unlocks by worship arrive with Shrines and Reliquaries (M9).
+
 ## 4. Data packs (`data/`, `packages/data`)
 
 - Files: `units.json, buildings.json, spells.json, effects.json, ai_personalities.json, balance.json, terrain.json, style.json, levels/*.json`.
