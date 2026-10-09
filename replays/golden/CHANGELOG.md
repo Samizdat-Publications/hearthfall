@@ -41,3 +41,7 @@ Reason: M5: combat and status entity columns, Shaper and cast state in the tribe
 ## 2026-10-09 00:34 UTC
 Reason: M4 review: priorities in the tribe hash, forest spread on its own rng stream, stumps cleared at plan placement
 - terrain_ops_continents: final 38553ea7 -> 7e6e82ec (pack cefcd6de)
+
+## 2026-10-09 00:47 UTC
+Reason: M5: new golden replay covering all v1 spells, Shaper death and respawn, charge steal and undo
+- spells_duel: final none -> 97ada597 (pack cefcd6de)

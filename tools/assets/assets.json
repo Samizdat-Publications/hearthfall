@@ -7867,14 +7867,14 @@
           "request_hash": "f849490e22499c87f0fcea594c8d2e486fa4cd09bd6d6aa644d5859910f058bc"
         },
         "post": {
-          "status": "submitted",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:41:32Z",
-          "finished": "2026-10-09T00:27:56Z",
+          "finished": "2026-10-09T00:41:33Z",
           "cost": null,
           "output_path": "assets/audio/sfx.building_done.ogg",
-          "sha256": "af2596ddf3cc21e03e1463e7732513075088d72f7e01a50f7f07d969c43493e1",
+          "sha256": "b4d9b67e466d4646ae70db02f420b8739daa70fa55ccc36b7ed09b9866a660f2",
           "attempts": 1,
           "error": null,
           "meta": {
@@ -7976,15 +7976,15 @@
           "request_hash": "a09f8ace2f3dc9701b75a16ca64d354fcf4653e816dbad640cdcf084b7e84ea7"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:27:59Z",
-          "finished": "2026-10-09T00:28:00Z",
+          "started": "2026-10-09T00:41:33Z",
+          "finished": "2026-10-09T00:41:34Z",
           "cost": null,
           "output_path": "assets/audio/sfx.born.ogg",
-          "sha256": "9a71748576b077d82af5df2865e8987dd2b2e0d7c718cb3dfa5b10e5d51661db",
-          "attempts": 0,
+          "sha256": "ac3303653e99fcf6662ac7ef9dcb4b5d92ec8694d453edbf27ee2414f7fb1b16",
+          "attempts": 1,
           "error": null,
           "meta": {
             "bytes": 24358,
@@ -8085,15 +8085,15 @@
           "request_hash": "9b038a4bca4c3d8d52b54d69b9d42252d93dd452d4bd28aa842870296e1fd602"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:28:04Z",
-          "finished": "2026-10-09T00:28:04Z",
+          "started": "2026-10-09T00:41:34Z",
+          "finished": "2026-10-09T00:41:36Z",
           "cost": null,
           "output_path": "assets/audio/sfx.drowned.ogg",
-          "sha256": "17bbaaab1ea8f5d7bce57735f020bab8cf7270504ac81513b3fd7920879f6650",
-          "attempts": 0,
+          "sha256": "b684e98b1318c67c336bc2e04d4f8458e3f5d8073d95ad0496e9b582da4504e4",
+          "attempts": 1,
           "error": null,
           "meta": {
             "bytes": 28192,
@@ -8194,15 +8194,15 @@
           "request_hash": "98b6e710b3e42f5840a21d871c01e734c8e6114c7e0cd9a1657c7fe4f07ccf52"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:28:08Z",
-          "finished": "2026-10-09T00:28:08Z",
+          "started": "2026-10-09T00:41:36Z",
+          "finished": "2026-10-09T00:41:37Z",
           "cost": null,
           "output_path": "assets/audio/sfx.died.ogg",
-          "sha256": "c55beb31427b31ae292a176a7b234d322223536701177924096f8b72ef214c93",
-          "attempts": 0,
+          "sha256": "e95b346e3e444848a67c0e77c43dbe06a4462eb33240e586df42323926ddd5ae",
+          "attempts": 1,
           "error": null,
           "meta": {
             "bytes": 18240,
@@ -8303,15 +8303,15 @@
           "request_hash": "fe66b597ce713b6c1e638a322826e663785bd169805a5b6360005fb39fca52ed"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:28:11Z",
-          "finished": "2026-10-09T00:28:12Z",
+          "started": "2026-10-09T00:41:37Z",
+          "finished": "2026-10-09T00:41:38Z",
           "cost": null,
           "output_path": "assets/audio/sfx.plan_placed.ogg",
-          "sha256": "de9da831c07a08eb7ff5448ec782af66ebbefc88cbb47d37af18c3432f964826",
-          "attempts": 0,
+          "sha256": "25c5e6e9d05868fefeb5ac716215809519438ff7dc21cb9671772ca7770c25c3",
+          "attempts": 1,
           "error": null,
           "meta": {
             "bytes": 17354,
@@ -8412,15 +8412,15 @@
           "request_hash": "680ade159a5647d17e4384f7fbdb63eab696d51cabce7362eedf0d20c0dbad08"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:28:16Z",
-          "finished": "2026-10-09T00:28:17Z",
+          "started": "2026-10-09T00:41:38Z",
+          "finished": "2026-10-09T00:41:39Z",
           "cost": null,
           "output_path": "assets/audio/sfx.charged.ogg",
-          "sha256": "6d1f08fd6226afb7298ce711eb66eebdf921499ceb4999a031302ba4a50efc5d",
-          "attempts": 0,
+          "sha256": "e616cecf26ecb524a32ab8c585f5dffafe4938d2c76cec84afdf503e429fd48f",
+          "attempts": 1,
           "error": null,
           "meta": {
             "bytes": 26052,
@@ -8521,15 +8521,15 @@
           "request_hash": "e4aded5a58dd69710781877b77427b86da78d56e8f25fcfe841c6f6fa4ee25e6"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:28:20Z",
-          "finished": "2026-10-09T00:28:22Z",
+          "started": "2026-10-09T00:41:39Z",
+          "finished": "2026-10-09T00:41:40Z",
           "cost": null,
           "output_path": "assets/audio/sfx.ui_error.ogg",
-          "sha256": "253c0ab8eedc115357947c775ecb6fdd74ddbdc6b6b1d51a5c22eba4c9bddc6c",
-          "attempts": 0,
+          "sha256": "5133b359d57c4fc629b319d6eb91f8101a7be0a1189fc536100eb835ad131f4b",
+          "attempts": 1,
           "error": null,
           "meta": {
             "bytes": 12973,
@@ -8630,15 +8630,15 @@
           "request_hash": "558ff965f6300e037ec92b5bef018d882990890ac985484f07cae45eca1af664"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:28:26Z",
-          "finished": "2026-10-09T00:28:27Z",
+          "started": "2026-10-09T00:41:40Z",
+          "finished": "2026-10-09T00:41:42Z",
           "cost": null,
           "output_path": "assets/audio/sfx.bolt_cast.ogg",
-          "sha256": "b115044f3a4b24c425a7fdf539408788800fb7527ba8c3beb2c88572780bc84d",
-          "attempts": 0,
+          "sha256": "390356f4552b9c84d187dd0d5fe9d92b059ae9725120d73a02317b856b3a0f31",
+          "attempts": 1,
           "error": null,
           "meta": {
             "bytes": 19780,
@@ -8739,15 +8739,15 @@
           "request_hash": "0bca06a667e03bbd2c06126dca8b952db2df69e8c9271cf4bc04fca8ca386d68"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:28:31Z",
-          "finished": "2026-10-09T00:28:31Z",
+          "started": "2026-10-09T00:41:42Z",
+          "finished": "2026-10-09T00:41:43Z",
           "cost": null,
           "output_path": "assets/audio/sfx.bolt_impact.ogg",
-          "sha256": "8aa5c34e0a179b33eabd699a8c23242bf77375e4b40e5145853322bd277c760c",
-          "attempts": 0,
+          "sha256": "0e905bd594cf0c4f972c63b75d9c1c5f280ecb09d915197f60d19904fe15db8e",
+          "attempts": 1,
           "error": null,
           "meta": {
             "bytes": 28874,
@@ -8848,15 +8848,15 @@
           "request_hash": "db1bb54a8052e07b4ad011f34393b262617d978225803ce3113c52fe528b6c17"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:28:35Z",
-          "finished": "2026-10-09T00:28:36Z",
+          "started": "2026-10-09T00:41:43Z",
+          "finished": "2026-10-09T00:41:45Z",
           "cost": null,
           "output_path": "assets/audio/sfx.call_cast.ogg",
-          "sha256": "2ca574abf2abb7a9773d47bc18879447c9083aeb7ea26b99758bd9f3fc6b2aac",
-          "attempts": 0,
+          "sha256": "a55ea7dd813d37329fb55854462a439664b4a3418ce84d0117038016f651f43e",
+          "attempts": 1,
           "error": null,
           "meta": {
             "bytes": 33614,
@@ -8957,15 +8957,15 @@
           "request_hash": "962335eb305abd8a2628053f47ccd0875ead6a5b0c6f61e2efea17c3c55e27ca"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:28:40Z",
-          "finished": "2026-10-09T00:28:41Z",
+          "started": "2026-10-09T00:41:45Z",
+          "finished": "2026-10-09T00:41:46Z",
           "cost": null,
           "output_path": "assets/audio/sfx.lightning_impact.ogg",
-          "sha256": "50d047a35c14bd5648c4b8a59e7bd5fed860632c51549c47ac54ad56202e1782",
-          "attempts": 0,
+          "sha256": "e93e06892b0f0a344f83f9d4dc418d32e41360612c7d3e2c2d213db4e540d832",
+          "attempts": 1,
           "error": null,
           "meta": {
             "bytes": 38309,
@@ -9066,15 +9066,15 @@
           "request_hash": "821ccc04c8b7301933976e38e64141ee8bd0d9f480f61ef9d690c7370e333c10"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:28:44Z",
-          "finished": "2026-10-09T00:28:45Z",
+          "started": "2026-10-09T00:41:46Z",
+          "finished": "2026-10-09T00:41:48Z",
           "cost": null,
           "output_path": "assets/audio/sfx.raise_land.ogg",
-          "sha256": "f4be3055ad880fc5e943b7694116a041c3f0aaaa2290df71f58b9c5e20aef472",
-          "attempts": 0,
+          "sha256": "237ac7ee7f86963b14ed86c1280c5bbcef074bd7c4d87f13e902daccfe59f242",
+          "attempts": 1,
           "error": null,
           "meta": {
             "bytes": 34917,
@@ -9175,15 +9175,15 @@
           "request_hash": "0be96fa1288bae48e6a711df7c43d6f1671cbd6214c57b13c5f57651c1a21250"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:28:48Z",
-          "finished": "2026-10-09T00:28:49Z",
+          "started": "2026-10-09T00:41:48Z",
+          "finished": "2026-10-09T00:41:49Z",
           "cost": null,
           "output_path": "assets/audio/sfx.flatten.ogg",
-          "sha256": "090877d448b34f64e01a7e4f5ee9f4e4d2ef0274f91b0a31c6ff6d49fff92fb7",
-          "attempts": 0,
+          "sha256": "eced9cb20182ff0ce5bf4a09939f89db3dadb9e22cb0ae00312750902afa55d1",
+          "attempts": 1,
           "error": null,
           "meta": {
             "bytes": 31736,
@@ -9284,15 +9284,15 @@
           "request_hash": "4a15403b7e5f32324b67fe88d969d3f196213fccf0e47aa3aaa6aaacb35ae195"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:28:53Z",
-          "finished": "2026-10-09T00:28:53Z",
+          "started": "2026-10-09T00:41:49Z",
+          "finished": "2026-10-09T00:41:50Z",
           "cost": null,
           "output_path": "assets/audio/sfx.quake.ogg",
-          "sha256": "64b8adcad84fa7d3eeb81ee94e901fc0fb8f2bafd69aa0674350fd677a4bacf3",
-          "attempts": 0,
+          "sha256": "3a400009f137a19b9a977776f351d65d06220727624b5fb069b12a6737a09780",
+          "attempts": 1,
           "error": null,
           "meta": {
             "bytes": 34042,
@@ -9393,15 +9393,15 @@
           "request_hash": "bf6c3b481bd3cddd1a31eee0629826b8739c85aa1a1c5487eed511c70e8e6769"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:28:57Z",
-          "finished": "2026-10-09T00:28:58Z",
+          "started": "2026-10-09T00:41:50Z",
+          "finished": "2026-10-09T00:41:51Z",
           "cost": null,
           "output_path": "assets/audio/sfx.hornets.ogg",
-          "sha256": "1a439834763b878002907f6606b47ef9fef216a4a98d6e006cf77bdb91f980e9",
-          "attempts": 0,
+          "sha256": "ffa326daa1033d9f701d5f2132fa8746e207017a6e4c6e446f2796ecbc70daa7",
+          "attempts": 1,
           "error": null,
           "meta": {
             "bytes": 42762,
@@ -9502,15 +9502,15 @@
           "request_hash": "6e0c94f0b7f69f95e50e7bb4169ba58d03c37b9135ccc4fab09b439a96b4123d"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:29:02Z",
-          "finished": "2026-10-09T00:29:03Z",
+          "started": "2026-10-09T00:41:51Z",
+          "finished": "2026-10-09T00:41:52Z",
           "cost": null,
           "output_path": "assets/audio/sfx.volcano.ogg",
-          "sha256": "ceecc2142aaab2759b2991c8740d317e86f358f17f2b8336730700ab01729ad1",
-          "attempts": 0,
+          "sha256": "ec93c49c6dbddf37372e1a5f1bb06829afdebd4700c77d6d2733f0ad873e1127",
+          "attempts": 1,
           "error": null,
           "meta": {
             "bytes": 34794,
@@ -9620,15 +9620,15 @@
           "request_hash": "167eae5fbd82465eb883c72c05fe928083d0e72741dce57aec00d5943447e812"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:32:26Z",
-          "finished": "2026-10-09T00:32:29Z",
+          "started": "2026-10-09T00:41:52Z",
+          "finished": "2026-10-09T00:41:54Z",
           "cost": null,
           "output_path": "assets/audio/voice.shaper.acknowledged.ogg",
-          "sha256": "44178387ab3afa6229e76ed6e1e0072c8f7ad2a433de8e14a759fc9be00302e2",
-          "attempts": 0,
+          "sha256": "a21892a08ace16668ad2b360c78a2fb26029cf61c8df4ed9c72b58118b24d349",
+          "attempts": 1,
           "error": null,
           "meta": {
             "bytes": 17515,
@@ -9738,15 +9738,15 @@
           "request_hash": "91e0e0599270770cf79908e0b4b8c7ee682c41f36982aafee585687ab1889a4d"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:32:31Z",
-          "finished": "2026-10-09T00:32:32Z",
+          "started": "2026-10-09T00:41:54Z",
+          "finished": "2026-10-09T00:41:55Z",
           "cost": null,
           "output_path": "assets/audio/voice.shaper.acknowledged_b.ogg",
-          "sha256": "d4ae0416746c4558d3973874e8b6123e37aae8b414e2e30cda8a5eb1b71c9cd1",
-          "attempts": 0,
+          "sha256": "c509d6fe6a7ce0b3d0c65b13c3ebacdfc570b3c0d67a7e7af0e2d595e3eddc67",
+          "attempts": 1,
           "error": null,
           "meta": {
             "bytes": 19756,
@@ -9856,15 +9856,15 @@
           "request_hash": "8b649745740ffe2193c22a44fffa9213ec4f5c5000d725a5fe7dbdc24a2d9e82"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:32:34Z",
-          "finished": "2026-10-09T00:32:35Z",
+          "started": "2026-10-09T00:41:55Z",
+          "finished": "2026-10-09T00:41:56Z",
           "cost": null,
           "output_path": "assets/audio/voice.shaper.casting.ogg",
-          "sha256": "d798d19fba5f819029211b6724e0cf801206a6d709ded41f3c7b32abea107f1a",
-          "attempts": 0,
+          "sha256": "86887331ed16a14065fcb06494ce20bba699a08bc2d35f7c86ee77e8f93146a2",
+          "attempts": 1,
           "error": null,
           "meta": {
             "bytes": 32957,
@@ -9974,15 +9974,15 @@
           "request_hash": "2abd86bc19d9b24691fe6eadeacf59975bda5d18bbbf14070d2f101a4dfd59d9"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:32:37Z",
-          "finished": "2026-10-09T00:32:37Z",
+          "started": "2026-10-09T00:41:57Z",
+          "finished": "2026-10-09T00:41:58Z",
           "cost": null,
           "output_path": "assets/audio/voice.shaper.under_attack.ogg",
-          "sha256": "85db74c60fb9f68a9c4a2b1e8663ca32fb549092df1d273d226deff3b3ddbb69",
-          "attempts": 0,
+          "sha256": "b5cd3b28c1e90300ff2979f10fc63615e6ed797f109c866344c92adbbedb438c",
+          "attempts": 1,
           "error": null,
           "meta": {
             "bytes": 31269,
@@ -10092,15 +10092,15 @@
           "request_hash": "b65119ada16c22f50d07e42acba2e588e45252314fa4ec49c820bc484ba35ae0"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:32:39Z",
-          "finished": "2026-10-09T00:32:39Z",
+          "started": "2026-10-09T00:41:58Z",
+          "finished": "2026-10-09T00:41:59Z",
           "cost": null,
           "output_path": "assets/audio/voice.shaper.victory.ogg",
-          "sha256": "e4b19d46aafb7cc6a8907a2541e897e0c51d0d91ff68ff6d2f79d8a66ea35f46",
-          "attempts": 0,
+          "sha256": "b4688ddcfaa857f297147e7dcb0833ce67cd8e62279c244f4dd8ef0443b00600",
+          "attempts": 1,
           "error": null,
           "meta": {
             "bytes": 34064,
@@ -11021,7 +11021,7 @@
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:35:24Z",
-          "finished": "2026-10-09T00:35:37Z",
+          "finished": "2026-10-09T00:42:50Z",
           "cost": null,
           "output_path": "assets/icons/icon.spell.bolt.png",
           "sha256": "06d1fbdbecb4b0c5f90f3357e97c0273457992a2e07984e1833ee0991c7a91c5",
@@ -11035,7 +11035,8 @@
             ],
             "warnings": [],
             "bg_frac": 0.7899446487426758,
-            "band_frac": 0.013197898864746094
+            "band_frac": 0.013197898864746094,
+            "pocket_frac": 0.0
           },
           "request_hash": "657ee55b73aec851974832deecbcf2d1bf5e97e3c73720fbad6fa28666949e46"
         }
@@ -11138,10 +11139,10 @@
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:36:03Z",
-          "finished": "2026-10-09T00:36:07Z",
+          "finished": "2026-10-09T00:42:55Z",
           "cost": null,
           "output_path": "assets/icons/icon.spell.call.png",
-          "sha256": "916e54642e08f7eec203eda89dfc65ad7c4996954f17de852658cb647019c1f5",
+          "sha256": "30998444247d86aa8765b933a7eb810f951d11cdc5ce0602ba95037e79d0d140",
           "attempts": 1,
           "error": null,
           "meta": {
@@ -11151,8 +11152,9 @@
               256
             ],
             "warnings": [],
-            "bg_frac": 0.7575187683105469,
-            "band_frac": 0.015768051147460938
+            "bg_frac": 0.7598915100097656,
+            "band_frac": 0.017164230346679688,
+            "pocket_frac": 0.00237274169921875
           },
           "request_hash": "62161b275e2f22f104ea1d4d10be9d78a0070fafa59b33cd4c7e79dcb3e4466c"
         }
@@ -11255,10 +11257,10 @@
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:36:27Z",
-          "finished": "2026-10-09T00:36:32Z",
+          "finished": "2026-10-09T00:43:00Z",
           "cost": null,
           "output_path": "assets/icons/icon.spell.hornets.png",
-          "sha256": "5cf1156da98afe802611937d63a5a48dd5866172f2b4fbd8b3e2339645872ee0",
+          "sha256": "d572178675804c2cc487cdf7c0d55a0c4aee4d84224243b1d5d6a81339d9e027",
           "attempts": 1,
           "error": null,
           "meta": {
@@ -11268,8 +11270,9 @@
               256
             ],
             "warnings": [],
-            "bg_frac": 0.7707529067993164,
-            "band_frac": 0.029363632202148438
+            "bg_frac": 0.7769794464111328,
+            "band_frac": 0.03264141082763672,
+            "pocket_frac": 0.006226539611816406
           },
           "request_hash": "24d8f54a9bd8f502f746a06a1137770efc30d52fe84f14da7e7bd09503a780e1"
         }
@@ -11372,7 +11375,7 @@
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:36:47Z",
-          "finished": "2026-10-09T00:36:51Z",
+          "finished": "2026-10-09T00:43:07Z",
           "cost": null,
           "output_path": "assets/icons/icon.spell.raise_land.png",
           "sha256": "bcc62d345adc36124cd2819d0f1ba8be59f026636050be5d151aaae6d5683bf2",
@@ -11386,7 +11389,8 @@
             ],
             "warnings": [],
             "bg_frac": 0.6729316711425781,
-            "band_frac": 0.014868736267089844
+            "band_frac": 0.014868736267089844,
+            "pocket_frac": 0.0
           },
           "request_hash": "da519d71d3e1343d643410efadf9f82cbdef2b404b00edf605f7270e09fc0359"
         }
@@ -11489,7 +11493,7 @@
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:37:10Z",
-          "finished": "2026-10-09T00:37:14Z",
+          "finished": "2026-10-09T00:43:14Z",
           "cost": null,
           "output_path": "assets/icons/icon.spell.lightning.png",
           "sha256": "42928cc62a11fcfc40c6e23fe0460c4ad17be3a715c2b4f9f53f81817427c7cb",
@@ -11503,7 +11507,8 @@
             ],
             "warnings": [],
             "bg_frac": 0.75,
-            "band_frac": 0.023000717163085938
+            "band_frac": 0.023000717163085938,
+            "pocket_frac": 0.0
           },
           "request_hash": "9ac4f7e529adf5186712e783aa48ab0a60c9f613312cf96bbef73d73a38987bd"
         }
@@ -11606,7 +11611,7 @@
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:37:32Z",
-          "finished": "2026-10-09T00:37:36Z",
+          "finished": "2026-10-09T00:43:21Z",
           "cost": null,
           "output_path": "assets/icons/icon.spell.flatten.png",
           "sha256": "2d74ba36f4369ef02f710ba4a6d959e3bc85597e9ce40c9ca8454297882e6714",
@@ -11620,7 +11625,8 @@
             ],
             "warnings": [],
             "bg_frac": 0.6230745315551758,
-            "band_frac": 0.009737014770507812
+            "band_frac": 0.009737014770507812,
+            "pocket_frac": 0.0
           },
           "request_hash": "6f529d7a6152a19edcfa9f83a37bf4254f391bf4f6b98be78a4fd5747f166f0e"
         }
@@ -11723,7 +11729,7 @@
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:37:50Z",
-          "finished": "2026-10-09T00:37:52Z",
+          "finished": "2026-10-09T00:43:25Z",
           "cost": null,
           "output_path": "assets/icons/icon.spell.quake.png",
           "sha256": "3d6470fea7acdd9a6543e6a44c6de871a92528b45bc6a075ae6eeb710d875835",
@@ -11737,7 +11743,8 @@
             ],
             "warnings": [],
             "bg_frac": 0.6273984909057617,
-            "band_frac": 0.015630722045898438
+            "band_frac": 0.015630722045898438,
+            "pocket_frac": 0.0
           },
           "request_hash": "36e3df3389f23eb2eb9998bb58e161bb152880620c35b515236e736239a37a1c"
         }
@@ -11840,7 +11847,7 @@
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:38:10Z",
-          "finished": "2026-10-09T00:38:15Z",
+          "finished": "2026-10-09T00:43:31Z",
           "cost": null,
           "output_path": "assets/icons/icon.spell.volcano.png",
           "sha256": "447a9156bb124cb644b18fcfa542fa3e49f204b66ace72347521864f5cf2e029",
@@ -11854,7 +11861,8 @@
             ],
             "warnings": [],
             "bg_frac": 0.7401809692382812,
-            "band_frac": 0.011974334716796875
+            "band_frac": 0.011974334716796875,
+            "pocket_frac": 0.0
           },
           "request_hash": "241e0a94903ab7efbf8a27cc40b7147233d9d358a79bcb386f1e718b7ce277f5"
         }
@@ -11957,7 +11965,7 @@
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:38:32Z",
-          "finished": "2026-10-09T00:38:37Z",
+          "finished": "2026-10-09T00:43:38Z",
           "cost": null,
           "output_path": "assets/icons/icon.resource.mana.png",
           "sha256": "104ce10d673f23b9d14ebb3bb7c1441c45ad1200d5885845c23bed54b06dc738",
@@ -11971,7 +11979,8 @@
             ],
             "warnings": [],
             "bg_frac": 0.7932405471801758,
-            "band_frac": 0.009810447692871094
+            "band_frac": 0.009810447692871094,
+            "pocket_frac": 0.0
           },
           "request_hash": "7ff0b23a119f7f932e8017c00558a7a8f782d41bb7f9451934aefda3b694111a"
         }
@@ -12074,10 +12083,10 @@
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:39:05Z",
-          "finished": "2026-10-09T00:39:08Z",
+          "finished": "2026-10-09T00:43:45Z",
           "cost": null,
           "output_path": "assets/icons/icon.resource.population.png",
-          "sha256": "f09d1fc00ed18d6c4ba7cb8be6d50dfbf528b34e634d17e6fc4f9b537f031342",
+          "sha256": "42cca1f84afadbe658e2c08a7e95b2716c3ce471c51427f4754d214aac50e658",
           "attempts": 1,
           "error": null,
           "meta": {
@@ -12087,8 +12096,9 @@
               256
             ],
             "warnings": [],
-            "bg_frac": 0.6731195449829102,
-            "band_frac": 0.013035774230957031
+            "bg_frac": 0.6765689849853516,
+            "band_frac": 0.016183853149414062,
+            "pocket_frac": 0.0034494400024414062
           },
           "request_hash": "3c5611864ccc3f6f20fe4fe3b9eda1dd0cdfc9e12e58b139eec57da1c1d46bdc"
         }
@@ -12100,4 +12110,3 @@
     }
   ]
 }
-   

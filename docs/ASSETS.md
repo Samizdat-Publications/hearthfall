@@ -103,7 +103,11 @@ The pipeline stops a class when its cap is reached and logs the shortfall in PRO
 | Tripo v3 image-to-3D + smart_low_poly | 30 to 40 credits | | |
 | Gemini 1K image with one reference image (unit concepts) | $0.034 | $0.0336 each, `generateContent` route again | 2026-10-08 |
 | ElevenLabs SFX per second | ~$0.002 | 1.0 s clip, 17 KB mp3_44100_128 accepted on this plan; USD computed at $0.12/min (response header `character-cost: 5`, not a USD figure) | 2026-10-08 |
-| ElevenLabs music per minute | ~$0.15 | | |
+| ElevenLabs music per minute (`music_v2_5`, `force_instrumental`, 75 s, `mp3_44100_128`) | ~$0.15 | accepted on the pay-as-you-go plan (no plan error), 1.2 MB per 75 s stem, about 5 s to return; ledger computes $0.1875 per stem at list price (3 stems); no USD figure is returned | 2026-10-08 |
+| ElevenLabs SFX, 21 clips of 0.5 to 2 s | ~$0.002 per second | 28 s total, $0.052 at list price; response header `character-cost` 3 credits for 0.5 s. One 0.5 s clip came back near silent (peak -50 dB) and was regenerated for another $0.001, so budget 5 percent for redraws | 2026-10-08 |
+| ElevenLabs Voice Design (one call, 3 previews, then save preview 0) | not published | accepted; ledger assumes $0.01, real cost not visible in the response | 2026-10-08 |
+| ElevenLabs TTS `eleven_v4`, 5 short invented-language barks (10 to 25 chars) | $0.08 per 1K chars | 94 chars total, $0.0076 at list price (the ledger estimate; the promo rate would be lower) | 2026-10-08 |
+| Gemini 1K image on pure black (VFX) and on magenta with ref_04 (icons) | $0.034 | $0.0336 each, `generateContent` route; 17 images = $0.571, no redraws needed (magenta pockets fixed in the key, not by regenerating) | 2026-10-08 |
 
 ## 8. Keys and safety
 

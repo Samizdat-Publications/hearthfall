@@ -87,7 +87,7 @@ def build_icon_index(m):
             continue
         meta = a["steps"]["post"]["meta"]
         kind = a["id"].split(".")[1]
-        entries[a["id"]] = {"file_256": meta["output_path"], "file_128": meta["output_128"], "kind": kind, "source": "gemini + ref_04",
+        entries[a["id"]] = {"file_256": a["steps"]["post"]["output_path"], "file_128": meta["output_128"], "kind": kind, "source": "gemini + ref_04",
                             "prompt": a["prompt"]}
     for a in m["assets"]:
         if a["class"] in ("buildings", "units") and ".bakeoff" not in a["id"]:

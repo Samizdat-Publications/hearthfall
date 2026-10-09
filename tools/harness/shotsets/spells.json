@@ -1,0 +1,245 @@
+{
+ "$comment": "M5 spell shots: each v1 spell just after it resolves, from its scenario (docs/ROADMAP.md M5 gate).",
+ "shots": [
+  {
+   "id": "bolt",
+   "params": {
+    "scenario": "spell_bolt_knocks_into_water",
+    "camera": "default"
+   },
+   "steps": [
+    {
+     "setCamera": {
+      "x": 13,
+      "z": 30,
+      "zoom": 0.12,
+      "yaw": 0.7
+     }
+    },
+    {
+     "step": 23
+    },
+    {
+     "assert": "__game.getSummary().lastEvents.some((e) => e.type === 'spellCast')"
+    }
+   ],
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.02,
+     0.99
+    ]
+   }
+  },
+  {
+   "id": "call",
+   "params": {
+    "scenario": "spell_call_converts_wild",
+    "camera": "default"
+   },
+   "steps": [
+    {
+     "setCamera": {
+      "x": 20,
+      "z": 10,
+      "zoom": 0.12,
+      "yaw": 0.7
+     }
+    },
+    {
+     "step": 24
+    },
+    {
+     "assert": "__game.getSummary().lastEvents.some((e) => e.type === 'spellCast')"
+    }
+   ],
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.02,
+     0.99
+    ]
+   }
+  },
+  {
+   "id": "lightning",
+   "params": {
+    "scenario": "spell_lightning_kills_shaper",
+    "camera": "default"
+   },
+   "steps": [
+    {
+     "setCamera": {
+      "x": 20,
+      "z": 10,
+      "zoom": 0.12,
+      "yaw": 0.7
+     }
+    },
+    {
+     "step": 22
+    },
+    {
+     "assert": "__game.getSummary().lastEvents.some((e) => e.type === 'spellCast')"
+    }
+   ],
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.02,
+     0.99
+    ]
+   }
+  },
+  {
+   "id": "raise_land",
+   "params": {
+    "scenario": "spell_raise_land_bridges",
+    "camera": "default"
+   },
+   "steps": [
+    {
+     "setCamera": {
+      "x": 19,
+      "z": 32,
+      "zoom": 0.12,
+      "yaw": 0.7
+     }
+    },
+    {
+     "step": 30
+    },
+    {
+     "assert": "__game.getSummary().lastEvents.some((e) => e.type === 'spellCast')"
+    }
+   ],
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.02,
+     0.99
+    ]
+   }
+  },
+  {
+   "id": "flatten",
+   "params": {
+    "scenario": "spell_flatten_levels",
+    "camera": "default"
+   },
+   "steps": [
+    {
+     "setCamera": {
+      "x": 32,
+      "z": 32,
+      "zoom": 0.12,
+      "yaw": 0.7
+     }
+    },
+    {
+     "step": 26
+    },
+    {
+     "assert": "__game.getSummary().lastEvents.some((e) => e.type === 'spellCast')"
+    }
+   ],
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.02,
+     0.99
+    ]
+   }
+  },
+  {
+   "id": "quake",
+   "params": {
+    "scenario": "spell_quake_breaks_buildings",
+    "camera": "default"
+   },
+   "steps": [
+    {
+     "setCamera": {
+      "x": 32,
+      "z": 32,
+      "zoom": 0.12,
+      "yaw": 0.7
+     }
+    },
+    {
+     "step": 24
+    },
+    {
+     "assert": "__game.getSummary().lastEvents.some((e) => e.type === 'spellCast')"
+    }
+   ],
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.02,
+     0.99
+    ]
+   }
+  },
+  {
+   "id": "hornets",
+   "params": {
+    "scenario": "spell_hornets_swarm",
+    "camera": "default"
+   },
+   "steps": [
+    {
+     "setCamera": {
+      "x": 32,
+      "z": 32,
+      "zoom": 0.12,
+      "yaw": 0.7
+     }
+    },
+    {
+     "step": 60
+    },
+    {
+     "assert": "__game.getSummary().lastEvents.some((e) => e.type === 'spellCast')"
+    }
+   ],
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.02,
+     0.99
+    ]
+   }
+  },
+  {
+   "id": "volcano",
+   "params": {
+    "scenario": "spell_volcano_erupts",
+    "camera": "default"
+   },
+   "steps": [
+    {
+     "setCamera": {
+      "x": 32,
+      "z": 32,
+      "zoom": 0.12,
+      "yaw": 0.7
+     }
+    },
+    {
+     "step": 40
+    },
+    {
+     "assert": "__game.getSummary().lastEvents.some((e) => e.type === 'spellCast')"
+    }
+   ],
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.02,
+     0.99
+    ]
+   }
+  }
+ ]
+}

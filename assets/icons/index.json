@@ -1,0 +1,200 @@
+{
+  "schema": 1,
+  "generated": "2026-10-09T00:44:21Z",
+  "sizes": [
+    128,
+    256
+  ],
+  "count": 27,
+  "entries": {
+    "icon.building.chant_house": {
+      "file_256": "assets/icons/icon.building.chant_house.png",
+      "file_128": "assets/icons/icon.building.chant_house_128.png",
+      "kind": "building",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "building.chant_house"
+    },
+    "icon.building.dwelling_large": {
+      "file_256": "assets/icons/icon.building.dwelling_large.png",
+      "file_128": "assets/icons/icon.building.dwelling_large_128.png",
+      "kind": "building",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "building.dwelling_large"
+    },
+    "icon.building.dwelling_medium": {
+      "file_256": "assets/icons/icon.building.dwelling_medium.png",
+      "file_128": "assets/icons/icon.building.dwelling_medium_128.png",
+      "kind": "building",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "building.dwelling_medium"
+    },
+    "icon.building.dwelling_small": {
+      "file_256": "assets/icons/icon.building.dwelling_small.png",
+      "file_128": "assets/icons/icon.building.dwelling_small_128.png",
+      "kind": "building",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "building.dwelling_small"
+    },
+    "icon.building.fire_lodge": {
+      "file_256": "assets/icons/icon.building.fire_lodge.png",
+      "file_128": "assets/icons/icon.building.fire_lodge_128.png",
+      "kind": "building",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "building.fire_lodge"
+    },
+    "icon.building.hearth": {
+      "file_256": "assets/icons/icon.building.hearth.png",
+      "file_128": "assets/icons/icon.building.hearth_128.png",
+      "kind": "building",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "building.hearth"
+    },
+    "icon.building.reliquary": {
+      "file_256": "assets/icons/icon.building.reliquary.png",
+      "file_128": "assets/icons/icon.building.reliquary_128.png",
+      "kind": "building",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "building.reliquary"
+    },
+    "icon.building.shrine": {
+      "file_256": "assets/icons/icon.building.shrine.png",
+      "file_128": "assets/icons/icon.building.shrine_128.png",
+      "kind": "building",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "building.shrine"
+    },
+    "icon.building.totem": {
+      "file_256": "assets/icons/icon.building.totem.png",
+      "file_128": "assets/icons/icon.building.totem_128.png",
+      "kind": "building",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "building.totem"
+    },
+    "icon.building.warden_lodge": {
+      "file_256": "assets/icons/icon.building.warden_lodge.png",
+      "file_128": "assets/icons/icon.building.warden_lodge_128.png",
+      "kind": "building",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "building.warden_lodge"
+    },
+    "icon.building.watchtower": {
+      "file_256": "assets/icons/icon.building.watchtower.png",
+      "file_128": "assets/icons/icon.building.watchtower_128.png",
+      "kind": "building",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "building.watchtower"
+    },
+    "icon.resource.mana": {
+      "file_256": "assets/icons/icon.resource.mana.png",
+      "file_128": "assets/icons/icon.resource.mana_128.png",
+      "kind": "resource",
+      "source": "gemini + ref_04",
+      "prompt": "a glowing blue-violet crystal droplet of magical energy with a few small sparkles, resource icon"
+    },
+    "icon.resource.population": {
+      "file_256": "assets/icons/icon.resource.population.png",
+      "file_128": "assets/icons/icon.resource.population_128.png",
+      "kind": "resource",
+      "source": "gemini + ref_04",
+      "prompt": "three small stylized tribal people standing close together in simple tunics, resource icon"
+    },
+    "icon.spell.bolt": {
+      "file_256": "assets/icons/icon.spell.bolt.png",
+      "file_128": "assets/icons/icon.spell.bolt_128.png",
+      "kind": "spell",
+      "source": "gemini + ref_04",
+      "prompt": "a hurled bolt of fiery orange and white energy with a short comet tail, spell icon"
+    },
+    "icon.spell.call": {
+      "file_256": "assets/icons/icon.spell.call.png",
+      "file_128": "assets/icons/icon.spell.call_128.png",
+      "kind": "spell",
+      "source": "gemini + ref_04",
+      "prompt": "a carved wooden horn with three glowing pale green sound rings radiating from it, spell icon"
+    },
+    "icon.spell.flatten": {
+      "file_256": "assets/icons/icon.spell.flatten.png",
+      "file_128": "assets/icons/icon.spell.flatten_128.png",
+      "kind": "spell",
+      "source": "gemini + ref_04",
+      "prompt": "a perfectly level slab of earth with a smooth flat top and a heavy stone pressing down on it, spell icon"
+    },
+    "icon.spell.hornets": {
+      "file_256": "assets/icons/icon.spell.hornets.png",
+      "file_128": "assets/icons/icon.spell.hornets_128.png",
+      "kind": "spell",
+      "source": "gemini + ref_04",
+      "prompt": "three angry amber and black striped hornets swarming together, spell icon"
+    },
+    "icon.spell.lightning": {
+      "file_256": "assets/icons/icon.spell.lightning.png",
+      "file_128": "assets/icons/icon.spell.lightning_128.png",
+      "kind": "spell",
+      "source": "gemini + ref_04",
+      "prompt": "a bright blue-white forked lightning bolt striking down out of a dark storm cloud, spell icon"
+    },
+    "icon.spell.quake": {
+      "file_256": "assets/icons/icon.spell.quake.png",
+      "file_128": "assets/icons/icon.spell.quake_128.png",
+      "kind": "spell",
+      "source": "gemini + ref_04",
+      "prompt": "cracked ground split by a deep jagged fissure with flying rock chunks, spell icon"
+    },
+    "icon.spell.raise_land": {
+      "file_256": "assets/icons/icon.spell.raise_land.png",
+      "file_128": "assets/icons/icon.spell.raise_land_128.png",
+      "kind": "spell",
+      "source": "gemini + ref_04",
+      "prompt": "a jagged brown earthen ridge of rock rising up out of flat green ground with lifting chunks, spell icon"
+    },
+    "icon.spell.volcano": {
+      "file_256": "assets/icons/icon.spell.volcano.png",
+      "file_128": "assets/icons/icon.spell.volcano_128.png",
+      "kind": "spell",
+      "source": "gemini + ref_04",
+      "prompt": "a small volcano cone erupting with glowing orange lava and dark smoke, spell icon"
+    },
+    "icon.unit.chanter": {
+      "file_256": "assets/icons/icon.unit.chanter.png",
+      "file_128": "assets/icons/icon.unit.chanter_128.png",
+      "kind": "unit",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "unit.chanter"
+    },
+    "icon.unit.firecaller": {
+      "file_256": "assets/icons/icon.unit.firecaller.png",
+      "file_128": "assets/icons/icon.unit.firecaller_128.png",
+      "kind": "unit",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "unit.firecaller"
+    },
+    "icon.unit.settler": {
+      "file_256": "assets/icons/icon.unit.settler.png",
+      "file_128": "assets/icons/icon.unit.settler_128.png",
+      "kind": "unit",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "unit.settler"
+    },
+    "icon.unit.shaper": {
+      "file_256": "assets/icons/icon.unit.shaper.png",
+      "file_128": "assets/icons/icon.unit.shaper_128.png",
+      "kind": "unit",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "unit.shaper"
+    },
+    "icon.unit.warden": {
+      "file_256": "assets/icons/icon.unit.warden.png",
+      "file_128": "assets/icons/icon.unit.warden_128.png",
+      "kind": "unit",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "unit.warden"
+    },
+    "icon.unit.wild_person": {
+      "file_256": "assets/icons/icon.unit.wild_person.png",
+      "file_128": "assets/icons/icon.unit.wild_person_128.png",
+      "kind": "unit",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "unit.wild_person"
+    }
+  }
+}

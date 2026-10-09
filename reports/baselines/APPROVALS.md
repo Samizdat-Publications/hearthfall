@@ -7,3 +7,4 @@
 - 2026-10-09T00:18 set smoke (11 shots): M4: help bar moved below the title row after a VisionQA overlap flag; DOM check now requires a 4 px gap
 - 2026-10-09T00:34 bench baseline (reports/baselines/bench.json): re-saved after the M3 review changed the gated average to per-tick best-of-replays and added the two spike measures; looser p99 numbers reflect machine load during qa (approved by the main agent, M4 review note).
 - 2026-10-09T00:38 set smoke (11 shots): M5: help bar mentions spell hotkeys; VFX layer and targeting rings added (not visible in smoke shots)
+- 2026-10-09T00:45 set spells (8 shots): M5: first spell VFX baselines after one sheet review (thinner blue lightning, softer lava pools)

@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated": "2026-10-09T00:40:28Z",
+  "generated": "2026-10-09T00:44:21Z",
   "format": "ogg vorbis, 44.1 kHz",
   "loudness_targets_lufs": {
     "sfx": -18.0,
@@ -58,7 +58,7 @@
       "lufs": -18.3,
       "true_peak_db": -3.5,
       "bytes": 19780,
-      "sha256": "b115044f3a4b24c425a7fdf539408788800fb7527ba8c3beb2c88572780bc84d",
+      "sha256": "390356f4552b9c84d187dd0d5fe9d92b059ae9725120d73a02317b856b3a0f31",
       "prompt": "a quick fiery bolt launch, a hiss and a short whoosh",
       "event": "bolt_cast"
     },
@@ -69,7 +69,7 @@
       "lufs": -18.3,
       "true_peak_db": -7.5,
       "bytes": 28874,
-      "sha256": "8aa5c34e0a179b33eabd699a8c23242bf77375e4b40e5145853322bd277c760c",
+      "sha256": "0e905bd594cf0c4f972c63b75d9c1c5f280ecb09d915197f60d19904fe15db8e",
       "prompt": "a sharp electric crackle and a short blast",
       "event": "bolt_impact"
     },
@@ -80,7 +80,7 @@
       "lufs": -18.0,
       "true_peak_db": -12.6,
       "bytes": 24358,
-      "sha256": "9a71748576b077d82af5df2865e8987dd2b2e0d7c718cb3dfa5b10e5d51661db",
+      "sha256": "ac3303653e99fcf6662ac7ef9dcb4b5d92ec8694d453edbf27ee2414f7fb1b16",
       "prompt": "a soft rising wooden flute note, gentle and bright",
       "event": "born"
     },
@@ -91,7 +91,7 @@
       "lufs": -18.0,
       "true_peak_db": -3.9,
       "bytes": 29171,
-      "sha256": "af2596ddf3cc21e03e1463e7732513075088d72f7e01a50f7f07d969c43493e1",
+      "sha256": "b4d9b67e466d4646ae70db02f420b8739daa70fa55ccc36b7ed09b9866a660f2",
       "prompt": "a warm soft chime followed by two hammer knocks on wood",
       "event": "building_done"
     },
@@ -102,7 +102,7 @@
       "lufs": -18.0,
       "true_peak_db": -13.5,
       "bytes": 33614,
-      "sha256": "2ca574abf2abb7a9773d47bc18879447c9083aeb7ea26b99758bd9f3fc6b2aac",
+      "sha256": "a55ea7dd813d37329fb55854462a439664b4a3418ce84d0117038016f651f43e",
       "prompt": "a gentle chant swell of soft humming voices rising",
       "event": "call_cast"
     },
@@ -113,7 +113,7 @@
       "lufs": -18.4,
       "true_peak_db": -4.9,
       "bytes": 26052,
-      "sha256": "6d1f08fd6226afb7298ce711eb66eebdf921499ceb4999a031302ba4a50efc5d",
+      "sha256": "e616cecf26ecb524a32ab8c585f5dffafe4938d2c76cec84afdf503e429fd48f",
       "prompt": "a magical shimmer, a rising sparkle with a soft chime",
       "event": "charged"
     },
@@ -124,7 +124,7 @@
       "lufs": -24.9,
       "true_peak_db": -1.9,
       "bytes": 15802,
-      "sha256": "4f832d8f90fb744e8d154f63f8f6f635789d359f8303707b3ca95eb4f658760b",
+      "sha256": "baa056fa04b207777062a2210af3c489a256c0278b1c2b063fe9592e63a3a6b5",
       "prompt": "a single axe chop into a log, with a wood crack",
       "event": "chop"
     },
@@ -135,7 +135,7 @@
       "lufs": -21.0,
       "true_peak_db": -1.4,
       "bytes": 18240,
-      "sha256": "c55beb31427b31ae292a176a7b234d322223536701177924096f8b72ef214c93",
+      "sha256": "e95b346e3e444848a67c0e77c43dbe06a4462eb33240e586df42323926ddd5ae",
       "prompt": "a low dull thud, quiet and final",
       "event": "died"
     },
@@ -146,7 +146,7 @@
       "lufs": -18.4,
       "true_peak_db": -4.2,
       "bytes": 28192,
-      "sha256": "17bbaaab1ea8f5d7bce57735f020bab8cf7270504ac81513b3fd7920879f6650",
+      "sha256": "b684e98b1318c67c336bc2e04d4f8458e3f5d8073d95ad0496e9b582da4504e4",
       "prompt": "a splash followed by a short gurgle of water closing over",
       "event": "drowned"
     },
@@ -157,7 +157,7 @@
       "lufs": -24.7,
       "true_peak_db": -2.7,
       "bytes": 31736,
-      "sha256": "090877d448b34f64e01a7e4f5ee9f4e4d2ef0274f91b0a31c6ff6d49fff92fb7",
+      "sha256": "eced9cb20182ff0ce5bf4a09939f89db3dadb9e22cb0ae00312750902afa55d1",
       "prompt": "a grinding settle of earth, heavy stones sliding and compacting",
       "event": "flatten"
     },
@@ -168,7 +168,7 @@
       "lufs": -18.2,
       "true_peak_db": -7.7,
       "bytes": 42762,
-      "sha256": "1a439834763b878002907f6606b47ef9fef216a4a98d6e006cf77bdb91f980e9",
+      "sha256": "ffa326daa1033d9f701d5f2132fa8746e207017a6e4c6e446f2796ecbc70daa7",
       "prompt": "an angry buzzing swarm of hornets",
       "event": "hornets"
     },
@@ -179,7 +179,7 @@
       "lufs": -18.0,
       "true_peak_db": -6.1,
       "bytes": 38309,
-      "sha256": "50d047a35c14bd5648c4b8a59e7bd5fed860632c51549c47ac54ad56202e1782",
+      "sha256": "e93e06892b0f0a344f83f9d4dc418d32e41360612c7d3e2c2d213db4e540d832",
       "prompt": "a thunder crack, a sharp lightning strike then a short rolling rumble",
       "event": "lightning_impact"
     },
@@ -190,7 +190,7 @@
       "lufs": -17.9,
       "true_peak_db": -4.6,
       "bytes": 14745,
-      "sha256": "50f9719921f483d495fa8c51ee9c7d222c2cb570a06201ebe36533d5e150e809",
+      "sha256": "be3b8c33b3cbf188f2d7172f79341b4a67a2ca12e1177e188f0fd9911bf6c0fa",
       "prompt": "one short tribal hand drum tap, a warm acknowledgement",
       "event": "order_move"
     },
@@ -201,7 +201,7 @@
       "lufs": -18.2,
       "true_peak_db": -1.5,
       "bytes": 17354,
-      "sha256": "de9da831c07a08eb7ff5448ec782af66ebbefc88cbb47d37af18c3432f964826",
+      "sha256": "25c5e6e9d05868fefeb5ac716215809519438ff7dc21cb9671772ca7770c25c3",
       "prompt": "a wooden stake driven into soft earth, a thump and a little soil",
       "event": "plan_placed"
     },
@@ -212,7 +212,7 @@
       "lufs": -18.2,
       "true_peak_db": -4.1,
       "bytes": 34042,
-      "sha256": "64b8adcad84fa7d3eeb81ee94e901fc0fb8f2bafd69aa0674350fd677a4bacf3",
+      "sha256": "3a400009f137a19b9a977776f351d65d06220727624b5fb069b12a6737a09780",
       "prompt": "a long heavy rumble with cracking rock and crumbling earth",
       "event": "quake"
     },
@@ -223,19 +223,19 @@
       "lufs": -17.9,
       "true_peak_db": -4.6,
       "bytes": 34917,
-      "sha256": "f4be3055ad880fc5e943b7694116a041c3f0aaaa2290df71f58b9c5e20aef472",
+      "sha256": "237ac7ee7f86963b14ed86c1280c5bbcef074bd7c4d87f13e902daccfe59f242",
       "prompt": "a deep rumble of rising earth, rocks grinding upward",
       "event": "raise_land"
     },
     "sfx.ui_click": {
       "file": "assets/audio/sfx.ui_click.ogg",
       "kind": "sfx",
-      "duration_s": null,
-      "lufs": null,
-      "true_peak_db": null,
-      "bytes": 4305,
-      "sha256": "eec638344dcc6d182c765650a84d1aced44ded8ac2027afe14d2cc896cac6aff",
-      "prompt": "a short soft wooden click",
+      "duration_s": 0.45,
+      "lufs": -24.3,
+      "true_peak_db": -2.4,
+      "bytes": 11792,
+      "sha256": "6d0a6b243bb5e88bcb79d4ff11d6cd4d0460bbc0045baf1bcde092b5a3ef36d7",
+      "prompt": "a single crisp wooden click, a small hardwood block tapped once",
       "event": "ui_click"
     },
     "sfx.ui_confirm": {
@@ -256,7 +256,7 @@
       "lufs": -21.5,
       "true_peak_db": -1.4,
       "bytes": 12973,
-      "sha256": "253c0ab8eedc115357947c775ecb6fdd74ddbdc6b6b1d51a5c22eba4c9bddc6c",
+      "sha256": "5133b359d57c4fc629b319d6eb91f8101a7be0a1189fc536100eb835ad131f4b",
       "prompt": "a dull wooden knock, low and short, a refusal",
       "event": "ui_error"
     },
@@ -267,7 +267,7 @@
       "lufs": -23.0,
       "true_peak_db": -1.3,
       "bytes": 12659,
-      "sha256": "1980cf8e132970824b41c2ce09233c6345d7e767db4dc4f57c693afb42a749f9",
+      "sha256": "56054caf6f0a95f3ed05f21524c6494c0d11082f64305c61cf4d3bcf006798af",
       "prompt": "a soft wooden click, a light tap of wood on wood",
       "event": "unit_selected"
     },
@@ -278,7 +278,7 @@
       "lufs": -18.0,
       "true_peak_db": -8.3,
       "bytes": 34794,
-      "sha256": "ceecc2142aaab2759b2991c8740d317e86f358f17f2b8336730700ab01729ad1",
+      "sha256": "ec93c49c6dbddf37372e1a5f1bb06829afdebd4700c77d6d2733f0ad873e1127",
       "prompt": "a volcanic eruption roar with an explosive blast and deep rumble",
       "event": "volcano"
     },
@@ -289,7 +289,7 @@
       "lufs": -27.5,
       "true_peak_db": -2.1,
       "bytes": 17210,
-      "sha256": "2f5a6941c89332e110a4969413adc4e26efa8146c45f7fe8c4ac6220bddc9e03",
+      "sha256": "86730cea8abd2e0f114121db8c045bd82f932e0c8fd5bed14db14601c634fb9a",
       "prompt": "a dull wooden thunk of a log dropped onto a pile of logs",
       "event": "wood_delivered"
     },
@@ -300,7 +300,7 @@
       "lufs": -18.1,
       "true_peak_db": -2.4,
       "bytes": 17515,
-      "sha256": "44178387ab3afa6229e76ed6e1e0072c8f7ad2a433de8e14a759fc9be00302e2",
+      "sha256": "a21892a08ace16668ad2b360c78a2fb26029cf61c8df4ed9c72b58118b24d349",
       "prompt": "acknowledged an order, calm and brief",
       "voice": "shaper",
       "text": "Ihra sovenu.",
@@ -314,7 +314,7 @@
       "lufs": -18.1,
       "true_peak_db": -3.3,
       "bytes": 19756,
-      "sha256": "d4ae0416746c4558d3973874e8b6123e37aae8b414e2e30cda8a5eb1b71c9cd1",
+      "sha256": "c509d6fe6a7ce0b3d0c65b13c3ebacdfc570b3c0d67a7e7af0e2d595e3eddc67",
       "prompt": "acknowledged an order, a second variant",
       "voice": "shaper",
       "text": "Vael tanuri.",
@@ -328,7 +328,7 @@
       "lufs": -18.1,
       "true_peak_db": -2.7,
       "bytes": 32957,
-      "sha256": "d798d19fba5f819029211b6724e0cf801206a6d709ded41f3c7b32abea107f1a",
+      "sha256": "86887331ed16a14065fcb06494ce20bba699a08bc2d35f7c86ee77e8f93146a2",
       "prompt": "casting a spell, rising and commanding",
       "voice": "shaper",
       "text": "Kael-thu ora, vessen alu!",
@@ -342,7 +342,7 @@
       "lufs": -18.0,
       "true_peak_db": -2.2,
       "bytes": 31269,
-      "sha256": "85db74c60fb9f68a9c4a2b1e8663ca32fb549092df1d273d226deff3b3ddbb69",
+      "sha256": "b5cd3b28c1e90300ff2979f10fc63615e6ed797f109c866344c92adbbedb438c",
       "prompt": "under attack, sharp and urgent",
       "voice": "shaper",
       "text": "Dru karesh! Alun mor!",
@@ -356,7 +356,7 @@
       "lufs": -18.1,
       "true_peak_db": -3.5,
       "bytes": 34064,
-      "sha256": "e4b19d46aafb7cc6a8907a2541e897e0c51d0d91ff68ff6d2f79d8a66ea35f46",
+      "sha256": "b4688ddcfaa857f297147e7dcb0833ce67cd8e62279c244f4dd8ef0443b00600",
       "prompt": "victory, proud and ringing",
       "voice": "shaper",
       "text": "Ohe thavuni, sorrenu ai!",

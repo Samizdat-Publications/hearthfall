@@ -20,7 +20,9 @@ Run everything with the project venv: `.venv/Scripts/python tools/assets/<script
 | `qa.py [--class X]` | tri count, bounds, palette distance, non-manifold edges, file size, written into the manifest; builds `reports/latest/assets_sheet.png` |
 | `audio_post.py [--check]` | trim leading silence, loudness normalize, convert to OGG (stub with a printed plan if ffmpeg is missing) |
 
-Classes: `concept`, `buildings`, `props`, `units`, `sfx`, `music`.
+Classes: `concept`, `buildings`, `props`, `units`, `sfx`, `music`, `voice`, `vfx`, `icons`.
+
+A3 extras: `a3_voice.py design` (one Voice Design call, saves the voice id in `voices.json`), `keying.py thumbs` (Blender thumbnails to transparent `icon.building.*` and `icon.unit.*` at 256 and 128 px), `a3_index.py index|sheets` (writes `assets/audio|vfx|icons/index.json` and the icon and VFX contact sheets). `vfx` rows are keyed from black into `assets/vfx/<id>.png` (additive blending), `icons` rows keyed from magenta into `assets/icons/<id>.png` and `_128.png`. Music stems are crossfaded (2 s tail into head) so the OGG loops.
 
 ## Safety and budgets
 
@@ -63,4 +65,3 @@ Checked against docs.meshy.ai/en/api/image-to-3d and confirmed by two real calls
 ## Not done yet
 
 - Tripo client is written but untested (bake-off is A1); rigging and animation steps are `skipped` (v1 units are static).
-- Voice barks, VFX textures and icons from Gemini have no rows yet (A3).

@@ -300,6 +300,56 @@
       "when": "2026-10-09T00:03:31.020Z",
       "source": "reports/latest/shots/hud_economy.png",
       "bytes": 447777
+    },
+    {
+      "file": "a3/20261009-0044_a3-icons-sheet.png",
+      "milestone": "A3",
+      "kind": "asset-sheet",
+      "caption": "Spell, resource, building and unit icons: Gemini emblems in the ref_04 low-poly style keyed from magenta, plus the Blender thumbnails on transparent backgrounds.",
+      "highlight": true,
+      "when": "2026-10-09T00:44:38.970Z",
+      "source": "reports/latest/assets_icons_sheet.png",
+      "bytes": 790209
+    },
+    {
+      "file": "a3/20261009-0044_a3-vfx-sheet.png",
+      "milestone": "A3",
+      "kind": "asset-sheet",
+      "caption": "Seven spell VFX textures keyed from pure black and shown additively over terrain green: bolt burst, lightning, hornets, lava, magic ring, dust, water.",
+      "highlight": false,
+      "when": "2026-10-09T00:44:39.253Z",
+      "source": "reports/latest/assets_vfx_sheet.png",
+      "bytes": 409967
+    },
+    {
+      "file": "m5/20261009-0046_spells-v1.png",
+      "milestone": "M5",
+      "kind": "contact-sheet",
+      "caption": "The Shaper's power: all eight v1 spells captured just after they resolve",
+      "highlight": true,
+      "when": "2026-10-09T00:46:24.514Z",
+      "source": "reports/latest/sheet.png",
+      "bytes": 469296
+    },
+    {
+      "file": "m5/20261009-0046_volcano.png",
+      "milestone": "M5",
+      "kind": "screenshot",
+      "caption": "Volcano: a cone rises, lava pools burn and molten rocks scatter",
+      "highlight": false,
+      "when": "2026-10-09T00:46:24.754Z",
+      "source": "reports/latest/shots/volcano.png",
+      "bytes": 235741
+    },
+    {
+      "file": "m5/20261009-0046_raise-land.png",
+      "milestone": "M5",
+      "kind": "screenshot",
+      "caption": "Raise Land bridges a deep channel from the Shaper toward her target",
+      "highlight": false,
+      "when": "2026-10-09T00:46:24.976Z",
+      "source": "reports/latest/shots/raise_land.png",
+      "bytes": 201012
     }
   ]
 }

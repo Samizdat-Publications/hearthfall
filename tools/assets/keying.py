@@ -91,7 +91,10 @@ def key_magenta(img: Image.Image):
     r, g, b = a[..., 0], a[..., 1], a[..., 2]
     spill = np.minimum(r, b) - g  # large for magenta-ish pixels
     core = (spill > 90) & (r > 140) & (b > 140)
-    bg = _flood_scipy(core)
+    flood = _flood_scipy(core)
+    # enclosed pockets of strong magenta (between figures, inside a horn) are background too; stricter threshold so emblem pinks survive
+    pockets = (spill > 100) & (r > 160) & (b > 160)
+    bg = flood | pockets
     # feather band: pixels within ~3 px of the removed background
     bgimg = Image.fromarray((bg * 255).astype(np.uint8))
     near = np.asarray(bgimg.filter(ImageFilter.MaxFilter(7))) > 0
@@ -107,7 +110,7 @@ def key_magenta(img: Image.Image):
     b2[band] = b[band] - s[band] * 0.85
     out = np.dstack([np.clip(r2, 0, 255), g, np.clip(b2, 0, 255), alpha * 255.0]).astype(np.uint8)
     # a thin remaining pink halo: anything in the band that is still strongly magenta becomes transparent
-    stats = {"bg_frac": float(bg.mean()), "band_frac": float(band.mean())}
+    stats = {"bg_frac": float(bg.mean()), "band_frac": float(band.mean()), "pocket_frac": float((pockets & ~flood).mean())}
     return Image.fromarray(out), stats
 
 

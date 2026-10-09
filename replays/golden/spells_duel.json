@@ -1,0 +1,400 @@
+{
+ "id": "spells_duel",
+ "description": "Two tribes on a channel map trade every v1 spell: bolt, call, hornets, raise land, lightning (kills a Shaper, charge steal, respawn), flatten, quake and volcano, plus walking into range and an undone cast. 1200 ticks.",
+ "every": 100,
+ "def": {
+  "id": "spells_duel",
+  "seed": 777,
+  "map": {
+   "generator": "flat_with_channel",
+   "size": 64,
+   "tribes": 2
+  },
+  "setup": [
+   {
+    "spawn": "hearth",
+    "tribe": 0,
+    "at": [
+     6,
+     32
+    ]
+   },
+   {
+    "spawn": "hearth",
+    "tribe": 1,
+    "at": [
+     44,
+     32
+    ]
+   },
+   {
+    "spawn": "shaper",
+    "tribe": 0,
+    "at": [
+     14,
+     30
+    ]
+   },
+   {
+    "spawn": "shaper",
+    "tribe": 1,
+    "at": [
+     26,
+     30
+    ]
+   },
+   {
+    "spawn": "settler",
+    "tribe": 0,
+    "near": [
+     8,
+     40
+    ],
+    "count": 4
+   },
+   {
+    "spawn": "settler",
+    "tribe": 1,
+    "near": [
+     30,
+     35
+    ],
+    "count": 6
+   },
+   {
+    "spawn": "wild",
+    "near": [
+     12,
+     22
+    ],
+    "count": 5
+   },
+   {
+    "spawn": "dwelling",
+    "tribe": 0,
+    "at": [
+     8,
+     24
+    ]
+   }
+  ],
+  "commands": [
+   {
+    "tick": 0,
+    "tribe": -1,
+    "type": "grantCharges",
+    "args": {
+     "tribe": 0,
+     "spell": "bolt",
+     "n": 2
+    }
+   },
+   {
+    "tick": 0,
+    "tribe": -1,
+    "type": "grantCharges",
+    "args": {
+     "tribe": 0,
+     "spell": "call",
+     "n": 2
+    }
+   },
+   {
+    "tick": 0,
+    "tribe": -1,
+    "type": "grantCharges",
+    "args": {
+     "tribe": 0,
+     "spell": "hornets",
+     "n": 2
+    }
+   },
+   {
+    "tick": 0,
+    "tribe": -1,
+    "type": "grantCharges",
+    "args": {
+     "tribe": 0,
+     "spell": "raise_land",
+     "n": 2
+    }
+   },
+   {
+    "tick": 0,
+    "tribe": -1,
+    "type": "grantCharges",
+    "args": {
+     "tribe": 0,
+     "spell": "lightning",
+     "n": 2
+    }
+   },
+   {
+    "tick": 0,
+    "tribe": -1,
+    "type": "grantCharges",
+    "args": {
+     "tribe": 0,
+     "spell": "flatten",
+     "n": 2
+    }
+   },
+   {
+    "tick": 0,
+    "tribe": -1,
+    "type": "grantCharges",
+    "args": {
+     "tribe": 0,
+     "spell": "quake",
+     "n": 2
+    }
+   },
+   {
+    "tick": 0,
+    "tribe": -1,
+    "type": "grantCharges",
+    "args": {
+     "tribe": 0,
+     "spell": "volcano",
+     "n": 2
+    }
+   },
+   {
+    "tick": 0,
+    "tribe": -1,
+    "type": "grantCharges",
+    "args": {
+     "tribe": 1,
+     "spell": "bolt",
+     "n": 1
+    }
+   },
+   {
+    "tick": 2,
+    "tribe": 0,
+    "type": "cast",
+    "args": {
+     "spell": "call",
+     "target": [
+      12,
+      22
+     ]
+    }
+   },
+   {
+    "tick": 40,
+    "tribe": 0,
+    "type": "cast",
+    "args": {
+     "spell": "raise_land",
+     "target": [
+      24,
+      30
+     ]
+    }
+   },
+   {
+    "tick": 80,
+    "tribe": 0,
+    "type": "move",
+    "args": {
+     "units": "tribe0.shapers",
+     "to": [
+      24,
+      30
+     ]
+    }
+   },
+   {
+    "tick": 300,
+    "tribe": 0,
+    "type": "cast",
+    "args": {
+     "spell": "lightning",
+     "target": [
+      26,
+      30
+     ]
+    }
+   },
+   {
+    "tick": 360,
+    "tribe": 0,
+    "type": "cast",
+    "args": {
+     "spell": "bolt",
+     "target": [
+      28,
+      33
+     ]
+    }
+   },
+   {
+    "tick": 420,
+    "tribe": 0,
+    "type": "cast",
+    "args": {
+     "spell": "hornets",
+     "target": [
+      31,
+      36
+     ]
+    }
+   },
+   {
+    "tick": 480,
+    "tribe": 0,
+    "type": "cast",
+    "args": {
+     "spell": "quake",
+     "target": [
+      30,
+      32
+     ]
+    }
+   },
+   {
+    "tick": 540,
+    "tribe": 0,
+    "type": "cast",
+    "args": {
+     "spell": "flatten",
+     "target": [
+      28,
+      27
+     ]
+    }
+   },
+   {
+    "tick": 600,
+    "tribe": 0,
+    "type": "cast",
+    "args": {
+     "spell": "bolt",
+     "target": [
+      28,
+      30
+     ]
+    }
+   },
+   {
+    "tick": 605,
+    "tribe": 0,
+    "type": "cancelCast",
+    "args": {}
+   },
+   {
+    "tick": 660,
+    "tribe": 0,
+    "type": "cast",
+    "args": {
+     "spell": "volcano",
+     "target": [
+      29,
+      33
+     ]
+    }
+   }
+  ],
+  "runTicks": 1200
+ },
+ "packHash": "cefcd6de",
+ "checkpoints": [
+  {
+   "tick": 100,
+   "all": "f2f36ea6",
+   "terrain": "61608405",
+   "entities": "29dc55ce",
+   "rng": "5512dad8",
+   "meta": "6b46e20d"
+  },
+  {
+   "tick": 200,
+   "all": "02583da3",
+   "terrain": "61608405",
+   "entities": "dd9850fe",
+   "rng": "9c7efeeb",
+   "meta": "127e8eac"
+  },
+  {
+   "tick": 300,
+   "all": "e13e1a96",
+   "terrain": "61608405",
+   "entities": "07c5360d",
+   "rng": "7b3461db",
+   "meta": "98281e59"
+  },
+  {
+   "tick": 400,
+   "all": "cb124401",
+   "terrain": "61608405",
+   "entities": "83e2a894",
+   "rng": "498b9eec",
+   "meta": "38b1c648"
+  },
+  {
+   "tick": 500,
+   "all": "488948f6",
+   "terrain": "61608405",
+   "entities": "8d1f306c",
+   "rng": "d5e416da",
+   "meta": "4f7e4cd9"
+  },
+  {
+   "tick": 600,
+   "all": "51017822",
+   "terrain": "31d6ef97",
+   "entities": "07707128",
+   "rng": "8e2626a3",
+   "meta": "f3d2d4bc"
+  },
+  {
+   "tick": 700,
+   "all": "3e8c3481",
+   "terrain": "9711c7d2",
+   "entities": "c786f832",
+   "rng": "2192299f",
+   "meta": "4f81ef12"
+  },
+  {
+   "tick": 800,
+   "all": "a65ee51e",
+   "terrain": "3ecfefe3",
+   "entities": "ca9913c8",
+   "rng": "68691b92",
+   "meta": "9557df45"
+  },
+  {
+   "tick": 900,
+   "all": "6c0b042b",
+   "terrain": "4ab3b020",
+   "entities": "7a43bb60",
+   "rng": "44bef00a",
+   "meta": "678be394"
+  },
+  {
+   "tick": 1000,
+   "all": "3f0ff647",
+   "terrain": "53f8d119",
+   "entities": "fe0e9978",
+   "rng": "9c90f61c",
+   "meta": "1b701eeb"
+  },
+  {
+   "tick": 1100,
+   "all": "4f4f0bb8",
+   "terrain": "a6982fbe",
+   "entities": "c3cd9dbb",
+   "rng": "3aae74ee",
+   "meta": "de70ada3"
+  },
+  {
+   "tick": 1200,
+   "all": "97ada597",
+   "terrain": "47bf510f",
+   "entities": "8a3f48eb",
+   "rng": "622ca753",
+   "meta": "db29a092"
+  }
+ ]
+}

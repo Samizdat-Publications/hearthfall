@@ -21,7 +21,7 @@ const SPELL_COLORS: Record<string, string> = {
   call: "#7fd4ff",
   hornets: "#ffd23a",
   raise_land: "#c9a65a",
-  lightning: "#bfe8ff",
+  lightning: "#8fc8ff",
   flatten: "#d9cbb0",
   quake: "#8a6a4a",
   volcano: "#ff3b10",
@@ -36,7 +36,7 @@ const IMPACTS: Record<string, { flash?: number; ring?: number; beam?: boolean; s
   lightning: { flash: 1.2, beam: true, ring: 1.2, sparks: 6, dur: 0.8 },
   flatten: { ring: 5, sparks: 14, dur: 1.6 },
   quake: { ring: 7, sparks: 20, dur: 2 },
-  volcano: { flash: 4, ring: 7, sparks: 24, dur: 2.2 },
+  volcano: { flash: 2.6, ring: 7, sparks: 24, dur: 2.2 },
 };
 
 export class VfxLayer {
@@ -67,9 +67,9 @@ export class VfxLayer {
     };
     this.flashes = add(new THREE.IcosahedronGeometry(1, 1));
     this.rings = add(new THREE.RingGeometry(0.85, 1, 32).rotateX(-Math.PI / 2));
-    this.beams = add(new THREE.CylinderGeometry(0.12, 0.3, 1, 6).translate(0, 0.5, 0));
+    this.beams = add(new THREE.CylinderGeometry(0.05, 0.16, 1, 6).translate(0, 0.5, 0));
     this.swarm = add(new THREE.OctahedronGeometry(0.08));
-    this.pools = add(new THREE.CircleGeometry(1, 20).rotateX(-Math.PI / 2), 0.8);
+    this.pools = add(new THREE.CircleGeometry(1, 20).rotateX(-Math.PI / 2), 0.45);
   }
 
   /** Turn sim events into transient effects at visual time `now`. */
@@ -153,7 +153,7 @@ export class VfxLayer {
       this.s.set(sx, f.kind === "beam" ? sy : sx, sx);
       this.m.compose(this.p, this.q.identity(), this.s);
       im.setMatrixAt(k, this.m);
-      im.setColorAt(k, this.c.copy(f.color).multiplyScalar(fade * (f.kind === "beam" ? 1.6 : 1)));
+      im.setColorAt(k, this.c.copy(f.color).multiplyScalar(fade * (f.kind === "beam" ? 0.9 : 1)));
     }
     // persistent effect entities: hornet swarms (buzzing dots) and lava pools (pulsing discs)
     const E = w.ents;
@@ -176,7 +176,7 @@ export class VfxLayer {
       } else if (pools < this.pools.instanceMatrix.count) {
         const pulse = 0.75 + 0.25 * Math.sin(now * 5 + i);
         this.p.set(wrapX(E.x[i]), gy + 0.06, wrapZ(E.y[i]));
-        this.s.set(r, 1, r);
+        this.s.set(r * 0.85, 1, r * 0.85);
         this.m.compose(this.p, this.q.identity(), this.s);
         this.pools.setMatrixAt(pools, this.m);
         this.pools.setColorAt(pools++, this.c.set(SPELL_COLORS[spell] ?? "#ff3b10").multiplyScalar(pulse));
