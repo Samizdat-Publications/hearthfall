@@ -37,4 +37,42 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 - M6/M7 counter triangle: 100 percent every pair (target band 65 to 80); probes: Firecaller 6 v Chanter 10 and Chanter 6 v Warden 10 still win 100 percent, mixed mirror 40 to 50 percent (BACKLOG 65).
 
 ## State of the game (for Stewart)
-(written when the run is done)
+Written at the M11 exit (2026-10-09). The run continues with docs/BACKLOG.md after this.
+
+**What works**
+- A complete skirmish loop on a small curved, wrapping planet: your Shaper and settlers start at a Hearth, settlers chop wood, build Dwellings and breed; followers produce mana; you train Wardens (melee), Firecallers (ranged) and Chanters (convert) from lodges; you win by eliminating the rival tribes and lose when your tribe is gone.
+- Eight working spells: Bolt, Call, Hornets, Raise Land, Lightning, Flatten, Quake, Volcano. Terrain is fully deformable and water kills: sink land under an enemy village or raise a bridge across a channel.
+- Opponent AI with three personalities (aggressive, sneaky, turtle) and four difficulty presets, all through the same commands a player uses.
+- Campaign of three levels with objectives, triggers, hints and worship sites (Shrine, Reliquary, Totem): The Narrow Water, The Contested Shrine, Hold the Line. Progress is kept in the browser.
+- Menus: main menu, skirmish setup (map, size, seed, difficulty), settings (quality, volumes, key rebinding), pause, save and load, end screen with stats.
+- Look: retro pixel render pass (palette, dither, golden-hour light, firelight), real 3D models for units, buildings and trees with tribe tint and tribe rings under units, spell and combat VFX, stone and wood HUD with icons, minimap.
+- Audio: sound effects, Shaper voice lines and adaptive music (calm, tension, battle) with volume sliders.
+- Determinism: every match replays bit-identically from its command log (Node and Chromium agree); golden replays guard it.
+- Production build served as plain static files; a boot screen while loading and a clear error panel if WebGL 2 is missing.
+- QA: `npm run qa` runs typecheck, guards, about 200 unit tests, scenarios, golden replays, sim and render benchmarks (2000 units at 1440p in budget), screenshot baselines, browser end-to-end checks and the production build check.
+
+**How to play**
+```
+cd C:\Users\stewa\Documents\Claude\Hearthfall
+npm run build
+npm run serve
+```
+Then open http://127.0.0.1:5182/ in Chrome or Edge. Pick Skirmish (try continents, normal) or Campaign.
+- Mouse: drag to box-select, click a unit or building to select it, right click to move (on your tower: garrison), wheel to zoom, Q and E to rotate.
+- Keys: A attack-move, R retreat, G garrison, S select the Shaper, Z to N cast spells (then click a target, Esc cancels), D place a Dwelling, T a Watchtower, M map view, H help, Esc pause.
+- The top-left slider splits followers between praying for mana (Spells) and training troops (Training). Reach 10 followers to unlock the Watchtower and Warden Lodge, more for the other lodges.
+- Tip: keep the Shaper safe. If she dies she respawns at the Hearth after a delay, and her killer can steal spell charges.
+
+**Known issues**
+- Balance: the sneaky AI wins most AI versus AI matches, and the counter triangle is lopsided (each counter wins every time instead of about 70 percent). Hold the Line is beatable by doing nothing at low raid counts. See "Balance gaps" above and BACKLOG 64, 65, 83.
+- Eight more spells (Veil, Ward, Beguile, Whirlwind, Mire, Erode, Firerain, Wraith), the Shade, boats and the Skyloft exist only as data or placeholders; they are not playable yet.
+- Units do not animate (they glide); a few models and sounds are placeholders (docs/ASSETS.md A4 list).
+- No fog of war: you and the AI see the whole map.
+- Tribe rings can clip into steep slopes; text in menus is small at 1280x720.
+
+**Top 5 next items**
+1. Finish the eight remaining spells with a scenario and a shot each (BACKLOG 1).
+2. Balance pass on AI personalities and the counter triangle, with Hold the Line tuned so idling loses (BACKLOG 7 with 64, 65, 83).
+3. Fog of war and scouting, with an AI that respects it (BACKLOG 3).
+4. Animated units via vertex animation textures (BACKLOG 5).
+5. Look v2 follow-ups: pine forest belts, terraced cliffs, a volcano smoke column (BACKLOG 0a).

@@ -4,7 +4,7 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 
 ## P1: make the core game great
 0. [M] (done 10/09/2026, look v2 on top) Retro render pass (ADR-005): low-res render target with nearest upscale, palette quantization and ordered dither, pixel-noise detail textures, dusk and firelight lighting, stone and wood HUD frame; knobs in style.json; rebaseline shots once. Do this right after the M5 review so every later shot uses the final look.
-0a. [M] Look v2 follow-ups (gap to retro-candidate-1 after the look v2 pass): dense pine forest belts around villages (generator tree clusters, taller conifer props), villages that read as villages (M10 building and unit models at a larger on-screen scale), terraced plateaus from the generator (stepped height quantization on land) so cliffs form bands instead of slope patches, a volcano and smoke column that reads at mid zoom, HUD icons from assets/icons (A3) in the spell row and build column.
+0a. [M] Look v2 follow-ups (gap to retro-candidate-1; M10 brought the building and unit models and the HUD icons, M11 the tribe rings): dense pine forest belts around villages (generator tree clusters, taller conifer props), villages that read as villages (M10 building and unit models at a larger on-screen scale), terraced plateaus from the generator (stepped height quantization on land) so cliffs form bands instead of slope patches, a volcano and smoke column that reads at mid zoom, HUD icons from assets/icons (A3) in the spell row and build column.
 0b. [M] DONE (after M6): follower tiers gate the Watchtower and lodges (balance.progression, eco.tier, placePlan lock, HUD next-unlock line). Worship-driven spell unlocks move to M9 (Shrines, Reliquaries). Second harvested resource: evaluated and deferred to 0c below until the M7 AI and M9 levels are in, since it touches every bot build order.
 0c. [M] Second harvested resource (stone or clay from rocks) for towers and lodges, with settler jobs, data costs and bot build orders (split from 0b).
 1. [M] Remaining v1 spells as data: Veil, Ward, Beguile, Whirlwind, Mire, Erode, Firerain, Wraith: one scenario each, shot per spell.
@@ -13,7 +13,7 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 4. [M] Command UX polish: formations, double-click type select, control group jump, spell target previews refined, undo window tuned from playtest feedback.
 5. [L] Animated units: rig the chosen unit meshes (Meshy or Tripo rigging), generate clips (idle, walk, work, attack, cast, pray, die, drown), bake to vertex animation textures in Blender for InstancedMesh; `bench:render` must stay in budget. Needs Blender; if missing, log under Cuts.
 6. [M] Difficulty levels (decision quality, reaction time, optional resource multipliers) with soak verification per level.
-7. [M] Balance pass driven by soak metrics, with `playtest-analyst` proposals reviewed against DESIGN pillars.
+7. [M] Balance pass driven by soak metrics, with `playtest-analyst` proposals reviewed against DESIGN pillars. M11 re-rank: this absorbs 60, 64, 65, 71 and 83 (the biggest known gaps in play quality); do it right after 1.
 8. [S] Accessibility: colorblind-safe tribe palettes, UI scale, remappable keys, subtitle text for barks.
 
 ## P2: content and modes
@@ -106,6 +106,9 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 92. [S] Missing models and sounds (placeholders logged in docs/ASSETS.md A4): Boathouse, Shade Den, Skyloft, Shade; chant, chant break, conversion, training and elimination cues; and own cast clips for the eight spells that borrow one by alias (M10).
 93. [S] M10 review follow-ups: models.ts takes only the first mesh of a GLB (merge all or fail the load); models.test "nothing lost" check is always true (compare with the source triangle count); renderer disposeGroup disposes shared model geometry so each setWorld re-uploads it; player.ts fetch ignores r.ok and bindInput listeners are never removed; bench:render is CPU only (1.7M triangles at 1000 units has no GPU time check); review the mix of unpositioned rival cues in a 4-tribe game.
 36. [S] Spells that drown units need a readable lead-in (rumble, crack VFX, short delay) so players see cause and effect (M5, M1 review).
+
+94. [S] Tribe rings sit at ground + 0.02 under the unit centre, so on steep slopes part of the ring sinks into the terrain; sample the four corners or tilt the ring to the ground normal (M11 contact sheet).
+95. [S] Spell colors and impact recipes in packages/render/src/vfx.ts cover only the 8 working spells; move them into style.json and add entries as BACKLOG 1 lands (M11).
 
 ## Parking lot (ideas, unranked)
 - Wild people tribe that can be Called (converted) for growth.
