@@ -72,6 +72,11 @@ async function flow(browser, url, vp) {
     if (tribes !== 3) problem(`skirmish has ${tribes} tribes, expected 3`);
     await page.evaluate(() => window.__game.step(200));
     await check("play");
+    // the music director runs every frame, not only on frames with sim events (M10 review)
+    const m0 = await page.evaluate(() => window.__game.audio().music);
+    await settle();
+    const m1 = await page.evaluate(() => window.__game.audio().music);
+    if (!(m1.updates > m0.updates) || m1.stem !== "calm") problem(`music director idle while paused: ${JSON.stringify([m0, m1])}`);
     // the minimap footprint must not depend on whether a frame was rendered since the camera moved
     await page.evaluate(() => window.__game.setCamera("mid"));
     await settle();

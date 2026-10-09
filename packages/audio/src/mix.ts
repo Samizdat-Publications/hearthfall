@@ -67,6 +67,8 @@ const COMBAT = new Set(["melee", "fireball", "destroyed", "shaperDied", "chantBe
  */
 export class MusicDirector {
   stem: Stem = "calm";
+  /** calls so far; the game calls once per frame, events or not, so quiet stretches step down */
+  updates = 0;
   private lastNear = -1e9;
   private lastAny = -1e9;
   private since = 0;
@@ -84,6 +86,14 @@ export class MusicDirector {
 
   /** Feed one batch of events at sim time `t` (seconds); returns the stem to play. */
   update(t: number, events: readonly DirectorEvent[], l: Listener, localTribe: number): Stem {
+    this.updates++;
+    // sim time went back: a new world or a loaded save, so forget the old fight
+    if (t < this.since) {
+      this.stem = "calm";
+      this.lastNear = -1e9;
+      this.lastAny = -1e9;
+      this.since = t;
+    }
     for (const e of events) {
       const combat = COMBAT.has(e.type) || (e.type === "killed" && e.cat === 3);
       const raid = e.type === "raid" && e.tribe !== localTribe;

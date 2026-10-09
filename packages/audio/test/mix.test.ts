@@ -48,6 +48,14 @@ describe("audio mix", () => {
     expect(d.update(81, [{ type: "raid", tribe: 1 }], l, 0)).toBe("tension");
   });
 
+  it("a new world (sim time going back) starts calm instead of keeping the old fight", () => {
+    const d = new MusicDirector(24, 15, 35, 20);
+    const l: Listener = { x: 10, z: 10, size: 128, radius: 60 };
+    expect(d.update(500, [{ type: "melee", x: 12, y: 10 }], l, 0)).toBe("battle");
+    expect(d.update(0, [], l, 0)).toBe("calm");
+    expect(d.update(1, [], l, 0)).toBe("calm");
+  });
+
   it("aliases map a cue to the clip that serves it", () => {
     const played: string[] = [];
     const h = new AudioHooks({ spellCast: { cue: "sfx.{spell}_cast" } }, new Set(["sfx.quake"]), (p) => played.push(p.cue), { "sfx.quake_cast": "sfx.quake" });

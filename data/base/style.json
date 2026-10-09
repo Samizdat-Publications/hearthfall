@@ -79,7 +79,6 @@
       "killed": { "cue": "sfx.died", "maxPerTick": 3, "where": { "cat": 3 } },
       "destroyed": { "cue": "sfx.building_down", "maxPerTick": 2 },
       "drowned": { "cue": "sfx.drowned", "maxPerTick": 2, "where": { "cat": 3 } },
-      "shaperDied": { "cue": "voice.shaper.under_attack", "maxPerTick": 1 },
       "tribeEliminated": { "cue": "sfx.eliminated", "maxPerTick": 1 },
       "spellCast": { "cue": "sfx.{spell}_cast", "maxPerTick": 2 },
       "buildingDone": { "cue": "sfx.building_done", "maxPerTick": 1 },

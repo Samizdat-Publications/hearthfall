@@ -104,6 +104,7 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 90. [S] Tribe readability on real unit models: only the loincloth carries the tribe tint (3 to 5 percent of faces), so crowds read as one people at default zoom; add a tinted ground disc or shoulder sash per unit, and make the Shaper stand out (staff glow, slightly larger scale) (M10 contact sheet).
 91. [S] Trees read as dark blobs at overview and globe zoom: lighten the canopy colors or add a distance tint toward the grass palette, and vary scale per instance (M10 contact sheet).
 92. [S] Missing models and sounds (placeholders logged in docs/ASSETS.md A4): Boathouse, Shade Den, Skyloft, Shade; chant, chant break, conversion, training and elimination cues; and own cast clips for the eight spells that borrow one by alias (M10).
+93. [S] M10 review follow-ups: models.ts takes only the first mesh of a GLB (merge all or fail the load); models.test "nothing lost" check is always true (compare with the source triangle count); renderer disposeGroup disposes shared model geometry so each setWorld re-uploads it; player.ts fetch ignores r.ok and bindInput listeners are never removed; bench:render is CPU only (1.7M triangles at 1000 units has no GPU time check); review the mix of unpositioned rival cues in a 4-tribe game.
 36. [S] Spells that drown units need a readable lead-in (rumble, crack VFX, short delay) so players see cause and effect (M5, M1 review).
 
 ## Parking lot (ideas, unranked)

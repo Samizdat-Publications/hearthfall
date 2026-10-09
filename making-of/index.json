@@ -590,6 +590,16 @@
       "when": "2026-10-09T09:30:27.076Z",
       "source": "external:m10_close_before_after.png",
       "bytes": 562236
+    },
+    {
+      "file": "m10/20261009-0956_m10-smoke-sheet.png",
+      "milestone": "M10",
+      "kind": "contact-sheet",
+      "caption": "M10 exit: the smoke set with every placeholder swapped for the generated models",
+      "highlight": true,
+      "when": "2026-10-09T09:56:10.721Z",
+      "source": "external:m10_smoke_sheet.png",
+      "bytes": 1619735
     }
   ]
 }

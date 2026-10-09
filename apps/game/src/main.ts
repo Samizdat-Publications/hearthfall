@@ -117,7 +117,7 @@ if (__DEBUG_API__ || game.params.debug) {
       return game.ended;
     },
     /** M10 audio: cue hook stats (played, silent stubs, by cue) and the Web Audio player state */
-    audio: () => ({ hooks: game.audio.stats(), player: game.player.stats() }),
+    audio: () => ({ hooks: game.audio.stats(), player: game.player.stats(), music: { stem: game.music.stem, updates: game.music.updates } }),
     /** M10 real models: pending while loading, ids loaded and failed, ids the current layers draw */
     models: () => game.renderer.modelStatus(),
     /** minimap camera outline: screen border samples picked onto the terrain (unwrapped around the view center) */

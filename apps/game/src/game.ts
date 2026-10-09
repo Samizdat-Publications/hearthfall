@@ -151,7 +151,7 @@ export class Game {
   readonly audio: AudioHooks;
   /** M10 Web Audio playback; silent until the first user gesture (browser autoplay rules) */
   readonly player: WebAudioPlayer;
-  private readonly music = new MusicDirector();
+  readonly music = new MusicDirector();
   private selKey = "";
   private ackFlip = 0;
   private lastCastVoice = -1e9;
@@ -191,7 +191,11 @@ export class Game {
     this.paused = params.paused || params.fixedStep;
     this.renderer = new ThreeRenderer({ canvas, style: this.pack.files.style, heightUnitsPerWorldUnit: this.pack.files.balance.terrain.heightUnitsPerWorldUnit });
     // the game never waits for models: placeholders draw until they arrive
-    if (params.models) void this.renderer.loadModels(MODEL_URLS).then(() => this.onChange());
+    if (params.models)
+      void this.renderer
+        .loadModels(MODEL_URLS)
+        .then(() => this.onChange())
+        .catch((e: unknown) => console.warn("model layers kept their placeholders:", e));
     const store = browserKV();
     this.kv = store.kv;
     this.persistent = store.persistent;
@@ -442,6 +446,7 @@ export class Game {
   private cueFor(e: SimEvent): void {
     if (e.tribe !== this.localTribe) return;
     if (e.type === "commandRejected") this.player.play("sfx.ui_error");
+    else if (e.type === "shaperDied") this.player.play("voice.shaper.under_attack");
     else if (e.type === "spellCast" && this.world.tick - this.lastCastVoice > 20 * this.world.cfg.tickHz) {
       this.lastCastVoice = this.world.tick;
       this.player.play("voice.shaper.casting");
@@ -560,9 +565,10 @@ export class Game {
       const wall = now / 1000;
       this.renderer.consumeEvents(this.events, this.params.fixedStep ? (e) => (e.tick + 1) / hz : () => wall);
       this.audio.consume(this.events);
-      this.player.setStem(this.music.update(this.world.tick / hz, this.events, this.player.listener, this.localTribe));
-      this.events = [];
     }
+    // every frame, events or not: the battle, tension and hold windows only lapse when the director runs
+    this.player.setStem(this.music.update(this.world.tick / this.world.cfg.tickHz, this.events, this.player.listener, this.localTribe));
+    this.events = [];
     // fixedStep: visuals follow the sim tick, so re-rendering the same tick gives identical pixels
     const visualTime = this.params.fixedStep ? this.world.tick / this.world.cfg.tickHz : now / 1000;
     this.renderer.render(visualTime);
