@@ -122,6 +122,40 @@ async function flow(browser, url, vp) {
     await click("main-menu");
     await screenIs("main");
     await settle();
+    // M9 campaign: only the first level is open; win it, go on to the next, and the menu remembers
+    await click("campaign");
+    await screenIs("campaign");
+    const order = await page.$$eval('[data-ui^="level-"]', (els) => els.map((e) => ({ ui: e.getAttribute("data-ui"), disabled: e.disabled })));
+    if (order.length < 3 || order[0].disabled || !order.slice(1).every((l) => l.disabled)) problem(`campaign: open levels ${JSON.stringify(order)}`);
+    await check("campaign");
+    await click(order[0].ui);
+    await screenIs("none");
+    await page.evaluate(() => window.__game.step(60));
+    const lv = await page.evaluate(() => window.__game.level());
+    if (!lv || `level-${lv.id}` !== order[0].ui) problem(`campaign: running level ${JSON.stringify(lv)}`);
+    const objectives = await page.$$eval('[data-hud-part^="objective-"]', (els) => els.length);
+    if (!objectives) problem("campaign: no level objectives in the HUD");
+    await check("level");
+    const won = await page.evaluate(() => window.__game.winLevel());
+    if (!won?.won) problem(`winLevel: ended ${JSON.stringify(won)}`);
+    await screenIs("end");
+    const lvTitle = await page.textContent('[data-ui="end-title"]');
+    if (lvTitle?.trim() !== "Level won") problem(`level end title ${lvTitle}`);
+    await check("level-end");
+    await click("next-level");
+    await screenIs("none");
+    const next = await page.evaluate(() => window.__game.level());
+    if (!next || `level-${next.id}` !== order[1].ui) problem(`next level: ${JSON.stringify(next)}`);
+    await page.keyboard.press("p");
+    await screenIs("pause");
+    await click("quit");
+    await screenIs("main");
+    await click("campaign");
+    await screenIs("campaign");
+    const open2 = await page.$eval(`[data-ui="${order[1].ui}"]`, (e) => !e.disabled);
+    if (!open2) problem("campaign: the second level is still closed after winning the first");
+    await click("back");
+    await screenIs("main");
   } catch (e) {
     problem(String(e.message ?? e).split("\n")[0].slice(0, 200));
   }

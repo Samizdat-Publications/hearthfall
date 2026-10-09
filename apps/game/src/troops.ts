@@ -18,6 +18,18 @@ export function buildingAt(w: World, tribe: number, x: number, y: number): numbe
   return -1;
 }
 
+/** Tag of the worship site under (x, y) that still has something to give, else null (M9). */
+export function siteAt(w: World, x: number, y: number): string | null {
+  const E = w.ents;
+  const n = w.terrain.size;
+  for (const s of w.worship.sites) {
+    const i = E.index(s.ent);
+    if (i < 0 || s.usesLeft <= 0) continue;
+    if (Math.abs(wrapDelta(x - E.x[i], n)) <= 1.5 && Math.abs(wrapDelta(y - E.y[i], n)) <= 1.5) return s.tag;
+  }
+  return null;
+}
+
 /** Nearest own finished Watchtower with a free slot for the selection's first unit, else -1. */
 export function towerFor(w: World, sel: readonly number[]): number {
   const i = sel.find((k) => w.ents.alive[k] && w.ents.cat[k] === CAT.unit && !w.cfg.pack.units.units[w.ents.type[k]].isCaster);

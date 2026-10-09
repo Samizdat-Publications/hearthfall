@@ -106,7 +106,10 @@ export function slotMeta(kv: KV, n: number): SlotMeta | null {
 
 /** Write a save; the error is player-readable (storage full, unavailable). */
 export function writeSlot(kv: KV, n: number, s: SaveGame): string | null {
-  const meta: SlotMeta = { savedAt: s.savedAt, tick: s.tick, map: `${s.params.level} ${s.params.size}, seed ${s.params.seed}`, opponents: `${s.params.ai.join(", ")} (${s.params.difficulty})` };
+  const c = s.params.campaign;
+  const meta: SlotMeta = c
+    ? { savedAt: s.savedAt, tick: s.tick, map: `campaign: ${c.def.name}`, opponents: s.params.ai.filter((x) => x !== "none").join(", ") || "none" }
+    : { savedAt: s.savedAt, tick: s.tick, map: `${s.params.level} ${s.params.size}, seed ${s.params.seed}`, opponents: `${s.params.ai.join(", ")} (${s.params.difficulty})` };
   // a failed write must not cost the player the save already in the slot: put the old pair back
   const prevSlot = kv.getItem(slotKey(n));
   const prevMeta = kv.getItem(metaKey(n));

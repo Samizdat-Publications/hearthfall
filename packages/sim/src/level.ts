@@ -3,6 +3,7 @@
 // triggers. LevelRuntime evaluates them in step 9 after worship; the player is tribe 0. The outcome is
 // sim state (hashed and snapshotted), so a replay of a level proves the same win or loss.
 import type { LevelDef, PackFiles } from "@hearthfall/data";
+import { registerCommand } from "./commands.ts";
 import type { Fnv } from "./hash.ts";
 import type { MapSpec } from "./generator.ts";
 import { applySetup, type BotFactory } from "./scenario.ts";
@@ -158,6 +159,18 @@ export class LevelRuntime {
     this.endedAt = s.endedAt;
   }
 }
+
+/** God mode (tests and the e2e flow): mark every objective done; the level is won in this tick's step 9. */
+registerCommand("completeObjectives", {
+  validate(w, c) {
+    if (c.tribe !== -1 && !w.godMode) return "completeObjectives is god mode only";
+    if (!w.level) return "not a campaign level";
+    return w.level.outcome === OUTCOME.none ? null : "the level is over";
+  },
+  apply(w) {
+    w.level!.done = w.level!.done.map(() => 1);
+  },
+});
 
 /**
  * Build a level world: the painted map, per-level spell unlocks (plus the campaign carry for the

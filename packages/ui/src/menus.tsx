@@ -1,11 +1,11 @@
 // Menus (M8): main menu, skirmish setup, pause, saves, settings and the end screen. Like the HUD,
 // a Preact overlay driven by a plain MenuModel; every intent goes back through MenuActions. Each
 // screen is one centered panel tagged data-hud (so the DOM layout checks cover it) and its buttons
-// carry data-ui names for the e2e test.
+// carry data-ui names for the e2e test. M9 adds the campaign screen (levels open in order).
 import { Fragment, render } from "preact";
 import { signal } from "@preact/signals";
 
-export type Screen = "none" | "main" | "setup" | "pause" | "settings" | "saves" | "end";
+export type Screen = "none" | "main" | "campaign" | "setup" | "pause" | "settings" | "saves" | "end";
 
 export interface Choice {
   value: string;
@@ -45,12 +45,21 @@ export interface SlotView {
   detail: string;
 }
 
+export interface LevelView {
+  id: string;
+  name: string;
+  description: string;
+  open: boolean;
+  won: boolean;
+}
+
 export interface MenuModel {
   screen: Screen;
   setup: SetupView;
   settings: SettingsView;
   saves: { mode: "save" | "load"; slots: SlotView[]; message: string | null };
-  end: { won: boolean; lines: { label: string; value: string }[] } | null;
+  end: { won: boolean; title?: string; tag?: string; lines: { label: string; value: string }[]; next: boolean } | null;
+  campaign: { levels: LevelView[]; message: string | null };
   /** saving needs a skirmish in progress (scenarios and the menu backdrop cannot be saved) */
   canSave: boolean;
 }
@@ -74,6 +83,8 @@ export interface MenuActions {
   resetKeys(): void;
   quitToMenu(): void;
   playAgain(): void;
+  playLevel(id: string): void;
+  nextLevel(): void;
 }
 
 export const menuModel = signal<MenuModel | null>(null);
@@ -103,7 +114,10 @@ function Main({ act }: { act: MenuActions }) {
     <div data-hud="menu-main" class="menu-panel menu-main">
       <h1 class="menu-title">Hearthfall</h1>
       <p class="menu-tag">Shape the land. Lead your tribe. Keep them out of the sea.</p>
-      <Btn ui="skirmish" primary onClick={() => act.go("setup")}>
+      <Btn ui="campaign" primary onClick={() => act.go("campaign")}>
+        Campaign
+      </Btn>
+      <Btn ui="skirmish" onClick={() => act.go("setup")}>
         Skirmish
       </Btn>
       <Btn ui="load" onClick={() => act.openSaves("load")}>
@@ -160,6 +174,35 @@ function Setup({ s, act }: { s: SetupView; act: MenuActions }) {
         </Btn>
         <Btn ui="start" primary onClick={() => act.start()}>
           Start
+        </Btn>
+      </div>
+    </div>
+  );
+}
+
+function Campaign({ m, act }: { m: MenuModel; act: MenuActions }) {
+  const v = m.campaign;
+  return (
+    <div data-hud="menu-campaign" class="menu-panel menu-saves">
+      <h2 class="menu-head">Campaign</h2>
+      {v.levels.map((l, k) => (
+        <div key={l.id} class="slot">
+          <span class="slot-text">
+            <b>
+              {k + 1}. {l.name}
+              {l.won ? " (won)" : ""}
+            </b>
+            <span class="slot-detail level-desc">{l.open ? l.description : "Win the level before this one to open it."}</span>
+          </span>
+          <button class="menu-small" data-ui={`level-${l.id}`} disabled={!l.open} onClick={() => act.playLevel(l.id)}>
+            {l.won ? "Replay" : "Play"}
+          </button>
+        </div>
+      ))}
+      {v.message ? <p class="menu-note">{v.message}</p> : null}
+      <div class="menu-actions">
+        <Btn ui="back" onClick={() => act.back()}>
+          Back
         </Btn>
       </div>
     </div>
@@ -278,9 +321,9 @@ function End({ m, act }: { m: MenuModel; act: MenuActions }) {
   return (
     <div data-hud="menu-end" class={"menu-panel menu-main " + (e.won ? "won" : "lost")}>
       <h1 class="menu-title" data-ui="end-title">
-        {e.won ? "Victory" : "Defeat"}
+        {e.title ?? (e.won ? "Victory" : "Defeat")}
       </h1>
-      <p class="menu-tag">{e.won ? "Every rival tribe has fallen." : "Your tribe is no more."}</p>
+      <p class="menu-tag">{e.tag ?? (e.won ? "Every rival tribe has fallen." : "Your tribe is no more.")}</p>
       <div class="menu-grid end-lines">
         {e.lines.map((l) => (
           <Fragment key={l.label}>
@@ -289,8 +332,13 @@ function End({ m, act }: { m: MenuModel; act: MenuActions }) {
           </Fragment>
         ))}
       </div>
-      <Btn ui="play-again" primary onClick={() => act.playAgain()}>
-        Play again
+      {e.next ? (
+        <Btn ui="next-level" primary onClick={() => act.nextLevel()}>
+          Next level
+        </Btn>
+      ) : null}
+      <Btn ui="play-again" primary={!e.next} onClick={() => act.playAgain()}>
+        {e.won ? "Play again" : "Try again"}
       </Btn>
       <Btn ui="main-menu" onClick={() => act.quitToMenu()}>
         Main menu
@@ -305,6 +353,7 @@ function Menus({ act }: { act: MenuActions }) {
   return (
     <div class={"menu-backdrop" + (m.screen === "main" ? " title" : "")}>
       {m.screen === "main" ? <Main act={act} /> : null}
+      {m.screen === "campaign" ? <Campaign m={m} act={act} /> : null}
       {m.screen === "setup" ? <Setup s={m.setup} act={act} /> : null}
       {m.screen === "pause" ? <Pause m={m} act={act} /> : null}
       {m.screen === "saves" ? <Saves m={m} act={act} /> : null}

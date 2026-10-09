@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { CAT, type World } from "@hearthfall/sim";
 
-function colored(g: THREE.BufferGeometry, c: THREE.Color): THREE.BufferGeometry {
+export function colored(g: THREE.BufferGeometry, c: THREE.Color): THREE.BufferGeometry {
   const ng = g.index ? g.toNonIndexed() : g;
   const n = ng.getAttribute("position").count;
   const col = new Float32Array(n * 3);

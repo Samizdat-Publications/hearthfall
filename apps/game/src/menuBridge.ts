@@ -5,12 +5,20 @@ import { KEY_ACTIONS, defaultKeymap, keyLabel, menuModel, mountMenus, rebind, ty
 import "../../../packages/ui/src/menus.css";
 import type { Game } from "./game.ts";
 import { makeSave, restoreSave, type SkirmishParams } from "./session.ts";
+import { levelOpen } from "./campaign.ts";
 import { QUALITIES, SLOTS, deleteSlot, readSlot, slotMeta, storeSettings, writeSlot } from "./storage.ts";
 
 const title = (id: string) => id[0].toUpperCase() + id.slice(1);
 const clock = (ticks: number, hz: number) => {
   const s = Math.floor(ticks / hz);
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+};
+
+/** end screen line for why a campaign level was lost (LevelRuntime reasons) */
+const LOST_WHY: Record<string, string> = {
+  eliminated: "Your tribe is no more.",
+  timeLimit: "Time ran out.",
+  siteLost: "A rival tribe claimed the site first.",
 };
 
 /** generator limit: TRIBE_COLORS has four entries */
@@ -81,15 +89,28 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
       end: game.ended
         ? {
             won: game.ended.won,
+            ...(w.level
+              ? {
+                  title: game.ended.won ? "Level won" : "Level lost",
+                  tag: game.ended.won ? `${w.level.def.name} is yours.` : (LOST_WHY[game.ended.why ?? ""] ?? "Your tribe is no more."),
+                }
+              : {}),
             lines: [
               { label: "Time", value: clock(w.tick, hz) },
               { label: "Followers", value: String(me ? w.economy.followers(me.index) : 0) },
-              { label: "Rivals out", value: `${w.tribes.filter((t) => t.index !== game.localTribe && !t.alive).length} of ${w.tribes.length - 1}` },
+              w.level
+                ? { label: "Objectives", value: `${w.level.done.filter((d) => d === 1).length} of ${w.level.done.length}` }
+                : { label: "Rivals out", value: `${w.tribes.filter((t) => t.index !== game.localTribe && !t.alive).length} of ${w.tribes.length - 1}` },
               { label: "Foes defeated", value: String(game.stats.kills) },
               { label: "Units lost", value: String(game.stats.lost) },
             ],
+            next: game.ended.won && game.nextLevelId() !== null,
           }
         : null,
+      campaign: {
+        levels: game.levels.map((l) => ({ id: l.id, name: l.name, description: l.description, open: levelOpen(game.levels, game.campaignWon, l.id), won: game.campaignWon.includes(l.id) })),
+        message: game.persistent ? null : "Browser storage is unavailable: campaign progress lasts until this tab closes.",
+      },
       canSave: game.inGame && game.skirmish !== null && !game.ended,
     };
   };
@@ -163,7 +184,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
     saveSlot: (n) => {
       const sp = game.skirmish;
       if (!sp || !game.inGame || game.ended) {
-        saves.message = "Only a skirmish in progress can be saved.";
+        saves.message = "Only a skirmish or campaign level in progress can be saved.";
         return refresh();
       }
       const s = makeSave(game.world, sp, game.log, game.pendingCommands(), new Date().toISOString());
@@ -209,6 +230,11 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
     quitToMenu: () => game.showMainMenu(),
     playAgain: () => {
       if (game.skirmish) game.startSkirmish(game.skirmish);
+    },
+    playLevel: (id) => game.playLevel(id),
+    nextLevel: () => {
+      const id = game.nextLevelId();
+      if (id) game.playLevel(id);
     },
   });
   refresh();

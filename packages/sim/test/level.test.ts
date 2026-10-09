@@ -102,6 +102,14 @@ describe("campaign levels", () => {
     expect(r.level!.outcome).toBe(OUTCOME.won);
   });
 
+  it("completeObjectives (god mode) wins the level in the same step; players cannot send it", () => {
+    const w = make(level());
+    w.step([{ tick: 0, tribe: 0, type: "completeObjectives", args: {} }]);
+    expect(w.events).toContainEqual(expect.objectContaining({ type: "commandRejected" }));
+    w.step([{ tick: w.tick, tribe: -1, type: "completeObjectives", args: {} }]);
+    expect(w.level!.outcome).toBe(OUTCOME.won);
+  });
+
   it("validateLevel catches broken references", () => {
     const bad = { ...level(), objectives: [{ type: "worship", site: "nowhere" }], tribes: [{ ai: "aggressive" }] };
     const msgs = validateLevel(bad, basePack().files).issues.map((i) => i.message);

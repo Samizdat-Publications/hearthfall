@@ -3,9 +3,12 @@
 // WorldInit and the opponents, each controller's saveState, the local command log and the commands
 // queued for the next tick. Loading restores the snapshot, recreates the opponents from the params
 // and hands each its state back, so the loaded game has the same hash and the same future.
-import type { ValidatedPack } from "@hearthfall/data";
-import { World, type Command, type WorldInit, type WorldSnapshot } from "@hearthfall/sim";
-import { opponentsFor } from "./opponents.ts";
+// M9: a campaign level is a session too; its params carry the level definition itself (and the
+// campaign carry), so a save restores the level it was made in even after the level file changes.
+import type { LevelDef, ValidatedPack } from "@hearthfall/data";
+import { makeBot } from "@hearthfall/ai";
+import { World, createLevelWorld, levelMap, type CampaignCarry, type Command, type WorldInit, type WorldSnapshot } from "@hearthfall/sim";
+import { levelOpponents, opponentsFor } from "./opponents.ts";
 
 export interface SkirmishParams {
   seed: number;
@@ -17,16 +20,33 @@ export interface SkirmishParams {
   /** opponent per non-local tribe (personality id, "economy" or "none"), cycled */
   ai: string[];
   difficulty: string;
+  /** M9: set when this session is a campaign level (the other fields then mirror the level) */
+  campaign?: { def: LevelDef; carry: CampaignCarry };
 }
 
 export const LOCAL_TRIBE = 0;
 
+/** Session params for a campaign level and the unlocks earned in the levels before it. */
+export function campaignParams(def: LevelDef, carry: CampaignCarry): SkirmishParams {
+  return {
+    seed: def.seed,
+    level: def.map.generator,
+    size: def.map.size,
+    tribes: def.tribes.length,
+    ai: def.tribes.slice(1).map((t) => t.ai ?? "none"),
+    difficulty: def.tribes.find((t) => t.difficulty)?.difficulty ?? "normal",
+    campaign: { def, carry: { spells: [...(carry.spells ?? [])], buildings: [...(carry.buildings ?? [])] } },
+  };
+}
+
 export function skirmishInit(pack: ValidatedPack, p: SkirmishParams): WorldInit {
+  if (p.campaign) return { pack: pack.files, packHash: pack.hash, seed: p.campaign.def.seed, map: levelMap(p.campaign.def), populate: false, level: { def: p.campaign.def, carry: p.campaign.carry } };
   return { pack: pack.files, packHash: pack.hash, seed: p.seed, map: { generator: p.level, size: p.size, tribes: p.tribes } };
 }
 
-/** A new skirmish world with its opponents attached. */
+/** A new skirmish (or campaign level) world with its opponents attached. */
 export function createSkirmish(pack: ValidatedPack, p: SkirmishParams): World {
+  if (p.campaign) return createLevelWorld({ def: p.campaign.def, carry: p.campaign.carry }, pack.files, pack.hash, makeBot);
   const w = new World(skirmishInit(pack, p));
   for (const c of opponentsFor(w.tribes.length, LOCAL_TRIBE, p)) w.controllers.push(c);
   return w;
@@ -57,7 +77,7 @@ export function makeSave(w: World, params: SkirmishParams, log: Command[], pendi
   return {
     version: SAVE_VERSION,
     packHash: w.cfg.packHash,
-    params: { ...params, ai: [...params.ai] },
+    params: { ...params, ai: [...params.ai], ...(params.campaign ? { campaign: structuredClone(params.campaign) } : {}) },
     savedAt,
     tick: w.tick,
     hash: w.hash().all,
@@ -73,7 +93,8 @@ export function restoreSave(pack: ValidatedPack, s: SaveGame): World {
   if (s.version !== SAVE_VERSION) throw new Error(`save version ${s.version} is not supported`);
   if (s.packHash !== pack.hash) throw new Error("save was made with different game data");
   const w = World.restore(skirmishInit(pack, s.params), s.snapshot);
-  for (const c of opponentsFor(w.tribes.length, LOCAL_TRIBE, s.params)) {
+  const cs = s.params.campaign ? levelOpponents(s.params.campaign.def) : opponentsFor(w.tribes.length, LOCAL_TRIBE, s.params);
+  for (const c of cs) {
     const st = s.controllers.find((x) => x.tribe === c.tribe);
     if (st && c.loadState) c.loadState(st.state);
     w.controllers.push(c);

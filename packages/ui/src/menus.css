@@ -38,3 +38,4 @@
 .end-lines { margin: 4px 0 8px; }
 .menu-end.lost .menu-title, .menu-panel.lost .menu-title { color: #ff8a6a; }
 .settings-cols .menu-grid { align-content: start; }
+.level-desc { white-space: normal; }

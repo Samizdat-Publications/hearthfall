@@ -10,6 +10,7 @@ import { CHUNK, makeWaterMaterial, TerrainChunk, type TerrainPalette } from "./t
 import { TreeLayer } from "./props.ts";
 import { UnitLayer } from "./unitsLayer.ts";
 import { BuildingLayer } from "./buildingsLayer.ts";
+import { WorshipLayer } from "./worshipLayer.ts";
 import { VfxLayer } from "./vfx.ts";
 import { RetroPass } from "./retro.ts";
 
@@ -66,6 +67,7 @@ export class ThreeRenderer implements Renderer {
   private readonly styleRender: RendererOptions["style"]["render"];
   units: UnitLayer | null = null;
   buildings: BuildingLayer | null = null;
+  worship: WorshipLayer | null = null;
   /** sim tick interpolation factor in [0, 1] and the selection to ring (entity indices) */
   alpha = 1;
   selected: ReadonlySet<number> = new Set();
@@ -181,6 +183,9 @@ export class ThreeRenderer implements Renderer {
     if (this.buildings) disposeGroup(this.scene, this.buildings.group);
     this.buildings = new BuildingLayer(this.propMat, world.cfg.pack.buildings.buildings, this.pal, world.tribes.map((t) => t.color));
     this.scene.add(this.buildings.group);
+    if (this.worship) disposeGroup(this.scene, this.worship.group);
+    this.worship = new WorshipLayer(this.propMat, world.cfg.pack.buildings.worship.kinds ?? [], this.pal, world.tribes.map((t) => t.color));
+    this.scene.add(this.worship.group);
   }
 
   private rebuildAll(): void {
@@ -274,6 +279,7 @@ export class ThreeRenderer implements Renderer {
       for (const c of this.chunks) c.place(this.cam.x, this.cam.z, size);
       this.trees.update(w, this.cam.x, this.cam.z, this.palette.heightScale);
       this.buildings?.update(w, this.cam.x, this.cam.z, this.palette.heightScale);
+      this.worship?.update(w, this.cam.x, this.cam.z, this.palette.heightScale);
       this.units?.update(w, this.alpha, this.cam.x, this.cam.z, this.palette.heightScale, visualTime, this.bend.uFadeEnd.value, this.camera, this.bend.uBendK.value, this.viewW, this.viewH, this.selected);
       this.stats.unitsDrawn = this.units?.drawn ?? 0;
       this.vfx.update(w, visualTime, this.cam.x, this.cam.z, this.palette.heightScale);

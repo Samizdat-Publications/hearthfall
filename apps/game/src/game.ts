@@ -3,18 +3,21 @@
 // step(n), and every time-driven visual reads the frame counter, so captures are deterministic.
 // M8: the game flow (main menu, skirmish, pause, saves, settings, end screen) is a `screen` here; the
 // sim only runs while no menu screen is up. menuBridge.ts turns this state into the menu view model.
-import { SKIRMISH_DEFAULTS, validatePack, type ValidatedPack } from "@hearthfall/data";
-import { CAT, World, commandsByTick, createScenarioWorld, shaperIndex, wrapDelta, type Command, type ScenarioDef, type SimEvent } from "@hearthfall/sim";
+// M9: campaign levels (data/levels) run as sessions too; the level runtime decides the end.
+import { SKIRMISH_DEFAULTS, validateLevel, validatePack, type LevelDef, type ValidatedPack } from "@hearthfall/data";
+import { CAT, OUTCOME, World, commandsByTick, createScenarioWorld, shaperIndex, wrapDelta, type Command, type ScenarioDef, type SimEvent } from "@hearthfall/sim";
 import { ThreeRenderer, type CameraState } from "@hearthfall/render";
 import { DEFAULT_AI } from "./opponents.ts";
 import { actionFor, spellSlot, type KeyAction, type Screen } from "@hearthfall/ui";
-import { LOG_TAIL, createSkirmish, type SaveGame, type SkirmishParams } from "./session.ts";
+import { LOG_TAIL, campaignParams, createSkirmish, type SaveGame, type SkirmishParams } from "./session.ts";
+import { campaignCarry, levelOpen, loadProgress, nextLevel, ordered, recordWin } from "./campaign.ts";
 import { QUALITY_SCALE, browserKV, loadSettings, type KV, type Settings } from "./storage.ts";
 import { AudioHooks } from "@hearthfall/audio";
-import { buildingAt, troopCommand, type TroopIntent } from "./troops.ts";
+import { buildingAt, siteAt, troopCommand, type TroopIntent } from "./troops.ts";
 
 const packFiles = import.meta.glob("../../../data/base/*.json", { eager: true, import: "default" });
 const scenarioFiles = import.meta.glob("../../../scenarios/*.json", { eager: true, import: "default" });
+const levelFiles = import.meta.glob("../../../data/levels/*.json", { eager: true, import: "default" });
 
 export function loadPack(): ValidatedPack {
   const raw: Record<string, unknown> = {};
@@ -22,6 +25,17 @@ export function loadPack(): ValidatedPack {
   const res = validatePack(raw);
   if (!res.pack) throw new Error("data pack invalid: " + res.issues.slice(0, 3).map((i) => `${i.file} ${i.path} ${i.message}`).join("; "));
   return res.pack;
+}
+
+/** Campaign levels in order; a level that fails validation is a build bug (the data guard checks them too). */
+export function loadLevels(pack: ValidatedPack): LevelDef[] {
+  const out: LevelDef[] = [];
+  for (const [path, json] of Object.entries(levelFiles)) {
+    const res = validateLevel(json, pack.files, path.split("/").pop());
+    if (!res.level) throw new Error("level invalid: " + res.issues.slice(0, 3).map((i) => `${i.file} ${i.path} ${i.message}`).join("; "));
+    out.push(res.level);
+  }
+  return ordered(out);
 }
 
 export function findScenario(id: string): ScenarioDef | undefined {
@@ -46,6 +60,8 @@ export interface GameParams {
   /** opponent controller per non-local tribe in order: a personality id, "economy" or "none" (cycled) */
   ai: string[];
   difficulty: string;
+  /** M9: boot straight into this campaign level (shots and debugging; ignores campaign progress) */
+  campaign: string | null;
 }
 
 export function parseParams(search: string): GameParams {
@@ -65,6 +81,7 @@ export function parseParams(search: string): GameParams {
     menu: [...q.keys()].length === 0 || q.get("menu") === "1",
     ai: q.get("ai") ? q.get("ai")!.split(",").filter(Boolean) : DEFAULT_AI,
     difficulty: q.get("difficulty") ?? "normal",
+    campaign: q.get("campaign"),
   };
 }
 
@@ -89,6 +106,9 @@ export interface DebugFlags {
 
 export class Game {
   readonly pack = loadPack();
+  readonly levels = loadLevels(this.pack);
+  /** campaign levels won (browser storage; this session only when storage is unavailable) */
+  campaignWon: string[] = [];
   world!: World;
   readonly renderer: ThreeRenderer;
   params: GameParams;
@@ -134,7 +154,7 @@ export class Game {
   skirmish: SkirmishParams | null = null;
   /** local commands applied so far this session (tail kept), stored in saves */
   log: Command[] = [];
-  ended: { won: boolean } | null = null;
+  ended: { won: boolean; why?: string } | null = null;
   stats = { kills: 0, lost: 0 };
   readonly kv: KV;
   readonly persistent: boolean;
@@ -160,8 +180,10 @@ export class Game {
     this.kv = store.kv;
     this.persistent = store.persistent;
     this.settings = loadSettings(this.kv);
+    this.campaignWon = loadProgress(this.kv);
     this.applyQuality();
-    if (params.menu && !params.scenario) this.showMainMenu();
+    if (params.campaign && !params.scenario) this.playLevel(params.campaign, true);
+    else if (params.menu && !params.scenario) this.showMainMenu();
     else this.load();
     this.bindInput();
   }
@@ -173,11 +195,11 @@ export class Game {
   }
 
   /** (Re)build the world from params: a scenario id, or a procedural planet. */
-  load(scenarioId: string | null = this.params.scenario): void {
+  load(scenarioId: string | null = this.params.scenario, session?: SkirmishParams): void {
     const p = this.pack;
     const def = scenarioId ? findScenario(scenarioId) : undefined;
     if (scenarioId && !def) throw new Error(`unknown scenario ${scenarioId}`);
-    const sp: SkirmishParams = { seed: this.params.seed, level: this.params.level, size: this.params.size, tribes: this.params.tribes, ai: [...this.params.ai], difficulty: this.params.difficulty };
+    const sp: SkirmishParams = session ?? { seed: this.params.seed, level: this.params.level, size: this.params.size, tribes: this.params.tribes, ai: [...this.params.ai], difficulty: this.params.difficulty };
     this.world = def ? createScenarioWorld(def, p.files, p.hash) : createSkirmish(p, sp);
     this.scenarioCmds = def ? commandsByTick(def.commands) : null;
     this.afterWorld();
@@ -222,13 +244,27 @@ export class Game {
     const prev = this.params;
     this.params = { ...this.params, seed: sp.seed, level: sp.level, size: sp.size, tribes: sp.tribes, ai: [...sp.ai], difficulty: sp.difficulty, scenario: null, camera: null };
     try {
-      this.load(null);
+      this.load(null, sp);
     } catch (e) {
       // the generator can fail for a seed and size (the menu shows it); keep the current world and params
       this.params = prev;
       throw e;
     }
     this.paused = this.params.fixedStep;
+  }
+
+  /** Start a campaign level (it must be open) with the unlocks of the levels won before it. */
+  playLevel(id: string, anyway = false): void {
+    const def = this.levels.find((l) => l.id === id);
+    if (!def) throw new Error(`unknown level ${id}`);
+    if (!anyway && !levelOpen(this.levels, this.campaignWon, id)) return;
+    this.startSkirmish(campaignParams(def, campaignCarry(this.levels, this.campaignWon, id)));
+  }
+
+  /** The level after the current campaign level, or null. */
+  nextLevelId(): string | null {
+    const c = this.skirmish?.campaign;
+    return c ? (nextLevel(this.levels, c.def.id)?.id ?? null) : null;
   }
 
   /** The main menu over a still planet (no opponents, the sim does not run). */
@@ -309,9 +345,23 @@ export class Game {
     return Boolean(this.targeting || this.placing || this.pointing || this.attackMode || this.selection.size || this.selectedBuilding >= 0);
   }
 
-  /** Victory when every rival tribe is eliminated, defeat when the local tribe is (skirmish only). */
+  /** Victory when every rival tribe is eliminated, defeat when the local tribe is (skirmish only).
+   * In a campaign level the level runtime decides, and a win is recorded in the campaign progress. */
   private checkEnd(): void {
-    if (!this.skirmish || this.ended || this.world.tribes.length < 2) return;
+    if (!this.skirmish || this.ended) return;
+    const lv = this.world.level;
+    if (lv) {
+      if (lv.outcome === OUTCOME.none) return;
+      const won = lv.outcome === OUTCOME.won;
+      if (won && !recordWin(this.kv, lv.def.id, this.campaignWon)) this.notify("progress", "Campaign progress could not be stored in this browser.", "info");
+      this.ended = { won, why: [...this.world.events].reverse().find((e) => e.type === "levelLost")?.why as string | undefined };
+      this.cancelModes();
+      this.screen = "end";
+      this.backStack = [];
+      this.onChange();
+      return;
+    }
+    if (this.world.tribes.length < 2) return;
     const ts = this.world.tribes;
     const me = ts[this.localTribe];
     const rivalsOut = ts.every((t) => t.index === this.localTribe || !t.alive);
@@ -394,6 +444,37 @@ export class Game {
         break;
       case "castFailed":
         if (e.tribe === me) this.notify("castFailed", "The spell failed: the Shaper could not reach the target.", "info", 3);
+        break;
+      // M9 worship and campaign levels
+      case "levelMessage":
+        if (e.tribe === me) this.notify(`msg${this.noteSeq}`, String(e.text), "info");
+        break;
+      case "rewardSpawn":
+        if (e.tribe === me) this.notify(`rs${this.world.tick}`, `${e.n} ${String(e.unit).replace(/_/g, " ")}${e.n === 1 ? " has" : "s have"} joined your tribe.`, "good");
+        break;
+      case "objectiveComplete": {
+        const o = this.world.level?.def.objectives[e.index as number];
+        this.notify(`obj${e.index}`, `Objective complete${o?.text ? `: ${o.text}` : "."}`, "good");
+        break;
+      }
+      case "worshipComplete":
+        if (e.tribe === me) this.notify(`ws${e.site}`, `The prayers at the ${e.kind} were answered.`, "good");
+        else this.notify(`ws${e.site}`, `A rival tribe has claimed the ${e.kind}.`, "bad");
+        break;
+      case "worshipFailed":
+        if (e.tribe === me) this.notify("worshipFailed", "Your worshippers could not reach the site.", "info", 5);
+        break;
+      case "spellUnlocked":
+        if (e.tribe === me) this.notify(`sp${e.spell}`, `New spell: ${String(e.spell).replace(/_/g, " ")}.`, "good");
+        break;
+      case "buildingUnlocked":
+        if (e.tribe === me) this.notify(`bu${e.building}`, `New building: ${String(e.building).replace(/_/g, " ")}.`, "good");
+        break;
+      case "rewardCharges":
+        if (e.tribe === me) this.notify(`ch${e.spell}${this.world.tick}`, `Gained ${e.n} ${String(e.spell).replace(/_/g, " ")} charge${e.n === 1 ? "" : "s"}.`, "good");
+        break;
+      case "raid":
+        if (e.tribe !== me) this.notify("raid", "Raiders are coming!", "bad", 10);
         break;
       default:
         break;
@@ -507,6 +588,11 @@ export class Game {
     const E = this.world.ents;
     const b = attack ? -1 : buildingAt(this.world, this.localTribe, p.x, p.z);
     if (b >= 0 && this.world.combat.garrisonOf(E.type[b]) > 0) return this.troop({ kind: "garrison", tower: b });
+    const site = attack ? null : siteAt(this.world, p.x, p.z);
+    if (site) {
+      this.command({ tribe: this.localTribe, type: "worship", args: { units: [...this.selection].map((i) => E.idOf(i)), site } });
+      return true;
+    }
     this.command({ tribe: this.localTribe, type: "move", args: { units: [...this.selection].map((i) => E.idOf(i)), to: [p.x, p.z], attack } });
     return true;
   }
@@ -560,7 +646,8 @@ export class Game {
     const w = this.world;
     const tr = w.tribes[this.localTribe];
     if (!tr) return [];
-    return w.cfg.pack.spells.spells.filter((_, i) => tr.eco.unlocked[i]).map((s) => s.id);
+    // a locked spell with charges from a shrine or a level reward is castable until they run out
+    return w.cfg.pack.spells.spells.filter((_, i) => tr.eco.unlocked[i] || tr.eco.charges[i] > 0).map((s) => s.id);
   }
 
   startTargeting(spell: string): void {
@@ -821,6 +908,10 @@ export class Game {
       }),
       counts: { trees: w.count((i) => E.cat[i] === CAT.tree), wild: w.count((i) => E.cat[i] === CAT.unit && E.tribe[i] === -1), entities: E.count },
       terrainVersion: w.terrain.version,
+      sites: w.worship.sites.map((s) => {
+        const i = E.index(s.ent);
+        return { tag: s.tag, kind: s.kind, at: i >= 0 ? [+E.x[i].toFixed(2), +E.y[i].toFixed(2)] : null, usesLeft: s.usesLeft, lastBy: s.lastBy };
+      }),
       render: { ...this.renderer.stats, vfx: this.renderer.vfx.drawn() },
       audio: this.audio.stats(),
       camera: { ...this.renderer.cam },

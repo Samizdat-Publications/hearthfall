@@ -23,7 +23,8 @@ export function hudFor(game: Game): HudModel {
     const etas = spellEtas({ costs: spells.map((s) => s.cost), maxCharges: spells.map((s) => s.maxCharges), charges: e.charges, progress: e.progress, auto: e.auto, unlocked: e.unlocked, cursor: e.cursor, incomePerMin: e.incomePerMin, spellsPct: e.spellsPct, trainDemand: e.trainDemand });
     let k = 0;
     spells.forEach((s, i) => {
-      if (!e.unlocked[i]) return;
+      // M9: a locked spell shows while it holds charges from a shrine or a level reward
+      if (!e.unlocked[i] && e.charges[i] <= 0) return;
       sv.push({ id: s.id, name: title(s.id), tier: s.tier, cost: s.cost, charges: e.charges[i], max: s.maxCharges, progress: e.progress[i] / s.cost, auto: e.auto[i] === 1, charging: cursor === i, hotkey: SPELL_KEYS[k++] ?? "", eta: etaLabel(etas[i]) });
     });
   }
@@ -35,7 +36,7 @@ export function hudFor(game: Game): HudModel {
   const respawnSec = tr && tr.alive && tr.respawnAt >= 0 ? Math.max(0, Math.ceil((tr.respawnAt - w.tick) / w.cfg.tickHz)) : -1;
   return {
     title: "Hearthfall",
-    mapLine: `${w.mapInfo.generator} ${w.terrain.size} seed ${w.seed}`,
+    mapLine: w.level ? `Campaign: ${w.level.def.name}` : `${w.mapInfo.generator} ${w.terrain.size} seed ${w.seed}`,
     tick: w.tick,
     paused: game.paused,
     pop: tr ? w.economy.followers(tr.index) : 0,
@@ -62,12 +63,41 @@ export function hudFor(game: Game): HudModel {
   };
 }
 
+const clock = (sec: number) => `${Math.floor(sec / 60)}:${String(Math.max(0, Math.floor(sec % 60))).padStart(2, "0")}`;
+const words = (id: string) => id.replace(/_/g, " ");
+
+/** M9: a campaign level's objectives (its own text, else one from the type) and its lose conditions. */
+function levelObjectives(game: Game): ObjectiveView[] {
+  const w = game.world;
+  const lv = w.level!;
+  const hz = w.cfg.tickHz;
+  const left = (sec: number) => clock(Math.max(0, sec - w.tick / hz));
+  const out: ObjectiveView[] = lv.def.objectives.map((o, k) => {
+    const done = lv.done[k] === 1;
+    const auto =
+      o.type === "eliminateAll"
+        ? "Defeat every rival tribe"
+        : o.type === "worship"
+          ? `Worship at the ${words(o.site)}`
+          : o.type === "survive"
+            ? `Survive ${clock(o.seconds)}${done ? "" : ` (${left(o.seconds)} left)`}`
+            : `Reach ${o.n} followers (${w.economy.followers(game.localTribe)})`;
+    return { text: o.text ?? auto, done, part: `objective-${k}` };
+  });
+  (lv.def.lose ?? []).forEach((l, k) => {
+    if (l.type === "timeLimit") out.push({ text: `Time left: ${left(l.seconds)}`, done: false, part: `lose-${k}` });
+    if (l.type === "siteLost") out.push({ text: `Do not let a rival claim the ${words(l.site)}`, done: false, part: `lose-${k}` });
+  });
+  return out;
+}
+
 /** Objectives (M8): rivals left in a skirmish, keep the Hearth standing, and the next unlock tier. */
 function objectivesFor(game: Game, next: { name: string; followers: number; opens: string[] } | null): ObjectiveView[] {
   const w = game.world;
   const me = w.tribes[game.localTribe];
   const out: ObjectiveView[] = [];
   if (!me) return out;
+  if (w.level) return levelObjectives(game);
   if (game.skirmish && w.tribes.length > 1) {
     const rivals = w.tribes.filter((t) => t.index !== me.index);
     const left = rivals.filter((t) => t.alive).length;

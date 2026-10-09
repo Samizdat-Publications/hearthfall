@@ -307,7 +307,7 @@ function Hud({ act }: { act: HudActions }) {
         <div data-hud="objectives" class="hud-panel hud-objectives">
           <span class="obj-head">Objectives</span>
           {m.objectives.map((o) => (
-            <span key={o.text} class={"obj" + (o.done ? " done" : "")} data-hud-part={o.part}>
+            <span key={o.part ?? o.text} class={"obj" + (o.done ? " done" : "")} data-hud-part={o.part}>
               {o.done ? "\u2713 " : "\u25c7 "}
               {o.text}
             </span>

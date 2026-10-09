@@ -1,6 +1,7 @@
 // Skirmish opponents (M7): which controller runs each non-local tribe, from the URL params (and the
 // M8 skirmish setup). Kept apart from game.ts so it is unit tested without a renderer.
 import { makeBot } from "@hearthfall/ai";
+import type { LevelDef } from "@hearthfall/data";
 import type { Controller } from "@hearthfall/sim";
 
 /** Default opponents cycle through the three personalities. */
@@ -17,5 +18,15 @@ export function opponentsFor(tribes: number, local: number, p: { ai: string[]; d
     if (kind === "none") continue;
     out.push(kind === "economy" ? makeBot({ type: "economy", tribe: t, offset: t }) : makeBot({ type: "opponent", tribe: t, personality: kind, difficulty: p.difficulty, offset: t }));
   }
+  return out;
+}
+
+/** Campaign level opponents, built exactly as createLevelWorld builds them (a restored save needs the same). */
+export function levelOpponents(def: LevelDef): Controller[] {
+  const out: Controller[] = [];
+  def.tribes.forEach((t, k) => {
+    if (k === 0 || !t.ai) return;
+    out.push(makeBot({ type: "opponent", tribe: k, personality: t.ai, difficulty: t.difficulty ?? "normal", offset: k - 1 }));
+  });
   return out;
 }

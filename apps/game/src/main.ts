@@ -108,6 +108,14 @@ if (__DEBUG_API__ || game.params.debug) {
       game.step(1);
       return game.ended;
     },
+    /** M9 campaign: the running level (id, outcome 0 none 1 won 2 lost, objectives done), levels won, and a forced level win */
+    level: () => (game.world.level ? { id: game.world.level.def.id, outcome: game.world.level.outcome, done: [...game.world.level.done] } : null),
+    campaignWon: () => [...game.campaignWon],
+    winLevel: () => {
+      game.command({ tribe: -1, type: "completeObjectives" });
+      game.step(1);
+      return game.ended;
+    },
     /** minimap camera outline: screen border samples picked onto the terrain (unwrapped around the view center) */
     viewOutline: (fresh = false) => viewOutline(game, fresh),
     minimapCurrent: () => drawnViewKey === viewKey(game),

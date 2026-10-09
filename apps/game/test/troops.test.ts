@@ -2,7 +2,7 @@
 import { describe, expect, it } from "vitest";
 import { STANCE, TASK } from "@hearthfall/sim";
 import { world } from "../../../packages/sim/test/helpers.ts";
-import { buildingAt, troopCommand, troopView } from "../src/troops.ts";
+import { buildingAt, siteAt, troopCommand, troopView } from "../src/troops.ts";
 
 function arena() {
   const w = world({ generator: "flat", size: 64, tribes: 2 });
@@ -90,5 +90,14 @@ describe("selected units panel (M8)", () => {
     ]);
     expect(v.units.find((u) => u.count === 2)!.hpFrac).toBeCloseTo(0.75, 3);
     expect(troopView(w, 0, [], -1).units).toEqual([]);
+  });
+
+  it("M9: right-clicking a worship site that still has a use targets it", () => {
+    const w = arena();
+    w.worship.addSite("shrine", 30, 30, { tag: "s", rewards: [] });
+    expect(siteAt(w, 30.8, 29.4)).toBe("s");
+    expect(siteAt(w, 34, 30)).toBeNull();
+    w.worship.sites[0].usesLeft = 0;
+    expect(siteAt(w, 30, 30)).toBeNull();
   });
 });
