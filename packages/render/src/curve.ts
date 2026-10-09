@@ -58,14 +58,30 @@ if ( vBendDist > uFadeEnd ) discard;
 gl_FragColor.rgb = mix( gl_FragColor.rgb, uHorizon, smoothstep( uFadeStart, uFadeEnd, vBendDist ) );
 `;
 
-/** Patch a built-in material (Lambert, Standard, Basic...) in place to bend and fade. */
-export function bendMaterial<T extends THREE.Material>(mat: T, u: BendUniforms): T {
+/**
+ * Patch a built-in material (Lambert, Standard, Basic...) in place to bend and fade. With a detail
+ * uniform, surfaces get world-anchored pixel noise (sand grains, grass tufts) at detailCells per unit.
+ */
+export function bendMaterial<T extends THREE.Material>(mat: T, u: BendUniforms, detail?: { amount: { value: number }; cells: { value: number } }): T {
   mat.onBeforeCompile = (shader) => {
     Object.assign(shader.uniforms, u);
-    shader.vertexShader = BEND_VERTEX_PARS + shader.vertexShader.replace("#include <project_vertex>", BEND_PROJECT_VERTEX);
-    shader.fragmentShader = BEND_FRAGMENT_PARS + shader.fragmentShader.replace("#include <fog_fragment>", "#include <fog_fragment>\n" + BEND_FRAGMENT_FADE);
+    let vs = BEND_VERTEX_PARS + shader.vertexShader.replace("#include <project_vertex>", BEND_PROJECT_VERTEX);
+    let fs = BEND_FRAGMENT_PARS + shader.fragmentShader.replace("#include <fog_fragment>", "#include <fog_fragment>\n" + BEND_FRAGMENT_FADE);
+    if (detail) {
+      shader.uniforms.uDetail = detail.amount;
+      shader.uniforms.uDetailCells = detail.cells;
+      vs = "varying vec2 vDetailXZ;\n" + vs.replace("vBendDist = sqrt( hfR2 );", "vBendDist = sqrt( hfR2 );\nvDetailXZ = ( modelMatrix * vec4( transformed, 1.0 ) ).xz;");
+      fs =
+        "uniform float uDetail;\nuniform float uDetailCells;\nvarying vec2 vDetailXZ;\n" +
+        fs.replace(
+          "#include <color_fragment>",
+          "#include <color_fragment>\n{ vec2 cell = floor( vDetailXZ * uDetailCells ); float hn = fract( sin( dot( cell, vec2( 12.9898, 78.233 ) ) ) * 43758.5453 ); diffuseColor.rgb *= 1.0 + uDetail * ( hn - 0.5 ) * 2.0; }",
+        );
+    }
+    shader.vertexShader = vs;
+    shader.fragmentShader = fs;
   };
-  mat.customProgramCacheKey = () => "hf-bend";
+  mat.customProgramCacheKey = () => (detail ? "hf-bend-detail" : "hf-bend");
   return mat;
 }
 

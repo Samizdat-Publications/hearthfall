@@ -31,17 +31,31 @@
     "scar": "#3A2A22"
   },
   "lighting": {
-    "keyColor": "#FFE2B0",
-    "keyIntensity": 2.2,
-    "skyTop": "#7FB6E8",
-    "skyHorizon": "#F3D9B1",
-    "fogColor": "#E9D8BC"
+    "keyColor": "#ffc98f",
+    "keyIntensity": 2,
+    "skyTop": "#3d5f96",
+    "skyHorizon": "#f0b884",
+    "fogColor": "#c9a98a"
   },
   "direction": {
-    "primaryRef": "making-of/a1 retro-candidate-3",
-    "lightingRef": "making-of/a1 retro-candidate-6",
+    "primaryRef": "making-of/a1 retro-candidate-1 (Stewart's pick)",
+    "lightingRef": "making-of/a1 retro-candidate-3 (technique)",
     "chosen": "10/08/2026, Stewart and the main agent, art direction v2",
-    "notes": "Retro 90s nostalgia on a modern 3D build: keep the 3D low-poly world (deformable terrain needs it), render it at reduced resolution with crisp nearest-neighbor upscaling, a limited warm palette with ordered dithering on shading and water, low-res nearest-filtered surface detail (pixel-noise sand, thatch, grass), pixel-style fire and spell VFX, warm firelight against cool dusk ambient, strong soft shadows. Small traditional tribal figures (no cartoon big-head proportions), the Shaper in feathers and hides with a carved staff (not a pointed wizard hat). HUD: a chunky stone and wood frame with round spell orbs (candidate 5). Avoid the glossy mobile-strategy look."
+    "notes": "Target look = candidate 1: dense tribal village on a small planet floating in a dark starry sky, brown terraced cliff edges, busy turquoise sea with white foam strokes, chunky pixel resolution, a stone-framed HUD (Shaper portrait with mana bar top-left, spell row, build tools on the right, minimap with population bottom-right). Technique = candidate 3: keep the 3D low-poly world (deformable terrain), render it through the retro pass (low-res target, nearest upscale, palette plus Bayer dither), pixel-noise surface detail, warm firelight. Small traditional tribal figures, the Shaper in feathers and hides with a carved staff, no pointed wizard hat, no glossy mobile look."
+  },
+  "render": {
+    "$comment": "Retro render pass (ADR-005). pixelScale 1 and paletteLevels 0 turn the retro look off.",
+    "pixelScale": 3,
+    "paletteLevels": 20,
+    "ditherStrength": 0.7,
+    "detailNoise": 0.09,
+    "detailCellsPerUnit": 3,
+    "hearthLight": {
+      "color": "#ffa04a",
+      "intensity": 14,
+      "distance": 9
+    },
+    "ambientIntensity": 0.95
   },
   "promptStyleSuffix": "stylized low-poly game asset, crisp flat-shaded facets, chunky readable shapes, warm earthy palette, warm golden-hour lighting, clean silhouette, plain neutral background, no text, no logo",
   "promptNegative": "photorealistic, noisy texture, text, watermark, thin spindly parts, modern objects",

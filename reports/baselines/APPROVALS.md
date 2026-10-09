@@ -8,3 +8,5 @@
 - 2026-10-09T00:34 bench baseline (reports/baselines/bench.json): re-saved after the M3 review changed the gated average to per-tick best-of-replays and added the two spike measures; looser p99 numbers reflect machine load during qa (approved by the main agent, M4 review note).
 - 2026-10-09T00:38 set smoke (11 shots): M5: help bar mentions spell hotkeys; VFX layer and targeting rings added (not visible in smoke shots)
 - 2026-10-09T00:45 set spells (8 shots): M5: first spell VFX baselines after one sheet review (thinner blue lightning, softer lava pools)
+- 2026-10-09T01:13 set smoke (11 shots): ADR-005 retro render pass v1 (pixel scale 3, 20-level palette with Bayer dither, terrain pixel noise, Hearth firelight, dusk lighting, stone and wood HUD)
+- 2026-10-09T01:16 set spells (8 shots): ADR-005 retro render pass v1

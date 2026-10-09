@@ -11,6 +11,7 @@ import { TreeLayer } from "./props.ts";
 import { UnitLayer } from "./unitsLayer.ts";
 import { BuildingLayer } from "./buildingsLayer.ts";
 import { VfxLayer } from "./vfx.ts";
+import { RetroPass } from "./retro.ts";
 
 export interface Renderer {
   setWorld(world: World): void;
@@ -62,6 +63,7 @@ export class ThreeRenderer implements Renderer {
   private readonly propMat: THREE.MeshLambertMaterial;
   private readonly ringMat: THREE.MeshBasicMaterial;
   private readonly pal: Record<string, string>;
+  private readonly styleRender: RendererOptions["style"]["render"];
   units: UnitLayer | null = null;
   buildings: BuildingLayer | null = null;
   /** sim tick interpolation factor in [0, 1] and the selection to ring (entity indices) */
@@ -69,6 +71,9 @@ export class ThreeRenderer implements Renderer {
   selected: ReadonlySet<number> = new Set();
   private ghost: THREE.Mesh;
   readonly vfx: VfxLayer;
+  readonly retro: RetroPass;
+  private hearthLights: THREE.PointLight[] = [];
+  private readonly detail = { amount: { value: 0 }, cells: { value: 3 } };
   private rangeRing: THREE.Mesh;
   private areaRing: THREE.Mesh;
   private viewW = 1280;
@@ -102,14 +107,24 @@ export class ThreeRenderer implements Renderer {
     const L = o.style.lighting;
     this.bend.uHorizon.value.set(L.skyHorizon);
     this.scene.fog = new THREE.Fog(L.fogColor, 60, 200);
-    this.scene.add(new THREE.HemisphereLight(L.skyTop, pal.moss ?? "#5e8c3a", 1.25));
+    const rs = o.style.render;
+    this.scene.add(new THREE.HemisphereLight(L.skyTop, pal.moss ?? "#5e8c3a", 1.25 * (rs?.ambientIntensity ?? 1)));
+    this.retro = new RetroPass({ pixelScale: rs?.pixelScale ?? 1, paletteLevels: rs?.paletteLevels ?? 0, ditherStrength: rs?.ditherStrength ?? 0 });
+    this.detail.amount.value = rs?.detailNoise ?? 0;
+    this.detail.cells.value = rs?.detailCellsPerUnit ?? 3;
+    for (let k = 0; k < 4; k++) {
+      const pl = new THREE.PointLight(rs?.hearthLight.color ?? "#ffa04a", 0, rs?.hearthLight.distance ?? 9, 1.6);
+      this.hearthLights.push(pl);
+      this.scene.add(pl);
+    }
     this.sun = new THREE.DirectionalLight(L.keyColor, L.keyIntensity);
     this.sun.position.set(0.55, 0.8, 0.3);
     this.scene.add(this.sun);
     this.scene.add(this.sun.target);
-    this.terrainMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend);
+    this.terrainMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend, this.detail);
     this.waterMat = makeWaterMaterial(this.palette, this.bend, this.time);
     this.pal = pal;
+    this.styleRender = o.style.render;
     this.propMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend);
     this.ringMat = bendMaterial(new THREE.MeshBasicMaterial({ color: pal.foam ?? "#e6f4f8", transparent: true, opacity: 0.9, depthWrite: false }), this.bend);
     this.trees = new TreeLayer(this.propMat, pal);
@@ -222,6 +237,7 @@ export class ThreeRenderer implements Renderer {
   resize(w: number, h: number): void {
     this.viewW = w;
     this.viewH = h;
+    this.retro.setSize(w, h);
     this.gl.setSize(w, h, false);
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
@@ -255,15 +271,44 @@ export class ThreeRenderer implements Renderer {
       this.sun.target.position.set(this.cam.x, 0, this.cam.z);
       this.sun.position.set(this.cam.x + 40, 80, this.cam.z + 25);
     }
+    this.placeHearthLights();
     this.sky.visible = !this.cam.map && this.scene.visible;
     this.sky.position.copy(this.camera.position);
     this.sky.scale.setScalar((this.camera.far * 0.9) / 900);
-    this.gl.render(this.scene, this.camera);
+    if (this.retro.enabled && this.scene.visible) this.retro.render(this.gl, this.scene, this.camera);
+    else this.gl.render(this.scene, this.camera);
     this.frames++;
     this.stats.frames = this.frames;
     this.stats.drawCalls = this.gl.info.render.calls;
     this.stats.triangles = this.gl.info.render.triangles;
     this.stats.cpuMs = performance.now() - t0;
+  }
+
+  /** Warm firelight on up to four Hearths nearest the camera focus (wrapped near the focus). */
+  private placeHearthLights(): void {
+    const w = this.world;
+    for (const l of this.hearthLights) l.intensity = 0;
+    if (!w) return;
+    const n = w.terrain.size;
+    const E = w.ents;
+    const rs = this.styleRender;
+    const found: { d: number; x: number; z: number; y: number }[] = [];
+    for (const t of w.tribes) {
+      const h = E.index(t.hearth);
+      if (h < 0) continue;
+      let ox = E.x[h] - this.cam.x;
+      let oz = E.y[h] - this.cam.z;
+      ox -= Math.round(ox / n) * n;
+      oz -= Math.round(oz / n) * n;
+      const y = Math.max(w.terrain.heightAt(E.x[h], E.y[h]), w.terrain.sea) * this.palette.heightScale;
+      found.push({ d: ox * ox + oz * oz, x: this.cam.x + ox, z: this.cam.z + oz, y });
+    }
+    found.sort((a, b) => a.d - b.d);
+    found.slice(0, this.hearthLights.length).forEach((f, k) => {
+      const l = this.hearthLights[k];
+      l.position.set(f.x, f.y + 1.2 - this.bend.uBendK.value * f.d, f.z);
+      l.intensity = rs?.hearthLight.intensity ?? 14;
+    });
   }
 
   /** Spell targeting preview: range ring around the Shaper and the effect area at the cursor. */

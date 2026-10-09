@@ -77,6 +77,75 @@
       ],
       "additionalProperties": false
     },
+    "render": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "pixelScale": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "paletteLevels": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 64
+        },
+        "ditherStrength": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "detailNoise": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.5
+        },
+        "detailCellsPerUnit": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "hearthLight": {
+          "type": "object",
+          "properties": {
+            "color": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            },
+            "intensity": {
+              "type": "number",
+              "minimum": 0
+            },
+            "distance": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "color",
+            "intensity",
+            "distance"
+          ],
+          "additionalProperties": false
+        },
+        "ambientIntensity": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "pixelScale",
+        "paletteLevels",
+        "ditherStrength",
+        "detailNoise",
+        "detailCellsPerUnit",
+        "hearthLight",
+        "ambientIntensity"
+      ],
+      "additionalProperties": false
+    },
     "promptStyleSuffix": {
       "type": "string"
     },

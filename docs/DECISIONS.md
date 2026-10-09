@@ -69,3 +69,6 @@ Append new ADRs at the bottom. Format: context, decision, consequences. Never re
 **Decision.** Stay 3D. Benchmark = candidate 3 (stylized low-poly planet with pixel-textured surfaces, dusk light, pixel fire), with candidate 6's crisp dithered shading and candidate 5's stone and wood HUD frame. Implementation: a retro render pass in packages/render (render target at 1/2 to 1/4 resolution, nearest-neighbor upscale, palette quantization with ordered dithering, optional outline), low-res nearest-filtered detail textures on terrain bands and thatch, warm point light at hearths, cooler ambient, shadows. All knobs in style.json (pixel scale, palette size, dither strength) so the look is tunable and can be switched off. PixelLab stays unused.
 
 **Consequences.** Existing GLB assets and placeholder meshes keep working under the pass. Shot baselines are re-approved once when the pass lands. Fallback: pass off (current flat-shaded look).
+
+### ADR-005 addendum (10/08/2026)
+Stewart's pick (Downloads file "... - stewarts pick.jpg") is candidate 1, not 3. Candidate 1 becomes the target look (composition, space sky, terraced cliffs, foamy sea, stone-framed HUD layout); candidate 3 stays the technique reference for how a 3D build reaches it. Still no sprites and no PixelLab.

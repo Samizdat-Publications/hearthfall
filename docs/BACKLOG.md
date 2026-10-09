@@ -63,6 +63,7 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 51. [S] Bench economy cost (nearestTree computes components per tree) with a bot-driven economy bench case (M4 review).
 52. [S] HUD: real spell and resource icons (A3), a short label on the training side of the split slider, narrow-width DOM check (M4 review).
 53. [S] Spell hotkeys: 8 v1 spells but 7 keys (Volcano has none); add a second row or let players rebind (M5).
+54. [M] M5 review follow-ups: eliminated tribes keep breeding and acting (decide: units turn wild, freeze or die); a queued cast at an unreachable target never clears (drop it with castFailed); Shapers never regenerate and sit at 1 hp after non-lethal damage (add regen or troop lethality before M6); statusApply counts own units against max and unknown statuses should throw; data for knockback falloff, terrainOp and respawn fallbacks, STREAMS.terrain for the quake seed; Shift+M hotkey never matches (e.key is "M") and Volcano has no key; TESTING.md grantCharges example lacks args.tribe; tests for elimination at 0 followers, respawn with no Hearth, double elimination, mid-cast snapshot; spell shots should assert VFX are drawn; bench spell and effect load.
 36. [S] Spells that drown units need a readable lead-in (rumble, crack VFX, short delay) so players see cause and effect (M5, M1 review).
 
 ## Parking lot (ideas, unranked)

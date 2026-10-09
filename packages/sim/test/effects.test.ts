@@ -42,3 +42,23 @@ describe("effect primitives", () => {
     expect(moved).toBeLessThan(3.2);
   });
 });
+
+describe("charge steal (M5 review regression)", () => {
+  it("the killer gains a share of the victim's total stored charge value", () => {
+    const w = world({ generator: "flat", size: 64, tribes: 2 });
+    const e = w.tribes[1].eco;
+    const idx = (id: string) => w.cfg.spellIndex.get(id)!;
+    e.charges[idx("bolt")] = 3;
+    e.charges[idx("hornets")] = 3;
+    e.charges[idx("quake")] = 2;
+    const s = w.ents.index(w.spawnUnit("shaper", 1, 10, 10));
+    const before = w.tribes[0].eco.progress.reduce((a, b) => a + b, 0) + w.tribes[0].eco.wasted;
+    w.damage(s, 99999, 0, true);
+    const stored = 3 * 100 + 3 * 400 + 2 * 1750;
+    const pct = w.cfg.pack.spells.chargeRules.killChargeStealPct;
+    expect(w.eventCounts.get("chargesStolen")).toBe(1);
+    const gained = w.tribes[0].eco.progress.reduce((a, b) => a + b, 0) + w.tribes[0].eco.wasted - before + w.tribes[0].eco.charges.reduce((a, c, i) => a + c * w.cfg.pack.spells.spells[i].cost, 0) - 300;
+    expect(gained).toBeCloseTo(Math.floor((stored * pct) / 100), 6);
+    expect(e.charges[idx("quake")]).toBe(1);
+  });
+});

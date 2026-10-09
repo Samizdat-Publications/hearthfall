@@ -108,6 +108,19 @@ export const StyleSchema = z.strictObject({
     fogColor: hex,
   }),
   direction: z.strictObject({ primaryRef: z.string(), lightingRef: z.string(), chosen: z.string(), notes: z.string() }).optional(),
+  /** retro render pass and look knobs (ADR-005); all optional with defaults in the renderer */
+  render: z
+    .strictObject({
+      ...comment,
+      pixelScale: z.number().int().min(1).max(8),
+      paletteLevels: z.number().int().min(0).max(64),
+      ditherStrength: z.number().min(0).max(1),
+      detailNoise: z.number().min(0).max(0.5),
+      detailCellsPerUnit: z.number().positive(),
+      hearthLight: z.strictObject({ color: hex, intensity: pos, distance: pos }),
+      ambientIntensity: pos,
+    })
+    .optional(),
   promptStyleSuffix: z.string(),
   promptNegative: z.string(),
   triBudgets: z.record(z.string(), range2),

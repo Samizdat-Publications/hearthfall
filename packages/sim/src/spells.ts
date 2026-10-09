@@ -176,13 +176,21 @@ export function onShaperDeath(w: World, tribe: number, drowned: boolean, killer:
   if (killer < 0 || killer === tribe || !w.tribes[killer]) return;
   const pct = w.cfg.pack.spells.chargeRules.killChargeStealPct;
   const spells = w.cfg.pack.spells.spells;
-  let mana = 0;
-  for (let s = 0; s < spells.length; s++) {
-    const lost = Math.floor((t.eco.charges[s] * pct) / 100);
-    if (lost > 0) {
-      t.eco.charges[s] -= lost;
-      mana += lost * spells[s].cost;
-    }
+  // the killer gains pct of the total stored charge value; the victim loses whole charges worth at
+  // least that much, most expensive first (ties by spell index)
+  let stored = 0;
+  for (let s = 0; s < spells.length; s++) stored += t.eco.charges[s] * spells[s].cost;
+  const mana = Math.floor((stored * pct) / 100);
+  let owed = mana;
+  const order = spells.map((_, s) => s).sort((a, b) => spells[b].cost - spells[a].cost || a - b);
+  while (owed > 0) {
+    // smallest charge that covers the rest, else the most expensive one held
+    let pick = -1;
+    for (const s of order) if (t.eco.charges[s] > 0 && spells[s].cost >= owed) pick = s;
+    if (pick < 0) pick = order.find((s) => t.eco.charges[s] > 0) ?? -1;
+    if (pick < 0) break;
+    t.eco.charges[pick]--;
+    owed -= spells[pick].cost;
   }
   if (mana > 0) {
     w.economy.addMana(killer, mana);

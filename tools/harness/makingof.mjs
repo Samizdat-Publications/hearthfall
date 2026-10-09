@@ -37,7 +37,11 @@ export function archive(file, { milestone, kind, caption, highlight = false, slu
   mkdirSync(DIR + folder, { recursive: true });
   copyFileSync(abs, DIR + folder + name);
   const idx = load();
-  const entry = { file: folder + name, milestone, kind, caption, highlight: Boolean(highlight), when: now.toISOString(), source: source ?? file.replace(ROOT, "").replace(/\\/g, "/"), bytes: statSync(abs).size };
+  // source is project-relative, or just the file name for files from outside the project (no personal paths)
+  const norm = (source ?? abs).replace(/\\/g, "/");
+  const rootN = ROOT.replace(/\\/g, "/");
+  const src = norm.startsWith(rootN) ? norm.slice(rootN.length) : "external:" + basename(norm);
+  const entry = { file: folder + name, milestone, kind, caption, highlight: Boolean(highlight), when: now.toISOString(), source: src, bytes: statSync(abs).size };
   idx.entries.push(entry);
   writeFileSync(INDEX, JSON.stringify(idx, null, 2) + "\n");
   return entry.file;

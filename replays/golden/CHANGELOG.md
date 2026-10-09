@@ -45,3 +45,7 @@ Reason: M4 review: priorities in the tribe hash, forest spread on its own rng st
 ## 2026-10-09 00:47 UTC
 Reason: M5: new golden replay covering all v1 spells, Shaper death and respawn, charge steal and undo
 - spells_duel: final none -> 97ada597 (pack cefcd6de)
+
+## 2026-10-09 01:24 UTC
+Reason: M5 review: charge steal takes a percentage of the total stored charge value (was per spell, rounding to zero)
+- spells_duel: final 97ada597 -> 97ada597 (pack 4b2a6a53)

@@ -355,10 +355,10 @@
       "file": "a1/20261009-0100_retro-candidate-1.jpg",
       "milestone": "A1",
       "kind": "concept",
-      "caption": "Retro pixel candidate 1: dense 16-bit isometric village with a chunky stone HUD frame",
-      "highlight": false,
+      "caption": "Stewart's pick and the art target: dense 16-bit village on a small planet in space, terraced cliffs, foamy turquoise sea, stone-framed HUD",
+      "highlight": true,
       "when": "2026-10-09T01:00:52.350Z",
-      "source": "C:/Users/stewa/AppData/Local/Temp/claude/C--Users-stewa/a3d7fbfe-2979-4001-9dd3-923ef59d503d/images/1.jpg",
+      "source": "external:1.jpg",
       "bytes": 442885
     },
     {
@@ -368,17 +368,17 @@
       "caption": "Retro pixel candidate 2: HD-2D pixel sprites in a tilt-shift 3D diorama",
       "highlight": false,
       "when": "2026-10-09T01:00:54.454Z",
-      "source": "C:/Users/stewa/AppData/Local/Temp/claude/C--Users-stewa/a3d7fbfe-2979-4001-9dd3-923ef59d503d/images/2.jpg",
+      "source": "external:2.jpg",
       "bytes": 402137
     },
     {
       "file": "a1/20261009-0100_retro-candidate-3.jpg",
       "milestone": "A1",
       "kind": "concept",
-      "caption": "Retro pixel candidate 3: stylized 3D low-poly planet with pixel-textured surfaces, dusk light and pixel fire (chosen benchmark)",
+      "caption": "Technique reference: stylized low-poly 3D with pixel-textured surfaces, dusk light and pixel fire",
       "highlight": true,
       "when": "2026-10-09T01:00:56.619Z",
-      "source": "C:/Users/stewa/AppData/Local/Temp/claude/C--Users-stewa/a3d7fbfe-2979-4001-9dd3-923ef59d503d/images/3.jpg",
+      "source": "external:3.jpg",
       "bytes": 365946
     },
     {
@@ -388,7 +388,7 @@
       "caption": "Retro pixel candidate 4: flat 16-bit pixel art with an atmospheric planet rim",
       "highlight": false,
       "when": "2026-10-09T01:00:58.776Z",
-      "source": "C:/Users/stewa/AppData/Local/Temp/claude/C--Users-stewa/a3d7fbfe-2979-4001-9dd3-923ef59d503d/images/4.jpg",
+      "source": "external:4.jpg",
       "bytes": 460485
     },
     {
@@ -398,7 +398,7 @@
       "caption": "Retro pixel candidate 5: late-90s PC strategy look with a stone and wood spell bar",
       "highlight": false,
       "when": "2026-10-09T01:01:00.785Z",
-      "source": "C:/Users/stewa/AppData/Local/Temp/claude/C--Users-stewa/a3d7fbfe-2979-4001-9dd3-923ef59d503d/images/5.jpg",
+      "source": "external:5.jpg",
       "bytes": 396331
     },
     {
@@ -408,7 +408,7 @@
       "caption": "Retro pixel candidate 6: flat-shaded low-poly with dithered pixel shading and crisp outlines",
       "highlight": false,
       "when": "2026-10-09T01:01:02.812Z",
-      "source": "C:/Users/stewa/AppData/Local/Temp/claude/C--Users-stewa/a3d7fbfe-2979-4001-9dd3-923ef59d503d/images/6.jpg",
+      "source": "external:6.jpg",
       "bytes": 442793
     },
     {
@@ -418,8 +418,18 @@
       "caption": "Retro pixel candidate 7: bright modern pixel art with a cozy palette",
       "highlight": false,
       "when": "2026-10-09T01:01:05.308Z",
-      "source": "C:/Users/stewa/AppData/Local/Temp/claude/C--Users-stewa/a3d7fbfe-2979-4001-9dd3-923ef59d503d/images/7.jpg",
+      "source": "external:7.jpg",
       "bytes": 376964
+    },
+    {
+      "file": "m5/20261009-0116_retro-pass-v1.png",
+      "milestone": "M5",
+      "kind": "comparison",
+      "caption": "First retro render pass (ADR-005): chunky pixels, dithered palette, firelit Hearth and a stone and wood HUD, the first step toward Stewart's pick",
+      "highlight": true,
+      "when": "2026-10-09T01:16:46.715Z",
+      "source": "reports/baselines/shots/smoke/hud_economy.png",
+      "bytes": 146741
     }
   ]
 }
