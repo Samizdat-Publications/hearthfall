@@ -4,7 +4,7 @@
 import { validatePack, type ValidatedPack } from "@hearthfall/data";
 import { CAT, World, commandsByTick, createScenarioWorld, shaperIndex, wrapDelta, type Command, type ScenarioDef, type SimEvent } from "@hearthfall/sim";
 import { ThreeRenderer, type CameraState } from "@hearthfall/render";
-import { makeBot } from "@hearthfall/ai";
+import { DEFAULT_AI, opponentsFor } from "./opponents.ts";
 import { spellSlot } from "@hearthfall/ui";
 import { AudioHooks } from "@hearthfall/audio";
 import { buildingAt, troopCommand, type TroopIntent } from "./troops.ts";
@@ -36,6 +36,9 @@ export interface GameParams {
   fixedStep: boolean;
   debug: boolean;
   quality: string;
+  /** opponent controller per non-local tribe in order: a personality id, "economy" or "none" (cycled) */
+  ai: string[];
+  difficulty: string;
 }
 
 export function parseParams(search: string): GameParams {
@@ -52,6 +55,8 @@ export function parseParams(search: string): GameParams {
     fixedStep: q.get("fixedStep") === "1",
     debug: q.get("debug") === "1",
     quality: q.get("quality") ?? "high",
+    ai: q.get("ai") ? q.get("ai")!.split(",").filter(Boolean) : DEFAULT_AI,
+    difficulty: q.get("difficulty") ?? "normal",
   };
 }
 
@@ -119,8 +124,7 @@ export class Game {
     this.scenarioCmds = def ? commandsByTick(def.commands) : null;
     this.selection.clear();
     this.placing = null;
-    // until the opponent AI lands (M7), other tribes run the economy bot so the world feels alive
-    if (!def) for (const t of this.world.tribes) if (t.index !== this.localTribe) this.world.controllers.push(makeBot({ type: "economy", tribe: t.index, offset: t.index }));
+    if (!def) for (const c of opponentsFor(this.world.tribes.length, this.localTribe, this.params)) this.world.controllers.push(c);
     this.renderer.setWorld(this.world);
     const home = this.world.tribes[0] ? this.world.ents.index(this.world.tribes[0].hearth) : -1;
     const size = this.world.terrain.size;

@@ -94,6 +94,7 @@ export class OpponentAI implements Controller {
       { id: "scout", score: (c) => this.scoutScore(c), act: (c, out) => this.sendScout(c, out) },
       { id: "buildLodge", score: (c) => this.lodgeScore(c), act: (c, out) => this.buildLodge(c, out) },
       { id: "buildTower", score: (c) => this.towerScore(c), act: (c, out) => this.build(c, out, "watchtower") },
+      { id: "garrison", score: (c) => this.garrisonScore(c), act: (c, out) => this.garrison(c, out) },
       { id: "train", score: (c) => this.trainScore(c), act: (c, out) => this.train(c, out) },
       { id: "attack", score: (c) => this.attackScore(c), act: (c, out) => this.attack(c, out) },
       { id: "cast", score: (c) => this.castScore(c), act: (c, out) => this.cast(c, out) },
@@ -232,6 +233,11 @@ export class OpponentAI implements Controller {
     return Math.max(8, Math.round(this.p.economyTargetPop * 0.35));
   }
 
+  /** settlers kept out of training: the economy floor, or a bare 6 while enemies are at the Hearth */
+  private floor(c: Census): number {
+    return c.threats.length ? Math.min(6, this.keep()) : this.keep();
+  }
+
   private protectScore(c: Census): number {
     if (c.si < 0) return 0;
     const E = c.w.ents;
@@ -343,8 +349,36 @@ export class OpponentAI implements Controller {
     if (spot) out.push(this.cmd(c.w, "placePlan", { building, at: spot }));
   }
 
+  /** finished own towers with a free slot, nearest the Hearth first */
+  private openTowers(c: Census): number[] {
+    const E = c.w.ents;
+    return c.towers.filter((b) => E.state[b] === BSTATE.done && E.occupants[b] < this.manned(c, b));
+  }
+
+  /** one sentinel per tower in peace, a full garrison while enemies are at the Hearth */
+  private manned(c: Census, b: number): number {
+    return c.threats.length ? c.w.combat.garrisonOf(c.w.ents.type[b]) : 1;
+  }
+
+  private garrisonScore(c: Census): number {
+    if (this.p.towerAffinity < 0.3 || !c.idle.length || !this.openTowers(c).length) return 0;
+    return 0.3 + 0.5 * this.p.towerAffinity + (c.threats.length ? 0.2 : 0);
+  }
+
+  /** tower minded personalities man their towers before anything marches out */
+  private garrison(c: Census, out: Command[]): void {
+    const E = c.w.ents;
+    for (const b of this.openTowers(c)) {
+      const room = this.manned(c, b) - E.occupants[b];
+      const units = c.idle.splice(0, room);
+      if (!units.length) break;
+      out.push(this.cmd(c.w, "garrison", { units: units.map((i) => E.idOf(i)), building: E.idOf(b) }));
+    }
+  }
+
   private trainScore(c: Census): number {
-    if (!c.lodges.size || c.settlers.length <= this.keep()) return 0;
+    if (!c.lodges.size || c.settlers.length <= this.floor(c)) return 0;
+    if (c.threats.length) return 0.85;
     const growth = clamp01(c.pop / this.p.economyTargetPop);
     return 0.25 + 0.55 * growth + 0.25 * this.p.aggression;
   }
@@ -353,7 +387,7 @@ export class OpponentAI implements Controller {
     const w = c.w;
     const E = w.ents;
     const queued = w.combat.queued();
-    let spare = Math.min(4, c.settlers.length - this.keep());
+    let spare = Math.min(4, c.settlers.length - this.floor(c));
     const total = Object.values(this.p.armyMix).reduce((a, b) => a + b, 0) || 1;
     const army = [...c.troops.values()].reduce((a, b) => a + b, 0) + 1;
     // largest deficit against the mix first

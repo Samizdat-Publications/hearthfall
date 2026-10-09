@@ -25,17 +25,17 @@
       "tribeColorDefault": "amber",
       "economyTargetPop": 50,
       "armyMix": {
-        "warden": 0.2,
+        "warden": 0.35,
         "firecaller": 0.3,
-        "chanter": 0.5
+        "chanter": 0.35
       },
-      "aggression": 0.55,
-      "firstAttackMinute": 8,
+      "aggression": 0.45,
+      "firstAttackMinute": 10,
       "spellPrefs": [
         "call",
-        "hornets",
         "raise_land",
-        "bolt"
+        "bolt",
+        "hornets"
       ],
       "scouting": 0.9,
       "towerAffinity": 0.3
@@ -43,19 +43,19 @@
     {
       "id": "turtle",
       "tribeColorDefault": "jade",
-      "economyTargetPop": 70,
+      "economyTargetPop": 55,
       "armyMix": {
-        "warden": 0.3,
-        "firecaller": 0.6,
+        "warden": 0.45,
+        "firecaller": 0.45,
         "chanter": 0.1
       },
       "aggression": 0.3,
-      "firstAttackMinute": 14,
+      "firstAttackMinute": 12,
       "spellPrefs": [
+        "lightning",
         "flatten",
         "quake",
-        "volcano",
-        "lightning"
+        "volcano"
       ],
       "scouting": 0.4,
       "towerAffinity": 0.9
@@ -66,24 +66,24 @@
       "id": "easy",
       "reactionSeconds": 6,
       "decisionNoise": 0.35,
-      "resourceMultiplier": 1.0
+      "resourceMultiplier": 1
     },
     {
       "id": "normal",
       "reactionSeconds": 3,
       "decisionNoise": 0.15,
-      "resourceMultiplier": 1.0
+      "resourceMultiplier": 1
     },
     {
       "id": "hard",
       "reactionSeconds": 1.5,
       "decisionNoise": 0.05,
-      "resourceMultiplier": 1.0
+      "resourceMultiplier": 1
     },
     {
       "id": "brutal",
       "reactionSeconds": 1,
-      "decisionNoise": 0.0,
+      "decisionNoise": 0,
       "resourceMultiplier": 1.25
     }
   ]

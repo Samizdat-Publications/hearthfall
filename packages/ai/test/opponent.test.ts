@@ -98,4 +98,26 @@ describe("OpponentAI (M7)", () => {
     expect(moves.some((c) => c.args.attack && (c.args.units as number[]).length === 3)).toBe(true);
     expect(ai.stats.actions.protectShaper).toBe(1);
   });
+
+  it("tower minded personalities post one sentinel per tower, and fill the towers when enemies reach the Hearth", () => {
+    const w = world({ generator: "flat", size: 64, tribes: 2 });
+    w.spawnBuilding("hearth", 0, 12, 32);
+    w.spawnBuilding("hearth", 1, 44, 32);
+    w.spawnUnit("shaper", 0, 10, 36);
+    w.spawnUnit("shaper", 1, 46, 34);
+    const tower = w.ents.index(w.spawnBuilding("watchtower", 0, 16, 32));
+    for (let k = 0; k < 4; k++) w.spawnUnit("warden", 0, 14 + k, 28);
+    w.step([]);
+    const ai = new OpponentAI({ tribe: 0, personality: "turtle", difficulty: "hard" });
+    const garrisons = () => ai.decide(w).filter((c) => c.type === "garrison");
+    const calm = garrisons();
+    expect(calm.length).toBe(1);
+    expect((calm[0].args.units as number[]).length).toBe(1);
+    expect(calm[0].args.building).toBe(w.ents.idOf(tower));
+    // raiders at the Hearth: the tower takes a full garrison
+    for (let k = 0; k < 3; k++) w.spawnUnit("warden", 1, 20 + k, 36);
+    const alarm = garrisons();
+    expect((alarm[0].args.units as number[]).length).toBe(w.combat.garrisonOf(w.ents.type[tower]));
+  });
 });
+
