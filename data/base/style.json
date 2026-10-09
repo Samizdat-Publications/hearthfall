@@ -67,6 +67,28 @@
     },
     "foamStrokes": 0.55
   },
+  "audio": {
+    "$comment": "sim event type to audio cue; cues without an asset are silent stubs until A4 (M10)",
+    "cues": {
+      "melee": { "cue": "sfx.melee_hit", "maxPerTick": 4 },
+      "fireball": { "cue": "sfx.fireball", "maxPerTick": 3 },
+      "chantBegun": { "cue": "sfx.chant", "maxPerTick": 2 },
+      "chantInterrupted": { "cue": "sfx.chant_break", "maxPerTick": 2 },
+      "converted": { "cue": "sfx.converted", "maxPerTick": 2 },
+      "trained": { "cue": "sfx.trained", "maxPerTick": 2 },
+      "killed": { "cue": "sfx.died", "maxPerTick": 3, "where": { "cat": 3 } },
+      "destroyed": { "cue": "sfx.building_down", "maxPerTick": 2 },
+      "drowned": { "cue": "sfx.drowned", "maxPerTick": 2, "where": { "cat": 3 } },
+      "shaperDied": { "cue": "voice.shaper.under_attack", "maxPerTick": 1 },
+      "tribeEliminated": { "cue": "sfx.eliminated", "maxPerTick": 1 },
+      "spellCast": { "cue": "sfx.{spell}_cast", "maxPerTick": 2 },
+      "buildingDone": { "cue": "sfx.building_done", "maxPerTick": 1 },
+      "born": { "cue": "sfx.born", "maxPerTick": 1 },
+      "woodDelivered": { "cue": "sfx.wood_delivered", "maxPerTick": 1 },
+      "charged": { "cue": "sfx.charged", "maxPerTick": 1 },
+      "planPlaced": { "cue": "sfx.plan_placed", "maxPerTick": 1 }
+    }
+  },
   "promptStyleSuffix": "stylized low-poly game asset, crisp flat-shaded facets, chunky readable shapes, warm earthy palette, warm golden-hour lighting, clean silhouette, plain neutral background, no text, no logo",
   "promptNegative": "photorealistic, noisy texture, text, watermark, thin spindly parts, modern objects",
   "triBudgets": {

@@ -6,6 +6,7 @@ import { CAT, World, commandsByTick, createScenarioWorld, shaperIndex, wrapDelta
 import { ThreeRenderer, type CameraState } from "@hearthfall/render";
 import { makeBot } from "@hearthfall/ai";
 import { spellSlot } from "@hearthfall/ui";
+import { AudioHooks } from "@hearthfall/audio";
 
 const packFiles = import.meta.glob("../../../data/base/*.json", { eager: true, import: "default" });
 const scenarioFiles = import.meta.glob("../../../scenarios/*.json", { eager: true, import: "default" });
@@ -89,6 +90,8 @@ export class Game {
   /** spell id being targeted (preview follows the cursor) */
   targeting: string | null = null;
   private events: SimEvent[] = [];
+  /** combat and world events to audio cues; no playback sink until A4 (M10), so every cue is a silent stub */
+  readonly audio: AudioHooks;
   onChange: () => void = () => {};
 
   readonly canvas: HTMLCanvasElement;
@@ -98,6 +101,7 @@ export class Game {
     this.params = params;
     this.paused = params.paused || params.fixedStep;
     this.renderer = new ThreeRenderer({ canvas, style: this.pack.files.style, heightUnitsPerWorldUnit: this.pack.files.balance.terrain.heightUnitsPerWorldUnit });
+    this.audio = new AudioHooks(this.pack.files.style.audio?.cues ?? {}, new Set());
     this.load();
     this.bindInput();
   }
@@ -161,6 +165,7 @@ export class Game {
       const hz = this.world.cfg.tickHz;
       const wall = now / 1000;
       this.renderer.consumeEvents(this.events, this.params.fixedStep ? (e) => (e.tick + 1) / hz : () => wall);
+      this.audio.consume(this.events);
       this.events = [];
     }
     // fixedStep: visuals follow the sim tick, so re-rendering the same tick gives identical pixels
@@ -477,6 +482,7 @@ export class Game {
       counts: { trees: w.count((i) => E.cat[i] === CAT.tree), wild: w.count((i) => E.cat[i] === CAT.unit && E.tribe[i] === -1), entities: E.count },
       terrainVersion: w.terrain.version,
       render: { ...this.renderer.stats, vfx: this.renderer.vfx.drawn() },
+      audio: this.audio.stats(),
       camera: { ...this.renderer.cam },
       lastEvents: w.recent.slice(-20),
       warnings: [] as string[],

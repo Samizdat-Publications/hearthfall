@@ -158,6 +158,23 @@ export const StyleSchema = z.strictObject({
       foamStrokes: z.number().min(0).max(1).optional(),
     })
     .optional(),
+  /** sim event type to audio cue (packages/audio AudioHooks); cues without an asset play as silent stubs */
+  audio: z
+    .strictObject({
+      ...comment,
+      cues: z.record(
+        z.string(),
+        z.strictObject({
+          /** asset id; `{field}` is replaced by that event field (spellCast: sfx.{spell}_cast) */
+          cue: z.string().min(1),
+          /** at most this many plays of the rule per sim tick (battles stay readable) */
+          maxPerTick: z.number().int().positive().optional(),
+          /** play only when every listed event field equals the value */
+          where: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
+        }),
+      ),
+    })
+    .optional(),
   promptStyleSuffix: z.string(),
   promptNegative: z.string(),
   triBudgets: z.record(z.string(), range2),

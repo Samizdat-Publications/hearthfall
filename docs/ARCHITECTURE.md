@@ -77,7 +77,7 @@ Dependency direction is strict: `sim` depends only on `data`. `ai` depends on `s
   9. worship, triggers, objectives, win/loss
   10. events flush, hash checkpoint if `tick % hashEvery == 0`
 - **Commands:** `{tick, tribe, type, args}` plain JSON. Every player action, AI action and bot action is a Command. Replays, bots, multiplayer lockstep and save games all reuse this format.
-- **Events:** sim emits an ordered event list per tick (unitDied, spellCast, buildingDone, drowned, conversion, shaperDied). Renderer and audio consume events; tests assert on them.
+- **Events:** sim emits an ordered event list per tick (unitDied, spellCast, buildingDone, drowned, conversion, shaperDied). Renderer and audio consume events; tests assert on them. As built (M6): `packages/audio` `AudioHooks` maps events to cues through `style.json` `audio.cues` (`cue` with `{field}` substitution, `maxPerTick` throttle, `where` filter); cues without an available asset count as silent stubs until A4 wires Web Audio in M10, and the debug summary reports `audio` stats.
 - **Hash:** `sim.hash()` FNV-1a or xxhash32 over heightmap, entity columns and RNG state. Golden replays assert checkpoint hashes; the first divergent tick pinpoints a bug.
 - **Snapshots:** `sim.snapshot()` returns transferable typed arrays so the sim can move to a Web Worker later without refactoring. Save game = snapshot + data pack hashes + command log tail.
 

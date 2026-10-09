@@ -183,6 +183,54 @@
       ],
       "additionalProperties": false
     },
+    "audio": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "cues": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "cue": {
+                "type": "string",
+                "minLength": 1
+              },
+              "maxPerTick": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              "where": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": [
+                    "string",
+                    "number"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "cue"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "cues"
+      ],
+      "additionalProperties": false
+    },
     "promptStyleSuffix": {
       "type": "string"
     },
