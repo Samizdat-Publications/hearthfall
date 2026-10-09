@@ -4,10 +4,26 @@
 // bob while moving and face their velocity. Also keeps screen positions for picking and selection.
 // M11 readability: real models carry little tribe color (a loincloth), so every tribe unit stands on a
 // small disc in its tribe color, and the Shaper is drawn larger on a larger disc.
+// BACKLOG 5: units animate procedurally (unitAnim.ts): each instance gets a pose from its sim state
+// (walk, work, attack, shoot, cast, pray, panic, idle), and a unit that dies leaves a short ghost
+// that topples over (or flails and sinks when it drowned).
 import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { unitModelId, type ModelParts } from "./models.ts";
-import { CAT, type World } from "@hearthfall/sim";
+import { CAT, type SimEvent, type World } from "@hearthfall/sim";
+import { deathPose, rigGeometry, unitClip, unitPose, type Pose } from "./unitAnim.ts";
+
+/** seconds a death ghost stays on screen */
+export const DEATH_SECONDS = 1.2;
+interface Ghost {
+  kind: number;
+  tribe: number;
+  x: number;
+  y: number;
+  facing: number;
+  t0: number;
+  drowned: boolean;
+}
 
 function colored(g: THREE.BufferGeometry, c: THREE.Color): THREE.BufferGeometry {
   const ng = g.index ? g.toNonIndexed() : g;
@@ -75,7 +91,14 @@ export class UnitLayer {
   viewTribe = 0;
   /** BACKLOG 3: draw every unit regardless of fog of war (debug, god view) */
   revealAll = false;
-  private kinds: { body: THREE.InstancedMesh; detail: THREE.InstancedMesh }[] = [];
+  private kinds: { body: THREE.InstancedMesh; detail: THREE.InstancedMesh; anim: THREE.InstancedBufferAttribute }[] = [];
+  /** BACKLOG 5: units that just died, drawn toppling for DEATH_SECONDS */
+  readonly ghosts: Ghost[] = [];
+  /** debug pose gallery (__game.setAnimProbe): overrides the clip per entity slot */
+  forceClip: ((i: number) => number) | null = null;
+  private readonly pose: Pose = [0, 0, 0, 0];
+  private readonly tipQ = new THREE.Quaternion();
+  private readonly xAxis = new THREE.Vector3(1, 0, 0);
   /** model ids drawn by this layer (the rest are placeholders) */
   readonly modelIds: string[] = [];
   private ring: THREE.InstancedMesh;
@@ -109,7 +132,20 @@ export class UnitLayer {
       // a model's tribe-color triangles are the tinted body, the rest is the untinted detail
       const m = models?.get(unitModelId(id));
       if (m) this.modelIds.push(unitModelId(id));
-      const g = m ? { body: m.tint ?? empty(), detail: m.body ?? empty() } : kindGeometry(id, pal);
+      const g = m ? { body: (m.tint ?? empty()).clone(), detail: (m.body ?? empty()).clone() } : kindGeometry(id, pal);
+      // the rig needs the whole model's height, not the part's
+      let height = m?.size.y ?? 0;
+      if (!m) {
+        g.body.computeBoundingBox();
+        g.detail.computeBoundingBox();
+        height = Math.max(g.body.boundingBox?.max.y ?? 0, g.detail.boundingBox?.max.y ?? 0);
+      }
+      const anim = new THREE.InstancedBufferAttribute(new Float32Array(cap * 4), 4);
+      anim.setUsage(THREE.DynamicDrawUsage);
+      for (const geo of [g.body, g.detail]) {
+        rigGeometry(geo, height);
+        geo.setAttribute("instanceAnim", anim);
+      }
       const body = new THREE.InstancedMesh(g.body, material, cap);
       body.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(cap * 3), 3);
       const detail = new THREE.InstancedMesh(g.detail, material, cap);
@@ -118,7 +154,7 @@ export class UnitLayer {
         im.count = 0;
         this.group.add(im);
       }
-      this.kinds.push({ body, detail });
+      this.kinds.push({ body, detail, anim });
       this.kindScale.push(id === "shaper" ? SHAPER_SCALE : 1);
     }
     const discGeo = colored(new THREE.RingGeometry(DISC_RADIUS * 0.58, DISC_RADIUS, 16).rotateX(-Math.PI / 2), new THREE.Color("#ffffff"));
@@ -132,6 +168,18 @@ export class UnitLayer {
     this.ring.frustumCulled = false;
     this.ring.count = 0;
     this.group.add(this.ring);
+  }
+
+  /** Remember units that died this tick (killed or drowned events) so they topple instead of vanishing. */
+  consume(events: readonly SimEvent[], timeOf: (e: SimEvent) => number): void {
+    for (const e of events) {
+      if ((e.type !== "killed" && e.type !== "drowned") || e.cat !== CAT.unit) continue;
+      const kind = Number(e.kind);
+      if (!(kind >= 0 && kind < this.kinds.length)) continue;
+      const slot = Number(e.id) & 0xffff;
+      this.ghosts.push({ kind, tribe: Number(e.tribe), x: Number(e.x), y: Number(e.y), facing: this.facing[slot] ?? 0, t0: timeOf(e), drowned: e.type === "drowned" });
+    }
+    if (this.ghosts.length > 256) this.ghosts.splice(0, this.ghosts.length - 256);
   }
 
   private grow(hi: number): void {
@@ -191,6 +239,7 @@ export class UnitLayer {
       const kind = this.kinds[k];
       kind.body.setMatrixAt(c, this.m);
       kind.detail.setMatrixAt(c, this.m);
+      kind.anim.array.set(unitPose(this.forceClip ? this.forceClip(i) : unitClip(w, i), visualTime, i, this.pose), c * 4);
       kind.body.setColorAt(c, shown >= 0 ? this.tribeColors[shown % this.tribeColors.length] : this.wildColor);
       if (E.tribe[i] >= 0 && discs < this.cap) {
         this.p.y = ground + 0.02;
@@ -214,7 +263,36 @@ export class UnitLayer {
       }
       this.drawn++;
     }
+    // death ghosts: topple (or flail and sink) where the unit died
+    for (let g = this.ghosts.length - 1; g >= 0; g--) {
+      const gh = this.ghosts[g];
+      const age = visualTime - gh.t0;
+      if (age > DEATH_SECONDS || age < -1) {
+        this.ghosts.splice(g, 1);
+        continue;
+      }
+      if (gh.tribe !== this.viewTribe && !this.revealAll && !w.vision.sees(this.viewTribe, gh.x, gh.y)) continue;
+      let ox = gh.x - focusX;
+      let oz = gh.y - focusZ;
+      ox -= Math.round(ox / n) * n;
+      oz -= Math.round(oz / n) * n;
+      if (ox * ox + oz * oz > fade2) continue;
+      const c = counts[gh.kind]++;
+      if (c >= this.cap) continue;
+      const d = deathPose(Math.max(0, age), DEATH_SECONDS, gh.drowned, this.pose);
+      const ground = Math.max(w.terrain.heightAt(((gh.x % n) + n) % n, ((gh.y % n) + n) % n), w.terrain.sea - 2) * heightScale;
+      this.p.set(focusX + ox, ground - d.sink, focusZ + oz);
+      this.q.setFromAxisAngle(this.up, gh.facing).multiply(this.tipQ.setFromAxisAngle(this.xAxis, -d.tip));
+      this.sk.copy(this.s).multiplyScalar(this.kindScale[gh.kind]);
+      this.m.compose(this.p, this.q, this.sk);
+      const kind = this.kinds[gh.kind];
+      kind.body.setMatrixAt(c, this.m);
+      kind.detail.setMatrixAt(c, this.m);
+      kind.body.setColorAt(c, gh.tribe >= 0 ? this.tribeColors[gh.tribe % this.tribeColors.length] : this.wildColor);
+      kind.anim.array.set(d.pose, c * 4);
+    }
     this.kinds.forEach((kind, k) => {
+      kind.anim.needsUpdate = true;
       kind.body.count = Math.min(counts[k], this.cap);
       kind.detail.count = Math.min(counts[k], this.cap);
       kind.body.instanceMatrix.needsUpdate = true;

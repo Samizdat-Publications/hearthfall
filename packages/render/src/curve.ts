@@ -4,6 +4,7 @@
 // hides the nearest-copy wrap jump of the torus (docs/ARCHITECTURE.md section 7). BACKLOG 3: the same
 // patch darkens everything by the viewer's fog of war texture (unexplored, explored, visible).
 import * as THREE from "three";
+import { UNIT_ANIM_PARS, UNIT_ANIM_VERTEX } from "./unitAnim.ts";
 
 export interface BendUniforms {
   uBendK: { value: number };
@@ -83,11 +84,13 @@ gl_FragColor.rgb = mix( gl_FragColor.rgb, uHorizon, smoothstep( uFadeStart, uFad
 /**
  * Patch a built-in material (Lambert, Standard, Basic...) in place to bend and fade. With a detail
  * uniform, surfaces get world-anchored pixel noise (sand grains, grass tufts) at detailCells per unit.
+ * With `anim`, unit meshes bend by their per-instance pose first (BACKLOG 5, unitAnim.ts).
  */
-export function bendMaterial<T extends THREE.Material>(mat: T, u: BendUniforms, detail?: { amount: { value: number }; cells: { value: number } }): T {
+export function bendMaterial<T extends THREE.Material>(mat: T, u: BendUniforms, detail?: { amount: { value: number }; cells: { value: number } }, anim = false): T {
   mat.onBeforeCompile = (shader) => {
     Object.assign(shader.uniforms, u);
     let vs = BEND_VERTEX_PARS + shader.vertexShader.replace("#include <project_vertex>", BEND_PROJECT_VERTEX);
+    if (anim) vs = UNIT_ANIM_PARS + vs.replace("#include <begin_vertex>", "#include <begin_vertex>\n" + UNIT_ANIM_VERTEX);
     let fs = BEND_FRAGMENT_PARS + shader.fragmentShader.replace("#include <fog_fragment>", "#include <fog_fragment>\n" + BEND_FRAGMENT_FADE);
     if (detail) {
       shader.uniforms.uDetail = detail.amount;
@@ -103,7 +106,7 @@ export function bendMaterial<T extends THREE.Material>(mat: T, u: BendUniforms, 
     shader.vertexShader = vs;
     shader.fragmentShader = fs;
   };
-  mat.customProgramCacheKey = () => (detail ? "hf-bend-detail" : "hf-bend");
+  mat.customProgramCacheKey = () => (detail ? "hf-bend-detail" : anim ? "hf-bend-anim" : "hf-bend");
   return mat;
 }
 

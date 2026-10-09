@@ -149,6 +149,10 @@ if (__DEBUG_API__ || game.params.debug) {
       game.renderer.revealFog = on;
       game.onChange();
     },
+    /** BACKLOG 5: pose gallery: every unit plays clip (slot index mod clip count) (render only) */
+    setAnimProbe: (on = true) => {
+      if (game.renderer.units) game.renderer.units.forceClip = on ? (i: number) => i % 8 : null;
+    },
     loadScenario: (id: string) => game.load(id),
     select: (ids: number[]) => {
       game.selection = new Set(ids.map((id) => game.world.ents.index(id)).filter((i) => i >= 0));

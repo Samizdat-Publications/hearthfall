@@ -750,6 +750,16 @@
       "when": "2026-10-09T18:50:33.441Z",
       "source": "external:formation.png",
       "bytes": 172448
+    },
+    {
+      "file": "b5/20261009-1927_anim-gallery.png",
+      "milestone": "B5",
+      "kind": "screenshot",
+      "caption": "BACKLOG 5 added unit animation: the pose gallery plays every clip side by side (Wardens above, settlers below): walk with swinging legs, chop, club swing, throw, cast with both arms up, kneel and pray, panic, idle breathing. Units that die now topple over, and drowned ones flail and sink",
+      "highlight": false,
+      "when": "2026-10-09T19:27:39.042Z",
+      "source": "external:anim_gallery.png",
+      "bytes": 173011
     }
   ]
 }

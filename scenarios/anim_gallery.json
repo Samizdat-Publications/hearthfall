@@ -1,0 +1,204 @@
+{
+  "id": "anim_gallery",
+  "description": "BACKLOG 5: two rows of idle units for the pose gallery shot (__game.setAnimProbe plays every clip side by side); the sim part only checks they stand still and stay valid.",
+  "tags": [
+    "fast"
+  ],
+  "seed": 63,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2
+  },
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        4,
+        4
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        50,
+        50
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        8,
+        8
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        48,
+        52
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "at": [
+        20,
+        30
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "at": [
+        22,
+        30
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "at": [
+        24,
+        30
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "at": [
+        26,
+        30
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "at": [
+        28,
+        30
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "at": [
+        30,
+        30
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "at": [
+        32,
+        30
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "at": [
+        34,
+        30
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "at": [
+        20,
+        33
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "at": [
+        22,
+        33
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "at": [
+        24,
+        33
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "at": [
+        26,
+        33
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "at": [
+        28,
+        33
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "at": [
+        30,
+        33
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "at": [
+        32,
+        33
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "at": [
+        34,
+        33
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": 0,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    }
+  ],
+  "runTicks": 60,
+  "assert": [
+    {
+      "at": 60,
+      "expr": "count(tribe0.wardens, near([27,30], 9)) == 8 && invariants() == 0"
+    }
+  ]
+}

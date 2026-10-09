@@ -74,6 +74,8 @@ export class ThreeRenderer implements Renderer {
   private modelReport: ModelLoadReport | null = null;
   private modelsPending = false;
   private readonly propMat: THREE.MeshLambertMaterial;
+  /** BACKLOG 5: the prop material plus the procedural unit animation */
+  private readonly unitMat: THREE.MeshLambertMaterial;
   private readonly ringMat: THREE.MeshBasicMaterial;
   private readonly pal: Record<string, string>;
   private readonly styleRender: RendererOptions["style"]["render"];
@@ -147,6 +149,7 @@ export class ThreeRenderer implements Renderer {
     this.pal = pal;
     this.styleRender = o.style.render;
     this.propMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend);
+    this.unitMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend, undefined, true);
     this.ringMat = bendMaterial(new THREE.MeshBasicMaterial({ color: pal.foam ?? "#e6f4f8", transparent: true, opacity: 0.9, depthWrite: false }), this.bend);
     this.trees = new TreeLayer(this.propMat, pal);
     for (const m of this.trees.meshes) this.scene.add(m);
@@ -235,7 +238,7 @@ export class ThreeRenderer implements Renderer {
   private buildLayers(world: World): void {
     const colors = world.tribes.map((t) => t.color);
     if (this.units) disposeGroup(this.scene, this.units.group);
-    this.units = new UnitLayer(this.propMat, this.ringMat, world.cfg.pack.units.units.map((u) => u.id), this.pal, colors, this.models);
+    this.units = new UnitLayer(this.unitMat, this.ringMat, world.cfg.pack.units.units.map((u) => u.id), this.pal, colors, this.models);
     this.scene.add(this.units.group);
     if (this.buildings) disposeGroup(this.scene, this.buildings.group);
     this.buildings = new BuildingLayer(this.propMat, world.cfg.pack.buildings.buildings, this.pal, colors, this.models, 2048, this.styleRender?.buildingScale ?? 1);
@@ -285,6 +288,7 @@ export class ThreeRenderer implements Renderer {
   /** Feed sim events (collected per tick by the app) to the VFX layer. */
   consumeEvents(events: readonly import("@hearthfall/sim").SimEvent[], timeOf: (e: import("@hearthfall/sim").SimEvent) => number): void {
     if (this.world) this.vfx.consume(events, this.world, timeOf, this.palette.heightScale);
+    this.units?.consume(events, timeOf);
   }
 
   /** Remesh only chunks touched since the last sync. Returns how many were rebuilt. */

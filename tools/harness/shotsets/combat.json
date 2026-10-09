@@ -130,6 +130,40 @@
      0.99
     ]
    }
+  },
+  {
+   "id": "anim_gallery",
+   "params": {
+    "scenario": "anim_gallery",
+    "camera": "default",
+    "reveal": "1"
+   },
+   "steps": [
+    {
+     "eval": "__game.setAnimProbe(true)"
+    },
+    {
+     "setCamera": {
+      "x": 27,
+      "z": 31.5,
+      "zoom": 0,
+      "yaw": 0
+     }
+    },
+    {
+     "eval": "__game.step(9)"
+    },
+    {
+     "step": 2
+    }
+   ],
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.02,
+     0.99
+    ]
+   }
   }
  ]
 }

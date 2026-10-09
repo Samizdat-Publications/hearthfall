@@ -111,3 +111,8 @@ One line per entry: `MM/DD/YYYY HH:MM  M<n>  what happened`. Never read this fil
 - App: player moves of 2+ units send formation box; double-click selects own same-type units within 14 cells; a control group digit pressed twice within 0.4 s centers the camera (wrap-aware center); spell preview line counts visible enemies and own units in the area; HUD counts down the Backspace undo while a cast is in its window (undoSeconds 1 equals castSeconds 1, no retune).
 - Tests: packages/sim/test/formation.test.ts (4), apps/game/test/commandux.test.ts (5), scenario formation_box_ranks, combat shot formation. Help line shortened; smoke, combat, spells, spells2, levels re-approved (help text diffs 1.3 to 1.7 percent; units_select_move also shows the formation).
 - Stewart's art note: tilt-shift tabletop ref (making-of/a1 style-ref-06) recorded as second reference, BACKLOG 14a, ASSETS decisions; making-of entry highlighted.
+
+## 2026-10-09 BACKLOG 5 animated units (ADR-012)
+- Procedural vertex animation instead of rig plus VAT: packages/render/src/unitAnim.ts (unitClip from sim state, pure unitPose and deathPose, rigGeometry aRig = model height and x share, GLSL chunk after begin_vertex via bendMaterial anim flag). UnitLayer writes instanceAnim per instance (shared by body and detail meshes, geometries cloned per kind) and draws 1.2 s death ghosts from killed and drowned events (Renderer.consumeEvents).
+- Debug: __game.setAnimProbe(on). Scenario anim_gallery and combat shot anim_gallery (two rows, all clips). Tests: packages/render/test/unitAnim.test.ts (4). bench:render median 3.7 ms, 1000 drawn. smoke and combat re-approved (walking legs, idle breathing).
+- Blender 5.1.2 present (doctor); rig plus VAT kept as BACKLOG 5a.

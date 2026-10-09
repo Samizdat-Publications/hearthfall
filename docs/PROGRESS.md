@@ -4,6 +4,7 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 
 ## Now
 - Run started: 2026-10-08T21:25:00Z
+- BACKLOG 5 DONE (ADR-012): procedural unit animation in the vertex shader (aRig per vertex, instanceAnim pose per instance; walk, work, attack, shoot, cast, pray, panic, idle from sim state; toppling and drowning death ghosts), pose gallery shot, render bench 3.7 ms; rigged clips left as BACKLOG 5a.
 - BACKLOG 4 DONE: command UX polish: box formations for player group moves (sim `move` formation arg, slots ranked melee front to Shaper back, balance.movement.formation), double-click type select, control group jump, spell preview counts, Backspace undo countdown; smoke, combat, spells, spells2 and levels re-approved (help line). Stewart's art note (10/09): tilt-shift miniature ref making-of/a1 style-ref-06 is a second reference (trees, huts, water, tilt-shift), BACKLOG 14a.
 - BACKLOG 3 DONE: fog of war (sim VisionSystem, per tribe explored and visible grids, ADR-011), AI sees only what its tribe sees (brutal has mapHack), shader fog on every bent material, units and buildings hidden, minimap fog, reveal=1 and __game.setReveal. Soaks with fog: economy 61, ai-idle all 12, ai (sneaky 5, aggressive 2, turtle 1, median 15.2 min), bots PASS; smoke, spells2 and levels re-approved, spell and combat shots use reveal=1.
 - BACKLOG 2 DONE: Shade and Shade Den, sneaky AI keeps two Shades, alloc status-leak fix ($0.67, total $9.15 of $30).
@@ -28,7 +29,7 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 - Subagents: project agents are registered again (milestone-reviewer, qa-runner, ...); call them by type.
 
 ## Next 3 actions
-1. BACKLOG P1 5 (animated units; Blender check first, Cuts if missing), then 6 (difficulty levels with soaks), then 8 (accessibility).
+1. BACKLOG P1 6 (difficulty levels with soaks), then 8 (accessibility); then soak and all shot sets (due after 6).
 2. Full npm run qa at least every 4 hours (last PASS after BACKLOG 3, about 18:24Z); then P2 from 9, with 14a (tilt-shift look) early.
 3. Re-run the full soak and shot sets every 3 backlog items (next after 6).
 
