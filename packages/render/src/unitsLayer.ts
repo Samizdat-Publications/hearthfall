@@ -155,6 +155,8 @@ export class UnitLayer {
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.unit || E.inside[i] >= 0) continue;
       if (E.veil[i] > 0 && E.tribe[i] !== this.viewTribe) continue;
+      // BACKLOG 2: a disguised enemy Shade wears the viewer's own color (cloth and ring)
+      const shown = E.tribe[i] >= 0 && E.tribe[i] !== this.viewTribe && w.combat.disguised(i) ? this.viewTribe : E.tribe[i];
       const k = E.type[i];
       if (k >= this.kinds.length) continue;
       // interpolate with wrap-aware delta
@@ -186,13 +188,13 @@ export class UnitLayer {
       const kind = this.kinds[k];
       kind.body.setMatrixAt(c, this.m);
       kind.detail.setMatrixAt(c, this.m);
-      kind.body.setColorAt(c, E.tribe[i] >= 0 ? this.tribeColors[E.tribe[i] % this.tribeColors.length] : this.wildColor);
+      kind.body.setColorAt(c, shown >= 0 ? this.tribeColors[shown % this.tribeColors.length] : this.wildColor);
       if (E.tribe[i] >= 0 && discs < this.cap) {
         this.p.y = ground + 0.02;
         this.sk.setScalar(this.s.x * (ks > 1 ? SHAPER_DISC : 1));
         this.m.compose(this.p, this.q, this.sk);
         this.disc.setMatrixAt(discs, this.m);
-        this.disc.setColorAt(discs++, this.tribeColors[E.tribe[i] % this.tribeColors.length]);
+        this.disc.setColorAt(discs++, this.tribeColors[shown % this.tribeColors.length]);
         this.p.y = ground + bob;
       }
       if (selected.has(i) && rings < 2048) {

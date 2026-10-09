@@ -93,7 +93,7 @@ Starting stats. Speed in cells per second (1 cell = 1 heightmap cell).
 | Warden | 2000 | 1.6 | Melee, kills ~6 settlers alone. Prefers attacking Firecallers. |
 | Firecaller | 700 | 1.25 | Ranged area fireball (range 7, min range 2, splash falls off from the center), knockback. +range per height band and in towers. |
 | Chanter | 1100 | 1.3 | Chants in a radius of 5 for a 6 s channel, then the nearest enemies convert (up to 3 per channel). Interrupted by ranged damage, melee hits, spells, and terrain change nearby. BACKLOG 7: enemies are no longer frozen while the channel runs (`entrancedFreeze` false), because a frozen front line made Chanters unbeatable by any number of Wardens; Wardens now win by reaching the Chanters inside the channel. Cannot convert Shapers, Chanters, or units inside buildings. |
-| Shade | 600 | 1.5 | Disguise (enemy color), burns buildings and trees, reveals info. |
+| Shade | 600 | 1.5 | Disguised: enemies see it in their own color and neither target, convert nor hunt it. An attack order on an enemy building (never a Hearth) or a tree starts a 6 s channel (2 s for a tree) at melee range; damage, a new order or the target leaving reach breaks it. A finished channel sets the building alight (`balance.statuses.buildingFire`: 6 percent of full hp per second for 20 s, so it burns down) or burns the tree at once, and reveals the Shade for 12 s. An enemy Shaper or finished Watchtower within 5 cells reveals it too (BACKLOG 2). Trained at the Shade Den (town tier). |
 
 Stances (M6): aggressive units acquire enemies within `combat.acquireRadius` and chase up to `leashRadius` from where they stood, defensive units only answer threats within a few cells, passive units never start fights. Troops default to aggressive, the Shaper to defensive, settlers and Shades to passive. Explicit attack orders chase any distance; attack-move fights on the way and then resumes. A unit just knocked back is immune to further knockback for `knockbackImmuneSeconds`, so massed fire cannot pin a target forever. Troop damage can kill the Shaper; out of combat she regenerates `shaperRegenPerSecond` after `shaperRegenDelaySeconds`. Conversion ignores the population cap (the cap only gates breeding).
 
@@ -200,4 +200,4 @@ DOM overlay HUD (layout v2, ADR-005 addendum 2: Shaper portrait with mana and fo
 
 ## 18. Out of scope for v1
 
-Online multiplayer, vehicles (boats, balloons), Shade unit, full campaign, mod browser, achievements, localization. All are in `docs/BACKLOG.md`.
+Online multiplayer, vehicles (boats, balloons), full campaign, mod browser, achievements, localization. All are in `docs/BACKLOG.md`.

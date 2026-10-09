@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { World } from "../../sim/src/world.ts";
+import { CAT } from "../../sim/src/entities.ts";
 import { basePack, world } from "../../sim/test/helpers.ts";
 import { OpponentAI, makeBot, type Personality } from "../src/index.ts";
 
@@ -213,5 +214,28 @@ describe("OpponentAI (M7)", () => {
     const alarm = garrisons();
     expect((alarm[0].args.units as number[]).length).toBe(w.combat.garrisonOf(w.ents.type[tower]));
   });
-});
 
+  it("a personality with shades builds a Shade Den, keeps two Shades and sends them at enemy buildings (BACKLOG 2)", () => {
+    // the sneaky data minus its waves, with Shades from minute 2, against an economy bot that builds
+    const p = basePack();
+    const sneaky = p.files.ai.personalities.find((x) => x.id === "sneaky")!;
+    expect(sneaky.shades?.count).toBeGreaterThan(0);
+    const spy: Personality = { ...sneaky, id: "test_spy", firstAttackMinute: 99, shades: { count: 2, fromMinute: 2 } };
+    const w = new World({ pack: p.files, packHash: p.hash, seed: 1003, map: { generator: "continents", size: 128, tribes: 2 } });
+    const ai = makeBot({ type: "opponent", tribe: 0, personality: spy }) as OpponentAI;
+    w.controllers.push(ai, makeBot({ type: "economy", tribe: 1 }));
+    let maxShades = 0;
+    for (let t = 0; t < 18 * 60 * w.cfg.tickHz; t++) {
+      w.step([]);
+      if (t % 300 === 0) maxShades = Math.max(maxShades, w.count((i) => w.ents.tribe[i] === 0 && w.combat.isSaboteur(w.ents.type[i]) && w.ents.cat[i] === CAT.unit));
+    }
+    expect(w.invariants()).toEqual([]);
+    expect(ai.stats.actions.buildDen).toBeGreaterThan(0);
+    expect(maxShades).toBe(2);
+    expect(ai.stats.sabotages ?? 0).toBeGreaterThan(0);
+    expect(w.eventCounts.get("sabotaged") ?? 0).toBeGreaterThan(0);
+    // personalities without shades never score the Shade actions
+    const t = vsIdle("turtle", 1003, 12).ai.stats;
+    expect(t.actions.buildDen ?? 0).toBe(0);
+  }, 90000);
+});

@@ -1,0 +1,127 @@
+{
+  "id": "shade_detected_by_tower",
+  "description": "BACKLOG 2: a Shade sent at a Dwelling passes within reach of an enemy Watchtower, is revealed, and the Wardens beside the Dwelling break every sabotage attempt and kill it; nothing burns.",
+  "tags": [
+    "fast",
+    "combat"
+  ],
+  "seed": 72,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2
+  },
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        8,
+        8
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        10,
+        10
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        52,
+        52
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        50,
+        54
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        28,
+        30
+      ]
+    },
+    {
+      "spawn": "dwelling",
+      "tribe": 1,
+      "at": [
+        34,
+        30
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        37,
+        30
+      ],
+      "count": 2
+    },
+    {
+      "spawn": "shade",
+      "tribe": 0,
+      "at": [
+        16,
+        30
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": 0,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 2,
+      "tribe": 0,
+      "type": "attack",
+      "args": {
+        "units": "tribe0.shades",
+        "target": "tribe1.dwellings"
+      }
+    }
+  ],
+  "runTicks": 900,
+  "assert": [
+    {
+      "at": 900,
+      "expr": "events.count('shadeRevealed') >= 1 && events.count('sabotaged') == 0"
+    },
+    {
+      "at": 900,
+      "expr": "count(tribe0.shades) == 0 && count(tribe1.dwellings) == 1"
+    },
+    {
+      "at": 900,
+      "expr": "invariants() == 0"
+    }
+  ]
+}

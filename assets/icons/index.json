@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generated": "2026-10-09T14:44:13Z",
+  "generated": "2026-10-09T17:40:07Z",
   "sizes": [
     128,
     256
   ],
-  "count": 35,
+  "count": 37,
   "entries": {
     "icon.building.chant_house": {
       "file_256": "assets/icons/icon.building.chant_house.png",
@@ -55,6 +55,13 @@
       "kind": "building",
       "source": "blender thumbnail, grey background keyed to transparent",
       "model": "building.reliquary"
+    },
+    "icon.building.shade_den": {
+      "file_256": "assets/icons/icon.building.shade_den.png",
+      "file_128": "assets/icons/icon.building.shade_den_128.png",
+      "kind": "building",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "building.shade_den"
     },
     "icon.building.shrine": {
       "file_256": "assets/icons/icon.building.shrine.png",
@@ -230,6 +237,13 @@
       "kind": "unit",
       "source": "blender thumbnail, grey background keyed to transparent",
       "model": "unit.settler"
+    },
+    "icon.unit.shade": {
+      "file_256": "assets/icons/icon.unit.shade.png",
+      "file_128": "assets/icons/icon.unit.shade_128.png",
+      "kind": "unit",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "unit.shade"
     },
     "icon.unit.shaper": {
       "file_256": "assets/icons/icon.unit.shaper.png",

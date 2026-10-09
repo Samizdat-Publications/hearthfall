@@ -4,7 +4,8 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 
 ## Now
 - Run started: 2026-10-08T21:25:00Z
-- BACKLOG 0c DONE: stone from rock outcrops (generator rocks per Hearth, quarry and haul jobs, stone costs on towers and lodges, plan blockers, bot and AI site checks, rock rendering, stone in build tooltips). Soaks economy (median 61), ai-idle (all 12), ai (sneaky 3, turtle 3, aggressive 2, median 16 min), bots PASS; shot sets PASS, smoke and spells2 re-approved; replays reblessed for the new stone column.
+- BACKLOG 2 DONE: Shade and Shade Den (disguise, sabotage fire on buildings and trees, Shaper and Watchtower detection, damage breaks the channel), sneaky AI keeps two Shades, 2 scenarios, alloc status-leak fix, models and icons ($0.67, total $9.15 of $30). Soaks economy (61), ai-idle (all 12), ai (aggressive 3, sneaky 3, turtle 2, median 16.6 min), bots PASS; all shot sets re-approved (Shade Den row in the build panel).
+- BACKLOG 0c DONE: stone from rock outcrops (rocks, quarry and haul jobs, stone costs on towers and lodges, plan blockers, AI site checks, rock rendering).
 - BACKLOG 0a DONE: tall conifers and Hearth grove rings, HUD icon audit (unit icons on troop chips), village scale 1.3x, terraced plateaus (generator terrace, walled-in pads refused, bot picks least-flatten sites), volcano ash column; battle bench 4.9 ms. Terrace soaks (economy, ai-idle, ai, bots) and all shot sets PASS. Full npm run qa PASS at 6988e09 (2026-10-09T16:50Z).
 - BACKLOG 7 DONE (soft gates, misses below): fair lodge payments (the AI trained only Wardens), Chanter rework (6 s channel, no freeze, melee breaks it), AI hunts a Hearthless Shaper (bridge or Lightning), personality data, detour and drowning fixes. ai-idle, ai and bots soaks PASS.
 - BACKLOG (after M11, top down): 1 DONE (and 53): all 16 spells. Veil, Ward, Beguile, Whirlwind, Mire, Erode, Firerain, Wraith as data plus primitives, 9 scenarios, spells2 shot set (approved), icons, AI targeting, skirmish Reliquaries teach them (ADR-010), second hotkey row. Soak note for 7: sneaky won 5 of 8.
@@ -25,8 +26,8 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 - Subagents: project agents are registered again (milestone-reviewer, qa-runner, ...); call them by type.
 
 ## Next 3 actions
-1. Full npm run qa (due by 20:50Z; last 16:50Z), then BACKLOG P1 2.
-2. Then BACKLOG P1 3 to 6, 8 in order.
+1. Full npm run qa after the BACKLOG 2 commit (last PASS 297fdc1 at 17:34Z; due by 21:30Z).
+2. BACKLOG P1 3 (fog of war and scouting), then 4, 5, 6, 8 in order.
 3. Re-run the full soak and shot sets every 3 backlog items (next after 4).
 
 ## Blocked

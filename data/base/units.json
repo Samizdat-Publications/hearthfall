@@ -132,14 +132,20 @@
         "idle": 9
       },
       "sabotage": {
-        "burnSeconds": 8,
-        "disguise": true
+        "$comment": "BACKLOG 2. Disguised (enemies neither target nor convert it) until an enemy detector comes within detectRadius or it finishes a sabotage; then revealed for revealSeconds. An attack order on an enemy building (never a Hearth) or a tree starts a channel at range; damage, a new order or the target leaving reach breaks it. A finished building channel sets the building on fire (balance.statuses.buildingFire); a tree burns at once.",
+        "channelSeconds": 6,
+        "treeChannelSeconds": 2,
+        "cooldownSeconds": 3,
+        "range": 0.8,
+        "disguise": true,
+        "detectRadius": 5,
+        "revealSeconds": 12,
+        "detectors": ["shaper", "watchtower"]
       },
       "trainedAt": "shade_den",
       "trainSeconds": 16,
       "trainMana": 200,
       "convertible": true,
-      "milestone": "backlog",
       "stance": "passive"
     },
     {

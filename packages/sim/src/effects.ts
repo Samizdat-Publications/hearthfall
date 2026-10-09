@@ -461,7 +461,7 @@ function wraithStep(w: World, i: number): void {
   const tr = E.tribe[i];
   if (E.cd[i] > 0) E.cd[i]--;
   let t = E.target[i] === NO_ENTITY ? -1 : E.index(E.target[i]);
-  const huntable = (u: number) => u >= 0 && E.alive[u] && E.cat[u] === CAT.unit && E.inside[u] < 0 && E.tribe[u] >= 0 && E.tribe[u] !== tr && E.veil[u] === 0 && E.ward[u] === 0 && !isCasterUnit(w, u);
+  const huntable = (u: number) => u >= 0 && E.alive[u] && E.cat[u] === CAT.unit && E.inside[u] < 0 && E.tribe[u] >= 0 && E.tribe[u] !== tr && E.veil[u] === 0 && !w.combat.disguised(u) && E.ward[u] === 0 && !isCasterUnit(w, u);
   if (!huntable(t) || w.tick % hz === 0) {
     let best = -1;
     let bd = e.huntRadius * e.huntRadius;
@@ -499,7 +499,8 @@ function wraithStep(w: World, i: number): void {
   if (E.level[i] >= e.maxKills) E.timer[i] = 1;
 }
 
-/** Step 6: tick persistent effect entities and unit statuses (burning damage, Veil, Ward, Beguile). */
+/** Step 6: tick persistent effect entities, unit statuses (burning damage, Veil, Ward, Beguile, a Shade's
+ * reveal) and buildings on fire (BACKLOG 2). */
 export function updateEffects(w: World): void {
   const E = w.ents;
   const hz = w.cfg.tickHz;
@@ -541,12 +542,22 @@ export function updateEffects(w: World): void {
       }
       continue;
     }
+    if (E.cat[i] === CAT.building) {
+      // set alight by a Shade: a share of the full hp each second, credited to the tribe that lit it
+      if (E.burn[i] > 0) {
+        E.burn[i]--;
+        const def = w.cfg.pack.buildings.buildings[E.type[i]];
+        w.damage(i, (def.hp * (w.cfg.pack.balance.statuses.buildingFire?.hpPctPerSecond ?? 6)) / 100 / hz, E.lastHit[i], false);
+      }
+      continue;
+    }
     if (E.cat[i] !== CAT.unit) continue;
     if (E.burn[i] > 0) {
       E.burn[i]--;
       w.damage(i, burnPerTick, -1, false);
       if (!E.alive[i]) continue;
     }
+    if (E.reveal[i] > 0) E.reveal[i]--;
     if (E.veil[i] > 0) E.veil[i]--;
     if (E.ward[i] > 0) E.ward[i]--;
     if (E.beguile[i] > 0 && --E.beguile[i] === 0) endBeguile(w, i, "expired");

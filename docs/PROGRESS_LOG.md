@@ -88,3 +88,13 @@ One line per entry: `MM/DD/YYYY HH:MM  M<n>  what happened`. Never read this fil
 - Economy bot findSpot and opponent lodge and tower scores skip stone buildings without a rock. The rusher's first wave slips to minute 7 (test bot match lengthened).
 - Render: rocks in the tree layer from the rock GLBs. One model is a tall spire that read as a monolith at footprint scale, so the scale is also capped by ROCK_HEIGHT; ROCK_WIDTH raised to 1.7 so outcrops read as a resource.
 - Replays reblessed (new entity column). Soaks economy, ai-idle, ai, bots PASS; smoke and spells2 baselines re-approved.
+
+## 2026-10-09 BACKLOG 2: Shade and Shade Den
+- Shade (combat kind saboteur, data `sabotage` block): disguised while the new `reveal` column is 0; enemies, the Wraith and the AI census skip it and the renderer draws it in the viewer's color. An attack order on an enemy building (never a Hearth, not already alight) or a tree starts a channel (6 s, 2 s for a tree); damage, a new order or the target leaving reach breaks it. A building catches fire (`balance.statuses.buildingFire`, 6 percent of full hp per second for 20 s), a tree burns at once, and the Shade is revealed for 12 s. Enemy Shapers and finished Watchtowers within 5 cells reveal it (checked every 4 ticks).
+- Regression found on the way: EntityStore.alloc did not reset veil, ward, beguile, home or stone, so a reused slot inherited statuses (slotReuse.test.ts failed first, now passes).
+- Any damage breaks a Shade channel (World.damage: no convert block means every hit interrupts).
+- Shade Den unlocked in the town tier. Models and icons by the asset producer (Gemini concept plus Meshy, $0.667).
+- AI: optional personality `shades: {count, fromMinute}` (sneaky: 2 from minute 8). Actions buildDen, trainShade and sabotage are scored only when it is set, so other personalities draw the same noise. Shades stay out of waves, go for the nearest finished building of a scouted enemy away from its detectors, and scout an unscouted start site otherwise. Against an economy bot two Shades finished 40 sabotages in 20 minutes (watch for a human player: counters are a Watchtower near the core and the Shaper).
+- Render: flames and smoke on burning buildings, sparks at a Shade's target while it channels.
+- Scenarios shade_burns_dwelling, shade_detected_by_tower; sim test shade.test.ts (4), AI test. Replays reblessed (new column). Smoke hud_troops now expects 5 locked buildings at start.
+- Soaks: economy median 61; ai-idle all 12 (sneaky 11 to 13 min); ai wins aggressive 3, sneaky 3, turtle 2, median 16.6 min; bots PASS. Shot sets smoke, spells, spells2, combat, levels re-approved (Shade Den row in the build panel).

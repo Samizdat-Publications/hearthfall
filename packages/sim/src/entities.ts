@@ -73,6 +73,8 @@ const COLUMNS: Record<string, ColCtor> = {
   home: Int8Array,
   // stone (BACKLOG 0c): a rock's stone left, a construction site's stone delivered
   stone: Uint8Array,
+  // BACKLOG 2: ticks a disguised Shade stays revealed (0 = disguised)
+  reveal: Int32Array,
 };
 export const COLUMN_NAMES = Object.keys(COLUMNS);
 
@@ -92,6 +94,7 @@ export class Entities {
   hp!: Float64Array;
   wood!: Uint8Array;
   stone!: Uint8Array;
+  reveal!: Int32Array;
   state!: Uint8Array;
   timer!: Int32Array;
   px!: Float64Array;
@@ -208,6 +211,13 @@ export class Entities {
     this.trance[i] = 0;
     this.chant[i] = 0;
     this.hitTick[i] = 0;
+    // statuses and stone too: a reused slot must not inherit Ward, Veil or Beguile (BACKLOG 2 regression)
+    this.veil[i] = 0;
+    this.ward[i] = 0;
+    this.beguile[i] = 0;
+    this.home[i] = 0;
+    this.stone[i] = 0;
+    this.reveal[i] = 0;
     this.count++;
     return (i | ((this.gen[i] & 0x7fff) << 16)) >>> 0;
   }

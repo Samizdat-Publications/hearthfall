@@ -191,7 +191,8 @@ export class World {
    * Damage a unit or building. Shapers only die to effects allowed to kill them (lethal); other
    * damage leaves them at least shaperMinHpFromNonLethal. Units inside buildings are safe. Any
    * damage but a melee swing breaks a chant (ranged hits and spells interrupt Chanters); a melee swing
-   * does too when the Chanter's convert.interruptedBy lists meleeDamage (BACKLOG 7).
+   * does too when the Chanter's convert.interruptedBy lists meleeDamage (BACKLOG 7). Any damage breaks
+   * a Shade's sabotage channel (BACKLOG 2).
    */
   damage(i: number, amount: number, fromTribe: number, lethal: boolean, melee = false): void {
     const E = this.ents;
@@ -202,8 +203,9 @@ export class World {
     if (fromTribe >= 0) E.lastHit[i] = fromTribe;
     E.hitTick[i] = this.tick;
     if (E.chant[i] > 0) {
+      const cv = this.cfg.pack.units.units[E.type[i]].convert;
       if (!melee) this.combat.interruptChant(i, "hit");
-      else if (this.cfg.pack.units.units[E.type[i]].convert?.interruptedBy.includes("meleeDamage")) this.combat.interruptChant(i, "melee");
+      else if (!cv || cv.interruptedBy.includes("meleeDamage")) this.combat.interruptChant(i, "melee");
     }
     let hp = E.hp[i] - amount;
     if (E.cat[i] === CAT.unit && isShaper(this, i) && !lethal) hp = Math.max(hp, this.cfg.pack.balance.combat.shaperMinHpFromNonLethal);

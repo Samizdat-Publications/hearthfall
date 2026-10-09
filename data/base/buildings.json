@@ -91,7 +91,6 @@
       "wood": 8,
       "stone": 3,
       "trains": "shade",
-      "milestone": "backlog",
       "hp": 2000,
       "queueMax": 5
     },

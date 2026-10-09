@@ -47,3 +47,8 @@
 - 2026-10-09T17:06 set spells (8 shots): BACKLOG 0a: volcano smoke column (dark ash puffs and embers over the erupting cone)
 - 2026-10-09T17:31 set smoke (12 shots): BACKLOG 0c: stone outcrops drawn by Hearths (trees cleared around them), build tooltips carry stone
 - 2026-10-09T17:32 set spells2 (9 shots): BACKLOG 0c: stone outcrops in frame
+- 2026-10-09T17:57 set spells (8 shots): BACKLOG 2: Shade Den row in the build panel
+- 2026-10-09T17:57 set spells2 (9 shots): BACKLOG 2: Shade Den row in the build panel
+- 2026-10-09T17:57 set combat (3 shots): BACKLOG 2: Shade Den row in the build panel
+- 2026-10-09T17:57 set levels (2 shots): BACKLOG 2: Shade Den row in the build panel
+- 2026-10-09T17:58 set smoke (12 shots): BACKLOG 2: Shade Den row in the build panel (5 locked at start)

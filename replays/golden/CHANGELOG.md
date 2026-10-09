@@ -79,3 +79,8 @@ Reason: BACKLOG 1: spell status columns veil, ward, beguile, home in the entity 
 Reason: BACKLOG 0c: entity column stone added (rocks, stone costs)
 - spells_duel: final 3bcafa10 -> 025f1738 (pack a549da99)
 - terrain_ops_continents: final a7bf943b -> 98d0419c (pack a549da99)
+
+## 2026-10-09 17:54 UTC
+Reason: BACKLOG 2: entity column reveal added (Shade disguise), sneaky AI uses Shades
+- spells_duel: final 025f1738 -> 5965f683 (pack c65eaf42)
+- terrain_ops_continents: final 98d0419c -> de47762e (pack c65eaf42)

@@ -700,6 +700,26 @@
       "when": "2026-10-09T17:31:39.836Z",
       "source": "external:rocks_village.png",
       "bytes": 222227
+    },
+    {
+      "file": "b1/20261009-1740_shade-unit.png",
+      "milestone": "B1",
+      "kind": "asset-sheet",
+      "caption": "Shade unit: Gemini concept beside the normalized Meshy model thumbnail (hooded charcoal cloak, azure sash)",
+      "highlight": false,
+      "when": "2026-10-09T17:40:29.603Z",
+      "source": "external:assets_shade_unit_sheet.png",
+      "bytes": 116906
+    },
+    {
+      "file": "b1/20261009-1740_shade-den.png",
+      "milestone": "B1",
+      "kind": "asset-sheet",
+      "caption": "Shade Den lodge: Gemini concept beside the normalized Meshy model thumbnail (low dark hut, hanging cloth)",
+      "highlight": false,
+      "when": "2026-10-09T17:40:30.450Z",
+      "source": "external:assets_shade_den_sheet.png",
+      "bytes": 129108
     }
   ]
 }

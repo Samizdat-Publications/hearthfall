@@ -16,6 +16,8 @@ export interface Personality {
   spellPrefs: string[];
   scouting: number;
   towerAffinity: number;
+  /** BACKLOG 2: keep this many Shades from this match minute on */
+  shades?: { count: number; fromMinute: number };
 }
 
 export interface OpponentState {
@@ -39,6 +41,8 @@ export interface OpponentOptions {
 export interface OpponentStats {
   decisions: number;
   actions: Record<string, number>;
+  /** BACKLOG 2: Shades sent at enemy buildings */
+  sabotages?: number;
   casts: Record<string, number>;
   waves: number;
   /** waves with at least two troop types */
@@ -56,6 +60,8 @@ interface Census {
   settlers: number[];
   troops: Map<string, number>;
   idle: number[];
+  /** BACKLOG 2: own Shades (kept out of troops, idle and waves) */
+  shades: number[];
   lodges: Map<string, number[]>;
   towers: number[];
   open: number;
@@ -68,6 +74,8 @@ interface Census {
 type Action = { id: string; score: (c: Census) => number; act: (c: Census, out: Command[]) => void };
 
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+/** BACKLOG 2: actions scored only for personalities with shades, so the others draw the same noise as before */
+const SHADE_ACTIONS = new Set(["buildDen", "trainShade", "sabotage"]);
 
 export class OpponentAI implements Controller {
   readonly tribe: number;
@@ -110,6 +118,9 @@ export class OpponentAI implements Controller {
       { id: "cast", score: (c) => this.castScore(c), act: (c, out) => this.cast(c, out) },
       // M9: only scored on maps with worship sites, so worlds without them draw the same noise as before
       { id: "worship", score: (c) => this.worshipScore(c), act: (c, out) => this.worship(c, out) },
+      { id: "buildDen", score: (c) => this.denScore(c), act: (c, out) => this.buildDen(c, out) },
+      { id: "trainShade", score: (c) => this.trainShadeScore(c), act: (c, out) => this.trainShade(c, out) },
+      { id: "sabotage", score: (c) => this.sabotageScore(c), act: (c, out) => this.sabotage(c, out) },
     ];
   }
 
@@ -161,7 +172,7 @@ export class OpponentAI implements Controller {
     this.stats.decisions++;
     // every decision: spells unlocked mid-match (worship sites) start charging too
     this.setup(w, out);
-    const acts = w.worship.sites.length ? this.actions : this.actions.filter((a) => a.id !== "worship");
+    const acts = this.actions.filter((a) => (a.id !== "worship" || w.worship.sites.length > 0) && (this.p.shades || !SHADE_ACTIONS.has(a.id)));
     const scored = acts.map((a, k) => ({ a, k, s: a.score(c) + (w.rng.float("ai") - 0.5) * 2 * this.noise }));
     scored.sort((x, y) => y.s - x.s || x.k - y.k);
     let ran = 0;
@@ -206,7 +217,7 @@ export class OpponentAI implements Controller {
     const units = w.cfg.pack.units.units;
     const bdefs = w.cfg.pack.buildings.buildings;
     const n = w.terrain.size;
-    const c: Census = { w, h, si: E.index(tr.shaper), minute: w.tick / (60 * w.cfg.tickHz), pop: w.economy.followers(this.tribe), settlers: [], troops: new Map(), idle: [], lodges: new Map(), towers: [], open: 0, threats: [], enemies: [] };
+    const c: Census = { w, h, si: E.index(tr.shaper), minute: w.tick / (60 * w.cfg.tickHz), pop: w.economy.followers(this.tribe), settlers: [], troops: new Map(), idle: [], shades: [], lodges: new Map(), towers: [], open: 0, threats: [], enemies: [] };
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i]) continue;
       if (E.tribe[i] === this.tribe) {
@@ -218,13 +229,14 @@ export class OpponentAI implements Controller {
         } else if (E.cat[i] === CAT.unit) {
           const def = units[E.type[i]];
           if (E.type[i] === w.economy.typeSettler) c.settlers.push(i);
+          else if (w.combat.isSaboteur(E.type[i])) c.shades.push(i);
           else if (def.trainedAt) {
             c.troops.set(def.id, (c.troops.get(def.id) ?? 0) + 1);
             if (E.inside[i] < 0 && E.mode[i] === 0 && E.order[i] === 0 && E.atk[i] === NO_ENTITY && i !== E.index(this.scout)) c.idle.push(i);
           }
         }
-      } else if (E.tribe[i] >= 0 && E.cat[i] === CAT.unit && E.veil[i] === 0 && w.tribes[E.tribe[i]]?.alive) {
-        // veiled enemies are invisible to the AI as they are to a player (no map hacks)
+      } else if (E.tribe[i] >= 0 && E.cat[i] === CAT.unit && E.veil[i] === 0 && !w.combat.disguised(i) && w.tribes[E.tribe[i]]?.alive) {
+        // veiled enemies and disguised Shades are invisible to the AI as they are to a player (no map hacks)
         const def = units[E.type[i]];
         if (!def.trainedAt && !def.isCaster) continue;
         const dx = wrapDelta(E.x[i] - E.x[h], n);
@@ -302,7 +314,7 @@ export class OpponentAI implements Controller {
     const n = w.terrain.size;
     let k = 0;
     for (let i = 0; i < E.hi; i++) {
-      if (!E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] < 0 || E.tribe[i] === this.tribe || E.veil[i] > 0) continue;
+      if (!E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] < 0 || E.tribe[i] === this.tribe || E.veil[i] > 0 || w.combat.disguised(i)) continue;
       if (!w.cfg.pack.units.units[E.type[i]].trainedAt) continue;
       const dx = wrapDelta(E.x[i] - x, n);
       const dy = wrapDelta(E.y[i] - y, n);
@@ -521,6 +533,116 @@ export class OpponentAI implements Controller {
     }
   }
 
+  // ------------------------------------------------------------------ BACKLOG 2: Shades
+
+  private denScore(c: Census): number {
+    const sh = this.p.shades;
+    if (!sh || c.minute < sh.fromMinute || c.lodges.has("shade_den") || c.threats.length) return 0;
+    if (c.open >= c.w.cfg.pack.balance.economy.maxOpenPlansPerTribe || c.settlers.length < this.keep() * 0.6) return 0;
+    const bt = c.w.cfg.buildingIndex.get("shade_den");
+    if (bt === undefined || c.w.economy.buildingLock(this.tribe, bt) || !this.supplied(c, "shade_den")) return 0;
+    return 0.65;
+  }
+
+  private buildDen(c: Census, out: Command[]): void {
+    this.build(c, out, "shade_den");
+  }
+
+  /** the finished Shade Den, or -1 */
+  private den(c: Census): number {
+    return (c.lodges.get("shade_den") ?? []).find((b) => c.w.ents.state[b] === BSTATE.done) ?? -1;
+  }
+
+  private trainShadeScore(c: Census): number {
+    const sh = this.p.shades;
+    const d = this.den(c);
+    if (!sh || d < 0 || c.threats.length || c.settlers.length <= this.floor(c)) return 0;
+    return c.shades.length + (c.w.combat.queued().get(d) ?? 0) < sh.count ? 0.6 : 0;
+  }
+
+  private trainShade(c: Census, out: Command[]): void {
+    const w = c.w;
+    const E = w.ents;
+    const d = this.den(c);
+    if (d < 0) return;
+    if (E.mode[d] === 0) out.push(this.cmd(w, "setRally", { building: E.idOf(d), at: [E.x[c.h] - 3, E.y[c.h] + 3] }));
+    out.push(this.cmd(w, "train", { building: E.idOf(d), count: 1 }));
+  }
+
+  /** own Shades with nothing to do */
+  private idleShades(c: Census): number[] {
+    const E = c.w.ents;
+    return c.shades.filter((i) => E.inside[i] < 0 && E.order[i] === 0 && E.atk[i] === NO_ENTITY && E.chant[i] === 0);
+  }
+
+  /**
+   * a sabotage target for Shade i: the nearest finished building of a scouted enemy that is not a Hearth,
+   * not already alight and not within detection of one of that tribe's Watchtowers or its Shaper
+   */
+  private sabotageTarget(c: Census, i: number): number {
+    const w = c.w;
+    const E = w.ents;
+    const n = w.terrain.size;
+    const sab = w.cfg.pack.units.units[E.type[i]].sabotage!;
+    const detB = new Set(sab.detectors.map((d) => w.cfg.buildingIndex.get(d)).filter((d) => d !== undefined));
+    const detU = new Set(sab.detectors.map((d) => w.cfg.unitIndex.get(d)).filter((d) => d !== undefined));
+    const home = this.comp(w, E.x[i], E.y[i]);
+    const guards: number[] = [];
+    for (let j = 0; j < E.hi; j++) {
+      if (!E.alive[j] || E.tribe[j] < 0 || E.tribe[j] === this.tribe || E.inside[j] >= 0) continue;
+      if (E.cat[j] === CAT.building ? detB.has(E.type[j]) : E.cat[j] === CAT.unit && detU.has(E.type[j])) guards.push(j);
+    }
+    const r = sab.detectRadius + 3;
+    let best = -1;
+    let bd = Infinity;
+    for (let j = 0; j < E.hi; j++) {
+      if (!E.alive[j] || E.cat[j] !== CAT.building || E.state[j] !== BSTATE.done || E.burn[j] > 0) continue;
+      const tj = E.tribe[j];
+      if (tj < 0 || tj === this.tribe || !this.known.has(tj) || !w.tribes[tj]?.alive || w.tribes[tj].hearth === E.idOf(j) || detB.has(E.type[j])) continue;
+      if (guards.some((g) => E.tribe[g] === tj && this.dist2(w, g, j) < r * r)) continue;
+      if (this.comp(w, E.x[j], E.y[j]) !== home) continue;
+      const dx = wrapDelta(E.x[j] - E.x[i], n);
+      const dy = wrapDelta(E.y[j] - E.y[i], n);
+      const d = dx * dx + dy * dy;
+      if (d < bd) {
+        bd = d;
+        best = j;
+      }
+    }
+    return best;
+  }
+
+  private dist2(w: World, a: number, b: number): number {
+    const n = w.terrain.size;
+    const dx = wrapDelta(w.ents.x[a] - w.ents.x[b], n);
+    const dy = wrapDelta(w.ents.y[a] - w.ents.y[b], n);
+    return dx * dx + dy * dy;
+  }
+
+  private sabotageScore(c: Census): number {
+    if (!this.p.shades || !c.enemies.length) return 0;
+    return this.idleShades(c).length ? 0.7 : 0;
+  }
+
+  /** each idle Shade goes for a target; with none in reach it slips toward an unscouted enemy start site */
+  private sabotage(c: Census, out: Command[]): void {
+    const w = c.w;
+    const E = w.ents;
+    const taken = new Set<number>();
+    for (const i of this.idleShades(c)) {
+      const t = this.sabotageTarget(c, i);
+      if (t >= 0 && !taken.has(t)) {
+        taken.add(t);
+        out.push(this.cmd(w, "attack", { units: [E.idOf(i)], target: E.idOf(t) }));
+        this.stats.sabotages = (this.stats.sabotages ?? 0) + 1;
+        continue;
+      }
+      const home = this.comp(w, E.x[i], E.y[i]);
+      const site = c.enemies.find(([tr, eh]) => !this.known.has(tr) && this.comp(w, E.x[eh], E.y[eh]) === home);
+      if (site) out.push(this.cmd(w, "move", { units: [E.idOf(i)], to: [E.x[site[1]], E.y[site[1]]] }));
+    }
+  }
+
   private waveSize(): number {
     return Math.round(4 + (1 - this.p.aggression) * 10);
   }
@@ -681,7 +803,7 @@ export class OpponentAI implements Controller {
           if (tribe !== this.tribe || E.cat[i] !== CAT.unit || !w.cfg.pack.units.units[E.type[i]].trainedAt) continue;
           ok = kind === "ownFighting" ? E.atk[i] !== NO_ENTITY && E.ward[i] === 0 : E.order[i] !== 0 && E.atk[i] === NO_ENTITY && E.veil[i] === 0;
         } else if (kind === "wild") ok = E.cat[i] === CAT.unit && E.type[i] === w.economy.typeWild;
-        else if (tribe >= 0 && tribe !== this.tribe && w.tribes[tribe]?.alive) ok = kind === "buildings" ? E.cat[i] === CAT.building && E.state[i] === BSTATE.done : E.cat[i] === CAT.unit && E.veil[i] === 0;
+        else if (tribe >= 0 && tribe !== this.tribe && w.tribes[tribe]?.alive) ok = kind === "buildings" ? E.cat[i] === CAT.building && E.state[i] === BSTATE.done : E.cat[i] === CAT.unit && E.veil[i] === 0 && !w.combat.disguised(i);
         if (!ok) continue;
         const dx = wrapDelta(E.x[i] - E.x[c.si], n);
         const dy = wrapDelta(E.y[i] - E.y[c.si], n);
@@ -713,7 +835,7 @@ export class OpponentAI implements Controller {
     const n = w.terrain.size;
     let k = 0;
     for (let j = 0; j < E.hi; j++) {
-      if (!E.alive[j] || E.cat[j] !== CAT.unit || E.veil[j] > 0) continue;
+      if (!E.alive[j] || E.cat[j] !== CAT.unit || E.veil[j] > 0 || w.combat.disguised(j)) continue;
       if (wild ? E.type[j] !== w.economy.typeWild : E.tribe[j] !== E.tribe[i]) continue;
       const dx = wrapDelta(E.x[j] - E.x[i], n);
       const dy = wrapDelta(E.y[j] - E.y[i], n);

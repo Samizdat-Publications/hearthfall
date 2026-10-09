@@ -564,6 +564,27 @@
             "damagePerSecond"
           ],
           "additionalProperties": false
+        },
+        "buildingFire": {
+          "type": "object",
+          "properties": {
+            "$comment": {
+              "type": "string"
+            },
+            "seconds": {
+              "type": "number",
+              "minimum": 0
+            },
+            "hpPctPerSecond": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "seconds",
+            "hpPctPerSecond"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [

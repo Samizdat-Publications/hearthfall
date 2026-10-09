@@ -151,17 +151,53 @@
           "sabotage": {
             "type": "object",
             "properties": {
-              "burnSeconds": {
+              "$comment": {
+                "type": "string"
+              },
+              "channelSeconds": {
+                "type": "number",
+                "minimum": 0
+              },
+              "treeChannelSeconds": {
+                "type": "number",
+                "minimum": 0
+              },
+              "cooldownSeconds": {
+                "type": "number",
+                "minimum": 0
+              },
+              "range": {
                 "type": "number",
                 "minimum": 0
               },
               "disguise": {
                 "type": "boolean"
+              },
+              "detectRadius": {
+                "type": "number",
+                "minimum": 0
+              },
+              "revealSeconds": {
+                "type": "number",
+                "minimum": 0
+              },
+              "detectors": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]*$"
+                }
               }
             },
             "required": [
-              "burnSeconds",
-              "disguise"
+              "channelSeconds",
+              "treeChannelSeconds",
+              "cooldownSeconds",
+              "range",
+              "disguise",
+              "detectRadius",
+              "revealSeconds",
+              "detectors"
             ],
             "additionalProperties": false
           },

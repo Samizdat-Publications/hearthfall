@@ -108,7 +108,7 @@
     "tiers": [
       { "id": "camp", "followers": 0, "buildings": ["dwelling"] },
       { "id": "village", "followers": 10, "buildings": ["watchtower", "warden_lodge"] },
-      { "id": "town", "followers": 18, "buildings": ["fire_lodge", "chant_house"] }
+      { "id": "town", "followers": 18, "buildings": ["fire_lodge", "chant_house", "shade_den"] }
     ]
   },
   "skirmishWorship": {
@@ -172,6 +172,11 @@
     },
     "burning": {
       "damagePerSecond": 40
+    },
+    "buildingFire": {
+      "$comment": "BACKLOG 2: a building a Shade sets alight loses hpPctPerSecond of its full hp each second for seconds (over 100 percent in total, so it burns down).",
+      "seconds": 20,
+      "hpPctPerSecond": 6
     }
   }
 }

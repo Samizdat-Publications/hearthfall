@@ -46,7 +46,7 @@ describe("models", () => {
     ];
     // content still drawn by placeholders (no model yet); the M10 gate logs these in docs/ASSETS.md
     const missing = want.filter((id) => !models.has(id));
-    expect(missing.sort()).toEqual(["building.boathouse", "building.shade_den", "building.skyloft", "unit.shade"]);
+    expect(missing.sort()).toEqual(["building.boathouse", "building.skyloft"]);
     for (const [id, m] of models) {
       // nothing lost in the split
       const n = (m.body?.getAttribute("position").count ?? 0) + (m.tint?.getAttribute("position").count ?? 0);

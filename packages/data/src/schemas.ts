@@ -116,6 +116,7 @@ export const BalanceSchema = z.strictObject({
     ...comment,
     panic: z.strictObject({ fleeDistance: pos, repickSeconds: pos }),
     burning: z.strictObject({ damagePerSecond: pos }),
+    buildingFire: z.strictObject({ ...comment, seconds: pos, hpPctPerSecond: pos }).optional(),
   }),
   progression: z.strictObject({
     ...comment,
@@ -267,7 +268,19 @@ export const UnitSchema = z.strictObject({
   melee: Melee.optional(),
   ranged: Ranged.optional(),
   convert: Convert.optional(),
-  sabotage: z.strictObject({ burnSeconds: pos, disguise: z.boolean() }).optional(),
+  sabotage: z
+    .strictObject({
+      ...comment,
+      channelSeconds: pos,
+      treeChannelSeconds: pos,
+      cooldownSeconds: pos,
+      range: pos,
+      disguise: z.boolean(),
+      detectRadius: pos,
+      revealSeconds: pos,
+      detectors: z.array(id),
+    })
+    .optional(),
   isCaster: z.boolean().optional(),
   respawn: z.strictObject({ seconds: pos, drownedSeconds: pos }).optional(),
   trainableInto: z.array(id).optional(),
@@ -466,6 +479,8 @@ export const PersonalitySchema = z.strictObject({
   spellPrefs: z.array(id),
   scouting: z.number().min(0).max(1),
   towerAffinity: z.number().min(0).max(1),
+  /** BACKLOG 2: keep this many Shades from this match minute on and send them at enemy buildings */
+  shades: z.strictObject({ ...comment, count: z.number().int().positive(), fromMinute: pos }).optional(),
 });
 export const DifficultySchema = z.strictObject({
   ...comment,

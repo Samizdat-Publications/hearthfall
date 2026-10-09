@@ -57,6 +57,8 @@ const IMPACTS: Record<string, { flash?: number; ring?: number; beam?: boolean; s
 
 /** Persistent unit status halos (BACKLOG 1): Ward gold, Beguile pink, Veil pale (own units only, the rest are hidden). */
 const STATUS_COLORS = { ward: "#ffd76a", beguile: "#ff7ad9", veil: "#9fb4c8" };
+/** BACKLOG 2: flame colors for burning buildings and a Shade's sabotage sparks */
+const FIRE_COLORS = ["#ffb347", "#ff6a1f", "#ffe08a"];
 
 /** Effect entity kinds as the sim numbers them (packages/sim/src/effects.ts FX). */
 const FX_STORM = 3;
@@ -302,6 +304,37 @@ export class VfxLayer {
     };
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i]) continue;
+      if (E.cat[i] === CAT.building && E.burn[i] > 0) {
+        // BACKLOG 2: a building set alight by a Shade: flames licking up from the roof and dark smoke
+        const gy = w.terrain.heightAt(E.x[i], E.y[i]) * heightScale;
+        const fp = w.cfg.pack.buildings.buildings[E.type[i]].footprint;
+        const half = Math.max(fp[0], fp[1]) * 0.4;
+        for (let k = 0; k < 14; k++) {
+          const p = (now * 1.6 + this.hash(k * 7 + i)) % 1;
+          const a = this.hash(k * 13 + i) * 6.28;
+          const rr = half * this.hash(k * 5 + i);
+          dot(E.x[i] + Math.cos(a) * rr, gy + 0.6 + p * 2.2, E.y[i] + Math.sin(a) * rr, 2.6 * (1 - p) + 0.4, FIRE_COLORS[k % 3], this.swarm, "spark");
+        }
+        for (let k = 0; k < 6; k++) {
+          const p = (now * 0.35 + this.hash(k * 19 + i)) % 1;
+          const size = (0.3 + 1.1 * p) * Math.min(1, (1 - p) * 5);
+          const shade = 0.05 + 0.12 * p;
+          dot(E.x[i] + p * 1.5, gy + 1.8 + p * 4, E.y[i] + p * 0.7, size, this.c.setRGB(shade, shade * 0.95, shade * 0.9), this.smoke, "smoke");
+        }
+        continue;
+      }
+      if (E.cat[i] === CAT.unit && E.chant[i] > 0 && E.inside[i] < 0 && w.combat.isSaboteur(E.type[i])) {
+        // BACKLOG 2: a Shade at work: sparks at its target while the channel runs
+        const t = E.index(E.atk[i]);
+        if (t >= 0) {
+          const gy = w.terrain.heightAt(E.x[t], E.y[t]) * heightScale;
+          for (let k = 0; k < 4; k++) {
+            const p = (now * 2.4 + this.hash(k * 23 + i)) % 1;
+            const a = this.hash(k * 3 + i) * 6.28 + now;
+            dot(E.x[t] + Math.cos(a) * 0.4, gy + 0.3 + p * 0.8, E.y[t] + Math.sin(a) * 0.4, 1.4 * (1 - p) + 0.3, FIRE_COLORS[k % 3], this.swarm, "spark");
+          }
+        }
+      }
       if (E.cat[i] === CAT.unit && E.inside[i] < 0 && (E.ward[i] > 0 || E.beguile[i] > 0 || E.veil[i] > 0)) {
         // another tribe's veiled unit is not drawn, so it gets no halo either
         if (E.veil[i] > 0 && E.tribe[i] !== this.viewTribe) continue;

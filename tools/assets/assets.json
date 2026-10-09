@@ -1874,7 +1874,7 @@
         },
         "bytes": 216900,
         "materials": 1,
-        "palette_delta": 1e-05,
+        "palette_delta": 9e-05,
         "palette_within": 1.0,
         "tribe_faces": 11,
         "tribe_height_range": [
@@ -13051,6 +13051,418 @@
       "request_hash": null,
       "approved": false,
       "qa": {}
+    },
+    {
+      "id": "unit.shade",
+      "class": "units",
+      "prompt": "a tribal shade saboteur standing relaxed in a long hooded charcoal grey cloak that hangs to the knees, face hidden in the dark hood shadow, a wide bright azure blue cloth sash across the chest and an azure waist cloth under the cloak, both hands held close to the body (a small unlit torch tucked at the right hip), dark wrapped boots, compact narrow silhouette, nothing extends forward",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1400,
+        "height": 1.0,
+        "budget_class": "unit",
+        "scheme": "sample",
+        "default_color": "cloth",
+        "pose": "relaxed_standing",
+        "tribe_color": "azure",
+        "textured": true
+      },
+      "steps": {
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-09T17:37:50Z",
+          "finished": "2026-10-09T17:38:11Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/unit.shade/concept.jpg",
+          "sha256": "6f9220bcdd4c61d0d6bad29a5a2cdac59715ce84b4b68aa12053acc8eaef0333",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 342773,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "1f4bdcc4019aaf259e9b6cf72d2697ee7e09a65d1c0816e834f68da5b9f3005c"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a121be-a595-7625-bf67-c7006953a68e",
+          "started": "2026-10-09T17:38:11Z",
+          "finished": "2026-10-09T17:38:37Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/unit.shade/model.glb",
+          "sha256": "2930ade49d43b1bef9f3b665e7a5ed4255fef20a29af2ecd741ea88dcba816d9",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "progress": 100,
+            "bytes": 1453592
+          },
+          "request_hash": "c885bcee597e59dda5977c8d61b026ca99e243cc12310bf16746b8409af34e4d"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T17:38:37Z",
+          "finished": "2026-10-09T17:38:43Z",
+          "cost": null,
+          "output_path": "assets/models/unit.shade.glb",
+          "sha256": "697d4d026dd5f60ea3840572b85b92b230c6613e691cb918d8d854443303779f",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1444,
+            "tris_out": 1443,
+            "decimated": false,
+            "scale": 1.0,
+            "bounds_min": [
+              -0.1965,
+              -0.1515,
+              0.0
+            ],
+            "bounds_max": [
+              0.1965,
+              0.1515,
+              1.0
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "amber",
+              "azure",
+              "rock",
+              "rockDark",
+              "scar",
+              "skin1",
+              "stone",
+              "thatch",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "rock": 2,
+              "rockDark": 333,
+              "woodDark": 317,
+              "thatch": 112,
+              "stone": 1,
+              "skin1": 9,
+              "azure": 74,
+              "amber": 6,
+              "scar": 589
+            },
+            "tribe_faces": 80,
+            "tribe_names": [
+              "azure",
+              "amber"
+            ],
+            "tribe_height_range": [
+              0.347,
+              0.821
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "28ba0d0ffb0fcf9e79219872b0d0918bf51361bf56c9bfefc85e8d8af29d156c"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-09T17:38:47Z",
+          "cost": null,
+          "output_path": "assets/icons/unit.shade.png",
+          "sha256": "9afcddec6e8106a26bba5640a7750c3aee649e52bd0ad2dce8a2170d8e782a1b",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 1443,
+        "verts": 4329,
+        "bounds": {
+          "min": [
+            -0.1965,
+            0.0,
+            -0.1515
+          ],
+          "max": [
+            0.1965,
+            1.0,
+            0.1515
+          ],
+          "size": [
+            0.393,
+            1.0,
+            0.3029
+          ]
+        },
+        "bytes": 183156,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 80,
+        "tribe_height_range": [
+          0.347,
+          0.821
+        ],
+        "boundary_edges": 93,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "building.shade_den",
+      "class": "buildings",
+      "prompt": "low shadowy shade den, a squat dark timber and turf hut with a low sagging thatch roof, tattered dark grey cloth strips hanging from the eaves and over the doorway, a dim doorway, a few ember-blackened logs by the wall, one clearly visible bright royal blue cloth banner or pennant hanging from a pole or the eaves (the only blue in the image)",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 2200,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "stone",
+        "footprint": 2.9,
+        "tribe_color": "azure",
+        "textured": true
+      },
+      "steps": {
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-09T17:38:48Z",
+          "finished": "2026-10-09T17:39:04Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.shade_den/concept.jpg",
+          "sha256": "8d08ec16134445a9d9c18f55214f6b12bce698d188c9b32b357287a02a6ca5ed",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 394018,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "0a8fec19fda70a47a88767c7e3d884b4382c26906791109353bb5fcf488c8d73"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a121bf-736d-76a9-976c-fa7487b0ec2d",
+          "started": "2026-10-09T17:39:04Z",
+          "finished": "2026-10-09T17:39:52Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.shade_den/model.glb",
+          "sha256": "e79ac64433d8698290dd14694cf9b4cee0bd032f2559ec8ffdc268c8b1b88073",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "progress": 100,
+            "bytes": 1836488
+          },
+          "request_hash": "e805a674c0e9a934095a531f51413a7d94f96cab8fa24bbf1184905dbe98d5f1"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T17:39:52Z",
+          "finished": "2026-10-09T17:39:55Z",
+          "cost": null,
+          "output_path": "assets/models/building.shade_den.glb",
+          "sha256": "bf04d85c467ec21d248ec124a9d00de40f398fdc9e90329da3850f42822b80bc",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 2133,
+            "tris_out": 2127,
+            "decimated": false,
+            "scale": 2.9,
+            "bounds_min": [
+              -1.45,
+              -1.45,
+              0.0
+            ],
+            "bounds_max": [
+              1.45,
+              1.45,
+              1.9138
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "cloth",
+              "rockDark",
+              "scar",
+              "skin3",
+              "stone",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "rockDark": 446,
+              "wood": 4,
+              "woodDark": 162,
+              "stone": 1,
+              "skin3": 66,
+              "cloth": 29,
+              "azure": 24,
+              "scar": 1395
+            },
+            "tribe_faces": 24,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.257,
+              0.602
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "0502c8e72de27ec6610c40c84cff1cd98d1704dd0cc15a9372032b9b924803ea"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-09T17:39:59Z",
+          "cost": null,
+          "output_path": "assets/icons/building.shade_den.png",
+          "sha256": "44b3150648f6e302d30b7119a2d8220387405ef17c31c00a046e554eac6b75cf",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 2127,
+        "verts": 6371,
+        "bounds": {
+          "min": [
+            -1.45,
+            0.0,
+            -1.45
+          ],
+          "max": [
+            1.45,
+            1.9138,
+            1.45
+          ],
+          "size": [
+            2.9,
+            1.9138,
+            2.9
+          ]
+        },
+        "bytes": 268956,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 24,
+        "tribe_height_range": [
+          0.257,
+          0.602
+        ],
+        "boundary_edges": 117,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     }
   ]
 }

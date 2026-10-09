@@ -12,11 +12,11 @@ describe("HUD icons", () => {
     units: { units: { id: string }[] };
   };
 
-  it("cover every spell, every buildable building and every unit but the summoned shade", () => {
+  it("cover every spell, every buildable building and every unit (the Shade since BACKLOG 2)", () => {
     expect(pack.spells.spells.filter((s) => !spellIcon(s.id)).map((s) => s.id)).toEqual([]);
     const shown = pack.buildings.buildings.filter((b) => b.buildable !== false && b.milestone !== "backlog");
     expect(shown.filter((b) => !buildingIcon(b.id)).map((b) => b.id)).toEqual([]);
-    expect(pack.units.units.filter((u) => !unitIcon(u.id)).map((u) => u.id)).toEqual(["shade"]);
+    expect(pack.units.units.filter((u) => !unitIcon(u.id)).map((u) => u.id)).toEqual([]);
   });
 
   it("troop chips name the unit type so the HUD can show its icon", () => {

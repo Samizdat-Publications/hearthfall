@@ -44,7 +44,12 @@
         "bolt"
       ],
       "scouting": 0.9,
-      "towerAffinity": 0.3
+      "towerAffinity": 0.3,
+      "shades": {
+        "$comment": "BACKLOG 2: a Shade Den from minute 8, two Shades kept, each sent disguised at an enemy building away from Watchtowers.",
+        "count": 2,
+        "fromMinute": 8
+      }
     },
     {
       "id": "turtle",

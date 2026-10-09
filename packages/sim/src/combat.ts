@@ -1,7 +1,8 @@
 // Combat (system order step 6b, M6): target acquisition by stance, chase and leash, melee swings,
 // Firecaller fireballs (area damage, height bonus, knockback, chant interruption), Chanter channels
 // that entrance and then convert, lodge training queues fed by the training mana sink, rally
-// points, Watchtower garrisons, Shaper regeneration and the elimination aftermath. Numbers come
+// points, Watchtower garrisons, Shaper regeneration and the elimination aftermath. BACKLOG 2: Shade
+// sabotage channels, disguise and detection. Numbers come
 // from balance.json `combat` and units.json; this system keeps no state outside entity columns.
 import { CAT, NO_ENTITY } from "./entities.ts";
 import { secondsToTicks } from "./config.ts";
@@ -11,13 +12,18 @@ import { knockUnit } from "./effects.ts";
 import { registerCommand, type Command } from "./commands.ts";
 import { wrapDelta, type TerrainOpSpec } from "./terrain.ts";
 import type { World } from "./world.ts";
+import type { UnitDef } from "@hearthfall/data";
+
+type Sabotage = NonNullable<UnitDef["sabotage"]>;
 
 export const STANCE = { aggressive: 0, defensive: 1, passive: 2 } as const;
 export const STANCE_NAMES = ["aggressive", "defensive", "passive"] as const;
 /** combat mode column: none, guard (return to the anchor after a fight), attack-move (resume to the goal), forced (explicit attack order) */
 export const CMODE = { none: 0, guard: 1, attackMove: 2, forced: 3 } as const;
 
-const KIND = { none: 0, melee: 1, ranged: 2, chanter: 3 } as const;
+const KIND = { none: 0, melee: 1, ranged: 2, chanter: 3, saboteur: 4 } as const;
+/** BACKLOG 2: disguised Shades are checked against enemy detectors every this many ticks */
+const DETECT_EVERY = 4;
 
 export class CombatSystem {
   private readonly w: World;
@@ -42,6 +48,10 @@ export class CombatSystem {
   private readonly typeWild: number;
   private readonly chantTicks: number;
   private readonly chantCool: number;
+  /** BACKLOG 2: per unit type its sabotage data (Shade) or null; detector unit and building types */
+  private readonly sab: (Sabotage | null)[] = [];
+  private readonly detectUnit = new Set<number>();
+  private readonly detectBuilding = new Set<number>();
 
   constructor(w: World) {
     this.w = w;
@@ -58,7 +68,17 @@ export class CombatSystem {
       this.convertible.push(u.convertible !== false && !(u.isCaster === true));
       this.stanceOf.push(STANCE[u.stance]);
       this.minRange.push(u.ranged?.minRange ?? 0);
-      if (u.convert) {
+      this.sab.push(u.sabotage ?? null);
+      if (u.sabotage) {
+        this.kind.push(KIND.saboteur);
+        this.reach.push(u.sabotage.range + 2 * cb.unitRadius);
+        this.hit.push(0);
+        this.cool.push(secondsToTicks(u.sabotage.cooldownSeconds, hz));
+        for (const d of u.sabotage.detectors) {
+          if (w.cfg.unitIndex.has(d)) this.detectUnit.add(w.cfg.unitIndex.get(d)!);
+          if (w.cfg.buildingIndex.has(d)) this.detectBuilding.add(w.cfg.buildingIndex.get(d)!);
+        }
+      } else if (u.convert) {
         this.kind.push(KIND.chanter);
         this.reach.push(u.convert.radius);
         this.hit.push(0);
@@ -141,15 +161,32 @@ export class CombatSystem {
     return r + this.halfSize(j);
   }
 
+  /** BACKLOG 2: is unit type t a saboteur (the Shade)? */
+  isSaboteur(t: number): boolean {
+    return this.kind[t] === KIND.saboteur;
+  }
+
+  /** BACKLOG 2: a Shade in disguise: enemies neither target, convert nor hunt it, and see it in their own color. */
+  disguised(i: number): boolean {
+    const E = this.w.ents;
+    return E.cat[i] === CAT.unit && E.tribe[i] >= 0 && E.reveal[i] === 0 && this.sab[E.type[i]]?.disguise === true;
+  }
+
   /** Can unit i (tribe tr) attack or chant at entity j? */
   private validTarget(i: number, j: number): boolean {
     const w = this.w;
     const E = w.ents;
     if (j < 0 || !E.alive[j]) return false;
     const tj = E.tribe[j];
-    if (tj < 0 || tj === E.tribe[i] || !w.tribes[tj]?.alive) return false;
     const c = E.cat[j];
-    if (c === CAT.unit && E.veil[j] > 0) return false;
+    if (this.kind[E.type[i]] === KIND.saboteur) {
+      // a Shade sabotages: any tree, or an enemy building that is not a Hearth and not already alight
+      if (c === CAT.tree) return true;
+      if (c !== CAT.building || tj < 0 || tj === E.tribe[i] || !w.tribes[tj]?.alive) return false;
+      return w.tribes[tj].hearth !== E.idOf(j) && E.burn[j] === 0;
+    }
+    if (tj < 0 || tj === E.tribe[i] || !w.tribes[tj]?.alive) return false;
+    if (c === CAT.unit && (E.veil[j] > 0 || this.disguised(j))) return false;
     if (this.kind[E.type[i]] === KIND.chanter) return c === CAT.unit && E.inside[j] < 0 && this.convertible[E.type[j]];
     if (c === CAT.unit) return E.inside[j] < 0;
     return c === CAT.building;
@@ -278,8 +315,8 @@ export class CombatSystem {
     const E = this.w.ents;
     if (E.chant[i] <= 0) return;
     E.chant[i] = 0;
-    E.cd[i] = this.chantCool;
-    this.w.emit("chantInterrupted", { id: E.idOf(i), tribe: E.tribe[i], why });
+    E.cd[i] = this.cool[E.type[i]];
+    this.w.emit(this.kind[E.type[i]] === KIND.saboteur ? "sabotageBroken" : "chantInterrupted", { id: E.idOf(i), tribe: E.tribe[i], why });
   }
 
   /** Forget the current fight and any walk to a lodge or tower (new player order). */
@@ -344,6 +381,7 @@ export class CombatSystem {
     this.buildings.length = 0;
     for (let j = 0; j < E.hi; j++) if (E.alive[j] && E.cat[j] === CAT.building) this.buildings.push(j);
     this.buildTribeGrid();
+    if (w.tick % DETECT_EVERY === 0) this.detect();
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.unit) continue;
       if (E.cd[i] > 0) E.cd[i]--;
@@ -358,7 +396,8 @@ export class CombatSystem {
       const inTower = E.inside[i] >= 0 && E.task[i] === TASK.garrison;
       if (E.inside[i] >= 0 && !inTower) continue;
       if (E.chant[i] > 0) {
-        this.channel(i);
+        if (k === KIND.saboteur) this.sabotageStep(i);
+        else this.channel(i);
         continue;
       }
       if (units[ty].isCaster && (w.tribes[tr].casting || w.tribes[tr].pending)) continue;
@@ -464,6 +503,14 @@ export class CombatSystem {
       w.damage(t, dmg, tr, true, true);
       return;
     }
+    if (k === KIND.saboteur) {
+      const s = this.sab[ty]!;
+      E.chant[i] = secondsToTicks(E.cat[t] === CAT.tree ? s.treeChannelSeconds : s.channelSeconds, w.cfg.tickHz);
+      E.cd[i] = 0;
+      w.emit("sabotageBegun", { id: E.idOf(i), tribe: tr, target: E.idOf(t), x: E.x[t], y: E.y[t] });
+      this.sabotageStep(i);
+      return;
+    }
     if (k === KIND.chanter) {
       E.chant[i] = this.chantTicks;
       E.cd[i] = 0;
@@ -498,6 +545,68 @@ export class CombatSystem {
         const py = d < 1e-6 ? wrapDelta(y - E.y[i], n) : dy;
         knockUnit(w, j, px, py, rd.knockback * (1 - Math.min(1, d / rd.radius) * 0.6));
       }
+    }
+  }
+
+  /**
+   * BACKLOG 2: a running sabotage channel. Broken when the target is gone, no longer valid or out of reach;
+   * at the end a tree burns away, a building catches fire, and the Shade drops its disguise.
+   */
+  private sabotageStep(i: number): void {
+    const w = this.w;
+    const E = w.ents;
+    const t = E.index(E.atk[i]);
+    if (t < 0 || !this.validTarget(i, t) || this.dist(i, E.x[t], E.y[t]) > this.reachOf(i, t) + 0.5) {
+      this.interruptChant(i, "target");
+      return;
+    }
+    if (--E.chant[i] > 0) return;
+    const s = this.sab[E.type[i]]!;
+    const hz = w.cfg.tickHz;
+    const tr = E.tribe[i];
+    E.cd[i] = this.cool[E.type[i]];
+    E.reveal[i] = Math.max(E.reveal[i], secondsToTicks(s.revealSeconds, hz));
+    const what = E.cat[t] === CAT.tree ? "tree" : "building";
+    w.emit("sabotaged", { id: E.idOf(i), tribe: tr, target: E.idOf(t), what, x: E.x[t], y: E.y[t] });
+    if (what === "tree") w.kill(t, "burned");
+    else {
+      const fire = w.cfg.pack.balance.statuses.buildingFire;
+      E.burn[t] = secondsToTicks(fire?.seconds ?? 20, hz);
+      E.lastHit[t] = tr;
+    }
+    E.atk[i] = NO_ENTITY;
+    E.mode[i] = CMODE.none;
+  }
+
+  /**
+   * BACKLOG 2: disguised Shades within detectRadius of an enemy detector (a Shaper, a finished Watchtower)
+   * are revealed for revealSeconds; one still in range stays revealed.
+   */
+  private detect(): void {
+    const w = this.w;
+    const E = w.ents;
+    const hz = w.cfg.tickHz;
+    for (let i = 0; i < E.hi; i++) {
+      if (!E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] < 0 || E.inside[i] >= 0) continue;
+      const s = this.sab[E.type[i]];
+      if (!s?.disguise) continue;
+      const tr = E.tribe[i];
+      let by = -1;
+      for (const b of this.buildings) {
+        if (!E.alive[b] || E.tribe[b] < 0 || E.tribe[b] === tr || !this.detectBuilding.has(E.type[b]) || E.state[b] !== BSTATE.done) continue;
+        if (this.dist(i, E.x[b], E.y[b]) <= s.detectRadius + this.halfSize(b)) {
+          by = b;
+          break;
+        }
+      }
+      for (let j = 0; by < 0 && j < E.hi; j++) {
+        if (!E.alive[j] || E.cat[j] !== CAT.unit || E.tribe[j] < 0 || E.tribe[j] === tr || E.inside[j] >= 0 || !this.detectUnit.has(E.type[j])) continue;
+        if (this.dist(i, E.x[j], E.y[j]) <= s.detectRadius) by = j;
+      }
+      if (by < 0) continue;
+      if (E.reveal[i] === 0) w.emit("shadeRevealed", { id: E.idOf(i), tribe: tr, by: E.idOf(by), x: E.x[i], y: E.y[i] });
+      // refreshed past the next scan so a Shade standing in range never flickers back into disguise
+      E.reveal[i] = Math.max(E.reveal[i], secondsToTicks(s.revealSeconds, hz), DETECT_EVERY + 1);
     }
   }
 
@@ -797,7 +906,9 @@ registerCommand("attack", {
     const idx = ownUnits(w, c);
     if (typeof idx === "string") return idx;
     const t = w.resolveEntity(c.args.target);
-    if (t < 0 || (w.ents.cat[t] !== CAT.unit && w.ents.cat[t] !== CAT.building)) return "no such target";
+    // BACKLOG 2: Shades may be sent at trees; a disguised enemy Shade cannot be picked out
+    if (t >= 0 && w.ents.cat[t] === CAT.tree) return idx.every((i) => w.combat.isSaboteur(w.ents.type[i])) ? null : "no such target";
+    if (t < 0 || (w.ents.cat[t] !== CAT.unit && w.ents.cat[t] !== CAT.building) || w.combat.disguised(t)) return "no such target";
     if (w.ents.tribe[t] < 0 || w.ents.tribe[t] === w.ents.tribe[idx[0]]) return "target is not an enemy";
     return null;
   },
