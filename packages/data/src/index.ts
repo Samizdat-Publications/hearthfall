@@ -77,6 +77,20 @@ function dupes(file: string, ids: string[], issues: PackIssue[]): Set<string> {
   return seen;
 }
 
+/** Terrain ops a spell may queue and the effect fields each one needs. */
+export const SPELL_TERRAIN_OPS: Record<string, readonly string[] | undefined> = {
+  ridgeLine: ["width", "heightAboveSea"],
+  flattenToAverage: ["radius"],
+  noiseScar: ["radius", "depth"],
+  crater: ["radius", "height"],
+  lowerTowardSea: ["radius", "depth"],
+  raise: ["radius", "height"],
+  lower: ["radius", "depth"],
+};
+
+/** statusApply statuses the sim implements; the rest belong to backlog spells and throw when cast. */
+export const IMPLEMENTED_STATUSES = ["panic", "burning"] as const;
+
 function crossCheck(p: PackFiles): PackIssue[] {
   const issues: PackIssue[] = [];
   const units = dupes("units.json", p.units.units.map((u) => u.id), issues);
@@ -93,6 +107,20 @@ function crossCheck(p: PackFiles): PackIssue[] {
     for (const t of u.convert?.cannotConvert ?? []) need("units.json", `${u.id}.convert.cannotConvert`, units, t, "unit");
   }
   for (const b of p.buildings.buildings) if (b.trains) need("buildings.json", `${b.id}.trains`, units, b.trains, "unit");
+  for (const u of p.units.units) if (u.isCaster && !u.respawn) issues.push({ file: "units.json", path: `${u.id}.respawn`, message: "the caster needs respawn timings" });
+  // effect fields the sim reads without a fallback (packages/sim/src/effects.ts)
+  for (const s of p.spells.spells) {
+    s.effects.forEach((e, k) => {
+      const at = `${s.id}.effects.${k}`;
+      if (e.type === "terrainOp") {
+        const fields = SPELL_TERRAIN_OPS[e.op];
+        if (!fields) issues.push({ file: "spells.json", path: at, message: `terrainOp ${e.op} is not available to spells` });
+        else for (const f of fields) if ((e as Record<string, unknown>)[f] === undefined) issues.push({ file: "spells.json", path: at, message: `terrainOp ${e.op} needs ${f}` });
+      }
+      if (e.type === "spawnEntity" && e.radius === undefined) issues.push({ file: "spells.json", path: at, message: "spawnEntity needs radius" });
+      if (e.type === "statusApply" && (IMPLEMENTED_STATUSES as readonly string[]).includes(e.status) && e.radius === undefined) issues.push({ file: "spells.json", path: at, message: `statusApply ${e.status} needs radius` });
+    });
+  }
   for (const per of p.ai.personalities) {
     for (const s of per.spellPrefs) need("ai_personalities.json", `${per.id}.spellPrefs`, spells, s, "spell");
     for (const u of Object.keys(per.armyMix)) need("ai_personalities.json", `${per.id}.armyMix`, units, u, "unit");

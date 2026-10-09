@@ -7,6 +7,7 @@ import { cos, sin, TWO_PI } from "./dmath.ts";
 import { secondsToTicks } from "./config.ts";
 import { wrapDelta } from "./terrain.ts";
 import type { World } from "./world.ts";
+import { STREAMS } from "./rng.ts";
 
 export interface EffectCtx {
   w: World;
@@ -108,7 +109,7 @@ registerEffect("knockback", (c, e) => {
     const dx = wrapDelta(E.x[i] - c.x, n);
     const dy = wrapDelta(E.y[i] - c.y, n);
     const d = Math.sqrt(dx * dx + dy * dy);
-    knockUnit(w, i, dx, dy, e.force * (1 - Math.min(1, d / e.radius) * 0.6));
+    knockUnit(w, i, dx, dy, e.force * (1 - Math.min(1, d / e.radius) * e.edgeFalloff));
   }
 });
 
@@ -140,19 +141,27 @@ registerEffect("convertRadius", (c, e) => {
   }
 });
 
+/** A field the pack cross-check guarantees (packages/data crossCheck); throws instead of guessing. */
+function need(v: number | undefined, what: string): number {
+  if (v === undefined) throw new Error(`spell data is missing ${what}`);
+  return v;
+}
+
 registerEffect("statusApply", (c, e) => {
   if (e.type !== "statusApply") return;
   const w = c.w;
   const E = w.ents;
   const ticks = secondsToTicks(e.seconds, w.cfg.tickHz);
+  if (e.status !== "panic" && e.status !== "burning") throw new Error(`statusApply ${e.status} is not implemented yet`);
   let left = e.max ?? Infinity;
-  for (const i of within(w, CAT.unit, c.x, c.y, e.radius ?? 1)) {
-    if (left-- <= 0) break;
+  for (const i of within(w, CAT.unit, c.x, c.y, need(e.radius, "statusApply radius"))) {
     if (E.tribe[i] === c.tribe) continue;
+    // only enemies count against max
+    if (left-- <= 0) break;
     if (e.status === "panic") {
       E.panic[i] = Math.max(E.panic[i], ticks);
       E.task[i] = 0;
-    } else if (e.status === "burning") E.burn[i] = Math.max(E.burn[i], ticks);
+    } else E.burn[i] = Math.max(E.burn[i], ticks);
   }
 });
 
@@ -173,26 +182,26 @@ registerEffect("terrainOp", (c, e) => {
         dx = (dx / d) * len;
         dy = (dy / d) * len;
       }
-      w.terrainQueue.push({ op: "ridgeLine", x: c.casterX, y: c.casterY, x2: c.casterX + dx, y2: c.casterY + dy, width: e.width ?? 2, aboveSea: e.heightAboveSea ?? 24 });
+      w.terrainQueue.push({ op: "ridgeLine", x: c.casterX, y: c.casterY, x2: c.casterX + dx, y2: c.casterY + dy, width: need(e.width, "ridgeLine width"), aboveSea: need(e.heightAboveSea, "ridgeLine heightAboveSea") });
       break;
     }
     case "flattenToAverage":
-      w.terrainQueue.push({ op: "flattenToAverage", x: c.x, y: c.y, r: e.radius ?? 4, minAboveSea: e.minHeightAboveSea ?? 0 });
+      w.terrainQueue.push({ op: "flattenToAverage", x: c.x, y: c.y, r: need(e.radius, "flattenToAverage radius"), minAboveSea: e.minHeightAboveSea ?? 0 });
       break;
     case "noiseScar":
-      w.terrainQueue.push({ op: "noiseScar", x: c.x, y: c.y, r: e.radius ?? 6, depth: e.depth ?? 20, seed: w.rng.nextU32(0) | 0 });
+      w.terrainQueue.push({ op: "noiseScar", x: c.x, y: c.y, r: need(e.radius, "noiseScar radius"), depth: need(e.depth, "noiseScar depth"), seed: w.rng.nextU32(STREAMS.terrain) | 0 });
       break;
     case "crater":
-      w.terrainQueue.push({ op: "crater", x: c.x, y: c.y, r: e.radius ?? 6, height: e.height ?? 60, shape: e.shape === "bowl" ? "bowl" : "cone" });
+      w.terrainQueue.push({ op: "crater", x: c.x, y: c.y, r: need(e.radius, "crater radius"), height: need(e.height, "crater height"), shape: e.shape === "bowl" ? "bowl" : "cone" });
       break;
     case "lowerTowardSea":
-      w.terrainQueue.push({ op: "lowerTowardSea", x: c.x, y: c.y, r: e.radius ?? 6, amount: e.depth ?? 12 });
+      w.terrainQueue.push({ op: "lowerTowardSea", x: c.x, y: c.y, r: need(e.radius, "lowerTowardSea radius"), amount: need(e.depth, "lowerTowardSea depth") });
       break;
     case "raise":
-      w.terrainQueue.push({ op: "raise", x: c.x, y: c.y, r: e.radius ?? 4, amount: e.height ?? 30 });
+      w.terrainQueue.push({ op: "raise", x: c.x, y: c.y, r: need(e.radius, "raise radius"), amount: need(e.height, "raise height") });
       break;
     case "lower":
-      w.terrainQueue.push({ op: "lower", x: c.x, y: c.y, r: e.radius ?? 4, amount: e.depth ?? 30 });
+      w.terrainQueue.push({ op: "lower", x: c.x, y: c.y, r: need(e.radius, "lower radius"), amount: need(e.depth, "lower depth") });
       break;
     default:
       throw new Error(`terrainOp ${e.op} is not available to spells`);
@@ -205,7 +214,7 @@ registerEffect("damageBuildingsRadius", (c, e) => {
   for (const i of within(w, CAT.building, c.x, c.y, e.radius)) {
     if (w.ents.tribe[i] === c.tribe) continue;
     const def = w.cfg.pack.buildings.buildings[w.ents.type[i]];
-    w.damage(i, ((def.hp ?? 1000) * e.damagePct) / 100, c.tribe, true);
+    w.damage(i, (def.hp * e.damagePct) / 100, c.tribe, true);
   }
 });
 
@@ -233,7 +242,7 @@ registerEffect("spawnEntity", (c, e) => {
   const def = w.cfg.pack.spells.entities.find((x) => x.id === e.entity);
   if (!def) throw new Error(`unknown spawnable entity ${e.entity}`);
   const n = w.terrain.size;
-  const r = e.radius ?? 4;
+  const r = need(e.radius, "spawnEntity radius");
   for (let k = 0; k < (e.count ?? 1); k++) {
     const a = w.rng.float("combat") * TWO_PI;
     const d = Math.sqrt(w.rng.float("combat")) * r;

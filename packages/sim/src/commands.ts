@@ -4,6 +4,7 @@ import type { TerrainOpSpec } from "./terrain.ts";
 import { CAT } from "./entities.ts";
 import { BSTATE, TASK } from "./economy.ts";
 import type { World } from "./world.ts";
+import { STREAMS } from "./rng.ts";
 
 export interface Command {
   tick: number;
@@ -54,7 +55,7 @@ registerCommand("terrainOp", {
   },
   apply(w, c) {
     const spec = { ...c.args } as unknown as TerrainOpSpec;
-    if (spec.op === "noiseScar" && !finite((spec as { seed?: unknown }).seed)) (spec as { seed: number }).seed = w.rng.nextU32(0) | 0;
+    if (spec.op === "noiseScar" && !finite((spec as { seed?: unknown }).seed)) (spec as { seed: number }).seed = w.rng.nextU32(STREAMS.terrain) | 0;
     if (spec.op === "crater" && (spec as { shape?: unknown }).shape !== "bowl") (spec as { shape: string }).shape = "cone";
     w.terrainQueue.push(spec);
   },

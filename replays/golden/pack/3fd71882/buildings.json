@@ -1,0 +1,146 @@
+{
+  "$comment": "Footprint in cells. breedSeconds = base / (0.5 + 0.5 * occupants) * nearCapFactor; zero occupants means no breeding. Max build slope lives in balance.json terrain.",
+  "buildings": [
+    {
+      "id": "dwelling",
+      "footprint": [
+        2,
+        2
+      ],
+      "levels": [
+        {
+          "level": 1,
+          "wood": 3,
+          "capacity": 3,
+          "supply": 3,
+          "breedSeconds": 40
+        },
+        {
+          "level": 2,
+          "upgradeWood": 2,
+          "upgradeWoodAtDoor": 3,
+          "capacity": 4,
+          "supply": 5,
+          "breedSeconds": 80
+        },
+        {
+          "level": 3,
+          "upgradeWood": 2,
+          "upgradeWoodAtDoor": 3,
+          "capacity": 5,
+          "supply": 7,
+          "breedSeconds": 100
+        }
+      ],
+      "hp": 1200
+    },
+    {
+      "id": "watchtower",
+      "footprint": [
+        1,
+        1
+      ],
+      "wood": 5,
+      "garrison": 2,
+      "rangeBonus": 3,
+      "hp": 1500
+    },
+    {
+      "id": "warden_lodge",
+      "footprint": [
+        3,
+        3
+      ],
+      "wood": 8,
+      "trains": "warden",
+      "hp": 2000,
+      "queueMax": 5
+    },
+    {
+      "id": "fire_lodge",
+      "footprint": [
+        3,
+        3
+      ],
+      "wood": 8,
+      "trains": "firecaller",
+      "hp": 2000,
+      "queueMax": 5
+    },
+    {
+      "id": "chant_house",
+      "footprint": [
+        3,
+        3
+      ],
+      "wood": 8,
+      "trains": "chanter",
+      "hp": 2000,
+      "queueMax": 5
+    },
+    {
+      "id": "shade_den",
+      "footprint": [
+        3,
+        3
+      ],
+      "wood": 8,
+      "trains": "shade",
+      "milestone": "backlog",
+      "hp": 2000,
+      "queueMax": 5
+    },
+    {
+      "id": "boathouse",
+      "footprint": [
+        3,
+        3
+      ],
+      "wood": 5,
+      "milestone": "backlog",
+      "hp": 1500
+    },
+    {
+      "id": "skyloft",
+      "footprint": [
+        3,
+        3
+      ],
+      "wood": 11,
+      "milestone": "backlog",
+      "hp": 1500
+    },
+    {
+      "id": "hearth",
+      "footprint": [
+        2,
+        2
+      ],
+      "wood": 0,
+      "respawnPoint": true,
+      "buildable": false,
+      "hp": 4000,
+      "destructible": true,
+      "rebuildable": false
+    }
+  ],
+  "construction": {
+    "flattenToAverage": true,
+    "workersPerSite": 4,
+    "buildSecondsPerWood": 2.5
+  },
+  "trees": {
+    "maxWood": 4,
+    "regrowSecondsPerWood": 68,
+    "regrowFromStumpSeconds": 330,
+    "chopSecondsPerWood": 3,
+    "spread": {
+      "enabled": true,
+      "chancePerMinute": 0.02
+    }
+  },
+  "worship": {
+    "shrinePrayerSeconds": 37.5,
+    "missingWorshipperSpeedFactor": 0.5
+  }
+}

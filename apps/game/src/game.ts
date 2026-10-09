@@ -5,6 +5,7 @@ import { validatePack, type ValidatedPack } from "@hearthfall/data";
 import { CAT, World, commandsByTick, createScenarioWorld, shaperIndex, wrapDelta, type Command, type ScenarioDef, type SimEvent } from "@hearthfall/sim";
 import { ThreeRenderer, type CameraState } from "@hearthfall/render";
 import { makeBot } from "@hearthfall/ai";
+import { spellSlot } from "@hearthfall/ui";
 
 const packFiles = import.meta.glob("../../../data/base/*.json", { eager: true, import: "default" });
 const scenarioFiles = import.meta.glob("../../../scenarios/*.json", { eager: true, import: "default" });
@@ -258,7 +259,7 @@ export class Game {
     this.cancelPlacing();
   }
 
-  /** Spells the local tribe can cast, in spell bar order (hotkeys Z X C V B N M). */
+  /** Spells the local tribe can cast, in spell bar order (hotkeys: SPELL_KEYS in @hearthfall/ui). */
   castable(): string[] {
     const w = this.world;
     const tr = w.tribes[this.localTribe];
@@ -366,9 +367,9 @@ export class Game {
         this.showHelp = !this.showHelp;
         this.onChange();
       }
-      const spellKey = ["z", "x", "c", "v", "b", "n", "m"].indexOf(k);
-      if (spellKey >= 0 && !e.ctrlKey && k !== "m") {
-        const sp = this.castable()[spellKey];
+      const slot = spellSlot(e);
+      if (slot >= 0) {
+        const sp = this.castable()[slot];
         if (sp) this.startTargeting(sp);
       }
       if (k === "backspace") this.command({ tribe: this.localTribe, type: "cancelCast", args: {} });
@@ -396,11 +397,7 @@ export class Game {
     window.addEventListener("keydown", (e) => {
       this.keys.add(e.key.toLowerCase());
       const k = e.key;
-      if (k === "m" && !e.shiftKey) this.renderer.setCamera({ map: !this.renderer.cam.map });
-      if (k === "m" && e.shiftKey) {
-        const sp = this.castable()[6];
-        if (sp) this.startTargeting(sp);
-      }
+      if (k === "m" && !e.shiftKey && !e.ctrlKey) this.renderer.setCamera({ map: !this.renderer.cam.map });
       if (k === " ") this.paused = !this.paused;
       const f = ["F1", "F2", "F3", "F4"].indexOf(k);
       if (f >= 0) {
@@ -479,7 +476,7 @@ export class Game {
       }),
       counts: { trees: w.count((i) => E.cat[i] === CAT.tree), wild: w.count((i) => E.cat[i] === CAT.unit && E.tribe[i] === -1), entities: E.count },
       terrainVersion: w.terrain.version,
-      render: { ...this.renderer.stats },
+      render: { ...this.renderer.stats, vfx: this.renderer.vfx.drawn() },
       camera: { ...this.renderer.cam },
       lastEvents: w.recent.slice(-20),
       warnings: [] as string[],

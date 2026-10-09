@@ -54,3 +54,8 @@ Reason: M5 review: charge steal takes a percentage of the total stored charge va
 Reason: M6 combat core: new entity columns (atk, cd, stance, mode, anchor, trance, chant, hitTick) are hashed; units now acquire and fight by stance; combat block added to the balance schema
 - spells_duel: final 97ada597 -> a7157576 (pack c7c5f12d)
 - terrain_ops_continents: final 7e6e82ec -> 911ea2a2 (pack c7c5f12d)
+
+## 2026-10-09 02:40 UTC
+Reason: BACKLOG 54: knockback edgeFalloff and building hp now required in the schema, queued casts carry their best distance (hashed) and drop with castFailed when unreachable
+- spells_duel: final a7157576 -> a7157576 (pack 3fd71882)
+- terrain_ops_continents: final 911ea2a2 -> 911ea2a2 (pack 3fd71882)

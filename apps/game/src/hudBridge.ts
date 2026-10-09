@@ -1,11 +1,10 @@
 // Builds the HUD view model from the Game each refresh and maps HUD intents to Commands.
-import { hudModel, mountHud, type HudModel, type SpellView } from "@hearthfall/ui";
+import { SPELL_KEYS, hudModel, mountHud, type HudModel, type SpellView } from "@hearthfall/ui";
 import "../../../packages/ui/src/hud.css";
 import { shaperIndex } from "@hearthfall/sim";
 import type { Game } from "./game.ts";
 import { drawMinimap } from "./minimap.ts";
 
-const SPELL_KEYS = ["Z", "X", "C", "V", "B", "N", "Shift+M"];
 const title = (id: string) => id.split("_").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
 
 export function hudFor(game: Game): HudModel {

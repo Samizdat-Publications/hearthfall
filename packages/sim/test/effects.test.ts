@@ -35,7 +35,7 @@ describe("effect primitives", () => {
   it("knockback moves units about `force` cells away from the blast", () => {
     const w = world({ generator: "flat", size: 64, tribes: 2 });
     const u = w.ents.index(w.spawnUnit("settler", 1, 30.5, 30));
-    applyEffects({ w, tribe: 0, spell: "bolt", x: 30, y: 30, casterX: 20, casterY: 30 }, [{ type: "knockback", radius: 2, force: 3 }]);
+    applyEffects({ w, tribe: 0, spell: "bolt", x: 30, y: 30, casterX: 20, casterY: 30 }, [{ type: "knockback", radius: 2, force: 3, edgeFalloff: 0.6 }]);
     w.run(10);
     const moved = w.ents.x[u] - 30.5;
     expect(moved).toBeGreaterThan(2);

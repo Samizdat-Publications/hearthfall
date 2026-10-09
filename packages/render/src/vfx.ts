@@ -72,6 +72,11 @@ export class VfxLayer {
     this.pools = add(new THREE.CircleGeometry(1, 20).rotateX(-Math.PI / 2), 0.45);
   }
 
+  /** Effect instances drawn in the last update (shot checks: spell shots must show their VFX). */
+  drawn(): number {
+    return this.flashes.count + this.rings.count + this.beams.count + this.swarm.count + this.pools.count;
+  }
+
   /** Turn sim events into transient effects at visual time `now`. */
   consume(events: readonly SimEvent[], w: World, timeOf: (e: SimEvent) => number, heightScale: number): void {
     const t = w.terrain;

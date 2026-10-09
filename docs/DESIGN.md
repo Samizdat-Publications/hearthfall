@@ -144,7 +144,7 @@ Composable from effect primitives (see `docs/ARCHITECTURE.md` section 6). Range 
 
 Anti-degenerate rules (fixes from the original's banned-spell meta): every powerful spell has a counter (Ward is popped by Lightning; Mire is visible; Beguile breaks when the caster dies), plus optional per-spell cooldowns in data.
 
-Spell UX: hover shows exact area preview on the curved terrain, range ring around the Shaper, red if out of range; right click or Esc cancels; a 1 s "undo" on misclick refunds the charge if the cast has not resolved. As built (M5): spell bar click or hotkeys Z X C V B N and Shift+M (M stays the map view) enter targeting; left click casts (out of range the Shaper walks there first); Backspace undoes within the cast window; right click on a spell button toggles auto-charge.
+Spell UX: hover shows exact area preview on the curved terrain, range ring around the Shaper, red if out of range; right click or Esc cancels; a 1 s "undo" on misclick refunds the charge if the cast has not resolved. As built (M5): spell bar click or hotkeys Z X C V B N, Shift+M and Shift+N (M stays the map view; one table, SPELL_KEYS in packages/ui) enter targeting; left click casts (out of range the Shaper walks there first; if she stops without getting closer the queued cast is dropped with `castFailed` and no charge is spent); Backspace undoes within the cast window; right click on a spell button toggles auto-charge.
 
 ## 10. Worship objects
 
@@ -166,7 +166,7 @@ Spell UX: hover shows exact area preview on the curved terrain, range ring aroun
 - Camera orbits a focus point on the surface: rotate 360 (Q/E or middle drag), zoom from close-up to globe view (wheel), pan with arrow keys, screen edge, or Ctrl + middle drag, double-tap a group key to jump. Four bookmark slots (F1 to F4). Map view toggle (M).
 - Selection: click, box select that works on the curved surface, double-click selects all of that type on screen, control groups 1 to 9, tab cycles unit types in selection.
 - Orders: right click move/attack/garrison/worship, attack-move (A), stances (aggressive, defensive, hold), formations for groups, rally points on lodges, queued orders (Shift), "retreat to nearest tower" (R).
-- Shaper: hotkey S selects and centers her. Spells on Z X C V B N M (in spell bar order) or click the HUD. No Alt chords (a lone Alt press steals focus in Chrome on Windows).
+- Shaper: hotkey S selects and centers her. Spells on Z X C V B N, Shift+M, Shift+N (in spell bar order) or click the HUD. No Alt chords (a lone Alt press steals focus in Chrome on Windows).
 - Settlers are mostly autonomous with a tribe-wide priority panel (build / chop / breed / pray), so the player manages intent, not individuals. As built (M4): toggles Build, Upgrade, Breed in the resource panel; chopping happens on demand for sites and upgrades; D places a dwelling plan (Z X C V B N M stay reserved for spells).
 
 ## 13. AI opponents

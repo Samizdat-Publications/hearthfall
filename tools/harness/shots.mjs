@@ -114,6 +114,10 @@ export async function captureSet(set, { onlyIds } = {}) {
           if (remeshed < lo || remeshed > hi) fail(`remeshed ${remeshed} chunks, expected ${lo}..${hi}`);
           if (after.render.fullRebuilds !== before.fullRebuilds) fail("terrain edit triggered a full rebuild");
         }
+        if (shot.expectVfx) {
+          res.checks.vfx = after.render.vfx ?? 0;
+          if (res.checks.vfx < shot.expectVfx) fail(`vfx: ${res.checks.vfx} effect instances drawn, expected at least ${shot.expectVfx}`);
+        }
         const path = SHOT_DIR + shot.id + ".png";
         await page.screenshot({ path });
         res.checks.dom = await page.evaluate(domCheckFn);

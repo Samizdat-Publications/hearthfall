@@ -26,7 +26,8 @@
         {
           "type": "knockback",
           "radius": 2,
-          "force": 3
+          "force": 3,
+          "edgeFalloff": 0.6
         }
       ]
     },
@@ -254,6 +255,7 @@
           "type": "terrainOp",
           "op": "lowerTowardSea",
           "radius": 6,
+          "depth": 12,
           "seconds": 10
         }
       ]

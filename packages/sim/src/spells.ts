@@ -21,6 +21,8 @@ export interface PendingCast {
   spell: number;
   x: number;
   y: number;
+  /** distance to the target when the Shaper was last ordered there; a stop without progress drops the cast */
+  best: number;
 }
 
 const finite = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v);
@@ -72,7 +74,7 @@ registerCommand("cast", {
     const si = shaperIndex(w, c.tribe);
     if (distTo(w, si, x, y) <= w.cfg.pack.spells.spells[s].range) beginCast(w, c.tribe, s, x, y);
     else {
-      w.tribes[c.tribe].pending = { spell: s, x, y };
+      w.tribes[c.tribe].pending = { spell: s, x, y, best: distTo(w, si, x, y) };
       w.units.order([si], x, y);
       w.emit("castQueued", { tribe: c.tribe, spell: w.cfg.pack.spells.spells[s].id });
     }
@@ -127,7 +129,17 @@ export function updateSpells(w: World): void {
       const p = t.pending;
       if (t.eco.charges[p.spell] <= 0) t.pending = null;
       else if (distTo(w, si, p.x, p.y) <= spells[p.spell].range) beginCast(w, t.index, p.spell, p.x, p.y);
-      else if (w.ents.order[si] === ORDER.none) w.units.order([si], p.x, p.y);
+      else if (w.ents.order[si] === ORDER.none) {
+        // she stopped short: walk on while each leg gets closer, else the target is unreachable
+        const d = distTo(w, si, p.x, p.y);
+        if (d < p.best - 0.5) {
+          p.best = d;
+          w.units.order([si], p.x, p.y);
+        } else {
+          t.pending = null;
+          w.emit("castFailed", { tribe: t.index, spell: spells[p.spell].id, reason: "unreachable" });
+        }
+      }
     }
     // resolve
     if (t.casting && w.tick >= t.casting.resolveAt) {
@@ -169,7 +181,8 @@ export function onShaperDeath(w: World, tribe: number, drowned: boolean, killer:
   const t = w.tribes[tribe];
   if (!t) return;
   const def = w.cfg.pack.units.units[w.cfg.unitIndex.get("shaper")!];
-  const secs = drowned ? (def.respawn?.drownedSeconds ?? 26) : (def.respawn?.seconds ?? 35);
+  if (!def.respawn) throw new Error("the Shaper needs respawn timings (units.json)");
+  const secs = drowned ? def.respawn.drownedSeconds : def.respawn.seconds;
   t.respawnAt = w.tick + secondsToTicks(secs, w.cfg.tickHz);
   t.shaper = NO_ENTITY;
   t.casting = null;

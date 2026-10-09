@@ -246,7 +246,7 @@ export const BuildingSchema = z.strictObject({
   queueMax: z.number().int().positive().optional(),
   respawnPoint: z.boolean().optional(),
   buildable: z.boolean().optional(),
-  hp: pos.optional(),
+  hp: pos,
   destructible: z.boolean().optional(),
   rebuildable: z.boolean().optional(),
   milestone: z.string().optional(),
@@ -274,7 +274,8 @@ export type BuildingsFile = z.infer<typeof BuildingsFileSchema>;
 // ---------------------------------------------------------------- spells.json (effect primitives)
 const Effect = z.discriminatedUnion("type", [
   z.strictObject({ type: z.literal("damageRadius"), radius: pos, damage: pos, downhillBonusPct: z.number().optional(), canKill: z.array(id).optional() }),
-  z.strictObject({ type: z.literal("knockback"), radius: pos, force: pos }),
+  /** edgeFalloff: share of the force lost at the rim (0 = same push everywhere) */
+  z.strictObject({ type: z.literal("knockback"), radius: pos, force: pos, edgeFalloff: z.number().min(0).max(1) }),
   z.strictObject({ type: z.literal("convertRadius"), radius: pos, max: z.number().int().positive(), excludes: z.array(id).optional(), targets: z.array(id).optional() }),
   z.strictObject({ type: z.literal("areaOverTime"), radius: pos, seconds: pos, damagePerSecond: pos }),
   z.strictObject({

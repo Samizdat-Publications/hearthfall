@@ -128,7 +128,8 @@
         },
         "required": [
           "id",
-          "footprint"
+          "footprint",
+          "hp"
         ],
         "additionalProperties": false
       }

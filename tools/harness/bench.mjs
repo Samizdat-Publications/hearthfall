@@ -6,13 +6,14 @@ import { World } from "../../packages/sim/src/world.ts";
 import { Rng } from "../../packages/sim/src/rng.ts";
 import { walkableComponents } from "../../packages/sim/src/generator.ts";
 import { makeBot } from "../../packages/ai/src/index.ts";
+import { applyEffects } from "../../packages/sim/src/effects.ts";
 import { loadBasePack } from "./datapack.mjs";
 import { ROOT, writeReport } from "./lib.mjs";
 
 // ARCHITECTURE section 9 budgets fail the bench. The two spike measures added at the M3 review (tick
 // right after a quake under 2000 moving units, ten group orders in one tick) warn above 20 ms and
 // fail above 40 ms, because wall-clock maxima on this often fully loaded PC are noisy.
-const BUDGET = { tickAvgMs: 8, tickP99Ms: 20, terrainOpMs: 2, afterTerrainOpMs: 40, groupOrdersMs: 40 };
+const BUDGET = { tickAvgMs: 8, tickP99Ms: 20, terrainOpMs: 2, afterTerrainOpMs: 40, groupOrdersMs: 40, spellStormMs: 40 };
 const SPIKE_WARN = 20;
 const BASE = ROOT + "reports/baselines/bench.json";
 
@@ -130,11 +131,34 @@ export default async function benchCmd(out, _cmd, args) {
     for (let g = 0; g < 10; g++) out.push({ tick: 0, tribe: 0, type: "move", args: { units: ids.slice(g * 20, g * 20 + 20), to: [(g * 13 + 5) % 128, (g * 29 + 7) % 128] } });
     return out;
   });
+  // E: spell storm (BACKLOG 54): every v1 spell's effects applied by both tribes at once, spread over
+  // the map, then the worst of the next 100 ticks while swarms, pools and burning run (fastest of 3).
+  const v1 = pack.files.spells.spells.filter((s) => s.v1);
+  let spellStorm = Infinity;
+  for (let rep = 0; rep < 3; rep++) {
+    const ww = World.restore(init, snap);
+    ww.step([]);
+    v1.forEach((s, k) => {
+      for (let tr = 0; tr < 2; tr++) {
+        const x = (k * 16 + tr * 64 + 8) % 128;
+        const y = (k * 23 + tr * 40 + 8) % 128;
+        applyEffects({ w: ww, tribe: tr, spell: s.id, x, y, casterX: (x + 4) % 128, casterY: y }, s.effects);
+      }
+    });
+    let mx = 0;
+    for (let k = 0; k < 100; k++) {
+      const t0 = performance.now();
+      ww.step([]);
+      mx = Math.max(mx, performance.now() - t0);
+    }
+    spellStorm = Math.min(spellStorm, mx);
+  }
   const m = {
     units: w.count((i) => w.ents.cat[i] === 3),
     rawP99Ms: +median(rawP99s).toFixed(3),
     afterTerrainOpMs: +afterOp.toFixed(3),
     groupOrdersMs: +groupOrders.toFixed(3),
+    spellStormMs: +spellStorm.toFixed(3),
     // gated average: mean of each tick's fastest replay (same noise filter as the p99); raw is informational
     tickAvgMs: +(best.reduce((x, y) => x + y, 0) / best.length).toFixed(3),
     rawAvgMs: +median(avgs).toFixed(3),
@@ -144,7 +168,7 @@ export default async function benchCmd(out, _cmd, args) {
   m.noiseRatio = +noise.toFixed(2);
   // on a visibly busy machine the two spike measures (not ARCHITECTURE budgets) only warn
   const noisy = noise > 2;
-  const fails = Object.entries(BUDGET).filter(([k, b]) => m[k] > b && !(noisy && (k === "afterTerrainOpMs" || k === "groupOrdersMs")));
+  const fails = Object.entries(BUDGET).filter(([k, b]) => m[k] > b && !(noisy && (k === "afterTerrainOpMs" || k === "groupOrdersMs" || k === "spellStormMs")));
   if (noisy) out.line(`NOTE machine noise ratio ${m.noiseRatio} (other processes busy): spike measures reported as warnings only`);
   const base = existsSync(BASE) ? JSON.parse(readFileSync(BASE, "utf8")) : null;
   const warns = base ? Object.keys(BUDGET).filter((k) => base[k] && m[k] > base[k] * 1.35) : [];
@@ -152,8 +176,9 @@ export default async function benchCmd(out, _cmd, args) {
   writeReport("bench.json", { metrics: m, budget: BUDGET, baseline: base, warns, runs: { avgs, p99s } });
   out.line(`2000-unit wander: avg ${m.tickAvgMs} ms (budget ${BUDGET.tickAvgMs}), p99 ${m.tickP99Ms} ms (budget ${BUDGET.tickP99Ms}), units alive ${m.units}`);
   out.line(`quake r8 + path invalidation: ${m.terrainOpMs} ms (budget ${BUDGET.terrainOpMs}); worst tick after it ${m.afterTerrainOpMs} ms; 10 group orders ${m.groupOrdersMs} ms (target 20, fail 40)`);
+  out.line(`spell storm (${v1.length} v1 spells x 2 tribes at once): worst tick ${m.spellStormMs} ms (target 20, fail 40)`);
   out.line(`raw wall-clock p99 ${m.rawP99Ms} ms (informational: includes OS preemption and GC pauses on this machine)`);
   for (const k of warns) out.line(`WARN ${k} regressed: ${m[k]} vs baseline ${base[k]}`);
-  for (const k of ["afterTerrainOpMs", "groupOrdersMs"]) if (m[k] > SPIKE_WARN) out.line(`WARN ${k} ${m[k]} ms above the ${SPIKE_WARN} ms target`);
+  for (const k of ["afterTerrainOpMs", "groupOrdersMs", "spellStormMs"]) if (m[k] > SPIKE_WARN) out.line(`WARN ${k} ${m[k]} ms above the ${SPIKE_WARN} ms target`);
   return out.finish(fails.length ? "FAIL" : "PASS", fails.length ? `${fails.length} budget(s) exceeded: ${fails.map(([k]) => k).join(", ")}` : "");
 }

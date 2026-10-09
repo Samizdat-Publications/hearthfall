@@ -598,7 +598,7 @@ export class EconomySystem {
         if (E.progress[s] >= total) {
           E.state[s] = BSTATE.done;
           const def = bdefs.buildings[E.type[s]];
-          E.hp[s] = def.hp ?? 1000;
+          E.hp[s] = def.hp;
           E.wood[s] = 0;
           E.progress[s] = 0;
           if (E.type[s] === this.typeDwelling) E.level[s] = 1;

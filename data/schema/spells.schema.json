@@ -129,12 +129,18 @@
                     "force": {
                       "type": "number",
                       "minimum": 0
+                    },
+                    "edgeFalloff": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
                     }
                   },
                   "required": [
                     "type",
                     "radius",
-                    "force"
+                    "force",
+                    "edgeFalloff"
                   ],
                   "additionalProperties": false
                 },
@@ -581,12 +587,18 @@
                     "force": {
                       "type": "number",
                       "minimum": 0
+                    },
+                    "edgeFalloff": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
                     }
                   },
                   "required": [
                     "type",
                     "radius",
-                    "force"
+                    "force",
+                    "edgeFalloff"
                   ],
                   "additionalProperties": false
                 },
