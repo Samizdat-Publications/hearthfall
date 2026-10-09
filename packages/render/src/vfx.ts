@@ -6,7 +6,7 @@ import { CAT, type SimEvent, type World } from "@hearthfall/sim";
 import { bendMaterial, type BendUniforms } from "./curve.ts";
 
 interface Fx {
-  kind: "flash" | "ring" | "beam" | "spark";
+  kind: "flash" | "ring" | "beam" | "spark" | "halo";
   x: number;
   z: number;
   y: number;
@@ -47,6 +47,8 @@ export class VfxLayer {
   private beams: THREE.InstancedMesh;
   private swarm: THREE.InstancedMesh;
   private pools: THREE.InstancedMesh;
+  /** Normal-blended rings (M11): colors that must keep their hue on bright ground (chant violet, melee dust). */
+  private halos: THREE.InstancedMesh;
   private readonly m = new THREE.Matrix4();
   private readonly q = new THREE.Quaternion();
   private readonly s = new THREE.Vector3();
@@ -55,8 +57,8 @@ export class VfxLayer {
   private seq = 0;
 
   constructor(bend: BendUniforms, cap = 512) {
-    const add = (geo: THREE.BufferGeometry, opacity = 1) => {
-      const mat = bendMaterial(new THREE.MeshBasicMaterial({ color: "#ffffff", transparent: true, opacity, blending: THREE.AdditiveBlending, depthWrite: false }), bend);
+    const add = (geo: THREE.BufferGeometry, opacity = 1, blending: THREE.Blending = THREE.AdditiveBlending) => {
+      const mat = bendMaterial(new THREE.MeshBasicMaterial({ color: "#ffffff", transparent: true, opacity, blending, depthWrite: false }), bend);
       const im = new THREE.InstancedMesh(geo, mat, cap);
       im.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(cap * 3), 3);
       im.frustumCulled = false;
@@ -70,11 +72,24 @@ export class VfxLayer {
     this.beams = add(new THREE.CylinderGeometry(0.05, 0.16, 1, 6).translate(0, 0.5, 0));
     this.swarm = add(new THREE.OctahedronGeometry(0.08));
     this.pools = add(new THREE.CircleGeometry(1, 20).rotateX(-Math.PI / 2), 0.45);
+    this.halos = add(new THREE.RingGeometry(0.78, 1, 32).rotateX(-Math.PI / 2), 0.85, THREE.NormalBlending);
   }
 
   /** Effect instances drawn in the last update (shot checks: spell shots must show their VFX). */
   drawn(): number {
-    return this.flashes.count + this.rings.count + this.beams.count + this.swarm.count + this.pools.count;
+    return this.flashes.count + this.rings.count + this.beams.count + this.swarm.count + this.pools.count + this.halos.count;
+  }
+
+  /** Drawn instances per kind in the last update (render tests). */
+  drawnBy(): { halo: number; ring: number; spark: number; flash: number } {
+    return { halo: this.halos.count, ring: this.rings.count, spark: this.swarm.count, flash: this.flashes.count };
+  }
+
+  /** Color of a drawn halo instance (render tests). */
+  haloColor(k: number): THREE.Color {
+    const c = new THREE.Color();
+    this.halos.getColorAt(k, c);
+    return c;
   }
 
   /** Turn sim events into transient effects at visual time `now`. */
@@ -109,6 +124,7 @@ export class VfxLayer {
         const fx = Number(e.fx ?? x);
         const fy = Number(e.fy ?? y);
         const col = new THREE.Color("#ff7a2e");
+        const glow = new THREE.Color("#ff7a2e").multiplyScalar(0.55);
         const n = w.terrain.size;
         let dx = x - fx;
         let dy = y - fy;
@@ -124,19 +140,28 @@ export class VfxLayer {
           const pz = fy + dy * q;
           const lift = 1.6 * 4 * q * (1 - q);
           this.fx.push({ kind: "spark", x: px, z: pz, y: ground(px, pz) + 0.5 + lift, t0: now + q * flight, dur: 0.16, size: 0.45, color: col });
+          this.fx.push({ kind: "flash", x: px, z: pz, y: ground(px, pz) + 0.5 + lift, t0: now + q * flight, dur: 0.22, size: 0.22, color: glow });
         }
         this.fx.push({ kind: "flash", x, z: y, y: ground(x, y) + 0.4, t0: now + flight, dur: 0.35, size: 1, color: col });
         this.fx.push({ kind: "ring", x, z: y, y: ground(x, y) + 0.1, t0: now + flight, dur: 0.6, size: 1.2, color: col });
       } else if (e.type === "chantBegun" && Number.isFinite(x)) {
         // M6: pulsing rings for the length of the channel (balance-free: 4 pulses over about 4 s)
-        const col = new THREE.Color("#c39bff");
-        for (let k = 0; k < 4; k++) this.fx.push({ kind: "ring", x, z: y, y: ground(x, y) + 0.1, t0: now + k, dur: 1, size: 3, color: col });
+        const col = new THREE.Color("#c39bff").multiplyScalar(0.5);
+        const violet = new THREE.Color("#8a3cff");
+        for (let k = 0; k < 4; k++) {
+          this.fx.push({ kind: "halo", x, z: y, y: ground(x, y) + 0.11, t0: now + k, dur: 1, size: 2.6, color: violet });
+          this.fx.push({ kind: "ring", x, z: y, y: ground(x, y) + 0.1, t0: now + k, dur: 1, size: 3, color: col });
+        }
       } else if (e.type === "chantInterrupted" || e.type === "melee") {
         const id = Number(e.id ?? NaN);
         const i = e.type === "melee" ? -1 : Number.isFinite(id) ? w.ents.index(id) : -1;
         const px = i >= 0 ? w.ents.x[i] : x;
         const pz = i >= 0 ? w.ents.y[i] : y;
         if (Number.isFinite(px)) this.fx.push({ kind: "spark", x: px, z: pz, y: ground(px, pz) + 0.5, t0: now, dur: 0.3, size: e.type === "melee" ? 0.4 : 0.5, color: new THREE.Color(e.type === "melee" ? "#f2e6c8" : "#8a8378") });
+        if (e.type === "melee" && Number.isFinite(px)) {
+          this.fx.push({ kind: "halo", x: px, z: pz, y: ground(px, pz) + 0.08, t0: now, dur: 0.45, size: 0.7, color: new THREE.Color("#c8b48a") });
+          this.fx.push({ kind: "flash", x: px, z: pz, y: ground(px, pz) + 0.55, t0: now, dur: 0.18, size: 0.3, color: new THREE.Color("#fff2d0") });
+        }
       } else if ((e.type === "drowned" || e.type === "flooded") && Number.isFinite(x)) {
         this.fx.push({ kind: "ring", x, z: y, y: t.sea * heightScale + 0.05, t0: now, dur: 1.2, size: 1.2, color: new THREE.Color("#e6f4f8") });
         this.fx.push({ kind: "flash", x, z: y, y: t.sea * heightScale + 0.2, t0: now, dur: 0.4, size: 0.5, color: new THREE.Color("#e6f4f8") });
@@ -165,8 +190,8 @@ export class VfxLayer {
     const n = w.terrain.size;
     const wrapX = (x: number) => focusX + (x - focusX - Math.round((x - focusX) / n) * n);
     const wrapZ = (z: number) => focusZ + (z - focusZ - Math.round((z - focusZ) / n) * n);
-    const counts = { flash: 0, ring: 0, beam: 0, spark: 0 };
-    const target = { flash: this.flashes, ring: this.rings, beam: this.beams, spark: this.swarm };
+    const counts = { flash: 0, ring: 0, beam: 0, spark: 0, halo: 0 };
+    const target = { flash: this.flashes, ring: this.rings, beam: this.beams, spark: this.swarm, halo: this.halos };
     this.fx = this.fx.filter((f) => now - f.t0 < f.dur);
     for (const f of this.fx) {
       const a = (now - f.t0) / f.dur;
@@ -180,6 +205,7 @@ export class VfxLayer {
       let y = f.y;
       if (f.kind === "flash") sx = sy = f.size * (0.4 + 0.8 * a);
       else if (f.kind === "ring") sx = sy = f.size * (0.2 + 0.9 * a);
+      else if (f.kind === "halo") sx = sy = f.size * (0.35 + 0.75 * a);
       else if (f.kind === "beam") {
         sx = 1 + 0.5 * fade;
         sy = f.size;
@@ -191,7 +217,8 @@ export class VfxLayer {
       this.s.set(sx, f.kind === "beam" ? sy : sx, sx);
       this.m.compose(this.p, this.q.identity(), this.s);
       im.setMatrixAt(k, this.m);
-      im.setColorAt(k, this.c.copy(f.color).multiplyScalar(fade * (f.kind === "beam" ? 0.9 : 1)));
+      const level = f.kind === "halo" ? 0.55 + 0.45 * fade : fade * (f.kind === "beam" ? 0.9 : 1);
+      im.setColorAt(k, this.c.copy(f.color).multiplyScalar(level));
     }
     // persistent effect entities: hornet swarms (buzzing dots) and lava pools (pulsing discs)
     const E = w.ents;

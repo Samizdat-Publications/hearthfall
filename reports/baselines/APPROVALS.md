@@ -32,3 +32,6 @@
 - 2026-10-09T12:23 set smoke (12 shots): M11: tribe discs under units, larger Shaper, lighter tree models; contact sheet reviewed
 - 2026-10-09T12:27 set spells (8 shots): M11: tribe discs under units, larger Shaper; contact sheet reviewed
 - 2026-10-09T12:31 set combat (3 shots): M11: tribe discs under units, larger Shaper; contact sheet reviewed
+- 2026-10-09T12:47 set combat (3 shots): M11: tribe rings instead of filled discs, violet chant halo, melee dust and flash (BACKLOG 57); sheet reviewed
+- 2026-10-09T12:51 set smoke (12 shots): M11: tribe rings instead of filled discs; close shot reviewed
+- 2026-10-09T12:55 set spells (8 shots): M11: tribe rings instead of filled discs (within tolerance, rebaselined to keep diffs exact)

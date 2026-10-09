@@ -64,7 +64,7 @@ function kindGeometry(id: string, pal: Record<string, string>): KindGeo {
   }
 }
 
-/** tribe disc radius under each unit (before the readability scale), and the Shaper's extra sizes */
+/** tribe ring (an annulus, so it never reads as a blood pool) under each unit: outer radius (before the readability scale), and the Shaper's extra sizes */
 export const DISC_RADIUS = 0.26;
 const SHAPER_SCALE = 1.2;
 const SHAPER_DISC = 1.5;
@@ -117,7 +117,7 @@ export class UnitLayer {
       this.kinds.push({ body, detail });
       this.kindScale.push(id === "shaper" ? SHAPER_SCALE : 1);
     }
-    const discGeo = colored(new THREE.CircleGeometry(DISC_RADIUS, 12).rotateX(-Math.PI / 2), new THREE.Color("#ffffff"));
+    const discGeo = colored(new THREE.RingGeometry(DISC_RADIUS * 0.58, DISC_RADIUS, 16).rotateX(-Math.PI / 2), new THREE.Color("#ffffff"));
     this.disc = new THREE.InstancedMesh(discGeo, material, cap);
     this.disc.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(cap * 3), 3);
     this.disc.frustumCulled = false;
