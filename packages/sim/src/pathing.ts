@@ -4,7 +4,7 @@
 // - Dijkstra flow fields for group orders to one target, cached until the terrain changes.
 // - Spatial hash (2x2 cell buckets) rebuilt each tick in entity-index order for separation.
 // Everything is deterministic: ties break on node index, buckets fill in index order.
-import type { Terrain } from "./terrain.ts";
+import { wrapDelta, type Terrain } from "./terrain.ts";
 
 const SQRT2 = 1.4142135623730951;
 const DX = [1, -1, 0, 0, 1, 1, -1, -1];
@@ -266,6 +266,13 @@ export class Pathfinder {
     const fail = (expanded: number): PathResult => ({ ok: false, waypoints: new Int32Array(0), expanded });
     if (!this.walk[start] || !this.walk[goal] || this.comp[start] !== this.comp[goal]) return fail(0);
     if (start === goal) return { ok: true, waypoints: new Int32Array(0), expanded: 0 };
+    // open ground: a clear straight line needs no search (most combat re-paths in a battle); the
+    // line's length in cells is charged as its work so the per-tick budget still bounds a burst
+    if (this.lineWalkable(start, goal)) {
+      const lx = Math.abs(wrapDelta((goal % n) - (start % n), n));
+      const ly = Math.abs(wrapDelta(Math.floor(goal / n) - Math.floor(start / n), n));
+      return { ok: true, waypoints: Int32Array.of(goal), expanded: Math.ceil(Math.max(lx, ly)) };
+    }
     const gen = ++this.gen;
     const heap = this.heap;
     heap.clear();

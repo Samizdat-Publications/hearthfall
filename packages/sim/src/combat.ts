@@ -33,6 +33,12 @@ export class CombatSystem {
   /** per building type: trained unit type (-1 none), garrison slots */
   private readonly trains: number[] = [];
   private readonly garrisonSlots: number[] = [];
+  /** alive building indices, refreshed at the start of each update */
+  private readonly buildings: number[] = [];
+  /** units per tribe per coarse cell (4 x 4 spatial hash buckets), built from the hash chains each
+   * update so acquire skips its bucket scan exactly when no enemy can be in it */
+  private tribeGrid = new Int32Array(0);
+  private gridC = 0;
   private readonly typeWild: number;
   private readonly chantTicks: number;
   private readonly chantCool: number;
@@ -160,21 +166,25 @@ export class CombatSystem {
     const y = E.y[i];
     const pref = this.prefers[E.type[i]];
     const bonus = w.cfg.pack.balance.combat.preferTargetBonus;
+    const tr = E.tribe[i];
     let br = Math.ceil(r / H.bs) + 1;
     if (2 * br + 1 > c) br = (c - 1) >> 1;
     const bx = ((Math.floor(x / H.bs) % c) + c) % c;
     const by = ((Math.floor(y / H.bs) % c) + c) % c;
     let best = -1;
     let bestScore = Infinity;
-    for (let oy = -br; oy <= br; oy++) {
+    const scan = this.enemyInBuckets(tr, bx, by, br);
+    for (let oy = -br; scan && oy <= br; oy++) {
       for (let ox = -br; ox <= br; ox++) {
         const b = ((bx + ox + c * 4) % c) + ((by + oy + c * 4) % c) * c;
         for (let j = H.head[b]; j !== -1; j = H.next[j]) {
-          if (!this.validTarget(i, j)) continue;
+          // cheap rejections first (friends and out of range), the full check last
+          const tj = E.tribe[j];
+          if (tj < 0 || tj === tr) continue;
           const dx = wrapDelta(E.x[j] - x, n);
           const dy = wrapDelta(E.y[j] - y, n);
           const d = Math.sqrt(dx * dx + dy * dy);
-          if (d > r || d < minR) continue;
+          if (d > r || d < minR || !this.validTarget(i, j)) continue;
           const s = d - (pref.has(E.type[j]) ? bonus : 0);
           if (s < bestScore || (s === bestScore && j < best)) {
             bestScore = s;
@@ -184,8 +194,8 @@ export class CombatSystem {
       }
     }
     if (best >= 0 || this.kind[E.type[i]] === KIND.chanter) return best;
-    for (let j = 0; j < E.hi; j++) {
-      if (!E.alive[j] || E.cat[j] !== CAT.building || !this.validTarget(i, j)) continue;
+    for (const j of this.buildings) {
+      if (!E.alive[j] || !this.validTarget(i, j)) continue;
       const d = this.dist(i, E.x[j], E.y[j]) - this.halfSize(j);
       if (d <= r && d < bestScore) {
         bestScore = d;
@@ -193,6 +203,46 @@ export class CombatSystem {
       }
     }
     return best;
+  }
+
+  private buildTribeGrid(): void {
+    const w = this.w;
+    const E = w.ents;
+    const H = w.units.hash;
+    const c = H.cols;
+    const C = (c + 3) >> 2;
+    const T = w.tribes.length;
+    if (this.tribeGrid.length !== C * C * T) this.tribeGrid = new Int32Array(C * C * T);
+    else this.tribeGrid.fill(0);
+    this.gridC = C;
+    for (let b = 0; b < c * c; b++) {
+      const cell = ((b % c) >> 2) + (Math.floor(b / c) >> 2) * C;
+      for (let j = H.head[b]; j !== -1; j = H.next[j]) {
+        const t = E.tribe[j];
+        if (t >= 0 && t < T) this.tribeGrid[t * C * C + cell]++;
+      }
+    }
+  }
+
+  /** Could a unit of a tribe other than tr sit in the (2 br + 1)^2 buckets around (bx, by)? */
+  private enemyInBuckets(tr: number, bx: number, by: number, br: number): boolean {
+    const c = this.w.units.hash.cols;
+    const C = this.gridC;
+    const T = this.w.tribes.length;
+    let lastY = -1;
+    for (let oy = -br; oy <= br; oy++) {
+      const cy = ((((by + oy) % c) + c) % c) >> 2;
+      if (cy === lastY) continue;
+      lastY = cy;
+      let lastX = -1;
+      for (let ox = -br; ox <= br; ox++) {
+        const cx = ((((bx + ox) % c) + c) % c) >> 2;
+        if (cx === lastX) continue;
+        lastX = cx;
+        for (let t = 0; t < T; t++) if (t !== tr && this.tribeGrid[t * C * C + cx + cy * C] > 0) return true;
+      }
+    }
+    return false;
   }
 
   /** End a chant early (ranged hit, spell, knockback, terrain change, new order). */
@@ -258,9 +308,14 @@ export class CombatSystem {
     const hz = w.cfg.tickHz;
     const units = w.cfg.pack.units.units;
     const retarget = secondsToTicks(cb.retargetSeconds, hz);
+    const idleScan = secondsToTicks(cb.idleAcquireSeconds, hz);
     const giveUp = secondsToTicks(w.cfg.pack.balance.movement.giveUpSeconds, hz);
     this.updateShapers();
     this.updateTrainingAndGarrisons();
+    // building indices, ascending, for acquire's fallback scan (a few dozen against thousands of units)
+    this.buildings.length = 0;
+    for (let j = 0; j < E.hi; j++) if (E.alive[j] && E.cat[j] === CAT.building) this.buildings.push(j);
+    this.buildTribeGrid();
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.unit) continue;
       if (E.cd[i] > 0) E.cd[i]--;
@@ -296,7 +351,9 @@ export class CombatSystem {
         E.stuck[i] = 0;
         t = -1;
       }
-      if (E.mode[i] !== CMODE.forced && (t < 0 || (w.tick + i) % retarget === 0)) {
+      // engaged units re-acquire at once when their target is lost; idle and marching ones every idleScan ticks
+      const engaged = E.atk[i] !== NO_ENTITY || E.mode[i] !== CMODE.none;
+      if (E.mode[i] !== CMODE.forced && ((t < 0 && (engaged || (w.tick + i) % idleScan === 0)) || (w.tick + i) % retarget === 0)) {
         const attackMoving = E.order[i] === ORDER.attackMove || E.mode[i] === CMODE.attackMove;
         const idle = E.order[i] === ORDER.none || E.mode[i] === CMODE.guard;
         let r = -1;

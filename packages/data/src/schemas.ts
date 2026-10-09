@@ -87,6 +87,8 @@ export const BalanceSchema = z.strictObject({
     acquireRadius: pos,
     leashRadius: pos,
     retargetSeconds: pos,
+    /** units not engaged (no target, no combat mode) look for enemies only this often (a 2000-unit battle stays in budget) */
+    idleAcquireSeconds: pos,
     chaseRepathSeconds: pos,
     /** body radius added to attack ranges on both sides */
     unitRadius: z.number().nonnegative(),

@@ -13,7 +13,7 @@ import { ROOT, writeReport } from "./lib.mjs";
 // ARCHITECTURE section 9 budgets fail the bench. The two spike measures added at the M3 review (tick
 // right after a quake under 2000 moving units, ten group orders in one tick) warn above 20 ms and
 // fail above 40 ms, because wall-clock maxima on this often fully loaded PC are noisy.
-const BUDGET = { tickAvgMs: 8, tickP99Ms: 20, terrainOpMs: 2, afterTerrainOpMs: 40, groupOrdersMs: 40, spellStormMs: 40 };
+const BUDGET = { tickAvgMs: 8, tickP99Ms: 20, terrainOpMs: 2, afterTerrainOpMs: 40, groupOrdersMs: 40, spellStormMs: 40, battleAvgMs: 8, battleP99Ms: 20 };
 const SPIKE_WARN = 20;
 const BASE = ROOT + "reports/baselines/bench.json";
 
@@ -36,6 +36,31 @@ function populated(pack, units, seed = 77) {
     w.controllers.push(makeBot({ type: "wander", tribe: tr, every: 1, offset: 0, spread: 20, chance: 0.4 }));
   }
   return w;
+}
+
+/**
+ * F (M6): 2000 units mid-battle, the ARCHITECTURE section 9 row. Flat 128 map, 1000 troops per tribe
+ * (half Wardens, a quarter each Firecallers and Chanters) in 32 x 32 blocks 20 cells apart,
+ * attack-moving through each other; Hearths and Shapers sit far away so nobody is eliminated.
+ */
+function battle(pack) {
+  const init = { pack: pack.files, packHash: pack.hash, seed: 91, map: { generator: "flat", size: 128, tribes: 2 } };
+  const w = new World(init);
+  const cmds = [];
+  for (let tr = 0; tr < 2; tr++) {
+    w.spawnBuilding("hearth", tr, 10 + tr * 64, 10);
+    w.spawnUnit("shaper", tr, 14 + tr * 64, 14);
+    const x0 = tr === 0 ? 20 : 72;
+    const ids = [];
+    for (let k = 0; k < 1000; k++) {
+      const kind = k % 4 === 1 ? "firecaller" : k % 4 === 3 ? "chanter" : "warden";
+      ids.push(w.spawnUnit(kind, tr, x0 + (k % 32) + 0.5, 48 + Math.floor(k / 32) + 0.5));
+    }
+    cmds.push({ tick: 0, tribe: tr, type: "move", args: { units: ids, to: [tr === 0 ? 100 : 24, 64], attack: true } });
+  }
+  w.step(cmds);
+  for (let k = 0; k < 120; k++) w.step([]);
+  return { init, snap: w.snapshot() };
 }
 
 const pct = (a, p) => {
@@ -153,8 +178,28 @@ export default async function benchCmd(out, _cmd, args) {
     }
     spellStorm = Math.min(spellStorm, mx);
   }
+  // F: 2000 units mid-battle, 400 ticks, each tick's fastest of 5 replays from one snapshot
+  const bt = battle(pack);
+  const bBest = new Array(400).fill(Infinity);
+  let battleUnits = 0;
+  let battleKills = 0;
+  for (let rep = 0; rep < 5; rep++) {
+    const ww = World.restore(bt.init, bt.snap);
+    for (let k = 0; k < 400; k++) {
+      const t0 = performance.now();
+      ww.step([]);
+      const dt = performance.now() - t0;
+      if (dt < bBest[k]) bBest[k] = dt;
+    }
+    battleUnits = ww.count((i) => ww.ents.cat[i] === 3);
+    battleKills = ww.eventCounts.get("killed") ?? 0;
+  }
   const m = {
     units: w.count((i) => w.ents.cat[i] === 3),
+    battleAvgMs: +(bBest.reduce((x, y) => x + y, 0) / bBest.length).toFixed(3),
+    battleP99Ms: +pct(bBest, 0.99).toFixed(3),
+    battleUnitsLeft: battleUnits,
+    battleKills,
     rawP99Ms: +median(rawP99s).toFixed(3),
     afterTerrainOpMs: +afterOp.toFixed(3),
     groupOrdersMs: +groupOrders.toFixed(3),
@@ -176,6 +221,7 @@ export default async function benchCmd(out, _cmd, args) {
   writeReport("bench.json", { metrics: m, budget: BUDGET, baseline: base, warns, runs: { avgs, p99s } });
   out.line(`2000-unit wander: avg ${m.tickAvgMs} ms (budget ${BUDGET.tickAvgMs}), p99 ${m.tickP99Ms} ms (budget ${BUDGET.tickP99Ms}), units alive ${m.units}`);
   out.line(`quake r8 + path invalidation: ${m.terrainOpMs} ms (budget ${BUDGET.terrainOpMs}); worst tick after it ${m.afterTerrainOpMs} ms; 10 group orders ${m.groupOrdersMs} ms (target 20, fail 40)`);
+  out.line(`2000-unit battle: avg ${m.battleAvgMs} ms (budget ${BUDGET.battleAvgMs}), p99 ${m.battleP99Ms} ms (budget ${BUDGET.battleP99Ms}), ${m.battleKills} killed, ${m.battleUnitsLeft} units left`);
   out.line(`spell storm (${v1.length} v1 spells x 2 tribes at once): worst tick ${m.spellStormMs} ms (target 20, fail 40)`);
   out.line(`raw wall-clock p99 ${m.rawP99Ms} ms (informational: includes OS preemption and GC pauses on this machine)`);
   for (const k of warns) out.line(`WARN ${k} regressed: ${m[k]} vs baseline ${base[k]}`);

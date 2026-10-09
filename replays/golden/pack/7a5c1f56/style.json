@@ -1,0 +1,108 @@
+{
+  "$comment": "Starting palette (sRGB hex). The asset pipeline converts to OKLab for snapping. Bump styleVersion when the look changes.",
+  "styleVersion": 2,
+  "palette": {
+    "sand": "#E8D2A0",
+    "meadow": "#7cb64e",
+    "moss": "#548f36",
+    "forest": "#3F6B2E",
+    "rock": "#8A8378",
+    "rockDark": "#5C564E",
+    "snow": "#F4F1EA",
+    "water": "#1d6a96",
+    "waterShallow": "#33bcc6",
+    "foam": "#effcff",
+    "wood": "#8B5A2B",
+    "woodDark": "#5E3A1A",
+    "thatch": "#C9A65A",
+    "stone": "#A9A196",
+    "skin1": "#E2B48C",
+    "skin2": "#B98058",
+    "skin3": "#7C4E33",
+    "cloth": "#D9CBB0",
+    "azure": "#2E6FD8",
+    "crimson": "#C8312E",
+    "amber": "#E0A12A",
+    "jade": "#2FA36B",
+    "fire": "#FF7A1A",
+    "lava": "#FF3B10",
+    "lightning": "#BFE8FF",
+    "magic": "#B07CFF",
+    "scar": "#3A2A22",
+    "cliff": "#9a6a40",
+    "cliffDark": "#6b4526"
+  },
+  "lighting": {
+    "keyColor": "#ffc98f",
+    "keyIntensity": 2,
+    "skyTop": "#3d5f96",
+    "skyHorizon": "#f0b884",
+    "fogColor": "#c9a98a"
+  },
+  "direction": {
+    "primaryRef": "making-of/a1 retro-candidate-1 (Stewart's pick)",
+    "lightingRef": "making-of/a1 retro-candidate-3 (technique)",
+    "chosen": "10/08/2026, Stewart and the main agent, art direction v2",
+    "notes": "Target look = candidate 1: dense tribal village on a small planet floating in a dark starry sky, brown terraced cliff edges, busy turquoise sea with white foam strokes, chunky pixel resolution, a stone-framed HUD (Shaper portrait with mana bar top-left, spell row, build tools on the right, minimap with population bottom-right). Technique = candidate 3: keep the 3D low-poly world (deformable terrain), render it through the retro pass (low-res target, nearest upscale, palette plus Bayer dither), pixel-noise surface detail, warm firelight. Small traditional tribal figures, the Shaper in feathers and hides with a carved staff, no pointed wizard hat, no glossy mobile look."
+  },
+  "render": {
+    "$comment": "Retro render pass (ADR-005). pixelScale 1 and paletteLevels 0 turn the retro look off.",
+    "pixelScale": 3,
+    "paletteLevels": 20,
+    "ditherStrength": 0.7,
+    "detailNoise": 0.09,
+    "detailCellsPerUnit": 3,
+    "hearthLight": {
+      "color": "#ffa04a",
+      "intensity": 14,
+      "distance": 9
+    },
+    "ambientIntensity": 0.95,
+    "space": {
+      "$comment": "Space backdrop around the curved world (look v2): sky gradient, star density 0..1, planet rim haze color.",
+      "top": "#04060f",
+      "horizon": "#0f1d3d",
+      "stars": 0.55,
+      "rim": "#5fa8e0"
+    },
+    "foamStrokes": 0.55
+  },
+  "audio": {
+    "$comment": "sim event type to audio cue; cues without an asset are silent stubs until A4 (M10)",
+    "cues": {
+      "melee": { "cue": "sfx.melee_hit", "maxPerTick": 4 },
+      "fireball": { "cue": "sfx.fireball", "maxPerTick": 3 },
+      "chantBegun": { "cue": "sfx.chant", "maxPerTick": 2 },
+      "chantInterrupted": { "cue": "sfx.chant_break", "maxPerTick": 2 },
+      "converted": { "cue": "sfx.converted", "maxPerTick": 2 },
+      "trained": { "cue": "sfx.trained", "maxPerTick": 2 },
+      "killed": { "cue": "sfx.died", "maxPerTick": 3, "where": { "cat": 3 } },
+      "destroyed": { "cue": "sfx.building_down", "maxPerTick": 2 },
+      "drowned": { "cue": "sfx.drowned", "maxPerTick": 2, "where": { "cat": 3 } },
+      "shaperDied": { "cue": "voice.shaper.under_attack", "maxPerTick": 1 },
+      "tribeEliminated": { "cue": "sfx.eliminated", "maxPerTick": 1 },
+      "spellCast": { "cue": "sfx.{spell}_cast", "maxPerTick": 2 },
+      "buildingDone": { "cue": "sfx.building_done", "maxPerTick": 1 },
+      "born": { "cue": "sfx.born", "maxPerTick": 1 },
+      "woodDelivered": { "cue": "sfx.wood_delivered", "maxPerTick": 1 },
+      "charged": { "cue": "sfx.charged", "maxPerTick": 1 },
+      "planPlaced": { "cue": "sfx.plan_placed", "maxPerTick": 1 }
+    }
+  },
+  "promptStyleSuffix": "stylized low-poly game asset, crisp flat-shaded facets, chunky readable shapes, warm earthy palette, warm golden-hour lighting, clean silhouette, plain neutral background, no text, no logo",
+  "promptNegative": "photorealistic, noisy texture, text, watermark, thin spindly parts, modern objects",
+  "triBudgets": {
+    "unit": [
+      600,
+      2000
+    ],
+    "building": [
+      800,
+      3000
+    ],
+    "prop": [
+      100,
+      800
+    ]
+  }
+}

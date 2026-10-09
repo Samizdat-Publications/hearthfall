@@ -87,6 +87,7 @@
     "acquireRadius": 7,
     "leashRadius": 12,
     "retargetSeconds": 0.5,
+    "idleAcquireSeconds": 0.2,
     "chaseRepathSeconds": 0.6,
     "unitRadius": 0.3,
     "heightBandUnits": 32,

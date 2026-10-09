@@ -59,3 +59,8 @@ Reason: M6 combat core: new entity columns (atk, cd, stance, mode, anchor, tranc
 Reason: BACKLOG 54: knockback edgeFalloff and building hp now required in the schema, queued casts carry their best distance (hashed) and drop with castFailed when unreachable
 - spells_duel: final a7157576 -> a7157576 (pack 3fd71882)
 - terrain_ops_continents: final 911ea2a2 -> 911ea2a2 (pack 3fd71882)
+
+## 2026-10-09 03:47 UTC
+Reason: M6 battle perf: idleAcquireSeconds throttle for unengaged units, A* straight-line shortcut on open ground
+- spells_duel: final a7157576 -> 623c6efc (pack 7a5c1f56)
+- terrain_ops_continents: final 911ea2a2 -> 911ea2a2 (pack 7a5c1f56)

@@ -24,3 +24,9 @@ One line per entry: `MM/DD/YYYY HH:MM  M<n>  what happened`. Never read this fil
 - WarBot (packages/ai/src/warBot.ts): economy bot plus lodges, a watchtower, training toward a mix, rally, attack-move waves. Tests in packages/ai/test/warBot.test.ts.
 - soak --mode war: 8/8 seeds x 20 min clean. Fixes on the way: path invalidation resets progress (regression scenario path_long_detour_after_terrain_change); orderGaveUp now carries chase (1 when combat re-aimed the unit at a moving target), the soak counts only reachable non-chase give-ups (regression test in combat.test.ts, seed 1006).
 - New per-tick invariants: hp range, wild units neutral, tower and lodge occupancy, inside units share the building's tribe.
+
+## 2026-10-09 M6 audio hooks, triangle soak, battle bench
+- AudioHooks (packages/audio) with style.json audio.cues; silent stubs until A4. Game summary reports audio stats.
+- soak --mode triangle: 100, 100, 100 percent after the perf changes (90, 100, 100 before), no draws.
+- Bench F (2000-unit battle) failed at 16.6 ms avg; profile: acquire 65 percent (full-entity building scan, friend checks), then A* re-paths of disengaged attack-movers. Fixed: building list, cheap rejections, per-tribe coarse grid early-out (all exact, same 1452 kills), idleAcquireSeconds 0.2 for unengaged units, A* straight-line shortcut. Now about 4.4 to 7.5 ms avg, 10 to 18 ms p99 on a noisy machine. Goldens reblessed (final hashes unchanged), browser replays identical.
+- WarBot waves only target enemy Hearths reachable on foot (test). orderFailed in war soak rose to 95 (melee chases across water): BACKLOG 55.

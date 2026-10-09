@@ -436,6 +436,10 @@
           "type": "number",
           "minimum": 0
         },
+        "idleAcquireSeconds": {
+          "type": "number",
+          "minimum": 0
+        },
         "chaseRepathSeconds": {
           "type": "number",
           "minimum": 0
@@ -506,6 +510,7 @@
         "acquireRadius",
         "leashRadius",
         "retargetSeconds",
+        "idleAcquireSeconds",
         "chaseRepathSeconds",
         "unitRadius",
         "heightBandUnits",

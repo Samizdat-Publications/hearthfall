@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import { CAT } from "../../sim/src/entities.ts";
 import { World } from "../../sim/src/world.ts";
 import { basePack } from "../../sim/test/helpers.ts";
-import { makeBot } from "../src/index.ts";
+import { WarBot, makeBot } from "../src/index.ts";
+import { world } from "../../sim/test/helpers.ts";
 
 function warMatch(seed: number, minutes: number): World {
   const p = basePack();
@@ -27,6 +28,26 @@ describe("WarBot (M6)", () => {
     expect(c("trained")).toBeGreaterThan(10);
     expect(c("killed") + c("converted")).toBeGreaterThan(0);
   }, 60000);
+
+  it("sends waves only at enemy Hearths reachable on foot", () => {
+    const w = world({ generator: "flat", size: 64, tribes: 2 });
+    w.spawnBuilding("hearth", 0, 12, 32);
+    w.spawnBuilding("hearth", 1, 44, 32);
+    w.spawnUnit("shaper", 0, 14, 36);
+    w.spawnUnit("shaper", 1, 46, 36);
+    for (let k = 0; k < 8; k++) w.spawnUnit("warden", 0, 16 + k, 28);
+    w.step([]);
+    const bot = new WarBot({ tribe: 0, waveSize: 8 });
+    const waves = () => bot.decide(w).filter((c) => c.type === "move" && c.args.attack);
+    expect(waves().length).toBe(1);
+    // two sea channels split the torus into two islands
+    const t = w.terrain;
+    for (let y = 0; y < 64; y++) for (const x of [28, 29, 30, 60, 61, 62]) t.heights[t.idx(x, y)] = 0;
+    t.version++;
+    w.step([]);
+    expect(t.sea).toBeGreaterThan(0);
+    expect(waves().length).toBe(0);
+  });
 
   it("war matches are deterministic", () => {
     expect(warMatch(1003, 4).hash()).toEqual(warMatch(1003, 4).hash());

@@ -112,15 +112,23 @@ export class WarBot implements Controller {
       }
     }
 
-    // 3. waves: attack-move idle troops at the nearest living enemy Hearth
+    // 3. waves: attack-move idle troops at the nearest living enemy Hearth reachable on foot (other
+    // landmasses need Raise Land or boats, which belong to the M7 opponent AI)
     if (idleTroops.length >= this.wave) {
       const n = w.terrain.size;
+      const pf = w.units.pf;
+      const snap = w.cfg.pack.balance.movement.snapRadius;
+      const comp = (x: number, y: number) => {
+        const v = pf.nearestWalkable((((Math.round(x) % n) + n) % n) + (((Math.round(y) % n) + n) % n) * n, snap);
+        return v < 0 ? -1 : pf.comp[v];
+      };
+      const home = comp(E.x[h], E.y[h]);
       let best = -1;
       let bestD = Infinity;
       for (const t of w.tribes) {
         if (t.index === this.tribe || !t.alive) continue;
         const eh = E.index(t.hearth);
-        if (eh < 0) continue;
+        if (eh < 0 || home < 0 || comp(E.x[eh], E.y[eh]) !== home) continue;
         const dx = wrapDelta(E.x[eh] - E.x[h], n);
         const dy = wrapDelta(E.y[eh] - E.y[h], n);
         const d = dx * dx + dy * dy;
