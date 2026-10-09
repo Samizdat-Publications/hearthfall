@@ -49,3 +49,4 @@ One line per entry: `MM/DD/YYYY HH:MM  M<n>  what happened`. Never read this fil
 - Docs: nine actions and the data-driven cadence (ARCHITECTURE, ADR-007), movement note, TESTING ai-idle wording. Review items 6 to 11 logged as BACKLOG 66 to 71.
 - Soaks: ai-idle 12/12 (8.8 to 15.8 min), ai 12/12 x 40 (sneaky 8, aggressive 2, turtle 2, median 13.4, 0 unfinished), bots 8/8 x 30 (0 give-ups), war 8/8.
 - Full qa after the fixes: one shot failed (units_select_move): its click hit an unwalkable spot 1 to 2 cells from the units and passed only by overshooting toward it. Click moved to (1100, 420), baseline reapproved (APPROVALS.md). Full `npm run qa` PASS.
+- Sonnet re-review: TAG (all FIX FIRST items verified). Notes logged as BACKLOG 72 (flow progress reset on any terrain change) and 73 (empty A* path when standing on the snapped goal). Tagged m7-done.

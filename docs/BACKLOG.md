@@ -83,6 +83,8 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 69. [S] Tuning literals in opponent.ts (threat radius 14, defend radius 30, wave formula, keep 0.35, 3-minute mixed hold, cast reach +10): move them into ai_personalities.json shared numbers (M7 review).
 70. [S] combat.ts `canReach`: when both units are stranded (`compAt` -1) they count as reachable; treat -1 as unreachable unless in melee reach, and cache the attacker's comp per tick (M7 review).
 71. [M] Turtle sends few or no waves in most matches (aggression 0.3, wave size 11, it usually dies before minute 15): pairs with 64 (M7 review).
+72. [S] units.ts flow-unit progress reset fires on any terrain change anywhere, so a truly stuck flow unit never gives up while terrain changes more often than giveUpSeconds (repeated quakes): reset only when the rebuilt field's route at the unit is longer than its best (M7 re-review).
+73. [S] A* returns an empty path when start equals the snapped goal, so a unit standing on the shore vertex ordered a few cells into the sea steers at the raw off-land goal and can still give up with reachable 1: treat an empty path as arrival at the snapped goal, with a regression starting at the shore (M7 re-review).
 36. [S] Spells that drown units need a readable lead-in (rumble, crack VFX, short delay) so players see cause and effect (M5, M1 review).
 
 ## Parking lot (ideas, unranked)
