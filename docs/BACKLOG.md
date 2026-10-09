@@ -3,6 +3,8 @@
 Order matters: work top down after M11. Re-rank when new findings arrive; keep each item small enough for one commit cycle or split it. Format: `P<n> [size S/M/L] item: acceptance`.
 
 ## P1: make the core game great
+0. [M] Retro render pass (ADR-005): low-res render target with nearest upscale, palette quantization and ordered dither, pixel-noise detail textures, dusk and firelight lighting, stone and wood HUD frame; knobs in style.json; rebaseline shots once. Do this right after the M5 review so every later shot uses the final look.
+0b. [M] In-match progression (DESIGN 3a): data-driven unlock tiers by follower count and worship, HUD "next unlock" panel; evaluate a second harvested resource (stone or clay).
 1. [M] Remaining v1 spells as data: Veil, Ward, Beguile, Whirlwind, Mire, Erode, Firerain, Wraith: one scenario each, shot per spell.
 2. [M] Shade unit and Shade Den: disguise, sabotage, scenarios for detection and burn.
 3. [M] Fog of war and scouting, minimap reveal, AI respects fog (no map hacks unless difficulty data says so).
@@ -60,6 +62,7 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 50. [S] Record controller (bot) specs in scenario and replay headers so a future command recorder never desyncs (M4 review).
 51. [S] Bench economy cost (nearestTree computes components per tree) with a bot-driven economy bench case (M4 review).
 52. [S] HUD: real spell and resource icons (A3), a short label on the training side of the split slider, narrow-width DOM check (M4 review).
+53. [S] Spell hotkeys: 8 v1 spells but 7 keys (Volcano has none); add a second row or let players rebind (M5).
 36. [S] Spells that drown units need a readable lead-in (rumble, crack VFX, short delay) so players see cause and effect (M5, M1 review).
 
 ## Parking lot (ideas, unranked)

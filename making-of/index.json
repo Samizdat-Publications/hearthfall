@@ -350,6 +350,76 @@
       "when": "2026-10-09T00:46:24.976Z",
       "source": "reports/latest/shots/raise_land.png",
       "bytes": 201012
+    },
+    {
+      "file": "a1/20261009-0100_retro-candidate-1.jpg",
+      "milestone": "A1",
+      "kind": "concept",
+      "caption": "Retro pixel candidate 1: dense 16-bit isometric village with a chunky stone HUD frame",
+      "highlight": false,
+      "when": "2026-10-09T01:00:52.350Z",
+      "source": "C:/Users/stewa/AppData/Local/Temp/claude/C--Users-stewa/a3d7fbfe-2979-4001-9dd3-923ef59d503d/images/1.jpg",
+      "bytes": 442885
+    },
+    {
+      "file": "a1/20261009-0100_retro-candidate-2.jpg",
+      "milestone": "A1",
+      "kind": "concept",
+      "caption": "Retro pixel candidate 2: HD-2D pixel sprites in a tilt-shift 3D diorama",
+      "highlight": false,
+      "when": "2026-10-09T01:00:54.454Z",
+      "source": "C:/Users/stewa/AppData/Local/Temp/claude/C--Users-stewa/a3d7fbfe-2979-4001-9dd3-923ef59d503d/images/2.jpg",
+      "bytes": 402137
+    },
+    {
+      "file": "a1/20261009-0100_retro-candidate-3.jpg",
+      "milestone": "A1",
+      "kind": "concept",
+      "caption": "Retro pixel candidate 3: stylized 3D low-poly planet with pixel-textured surfaces, dusk light and pixel fire (chosen benchmark)",
+      "highlight": true,
+      "when": "2026-10-09T01:00:56.619Z",
+      "source": "C:/Users/stewa/AppData/Local/Temp/claude/C--Users-stewa/a3d7fbfe-2979-4001-9dd3-923ef59d503d/images/3.jpg",
+      "bytes": 365946
+    },
+    {
+      "file": "a1/20261009-0100_retro-candidate-4.jpg",
+      "milestone": "A1",
+      "kind": "concept",
+      "caption": "Retro pixel candidate 4: flat 16-bit pixel art with an atmospheric planet rim",
+      "highlight": false,
+      "when": "2026-10-09T01:00:58.776Z",
+      "source": "C:/Users/stewa/AppData/Local/Temp/claude/C--Users-stewa/a3d7fbfe-2979-4001-9dd3-923ef59d503d/images/4.jpg",
+      "bytes": 460485
+    },
+    {
+      "file": "a1/20261009-0101_retro-candidate-5.jpg",
+      "milestone": "A1",
+      "kind": "concept",
+      "caption": "Retro pixel candidate 5: late-90s PC strategy look with a stone and wood spell bar",
+      "highlight": false,
+      "when": "2026-10-09T01:01:00.785Z",
+      "source": "C:/Users/stewa/AppData/Local/Temp/claude/C--Users-stewa/a3d7fbfe-2979-4001-9dd3-923ef59d503d/images/5.jpg",
+      "bytes": 396331
+    },
+    {
+      "file": "a1/20261009-0101_retro-candidate-6.jpg",
+      "milestone": "A1",
+      "kind": "concept",
+      "caption": "Retro pixel candidate 6: flat-shaded low-poly with dithered pixel shading and crisp outlines",
+      "highlight": false,
+      "when": "2026-10-09T01:01:02.812Z",
+      "source": "C:/Users/stewa/AppData/Local/Temp/claude/C--Users-stewa/a3d7fbfe-2979-4001-9dd3-923ef59d503d/images/6.jpg",
+      "bytes": 442793
+    },
+    {
+      "file": "a1/20261009-0101_retro-candidate-7.jpg",
+      "milestone": "A1",
+      "kind": "concept",
+      "caption": "Retro pixel candidate 7: bright modern pixel art with a cozy palette",
+      "highlight": false,
+      "when": "2026-10-09T01:01:05.308Z",
+      "source": "C:/Users/stewa/AppData/Local/Temp/claude/C--Users-stewa/a3d7fbfe-2979-4001-9dd3-923ef59d503d/images/7.jpg",
+      "bytes": 376964
     }
   ]
 }

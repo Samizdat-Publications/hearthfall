@@ -38,10 +38,10 @@
     "fogColor": "#E9D8BC"
   },
   "direction": {
-    "primaryRef": "concept.ref_04",
-    "lightingRef": "concept.ref_05",
-    "chosen": "10/08/2026, A1",
-    "notes": "Crisp flat-shaded low-poly: faceted vertex-colored terrain with visible stepped strata on cliffs, chunky clustered pines and round broadleaf trees, round thatched dwellings, saturated tribe colors only on clothing and banners. Lighting from ref_05: warm golden-hour key light, soft warm haze toward the horizon, deep blue faceted water with a lighter shallow band."
+    "primaryRef": "making-of/a1 retro-candidate-3",
+    "lightingRef": "making-of/a1 retro-candidate-6",
+    "chosen": "10/08/2026, Stewart and the main agent, art direction v2",
+    "notes": "Retro 90s nostalgia on a modern 3D build: keep the 3D low-poly world (deformable terrain needs it), render it at reduced resolution with crisp nearest-neighbor upscaling, a limited warm palette with ordered dithering on shading and water, low-res nearest-filtered surface detail (pixel-noise sand, thatch, grass), pixel-style fire and spell VFX, warm firelight against cool dusk ambient, strong soft shadows. Small traditional tribal figures (no cartoon big-head proportions), the Shaper in feathers and hides with a carved staff (not a pointed wizard hat). HUD: a chunky stone and wood frame with round spell orbs (candidate 5). Avoid the glossy mobile-strategy look."
   },
   "promptStyleSuffix": "stylized low-poly game asset, crisp flat-shaded facets, chunky readable shapes, warm earthy palette, warm golden-hour lighting, clean silhouette, plain neutral background, no text, no logo",
   "promptNegative": "photorealistic, noisy texture, text, watermark, thin spindly parts, modern objects",

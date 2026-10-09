@@ -113,6 +113,8 @@ A spell in data is a list of effect primitives with parameters:
 
 Example (illustrative): Volcano = `terrainOp(crater cone up) + areaOverTime(lava damage) + scar + spawnEntity(lavaRocks)`. New spells should be pure data. If a new spell needs a new primitive, add the primitive with tests, never a one-off spell class.
 
+As built (M5): `packages/sim/src/effects.ts` registers damageRadius (Shapers only die to effects whose `canKill` lists them), knockback (displacement that ignores walkability, so water and cliffs kill), convertRadius (capped by free housing), statusApply (panic, burning), terrainOp (ridgeLine from the caster, flattenToAverage, noiseScar, crater, lowerTowardSea, raise, lower), damageBuildingsRadius, scar, areaOverTime (persistent effect entities) and spawnEntity (sub-entities from `spells.json` `entities`, such as lava rocks). `packages/sim/src/spells.ts` owns the cast command (walks into range, a `castSeconds` window during which `cancelCast` refunds), resolution, Shaper death, respawn at the Hearth, charge steal and elimination.
+
 ## 7. Renderer (`packages/render`)
 
 - `Renderer` interface (`init, setSnapshot, setCamera, render, captureReady, dispose`) so WebGPU or another engine can replace it.

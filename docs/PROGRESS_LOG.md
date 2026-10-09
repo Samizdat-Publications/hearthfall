@@ -13,3 +13,5 @@ One line per entry: `MM/DD/YYYY HH:MM  M<n>  what happened`. Never read this fil
 10/08/2026 19:42  M3  Opus review fixes: snapshot cursor, strict reachable-give-up soak check (651 -> 0 give-ups), torus-ambiguous waypoint bug, fine line of sight, selective re-plan, fast refresh, ridge bridge scenario, bench spike measures; tagged m3-done
 10/08/2026 20:09  M4  economy core, economy bot, HUD v1, placement, economy soak gate (growth every minute, median 59 at 10 min)
 10/08/2026 20:41  M4  review fixes: stump deadlock and cancelled-plan tree leak fixed with tests, occupancy invariants, priorities hashed, spread rng stream; tagged m4-done. Stewart asked for Gemini prompts for a retro pixel look; inbox making-of/inbox/ waits for his pick
+10/08/2026 20:48  M5  spells v1 complete; A3 assets landed
+10/08/2026 21:02  M5  gates pass; art direction v2 decided with Stewart (ADR-005: 3D + retro render pass, benchmark retro-candidate-3); session handoff prepared

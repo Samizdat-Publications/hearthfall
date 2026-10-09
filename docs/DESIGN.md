@@ -42,6 +42,14 @@ Moment to moment: settlers chop trees, build and expand dwellings, which breed m
 
 Match arc: settle (0 to 5 min), expand and claim shrines (5 to 15 min), war and terrain escalation (15+ min), collapse of a tribe.
 
+## 3a. Progression (Stewart's priority)
+
+The heart of the loop: the Shaper gathers followers, followers make mana, and growth unlocks new options. Progression must be felt within a match and across a campaign:
+- In a match: tiers unlocked by population and by worship. Dwellings first; lodges and the Watchtower unlock at follower thresholds (data); stronger spells come from Shrines (one-shot) and Reliquaries (permanent). The HUD shows the next unlock and what it needs.
+- Harvesting: settlers chop and haul wood today; a second gathered resource (stone or clay from rocks, for towers and lodges) is a good candidate to deepen the harvest loop.
+- Across a campaign: each level unlocks spells and buildings carried forward (M9 level data, BACKLOG campaign item).
+Tone: traditional tribal villagers and a Shaper in feathers and hides, not a glossy mobile look (ADR-005).
+
 ## 4. Win and loss
 
 - Starting state: a Hearth, the Shaper, 5 settlers (each carrying 1 wood of starting supplies, `balance.economy.startWoodPerSettler`), and a few wild people wandering nearby.
@@ -132,7 +140,7 @@ Composable from effect primitives (see `docs/ARCHITECTURE.md` section 6). Range 
 
 Anti-degenerate rules (fixes from the original's banned-spell meta): every powerful spell has a counter (Ward is popped by Lightning; Mire is visible; Beguile breaks when the caster dies), plus optional per-spell cooldowns in data.
 
-Spell UX: hover shows exact area preview on the curved terrain, range ring around the Shaper, red if out of range; right click or Esc cancels; a 1 s "undo" on misclick refunds the charge if the cast has not resolved.
+Spell UX: hover shows exact area preview on the curved terrain, range ring around the Shaper, red if out of range; right click or Esc cancels; a 1 s "undo" on misclick refunds the charge if the cast has not resolved. As built (M5): spell bar click or hotkeys Z X C V B N and Shift+M (M stays the map view) enter targeting; left click casts (out of range the Shaper walks there first); Backspace undoes within the cast window; right click on a spell button toggles auto-charge.
 
 ## 10. Worship objects
 
