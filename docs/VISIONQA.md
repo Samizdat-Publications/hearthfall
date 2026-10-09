@@ -63,7 +63,7 @@ The debug API can break rendering on purpose: `setDebug({hideTerrain, blackCanva
 
 ## 6. How results flow
 
-`npm run visionqa -- --set smoke` reads `reports/latest/shots.json`, runs applicable checks, writes `reports/latest/visionqa.json` with per-shot answers, and prints a summary. A shot is **flagged for Claude** only if a calibrated check fails, the answer is `uncertain` or `refusal`, or VisionQA disagrees with the code checks. Unflagged shots are never looked at by Claude.
+`npm run visionqa -- --set smoke` reads `reports/latest/shots.json`, runs applicable checks, writes `reports/latest/visionqa.json` with per-shot answers, and prints a summary. A shot is **flagged for Claude** only if a calibrated check fails, the answer is `uncertain` or `refusal`, or VisionQA disagrees with the code checks. Unflagged shots are never looked at by Claude. After looking at a flagged shot and finding nothing wrong, `npm run visionqa -- --reviewed <shot id> --reason "..."` records it in `tools/visionqa/reviewed.json` keyed by the PNG's sha256, so the same image is no longer flagged (a changed image is judged again); a real defect gets fixed instead.
 
 ## 7. Optional: playtest variety move picker
 

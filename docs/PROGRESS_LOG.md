@@ -98,3 +98,4 @@ One line per entry: `MM/DD/YYYY HH:MM  M<n>  what happened`. Never read this fil
 - Render: flames and smoke on burning buildings, sparks at a Shade's target while it channels.
 - Scenarios shade_burns_dwelling, shade_detected_by_tower; sim test shade.test.ts (4), AI test. Replays reblessed (new column). Smoke hud_troops now expects 5 locked buildings at start.
 - Soaks: economy median 61; ai-idle all 12 (sneaky 11 to 13 min); ai wins aggressive 3, sneaky 3, turtle 2, median 16.6 min; bots PASS. Shot sets smoke, spells, spells2, combat, levels re-approved (Shade Den row in the build panel).
+- Full npm run qa PASS after BACKLOG 2. VisionQA flagged spells2/beguile (artifact_suspect 0.64, pink Beguile rings); Claude looked, false positive. New: `npm run visionqa -- --reviewed <id> --reason ...` records a reviewed flag by PNG sha256 in tools/visionqa/reviewed.json (docs/VISIONQA.md).

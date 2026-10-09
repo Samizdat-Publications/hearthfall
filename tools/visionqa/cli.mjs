@@ -132,6 +132,10 @@ export async function visionCmd(out, cmd, args) {
     const { calibrate } = await import("./run.mjs");
     return calibrate(out);
   }
+  if (typeof args.reviewed === "string") {
+    const { markReviewed } = await import("./run.mjs");
+    return markReviewed(out, args.reviewed, args.reason);
+  }
   if (provider() === "off") return out.finish("SKIP", "VisionQA provider is off");
   if (!existsSync(ROOT + "reports/latest/shots.json")) return out.finish("SKIP", "no shots.json yet (shot sets land at M2)");
   const { runChecks } = await import("./run.mjs").catch((e) => (e.code === "ERR_MODULE_NOT_FOUND" && e.message.includes("run.mjs") ? { runChecks: null } : Promise.reject(e)));

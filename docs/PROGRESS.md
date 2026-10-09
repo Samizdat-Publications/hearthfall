@@ -26,8 +26,8 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 - Subagents: project agents are registered again (milestone-reviewer, qa-runner, ...); call them by type.
 
 ## Next 3 actions
-1. Full npm run qa after the BACKLOG 2 commit (last PASS 297fdc1 at 17:34Z; due by 21:30Z).
-2. BACKLOG P1 3 (fog of war and scouting), then 4, 5, 6, 8 in order.
+1. BACKLOG P1 3 (fog of war and scouting). Full npm run qa PASS after BACKLOG 2 (18:30Z); next due by 22:30Z.
+2. Then BACKLOG P1 4, 5, 6, 8 in order.
 3. Re-run the full soak and shot sets every 3 backlog items (next after 4).
 
 ## Blocked

@@ -1,9 +1,28 @@
 // VisionQA runner and calibration (docs/VISIONQA.md sections 4 to 6). One Decisions request per image
 // packs every applicable question. Shots are flagged for Claude only when a calibrated check fails,
 // an answer is a refusal or uncertain, or VisionQA disagrees with the code checks.
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { ROOT, writeReport } from "../harness/lib.mjs";
 import { ask } from "./decisions.mjs";
+
+// flags Claude looked at and judged false positives, keyed by the PNG's sha256 (a changed image is judged again)
+const REVIEWED_FILE = ROOT + "tools/visionqa/reviewed.json";
+const reviewedMap = () => (existsSync(REVIEWED_FILE) ? JSON.parse(readFileSync(REVIEWED_FILE, "utf8")).reviewed : {});
+const pngHash = (path) => createHash("sha256").update(readFileSync(path)).digest("hex");
+
+/** `npm run visionqa -- --reviewed <shot id> --reason "..."`: record a flagged shot of the latest run as looked at. */
+export function markReviewed(out, id, reason) {
+  if (!reason || reason === true) return out.finish("FAIL", "1 (--reason is required)");
+  const shots = JSON.parse(readFileSync(ROOT + "reports/latest/shots.json", "utf8"));
+  const s = shots.results.find((r) => r.id === id);
+  if (!s || !existsSync(ROOT + s.file)) return out.finish("FAIL", `1 (no shot ${id} in the latest set ${shots.set})`);
+  const all = reviewedMap();
+  all[pngHash(ROOT + s.file)] = { set: shots.set, id, reason, at: new Date().toISOString().slice(0, 10) };
+  writeFileSync(REVIEWED_FILE, JSON.stringify({ $comment: "VisionQA flags reviewed by Claude, keyed by PNG sha256 (docs/VISIONQA.md)", reviewed: all }, null, 2) + "\n");
+  out.line(`reviewed ${shots.set}/${id}`);
+  return out.finish("PASS");
+}
 
 const CHECKS = () => JSON.parse(readFileSync(ROOT + "tools/visionqa/checks.json", "utf8")).checks;
 const THRESH_FILE = ROOT + "tools/visionqa/thresholds.json";
@@ -52,6 +71,7 @@ export async function runChecks(out) {
   const th = thresholds();
   const checks = CHECKS();
   const results = [];
+  const reviewed = reviewedMap();
   let usd = 0;
   for (const s of shots.results) {
     const path = ROOT + s.file;
@@ -74,6 +94,11 @@ export async function runChecks(out) {
       }
     }
     if (s.ok && why.some((w) => w.includes("failed"))) why.push("disagrees with code checks");
+    const rv = flag && !j.error ? reviewed[pngHash(path)] : undefined;
+    if (rv) {
+      flag = false;
+      why.push(`reviewed ${rv.at}: ${rv.reason}`);
+    }
     results.push({ id: s.id, flag, why, checks: per });
   }
   writeReport("visionqa.json", { set: shots.set, usd, results });

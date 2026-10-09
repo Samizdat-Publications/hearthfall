@@ -1,0 +1,11 @@
+{
+  "$comment": "VisionQA flags reviewed by Claude, keyed by PNG sha256 (docs/VISIONQA.md)",
+  "reviewed": {
+    "281d04b187c0b6b502d5a5b83665b941f4ec85244fbfb72bde4dba103c4ff51f": {
+      "set": "spells2",
+      "id": "beguile",
+      "reason": "pink Beguile status rings under a crowd read as artifacts; scene correct (Claude looked)",
+      "at": "2026-10-09"
+    }
+  }
+}
