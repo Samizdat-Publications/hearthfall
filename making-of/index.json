@@ -460,6 +460,36 @@
       "when": "2026-10-09T01:49:35.703Z",
       "source": "external:globe.png",
       "bytes": 100401
+    },
+    {
+      "file": "m6/20261009-0459_fireball.png",
+      "milestone": "M6",
+      "kind": "screenshot",
+      "caption": "M6 combat: a Firecaller's fireball arcs onto four settlers",
+      "highlight": true,
+      "when": "2026-10-09T04:59:09.327Z",
+      "source": "external:fireball.png",
+      "bytes": 136444
+    },
+    {
+      "file": "m6/20261009-0459_combat-sheet.png",
+      "milestone": "M6",
+      "kind": "contact-sheet",
+      "caption": "M6 combat VFX shots: fireball, chant, melee",
+      "highlight": false,
+      "when": "2026-10-09T04:59:12.516Z",
+      "source": "external:sheet.png",
+      "bytes": 366128
+    },
+    {
+      "file": "m6/20261009-0459_hud-troops.png",
+      "milestone": "M6",
+      "kind": "screenshot",
+      "caption": "M6 HUD troop panel: stances and retreat for six selected units, lodges in the build column",
+      "highlight": false,
+      "when": "2026-10-09T04:59:15.451Z",
+      "source": "external:hud_troops.png",
+      "bytes": 166338
     }
   ]
 }

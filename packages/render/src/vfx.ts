@@ -123,7 +123,7 @@ export class VfxLayer {
           const px = fx + dx * q;
           const pz = fy + dy * q;
           const lift = 1.6 * 4 * q * (1 - q);
-          this.fx.push({ kind: "spark", x: px, z: pz, y: ground(px, pz) + 0.5 + lift, t0: now + q * flight, dur: 0.14, size: 0.28, color: col });
+          this.fx.push({ kind: "spark", x: px, z: pz, y: ground(px, pz) + 0.5 + lift, t0: now + q * flight, dur: 0.16, size: 0.45, color: col });
         }
         this.fx.push({ kind: "flash", x, z: y, y: ground(x, y) + 0.4, t0: now + flight, dur: 0.35, size: 1, color: col });
         this.fx.push({ kind: "ring", x, z: y, y: ground(x, y) + 0.1, t0: now + flight, dur: 0.6, size: 1.2, color: col });
@@ -136,7 +136,7 @@ export class VfxLayer {
         const i = e.type === "melee" ? -1 : Number.isFinite(id) ? w.ents.index(id) : -1;
         const px = i >= 0 ? w.ents.x[i] : x;
         const pz = i >= 0 ? w.ents.y[i] : y;
-        if (Number.isFinite(px)) this.fx.push({ kind: "spark", x: px, z: pz, y: ground(px, pz) + 0.5, t0: now, dur: 0.2, size: e.type === "melee" ? 0.22 : 0.4, color: new THREE.Color(e.type === "melee" ? "#f2e6c8" : "#8a8378") });
+        if (Number.isFinite(px)) this.fx.push({ kind: "spark", x: px, z: pz, y: ground(px, pz) + 0.5, t0: now, dur: 0.3, size: e.type === "melee" ? 0.4 : 0.5, color: new THREE.Color(e.type === "melee" ? "#f2e6c8" : "#8a8378") });
       } else if ((e.type === "drowned" || e.type === "flooded") && Number.isFinite(x)) {
         this.fx.push({ kind: "ring", x, z: y, y: t.sea * heightScale + 0.05, t0: now, dur: 1.2, size: 1.2, color: new THREE.Color("#e6f4f8") });
         this.fx.push({ kind: "flash", x, z: y, y: t.sea * heightScale + 0.2, t0: now, dur: 0.4, size: 0.5, color: new THREE.Color("#e6f4f8") });

@@ -4,7 +4,7 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 
 ## Now
 - Run started: 2026-10-08T21:25:00Z
-- Milestone: M5 done (tag m5-done). Run resumed 2026-10-09T01:38Z. Look v2 done (8ab91b5: space sky, foam strokes, cliff strata, HUD layout v2 with portrait, bars, minimap). M6 combat core done (combat.ts: stances, melee, fireballs with min range and splash falloff, knockback immunity, Chanter channel and convert, attack-move, lodge training via the mana sink, rally, garrison, retreat, Shaper regen, wild aftermath; ADR-006; triangle 9/10, 10/10, 10/10 in runMatchup). BACKLOG 54 closed. War gate green: WarBot + `soak --mode war` 8/8 x 20 min clean (trained 488, killed 113, converted 93, 7 eliminations), combat invariants, chase give-ups tagged `chase: 1`. Now: M6 HUD, VFX, scenarios, triangle soak, battle bench.
+- Milestone: M6 exit ritual in progress (M5 tag m5-done). M6 shipped: combat core (combat.ts, ADR-006: stances, melee, fireballs, Chanter channel and convert, attack-move, lodge training, rally, garrison, retreat), WarBot + `soak --mode war` 8/8 x 20 min clean, `soak --mode triangle` 100/100/100 percent, battle bench 2000 units in budget, 6 combat scenarios, AudioHooks (silent stubs), fireball/chant/melee VFX with a combat shot set in `npm run qa`, HUD troop panel (build lodges and towers, select a building, train, rally, garrison, ungarrison, retreat, stance; R and G keys; troops.ts unit tests).
 - M1 shipped: sfc32 rng streams, FNV hash parts, SoA entities, torus terrain with all ops + dirty cursor (dirtySince), tileable fbm generator (continents, islands, flat test maps) with connected Hearth sites, trees, wild people; Command registry (god-mode terrainOp is tribe -1 or godMode only); World step order, drowning, snapshot/restore; scenario runner + safe DSL (4 scenarios); golden replay with frozen pack (terrain_ops_continents). 66 unit tests. qa:fast now includes replays.
 - M2 shipped: renderer (faceted chunks, water, curved world, wrap, sky, trees), camera rig, debug API, shot pipeline (pixel-exact baselines in fixedStep), VisionQA calibrated, browser replay determinism.
 - M3 shipped: SoA movement columns, pathing (A* + component labels + budget, flow fields, spatial hash separation, route-progress stuck detection; ADR-004), move/stop/impulse commands, Controller hook + WanderBot, starting Shaper + 5 settlers per Hearth, unit and building placeholder layers with tribe tint and interpolation, selection (click, box, groups) + right-click move via bent-terrain picking, 7 pathing scenarios, soak (8 seeds x 10 min x 1000 units clean), bench (2000 units avg 3.3 ms, algorithmic p99 2.2 ms).
@@ -18,12 +18,12 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 - Machine note: this PC often runs at 100 percent CPU (OneDrive sync); wall-clock timing is noisy, bench uses deterministic replay minima.
 - Keys: Meshy, ElevenLabs, Gemini, OpenAI present; Tripo, PixelLab missing.
 - Making-of archive: making-of/ via `npm run making-of -- add`; storyboard in making-of/README.md.
-- Subagents: project agents not registered in this session; use general-purpose with the agent file's rules and model pasted in.
+- Subagents: project agents are registered again (milestone-reviewer, qa-runner, ...); call them by type.
 
 ## Next 3 actions
-1. M6 HUD (lodge and tower build buttons, train, rally, garrison, stance), fireball and chant VFX, scenarios per combat feature, soak --mode triangle, bench battle; exit ritual (Sonnet reviewer), tag m6-done.
+1. Finish the M6 exit: milestone-reviewer (Sonnet), fix blockers, final `npm run qa`, commit, tag m6-done.
 2. In-match progression (BACKLOG 0b, DESIGN 3a): unlock tiers by followers and worship with a next-unlock HUD panel.
-3. M7 opponent AI (ai_personalities.json, war and economy bots).
+3. M7 opponent AI (ai_personalities.json, utility AI, test bot personalities, M7 gate soak).
 
 ## Blocked
 (none)
