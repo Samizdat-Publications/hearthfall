@@ -11,6 +11,16 @@ Stewart asked (10/08/2026) for every generated image to be kept so a "making of"
 - Kinds: `concept`, `screenshot`, `contact-sheet`, `asset-sheet`, `asset-thumb`, `comparison`, `diagram`.
 - `highlight: true` marks the one or two images that best represent that chapter; the artifact uses highlights as chapter heroes and the rest as a gallery.
 
+## The making-of page (Artifact, Stewart asked 10/09/2026)
+
+Live page: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5 (private to Stewart). It shows every archived image in time order with its caption and a change chip (added, changed, fixed, explored, removed), the run track (milestone tags and finished backlog items from git on one hour axis, one clickable dot per image), a then-and-now slider, a time-lapse player and filters.
+
+Update it at every gate: after each backlog item commit, each milestone exit, and whenever a hero shot is added.
+1. Archive the new images (`add` above; `--highlight` for hero shots, which also become the cover). Captions say what was added, changed, fixed or removed. An entry may carry `"change": "fixed"` (or added, changed, removed, explored) in index.json to override the chip, which otherwise comes from the kind.
+2. `cd C:\Users\stewa\Documents\Claude\Hearthfall` then `npm run making-of -- page` (tools/harness/makingof_page.py with the template tools/harness/makingof_template.html; needs the .venv with Pillow). Output: `making-of/site/` (gitignored, rebuilt from index.json, chapters.json and git).
+3. Republish with the Artifact tool: `url` = the live page above, `file_path` = `making-of/site/index.html`, `root` = `making-of/site`, `files` = the published paths in `making-of/site/publish.json` (its keys, `img/...`). A session that has not published it yet reads it first (`action: "read"` with the url), then publishes. Never publish without `url` (that makes a second page).
+4. Chapter titles and blurbs live in `making-of/chapters.json`; new chapters go there (tags list the milestone tags they collect; `B` collects every backlog tag).
+
 ## When images get archived (built into the workflow)
 
 1. Milestone exit ritual step 4: the contact sheet that was viewed is archived, plus the single best shot as a highlight.

@@ -4,7 +4,9 @@
 // Usage:
 //   node tools/harness/cli.mjs making-of add <file> --milestone M2 --kind screenshot --caption "..." [--highlight] [--slug name]
 //   node tools/harness/cli.mjs making-of list [--milestone M2]
+//   node tools/harness/cli.mjs making-of page   (builds making-of/site/, the making-of Artifact page)
 import { copyFileSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { basename, extname } from "node:path";
 import { ROOT } from "./lib.mjs";
 
@@ -53,6 +55,14 @@ export function makingOfCmd(out, args) {
     const file = args._[1];
     const p = archive(file, { milestone: args.milestone, kind: args.kind, caption: args.caption, highlight: args.highlight === true, slug: args.slug });
     out.line(`archived ${p}`);
+    return out.finish("PASS");
+  }
+  if (sub === "page") {
+    // builds making-of/site/ (the making-of Artifact page) with the project venv's Python and Pillow
+    const py = existsSync(ROOT + ".venv/Scripts/python.exe") ? ROOT + ".venv/Scripts/python.exe" : existsSync(ROOT + ".venv/bin/python") ? ROOT + ".venv/bin/python" : "python";
+    const r = spawnSync(py, ["-I", ROOT + "tools/harness/makingof_page.py"], { encoding: "utf8" });
+    if (r.status !== 0) return out.finish("FAIL", `1 (${(r.stderr || r.error?.message || "").trim().split("\n").pop()})`);
+    out.line(r.stdout.trim());
     return out.finish("PASS");
   }
   if (sub === "list") {

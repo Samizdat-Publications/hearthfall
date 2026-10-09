@@ -730,6 +730,16 @@
       "when": "2026-10-09T18:21:32.573Z",
       "source": "external:overview.png",
       "bytes": 191425
+    },
+    {
+      "file": "b3/20261009-1832_hero-village-fog.png",
+      "milestone": "B3",
+      "kind": "screenshot",
+      "caption": "Hero shot of the current build: the Shaper and five followers at the Hearth, real models in the retro pixel pass, the ground beyond the village going dark under the new fog of war.",
+      "highlight": true,
+      "when": "2026-10-09T18:32:04.959Z",
+      "source": "external:close.png",
+      "bytes": 184137
     }
   ]
 }

@@ -1,0 +1,19 @@
+{
+  "$comment": "Chapters of the making-of page (npm run making-of -- page). Order is the page order. An entry belongs to the first chapter listing its milestone tag; untagged leftovers go to the last chapter. Edit titles and blurbs freely; keep them free of em and en dashes.",
+  "title": "The Making of Hearthfall",
+  "intro": "Hearthfall is an original 3D god game built by Claude Code in one long autonomous run that started on 2026-10-08 at 21:25 UTC: a mortal Shaper, population-powered mana, a small curved planet you can reshape, and water that kills. Every image below was captured or generated during the build and archived as it happened, so scrolling down walks the game forward from its first pixels.",
+  "chapters": [
+    { "id": "first-pixels", "title": "First pixels", "tags": ["M0"], "blurb": "Before any game existed: proving the GPU could render headless so every later change could be checked by screenshot." },
+    { "id": "finding-the-look", "title": "Finding the look", "tags": ["A0", "A1"], "blurb": "Concept art, six candidate art directions, a unit bake-off between two 3D generation routes, and the retro pixel direction Stewart picked." },
+    { "id": "a-world-on-a-torus", "title": "A world on a torus", "tags": ["M1", "M2"], "blurb": "A wrapping planet generator and a renderer that bends the flat map into a small round world." },
+    { "id": "real-models", "title": "Models for the village", "tags": ["A2", "A3"], "blurb": "Buildings, units, trees, rocks, spell textures and icons generated in 3D and snapped to the game palette." },
+    { "id": "people-appear", "title": "People appear", "tags": ["M3"], "blurb": "Pathfinding over ridges, the Shaper and her first followers, selection and orders on a curved surface." },
+    { "id": "a-village-grows", "title": "A village grows", "tags": ["M4"], "blurb": "The economy: jobs, dwellings, breeding, mana income and the first HUD." },
+    { "id": "the-shapers-power", "title": "The Shaper's power", "tags": ["M5"], "blurb": "Eight spells that hurt people and move land, then the retro render pass and look v2 that set the final style." },
+    { "id": "war", "title": "War", "tags": ["M6", "M7"], "blurb": "Combat with a counter triangle, towers, and an opponent AI that raids." },
+    { "id": "a-real-game", "title": "A real game", "tags": ["M8", "M9"], "blurb": "Menus, saves, skirmish setup, HUD v2, worship sites and the first campaign levels." },
+    { "id": "real-assets", "title": "Real assets and sound", "tags": ["M10", "A4"], "blurb": "Every placeholder mesh swapped for the generated models." },
+    { "id": "polish", "title": "Polish", "tags": ["M11"], "blurb": "Readability: tribe rings, a larger Shaper, clearer spell effects, then the roadmap was complete." },
+    { "id": "growing", "title": "Growing for weeks", "tags": ["B", "run"], "blurb": "After the roadmap, the backlog: new spells, terrain and village look, stone, the Shade, fog of war, and whatever lands next." }
+  ]
+}
