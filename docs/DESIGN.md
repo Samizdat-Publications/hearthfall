@@ -190,7 +190,7 @@ Short positional SFX for every action, spell cast and impact; tribal percussion 
 
 ## 17. UI
 
-DOM overlay HUD: spell bar with charge rings and ETA, mana income breakdown and split slider, population and supply, selected unit panel, minimap, objectives, notifications (Shaper under attack, shrine claimed). Must stay readable at 1280x720 and scale to 4K. No overlaps (automated check).
+DOM overlay HUD (layout v2, ADR-005 addendum 2: Shaper portrait with mana and followers bars top-left, spell row top-center, build tools in a right column, minimap with population bottom-right, stone-framed panels): spell bar with charge rings and ETA, mana income breakdown and split slider, population and supply, selected unit panel, minimap, objectives, notifications (Shaper under attack, shrine claimed). Must stay readable at 1280x720 and scale to 4K. No overlaps (automated check).
 
 ## 18. Out of scope for v1
 

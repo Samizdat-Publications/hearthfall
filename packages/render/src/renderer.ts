@@ -47,7 +47,7 @@ export class ThreeRenderer implements Renderer {
   readonly camera = new THREE.PerspectiveCamera(40, 1, 0.1, 2000);
   readonly bend: BendUniforms = makeBendUniforms();
   readonly time = { value: 0 };
-  cam: CameraState = { x: 0, z: 0, yaw: 0.6, zoom: 0.32, map: false };
+  cam: CameraState = { x: 0, z: 0, yaw: 0.6, zoom: 0.42, map: false };
   frames = 0;
   stats: RenderStats = { frames: 0, chunks: 0, remeshTotal: 0, lastRemesh: 0, fullRebuilds: 0, drawCalls: 0, triangles: 0, cpuMs: 0, unitsDrawn: 0 };
   private world: World | null = null;
@@ -100,14 +100,18 @@ export class ThreeRenderer implements Renderer {
       water: C("water"),
       waterShallow: C("waterShallow"),
       foam: C("foam"),
+      cliff: C("cliff", "#8f5e36"),
+      cliffDark: C("cliffDark", "#5a371d"),
       bands: { shore: 0, lowland: 0, grass: 0, highland: 0, rock: 0, peak: 0 },
       heightScale: (o.verticalScale ?? 2.0) / o.heightUnitsPerWorldUnit,
       maxWalkSlope: 20,
     };
     const L = o.style.lighting;
-    this.bend.uHorizon.value.set(L.skyHorizon);
-    this.scene.fog = new THREE.Fog(L.fogColor, 60, 200);
     const rs = o.style.render;
+    const space = rs?.space;
+    // the planet limb fades to an atmospheric rim when the space backdrop is on
+    this.bend.uHorizon.value.set(space?.rim ?? L.skyHorizon);
+    this.scene.fog = new THREE.Fog(space?.rim ?? L.fogColor, 60, 200);
     this.scene.add(new THREE.HemisphereLight(L.skyTop, pal.moss ?? "#5e8c3a", 1.25 * (rs?.ambientIntensity ?? 1)));
     this.retro = new RetroPass({ pixelScale: rs?.pixelScale ?? 1, paletteLevels: rs?.paletteLevels ?? 0, ditherStrength: rs?.ditherStrength ?? 0 });
     this.detail.amount.value = rs?.detailNoise ?? 0;
@@ -122,7 +126,7 @@ export class ThreeRenderer implements Renderer {
     this.scene.add(this.sun);
     this.scene.add(this.sun.target);
     this.terrainMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend, this.detail);
-    this.waterMat = makeWaterMaterial(this.palette, this.bend, this.time);
+    this.waterMat = makeWaterMaterial(this.palette, this.bend, this.time, rs?.foamStrokes ?? 0);
     this.pal = pal;
     this.styleRender = o.style.render;
     this.propMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend);
@@ -144,7 +148,7 @@ export class ThreeRenderer implements Renderer {
       r.renderOrder = 10;
       this.scene.add(r);
     }
-    this.sky = makeSky(L.skyTop, L.skyHorizon);
+    this.sky = space ? makeSpaceSky(space.top, space.horizon, space.stars) : makeSky(L.skyTop, L.skyHorizon);
     this.gl.setClearColor(pal.water ?? "#2f7fb8", 1);
     this.scene.add(this.sky);
   }
@@ -424,6 +428,36 @@ export class ThreeRenderer implements Renderer {
   dispose(): void {
     this.gl.dispose();
   }
+}
+
+/** Dark space backdrop: a gradient toward the horizon plus hashed pixel stars (look v2). */
+function makeSpaceSky(top: string, horizon: string, stars: number): THREE.Mesh {
+  const mat = new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    depthWrite: false,
+    fog: false,
+    uniforms: { uTop: { value: new THREE.Color(top) }, uHorizon: { value: new THREE.Color(horizon) }, uStars: { value: stars } },
+    vertexShader: /* glsl */ `varying vec3 vDir; void main() { vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+    fragmentShader: /* glsl */ `uniform vec3 uTop; uniform vec3 uHorizon; uniform float uStars; varying vec3 vDir;
+      float h3(vec3 p) { return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453); }
+      void main() {
+        vec3 d = normalize(vDir);
+        vec3 col = mix(uHorizon, uTop, smoothstep(-0.35, 0.6, d.y));
+        vec3 cell = floor(d * 220.0);
+        float h = h3(cell);
+        float thr = 1.0 - 0.012 * uStars;
+        if (h > thr) col += vec3(0.75, 0.8, 1.0) * (0.35 + 0.65 * h3(cell + 3.1));
+        vec3 big = floor(d * 70.0);
+        if (h3(big + 9.7) > 1.0 - 0.0025 * uStars) col += vec3(1.0, 0.95, 0.85);
+        gl_FragColor = vec4(col, 1.0);
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+      }`,
+  });
+  const m = new THREE.Mesh(new THREE.SphereGeometry(900, 48, 24), mat);
+  m.renderOrder = -1;
+  m.frustumCulled = false;
+  return m;
 }
 
 function makeSky(top: string, horizon: string): THREE.Mesh {

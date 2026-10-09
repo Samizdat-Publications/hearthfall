@@ -20,6 +20,9 @@ export interface TerrainPalette {
   water: THREE.Color;
   waterShallow: THREE.Color;
   foam: THREE.Color;
+  /** brown earth on steep faces (look v2 terraced cliffs) */
+  cliff: THREE.Color;
+  cliffDark: THREE.Color;
   bands: { shore: number; lowland: number; grass: number; highland: number; rock: number; peak: number };
   heightScale: number;
   maxWalkSlope: number;
@@ -62,11 +65,12 @@ export function faceColor(p: TerrainPalette, sea: number, h0: number, h1: number
     const f = h1s > h0s ? Math.min(1, Math.max(0, (avg - h0s) / (h1s - h0s))) : 1;
     out.copy(c0).lerp(c1, f * f * (3 - 2 * f));
   }
-  // steep faces turn to rock, with broad and subtle strata
-  if (avg >= sea && span > p.maxWalkSlope * 0.8) {
-    const strata = 0.92 + 0.12 * (Math.floor(avg / 36) % 2);
-    tmp.copy(p.rock).lerp(p.rockDark, 0.35).multiplyScalar(strata);
-    out.lerp(tmp, Math.min(0.85, (span - p.maxWalkSlope * 0.8) / p.maxWalkSlope));
+  // steep faces turn to brown earth cliffs with layered strata (rock above the rock band)
+  if (avg >= sea && span > p.maxWalkSlope * 0.85) {
+    const layer = Math.floor(avg / 14) % 3;
+    const high = avg >= b.rock - 10;
+    tmp.copy(high ? p.rock : p.cliff).lerp(high ? p.rockDark : p.cliffDark, layer === 0 ? 0.65 : layer === 1 ? 0.2 : 0.4);
+    out.lerp(tmp, Math.min(0.95, 0.5 + (span - p.maxWalkSlope * 0.85) / (p.maxWalkSlope * 0.4)));
   }
   if (scar > 0) out.lerp(p.scar, Math.min(0.85, scar / 60));
   const j = 0.93 + 0.12 * faceHash(seed);
@@ -186,7 +190,8 @@ export class TerrainChunk {
   }
 }
 
-export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: { value: number }): THREE.ShaderMaterial {
+/** Water: depth-tinted turquoise, shoreline foam and (look v2) world-anchored drifting foam strokes. */
+export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: { value: number }, strokes = 0): THREE.ShaderMaterial {
   const mat = new THREE.ShaderMaterial({
     transparent: true,
     fog: true,
@@ -197,6 +202,7 @@ export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: {
         uShallow: { value: p.waterShallow.clone() },
         uFoam: { value: p.foam.clone() },
         uSun: { value: new THREE.Vector3(0.45, 0.8, 0.35).normalize() },
+        uStrokes: { value: strokes },
       },
     ]),
     vertexShader: /* glsl */ `
@@ -223,16 +229,42 @@ export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: {
       uniform vec3 uFoam;
       uniform vec3 uSun;
       uniform float uTime;
+      uniform float uStrokes;
       varying float vDepth;
+      float wh(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+      // short wave strokes: rows of cells along a slowly turning swell direction, a hashed share lit
+      float strokeAt(vec2 xz, float density, float scale) {
+        float a = 0.5 + 0.35 * sin(xz.x * 0.031 + xz.y * 0.027);
+        vec2 dir = vec2(cos(a), sin(a));
+        vec2 q = vec2(dot(xz, dir), dot(xz, vec2(-dir.y, dir.x))) * scale;
+        q.x += uTime * 0.35;
+        float row = floor(q.y / 0.55);
+        q.x += wh(vec2(row, 3.7)) * 4.0;
+        vec2 cell = vec2(floor(q.x / 1.7), row);
+        float h = wh(cell);
+        if (h > density) return 0.0;
+        vec2 f = vec2(fract(q.x / 1.7), fract(q.y / 0.55));
+        float len = 0.35 + 0.4 * wh(cell + 1.3);
+        float start = 0.1 + 0.3 * wh(cell + 2.9);
+        float bend = 0.16 * sin((f.x - start) / len * 3.1416);
+        return step(start, f.x) * step(f.x, start + len) * step(abs(f.y - 0.5 + bend), 0.2);
+      }
       varying vec3 vWorld;
       void main() {
         if (vDepth < -2.0) discard;
         vec3 n = normalize(cross(dFdx(vWorld), dFdy(vWorld)));
-        float t = smoothstep(0.0, 70.0, vDepth);
+        float t = smoothstep(0.0, uStrokes > 0.0 ? 30.0 : 70.0, vDepth);
         vec3 col = mix(uShallow, uDeep, t);
         col *= 0.82 + 0.25 * max(dot(n, uSun), 0.0);
         float foam = (1.0 - smoothstep(0.0, 10.0, vDepth)) * (0.65 + 0.35 * sin(uTime * 2.2 + vDepth * 0.9));
         col = mix(col, uFoam, clamp(foam, 0.0, 1.0) * 0.85);
+        if (uStrokes > 0.0) {
+          float near = 1.0 - smoothstep(4.0, 40.0, vDepth);
+          float s1 = strokeAt(vWorld.xz, uStrokes * (0.3 + 0.4 * near), 0.42);
+          float s2 = strokeAt(vWorld.xz + 31.7, uStrokes * 0.45, 0.33);
+          col = mix(col, uFoam, s1 * 0.9);
+          col = mix(col, uDeep * 0.7, s2 * (1.0 - s1) * 0.5);
+        }
         float alpha = mix(0.72, 0.94, t);
         gl_FragColor = vec4(col, alpha);
         #include <tonemapping_fragment>

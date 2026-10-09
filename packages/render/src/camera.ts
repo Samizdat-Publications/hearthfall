@@ -11,9 +11,9 @@ export interface CameraState {
 }
 
 export const CAMERA_PRESETS: Record<string, Partial<CameraState>> = {
-  default: { zoom: 0.32, yaw: 0.6, map: false },
+  default: { zoom: 0.42, yaw: 0.6, map: false },
   close: { zoom: 0.06, yaw: 0.9, map: false },
-  mid: { zoom: 0.5, yaw: 0.6, map: false },
+  mid: { zoom: 0.58, yaw: 0.6, map: false },
   globe: { zoom: 1, yaw: 0.6, map: false },
   map: { map: true },
 };
@@ -29,8 +29,9 @@ export interface RigOutput {
 export function rigParams(s: CameraState): RigOutput {
   const z = Math.min(1, Math.max(0, s.zoom));
   const distance = 11 + 120 * z * z + 20 * z;
-  const pitch = 0.6 + 0.8 * z;
-  const bendK = 0.0022 + 0.02 * z * z;
+  // look v2: a steep, near top-down view with strong curvature so the planet limb and space show
+  const pitch = 0.78 + 0.62 * z;
+  const bendK = 0.004 + 0.026 * z * z;
   return { distance, pitch, bendK, fogNear: distance * 1.1, fogFar: distance * 2.6 + 40 + 400 * z * z };
 }
 

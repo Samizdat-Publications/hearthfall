@@ -3,7 +3,8 @@
 Order matters: work top down after M11. Re-rank when new findings arrive; keep each item small enough for one commit cycle or split it. Format: `P<n> [size S/M/L] item: acceptance`.
 
 ## P1: make the core game great
-0. [M] Retro render pass (ADR-005): low-res render target with nearest upscale, palette quantization and ordered dither, pixel-noise detail textures, dusk and firelight lighting, stone and wood HUD frame; knobs in style.json; rebaseline shots once. Do this right after the M5 review so every later shot uses the final look.
+0. [M] (done 10/09/2026, look v2 on top) Retro render pass (ADR-005): low-res render target with nearest upscale, palette quantization and ordered dither, pixel-noise detail textures, dusk and firelight lighting, stone and wood HUD frame; knobs in style.json; rebaseline shots once. Do this right after the M5 review so every later shot uses the final look.
+0a. [M] Look v2 follow-ups (gap to retro-candidate-1 after the look v2 pass): dense pine forest belts around villages (generator tree clusters, taller conifer props), villages that read as villages (M10 building and unit models at a larger on-screen scale), terraced plateaus from the generator (stepped height quantization on land) so cliffs form bands instead of slope patches, a volcano and smoke column that reads at mid zoom, HUD icons from assets/icons (A3) in the spell row and build column.
 0b. [M] In-match progression (DESIGN 3a): data-driven unlock tiers by follower count and worship, HUD "next unlock" panel; evaluate a second harvested resource (stone or clay).
 1. [M] Remaining v1 spells as data: Veil, Ward, Beguile, Whirlwind, Mire, Erode, Firerain, Wraith: one scenario each, shot per spell.
 2. [M] Shade unit and Shade Den: disguise, sabotage, scenarios for detection and burn.

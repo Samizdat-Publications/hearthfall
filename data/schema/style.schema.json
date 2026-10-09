@@ -133,6 +133,43 @@
         "ambientIntensity": {
           "type": "number",
           "minimum": 0
+        },
+        "space": {
+          "type": "object",
+          "properties": {
+            "$comment": {
+              "type": "string"
+            },
+            "top": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            },
+            "horizon": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            },
+            "stars": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "rim": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          },
+          "required": [
+            "top",
+            "horizon",
+            "stars",
+            "rim"
+          ],
+          "additionalProperties": false
+        },
+        "foamStrokes": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
         }
       },
       "required": [

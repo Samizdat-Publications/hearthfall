@@ -1,8 +1,4 @@
-.hud-panel { position: absolute; color: #f4e6c8; background: linear-gradient(180deg, #4a3423 0%, #3a281b 100%); border: 3px solid #8a8378; border-radius: 6px; box-shadow: inset 0 0 0 2px #2b1d13, inset 0 2px 0 3px rgba(255, 230, 190, 0.12), 0 3px 0 #2b1d13, 0 4px 10px rgba(0, 0, 0, 0.45); padding: 6px 12px; font: 600 13px "Trebuchet MS", "Segoe UI", system-ui, sans-serif; text-shadow: 0 1px 0 #1d130c; white-space: nowrap; pointer-events: none; image-rendering: pixelated; }
-.hud-title { left: 16px; top: 12px; display: flex; gap: 10px; align-items: baseline; }
-.hud-name { font-weight: 800; font-size: 18px; letter-spacing: 0.5px; }
-.hud-sub { font-size: 12px; opacity: 0.85; }
-.hud-resources { right: 16px; top: 12px; display: flex; flex-direction: column; gap: 3px; min-width: 210px; pointer-events: auto; }
+.hud-panel { position: absolute; color: #f4e6c8; background: linear-gradient(180deg, #4a3423 0%, #3a281b 100%); border: 4px solid #8a8378; border-image: repeating-linear-gradient(90deg, #9a9387 0 7px, #7d766b 7px 10px, #a8a195 10px 16px) 4; border-radius: 0; box-shadow: inset 0 0 0 2px #2b1d13, inset 0 2px 0 3px rgba(255, 230, 190, 0.12), 0 3px 0 #2b1d13, 0 4px 10px rgba(0, 0, 0, 0.45); padding: 6px 12px; font: 600 13px "Trebuchet MS", "Segoe UI", system-ui, sans-serif; text-shadow: 0 1px 0 #1d130c; white-space: nowrap; pointer-events: none; image-rendering: pixelated; }
 .res-row { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
 .res-row b.warn { color: #ff7a5c; }
 .res-label { font-size: 12px; opacity: 0.8; }
@@ -10,8 +6,6 @@
 .priorities { gap: 4px; }
 .prio { flex: 1; border: 1px solid #8a8378; background: #2b1d13; color: #b8a58a; border-radius: 6px; font: 600 11px system-ui; padding: 2px 4px; cursor: pointer; }
 .prio.on { background: #8dbf5a; border-color: #5e8c3a; color: #fff; }
-.waste { font-size: 11px; color: #fff; background: #c8312e; border-radius: 6px; padding: 0 5px; }
-.hud-spellbar { left: 50%; bottom: 12px; transform: translateX(-50%); display: flex; gap: 4px; padding: 5px 8px; pointer-events: auto; }
 .spell { position: relative; width: 48px; height: 48px; border: none; background: transparent; padding: 0; cursor: pointer; opacity: 0.55; }
 .spell.auto { opacity: 1; }
 .spell .ring-bg { fill: #2b1d13; stroke: #8a8378; stroke-width: 4; }
@@ -24,11 +18,38 @@
 .spell .charges { position: absolute; right: 1px; bottom: 1px; font: 700 11px system-ui; background: #e0a12a; color: #2b1d13; border-radius: 7px; min-width: 14px; height: 14px; line-height: 14px; text-align: center; }
 .spell .hotkey, .build-btn .hotkey { position: absolute; left: 2px; top: 0; font-size: 9px; opacity: 0.6; }
 .build-btn .hotkey { position: static; margin-left: 4px; }
-.hud-build { left: 16px; bottom: 12px; display: flex; gap: 6px; padding: 5px 8px; pointer-events: auto; }
-.build-btn { border: 2px solid #8a8378; background: #5a3d26; color: #f4e6c8; border-radius: 8px; padding: 4px 10px; font: 600 12px system-ui; cursor: pointer; }
 .build-btn.active { background: #e0a12a; color: #fff; }
-.hud-selection { left: 16px; bottom: 64px; font-weight: 600; }
-.hud-help { left: 16px; top: 60px; font-size: 11px; }
 .hud-overlap { display: none; left: 40px; top: 18px; }
 body.debug-overlap-hud .hud-overlap { display: block; }
 .hud-box { position: absolute; border: 1.5px solid rgba(230, 244, 248, 0.95); background: rgba(230, 244, 248, 0.12); pointer-events: none; }
+/* layout v2 (ADR-005 target look): stone-framed panels around the edges, the world in the middle */
+.hud-shaper { left: 12px; top: 10px; width: 72px; padding: 4px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.hud-shaper .portrait { display: block; width: 64px; height: 64px; image-rendering: pixelated; border: 2px solid #2b1d13; }
+.hud-shaper.dead .portrait { filter: grayscale(1) brightness(0.55); }
+.shaper-name { font-size: 12px; letter-spacing: 0.5px; }
+.shaper-hp { display: block; height: 3px; background: #8dbf5a; align-self: flex-start; }
+.hud-resources { left: 108px; top: 10px; width: 240px; display: flex; flex-direction: column; gap: 4px; padding: 6px 8px; pointer-events: auto; }
+.bar { display: flex; align-items: center; gap: 6px; }
+.bar-glyph { width: 14px; text-align: center; font-size: 14px; }
+.bar-mana .bar-glyph { color: #58b4d6; }
+.bar-pop .bar-glyph { color: #e0a12a; }
+.bar-track { position: relative; flex: 1; height: 16px; background: #120c08; border: 2px solid #2b1d13; box-shadow: inset 0 0 0 1px #5c564e; overflow: hidden; }
+.bar-fill { position: absolute; left: 0; top: 0; bottom: 0; }
+.bar-mana .bar-fill { background: repeating-linear-gradient(90deg, #2e6fd8 0 6px, #4a8ae8 6px 8px); }
+.bar-pop .bar-fill { background: repeating-linear-gradient(90deg, #2fa36b 0 6px, #46bf80 6px 8px); }
+.bar-text { position: relative; padding-left: 6px; font-size: 11px; line-height: 14px; }
+.waste { font-size: 11px; color: #fff; background: #c8312e; padding: 0 5px; align-self: flex-start; }
+.hud-spellbar { left: 50%; top: 10px; transform: translateX(-50%); display: flex; gap: 4px; padding: 4px 8px; pointer-events: auto; }
+.hud-build { right: 12px; top: 120px; display: flex; flex-direction: column; gap: 6px; padding: 6px; pointer-events: auto; }
+.build-btn { border: 2px solid #8a8378; background: #5a3d26; color: #f4e6c8; border-radius: 0; padding: 6px 8px; font: 600 12px system-ui; cursor: pointer; min-width: 84px; text-align: left; }
+.hud-minimap { right: 12px; bottom: 12px; width: 156px; padding: 6px; display: flex; flex-direction: column; gap: 4px; pointer-events: auto; }
+.mm-pop { display: flex; align-items: baseline; gap: 4px; font-size: 16px; color: #8dff9a; }
+.mm-pop b.warn { color: #ff7a5c; }
+.mm-cap { font-size: 12px; color: #c9e8c0; }
+.mm-icon { color: #e2b48c; }
+.mm-canvas { width: 144px; height: 144px; image-rendering: pixelated; background: #04060f; border: 2px solid #2b1d13; cursor: pointer; display: block; }
+.hud-title { left: 12px; bottom: 12px; display: flex; gap: 10px; align-items: baseline; padding: 4px 10px; }
+.hud-name { font-weight: 800; font-size: 14px; letter-spacing: 0.5px; }
+.hud-sub { font-size: 11px; opacity: 0.85; }
+.hud-help { left: 12px; top: 132px; max-width: 320px; white-space: normal; line-height: 1.5; font-size: 11px; }
+.hud-selection { left: 50%; bottom: 12px; transform: translateX(-50%); font-weight: 600; }

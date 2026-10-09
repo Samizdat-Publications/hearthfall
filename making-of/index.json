@@ -430,6 +430,36 @@
       "when": "2026-10-09T01:16:46.715Z",
       "source": "reports/baselines/shots/smoke/hud_economy.png",
       "bytes": 146741
+    },
+    {
+      "file": "m5/20261009-0149_look-v2-compare.png",
+      "milestone": "M5",
+      "kind": "comparison",
+      "caption": "Look v2: retro pass v1 (left), space sky, turquoise sea with foam strokes, brown cliffs, steep curved camera and HUD layout v2 (middle), Stewart's target (right)",
+      "highlight": true,
+      "when": "2026-10-09T01:49:32.687Z",
+      "source": "external:look-v2-compare.png",
+      "bytes": 1124833
+    },
+    {
+      "file": "m5/20261009-0149_look-v2-overview.png",
+      "milestone": "M5",
+      "kind": "screenshot",
+      "caption": "Look v2 overview: the home island on a small planet in space",
+      "highlight": false,
+      "when": "2026-10-09T01:49:34.054Z",
+      "source": "external:overview.png",
+      "bytes": 167172
+    },
+    {
+      "file": "m5/20261009-0149_look-v2-globe.png",
+      "milestone": "M5",
+      "kind": "screenshot",
+      "caption": "Look v2 globe zoom: the world as a planet among the stars",
+      "highlight": false,
+      "when": "2026-10-09T01:49:35.703Z",
+      "source": "external:globe.png",
+      "bytes": 100401
     }
   ]
 }

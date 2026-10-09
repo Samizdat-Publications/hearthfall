@@ -119,6 +119,10 @@ export const StyleSchema = z.strictObject({
       detailCellsPerUnit: z.number().positive(),
       hearthLight: z.strictObject({ color: hex, intensity: pos, distance: pos }),
       ambientIntensity: pos,
+      /** look v2: dark starry space around the planet */
+      space: z.strictObject({ ...comment, top: hex, horizon: hex, stars: z.number().min(0).max(1), rim: hex }).optional(),
+      /** look v2: density of white foam strokes on open water (0 turns them off) */
+      foamStrokes: z.number().min(0).max(1).optional(),
     })
     .optional(),
   promptStyleSuffix: z.string(),

@@ -115,7 +115,7 @@ export class Game {
     this.renderer.setWorld(this.world);
     const home = this.world.tribes[0] ? this.world.ents.index(this.world.tribes[0].hearth) : -1;
     const size = this.world.terrain.size;
-    this.renderer.setCamera({ x: home >= 0 ? this.world.ents.x[home] : size / 2, z: home >= 0 ? this.world.ents.y[home] + 6 : size / 2 });
+    this.renderer.setCamera({ x: home >= 0 ? this.world.ents.x[home] : size / 2, z: home >= 0 ? this.world.ents.y[home] + 1 : size / 2 });
     this.renderer.setCamera(this.params.camera ?? "default");
     this.onChange();
   }

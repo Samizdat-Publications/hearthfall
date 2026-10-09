@@ -1,6 +1,9 @@
-// HUD v1 (M4): Preact DOM overlay driven by a plain HudModel. The UI never touches the sim: it
-// renders the model and calls back into the app, which turns intents into Commands.
+// HUD (M4, layout v2 after ADR-005): Preact DOM overlay driven by a plain HudModel. The UI never
+// touches the sim: it renders the model and calls back into the app, which turns intents into
+// Commands. Layout follows the target look: Shaper portrait and bars top-left, spells top-center,
+// build tools in the right column, minimap with population bottom-right.
 import { render } from "preact";
+import { useEffect, useRef } from "preact/hooks";
 import { signal } from "@preact/signals";
 
 export interface SpellView {
@@ -37,6 +40,10 @@ export interface HudModel {
   box: { x0: number; y0: number; x1: number; y1: number } | null;
   showHelp: boolean;
   priorities: { build: number; upgrade: number; breed: number };
+  /** Shaper state for the portrait: alive, or seconds until respawn (-1 when eliminated) */
+  shaper: { alive: boolean; respawnSec: number; hpFrac: number };
+  /** 0..1 progress of the spell currently charging (the mana bar) */
+  manaFrac: number;
 }
 
 export interface HudActions {
@@ -46,6 +53,10 @@ export interface HudActions {
   cancel(): void;
   togglePriority(key: "build" | "upgrade" | "breed"): void;
   target(spell: string): void;
+  /** paint the minimap into a canvas (the app reads sim state; the UI only hosts the canvas) */
+  drawMinimap(canvas: HTMLCanvasElement): void;
+  /** jump the camera to a normalized minimap point */
+  minimapJump(u: number, v: number): void;
 }
 
 export const hudModel = signal<HudModel | null>(null);
@@ -68,31 +79,82 @@ function SpellButton({ s, act }: { s: SpellView; act: HudActions }) {
   );
 }
 
+function Portrait() {
+  // placeholder Shaper portrait: feathered headdress, hide cloak, carved staff (icons arrive in M10)
+  return (
+    <svg class="portrait" viewBox="0 0 32 32" width="64" height="64" aria-hidden="true" shape-rendering="crispEdges">
+      <rect width="32" height="32" fill="#141a2e" />
+      <rect x="3" y="2" width="2" height="1" fill="#f4f1ea" />
+      <rect x="26" y="5" width="1" height="1" fill="#f4f1ea" />
+      <rect x="7" y="4" width="2" height="26" fill="#8b5a2b" />
+      <rect x="6" y="3" width="4" height="3" fill="#b07cff" />
+      <rect x="13" y="4" width="2" height="5" fill="#c8312e" />
+      <rect x="16" y="3" width="2" height="6" fill="#e0a12a" />
+      <rect x="19" y="4" width="2" height="5" fill="#2fa36b" />
+      <rect x="13" y="9" width="8" height="2" fill="#5e3a1a" />
+      <rect x="14" y="11" width="6" height="6" fill="#b98058" />
+      <rect x="15" y="13" width="1" height="1" fill="#2b1d13" />
+      <rect x="18" y="13" width="1" height="1" fill="#2b1d13" />
+      <rect x="11" y="17" width="12" height="13" fill="#7c5a3a" />
+      <rect x="16" y="17" width="2" height="13" fill="#2e6fd8" />
+      <rect x="9" y="19" width="3" height="3" fill="#b98058" />
+    </svg>
+  );
+}
+
+function Bar({ kind, frac, label }: { kind: "mana" | "pop"; frac: number; label: string }) {
+  return (
+    <div class={"bar bar-" + kind} title={label}>
+      <span class="bar-glyph" aria-hidden="true">{kind === "mana" ? "◆" : "✚"}</span>
+      <span class="bar-track">
+        <span class="bar-fill" style={{ width: Math.round(Math.min(1, Math.max(0, frac)) * 100) + "%" }} />
+        <span class="bar-text">{label}</span>
+      </span>
+    </div>
+  );
+}
+
+function Minimap({ m, act }: { m: HudModel; act: HudActions }) {
+  const ref = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    if (ref.current) act.drawMinimap(ref.current);
+  });
+  return (
+    <div data-hud="minimap" class="hud-panel hud-minimap">
+      <div class="mm-pop" title="Followers / housing">
+        <span class="mm-icon" aria-hidden="true">{"☺"}</span>
+        <b class={m.pop >= m.cap ? "warn" : ""}>{m.pop}</b>
+        <span class="mm-cap">/{m.cap}</span>
+      </div>
+      <canvas
+        ref={ref}
+        class="mm-canvas"
+        width={128}
+        height={128}
+        onClick={(e) => {
+          const r = (e.currentTarget as HTMLCanvasElement).getBoundingClientRect();
+          act.minimapJump((e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height);
+        }}
+      />
+    </div>
+  );
+}
+
 function Hud({ act }: { act: HudActions }) {
   const m = hudModel.value;
   if (!m) return null;
   const b = m.box;
   return (
     <>
-      <div data-hud="title" class="hud-panel hud-title">
-        <span class="hud-name">{m.title}</span>
-        <span class="hud-sub">
-          {m.mapLine} | tick {m.tick}
-          {m.paused ? " | paused" : ""}
-        </span>
+      <div data-hud="shaper" class={"hud-panel hud-shaper" + (m.shaper.alive ? "" : " dead")}>
+        <Portrait />
+        <span class="shaper-name">{m.shaper.alive ? "Shaper" : m.shaper.respawnSec >= 0 ? `back in ${m.shaper.respawnSec}s` : "fallen"}</span>
+        <span class="shaper-hp" style={{ width: Math.round(m.shaper.hpFrac * 100) + "%" }} />
       </div>
       <div data-hud="resources" class="hud-panel hud-resources">
-        <div class="res-row">
-          <span class="res-label">Population</span>
-          <b class={m.pop >= m.cap ? "warn" : ""}>
-            {m.pop}/{m.cap}
-          </b>
-        </div>
-        <div class="res-row">
-          <span class="res-label">Mana</span>
-          <b>{Math.round(m.manaPerMin)}/min</b>
-          {m.wasting ? <span class="waste" title="No spell or training can absorb mana: toggle auto-charge on a spell">wasting</span> : null}
-        </div>
+        <Bar kind="mana" frac={m.manaFrac} label={`Mana ${Math.round(m.manaPerMin)}/min`} />
+        <Bar kind="pop" frac={m.cap > 0 ? m.pop / m.cap : 0} label={`Followers ${m.pop}/${m.cap}`} />
+        {m.wasting ? <span class="waste" title="No spell or training can absorb mana: toggle auto-charge on a spell">mana wasting: auto-charge a spell</span> : null}
         <label class="res-row split">
           <span class="res-label">Spells {m.spellsPct}%</span>
           <input type="range" min="0" max="100" step="5" value={m.spellsPct} onInput={(e) => act.setSplit(Number((e.target as HTMLInputElement).value))} aria-label="Mana split between spells and training" />
@@ -118,6 +180,14 @@ function Hud({ act }: { act: HudActions }) {
           </button>
         ))}
       </div>
+      <div data-hud="title" class="hud-panel hud-title">
+        <span class="hud-name">{m.title}</span>
+        <span class="hud-sub">
+          {m.mapLine} | tick {m.tick}
+          {m.paused ? " | paused" : ""}
+        </span>
+      </div>
+      <Minimap m={m} act={act} />
       {m.selected > 0 || m.placing || m.targeting ? (
         <div data-hud="selection" class="hud-panel hud-selection">
           {m.targeting ? `Casting ${m.targeting.replace("_", " ")}: left click a target, right click or Esc to cancel, Backspace undoes a cast` : m.placing ? `Placing ${m.placing}: left click to place, Esc to cancel${m.placeBlocked ? ` (${m.placeBlocked})` : ""}` : `${m.selected} selected${m.attack ? " | attack-move: click a target" : " | right click to move"}`}

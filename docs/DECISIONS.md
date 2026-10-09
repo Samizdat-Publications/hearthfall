@@ -72,3 +72,6 @@ Append new ADRs at the bottom. Format: context, decision, consequences. Never re
 
 ### ADR-005 addendum (10/08/2026)
 Stewart's pick (Downloads file "... - stewarts pick.jpg") is candidate 1, not 3. Candidate 1 becomes the target look (composition, space sky, terraced cliffs, foamy sea, stone-framed HUD layout); candidate 3 stays the technique reference for how a 3D build reaches it. Still no sprites and no PixelLab.
+
+### ADR-005 addendum 2: look v2 (10/09/2026)
+Pushed the 3D build toward candidate 1 without new assets: a dark starry space backdrop (style.json `render.space`) with the planet limb fading to an atmospheric rim instead of a golden horizon; a steeper camera rig with stronger bend (pitch 0.78 + 0.62 zoom, bend 0.004 + 0.026 zoom squared, default zoom 0.42) so the curve and space show at play zoom; turquoise sea with world-anchored drifting foam strokes (`render.foamStrokes`); brown earth cliff strata on steep faces (palette `cliff`, `cliffDark`); HUD layout v2 (Shaper portrait and mana/followers bars top-left, spells top-center, build column right, minimap with population bottom-right). Fallback: drop `render.space` and set `foamStrokes` 0 to get the v1 sky and water; the camera curve is in packages/render/src/camera.ts. Baselines re-approved for smoke and spells.

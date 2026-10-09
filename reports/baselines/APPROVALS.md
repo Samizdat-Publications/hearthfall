@@ -10,3 +10,5 @@
 - 2026-10-09T00:45 set spells (8 shots): M5: first spell VFX baselines after one sheet review (thinner blue lightning, softer lava pools)
 - 2026-10-09T01:13 set smoke (11 shots): ADR-005 retro render pass v1 (pixel scale 3, 20-level palette with Bayer dither, terrain pixel noise, Hearth firelight, dusk lighting, stone and wood HUD)
 - 2026-10-09T01:16 set spells (8 shots): ADR-005 retro render pass v1
+- 2026-10-09T01:48 set spells (8 shots): look v2 (ADR-005 addendum 2): space sky, turquoise sea with foam strokes, brown cliffs, steep curved camera, HUD layout v2
+- 2026-10-09T01:49 set smoke (11 shots): look v2 (ADR-005 addendum 2): space sky, turquoise sea with foam strokes, brown cliffs, steep curved camera, HUD layout v2

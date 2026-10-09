@@ -1,7 +1,9 @@
 // Builds the HUD view model from the Game each refresh and maps HUD intents to Commands.
 import { hudModel, mountHud, type HudModel, type SpellView } from "@hearthfall/ui";
 import "../../../packages/ui/src/hud.css";
+import { shaperIndex } from "@hearthfall/sim";
 import type { Game } from "./game.ts";
+import { drawMinimap } from "./minimap.ts";
 
 const SPELL_KEYS = ["Z", "X", "C", "V", "B", "N", "Shift+M"];
 const title = (id: string) => id.split("_").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
@@ -20,6 +22,10 @@ export function hudFor(game: Game): HudModel {
     });
   }
   const bdefs = w.cfg.pack.buildings.buildings;
+  const si = tr ? shaperIndex(w, tr.index) : -1;
+  const cursor = tr ? w.economy.nextSpell(tr.eco) : -1;
+  const shaperHp = si >= 0 ? w.ents.hp[si] / Math.max(1, w.cfg.pack.units.units[w.ents.type[si]].hp) : 0;
+  const respawnSec = tr && tr.alive && tr.respawnAt >= 0 ? Math.max(0, Math.ceil((tr.respawnAt - w.tick) / w.cfg.tickHz)) : -1;
   return {
     title: "Hearthfall",
     mapLine: `${w.mapInfo.generator} ${w.terrain.size} seed ${w.seed}`,
@@ -40,6 +46,8 @@ export function hudFor(game: Game): HudModel {
     box: game.box,
     showHelp: game.showHelp,
     priorities: tr ? { ...tr.eco.priorities } : { build: 1, upgrade: 1, breed: 1 },
+    shaper: { alive: si >= 0, respawnSec, hpFrac: Math.min(1, Math.max(0, shaperHp)) },
+    manaFrac: tr && cursor >= 0 ? tr.eco.progress[cursor] / spells[cursor].cost : 0,
   };
 }
 
@@ -53,6 +61,11 @@ export function mountGameHud(el: HTMLElement, game: Game): { refresh: () => void
       game.command({ tribe: game.localTribe, type: "setAutoCharge", args: { spell, on: !on } });
     },
     startPlacing: (b) => game.startPlacing(b),
+    drawMinimap: (canvas) => drawMinimap(game, canvas),
+    minimapJump: (u, v) => {
+      const n = game.world.terrain.size;
+      game.renderer.setCamera({ x: u * n, z: v * n });
+    },
     target: (spell) => game.startTargeting(spell),
     cancel: () => game.cancelPlacing(),
     togglePriority: (key) => {
