@@ -130,3 +130,10 @@ One line per entry: `MM/DD/YYYY HH:MM  M<n>  what happened`. Never read this fil
 - UI scale 80 to 150 via CSS zoom on panels. The first 125 percent shot at 1280x720 overlapped (resources over spells, build over minimap), so the HUD now fits itself: hudFit.ts steps --hud-scale down 5 percent at a time until no panel overlaps (1280x720 fits about 105). Menus keep the full scale (their own layout checks pass at 125).
 - Subtitles: style.json subtitles for the five Shaper barks (invented tongue plus translation), Game.voice routes every bark; a test fails if a played cue lacks a subtitle.
 - Settings gain palette, uiScale, subtitles (sanitized on load); URL params palette and uiScale; e2e checks them in Settings and a bark subtitle in play. Shots combat colorblind (1920x1080) and uiscale_fit (1280x720, 150 asked). qa:fast PASS 272 unit tests, e2e PASS both sizes.
+
+## 2026-10-09 Run done criteria met
+- BACKLOG 8 follow-ups from the full qa: the bark subtitle collided with the troop panel (moved to 30 percent down); the HUD fit shrank the deliberate overlap calibration shot (skipped under that debug flag); VisionQA flagged its own correct find of the planted overlap as a disagreement (now agreement). Spell shots re-approved for the casting subtitle; three VisionQA flags reviewed (subtitle near the help panel, units behind the help panel).
+- qa layers: shot and e2e timeouts 300 to 420 s; another project's GPU benchmarks (ecosystem-sim, its own headless browsers) loaded the PC and the smoke set took 4.5 min. Those processes were left alone.
+- BACKLOG 5a cut: conditional on close-zoom quality, which the anim_gallery shot shows is fine at pixelScale 3.
+- Full npm run qa PASS at 5b2587a. Tags m0-done to m11-done present; every P1 done or cut. State of the game rewritten.
+
