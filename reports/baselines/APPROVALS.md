@@ -36,3 +36,5 @@
 - 2026-10-09T12:51 set smoke (12 shots): M11: tribe rings instead of filled discs; close shot reviewed
 - 2026-10-09T12:55 set spells (8 shots): M11: tribe rings instead of filled discs (within tolerance, rebaselined to keep diffs exact)
 - 2026-10-09T14:48 set spells2 (9 shots): BACKLOG 1: first baselines for the eight new spells and the 16-slot two-row spell bar
+- 2026-10-09T16:18 set smoke (12 shots): BACKLOG 0a: tall three-tier conifers (70 percent of trees) and a grove ring around each Hearth (terrain.trees.hearthGrove)
+- 2026-10-09T16:21 set spells2 (9 shots): BACKLOG 0a: tall conifers and the Hearth grove ring now frame hud_all_spells

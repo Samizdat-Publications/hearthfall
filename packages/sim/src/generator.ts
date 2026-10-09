@@ -233,16 +233,28 @@ export function generateMap(cfg: SimConfig, spec: MapSpec, seed: number): Genera
     }
     const hearths = sites.map((i) => ({ x: i % n, y: Math.floor(i / n) }));
     for (const h of hearths) t.flattenToAverage(h.x, h.y, hp.flatRadius + 1, hp.minHeightAboveSea);
-    // 3. trees: band density times a cluster mask, away from hearths, on gentle land
+    // 3. trees: band density times a cluster mask, away from hearths, on gentle land; a grove ring around
+    // each Hearth (BACKLOG 0a: villages ringed by pine forest, the look v2 target) wherever its band grows trees
     const trees: { x: number; y: number }[] = [];
     const clear2 = tf.trees.clearRadiusAroundHearth * tf.trees.clearRadiusAroundHearth;
+    const grove = tf.trees.hearthGrove;
+    const groveAt = (x: number, y: number): number => {
+      if (!grove) return 0;
+      for (const hh of hearths) {
+        const d2 = torusDist2(n, x, y, hh.x, hh.y);
+        if (d2 >= grove.inner * grove.inner && d2 <= grove.outer * grove.outer) return grove.density;
+      }
+      return 0;
+    };
     for (let y = 0; y < n; y++) {
       for (let x = 0; x < n; x++) {
         const h = t.get(x, y);
         if (h < cfg.sea + 4 || t.slope(x, y) > tf.trees.maxSlope) continue;
         const cluster = valueNoise((x / n) * tf.trees.clusterPeriod, (y / n) * tf.trees.clusterPeriod, tf.trees.clusterPeriod, s ^ 0x5bd1e995);
-        if (cluster < tf.trees.clusterThreshold) continue;
-        const dens = tf.trees.densityByBand[bandOf(cfg, h)] * (cluster - tf.trees.clusterThreshold) / (1 - tf.trees.clusterThreshold) * 4;
+        const band = tf.trees.densityByBand[bandOf(cfg, h)];
+        const ring = band > 0 ? groveAt(x, y) : 0;
+        if (cluster < tf.trees.clusterThreshold && ring === 0) continue;
+        const dens = Math.max(ring, cluster < tf.trees.clusterThreshold ? 0 : band * (cluster - tf.trees.clusterThreshold) / (1 - tf.trees.clusterThreshold) * 4);
         if (!rng.chance("gen", dens)) continue;
         if (hearths.some((hh) => torusDist2(n, x, y, hh.x, hh.y) < clear2)) continue;
         const tx = wrap(x + 0.2 + rng.float("gen") * 0.6, n);

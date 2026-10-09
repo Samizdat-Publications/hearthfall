@@ -107,6 +107,30 @@
         "maxSlope": {
           "type": "number",
           "minimum": 0
+        },
+        "hearthGrove": {
+          "type": "object",
+          "properties": {
+            "inner": {
+              "type": "number",
+              "minimum": 0
+            },
+            "outer": {
+              "type": "number",
+              "minimum": 0
+            },
+            "density": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "required": [
+            "inner",
+            "outer",
+            "density"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [

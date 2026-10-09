@@ -1,5 +1,7 @@
 // Trees as InstancedMesh, placed at the wrapped copy nearest the focus by instance origin. Real GLB
 // tree models (M10, models.ts) when loaded, else faceted procedural placeholders from the palette.
+// BACKLOG 0a: a tall three-tier conifer joins the GLB set and takes PINE_SHARE of the trees, so forests
+// read as dark pine belts (the look v2 target) instead of round blobs.
 import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { CAT, type World } from "@hearthfall/sim";
@@ -7,6 +9,8 @@ import { TREE_MODELS, trimBase, type ModelParts } from "./models.ts";
 
 /** tree models are 2 to 3 units tall; this brings them to the placeholder scale the sim spacing expects */
 const TREE_MODEL_SCALE = 0.72;
+/** share of trees drawn as the tall conifer when the GLB models are loaded (BACKLOG 0a) */
+export const PINE_SHARE = 0.7;
 
 function colored(g: THREE.BufferGeometry, c: THREE.Color): THREE.BufferGeometry {
   const ng = g.index ? g.toNonIndexed() : g;
@@ -30,6 +34,17 @@ export function pineGeometry(pal: Record<string, string>): THREE.BufferGeometry 
   return mergeGeometries([trunk, low, high])!;
 }
 
+/** BACKLOG 0a: a tall, narrow conifer in three tiers (about 2.1 units), dark at the base and lighter on top. */
+export function tallPineGeometry(pal: Record<string, string>): THREE.BufferGeometry {
+  const dark = new THREE.Color(pal.forest ?? "#3f6b2e").multiplyScalar(0.8);
+  const light = new THREE.Color(pal.forest ?? "#3f6b2e").lerp(new THREE.Color(pal.moss ?? "#5e8c3a"), 0.45);
+  const trunk = colored(new THREE.CylinderGeometry(0.06, 0.09, 0.45, 5).translate(0, 0.22, 0), new THREE.Color(pal.woodDark ?? "#5e3a1a"));
+  const tiers = [0, 1, 2].map((k) =>
+    colored(new THREE.ConeGeometry(0.46 - k * 0.11, 0.9 - k * 0.12, 7).translate(0, 0.75 + k * 0.48, 0), dark.clone().lerp(light, k / 2)),
+  );
+  return mergeGeometries([trunk, ...tiers])!;
+}
+
 export function broadleafGeometry(pal: Record<string, string>): THREE.BufferGeometry {
   const trunk = colored(new THREE.CylinderGeometry(0.08, 0.12, 0.6, 5).translate(0, 0.3, 0), new THREE.Color(pal.wood ?? "#8b5a2b"));
   const crown = colored(new THREE.IcosahedronGeometry(0.5, 0).scale(1, 0.85, 1).translate(0, 0.95, 0), new THREE.Color(pal.moss ?? "#5e8c3a").lerp(new THREE.Color(pal.meadow ?? "#8dbf5a"), 0.3));
@@ -47,6 +62,8 @@ export class TreeLayer {
   /** model ids drawn by this layer (empty: placeholders) */
   readonly modelIds: string[] = [];
   private readonly unit: number;
+  /** mesh index of the tall conifer (-1 with placeholders) */
+  private readonly pine: number;
   private cap: number;
   private lastKey = "";
   private readonly m = new THREE.Matrix4();
@@ -61,7 +78,9 @@ export class TreeLayer {
     const real = models && TREE_MODELS.every((id) => models.has(id)) ? TREE_MODELS.map((id) => trimBase(models.get(id)!.body!, models.get(id)!.size.y, 0.2, 0.45)) : null;
     if (real) this.modelIds.push(...TREE_MODELS);
     this.unit = real ? TREE_MODEL_SCALE : 1;
-    this.meshes = (real ?? [pineGeometry(pal), broadleafGeometry(pal)]).map((g) => {
+    // with real models the conifer is the last mesh, drawn at its own (placeholder) scale
+    this.pine = real ? real.length : -1;
+    this.meshes = (real ? [...real, tallPineGeometry(pal)] : [pineGeometry(pal), broadleafGeometry(pal)]).map((g) => {
       const im = new THREE.InstancedMesh(g, material, cap);
       im.frustumCulled = false;
       im.count = 0;
@@ -81,7 +100,11 @@ export class TreeLayer {
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.tree) continue;
       const h = hashf(i, 0x51);
-      const kind = this.meshes.length === 2 ? (h < 0.6 ? 0 : 1) : Math.min(this.meshes.length - 1, Math.floor(h * this.meshes.length));
+      const kind =
+        this.pine < 0
+          ? h < 0.6 ? 0 : 1
+          : h < PINE_SHARE ? this.pine : Math.min(this.pine - 1, Math.floor(((h - PINE_SHARE) / (1 - PINE_SHARE)) * this.pine));
+      const isPine = kind === this.pine;
       const k = counts[kind];
       if (k >= this.cap) continue;
       let x = E.x[i] - focusX;
@@ -89,15 +112,15 @@ export class TreeLayer {
       x -= Math.round(x / n) * n;
       z -= Math.round(z / n) * n;
       const y = w.terrain.heightAt(E.x[i], E.y[i]) * heightScale;
-      const sc = this.unit * (0.8 + 0.5 * hashf(i, 0x77)) * (0.6 + (0.4 * E.wood[i]) / 4);
+      const sc = (isPine ? 1 : this.unit) * (0.8 + 0.5 * hashf(i, 0x77)) * (0.6 + (0.4 * E.wood[i]) / 4);
       this.q.setFromAxisAngle(this.up, hashf(i, 0x33) * 6.283);
-      this.s.set(sc, sc * (0.9 + 0.3 * hashf(i, 0x99)), sc);
+      this.s.set(sc, sc * (isPine ? 1.05 + 0.35 * hashf(i, 0x99) : 0.9 + 0.3 * hashf(i, 0x99)), sc);
       this.p.set(focusX + x, y - 0.05, focusZ + z);
       this.m.compose(this.p, this.q, this.s);
       this.meshes[kind].setMatrixAt(k, this.m);
       // real tree models read as dark blobs from afar (M10 sheet), so they are lifted and nudged toward the meadow
-      const tint = (this.unit < 1 ? 1.35 : 0.85) + 0.3 * hashf(i, 0x13);
-      if (this.unit < 1) this.c.setRGB(tint * 0.95, tint * 1.1, tint * 0.8);
+      const tint = (this.unit < 1 && !isPine ? 1.35 : 0.85) + 0.3 * hashf(i, 0x13);
+      if (this.unit < 1 && !isPine) this.c.setRGB(tint * 0.95, tint * 1.1, tint * 0.8);
       else this.c.setRGB(tint, tint, tint * 0.95);
       this.meshes[kind].setColorAt(k, this.c);
       counts[kind]++;

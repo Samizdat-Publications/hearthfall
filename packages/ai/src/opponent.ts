@@ -688,6 +688,9 @@ export class OpponentAI implements Controller {
             : this.clusterAt(w, i, kind === "wild") + (kind === "units" && killsCaster && w.cfg.pack.units.units[E.type[i]].isCaster ? 2 : 0);
         // own-troop spells need a real group (a lone soldier is not worth the charge)
         if ((kind === "ownFighting" || kind === "ownMarching") && score < 3) continue;
+        // beyond range the cast walks the Shaper in, which fails on another landmass (BACKLOG 0a, ai soak
+        // seed 1002: a Lightning queued and failed every decision, overriding the approach move)
+        if (score > bestScore && dx * dx + dy * dy > def.range * def.range && this.comp(w, E.x[i], E.y[i]) !== this.comp(w, E.x[c.si], E.y[c.si])) continue;
         if (score > bestScore) {
           bestScore = score;
           best = i;

@@ -30,7 +30,12 @@
     "clusterPeriod": 10,
     "clusterThreshold": 0.42,
     "clearRadiusAroundHearth": 5,
-    "maxSlope": 14
+    "maxSlope": 14,
+    "hearthGrove": {
+      "inner": 9,
+      "outer": 15,
+      "density": 0.25
+    }
   },
   "hearth": {
     "flatRadius": 3,

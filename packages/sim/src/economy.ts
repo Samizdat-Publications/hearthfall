@@ -236,7 +236,7 @@ export class EconomySystem {
   }
 
   /** Walkable component of the vertex nearest an entity (0 when none is walkable nearby); r 2 for units, snapRadius for buildings. */
-  private compOf(i: number, r = 2): number {
+  compOf(i: number, r = 2): number {
     const pf = this.w.units.pf;
     pf.refresh();
     const n = this.w.terrain.size;

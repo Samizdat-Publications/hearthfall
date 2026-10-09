@@ -494,6 +494,8 @@ export const TerrainFileSchema = z.strictObject({
     clusterThreshold: z.number().min(0).max(1),
     clearRadiusAroundHearth: pos,
     maxSlope: pos,
+    /** BACKLOG 0a: a grove ring around each Hearth (cells from its center), planted at least at this density */
+    hearthGrove: z.strictObject({ inner: pos, outer: pos, density: z.number().min(0).max(1) }).optional(),
   }),
   hearth: z.strictObject({ flatRadius: pos, minHeightAboveSea: pos, maxSiteRange: pos, minSpacingFracOfSize: z.number().min(0).max(0.5) }),
   wild: z.strictObject({ distance: range2 }),

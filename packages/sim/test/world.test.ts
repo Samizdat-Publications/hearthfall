@@ -33,6 +33,28 @@ describe("planet generator", () => {
         });
         const wild = w.count((i) => w.ents.cat[i] === CAT.unit && w.ents.tribe[i] === -1);
         expect(wild).toBeGreaterThanOrEqual(6 * 4 - 4);
+        // BACKLOG 0a: every village is ringed by a grove (look v2 pine belts)
+        const g = w.cfg.pack.terrain.trees.hearthGrove!;
+        for (const h of hearths) {
+          const ring = w.count((i) => {
+            if (w.ents.cat[i] !== CAT.tree) return false;
+            const dx = wrapDelta(w.ents.x[i] - w.ents.x[h], 128);
+            const dy = wrapDelta(w.ents.y[i] - w.ents.y[h], 128);
+            const d = Math.sqrt(dx * dx + dy * dy);
+            return d >= g.inner && d <= g.outer;
+          });
+          // gentle land in the ring (the generator's tree rule), so a coastal village is judged by its land
+          let land = 0;
+          for (let dy = -g.outer; dy <= g.outer; dy++) {
+            for (let dx = -g.outer; dx <= g.outer; dx++) {
+              const d2 = dx * dx + dy * dy;
+              const x = Math.round(w.ents.x[h]) + dx;
+              const y = Math.round(w.ents.y[h]) + dy;
+              if (d2 >= g.inner * g.inner && d2 <= g.outer * g.outer && t.get(x, y) >= t.sea + 4 && t.slope(x, y) <= w.cfg.pack.terrain.trees.maxSlope) land++;
+            }
+          }
+          expect(ring).toBeGreaterThanOrEqual(0.12 * land);
+        }
       });
     }
   }

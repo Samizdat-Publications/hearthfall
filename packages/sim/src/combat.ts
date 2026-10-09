@@ -843,6 +843,9 @@ registerCommand("train", {
     else {
       const free: { i: number; d: number; housed: number }[] = [];
       const n = w.terrain.size;
+      // only settlers on the lodge's landmass (BACKLOG 0a, ai soak seed 1008: settlers across a cliff were
+      // picked every AI decision and failed their walk)
+      const lc = w.economy.compOf(b, w.cfg.pack.balance.movement.snapRadius);
       for (let i = 0; i < E.hi; i++) {
         if (!E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] !== E.tribe[b] || E.type[i] !== w.economy.typeSettler || E.mode[i] !== CMODE.none) continue;
         const tk = E.task[i];
@@ -851,6 +854,7 @@ registerCommand("train", {
           if (E.occupants[E.inside[i]] <= 1) continue;
           housed = 1;
         } else if (tk !== TASK.idle && tk !== TASK.wander && tk !== TASK.toTree && tk !== TASK.toWork && tk !== TASK.work && tk !== TASK.toHome) continue;
+        if (lc > 0 && w.economy.compOf(i) !== lc) continue;
         const dx = wrapDelta(E.x[i] - E.x[b], n);
         const dy = wrapDelta(E.y[i] - E.y[b], n);
         free.push({ i, d: dx * dx + dy * dy, housed });

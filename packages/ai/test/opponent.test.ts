@@ -154,6 +154,28 @@ describe("OpponentAI (M7)", () => {
     expect(w.tribes[1].alive).toBe(false);
   }, 30000);
 
+  it("no spell is aimed beyond range at a cluster on another landmass (regression, ai soak seed 1002)", () => {
+    const castAt = (moat: boolean) => {
+      const w = world({ generator: "flat", size: 64, tribes: 2 });
+      w.spawnBuilding("hearth", 0, 12, 32);
+      w.spawnBuilding("hearth", 1, 56, 32);
+      w.spawnUnit("shaper", 0, 24, 32);
+      w.spawnUnit("shaper", 1, 58, 32);
+      for (let k = 0; k < 3; k++) w.spawnUnit("warden", 1, 33 + k * 0.5, 32);
+      if (moat) {
+        const t = w.terrain;
+        for (let y = 26; y <= 38; y++) for (let x = 28; x <= 40; x++) if (Math.max(Math.abs(x - 34), Math.abs(y - 32)) >= 3 && Math.max(Math.abs(x - 34), Math.abs(y - 32)) <= 5) t.heights[t.idx(x, y)] = 0;
+        t.version++;
+      }
+      w.step([]);
+      w.tribes[0].eco.charges[w.cfg.spellIndex.get("bolt")!] = 2;
+      const ai = new OpponentAI({ tribe: 0, personality: { ...bold, spellPrefs: ["bolt"], firstAttackMinute: 99 }, every: 1 });
+      return ai.decide(w).some((c) => c.type === "cast");
+    };
+    expect(castAt(false)).toBe(true);
+    expect(castAt(true)).toBe(false);
+  });
+
   it("a hurt Shaper is pulled back to the Hearth and covered by idle troops", () => {
     const w = world({ generator: "flat", size: 64, tribes: 2 });
     w.spawnBuilding("hearth", 0, 12, 32);

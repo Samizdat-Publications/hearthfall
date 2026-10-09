@@ -269,6 +269,24 @@ describe("combat (M6)", () => {
     expect(w.invariants()).toEqual([]);
   });
 
+  it("train by count only picks settlers that can walk to the lodge (regression, ai soak seed 1008)", () => {
+    const w = arena();
+    const t = w.terrain;
+    // two water channels cut the torus in half: the nearest settlers are on the far side
+    for (let y = 0; y < 64; y++) for (const x of [26, 27, 28, 60, 61, 62]) t.heights[t.idx(x, y)] = 0;
+    t.version++;
+    const lodge = w.spawnBuilding("warden_lodge", 0, 20, 20);
+    const far = [0, 1].map((k) => w.ents.index(w.spawnUnit("settler", 0, 31, 20 + k)));
+    const near = [0, 1].map((k) => w.ents.index(w.spawnUnit("settler", 0, 8, 10 + k)));
+    w.step([]);
+    w.units.pf.refresh();
+    w.step(cmd(0, "train", { building: lodge, count: 2 }));
+    expect(far.every((i) => w.ents.task[i] !== TASK.toTrain)).toBe(true);
+    expect(near.every((i) => w.ents.task[i] === TASK.toTrain)).toBe(true);
+    w.run(20);
+    expect(w.eventCounts.get("orderFailed") ?? 0).toBe(0);
+  });
+
   it("train rejects full queues, non-lodges and other tribes' lodges", () => {
     const w = arena();
     const lodge = w.spawnBuilding("warden_lodge", 0, 20, 20);
