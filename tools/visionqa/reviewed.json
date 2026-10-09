@@ -6,6 +6,24 @@
       "id": "beguile",
       "reason": "pink Beguile status rings under a crowd read as artifacts; scene correct (Claude looked)",
       "at": "2026-10-09"
+    },
+    "b9e7a73991344dd3c62a375eb8aece1afffab0d3edbdd455fee44b8109b3df89": {
+      "set": "combat",
+      "id": "anim_gallery",
+      "reason": "the top row of pose units stands partly behind the help panel at close zoom; world behind a panel, not panels overlapping (DOM check clean)",
+      "at": "2026-10-09"
+    },
+    "f29f8681e8fc5f0ea9fb2ad53c667c4bb04aa9cef354ac83d82cf4726680942d": {
+      "set": "spells2",
+      "id": "mire",
+      "reason": "BACKLOG 8 bark subtitle 45 px right of the help panel and over the world; no panel overlap (DOM check clean)",
+      "at": "2026-10-09"
+    },
+    "98f9b950b0dbf9e55d3118d3dbc1455ec7dccc079eddbd69a588f4975afb6983": {
+      "set": "spells2",
+      "id": "firerain",
+      "reason": "BACKLOG 8 bark subtitle 45 px right of the help panel and over the world; no panel overlap (DOM check clean)",
+      "at": "2026-10-09"
     }
   }
 }

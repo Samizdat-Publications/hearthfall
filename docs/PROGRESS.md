@@ -35,7 +35,7 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 (none)
 
 ## Cuts and deferrals
-(none)
+- BACKLOG 5a (rigged clips, P1 but conditional: "only if close-zoom quality needs it"). Cut 10/09/2026: at the closest camera zoom with the retro pass (pixelScale 3) units are about 60 to 90 screen px tall and the procedural poses (walk, work, attack, shoot, cast, pray, panic, idle) read clearly in the combat anim_gallery shot, so the condition is not met; Meshy rigging would also spend asset budget for little visible gain. Revisit if a close-up or portrait camera ships (ADR-012 fallback stays valid: same instanceAnim attribute).
 
 ## Balance gaps
 (soft gate numbers that missed their targets, with the milestone)

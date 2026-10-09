@@ -770,6 +770,26 @@
       "when": "2026-10-09T20:21:16.403Z",
       "source": "external:soak-difficulty.png",
       "bytes": 24527
+    },
+    {
+      "file": "b8/20261009-2205_colorblind-palette.png",
+      "milestone": "B8",
+      "kind": "screenshot",
+      "caption": "BACKLOG 8 accessibility. Added: a colorblind tribe palette (deep blue, orange, purple, mint), chosen by simulating red-green and blue-yellow color blindness so every pair of tribes stays far apart for every viewer; here at 125 percent HUD scale on 1920x1080. Also added: subtitles for Shaper barks and a UI scale setting.",
+      "highlight": false,
+      "when": "2026-10-09T22:05:51.198Z",
+      "source": "external:colorblind.png",
+      "bytes": 278757
+    },
+    {
+      "file": "b8/20261009-2205_uiscale-fit.png",
+      "milestone": "B8",
+      "kind": "screenshot",
+      "caption": "BACKLOG 8: the first 125 percent HUD on a 1280x720 window put the stats panel over the spell bar and the build column over the minimap. Changed: the HUD now shrinks itself in 5 percent steps until nothing overlaps (150 percent asked, about 105 fits here).",
+      "highlight": false,
+      "when": "2026-10-09T22:05:55.831Z",
+      "source": "external:uiscale_fit.png",
+      "bytes": 181770
     }
   ]
 }

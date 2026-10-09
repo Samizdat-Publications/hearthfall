@@ -88,7 +88,10 @@ export async function runChecks(out) {
         flag = true;
         why.push(`${c.id} ${v.status}`);
       }
-      if (v.status === "fail" && !v.advisory) {
+      // a planted overlap (expectDomIssue shots) that the DOM check also found: VisionQA agrees, no flag
+      const planted = c.id === "ui_overlap" && (s.checks?.dom?.issues ?? []).some((i) => i.includes(" overlaps "));
+      if (v.status === "fail" && planted) v.expected = true;
+      else if (v.status === "fail" && !v.advisory) {
         flag = true;
         why.push(`${c.id} failed (${v.value})`);
       }

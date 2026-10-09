@@ -66,3 +66,6 @@
 - 2026-10-09T20:59 set spells2 (9 shots): BACKLOG 5 unit poses (procedural animation) on units in beguile, mire, firerain; diffs only on unit bodies
 - 2026-10-09T21:00 set spells (8 shots): BACKLOG 5 unit poses (procedural animation) on units in bolt, quake, hornets; diffs only on unit bodies
 - 2026-10-09T21:59 set combat (7 shots): BACKLOG 8: new colorblind (1920x1080, 125 percent HUD) and uiscale_fit (150 asked on 1280x720, stepped down) shots
+- 2026-10-09T22:16 set smoke (12 shots): BACKLOG 8: units_select_move now shows the Shaper bark subtitle (moved to 30 percent down, clear of the troop panel)
+- 2026-10-09T23:28 set spells (8 shots): BACKLOG 8: the Shaper casting bark subtitle now shows in every spell shot (diff is the subtitle only, 1.1 percent)
+- 2026-10-09T23:30 set spells2 (9 shots): BACKLOG 8: the Shaper casting bark subtitle now shows in spell shots (diff is the subtitle only, 1.1 percent)

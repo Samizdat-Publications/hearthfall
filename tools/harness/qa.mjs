@@ -6,6 +6,7 @@ import { ROOT, gitSha, readJson, runNode } from "./lib.mjs";
 import { guards, typecheck, unit } from "./steps.mjs";
 
 /** Layers of the full qa run, in order. Each runs as its own child process with its own timeout. */
+// shot and e2e layers get 7 min: on a loaded PC (100 percent CPU from other work) the smoke set took 4.5 min
 const LAYERS = [
   { id: "check", cmd: ["check"], timeoutMs: 120000 },
   { id: "unit", cmd: ["unit"], timeoutMs: 180000 },
@@ -13,11 +14,11 @@ const LAYERS = [
   { id: "replays", cmd: ["replays"], timeoutMs: 180000 },
   { id: "bench", cmd: ["bench"], timeoutMs: 240000 },
   { id: "bench-render", cmd: ["bench-render"], timeoutMs: 240000 },
-  { id: "shot", cmd: ["shot", "--set", "smoke"], timeoutMs: 300000 },
-  { id: "shot-spells", cmd: ["shot", "--set", "spells"], timeoutMs: 300000 },
-  { id: "shot-combat", cmd: ["shot", "--set", "combat"], timeoutMs: 300000 },
-  { id: "shot-spells2", cmd: ["shot", "--set", "spells2"], timeoutMs: 300000 },
-  { id: "e2e", cmd: ["e2e"], timeoutMs: 300000 },
+  { id: "shot", cmd: ["shot", "--set", "smoke"], timeoutMs: 420000 },
+  { id: "shot-spells", cmd: ["shot", "--set", "spells"], timeoutMs: 420000 },
+  { id: "shot-combat", cmd: ["shot", "--set", "combat"], timeoutMs: 420000 },
+  { id: "shot-spells2", cmd: ["shot", "--set", "spells2"], timeoutMs: 420000 },
+  { id: "e2e", cmd: ["e2e"], timeoutMs: 420000 },
   { id: "prod", cmd: ["prod"], timeoutMs: 240000 },
   { id: "replays-browser", cmd: ["replays", "--browser"], timeoutMs: 180000 },
   { id: "visionqa", cmd: ["visionqa", "--set", "smoke"], timeoutMs: 180000 },

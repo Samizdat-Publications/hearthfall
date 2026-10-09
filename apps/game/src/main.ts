@@ -88,6 +88,12 @@ try {
 // BACKLOG 8: refit the HUD scale when the setting or the window changes, or when grown content overlaps
 function refitHud() {
   if (game.screen !== "none") return;
+  // the visual QA calibration flag overlaps panels on purpose: leave them at the wanted scale
+  if (document.body.classList.contains("debug-overlap-hud")) {
+    fitKey = "";
+    hudEl.style.setProperty("--hud-scale", String(game.uiScaleWanted));
+    return;
+  }
   const key = `${game.uiScaleWanted} ${innerWidth}x${innerHeight}`;
   if (key !== fitKey || !hudFits(hudEl)) {
     fitKey = key;
