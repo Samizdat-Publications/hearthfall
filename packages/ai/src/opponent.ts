@@ -85,6 +85,8 @@ export class OpponentAI implements Controller {
   private eco: EconomyBot;
   private ready = false;
   private known = new Set<number>();
+  /** set once a wave found no walkable route: bridge spells join the prefs even if the personality lacks them */
+  private needBridge = false;
   private scout = NO_ENTITY;
   private readonly actions: Action[];
 
@@ -178,10 +180,18 @@ export class OpponentAI implements Controller {
   /** auto-charge the preferred spells the tribe has unlocked (once each: only when not yet on) */
   private setup(w: World, out: Command[]): void {
     const eco = w.tribes[this.tribe].eco;
-    for (const id of this.p.spellPrefs) {
+    for (const id of this.spellPrefs(w)) {
       const s = w.cfg.spellIndex.get(id);
       if (s !== undefined && eco.unlocked[s] && !eco.auto[s]) out.push(this.cmd(w, "setAutoCharge", { spell: id, on: true }));
     }
+  }
+
+  /** the personality's spell prefs, plus any bridge spell once the enemy is out of reach on foot (BACKLOG 7,
+   * ai-idle seed 1003: a Shaper thrown onto another landmass outlived a personality that never bridges) */
+  private spellPrefs(w: World): string[] {
+    if (!this.needBridge) return this.p.spellPrefs;
+    const extra = w.cfg.pack.spells.spells.filter((s) => s.aiTarget === "bridge" && !this.p.spellPrefs.includes(s.id)).map((s) => s.id);
+    return [...this.p.spellPrefs, ...extra];
   }
 
   private cmd(w: World, type: string, args: Record<string, unknown>): Command {
@@ -225,8 +235,15 @@ export class OpponentAI implements Controller {
     const ds: [number, number, number][] = [];
     for (const t of w.tribes) {
       if (t.index === this.tribe || !t.alive) continue;
-      const eh = E.index(t.hearth);
-      if (eh < 0) continue;
+      let eh = E.index(t.hearth);
+      if (eh < 0) {
+        // the Hearth fell but the tribe lives on while its Shaper does: hunt her (BACKLOG 7, ai-idle
+        // seed 1000: a Shaper that slipped the first wave kept an idle tribe alive for the whole match)
+        const s = E.index(t.shaper);
+        if (s < 0 || E.veil[s] !== 0) continue;
+        eh = s;
+        this.known.add(t.index);
+      }
       const dx = wrapDelta(E.x[eh] - E.x[h], n);
       const dy = wrapDelta(E.y[eh] - E.y[h], n);
       ds.push([dx * dx + dy * dy, t.index, eh]);
@@ -506,10 +523,11 @@ export class OpponentAI implements Controller {
     if (c.minute < this.p.firstAttackMinute || !c.enemies.length) return 0;
     const ratio = c.idle.length / this.waveSize();
     if (ratio < 1) return 0;
-    // mixed waves: hold a single-type wave while a second lodge is up, for up to 3 minutes
+    // mixed waves: hold a single-type wave while a second lodge is up or still being built (BACKLOG 7:
+    // waiting only for a finished one let fast single-type waves end the match first), for up to 3 minutes
     const kinds = new Set(c.idle.map((i) => c.w.ents.type[i])).size;
-    const lodgesDone = [...c.lodges.values()].filter((l) => l.some((b) => c.w.ents.state[b] === BSTATE.done)).length;
-    if (kinds < 2 && lodgesDone >= 2 && c.minute < this.p.firstAttackMinute + 3) return 0;
+    const lodgeKinds = [...c.lodges.values()].filter((l) => l.length > 0).length;
+    if (kinds < 2 && lodgeKinds >= 2 && c.minute < this.p.firstAttackMinute + 3) return 0;
     return clamp01(0.35 + 0.5 * this.p.aggression + 0.15 * (ratio - 1));
   }
 
@@ -521,6 +539,7 @@ export class OpponentAI implements Controller {
     const ranked = [...c.enemies.filter(([t]) => this.known.has(t)), ...c.enemies.filter(([t]) => !this.known.has(t))];
     const target = ranked.find(([, eh]) => this.comp(w, E.x[eh], E.y[eh]) === home);
     if (!target) {
+      if (E.cat[ranked[0][1]] === CAT.unit) this.approach(c, out, ranked[0][1], home);
       this.bridge(c, out, ranked[0][1]);
       return;
     }
@@ -540,10 +559,42 @@ export class OpponentAI implements Controller {
     if (kinds.size >= 2) this.stats.mixedWaves++;
   }
 
+  /** A hunted Shaper out of reach on foot (BACKLOG 7, ai-idle seed 1003: stranded in a one-cell pocket among
+   * cliffs): our Shaper walks to the nearest cell of our landmass within 10 of her, so a spell reaches. */
+  private approach(c: Census, out: Command[], e: number, home: number): void {
+    const w = c.w;
+    const E = w.ents;
+    if (c.si < 0 || w.tribes[this.tribe].casting || w.tribes[this.tribe].pending || this.protectScore(c) > 0) return;
+    const n = w.terrain.size;
+    const pf = w.units.pf;
+    const ex = Math.round(E.x[e]);
+    const ey = Math.round(E.y[e]);
+    let best = -1;
+    let bestD = 101;
+    for (let dy = -10; dy <= 10; dy++) {
+      for (let dx = -10; dx <= 10; dx++) {
+        const d = dx * dx + dy * dy;
+        if (d >= bestD) continue;
+        const v = ((((ex + dx) % n) + n) % n) + ((((ey + dy) % n) + n) % n) * n;
+        if (pf.nearestWalkable(v, 0) !== v || pf.comp[v] !== home) continue;
+        best = v;
+        bestD = d;
+      }
+    }
+    if (best < 0) return;
+    const bx = best % n;
+    const by = (best - bx) / n;
+    const sx = wrapDelta(bx - E.x[c.si], n);
+    const sy = wrapDelta(by - E.y[c.si], n);
+    if (sx * sx + sy * sy < 4) return;
+    out.push(this.cmd(w, "move", { units: [E.idOf(c.si)], to: [bx, by] }));
+  }
+
   /** terrain attack: no walkable route to the enemy, so the Shaper raises land from the nearest shore toward it */
   private bridge(c: Census, out: Command[], eh: number): void {
     const w = c.w;
     const E = w.ents;
+    this.needBridge = true;
     if (c.si < 0 || w.tribes[this.tribe].casting || w.tribes[this.tribe].pending) return;
     const spell = this.chargedSpell(w, "bridge");
     if (!spell) return;
@@ -585,7 +636,7 @@ export class OpponentAI implements Controller {
   /** first preferred spell with a charge whose aiTarget matches */
   private chargedSpell(w: World, kind: string): string | null {
     const eco = w.tribes[this.tribe].eco;
-    for (const id of this.p.spellPrefs) {
+    for (const id of this.spellPrefs(w)) {
       const s = w.cfg.spellIndex.get(id);
       if (s === undefined || !eco.unlocked[s] || eco.charges[s] <= 0) continue;
       if (w.cfg.pack.spells.spells[s].aiTarget === kind) return id;
@@ -612,6 +663,7 @@ export class OpponentAI implements Controller {
       const reach = def.range + 10;
       const kind = def.aiTarget ?? "none";
       if (kind === "none" || kind === "bridge") continue;
+      const killsCaster = def.effects.some((e) => e.type === "damageRadius" && (e.canKill?.length ?? 0) > 0);
       let best = -1;
       let bestScore = 0;
       for (let i = 0; i < E.hi; i++) {
@@ -629,7 +681,11 @@ export class OpponentAI implements Controller {
         const dy = wrapDelta(E.y[i] - E.y[c.si], n);
         if (dx * dx + dy * dy > reach * reach) continue;
         // value: units in a cluster (or the building's own worth) near the point
-        const score = kind === "buildings" ? 2 + (w.cfg.pack.buildings.buildings[E.type[i]].id === "hearth" ? 3 : 0) : this.clusterAt(w, i, kind === "wild");
+        // a spell that can kill a Shaper values one even alone (BACKLOG 7: the last Shaper of a fallen tribe)
+        const score =
+          kind === "buildings"
+            ? 2 + (w.cfg.pack.buildings.buildings[E.type[i]].id === "hearth" ? 3 : 0)
+            : this.clusterAt(w, i, kind === "wild") + (kind === "units" && killsCaster && w.cfg.pack.units.units[E.type[i]].isCaster ? 2 : 0);
         // own-troop spells need a real group (a lone soldier is not worth the charge)
         if ((kind === "ownFighting" || kind === "ownMarching") && score < 3) continue;
         if (score > bestScore) {

@@ -54,4 +54,31 @@ describe("unit orders", () => {
     expect(gaveUp).toEqual([]);
     for (const i of ids) expect(E.x[i]).toBeGreaterThan(34);
   });
+
+  // regression (BACKLOG 7 ai soak, seed 1008): a wild person's straight path was blocked, the stuck
+  // repath found a longer detour round the wrap, but progress was still measured against the old short
+  // route, so it gave up 8 cells from a reachable goal while walking the new route
+  it("a stuck repath onto a longer detour restarts route progress instead of giving up", () => {
+    const w = world({ generator: "flat", size: 64, tribes: 2 });
+    const t = w.terrain;
+    const E = w.ents;
+    // a wall between the unit and its goal with one gap far to the north
+    for (let y = 10; y <= 60; y++) t.heights[t.idx(30, y)] = 600;
+    t.version++;
+    const i = E.index(w.spawnUnit("settler", 0, 26, 40));
+    w.units.order([i], 34, 40);
+    w.step([]);
+    w.step([]);
+    // as if the unit had come within 2 cells along a straight route before a stuck repath
+    E.best[i] = 2;
+    E.waitPath[i] = 1;
+    (w.units as unknown as { queue: number[] }).queue.push(E.idOf(i));
+    const gaveUp: string[] = [];
+    for (let k = 0; k < 40 * 20; k++) {
+      w.step([]);
+      for (const e of w.events) if (e.type === "orderGaveUp") gaveUp.push(JSON.stringify(e));
+    }
+    expect(gaveUp).toEqual([]);
+    expect(Math.abs(E.x[i] - 34) + Math.abs(E.y[i] - 40)).toBeLessThan(2);
+  });
 });

@@ -1,6 +1,6 @@
 {
   "id": "combat_chanter_converts",
-  "description": "A Chanter channels next to enemy Wardens, entrances them and converts up to its per-channel cap.",
+  "description": "A Chanter channels next to passive enemy Wardens and converts up to its per-channel cap.",
   "tags": [
     "fast",
     "combat"

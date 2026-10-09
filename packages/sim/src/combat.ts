@@ -653,9 +653,12 @@ export class CombatSystem {
       E.py[i] = E.y[b];
       w.emit(tk === TASK.toTrain ? "enteredLodge" : "garrisoned", { id: E.idOf(i), tribe: E.tribe[i], building: E.idOf(b) });
     }
-    // lodges: one trainee at a time in arrival order; pay from the training sink, then train
+    // lodges: one trainee at a time in arrival order; pay from the training sink, then train. Payments
+    // wait for the loop and go oldest trainee first per tribe (BACKLOG 7: in index order a cheap lodge
+    // with a full queue took every payment and a dearer lodge never trained)
     const unpaid = new Float64Array(w.tribes.length);
     const queued = this.queued();
+    const due: number[] = [];
     for (let b = 0; b < E.hi; b++) {
       if (!E.alive[b] || E.cat[b] !== CAT.building || E.state[b] !== BSTATE.done) continue;
       const into = this.trains[E.type[b]];
@@ -678,15 +681,9 @@ export class CombatSystem {
       const waiting = (queued.get(b) ?? 0) - (cur >= 0 ? 1 : 0);
       unpaid[tr] += waiting * cost;
       if (cur < 0) continue;
-      const eco = w.tribes[tr].eco;
       if (E.cd[b] === 0) {
-        if (eco.trainMana + 1e-9 >= cost) {
-          eco.trainMana = Math.max(0, eco.trainMana - cost);
-          E.cd[b] = 1;
-        } else {
-          unpaid[tr] += cost;
-          continue;
-        }
+        due.push(b);
+        continue;
       }
       E.progress[b] += 1 / Math.max(1, secondsToTicks(units[into].trainSeconds ?? 10, hz));
       if (E.progress[b] < 1 - 1e-9) continue;
@@ -704,6 +701,21 @@ export class CombatSystem {
       E.cd[cur] = 0;
       w.emit("trained", { id: E.idOf(cur), tribe: tr, kind: into, lodge: E.idOf(b) });
       if (E.mode[b] === 1) w.units.order([cur], E.ax[b], E.ay[b], ORDER.move);
+    }
+    // the paid lodge starts its first training step next tick; an unaffordable trainee blocks younger ones
+    due.sort((a, z) => E.timer[E.index(E.target[a])] - E.timer[E.index(E.target[z])] || a - z);
+    const blocked = new Uint8Array(w.tribes.length);
+    for (const b of due) {
+      const tr = E.tribe[b];
+      const cost = units[this.trains[E.type[b]]].trainMana ?? 0;
+      const eco = w.tribes[tr].eco;
+      if (!blocked[tr] && eco.trainMana + 1e-9 >= cost) {
+        eco.trainMana = Math.max(0, eco.trainMana - cost);
+        E.cd[b] = 1;
+      } else {
+        blocked[tr] = 1;
+        unpaid[tr] += cost;
+      }
     }
     for (const t of w.tribes) t.eco.trainDemand = t.alive ? Math.max(0, unpaid[t.index] - t.eco.trainMana) : 0;
   }

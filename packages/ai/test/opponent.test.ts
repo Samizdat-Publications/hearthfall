@@ -98,6 +98,62 @@ describe("OpponentAI (M7)", () => {
     expect(comp(12, 34)).toBe(comp(44, 34));
   }, 30000);
 
+  it("a personality without a bridge spell in its prefs still charges one once the enemy is out of reach (regression, ai-idle soak seed 1003)", () => {
+    const w = world({ generator: "flat", size: 64, tribes: 2 });
+    w.spawnBuilding("hearth", 0, 12, 32);
+    w.spawnUnit("shaper", 0, 14, 34);
+    w.spawnUnit("shaper", 1, 46, 34);
+    for (let k = 0; k < 5; k++) w.spawnUnit("warden", 0, 16 + k, 28);
+    const t = w.terrain;
+    for (let y = 0; y < 64; y++) for (const x of [28, 29, 30, 60, 61, 62]) t.heights[t.idx(x, y)] = 0;
+    t.version++;
+    w.step([]);
+    const ai = new OpponentAI({ tribe: 0, personality: { ...bold, spellPrefs: ["bolt"] }, every: 1 });
+    const charged = () => ai.decide(w).some((c) => c.type === "setAutoCharge" && c.args.spell === "raise_land" && c.args.on);
+    expect(charged()).toBe(false);
+    expect(charged()).toBe(true);
+  });
+
+  it("a tribe whose Hearth fell is hunted down through its Shaper (regression, ai-idle soak seed 1000)", () => {
+    const w = world({ generator: "flat", size: 64, tribes: 2 });
+    w.spawnBuilding("hearth", 0, 12, 32);
+    w.spawnUnit("shaper", 0, 13, 34);
+    // tribe 1 has no Hearth left, only its Shaper, so it is still alive
+    const enemy = w.ents.index(w.spawnUnit("shaper", 1, 40, 20));
+    for (let k = 0; k < 5; k++) w.spawnUnit("warden", 0, 14 + k, 28);
+    w.step([]);
+    expect(w.tribes[1].alive).toBe(true);
+    const ai = new OpponentAI({ tribe: 0, personality: bold, every: 1 });
+    const out = ai.decide(w);
+    const wave = out.find((c) => c.type === "move" && c.args.attack);
+    expect(wave).toBeDefined();
+    const [x, y] = wave!.args.to as number[];
+    expect(Math.abs(x - w.ents.x[enemy]) + Math.abs(y - w.ents.y[enemy])).toBeLessThan(2);
+  });
+
+  it("a hunted Shaper stranded out of reach on foot is struck down with a Shaper-killing spell (regression, ai-idle soak seed 1003)", () => {
+    const w = world({ generator: "flat", size: 64, tribes: 2 });
+    w.spawnBuilding("hearth", 0, 12, 32);
+    w.spawnUnit("shaper", 0, 14, 34);
+    const enemy = w.ents.index(w.spawnUnit("shaper", 1, 44, 32));
+    for (let k = 0; k < 5; k++) w.spawnUnit("warden", 0, 16 + k, 28);
+    // a moat around a 3 by 3 island holding the Hearthless tribe's Shaper
+    const t = w.terrain;
+    for (let y = 27; y <= 37; y++) for (let x = 39; x <= 49; x++) if (Math.max(Math.abs(x - 44), Math.abs(y - 32)) >= 2 && Math.max(Math.abs(x - 44), Math.abs(y - 32)) <= 4) t.heights[t.idx(x, y)] = 0;
+    t.version++;
+    w.tribes[0].eco.charges[w.cfg.spellIndex.get("lightning")!] = 2;
+    const ai = new OpponentAI({ tribe: 0, personality: { ...bold, spellPrefs: ["lightning"] }, difficulty: "hard" });
+    w.controllers.push(ai);
+    let struck = false;
+    for (let k = 0; k < 90 * 20 && w.tribes[1].alive; k++) {
+      w.step([]);
+      struck ||= w.events.some((e) => e.type === "spellCast" && e.spell === "lightning");
+    }
+    expect(struck).toBe(true);
+    expect(w.ents.alive[enemy] === 1 && w.ents.tribe[enemy] === 1).toBe(false);
+    expect(w.tribes[1].alive).toBe(false);
+  }, 30000);
+
   it("a hurt Shaper is pulled back to the Hearth and covered by idle troops", () => {
     const w = world({ generator: "flat", size: 64, tribes: 2 });
     w.spawnBuilding("hearth", 0, 12, 32);

@@ -251,7 +251,8 @@ const Convert = z.strictObject({
   maxPerChannel: z.number().int().positive(),
   entrancedFreeze: z.boolean(),
   cannotConvert: z.array(id),
-  interruptedBy: z.array(z.enum(["rangedDamage", "spell", "terrainChangeNear"])),
+  /** BACKLOG 7: meleeDamage lets a melee swing break the channel too (ranged hits and spells always do) */
+  interruptedBy: z.array(z.enum(["rangedDamage", "spell", "terrainChangeNear", "meleeDamage"])),
   cooldownSeconds: pos,
 });
 export const UnitSchema = z.strictObject({

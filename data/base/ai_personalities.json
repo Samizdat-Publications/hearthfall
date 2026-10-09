@@ -27,7 +27,7 @@
     {
       "id": "sneaky",
       "tribeColorDefault": "amber",
-      "economyTargetPop": 50,
+      "economyTargetPop": 42,
       "armyMix": {
         "warden": 0.35,
         "firecaller": 0.3,
@@ -40,10 +40,8 @@
         "veil",
         "whirlwind",
         "wraith",
-        "call",
         "raise_land",
-        "bolt",
-        "hornets"
+        "bolt"
       ],
       "scouting": 0.9,
       "towerAffinity": 0.3
@@ -51,13 +49,13 @@
     {
       "id": "turtle",
       "tribeColorDefault": "jade",
-      "economyTargetPop": 55,
+      "economyTargetPop": 45,
       "armyMix": {
         "warden": 0.45,
         "firecaller": 0.45,
         "chanter": 0.1
       },
-      "aggression": 0.3,
+      "aggression": 0.5,
       "firstAttackMinute": 12,
       "spellPrefs": [
         "firerain",
@@ -65,12 +63,14 @@
         "mire",
         "ward",
         "lightning",
+        "bolt",
+        "hornets",
         "flatten",
         "quake",
         "volcano"
       ],
       "scouting": 0.4,
-      "towerAffinity": 0.9
+      "towerAffinity": 0.5
     }
   ],
   "difficulties": [

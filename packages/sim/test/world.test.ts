@@ -88,6 +88,25 @@ describe("world step", () => {
     expect(w.count((i) => w.ents.cat[i] === CAT.unit)).toBe(1);
   });
 
+  it("occupants of a building destroyed on drowned ground drown as they walk out (regression, ai soak seed 1002)", () => {
+    const w = world({ generator: "flat", size: 64, tribes: 2 });
+    const E = w.ents;
+    const b = E.index(w.spawnBuilding("dwelling", 1, 30, 30));
+    const s = E.index(w.spawnUnit("settler", 1, 30, 30));
+    E.inside[s] = b;
+    E.occupants[b] = 1;
+    E.task[s] = 7;
+    // the land under the standing dwelling sank (a building is not lost to water by itself)
+    const t = w.terrain;
+    for (let y = 26; y <= 34; y++) for (let x = 26; x <= 34; x++) t.heights[t.idx(x, y)] = 60;
+    t.version++;
+    expect(t.drowns(30, 30)).toBe(true);
+    w.kill(b, "destroyed");
+    expect(E.alive[s]).toBe(0);
+    expect(w.eventCounts.get("drowned")).toBe(1);
+    expect(w.invariants()).toEqual([]);
+  });
+
   it("entity ids go stale after free and slots are reused with a new generation", () => {
     const w = world({ generator: "flat", size: 64, tribes: 1 });
     const id = w.spawnTree(1, 1);

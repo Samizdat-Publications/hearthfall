@@ -67,3 +67,10 @@ One line per entry: `MM/DD/YYYY HH:MM  M<n>  what happened`. Never read this fil
 - Then: VFX and status halos, veiled enemies hidden (viewTribe), skirmish Reliquaries (balance.skirmishWorship, ADR-010), AI aiTarget ownFighting and ownMarching plus setup every decision, 16 spell keys and a wrapping spell bar, 8 icons via asset-producer (Gemini, $0.27).
 - Bug found by the bots soak: a unit beguiled into a tower stayed inside when it went home (invariant: unit inside another tribe's building). Fix: convertUnit leaves the building first; regression test in effects.test.ts.
 - Soaks (8 seeds, 30 min): ai PASS (wins sneaky 5, aggressive 1, turtle 1), ai-idle PASS, bots PASS. spells2 shots 9/9 approved; qa:fast PASS.
+
+## 2026-10-09 BACKLOG 7: balance pass (soft gates)
+- Root cause of single-type AI armies: lodges paid from the training sink in building index order, so the Warden lodge (150) took every payment before the Fire lodge (180) or Chant house could. Payments now go oldest trainee first per tribe; regression test in combat.test.ts.
+- Chanter: channel 4 to 6 s, entrancedFreeze off, meleeDamage interrupts (the frozen front line walled the Wardens out). Chanter 6 v Warden 10 dropped from 100 to 40 percent. Firecaller 6 v Chanter 10 stays 100 (ranged hits interrupt every chant).
+- AI: hunts a Hearthless tribe's Shaper; charges a bridge spell once a wave finds no route; walks its Shaper toward a stranded enemy Shaper and values her for Lightning. Fixed two ai-idle stalls (seed 1000 turtle, seed 1003 aggressive). Personality data: turtle and sneaky economy targets and spells.
+- Sim: stuck repaths onto a longer detour restart route progress (not in chases); occupants let out of a building destroyed on drowned land drown at once (ai soak seed 1002 invariant).
+- Soaks: ai-idle PASS (12 of 12, all waves mixed), ai PASS (sneaky 6, turtle 5, aggressive 1), bots PASS. qa:fast PASS, replays unchanged.

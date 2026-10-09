@@ -87,6 +87,25 @@ export class UnitSystem {
     E.vy[i] = 0;
   }
 
+  /** Length of a route from unit i through every waypoint (wrapped). */
+  private routeLength(i: number, p: ArrayLike<number>): number {
+    const E = this.w.ents;
+    const n = this.w.terrain.size;
+    let ax = E.x[i];
+    let ay = E.y[i];
+    let len = 0;
+    for (let k = 0; k < p.length; k++) {
+      const bx = p[k] % n;
+      const by = (p[k] - bx) / n;
+      const dx = wrapD(bx - ax, n);
+      const dy = wrapD(by - ay, n);
+      len += Math.sqrt(dx * dx + dy * dy);
+      ax = bx;
+      ay = by;
+    }
+    return len;
+  }
+
   /** Flow field for a goal, or null when this tick's build budget is spent (the unit waits a tick). */
   private flowFor(goal: number): Float32Array | null {
     const t = this.w.terrain;
@@ -183,6 +202,11 @@ export class UnitSystem {
       }
       this.paths[i] = r.waypoints;
       E.pathPos[i] = 0;
+      // a repath onto a longer detour (BACKLOG 7, soak seed 1008): progress restarts against the new
+      // route, or the unit would give up while walking it; a same-length route keeps the stuck count. Not
+      // in a chase: a runner lengthens every repath, and that hopeless chase must still give up
+      const len = E.atk[i] === NO_ENTITY ? this.routeLength(i, r.waypoints) : 0;
+      if (E.best[i] < 1e9 && len > E.best[i] + m.progressEpsilon) E.best[i] = len;
     }
     this.queue = this.queue.slice(this.qHead);
     this.qHead = 0;

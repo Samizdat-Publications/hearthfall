@@ -4,6 +4,7 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 
 ## Now
 - Run started: 2026-10-08T21:25:00Z
+- BACKLOG 7 DONE (soft gates, misses below): fair lodge payments (the AI trained only Wardens), Chanter rework (6 s channel, no freeze, melee breaks it), AI hunts a Hearthless Shaper (bridge or Lightning), personality data, detour and drowning fixes. ai-idle, ai and bots soaks PASS.
 - BACKLOG (after M11, top down): 1 DONE (and 53): all 16 spells. Veil, Ward, Beguile, Whirlwind, Mire, Erode, Firerain, Wraith as data plus primitives, 9 scenarios, spells2 shot set (approved), icons, AI targeting, skirmish Reliquaries teach them (ADR-010), second hotkey row. Soak note for 7: sneaky won 5 of 8.
 - Milestone: M11 done (tag m11-done; roadmap complete, now BACKLOG top down). M11 shipped: tribe rings under units and a larger Shaper, lighter trees, combat VFX readability (BACKLOG 57), boot screen, fatal panel with cause, frame loop failure and context loss handling, production build served statically (npm run serve, prod qa layer), State of the game section below. Opus review: 3 blockers fixed (frame error handling, static server containment, controls text), follow-ups in BACKLOG 96. M10 done (tag m10-done).
 - M1 shipped: sfc32 rng streams, FNV hash parts, SoA entities, torus terrain with all ops + dirty cursor (dirtySince), tileable fbm generator (continents, islands, flat test maps) with connected Hearth sites, trees, wild people; Command registry (god-mode terrainOp is tribe -1 or godMode only); World step order, drowning, snapshot/restore; scenario runner + safe DSL (4 scenarios); golden replay with frozen pack (terrain_ops_continents). 66 unit tests. qa:fast now includes replays.
@@ -22,9 +23,9 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 - Subagents: project agents are registered again (milestone-reviewer, qa-runner, ...); call them by type.
 
 ## Next 3 actions
-1. BACKLOG P1 item 7: balance pass (absorbs 60, 64, 65, 71, 83) with playtest-analyst proposals; start with sneaky dominance (Beguile, Veil).
-2. BACKLOG P1 0a (look v2 follow-ups), then 0c, 2 to 6, 8 in order.
-3. Re-run the full soak and shot sets every 3 backlog items (next after 0a); full npm run qa at least every 4 hours.
+1. BACKLOG P1 0a: tall conifers are in props.ts (uncommitted, tested); view the smoke sheet, approve baselines, then pine belts around Hearths, terraced plateaus, volcano smoke, village scale.
+2. Full npm run qa (due), then BACKLOG P1 0c, 2 to 6, 8 in order.
+3. Re-run the full soak and shot sets every 3 backlog items (next after 0c); full npm run qa at least every 4 hours.
 
 ## Blocked
 (none)
@@ -36,6 +37,7 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 (soft gate numbers that missed their targets, with the milestone)
 - M7 ai soak (12 seeds x 40 min, normal): wins sneaky 8, aggressive 2, turtle 2, unfinished 0, median 13.4 min (ok). Sneaky takes 8 of 12 wins (its pair win rates are over the 70 percent cap); 2 analyst passes plus garrison and training code did not fix it (BACKLOG 64, 71).
 - M6/M7 counter triangle: 100 percent every pair (target band 65 to 80); probes: Firecaller 6 v Chanter 10 and Chanter 6 v Warden 10 still win 100 percent, mixed mirror 40 to 50 percent (BACKLOG 65).
+- BACKLOG 7 (2026-10-09): triangle still 100 percent every pair; probes Warden 6 v Firecaller 10 0, Firecaller 6 v Chanter 10 100 (ranged hits break every chant, 3 s cooldown: needs a design change, 60 and 65), Chanter 6 v Warden 10 40 (was 100), mixed mirror 60. ai soak 12 x 30 min: sneaky 6, turtle 5, aggressive 1 (aggressive now the weakest), unfinished 0, median 17.6 min, 74 of 74 waves mixed. ai-idle: all 12 eliminated (aggressive 9 to 13 min, sneaky 11 to 12, turtle 13 to 13.5). Hold the Line (83) not tuned.
 
 ## State of the game (for Stewart)
 Written at the M11 exit (2026-10-09). The run continues with docs/BACKLOG.md after this.

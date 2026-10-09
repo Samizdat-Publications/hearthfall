@@ -127,7 +127,8 @@
                   "enum": [
                     "rangedDamage",
                     "spell",
-                    "terrainChangeNear"
+                    "terrainChangeNear",
+                    "meleeDamage"
                   ]
                 }
               },

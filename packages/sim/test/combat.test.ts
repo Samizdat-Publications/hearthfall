@@ -4,6 +4,7 @@ import { ORDER } from "../src/units.ts";
 import { BSTATE, TASK } from "../src/economy.ts";
 import { CMODE, STANCE } from "../src/combat.ts";
 import { runMatchup } from "../src/matchup.ts";
+import { World } from "../src/world.ts";
 import { basePack, world } from "./helpers.ts";
 
 const cmd = (tribe: number, type: string, args: Record<string, unknown>) => [{ tick: 0, tribe, type, args }];
@@ -158,17 +159,57 @@ describe("combat (M6)", () => {
     expect(w.ents.alive[f]).toBe(1);
   });
 
-  it("Chanters entrance enemies while channeling, then convert up to the cap", () => {
+  it("Chanters channel, then convert up to the cap; with entrancedFreeze the enemies in the radius are held", () => {
     const w = arena();
     const c = w.ents.index(w.spawnUnit("chanter", 0, 20, 30));
     const ws = [0, 1, 2, 3].map((k) => w.ents.index(w.spawnUnit("warden", 1, 23, 28.5 + k)));
     for (const i of ws) w.ents.stance[i] = STANCE.passive;
     w.run(4);
     expect(w.ents.chant[c]).toBeGreaterThan(0);
-    expect(ws.every((i) => w.ents.trance[i] > 0)).toBe(true);
-    w.run(5 * 20);
+    // live data (BACKLOG 7): no freeze, so Wardens can still walk in and break the chant
+    expect(ws.every((i) => w.ents.trance[i] === 0)).toBe(true);
+    w.run(7 * 20);
     expect(w.eventCounts.get("converted")).toBe(w.cfg.pack.units.units[w.ents.type[c]].convert!.maxPerChannel);
     expect(ws.filter((i) => w.ents.tribe[i] === 0).length).toBe(3);
+  });
+
+  it("entrancedFreeze holds every enemy in the radius while the channel runs", () => {
+    const p = basePack();
+    const files = structuredClone(p.files);
+    files.units.units.find((u) => u.id === "chanter")!.convert!.entrancedFreeze = true;
+    const w = new World({ pack: files, packHash: p.hash, seed: 1, map: { generator: "flat", size: 64, tribes: 2 } });
+    w.spawnBuilding("hearth", 0, 2, 2);
+    w.spawnBuilding("hearth", 1, 34, 2);
+    const c = w.ents.index(w.spawnUnit("chanter", 0, 20, 30));
+    const ws = [0, 1, 2, 3].map((k) => w.ents.index(w.spawnUnit("warden", 1, 23, 28.5 + k)));
+    for (const i of ws) w.ents.stance[i] = STANCE.passive;
+    w.run(4);
+    expect(w.ents.chant[c]).toBeGreaterThan(0);
+    expect(ws.every((i) => w.ents.trance[i] > 0)).toBe(true);
+  });
+
+  it("a melee swing breaks a chant only when convert.interruptedBy lists meleeDamage (BACKLOG 7)", () => {
+    const run = (melee: boolean) => {
+      const p = basePack();
+      const files = structuredClone(p.files);
+      const cv = files.units.units.find((u) => u.id === "chanter")!.convert!;
+      cv.interruptedBy = cv.interruptedBy.filter((k) => k !== "meleeDamage");
+      if (melee) cv.interruptedBy.push("meleeDamage");
+      const w = new World({ pack: files, packHash: p.hash, seed: 1, map: { generator: "flat", size: 64, tribes: 2 } });
+      w.spawnBuilding("hearth", 0, 2, 2);
+      w.spawnBuilding("hearth", 1, 34, 2);
+      const c = w.ents.index(w.spawnUnit("chanter", 0, 20, 30));
+      const s = w.ents.index(w.spawnUnit("settler", 1, 23, 30));
+      w.ents.stance[s] = STANCE.passive;
+      w.run(4);
+      expect(w.ents.chant[c]).toBeGreaterThan(0);
+      w.damage(c, 10, 1, true, true);
+      return w;
+    };
+    const on = run(true);
+    expect(on.eventCounts.get("chantInterrupted")).toBe(1);
+    const off = run(false);
+    expect(off.eventCounts.get("chantInterrupted") ?? 0).toBe(0);
   });
 
   it("ranged damage interrupts a chant; Shapers and Chanters are never converted", () => {
@@ -207,6 +248,24 @@ describe("combat (M6)", () => {
     expect(ids.every((i) => w.ents.type[i] === warden && w.ents.inside[i] < 0)).toBe(true);
     expect(Math.abs(w.ents.x[ids[0]] - 30)).toBeLessThan(3);
     expect(w.tribes[0].eco.trainMana).toBeCloseTo(1000 - 2 * w.cfg.pack.units.units[warden].trainMana!, 5);
+    expect(w.invariants()).toEqual([]);
+  });
+
+  it("lodges are paid oldest trainee first, so a cheap lodge with a full queue cannot starve a dearer one (BACKLOG 7)", () => {
+    const w = arena();
+    // the warden lodge has the lower index, so it used to grab every 150 before the fire lodge reached 180
+    const wl = w.spawnBuilding("warden_lodge", 0, 20, 20);
+    const fl = w.spawnBuilding("fire_lodge", 0, 30, 20);
+    for (let k = 0; k < 10; k++) w.spawnUnit("settler", 0, 22 + (k % 5), 24 + Math.floor(k / 5));
+    w.step(cmd(0, "train", { building: fl, count: 2 }));
+    for (let t = 0; t < 120 * 20; t++) {
+      // slow income (8 mana a second) and a warden queue kept full
+      w.tribes[0].eco.trainMana += 0.4;
+      const q = w.combat.queued().get(w.ents.index(wl)) ?? 0;
+      w.step(t % 20 === 0 && q < 2 ? cmd(0, "train", { building: wl, count: 2 - q }) : []);
+    }
+    const fire = w.cfg.unitIndex.get("firecaller")!;
+    expect(w.count((i) => w.ents.type[i] === fire)).toBeGreaterThanOrEqual(2);
     expect(w.invariants()).toEqual([]);
   });
 

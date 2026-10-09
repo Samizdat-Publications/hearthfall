@@ -181,7 +181,8 @@ export class World {
   /**
    * Damage a unit or building. Shapers only die to effects allowed to kill them (lethal); other
    * damage leaves them at least shaperMinHpFromNonLethal. Units inside buildings are safe. Any
-   * damage but a melee swing breaks a chant (ranged hits and spells interrupt Chanters).
+   * damage but a melee swing breaks a chant (ranged hits and spells interrupt Chanters); a melee swing
+   * does too when the Chanter's convert.interruptedBy lists meleeDamage (BACKLOG 7).
    */
   damage(i: number, amount: number, fromTribe: number, lethal: boolean, melee = false): void {
     const E = this.ents;
@@ -191,7 +192,10 @@ export class World {
     if (E.cat[i] === CAT.unit && E.ward[i] > 0) return;
     if (fromTribe >= 0) E.lastHit[i] = fromTribe;
     E.hitTick[i] = this.tick;
-    if (!melee && E.chant[i] > 0) this.combat.interruptChant(i, "hit");
+    if (E.chant[i] > 0) {
+      if (!melee) this.combat.interruptChant(i, "hit");
+      else if (this.cfg.pack.units.units[E.type[i]].convert?.interruptedBy.includes("meleeDamage")) this.combat.interruptChant(i, "melee");
+    }
     let hp = E.hp[i] - amount;
     if (E.cat[i] === CAT.unit && isShaper(this, i) && !lethal) hp = Math.max(hp, this.cfg.pack.balance.combat.shaperMinHpFromNonLethal);
     E.hp[i] = hp;
@@ -223,6 +227,7 @@ export class World {
       if (e.occupants[h] > 0) e.occupants[h]--;
       e.inside[i] = -1;
     }
+    const out: number[] = [];
     if (e.cat[i] === CAT.building) {
       if (e.state[i] !== BSTATE.done) this.economy.releasePlanTrees(i);
       // occupants walk out of a destroyed building
@@ -230,11 +235,15 @@ export class World {
         if (e.alive[k] && e.inside[k] === i) {
           e.inside[k] = -1;
           e.task[k] = 0;
+          out.push(k);
         }
       }
     }
     this.emit(cause, { id: e.idOf(i), cat: e.cat[i], kind: e.type[i], tribe: e.tribe[i], x: e.x[i], y: e.y[i], by: e.lastHit[i] });
     e.free(e.idOf(i));
+    // a building can stand on sunken land; its people step out into deep water and drown at once
+    // (BACKLOG 7, ai soak seed 1002: a combat kill came after the tick's drowning pass)
+    for (const k of out) if (e.alive[k] && this.terrain.drowns(e.x[k], e.y[k])) this.kill(k, "drowned");
   }
 
   emit(type: string, data: Record<string, number | string> = {}): void {

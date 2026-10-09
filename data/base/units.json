@@ -99,9 +99,9 @@
       },
       "convert": {
         "radius": 5,
-        "channelSeconds": 4,
+        "channelSeconds": 6,
         "maxPerChannel": 3,
-        "entrancedFreeze": true,
+        "entrancedFreeze": false,
         "cannotConvert": [
           "shaper",
           "chanter"
@@ -109,7 +109,8 @@
         "interruptedBy": [
           "rangedDamage",
           "spell",
-          "terrainChangeNear"
+          "terrainChangeNear",
+          "meleeDamage"
         ],
         "cooldownSeconds": 3
       },
