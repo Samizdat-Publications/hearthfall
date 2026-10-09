@@ -191,6 +191,9 @@ export class Game {
   /** Reset the per-match UI state and point the renderer and camera at the current world. */
   private afterWorld(): void {
     this.selection.clear();
+    // entity ids and camera spots belong to the old world
+    this.groups = Array.from({ length: 10 }, () => []);
+    this.bookmarks = [null, null, null, null];
     this.selectedBuilding = -1;
     this.placing = null;
     this.placeAt = null;
@@ -216,8 +219,15 @@ export class Game {
   // ---------------------------------------------------------------- game flow (M8)
   /** A new skirmish from the setup screen (or Play again): the params replace the URL ones. */
   startSkirmish(sp: SkirmishParams): void {
+    const prev = this.params;
     this.params = { ...this.params, seed: sp.seed, level: sp.level, size: sp.size, tribes: sp.tribes, ai: [...sp.ai], difficulty: sp.difficulty, scenario: null, camera: null };
-    this.load(null);
+    try {
+      this.load(null);
+    } catch (e) {
+      // the generator can fail for a seed and size (the menu shows it); keep the current world and params
+      this.params = prev;
+      throw e;
+    }
     this.paused = this.params.fixedStep;
   }
 

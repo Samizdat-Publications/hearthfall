@@ -110,7 +110,12 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
     }
     setup.error = null;
     const sp: SkirmishParams = { seed, level: setup.map, size: setup.size, tribes: 1 + setup.opponents.length, ai: [...setup.opponents], difficulty: setup.difficulty };
-    game.startSkirmish(sp);
+    try {
+      game.startSkirmish(sp);
+    } catch {
+      setup.error = "This map could not be generated with these settings. Try another seed, a larger map or fewer opponents.";
+      refresh();
+    }
   };
 
   game.onRebindKey = (e) => {

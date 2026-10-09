@@ -85,6 +85,14 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 71. [M] Turtle sends few or no waves in most matches (aggression 0.3, wave size 11, it usually dies before minute 15): pairs with 64 (M7 review).
 72. [S] units.ts flow-unit progress reset fires on any terrain change anywhere, so a truly stuck flow unit never gives up while terrain changes more often than giveUpSeconds (repeated quakes): reset only when the rebuilt field's route at the unit is longer than its best (M7 re-review).
 73. [S] A* returns an empty path when start equals the snapped goal, so a unit standing on the shore vertex ordered a few cells into the sea steers at the raw off-land goal and can still give up with reachable 1: treat an empty path as arrival at the snapped goal, with a regression starting at the shore (M7 re-review).
+74. [S] Menu DOM checks: each menu is one data-hud panel, so overlap checks never fire inside it; tag menu rows and buttons as parts and check vertical overflow of the scrolling panel (M8 review).
+75. [S] Defeat path test: a scenario or e2e step where the local tribe is eliminated and the defeat end screen shows (only the forced win is covered) (M8 review).
+76. [S] e2e load check: step N ticks after loading in the browser and compare with the same steps from the saved game (the hash check on load cannot fail on its own) (M8 review).
+77. [S] Volume sliders are stored but nothing reads them until the A4 audio sink: wire them in M10 or mark them "audio arrives in M10" (M8 review).
+78. [S] Move UI tunables (notification seconds, max notes, throttles, quality scales) to data, and take `balance.skirmish` (menu defaults) out of the sim pack hash so editing a menu default does not invalidate saves (M8 review).
+79. [S] End screen stats (kills, units lost) are not saved, so they restart at 0 after a load: put them in the save's controller state.
+80. [S] Minimap footprint on small flat maps can fold into a V where the view crosses the wrap; clip the footprint to one map copy or fall back to the focus cross when edges cross (M8 shots).
+81. [S] Menu polish: a title illustration on the main menu, the settings panel left column has unused height, menu text is small at 1280x720 (M8 contact sheet).
 36. [S] Spells that drown units need a readable lead-in (rumble, crack VFX, short delay) so players see cause and effect (M5, M1 review).
 
 ## Parking lot (ideas, unranked)

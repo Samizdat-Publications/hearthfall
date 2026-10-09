@@ -22,3 +22,4 @@
 - 2026-10-09T06:29 set combat (3 shots): M8 HUD v2: objectives panel, spell ETA, unit chips, minimap view footprint and Shaper markers
 - 2026-10-09T06:29 set smoke (12 shots): M8 HUD v2: objectives panel, spell ETA, unit chips, minimap view footprint and Shaper markers
 - 2026-10-09T06:29 set spells (8 shots): M8 HUD v2: objectives panel, spell ETA, unit chips, minimap view footprint and Shaper markers
+- 2026-10-09T07:00 set smoke (12 shots): wrap_seam baseline held a stale minimap footprint (HUD redrew on a 250 ms timer); now redrawn on camera change

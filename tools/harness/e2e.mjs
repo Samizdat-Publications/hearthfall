@@ -54,6 +54,17 @@ async function flow(browser, url, vp) {
     await screenIs("setup");
     await page.selectOption('[data-ui="setup-size"]', "96");
     await click("setup-add");
+    // a map the generator cannot make (continents 96, 4 tribes, seed 11) keeps the setup open with an error
+    await click("setup-add");
+    await page.fill('[data-ui="setup-seed"]', "11");
+    await page.dispatchEvent('[data-ui="setup-seed"]', "change");
+    await click("start");
+    await settle();
+    const genErr = await page.evaluate(() => ({ screen: window.__game.screen(), err: document.querySelector(".menu-error")?.textContent ?? "" }));
+    if (genErr.screen !== "setup" || !/could not be generated/.test(genErr.err)) problem(`generator failure on start: ${JSON.stringify(genErr)}`);
+    await click("setup-remove-3");
+    await page.fill('[data-ui="setup-seed"]', "1");
+    await page.dispatchEvent('[data-ui="setup-seed"]', "change");
     await check("setup");
     await click("start");
     await screenIs("none");
@@ -70,6 +81,17 @@ async function flow(browser, url, vp) {
     });
     await settle();
     const after = await page.evaluate(() => window.__game.viewOutline(true));
+    // and the minimap must redraw within a few animation frames of a camera move while paused (as in shots),
+    // not on the 250 ms HUD timer
+    const current = await page.evaluate(async () => {
+      window.__game.pause(true);
+      window.__game.setCamera({ yaw: 0.4, zoom: 0.25 });
+      for (let k = 0; k < 4; k++) await new Promise((r) => requestAnimationFrame(r));
+      const ok = window.__game.minimapCurrent();
+      window.__game.pause(false);
+      return ok;
+    });
+    if (!current) problem("minimap still shows the old camera footprint 4 frames after a camera move");
     if (JSON.stringify(before) !== JSON.stringify(after)) problem(`minimap footprint before the next frame differs from after it: ${JSON.stringify(before?.slice(0, 2))} vs ${JSON.stringify(after?.slice(0, 2))}`);
     // pause, save to slot 1, load it back
     await page.keyboard.press("p");

@@ -510,6 +510,36 @@
       "when": "2026-10-09T05:36:23.919Z",
       "source": "external:sheet.png",
       "bytes": 162829
+    },
+    {
+      "file": "m8/20261009-0640_menus.png",
+      "milestone": "M8",
+      "kind": "contact-sheet",
+      "caption": "M8 game flow: main menu, skirmish setup, settings with rebindable keys, pause, save slots and the victory screen, from the e2e run at 1280x720.",
+      "highlight": false,
+      "when": "2026-10-09T06:40:44.502Z",
+      "source": "external:m8_menus_sheet.png",
+      "bytes": 1462840
+    },
+    {
+      "file": "m8/20261009-0640_hud-v2.png",
+      "milestone": "M8",
+      "kind": "contact-sheet",
+      "caption": "M8 HUD v2: objectives panel, spell charge ETAs, selected unit chips, and the minimap camera footprint with Shaper markers.",
+      "highlight": false,
+      "when": "2026-10-09T06:40:45.403Z",
+      "source": "external:m8_hud_sheet.png",
+      "bytes": 2017623
+    },
+    {
+      "file": "m8/20261009-0640_main-menu.png",
+      "milestone": "M8",
+      "kind": "screenshot",
+      "caption": "The Hearthfall main menu at 1440p over a slowly turning planet.",
+      "highlight": true,
+      "when": "2026-10-09T06:40:46.343Z",
+      "source": "external:2560x1440-main.png",
+      "bytes": 760862
     }
   ]
 }

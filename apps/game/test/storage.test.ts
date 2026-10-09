@@ -37,4 +37,21 @@ describe("settings and save slots (M8)", () => {
     const full: KV = { getItem: () => null, setItem: () => { throw new Error("QuotaExceededError"); }, removeItem: () => {} };
     expect(writeSlot(full, 1, save)).toMatch(/could not save: QuotaExceededError/);
   });
+
+  it("a failed overwrite keeps the save already in the slot", () => {
+    const pack = loadBasePack().pack!;
+    const params = { seed: 4, level: "continents", size: 96, tribes: 2, ai: ["aggressive"], difficulty: "normal" };
+    const w = createSkirmish(pack, params);
+    const first = makeSave(w, params, [], [], "2026-10-09T00:00:00.000Z");
+    w.run(40);
+    const second = makeSave(w, params, [], [], "2026-10-09T00:01:00.000Z");
+    const kv = new MemoryKV();
+    expect(writeSlot(kv, 1, first)).toBeNull();
+    let fail = false;
+    const flaky: KV = { getItem: (k) => kv.getItem(k), setItem: (k, v) => { if (fail) throw new Error("QuotaExceededError"); kv.setItem(k, v); }, removeItem: (k) => kv.removeItem(k) };
+    fail = true;
+    expect(writeSlot(flaky, 1, second)).toMatch(/could not save/);
+    expect(readSlot(kv, 1).hash).toBe(first.hash);
+    expect(slotMeta(kv, 1)?.tick).toBe(first.tick);
+  });
 });

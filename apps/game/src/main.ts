@@ -4,7 +4,7 @@ import type { TroopIntent } from "./troops.ts";
 import { Game, parseParams, type DebugFlags } from "./game.ts";
 import { mountGameHud } from "./hudBridge.ts";
 import { mountGameMenus } from "./menuBridge.ts";
-import { viewOutline } from "./minimap.ts";
+import { drawnViewKey, viewKey, viewOutline } from "./minimap.ts";
 import type { CameraState } from "@hearthfall/render";
 import { validatePack } from "@hearthfall/data";
 import { commandsByTick, createScenarioWorld, type ScenarioDef } from "@hearthfall/sim";
@@ -32,8 +32,17 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
+// a camera move redraws the HUD (minimap footprint) on the next frame, also while paused, so captures
+// taken a few frames after setCamera never show the previous view
+let camKey = "";
 function frame(now: number) {
   game.frame(now);
+  const c = game.renderer.cam;
+  const k = `${c.x} ${c.z} ${c.yaw} ${c.zoom} ${c.map}`;
+  if (k !== camKey && game.screen === "none") {
+    camKey = k;
+    hud.refresh();
+  }
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
@@ -101,6 +110,7 @@ if (__DEBUG_API__ || game.params.debug) {
     },
     /** minimap camera outline: screen border samples picked onto the terrain (unwrapped around the view center) */
     viewOutline: (fresh = false) => viewOutline(game, fresh),
+    minimapCurrent: () => drawnViewKey === viewKey(game),
     lastSave: () => game.lastSave,
     lastLoad: () => game.lastLoad,
     /** Run a scenario-style definition headless in this page (cross-engine determinism check). */

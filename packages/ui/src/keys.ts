@@ -31,6 +31,10 @@ export type Keymap = Record<KeyAction, string>;
 /** Keys a binding may not take (fixed controls listed above, plus every spell key). */
 const RESERVED = new Set<string>(["Escape", "Space", "F1", "F2", "F3", "F4", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Tab", ...SPELL_KEYS, ..."0123456789"]);
 
+/** Actions polled as held keys every frame; the held key set stores bare keys, so these cannot use Shift combos. */
+const HELD = new Set<string>(["rotateLeft", "rotateRight"]);
+const heldOk = (action: string, label: string) => !HELD.has(action) || !label.startsWith("Shift+");
+
 export function defaultKeymap(): Keymap {
   return Object.fromEntries(KEY_ACTIONS.map((a) => [a.id, a.key])) as Keymap;
 }
@@ -58,8 +62,10 @@ export function actionFor(km: Keymap, e: { key: string; shiftKey: boolean; ctrlK
 export function rebind(km: Keymap, action: KeyAction, label: string): { keymap: Keymap; error: string | null } {
   if (!label) return { keymap: km, error: "press a key" };
   if (RESERVED.has(label)) return { keymap: km, error: `${label} is reserved` };
+  if (!heldOk(action, label)) return { keymap: km, error: "camera rotation keys cannot use Shift" };
   const out = { ...km };
   const other = KEY_ACTIONS.find((a) => a.id !== action && out[a.id] === label);
+  if (other && !heldOk(other.id, km[action])) return { keymap: km, error: `${label} rotates the camera, which cannot take ${km[action]} (Shift)` };
   if (other) out[other.id] = km[action];
   out[action] = label;
   return { keymap: out, error: null };
@@ -72,7 +78,7 @@ export function sanitizeKeymap(stored: unknown): Keymap {
   const seen = new Set<string>();
   for (const a of KEY_ACTIONS) {
     const v = (stored as Record<string, unknown>)[a.id];
-    if (typeof v === "string" && v && !RESERVED.has(v) && !seen.has(v)) {
+    if (typeof v === "string" && v && !RESERVED.has(v) && !seen.has(v) && heldOk(a.id, v)) {
       km[a.id] = v;
       seen.add(v);
     }

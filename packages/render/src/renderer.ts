@@ -175,10 +175,10 @@ export class ThreeRenderer implements Renderer {
     }
     this.rebuildAll();
     this.stats.chunks = this.chunks.length;
-    if (this.units) this.scene.remove(this.units.group);
+    if (this.units) disposeGroup(this.scene, this.units.group);
     this.units = new UnitLayer(this.propMat, this.ringMat, world.cfg.pack.units.units.map((u) => u.id), this.pal, world.tribes.map((t) => t.color));
     this.scene.add(this.units.group);
-    if (this.buildings) this.scene.remove(this.buildings.group);
+    if (this.buildings) disposeGroup(this.scene, this.buildings.group);
     this.buildings = new BuildingLayer(this.propMat, world.cfg.pack.buildings.buildings, this.pal, world.tribes.map((t) => t.color));
     this.scene.add(this.buildings.group);
   }
@@ -512,4 +512,13 @@ function makeSky(top: string, horizon: string): THREE.Mesh {
   m.renderOrder = -1;
   m.frustumCulled = false;
   return m;
+}
+
+/** Remove a replaced layer and free its GPU buffers (geometries and instance attributes; shared materials stay). */
+function disposeGroup(scene: THREE.Scene, group: THREE.Object3D): void {
+  scene.remove(group);
+  group.traverse((o) => {
+    if (o instanceof THREE.InstancedMesh) o.dispose();
+    if (o instanceof THREE.Mesh) o.geometry.dispose();
+  });
 }

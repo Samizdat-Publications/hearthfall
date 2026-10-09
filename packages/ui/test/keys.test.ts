@@ -44,6 +44,13 @@ describe("rebindable keys (M8 settings)", () => {
     expect(rebind(km, "help", "Escape").error).toMatch(/reserved/);
     expect(rebind(km, "help", "5").error).toMatch(/reserved/);
   });
+  it("held camera keys never take a Shift combo (the held key set only sees the bare key)", () => {
+    const km = defaultKeymap();
+    expect(rebind(km, "rotateLeft", "Shift+Q").error).toMatch(/Shift/);
+    const withShift = rebind(km, "help", "Shift+K").keymap;
+    expect(rebind(withShift, "help", "Q").error).toMatch(/Shift/);
+    expect(sanitizeKeymap({ rotateRight: "Shift+E" }).rotateRight).toBe("E");
+  });
   it("a stored keymap is sanitized against defaults, junk and duplicates", () => {
     expect(sanitizeKeymap(null)).toEqual(defaultKeymap());
     expect(sanitizeKeymap({ help: "J", bogus: "K" }).help).toBe("J");

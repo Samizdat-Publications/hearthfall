@@ -52,12 +52,20 @@ function terrainImage(game: Game, ctx: CanvasRenderingContext2D): ImageData {
 let view: { key: string; pts: [number, number][] | null } | null = null;
 
 /** Screen border samples projected onto the curved ground in unwrapped map units; null when the center misses. */
+/** Cache key of the camera footprint: viewport, camera and terrain. */
+export function viewKey(game: Game): string {
+  const cam = game.renderer.cam;
+  const t = game.world.terrain;
+  return `${game.canvas.clientWidth}x${game.canvas.clientHeight} ${cam.x} ${cam.z} ${cam.yaw} ${cam.zoom} ${cam.map} ${t.version} ${t.size}`;
+}
+
+/** viewKey of the footprint the minimap last drew (tests check it follows the camera within a few frames). */
+export let drawnViewKey = "";
+
 export function viewOutline(game: Game, fresh = false): [number, number][] | null {
   const W = game.canvas.clientWidth;
   const H = game.canvas.clientHeight;
-  const cam = game.renderer.cam;
-  const t = game.world.terrain;
-  const key = `${W}x${H} ${cam.x} ${cam.z} ${cam.yaw} ${cam.zoom} ${cam.map} ${t.version} ${t.size}`;
+  const key = viewKey(game);
   if (!fresh && view && view.key === key) return view.pts;
   const pick = (x: number, y: number) => game.renderer.pickGround(x, y);
   const cx = W / 2;
@@ -133,6 +141,7 @@ export function drawMinimap(game: Game, canvas: HTMLCanvasElement): void {
     ctx.fillRect(x - 1, y - 1, 3, 3);
   }
   const pts = viewOutline(game);
+  drawnViewKey = viewKey(game);
   const span = (k: 0 | 1) => (pts ? Math.max(...pts.map((p) => p[k])) - Math.min(...pts.map((p) => p[k])) : 0);
   // a view that sees most of the planet (globe zoom) has no useful outline: mark the focus instead
   const outline = pts && pts.length > 2 && span(0) < 0.85 * n && span(1) < 0.85 * n;
