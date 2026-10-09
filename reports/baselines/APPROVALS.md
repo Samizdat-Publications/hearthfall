@@ -25,3 +25,7 @@
 - 2026-10-09T07:00 set smoke (12 shots): wrap_seam baseline held a stale minimap footprint (HUD redrew on a 250 ms timer); now redrawn on camera change
 - 2026-10-09T07:40 set levels (2 shots): M9: new campaign level shots (worship site meshes, level HUD)
 - 2026-10-09T08:07 set levels (2 shots): M9 review: contested_shrine rebalanced (shrine moved to 34,48, rival 6 settlers)
+- 2026-10-09T09:27 set smoke (12 shots): M10: real GLB models with tribe tint, HUD icons; contact sheet reviewed
+- 2026-10-09T09:28 set spells (8 shots): M10: real GLB unit models; contact sheet reviewed
+- 2026-10-09T09:29 set combat (3 shots): M10: real GLB unit models; contact sheet reviewed
+- 2026-10-09T09:30 set levels (2 shots): M10: real GLB worship site and unit models; contact sheet reviewed

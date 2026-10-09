@@ -88,7 +88,7 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 74. [S] Menu DOM checks: each menu is one data-hud panel, so overlap checks never fire inside it; tag menu rows and buttons as parts and check vertical overflow of the scrolling panel (M8 review).
 75. [S] Defeat path test: a scenario or e2e step where the local tribe is eliminated and the defeat end screen shows (only the forced win is covered) (M8 review).
 76. [S] e2e load check: step N ticks after loading in the browser and compare with the same steps from the saved game (the hash check on load cannot fail on its own) (M8 review).
-77. [S] Volume sliders are stored but nothing reads them until the A4 audio sink: wire them in M10 or mark them "audio arrives in M10" (M8 review).
+77. [S] DONE (M10): volume sliders feed the Web Audio buses at once (`menuBridge` setSetting calls `player.setVolumes`; bus gain math tested in packages/audio/test/mix.test.ts).
 78. [S] Move UI tunables (notification seconds, max notes, throttles, quality scales) to data, and take `balance.skirmish` (menu defaults) out of the sim pack hash so editing a menu default does not invalidate saves (M8 review).
 79. [S] End screen stats (kills, units lost) are not saved, so they restart at 0 after a load: put them in the save's controller state.
 80. [S] Minimap footprint on small flat maps can fold into a V where the view crosses the wrap; clip the footprint to one map copy or fall back to the focus cross when edges cross (M8 shots).
@@ -101,6 +101,9 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 87. [S] Locked spells with charges are castable everywhere now (spells.ts cast validation): add a regression test that tier-locked skirmish spells never hold charges, so the relaxed rule only matters in levels (M9 review).
 88. [S] OpponentAI worship needs settlers >= need - have + 4; The Contested Shrine's rival starts with 6 settlers on purpose (it worships after breeding to 8, about 105 s in). Make the delay explicit (a per-level AI worship delay) so difficulty changes cannot silently disable it (M9 review).
 89. [S] Worship readability: a progress ring or bar at the site (and in the HUD objectives) while a tribe prays, lighter stone so shrines stand out from the grass, and no "mana wasting" warning when the only spells are level charges (M9 contact sheet).
+90. [S] Tribe readability on real unit models: only the loincloth carries the tribe tint (3 to 5 percent of faces), so crowds read as one people at default zoom; add a tinted ground disc or shoulder sash per unit, and make the Shaper stand out (staff glow, slightly larger scale) (M10 contact sheet).
+91. [S] Trees read as dark blobs at overview and globe zoom: lighten the canopy colors or add a distance tint toward the grass palette, and vary scale per instance (M10 contact sheet).
+92. [S] Missing models and sounds (placeholders logged in docs/ASSETS.md A4): Boathouse, Shade Den, Skyloft, Shade; chant, chant break, conversion, training and elimination cues; and own cast clips for the eight spells that borrow one by alias (M10).
 36. [S] Spells that drown units need a readable lead-in (rumble, crack VFX, short delay) so players see cause and effect (M5, M1 review).
 
 ## Parking lot (ideas, unranked)

@@ -570,6 +570,26 @@
       "when": "2026-10-09T08:07:44.270Z",
       "source": "external:contested_shrine_hill.png",
       "bytes": 163432
+    },
+    {
+      "file": "m10/20261009-0930_sheet.png",
+      "milestone": "M10",
+      "kind": "contact-sheet",
+      "caption": "Campaign shrines and the Hearth as real models (M10 levels set)",
+      "highlight": false,
+      "when": "2026-10-09T09:30:03.556Z",
+      "source": "external:sheet.png",
+      "bytes": 286945
+    },
+    {
+      "file": "m10/20261009-0930_m10-close-before-after.png",
+      "milestone": "M10",
+      "kind": "comparison",
+      "caption": "Before and after: placeholder meshes give way to the real Hearth and follower models",
+      "highlight": true,
+      "when": "2026-10-09T09:30:27.076Z",
+      "source": "external:m10_close_before_after.png",
+      "bytes": 562236
     }
   ]
 }

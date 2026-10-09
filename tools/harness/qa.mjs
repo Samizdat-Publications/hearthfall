@@ -12,6 +12,7 @@ const LAYERS = [
   { id: "scenarios", cmd: ["scenarios"], timeoutMs: 300000 },
   { id: "replays", cmd: ["replays"], timeoutMs: 180000 },
   { id: "bench", cmd: ["bench"], timeoutMs: 240000 },
+  { id: "bench-render", cmd: ["bench-render"], timeoutMs: 240000 },
   { id: "shot", cmd: ["shot", "--set", "smoke"], timeoutMs: 300000 },
   { id: "shot-spells", cmd: ["shot", "--set", "spells"], timeoutMs: 300000 },
   { id: "shot-combat", cmd: ["shot", "--set", "combat"], timeoutMs: 300000 },

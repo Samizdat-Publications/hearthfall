@@ -97,6 +97,8 @@ export class ThreeRenderer implements Renderer {
   constructor(o: RendererOptions) {
     this.gl = new THREE.WebGLRenderer({ canvas: o.canvas, antialias: true, preserveDrawingBuffer: true, powerPreference: "high-performance" });
     this.gl.setPixelRatio(1);
+    // stats count the whole frame (scene pass plus the retro upscale), so reset by hand in render()
+    this.gl.info.autoReset = false;
     this.gl.toneMapping = THREE.ACESFilmicToneMapping;
     this.gl.toneMappingExposure = 1.05;
     this.gl.outputColorSpace = THREE.SRGBColorSpace;
@@ -310,6 +312,7 @@ export class ThreeRenderer implements Renderer {
 
   render(visualTime: number): void {
     const t0 = performance.now();
+    this.gl.info.reset();
     this.time.value = visualTime;
     this.syncTerrain();
     const w = this.world;

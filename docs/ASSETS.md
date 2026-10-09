@@ -69,6 +69,12 @@ Blender 5.x gotchas (from research): engine id `BLENDER_EEVEE`, set `media_type`
 4. **A3 (during M6 to M8):** SFX list (from sim event types), Shaper and troop barks, 3 music stems, spell VFX textures, icons.
 5. **A4 (M10):** renderer swaps placeholders for assets; shot sets re-baselined after the contact sheet review.
 
+### A4 integration (M10, done)
+- **Models:** `packages/render/src/models.ts` loads every `assets/models/*.glb` (bake-off files excluded) once per page with GLTFLoader and never throws; a failed or missing id keeps its placeholder mesh. Ids: `building.<id>` (dwellings by level: `_small`, `_medium`, `_large`), `unit.<id>` (`wild` uses `unit.wild_person`), worship sites `building.<id>`, trees `prop.tree_a|b|c`. Tribe tint: triangles whose three vertex colors are the azure marker (`#2E6FD8`) form a separate white part painted per instance; buildings with under 1 percent marker get a banner (pole and white flag) as their tint part. Tree models drop their root disc (`trimBase`). `?models=0` forces placeholders; `__game.models()` reports pending, loaded, failed and drawn ids.
+- **Icons:** `assets/icons/icon.<kind>.<id>_128.png` in the spell bar, the build menu (dwellings use `_small`) and the mana and population bars (`apps/game/src/icons.ts`).
+- **Audio:** `packages/audio` plays `assets/audio/<id>.ogg` through Web Audio (`player.ts`) with sfx, voice and music buses fed by the volume settings, distance falloff and pan around the camera focus, and a music director (`mix.ts`) choosing the calm, tension or battle stem. `style.json` `audio.alias` lets a cue borrow another clip.
+- **Placeholders still in use (logged, not blocking):** models `building.boathouse`, `building.shade_den`, `building.skyloft`, `unit.shade` (no GLB yet, placeholder meshes draw); sound cues `sfx.chant`, `sfx.chant_break`, `sfx.converted`, `sfx.trained`, `sfx.eliminated` (silent stubs, counted by `__game.audio().hooks`). Spells without their own cast clip borrow one by alias (firerain, whirlwind, erode, mire, veil, ward, beguile, wraith, hornets, raise_land, flatten, quake, volcano, lightning). `packages/audio/test/mix.test.ts` pins this list so a new cue without a clip fails a test.
+
 Every concept reference, style pick, bake-off comparison and class contact sheet is also archived for the making-of story: `npm run making-of -- add <file> --milestone A1 --kind concept --caption "..."` (see `making-of/README.md`).
 
 ### Decisions so far

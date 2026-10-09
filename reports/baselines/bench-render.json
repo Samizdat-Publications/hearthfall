@@ -1,0 +1,10 @@
+{
+  "when": "2026-10-09T09:34:34.737Z",
+  "real": {
+    "medianMs": 4.6,
+    "p95Ms": 9.5
+  },
+  "placeholders": {
+    "medianMs": 4.8
+  }
+}

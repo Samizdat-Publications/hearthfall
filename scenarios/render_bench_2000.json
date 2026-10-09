@@ -1,0 +1,33 @@
+{
+  "id": "render_bench_2000",
+  "description": "Render bench world for npm run bench:render: 2000 units on a flat 128 map, 1000 per tribe around each Hearth (one crowd in view, the other on the far side), with a forest and dwellings so trees and buildings draw too.",
+  "tags": [
+    "bench"
+  ],
+  "seed": 1010,
+  "map": {
+    "generator": "flat",
+    "size": 128,
+    "tribes": 2
+  },
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [40, 40] },
+    { "spawn": "hearth", "tribe": 1, "at": [104, 104] },
+    { "spawn": "shaper", "tribe": 0, "at": [44, 40] },
+    { "spawn": "shaper", "tribe": 1, "at": [108, 104] },
+    { "spawn": "settler", "tribe": 0, "near": [40, 40], "count": 999, "spacing": 0.62 },
+    { "spawn": "settler", "tribe": 1, "near": [104, 104], "count": 999, "spacing": 0.62 },
+    { "spawn": "dwelling", "tribe": 0, "at": [12, 40] },
+    { "spawn": "dwelling", "tribe": 0, "at": [68, 40] },
+    { "spawn": "dwelling", "tribe": 0, "at": [40, 12] },
+    { "spawn": "dwelling", "tribe": 0, "at": [40, 68] },
+    { "spawn": "tree", "near": [40, 40], "count": 500, "spacing": 2.4 }
+  ],
+  "runTicks": 2,
+  "assert": [
+    {
+      "at": 0,
+      "expr": "count(units) == 2000 && count(buildings) == 6"
+    }
+  ]
+}
