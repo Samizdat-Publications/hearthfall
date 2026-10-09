@@ -21,9 +21,26 @@ export interface MatchupResult {
   killed: number;
 }
 
-export function runMatchup(pack: PackFiles, packHash: string, a: string, b: string, seed: number, opts: { size?: number; perSide?: number; apart?: number; seconds?: number } = {}): MatchupResult {
+export interface MatchupOptions {
+  size?: number;
+  /** units per side (side b uses perSideB when given) */
+  perSide?: number;
+  perSideB?: number;
+  apart?: number;
+  seconds?: number;
+  /** formation jitter in cells (default 0.4, the fixed definition) */
+  jitter?: number;
+}
+
+/**
+ * a and b name one unit type each, or a mixed army as "warden+firecaller+chanter" (types cycle over
+ * the formation slots). BACKLOG 60 variance probes use uneven counts and wider jitter; the fixed
+ * triangle definition is the default options.
+ */
+export function runMatchup(pack: PackFiles, packHash: string, a: string, b: string, seed: number, opts: MatchupOptions = {}): MatchupResult {
   const size = opts.size ?? 64;
   const per = opts.perSide ?? 10;
+  const jit = opts.jitter ?? 0.4;
   const apart = opts.apart ?? 20;
   const w = new World({ pack, packHash, seed, map: { generator: "flat", size, tribes: 2 } });
   // no Shapers: each tribe gets a Hearth in a far corner so it is only eliminated when its units are gone
@@ -33,19 +50,20 @@ export function runMatchup(pack: PackFiles, packHash: string, a: string, b: stri
   const cy = size / 2;
   const ax = size / 2 - apart / 2;
   const bx = size / 2 + apart / 2;
-  const place = (kind: string, tribe: number, x0: number): number[] => {
+  const place = (army: string, tribe: number, x0: number, count: number): number[] => {
+    const kinds = army.split("+");
     const out: number[] = [];
-    for (let k = 0; k < per; k++) {
+    for (let k = 0; k < count; k++) {
       const col = k % 2;
       const row = (k - col) / 2;
-      const jx = (rng.float("spawn") - 0.5) * 0.4;
-      const jy = (rng.float("spawn") - 0.5) * 0.4;
-      out.push(w.ents.index(w.spawnUnit(kind, tribe, x0 + (tribe === 0 ? -col : col) + jx, cy - (per / 4) + row + jy)));
+      const jx = (rng.float("spawn") - 0.5) * jit;
+      const jy = (rng.float("spawn") - 0.5) * jit;
+      out.push(w.ents.index(w.spawnUnit(kinds[k % kinds.length], tribe, x0 + (tribe === 0 ? -col : col) + jx, cy - count / 4 + row + jy)));
     }
     return out;
   };
-  const ga = place(a, 0, ax);
-  const gb = place(b, 1, bx);
+  const ga = place(a, 0, ax, per);
+  const gb = place(b, 1, bx, opts.perSideB ?? per);
   w.units.order(ga, bx, cy, ORDER.attackMove);
   w.units.order(gb, ax, cy, ORDER.attackMove);
   const ticks = Math.round((opts.seconds ?? 90) * w.cfg.tickHz);

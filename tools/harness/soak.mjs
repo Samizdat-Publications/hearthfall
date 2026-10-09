@@ -37,9 +37,21 @@ async function triangle(out, seeds) {
   }
   const softMet = pairs.every((q) => q.winPct >= target);
   const draws = pairs.reduce((x, q) => x + q.draws, 0);
-  const metrics = { mode: "triangle", seeds, wallSec: +((Date.now() - t0) / 1000).toFixed(1), softTargetPct: target, softMet, draws, pairs: pairs.map(({ results: _r, ...q }) => q) };
+  // BACKLOG 60 variance probes (reported, never gated): a counter outnumbered 6 to 10 in a loose
+  // formation (a stomp still wins most of these), and a mixed-army mirror (should sit near 50 percent)
+  const pct = (rs, side) => Math.round((rs.filter((r) => r.winner === side).length * 100) / rs.length);
+  const probes = [];
+  for (const [a, b] of [["warden", "firecaller"], ["firecaller", "chanter"], ["chanter", "warden"]]) {
+    const rs = Array.from({ length: seeds }, (_, k) => runMatchup(p.files, p.hash, a, b, 101 + k, { perSide: 6, perSideB: 10, jitter: 3 }));
+    probes.push({ probe: `${a} 6 v ${b} 10`, winPct: pct(rs, "a"), drawPct: pct(rs, "draw") });
+  }
+  const mix = "warden+firecaller+chanter";
+  const mirror = Array.from({ length: seeds }, (_, k) => runMatchup(p.files, p.hash, mix, mix, 201 + k, { perSide: 9, jitter: 3 }));
+  probes.push({ probe: "mixed 9 v mixed 9", winPct: pct(mirror, "a"), drawPct: pct(mirror, "draw") });
+  const metrics = { mode: "triangle", seeds, wallSec: +((Date.now() - t0) / 1000).toFixed(1), softTargetPct: target, softMet, draws, pairs: pairs.map(({ results: _r, ...q }) => q), probes };
   writeReport("soak-triangle.json", { metrics, pairs });
   for (const q of pairs) out.line(`${q.counter} vs ${q.victim}: ${q.wins}/${seeds} (${q.winPct}%), draws ${q.draws}, avg ${q.avgEndSec}s`);
+  out.line(`variance probes: ${probes.map((q) => `${q.probe} ${q.winPct}% (draws ${q.drawPct}%)`).join("; ")}`);
   out.line(`triangle soft target ${target}% ${softMet ? "met" : "missed"}`);
   return draws ? out.finish("FAIL", `${draws} matchups ended without a winner`) : out.finish("PASS", "");
 }
