@@ -1,12 +1,12 @@
 // Builds the HUD view model from the Game each refresh and maps HUD intents to Commands.
-import { SPELL_KEYS, hudModel, mountHud, type HudModel, type ObjectiveView, type SpellView } from "@hearthfall/ui";
+import { SPELL_KEYS, hudModel, mountHud, type HudModel, type ObjectiveView, type SpellView, type TroopView } from "@hearthfall/ui";
 import "../../../packages/ui/src/hud.css";
 import { shaperIndex } from "@hearthfall/sim";
 import type { Game } from "./game.ts";
 import { drawMinimap } from "./minimap.ts";
 import { troopView } from "./troops.ts";
 import { etaLabel, spellEtas } from "./eta.ts";
-import { buildingIcon, resourceIcon, spellIcon } from "./icons.ts";
+import { buildingIcon, resourceIcon, spellIcon, unitIcon } from "./icons.ts";
 
 /** build tool hotkeys (the rest of the build column is click only) */
 const BUILD_KEYS: Record<string, string> = { dwelling: "D", watchtower: "T" };
@@ -60,7 +60,7 @@ export function hudFor(game: Game): HudModel {
     priorities: tr ? { ...tr.eco.priorities } : { build: 1, upgrade: 1, breed: 1 },
     shaper: { alive: si >= 0, respawnSec, hpFrac: Math.min(1, Math.max(0, shaperHp)) },
     manaFrac: tr && cursor >= 0 ? tr.eco.progress[cursor] / spells[cursor].cost : 0,
-    troops: troopView(w, game.localTribe, [...game.selection], game.selectedBuilding),
+    troops: withUnitIcons(troopView(w, game.localTribe, [...game.selection], game.selectedBuilding)),
     pointing: game.pointing,
   };
 }
@@ -149,4 +149,9 @@ export function mountGameHud(el: HTMLElement, game: Game): { refresh: () => void
   };
   refresh();
   return { refresh };
+}
+
+/** BACKLOG 0a: troop chips carry their unit icon (troops.ts stays free of asset imports). */
+function withUnitIcons(t: TroopView): TroopView {
+  return t.units.length ? { ...t, units: t.units.map((u) => ({ ...u, icon: unitIcon(u.id) })) } : t;
 }

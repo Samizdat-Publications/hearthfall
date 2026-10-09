@@ -37,7 +37,7 @@ export function towerFor(w: World, sel: readonly number[]): number {
 }
 
 /** Selection by unit kind, in data order: count and mean health fraction. */
-export function unitMix(w: World, units: readonly number[]): { name: string; count: number; hpFrac: number }[] {
+export function unitMix(w: World, units: readonly number[]): { id: string; name: string; count: number; hpFrac: number }[] {
   const E = w.ents;
   const defs = w.cfg.pack.units.units;
   const by = new Map<number, { count: number; hp: number }>();
@@ -47,7 +47,7 @@ export function unitMix(w: World, units: readonly number[]): { name: string; cou
     k.hp += Math.min(1, Math.max(0, E.hp[i] / Math.max(1, defs[E.type[i]].hp)));
     by.set(E.type[i], k);
   }
-  return [...by.entries()].sort((a, b) => a[0] - b[0]).map(([t, k]) => ({ name: title(defs[t].id) + (k.count > 1 ? "s" : ""), count: k.count, hpFrac: +(k.hp / k.count).toFixed(3) }));
+  return [...by.entries()].sort((a, b) => a[0] - b[0]).map(([t, k]) => ({ id: defs[t].id, name: title(defs[t].id) + (k.count > 1 ? "s" : ""), count: k.count, hpFrac: +(k.hp / k.count).toFixed(3) }));
 }
 
 export function troopView(w: World, tribe: number, sel: readonly number[], b: number): TroopView {

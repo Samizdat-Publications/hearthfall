@@ -41,7 +41,8 @@ export interface TroopView {
   /** lodge or tower is still being built */
   building: boolean;
   /** unit selection by kind (M8 selected units panel) */
-  units: { name: string; count: number; hpFrac: number }[];
+  /** id is the unit type; icon (BACKLOG 0a) is its HUD icon URL when one exists */
+  units: { id: string; name: string; count: number; hpFrac: number; icon?: string }[];
 }
 
 export interface NoteView {
@@ -125,6 +126,7 @@ function Troops({ t, act, pointing }: { t: TroopView; act: HudActions; pointing:
         <div class="troops-units">
           {t.units.map((u) => (
             <span key={u.name} class="unit-chip" title={`${u.count} ${u.name}, health ${Math.round(u.hpFrac * 100)}%`}>
+              {u.icon ? <img class="unit-icon" src={u.icon} alt="" /> : null}
               <b>{u.count}</b> {u.name}
               <span class="unit-hp" style={{ width: Math.round(u.hpFrac * 100) + "%" }} />
             </span>

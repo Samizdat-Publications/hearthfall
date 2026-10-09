@@ -9,6 +9,9 @@ export const spellIcon = (id: string): string | undefined => urls.get(`icon.spel
 /** Icon URL for a building id (a leveled building shows its first level). */
 export const buildingIcon = (id: string): string | undefined => urls.get(`icon.building.${id}`) ?? urls.get(`icon.building.${id}_small`);
 
+/** Icon URL for a unit type (BACKLOG 0a: troop panel chips); the wild person's icon has a longer name. */
+export const unitIcon = (id: string): string | undefined => urls.get(`icon.unit.${id}`) ?? urls.get(`icon.unit.${id}_person`);
+
 /** Icon URL for a resource: mana or population. */
 export const resourceIcon = (id: "mana" | "population"): string | undefined => urls.get(`icon.resource.${id}`);
 
