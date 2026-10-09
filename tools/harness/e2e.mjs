@@ -83,6 +83,13 @@ async function flow(browser, url, vp) {
     const bound = await page.textContent('[data-ui="key-help"]');
     if (bound?.trim() !== "J") problem(`rebind: help key shows ${bound}`);
     await check("settings");
+    // BACKLOG 8: colorblind tribe colors and a 125 percent interface apply at once and pass the layout checks
+    await page.selectOption('[data-ui="set-palette"]', "colorblind");
+    await page.selectOption('[data-ui="set-uiscale"]', "125");
+    const a11y = await page.evaluate(() => window.__game.a11y());
+    if (a11y.uiScale !== "1.25" || a11y.tribePal.crimson !== "#E95D0B") problem(`a11y settings: ${JSON.stringify(a11y)}`);
+    await check("settings-a11y");
+    await page.selectOption('[data-ui="set-uiscale"]', "100");
     await click("keys-reset");
     await click("back");
     await screenIs("main");
@@ -109,6 +116,11 @@ async function flow(browser, url, vp) {
     if (tribes !== 3) problem(`skirmish has ${tribes} tribes, expected 3`);
     await page.evaluate(() => window.__game.step(200));
     await check("play");
+    // BACKLOG 8: ordering the Shaper speaks a bark, which shows its subtitle
+    await page.keyboard.press("s");
+    await page.mouse.click(vp.width / 2 + 30, vp.height / 2 + 30, { button: "right" });
+    const sub = await page.waitForSelector('[data-hud="subtitle"]', { timeout: 5000 }).then((e) => e.textContent(), () => null);
+    if (!sub || !/^Shaper:/.test(sub.trim())) problem(`no Shaper subtitle after an order: ${JSON.stringify(await page.evaluate(() => window.__game.a11y().subtitle))}`);
     // the music director runs every frame, not only on frames with sim events (M10 review)
     const m0 = await page.evaluate(() => window.__game.audio().music);
     await settle();

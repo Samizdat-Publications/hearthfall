@@ -3,6 +3,7 @@
 import { LevelSchema, PACK_FILES, type LevelDef, type PackFileName, type PackFiles, type Reward } from "./schemas.ts";
 
 export * from "./schemas.ts";
+export * from "./colorVision.ts";
 
 /** Canonical JSON: sorted object keys, no whitespace. Line endings in source files never matter. */
 export function canonicalJson(value: unknown): string {

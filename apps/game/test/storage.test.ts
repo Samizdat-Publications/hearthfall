@@ -17,6 +17,11 @@ describe("settings and save slots (M8)", () => {
     expect(d.master).toBe(100);
     expect(d.sfx).toBe(80);
     expect(d.keymap.help).toBe("H");
+    // BACKLOG 8: accessibility settings round trip and fall back to the defaults
+    expect(storeSettings(kv, { ...defaultSettings(), palette: "colorblind", uiScale: 125, subtitles: false })).toBe(true);
+    expect(loadSettings(kv)).toMatchObject({ palette: "colorblind", uiScale: 125, subtitles: false });
+    kv.setItem("hearthfall.settings.v1", JSON.stringify({ palette: "sepia", uiScale: 333, subtitles: "yes" }));
+    expect(loadSettings(kv)).toMatchObject({ palette: "default", uiScale: 100, subtitles: true });
     kv.setItem("hearthfall.settings.v1", "{not json");
     expect(loadSettings(kv)).toEqual(defaultSettings());
   });

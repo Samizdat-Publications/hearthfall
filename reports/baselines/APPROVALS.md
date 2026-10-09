@@ -65,3 +65,4 @@
 - 2026-10-09T19:24 set smoke (12 shots): BACKLOG 5: procedural unit animation (walking legs in units_select_move)
 - 2026-10-09T20:59 set spells2 (9 shots): BACKLOG 5 unit poses (procedural animation) on units in beguile, mire, firerain; diffs only on unit bodies
 - 2026-10-09T21:00 set spells (8 shots): BACKLOG 5 unit poses (procedural animation) on units in bolt, quake, hornets; diffs only on unit bodies
+- 2026-10-09T21:59 set combat (7 shots): BACKLOG 8: new colorblind (1920x1080, 125 percent HUD) and uiscale_fit (150 asked on 1280x720, stepped down) shots

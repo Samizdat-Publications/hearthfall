@@ -5,11 +5,11 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 ## Now
 - Run started: 2026-10-08T21:25:00Z
 - Full npm run qa PASS at e4183f0 (2026-10-09T21:15Z) after the battle bench perf fix (5.2 ms) and spells and spells2 re-approval for unit poses; soaks PASS: economy median 61, ai-idle 12/12, ai (sneaky 4, aggressive 1, turtle 1, 2 unfinished, median 14.3 min, 10 spell types), bots, difficulty.
+- BACKLOG 8 DONE: accessibility: colorblind tribe palette (simulated protan, deutan, tritan; min Lab pair 47 v 22), UI scale 80 to 150 (HUD steps down to fit the window, hudFit.ts), Shaper bark subtitles, settings and URL params; combat shots colorblind and uiscale_fit; e2e a11y checks.
 - BACKLOG 6 DONE: difficulty levels: handicap command applies resourceMultiplier through the sim (eco.incomeMult), easy retuned (8 s reaction, 0.7x income), soak --mode difficulty gate (easy 0.13, hard 0.88, brutal 0.88 v normal); campaign level 2 rival now claims the shrine at 195 s (tests widened).
-- BACKLOG 5 DONE (ADR-012): procedural unit animation in the vertex shader (aRig per vertex, instanceAnim pose per instance; walk, work, attack, shoot, cast, pray, panic, idle from sim state; toppling and drowning death ghosts), pose gallery shot, render bench 3.7 ms; rigged clips left as BACKLOG 5a.
 - BACKLOG 4 DONE: command UX polish: box formations for player group moves (sim `move` formation arg, slots ranked melee front to Shaper back, balance.movement.formation), double-click type select, control group jump, spell preview counts, Backspace undo countdown; smoke, combat, spells, spells2 and levels re-approved (help line). Stewart's art note (10/09): tilt-shift miniature ref making-of/a1 style-ref-06 is a second reference (trees, huts, water, tilt-shift), BACKLOG 14a.
 - BACKLOG 3 DONE: fog of war (sim VisionSystem, per tribe explored and visible grids, ADR-011), AI sees only what its tribe sees (brutal has mapHack), shader fog on every bent material, units and buildings hidden, minimap fog, reveal=1 and __game.setReveal. Soaks with fog: economy 61, ai-idle all 12, ai (sneaky 5, aggressive 2, turtle 1, median 15.2 min), bots PASS; smoke, spells2 and levels re-approved, spell and combat shots use reveal=1.
-- Earlier BACKLOG DONE: 1 (all 16 spells, ADR-010), 0a (conifers, terraces, icons), 0c (stone), 7 (fair lodges, Chanter rework, AI hunts Hearthless Shaper), 2 (Shade and Shade Den; spend $9.15 of $30). Full npm run qa PASS at 6988e09 (16:50Z) and after BACKLOG 3 (about 18:24Z). Details in PROGRESS_LOG.
+- Earlier BACKLOG DONE: 5 (procedural unit animation, ADR-012), 1 (all 16 spells, ADR-010), 0a (conifers, terraces, icons), 0c (stone), 7 (fair lodges, Chanter rework, AI hunts Hearthless Shaper), 2 (Shade and Shade Den; spend $9.15 of $30). Full npm run qa PASS at 6988e09 (16:50Z) and after BACKLOG 3 (about 18:24Z). Details in PROGRESS_LOG.
 - Milestone: M11 done (tag m11-done; roadmap complete, now BACKLOG top down). M11 shipped: tribe rings under units and a larger Shaper, lighter trees, combat VFX readability (BACKLOG 57), boot screen, fatal panel with cause, frame loop failure and context loss handling, production build served statically (npm run serve, prod qa layer), State of the game section below. Opus review: 3 blockers fixed (frame error handling, static server containment, controls text), follow-ups in BACKLOG 96. M10 done (tag m10-done).
 - M1 shipped: sfc32 rng streams, FNV hash parts, SoA entities, torus terrain with all ops + dirty cursor (dirtySince), tileable fbm generator (continents, islands, flat test maps) with connected Hearth sites, trees, wild people; Command registry (god-mode terrainOp is tribe -1 or godMode only); World step order, drowning, snapshot/restore; scenario runner + safe DSL (4 scenarios); golden replay with frozen pack (terrain_ops_continents). 66 unit tests. qa:fast now includes replays.
 - M2 shipped: renderer (faceted chunks, water, curved world, wrap, sky, trees), camera rig, debug API, shot pipeline (pixel-exact baselines in fixedStep), VisionQA calibrated, browser replay determinism.
@@ -27,9 +27,9 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 - Subagents: project agents are registered again (milestone-reviewer, qa-runner, ...); call them by type.
 
 ## Next 3 actions
-1. BACKLOG P1 8 (accessibility: colorblind-safe tribe palettes, UI scale, remappable keys, bark subtitles); then P2 from 9 with 14a (tilt-shift) early.
+1. BACKLOG P2: 14a (tilt-shift miniature look) first, then 9 onward.
 2. Full npm run qa at least every 4 hours (last PASS 21:15Z, next by about 01:15Z).
-3. Re-run the full soak and shot sets every 3 backlog items (next after 6).
+3. Re-run the full soak and shot sets every 3 backlog items (last after 6; next after 9).
 
 ## Blocked
 (none)

@@ -33,6 +33,12 @@ export interface SettingsView {
   music: number;
   sfx: number;
   keys: { id: string; label: string; key: string }[];
+  /** BACKLOG 8 accessibility: tribe palette, HUD scale (percent, as a string for the select), voice subtitles ("on" or "off") */
+  palettes: Choice[];
+  palette: string;
+  uiScales: Choice[];
+  uiScale: string;
+  subtitles: string;
   /** action id waiting for a key press */
   rebinding: string | null;
   message: string | null;
@@ -65,7 +71,7 @@ export interface MenuModel {
 }
 
 export type SetupPatch = Partial<Pick<SetupView, "map" | "size" | "seed" | "opponents" | "difficulty">>;
-export type SettingsPatch = Partial<Pick<SettingsView, "quality" | "master" | "music" | "sfx">>;
+export type SettingsPatch = Partial<Pick<SettingsView, "quality" | "master" | "music" | "sfx" | "palette">> & { uiScale?: number; subtitles?: boolean };
 
 export interface MenuActions {
   go(screen: Screen): void;
@@ -96,6 +102,11 @@ function Btn({ ui, onClick, children, disabled, primary }: { ui: string; onClick
     </button>
   );
 }
+
+const ONOFF: Choice[] = [
+  { value: "on", label: "On" },
+  { value: "off", label: "Off" },
+];
 
 function Select({ ui, value, options, onChange }: { ui: string; value: string; options: Choice[]; onChange: (v: string) => void }) {
   return (
@@ -290,6 +301,12 @@ function Settings({ s, act }: { s: SettingsView; act: MenuActions }) {
           <Slider ui="set-master" label="Master volume" value={s.master} onInput={(v) => act.setSetting({ master: v })} />
           <Slider ui="set-music" label="Music" value={s.music} onInput={(v) => act.setSetting({ music: v })} />
           <Slider ui="set-sfx" label="Effects" value={s.sfx} onInput={(v) => act.setSetting({ sfx: v })} />
+          <label class="menu-label">Tribe colors</label>
+          <Select ui="set-palette" value={s.palette} options={s.palettes} onChange={(v) => act.setSetting({ palette: v })} />
+          <label class="menu-label">Interface size</label>
+          <Select ui="set-uiscale" value={s.uiScale} options={s.uiScales} onChange={(v) => act.setSetting({ uiScale: Number(v) })} />
+          <label class="menu-label">Subtitles</label>
+          <Select ui="set-subtitles" value={s.subtitles} options={ONOFF} onChange={(v) => act.setSetting({ subtitles: v === "on" })} />
         </div>
         <div class="keys">
           {s.keys.map((k) => (

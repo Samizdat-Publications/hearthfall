@@ -3,6 +3,7 @@
 import type { TroopIntent } from "./troops.ts";
 import { Game, parseParams, type DebugFlags } from "./game.ts";
 import { mountGameHud } from "./hudBridge.ts";
+import { fitHud, hudFits } from "./hudFit.ts";
 import { mountGameMenus } from "./menuBridge.ts";
 import { drawnViewKey, viewKey, viewOutline } from "./minimap.ts";
 import type { CameraState } from "@hearthfall/render";
@@ -58,6 +59,8 @@ canvas.addEventListener("webglcontextrestored", () => {
   notice("Graphics restored.", 3000);
 });
 const hudEl = document.getElementById("hud")!;
+/** BACKLOG 8: window size and wanted scale the HUD was last fitted to (refitHud) */
+let fitKey = "";
 function resize() {
   game.renderer.resize(window.innerWidth, window.innerHeight);
 }
@@ -74,6 +77,7 @@ try {
     hudEl.style.display = game.screen === "none" ? "" : "none";
     hud.refresh();
     menus.refresh();
+    refitHud();
   };
   game.onChange();
   window.addEventListener("resize", resize);
@@ -81,9 +85,19 @@ try {
 } catch (e) {
   fatal(e);
 }
+// BACKLOG 8: refit the HUD scale when the setting or the window changes, or when grown content overlaps
+function refitHud() {
+  if (game.screen !== "none") return;
+  const key = `${game.uiScaleWanted} ${innerWidth}x${innerHeight}`;
+  if (key !== fitKey || !hudFits(hudEl)) {
+    fitKey = key;
+    fitHud(hudEl, game.uiScaleWanted);
+  }
+}
 // mana and charges change every tick: refresh the HUD a few times a second
 setInterval(() => {
   if (game.screen === "none") hud.refresh();
+  refitHud();
 }, 250);
 
 // a camera move redraws the HUD (minimap footprint) on the next frame, also while paused, so captures
@@ -208,6 +222,8 @@ if (__DEBUG_API__ || game.params.debug) {
       game.step(1);
       return game.ended;
     },
+    /** BACKLOG 8: applied accessibility settings (HUD scale CSS variable, tribe colors, current subtitle) */
+    a11y: () => ({ uiScale: getComputedStyle(document.documentElement).getPropertyValue("--ui-scale").trim(), hudScale: hudEl.style.getPropertyValue("--hud-scale"), tribePal: { ...game.tribePal }, subtitle: game.subtitle }),
     /** M10 audio: cue hook stats (played, silent stubs, by cue) and the Web Audio player state */
     audio: () => ({ hooks: game.audio.stats(), player: game.player.stats(), music: { stem: game.music.stem, updates: game.music.updates } }),
     /** M10 real models: pending while loading, ids loaded and failed, ids the current layers draw */

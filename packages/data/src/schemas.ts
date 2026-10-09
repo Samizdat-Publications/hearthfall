@@ -245,6 +245,10 @@ export const StyleSchema = z.strictObject({
       alias: z.record(z.string(), z.string().min(1)).optional(),
     })
     .optional(),
+  /** BACKLOG 8: alternative tribe colors by palette id (settings: colorblind), keyed by TRIBE_COLORS name */
+  tribePalettes: z.record(z.string(), z.record(z.enum(["azure", "crimson", "amber", "jade"]), hex)).optional(),
+  /** BACKLOG 8: subtitle shown for a voice cue (the barks are in the Shaper's tongue): speaker and meaning */
+  subtitles: z.record(z.string(), z.strictObject({ speaker: z.string().min(1), text: z.string().min(1) })).optional(),
   promptStyleSuffix: z.string(),
   promptNegative: z.string(),
   triBudgets: z.record(z.string(), range2),

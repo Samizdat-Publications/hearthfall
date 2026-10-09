@@ -147,7 +147,6 @@ export function drawMinimap(game: Game, canvas: HTMLCanvasElement): void {
   const E = w.ents;
   const viewer = game.renderer.viewTribe;
   const reveal = game.renderer.revealFog;
-  const pal = game.pack.files.style.palette;
   const defs = w.cfg.pack.units.units;
   const shapers: number[] = [];
   for (let i = 0; i < E.hi; i++) {
@@ -161,7 +160,7 @@ export function drawMinimap(game: Game, canvas: HTMLCanvasElement): void {
       continue;
     }
     const tr = w.tribes[E.tribe[i]];
-    ctx.fillStyle = tr ? pal[tr.color] ?? "#d9cbb0" : "#d9cbb0";
+    ctx.fillStyle = tr ? game.tribePal[tr.color] ?? "#d9cbb0" : "#d9cbb0";
     const s = cat === CAT.building ? 3 : 1;
     ctx.fillRect(Math.floor(E.x[i]) - (s >> 1), Math.floor(E.y[i]) - (s >> 1), s, s);
   }
@@ -172,7 +171,7 @@ export function drawMinimap(game: Game, canvas: HTMLCanvasElement): void {
     const y = Math.floor(E.y[i]);
     ctx.fillStyle = "#f4f1ea";
     ctx.fillRect(x - 2, y - 2, 5, 5);
-    ctx.fillStyle = tr ? pal[tr.color] ?? "#d9cbb0" : "#d9cbb0";
+    ctx.fillStyle = tr ? game.tribePal[tr.color] ?? "#d9cbb0" : "#d9cbb0";
     ctx.fillRect(x - 1, y - 1, 3, 3);
   }
   const pts = viewOutline(game);

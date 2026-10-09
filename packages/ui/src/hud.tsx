@@ -87,6 +87,8 @@ export interface HudModel {
   /** M8: objectives panel (rivals left, Hearth, next tier) and event notifications, newest last */
   objectives: ObjectiveView[];
   notes: NoteView[];
+  /** BACKLOG 8: the current voice line's subtitle */
+  subtitle?: { speaker: string; text: string } | null;
   box: { x0: number; y0: number; x1: number; y1: number } | null;
   showHelp: boolean;
   priorities: { build: number; upgrade: number; breed: number };
@@ -350,6 +352,11 @@ function Hud({ act }: { act: HudActions }) {
         </div>
       ) : null}
       <Troops t={m.troops} act={act} pointing={m.pointing} />
+      {m.subtitle ? (
+        <div data-hud="subtitle" class="hud-subtitle">
+          <b>{m.subtitle.speaker}:</b> {m.subtitle.text}
+        </div>
+      ) : null}
       {m.undoSec !== undefined && m.undoSec > 0 ? (
         <div data-hud="undo" class="hud-panel hud-undo">
           Backspace undoes this cast ({m.undoSec.toFixed(1)} s)

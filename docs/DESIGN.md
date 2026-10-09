@@ -204,6 +204,12 @@ Short positional SFX for every action, spell cast and impact; tribal percussion 
 
 DOM overlay HUD (layout v2, ADR-005 addendum 2: Shaper portrait with mana and followers bars top-left, spell row top-center, build tools in a right column, minimap with population bottom-right, stone-framed panels): spell bar with charge rings and ETA, mana income breakdown and split slider, population and supply, selected unit panel, minimap, objectives, notifications (Shaper under attack, shrine claimed). Must stay readable at 1280x720 and scale to 4K. No overlaps (automated check).
 
+Accessibility (BACKLOG 8), all in Settings and stored with the other settings:
+- Tribe colors: `default` or `colorblind` (`style.json` tribePalettes; azure #1D3FE8, crimson #E95D0B, amber #853488, jade #76E7BF). The colorblind set was picked by simulating protan, deutan and tritan vision (Machado 2009) and maximizing the smallest Lab distance between any two tribes: at least 40 for every vision type, against about 22 for the default set. It recolors units, rings, buildings and the minimap.
+- UI scale: 80 to 150 percent for the HUD and menus. On a window too small for the chosen scale the HUD steps down in 5 percent steps until no panel overlaps (125 percent needs about 1920x1080; 1280x720 fits about 105).
+- Subtitles (on by default): every Shaper bark shows its line with a translation for 4 s at the bottom center (`style.json` subtitles).
+- Remappable keys: since M8 (Settings, Controls).
+
 ## 18. Out of scope for v1
 
 Online multiplayer, vehicles (boats, balloons), full campaign, mod browser, achievements, localization. All are in `docs/BACKLOG.md`.

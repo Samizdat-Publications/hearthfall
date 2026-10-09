@@ -68,6 +68,16 @@
     },
     "foamStrokes": 0.55
   },
+  "tribePalettes": {
+    "colorblind": { "azure": "#1D3FE8", "crimson": "#E95D0B", "amber": "#853488", "jade": "#76E7BF" }
+  },
+  "subtitles": {
+    "voice.shaper.acknowledged": { "speaker": "Shaper", "text": "Ihra sovenu. (It will be so.)" },
+    "voice.shaper.acknowledged_b": { "speaker": "Shaper", "text": "Vael tanuri. (I go.)" },
+    "voice.shaper.casting": { "speaker": "Shaper", "text": "Kael-thu ora, vessen alu! (Hear me, the land answers!)" },
+    "voice.shaper.under_attack": { "speaker": "Shaper", "text": "Dru karesh! Alun mor! (They strike us! To me!)" },
+    "voice.shaper.victory": { "speaker": "Shaper", "text": "Ohe thavuni, sorrenu ai! (The land is ours, rejoice!)" }
+  },
   "audio": {
     "$comment": "sim event type to audio cue; alias maps a cue to the asset that serves it; cues without an asset are silent stubs",
     "cues": {

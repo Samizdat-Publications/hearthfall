@@ -77,7 +77,9 @@ export class ThreeRenderer implements Renderer {
   /** BACKLOG 5: the prop material plus the procedural unit animation */
   private readonly unitMat: THREE.MeshLambertMaterial;
   private readonly ringMat: THREE.MeshBasicMaterial;
-  private readonly pal: Record<string, string>;
+  private pal: Record<string, string>;
+  /** BACKLOG 8: the style palette before any tribe color override */
+  private basePal: Record<string, string> = {};
   private readonly styleRender: RendererOptions["style"]["render"];
   units: UnitLayer | null = null;
   buildings: BuildingLayer | null = null;
@@ -147,6 +149,7 @@ export class ThreeRenderer implements Renderer {
     this.terrainMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend, this.detail);
     this.waterMat = makeWaterMaterial(this.palette, this.bend, this.time, rs?.foamStrokes ?? 0);
     this.pal = pal;
+    this.basePal = pal;
     this.styleRender = o.style.render;
     this.propMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend);
     this.unitMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend, undefined, true);
@@ -234,6 +237,15 @@ export class ThreeRenderer implements Renderer {
     this.fogTex.needsUpdate = true;
   }
 
+  /**
+   * BACKLOG 8: override the tribe colors (style.json tribePalettes, keyed by tribe color name), or null
+   * for the plain palette. Rebuilds the entity layers so units, rings and buildings repaint.
+   */
+  setTribeColors(over: Record<string, string> | null): void {
+    this.pal = { ...this.basePal, ...(over ?? {}) };
+    if (this.world) this.buildLayers(this.world);
+  }
+
   /** (Re)create the entity layers for a world, with the real models when they are loaded. */
   private buildLayers(world: World): void {
     const colors = world.tribes.map((t) => t.color);
@@ -255,7 +267,7 @@ export class ThreeRenderer implements Renderer {
   async loadModels(urls: Readonly<Record<string, string>>, fetchBytes?: (url: string) => Promise<ArrayBuffer>): Promise<ModelStatus> {
     this.modelsPending = true;
     try {
-      const { models, report } = await loadModels(urls, this.pal.azure ?? "#2e6fd8", fetchBytes);
+      const { models, report } = await loadModels(urls, this.basePal.azure ?? "#2e6fd8", fetchBytes);
       this.models = models;
       this.modelReport = report;
       for (const m of this.trees.meshes) {

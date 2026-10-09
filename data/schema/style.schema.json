@@ -246,6 +246,58 @@
       ],
       "additionalProperties": false
     },
+    "tribePalettes": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string",
+          "enum": [
+            "azure",
+            "crimson",
+            "amber",
+            "jade"
+          ]
+        },
+        "additionalProperties": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "required": [
+          "azure",
+          "crimson",
+          "amber",
+          "jade"
+        ]
+      }
+    },
+    "subtitles": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "speaker": {
+            "type": "string",
+            "minLength": 1
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "speaker",
+          "text"
+        ],
+        "additionalProperties": false
+      }
+    },
     "promptStyleSuffix": {
       "type": "string"
     },

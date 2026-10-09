@@ -55,6 +55,7 @@ export function hudFor(game: Game): HudModel {
     icons: { mana: resourceIcon("mana"), pop: resourceIcon("population") },
     objectives: objectivesFor(game, nextTier ? { name: title(nextTier.id), followers: nextTier.followers, opens: nextTier.buildings.map(title) } : null),
     notes: game.notes.filter((n) => n.until > w.tick).map((n) => ({ id: n.id, text: n.text, kind: n.kind })),
+    subtitle: game.subtitle && game.subtitle.until > w.tick ? { speaker: game.subtitle.speaker, text: game.subtitle.text } : null,
     box: game.box,
     showHelp: game.showHelp,
     priorities: tr ? { ...tr.eco.priorities } : { build: 1, upgrade: 1, breed: 1 },

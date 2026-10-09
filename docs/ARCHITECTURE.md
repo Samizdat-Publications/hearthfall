@@ -188,6 +188,8 @@ HUD v2 (M8): `hudBridge.ts` adds spell ETAs (`eta.ts` plays the economy round ro
 
 Troop controls (M6): `apps/game/src/troops.ts` holds pure functions of (World, tribe, selection, selected building) that build the HUD `TroopView` and turn intents into Commands; Game routes HUD buttons, the R (retreat) and G (garrison) hotkeys, and right clicks through them (right click with a lodge selected sets its rally point; with units selected on an own Watchtower it garrisons). Unit tests live in `apps/game/test/`.
 
+Accessibility (BACKLOG 8): `Game.applyA11y()` (constructor and Settings changes) merges the chosen `style.json` tribePalettes entry over the palette into `Game.tribePal` (the minimap reads it), calls `renderer.setTribeColors(over)` (rebuilds the tinted entity layers; null restores the base palette) and sets the CSS variable `--ui-scale` (menus and subtitles zoom by it). `apps/game/src/hudFit.ts` fits the HUD: `fitHud` sets `--hud-scale` from the wanted scale down in 5 percent steps until every `.hud-panel` is on screen with 4 px between panels; `main.ts` refits when the wanted scale or window size changes or a panel grows into another (checked every 250 ms). Voice cues go through `Game.voice(cue)`, which sets `Game.subtitle` from `style.json` subtitles when the setting is on; the HUD shows it until its tick. URL params `palette=colorblind` and `uiScale=125` override the stored settings; `__game.a11y()` returns `{uiScale, hudScale, tribePal, subtitle}`. `packages/data/src/colorVision.ts` holds the color vision simulation used by the palette test.
+
 Agents read `getSummary()` and headless harness output first. Screenshots are the last resort.
 
 ## 9. Performance budgets (gated by `npm run bench`)

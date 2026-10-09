@@ -72,6 +72,9 @@ export interface GameParams {
   models: boolean;
   /** BACKLOG 3: reveal=1 draws the whole map through the fog of war (render only; the sim and AI keep it) */
   reveal: boolean;
+  /** BACKLOG 8: tribe palette and HUD scale overrides (palette=colorblind, uiScale=125); null uses the stored setting */
+  palette: string | null;
+  uiScale: number | null;
 }
 
 export function parseParams(search: string): GameParams {
@@ -94,6 +97,8 @@ export function parseParams(search: string): GameParams {
     campaign: q.get("campaign"),
     models: q.get("models") !== "0",
     reveal: q.get("reveal") === "1",
+    palette: q.get("palette"),
+    uiScale: q.has("uiScale") ? num("uiScale", 100) : null,
   };
 }
 
@@ -106,6 +111,8 @@ export interface Note {
 }
 
 const NOTE_SECONDS = 8;
+/** BACKLOG 8: how long a voice subtitle stays up */
+const SUBTITLE_SECONDS = 4;
 const MAX_NOTES = 4;
 /** BACKLOG 4: double-click selects own units of the clicked type within this many cells */
 const SAME_TYPE_RADIUS = 14;
@@ -190,6 +197,12 @@ export class Game {
   onRebindKey: ((e: KeyboardEvent) => void) | null = null;
   /** HUD notifications (sim ticks, so fixedStep captures see the same list); newest last */
   notes: Note[] = [];
+  /** BACKLOG 8: the UI scale setting as a factor (the HUD may run smaller to fit the window, see hudFit.ts) */
+  uiScaleWanted = 1;
+  /** BACKLOG 8: tribe color name to hex for the current palette setting */
+  tribePal: Record<string, string> = {};
+  /** BACKLOG 8: the last voice line's subtitle, shown until the tick `until` */
+  subtitle: { speaker: string; text: string; until: number } | null = null;
   private noteSeq = 0;
   private noteLast = new Map<string, number>();
   lastSave: { tick: number; hash: string } | null = null;
@@ -215,6 +228,7 @@ export class Game {
     this.audio = new AudioHooks(st?.cues ?? {}, new Set(Object.keys(AUDIO_URLS)), (p) => this.player.play(p.cue, p.x, p.y), st?.alias ?? {});
     this.campaignWon = loadProgress(this.kv);
     this.applyQuality();
+    this.applyA11y();
     if (params.campaign && !params.scenario) this.playLevel(params.campaign, true);
     else if (params.menu && !params.scenario) this.showMainMenu();
     else this.load();
@@ -225,6 +239,28 @@ export class Game {
   applyQuality(): void {
     const q = this.params.quality ?? this.settings.quality;
     this.renderer.setRenderScale(QUALITY_SCALE[q] ?? 1);
+  }
+
+  /**
+   * BACKLOG 8: tribe colors (colorblind palette) and HUD scale from the URL override or the stored
+   * setting. The renderer rebuilds its entity layers; the minimap reads `tribePal`.
+   */
+  applyA11y(): void {
+    const style = this.pack.files.style;
+    const id = this.params.palette ?? this.settings.palette;
+    const over = style.tribePalettes?.[id] ?? null;
+    this.tribePal = { ...style.palette, ...(over ?? {}) };
+    this.renderer.setTribeColors(over);
+    const scale = Math.min(2, Math.max(0.5, (this.params.uiScale ?? this.settings.uiScale) / 100));
+    this.uiScaleWanted = scale;
+    if (typeof document !== "undefined") document.documentElement.style.setProperty("--ui-scale", String(scale));
+  }
+
+  /** BACKLOG 8: play a voice cue and, with subtitles on, show its line (style.json subtitles) for a few seconds. */
+  private voice(cue: string): void {
+    this.player.play(cue);
+    const sub = this.settings.subtitles ? this.pack.files.style.subtitles?.[cue] : undefined;
+    if (sub) this.subtitle = { speaker: sub.speaker, text: sub.text, until: this.world.tick + SUBTITLE_SECONDS * this.world.cfg.tickHz };
   }
 
   /** (Re)build the world from params: a scenario id, or a procedural planet. */
@@ -390,7 +426,7 @@ export class Game {
       const won = lv.outcome === OUTCOME.won;
       if (won && !recordWin(this.kv, lv.def.id, this.campaignWon)) this.notify("progress", "Campaign progress could not be stored in this browser.", "info");
       this.ended = { won, why: [...this.world.events].reverse().find((e) => e.type === "levelLost")?.why as string | undefined };
-      if (won) this.player.play("voice.shaper.victory");
+      if (won) this.voice("voice.shaper.victory");
       this.cancelModes();
       this.screen = "end";
       this.backStack = [];
@@ -403,7 +439,7 @@ export class Game {
     const rivalsOut = ts.every((t) => t.index === this.localTribe || !t.alive);
     if (me?.alive && !rivalsOut) return;
     this.ended = { won: Boolean(me?.alive) };
-    if (this.ended.won) this.player.play("voice.shaper.victory");
+    if (this.ended.won) this.voice("voice.shaper.victory");
     this.cancelModes();
     this.screen = "end";
     this.backStack = [];
@@ -458,10 +494,10 @@ export class Game {
   private cueFor(e: SimEvent): void {
     if (e.tribe !== this.localTribe) return;
     if (e.type === "commandRejected") this.player.play("sfx.ui_error");
-    else if (e.type === "shaperDied") this.player.play("voice.shaper.under_attack");
+    else if (e.type === "shaperDied") this.voice("voice.shaper.under_attack");
     else if (e.type === "spellCast" && this.world.tick - this.lastCastVoice > 20 * this.world.cfg.tickHz) {
       this.lastCastVoice = this.world.tick;
-      this.player.play("voice.shaper.casting");
+      this.voice("voice.shaper.casting");
     }
   }
 
@@ -469,7 +505,7 @@ export class Game {
   private orderSound(): void {
     this.player.play("sfx.order_move");
     const si = shaperIndex(this.world, this.localTribe);
-    if (si >= 0 && this.selection.has(si)) this.player.play(this.ackFlip++ % 2 ? "voice.shaper.acknowledged_b" : "voice.shaper.acknowledged");
+    if (si >= 0 && this.selection.has(si)) this.voice(this.ackFlip++ % 2 ? "voice.shaper.acknowledged_b" : "voice.shaper.acknowledged");
   }
 
   private noteFor(e: SimEvent): void {

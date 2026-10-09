@@ -164,6 +164,78 @@
      0.99
     ]
    }
+  },
+  {
+   "id": "colorblind",
+   "params": {
+    "scenario": "combat_warden_melee_kills",
+    "camera": "default",
+    "reveal": "1",
+    "palette": "colorblind",
+    "uiScale": "125"
+   },
+   "steps": [
+    {
+     "setCamera": {
+      "x": 32,
+      "z": 30,
+      "zoom": 0.1,
+      "yaw": 0.7
+     }
+    },
+    {
+     "eval": "window.__hit = false; for (let k = 0; k < 900 && !window.__hit; k++) { __game.step(1); const s = __game.getSummary(); window.__hit = s.lastEvents.some((e) => e.type === 'melee' && e.tick >= s.tick - 1); }"
+    },
+    {
+     "assert": "window.__hit === true"
+    }
+   ],
+   "kind": "hud",
+   "coverage": {
+    "green": [
+     0.02,
+     0.99
+    ]
+   },
+   "expectVfx": 1,
+   "$comment": "BACKLOG 8: the melee fight with the colorblind tribe palette and the HUD at 125 percent (fits at 1920x1080)",
+   "width": 1920,
+   "height": 1080
+  },
+  {
+   "id": "uiscale_fit",
+   "params": {
+    "scenario": "combat_warden_melee_kills",
+    "camera": "default",
+    "reveal": "1",
+    "palette": "default",
+    "uiScale": "150"
+   },
+   "steps": [
+    {
+     "setCamera": {
+      "x": 32,
+      "z": 30,
+      "zoom": 0.1,
+      "yaw": 0.7
+     }
+    },
+    {
+     "eval": "window.__hit = false; for (let k = 0; k < 900 && !window.__hit; k++) { __game.step(1); const s = __game.getSummary(); window.__hit = s.lastEvents.some((e) => e.type === 'melee' && e.tick >= s.tick - 1); }"
+    },
+    {
+     "assert": "window.__hit === true"
+    }
+   ],
+   "kind": "hud",
+   "coverage": {
+    "green": [
+     0.02,
+     0.99
+    ]
+   },
+   "expectVfx": 1,
+   "$comment": "BACKLOG 8: 150 percent asked on a 1280x720 window: the HUD steps down until no panel overlaps (DOM checks)"
   }
  ]
 }
