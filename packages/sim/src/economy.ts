@@ -35,6 +35,8 @@ export interface TribeEco {
   priorities: { build: number; upgrade: number; breed: number };
   /** highest progression tier reached (balance.progression.tiers index; never goes down) */
   tier: number;
+  /** BACKLOG 6: mana income multiplier (an AI difficulty's resourceMultiplier, set by the handicap command) */
+  incomeMult: number;
 }
 
 export function newTribeEco(w: World): TribeEco {
@@ -54,6 +56,7 @@ export function newTribeEco(w: World): TribeEco {
     trainDemand: 0,
     priorities: { ...eco.priorities },
     tier: 0,
+    incomeMult: 1,
   };
   spells.spells.forEach((s, i) => {
     const sel = eco.skirmishSpells;
@@ -905,8 +908,9 @@ export class EconomySystem {
       if (tr >= 0 && tr < rates.length) rates[tr] += this.manaRate(i);
     }
     for (const tr of w.tribes) {
-      tr.eco.incomePerMin = tr.alive ? rates[tr.index] : 0;
-      this.distribute(tr.index, tr.alive ? rates[tr.index] / per : 0);
+      const rate = rates[tr.index] * tr.eco.incomeMult;
+      tr.eco.incomePerMin = tr.alive ? rate : 0;
+      this.distribute(tr.index, tr.alive ? rate / per : 0);
     }
   }
 

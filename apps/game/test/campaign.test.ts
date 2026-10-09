@@ -49,8 +49,8 @@ describe("campaign (M9)", () => {
     const b = restoreSave(pack, save);
     expect(b.hash().all).toBe(a.hash().all);
     // an idle player loses the shrine race in both worlds, on the same tick
-    a.run(150 * 20);
-    b.run(150 * 20);
+    a.run(200 * 20);
+    b.run(200 * 20);
     expect(b.hash().all).toBe(a.hash().all);
     expect(a.level!.outcome).toBe(OUTCOME.lost);
     expect(b.level!.outcome).toBe(OUTCOME.lost);

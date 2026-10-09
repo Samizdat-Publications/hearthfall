@@ -98,6 +98,25 @@ registerCommand("move", {
   },
 });
 
+/**
+ * BACKLOG 6: an AI difficulty's resource multiplier on the tribe's mana income. Only an AI controller of
+ * that tribe (or god mode, naming args.tribe) may set it, so a player can never hand themselves one.
+ */
+registerCommand("handicap", {
+  validate(w, c) {
+    const m = c.args.mult;
+    if (!finite(m) || m < 0.25 || m > 4) return "handicap needs mult between 0.25 and 4";
+    const tribe = c.tribe === -1 ? Number(c.args.tribe) : c.tribe;
+    if (!w.tribes[tribe]) return "no such tribe";
+    if (c.tribe !== -1 && !w.controllers.some((ctl) => ctl.tribe === c.tribe)) return "only an AI controller sets a handicap";
+    return null;
+  },
+  apply(w, c) {
+    const tribe = c.tribe === -1 ? Number(c.args.tribe) : c.tribe;
+    w.tribes[tribe].eco.incomeMult = c.args.mult as number;
+  },
+});
+
 /** God-mode displacement (knockback precursor, tests): units pushed into deep water drown. */
 registerCommand("impulse", {
   validate(w, c) {

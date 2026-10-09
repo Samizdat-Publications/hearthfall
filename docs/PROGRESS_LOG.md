@@ -116,3 +116,10 @@ One line per entry: `MM/DD/YYYY HH:MM  M<n>  what happened`. Never read this fil
 - Procedural vertex animation instead of rig plus VAT: packages/render/src/unitAnim.ts (unitClip from sim state, pure unitPose and deathPose, rigGeometry aRig = model height and x share, GLSL chunk after begin_vertex via bendMaterial anim flag). UnitLayer writes instanceAnim per instance (shared by body and detail meshes, geometries cloned per kind) and draws 1.2 s death ghosts from killed and drowned events (Renderer.consumeEvents).
 - Debug: __game.setAnimProbe(on). Scenario anim_gallery and combat shot anim_gallery (two rows, all clips). Tests: packages/render/test/unitAnim.test.ts (4). bench:render median 3.7 ms, 1000 drawn. smoke and combat re-approved (walking legs, idle breathing).
 - Blender 5.1.2 present (doctor); rig plus VAT kept as BACKLOG 5a.
+
+## 2026-10-09 BACKLOG 6: difficulty levels
+- resourceMultiplier was declared in data but unused. Now OpponentAI issues a `handicap` command (sim, packages/sim/src/commands.ts) when its tribe's eco.incomeMult differs; updateMana multiplies the tribe income; hashed only when not 1 (golden replays unchanged). Only a tribe with an attached controller or god mode may set it.
+- Soak `--mode difficulty` (tools/harness/soak.mjs, `--levels`, default 8 seeds per level): first run easy 0.44 to 0.63 v normal (noise 0.35, 6 s, 1.0x was about even), hard and brutal 0.88. Easy retuned to 8 s reaction, 0.7x income: 0.13 over 16 seeds and 0.13 over 8. A noise 0.5 variant scored 0.5 (more noise fires more early raids), so noise stays 0.35.
+- Campaign level 2 (contested_shrine, easy turtle) rival claims the shrine at 195 s instead of under 170 s; scenario level_contested_shrine_idle_loses runTicks 4400 and campaign save test window 200 s.
+- Soak worker fan-out now uses the spec count, not --seeds (ai-idle and difficulty ran with too few workers).
+- Tests: packages/sim/test/handicap.test.ts (3), opponent.test.ts brutal handicap (1). qa:fast PASS, scenarios 52/52.

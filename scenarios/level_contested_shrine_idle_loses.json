@@ -3,8 +3,8 @@
   "description": "Campaign level 2 can be lost: a player who never sends worshippers watches the rival tribe claim the hill shrine.",
   "tags": ["fast", "levels"],
   "level": "contested_shrine",
-  "runTicks": 3400,
+  "runTicks": 4400,
   "assert": [
-    { "at": 3400, "expr": "level.lost && !level.won && site('hill_shrine').by == 1 && events.count('levelLost') == 1" }
+    { "at": 4400, "expr": "level.lost && !level.won && site('hill_shrine').by == 1 && events.count('levelLost') == 1" }
   ]
 }

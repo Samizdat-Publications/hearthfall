@@ -93,5 +93,5 @@ parentPort.postMessage({
   tick: w.tick,
   violations,
   metrics: { ticks: w.tick, avgTickMs: +(ms / Math.max(1, w.tick)).toFixed(3), drowned: ec("drowned"), orderFailed: ec("orderFailed"), orderGaveUp: ec("orderGaveUp"), moves: w.units.ordersIssued, maxStuckSec: +(maxStuck / w.cfg.tickHz).toFixed(1), units: w.count((i) => w.ents.cat[i] === 3), popByMinute, born: ec("born"), buildings: ec("buildingDone"), trained: ec("trained"), killed: ec("killed"), converted: ec("converted"), fireballs: ec("fireball"), eliminated: ec("tribeEliminated"), alive: w.tribes.filter((t) => t.alive).length },
-  ai: aiMode ? { ais: ais.map((a) => ({ tribe: a.tribe, type: a.spec.type, personality: a.spec.personality ?? null, alive: w.tribes[a.tribe].alive, stats: a.bot.stats ?? null })), alive: w.tribes.filter((t) => t.alive).map((t) => t.index), endMinute: +(w.tick / minuteTicks).toFixed(2), spellCast: ec("spellCast") } : null,
+  ai: aiMode ? { ais: ais.map((a) => ({ tribe: a.tribe, type: a.spec.type, personality: a.spec.personality ?? null, difficulty: a.spec.difficulty ?? null, units: w.count((i) => w.ents.cat[i] === 3 && w.ents.tribe[i] === a.tribe), alive: w.tribes[a.tribe].alive, stats: a.bot.stats ?? null })), alive: w.tribes.filter((t) => t.alive).map((t) => t.index), endMinute: +(w.tick / minuteTicks).toFixed(2), spellCast: ec("spellCast") } : null,
 });

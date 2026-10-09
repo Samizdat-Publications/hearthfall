@@ -176,6 +176,7 @@ Spell UX: hover shows exact area preview on the curved terrain, range ring aroun
 - Utility-based AI driven by **personality data**: aggressive (Crimson: early Warden rushes, Bolt harassment), sneaky (Amber: Chanters, Shades, Veil, skirmish raids), turtle (Jade: towers, Mire, Quake from range).
 - Same command API as the player. Spell preferences are filtered to spells the AI actually has unlocked. No hidden cheats by default; difficulty scales decision quality, reaction time and optional resource multipliers declared in data.
 - Plays under the same fog of war as the player (section 13a); only a difficulty with `mapHack` in data sees through it (brutal).
+- Difficulty levels (BACKLOG 6, `ai_personalities.json` difficulties): easy reacts every 8 s with decision noise 0.35 and 0.7x mana income; normal 3 s, noise 0.15; hard 1.5 s, noise 0.05; brutal 1 s, no noise, 1.25x income and map hack. Against a normal opponent of the same personality (`npm run soak -- --mode difficulty`, 8 seeds per level, 20 min) easy scores about 0.13, hard and brutal about 0.88. The income multiplier is applied through the sim (`handicap` command), never in hidden AI code, so it shows in the HUD income and in replays.
 - Must scout, contest shrines and reliquaries, adapt army composition to what it sees, and react to Shaper threats. Show AI intent subtly in-world (gathering banners before an attack) so losses feel fair.
 
 ## 13a. Fog of war (BACKLOG 3)

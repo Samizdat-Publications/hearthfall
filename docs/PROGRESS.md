@@ -4,14 +4,11 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 
 ## Now
 - Run started: 2026-10-08T21:25:00Z
+- BACKLOG 6 DONE: difficulty levels: handicap command applies resourceMultiplier through the sim (eco.incomeMult), easy retuned (8 s reaction, 0.7x income), soak --mode difficulty gate (easy 0.13, hard 0.88, brutal 0.88 v normal); campaign level 2 rival now claims the shrine at 195 s (tests widened).
 - BACKLOG 5 DONE (ADR-012): procedural unit animation in the vertex shader (aRig per vertex, instanceAnim pose per instance; walk, work, attack, shoot, cast, pray, panic, idle from sim state; toppling and drowning death ghosts), pose gallery shot, render bench 3.7 ms; rigged clips left as BACKLOG 5a.
 - BACKLOG 4 DONE: command UX polish: box formations for player group moves (sim `move` formation arg, slots ranked melee front to Shaper back, balance.movement.formation), double-click type select, control group jump, spell preview counts, Backspace undo countdown; smoke, combat, spells, spells2 and levels re-approved (help line). Stewart's art note (10/09): tilt-shift miniature ref making-of/a1 style-ref-06 is a second reference (trees, huts, water, tilt-shift), BACKLOG 14a.
 - BACKLOG 3 DONE: fog of war (sim VisionSystem, per tribe explored and visible grids, ADR-011), AI sees only what its tribe sees (brutal has mapHack), shader fog on every bent material, units and buildings hidden, minimap fog, reveal=1 and __game.setReveal. Soaks with fog: economy 61, ai-idle all 12, ai (sneaky 5, aggressive 2, turtle 1, median 15.2 min), bots PASS; smoke, spells2 and levels re-approved, spell and combat shots use reveal=1.
-- BACKLOG 2 DONE: Shade and Shade Den, sneaky AI keeps two Shades, alloc status-leak fix ($0.67, total $9.15 of $30).
-- BACKLOG 0c DONE: stone from rock outcrops (rocks, quarry and haul jobs, stone costs on towers and lodges, plan blockers, AI site checks, rock rendering).
-- BACKLOG 0a DONE: tall conifers and Hearth grove rings, HUD icon audit (unit icons on troop chips), village scale 1.3x, terraced plateaus (generator terrace, walled-in pads refused, bot picks least-flatten sites), volcano ash column; battle bench 4.9 ms. Terrace soaks (economy, ai-idle, ai, bots) and all shot sets PASS. Full npm run qa PASS at 6988e09 (2026-10-09T16:50Z).
-- BACKLOG 7 DONE (soft gates, misses below): fair lodge payments (the AI trained only Wardens), Chanter rework (6 s channel, no freeze, melee breaks it), AI hunts a Hearthless Shaper (bridge or Lightning), personality data, detour and drowning fixes. ai-idle, ai and bots soaks PASS.
-- BACKLOG (after M11, top down): 1 DONE (and 53): all 16 spells. Veil, Ward, Beguile, Whirlwind, Mire, Erode, Firerain, Wraith as data plus primitives, 9 scenarios, spells2 shot set (approved), icons, AI targeting, skirmish Reliquaries teach them (ADR-010), second hotkey row. Soak note for 7: sneaky won 5 of 8.
+- Earlier BACKLOG DONE: 1 (all 16 spells, ADR-010), 0a (conifers, terraces, icons), 0c (stone), 7 (fair lodges, Chanter rework, AI hunts Hearthless Shaper), 2 (Shade and Shade Den; spend $9.15 of $30). Full npm run qa PASS at 6988e09 (16:50Z) and after BACKLOG 3 (about 18:24Z). Details in PROGRESS_LOG.
 - Milestone: M11 done (tag m11-done; roadmap complete, now BACKLOG top down). M11 shipped: tribe rings under units and a larger Shaper, lighter trees, combat VFX readability (BACKLOG 57), boot screen, fatal panel with cause, frame loop failure and context loss handling, production build served statically (npm run serve, prod qa layer), State of the game section below. Opus review: 3 blockers fixed (frame error handling, static server containment, controls text), follow-ups in BACKLOG 96. M10 done (tag m10-done).
 - M1 shipped: sfc32 rng streams, FNV hash parts, SoA entities, torus terrain with all ops + dirty cursor (dirtySince), tileable fbm generator (continents, islands, flat test maps) with connected Hearth sites, trees, wild people; Command registry (god-mode terrainOp is tribe -1 or godMode only); World step order, drowning, snapshot/restore; scenario runner + safe DSL (4 scenarios); golden replay with frozen pack (terrain_ops_continents). 66 unit tests. qa:fast now includes replays.
 - M2 shipped: renderer (faceted chunks, water, curved world, wrap, sky, trees), camera rig, debug API, shot pipeline (pixel-exact baselines in fixedStep), VisionQA calibrated, browser replay determinism.
@@ -29,7 +26,7 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 - Subagents: project agents are registered again (milestone-reviewer, qa-runner, ...); call them by type.
 
 ## Next 3 actions
-1. BACKLOG P1 6 (difficulty levels with soaks), then 8 (accessibility); then soak and all shot sets (due after 6).
+1. Full npm run qa (due), full soak (economy, ai-idle, ai, bots) and all shot sets (due after 6); then BACKLOG P1 8 (accessibility).
 2. Full npm run qa at least every 4 hours (last PASS after BACKLOG 3, about 18:24Z); then P2 from 9, with 14a (tilt-shift look) early.
 3. Re-run the full soak and shot sets every 3 backlog items (next after 6).
 

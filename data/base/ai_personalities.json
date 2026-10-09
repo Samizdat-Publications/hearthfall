@@ -81,9 +81,9 @@
   "difficulties": [
     {
       "id": "easy",
-      "reactionSeconds": 6,
+      "reactionSeconds": 8,
       "decisionNoise": 0.35,
-      "resourceMultiplier": 1
+      "resourceMultiplier": 0.7
     },
     {
       "id": "normal",

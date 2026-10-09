@@ -92,6 +92,8 @@ export class OpponentAI implements Controller {
   private noise = 0;
   /** BACKLOG 3: difficulty data lets this AI see through fog of war */
   private mapHack = false;
+  /** BACKLOG 6: the difficulty's mana income multiplier, applied through the handicap command */
+  private resourceMult = 1;
   private eco: EconomyBot;
   private ready = false;
   private known = new Set<number>();
@@ -159,6 +161,7 @@ export class OpponentAI implements Controller {
     if (!d) throw new Error(`unknown difficulty ${this.difficulty}`);
     this.noise = d.decisionNoise;
     this.mapHack = d.mapHack ?? false;
+    this.resourceMult = d.resourceMultiplier;
     this.periodTicks = this.periodOverride ?? Math.max(1, Math.round(d.reactionSeconds * w.cfg.tickHz));
     if (this.phase >= this.periodTicks) throw new Error("offset must be below the decision period");
     this.ready = true;
@@ -172,6 +175,8 @@ export class OpponentAI implements Controller {
     const c = this.census(w);
     if (!c) return [];
     const out = this.eco.decide(w);
+    // BACKLOG 6: the difficulty's resource multiplier goes through the sim as a command (hashed, replayable)
+    if (tr.eco.incomeMult !== this.resourceMult) out.push({ tick: w.tick, tribe: this.tribe, type: "handicap", args: { mult: this.resourceMult } });
     this.stats.decisions++;
     // every decision: spells unlocked mid-match (worship sites) start charging too
     this.setup(w, out);

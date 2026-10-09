@@ -59,6 +59,19 @@ describe("OpponentAI (M7)", () => {
     expect(ran).toEqual([3, 33, 63]);
   });
 
+  it("a difficulty with a resource multiplier applies it to its own tribe's income through the sim (BACKLOG 6)", () => {
+    for (const [difficulty, want] of [["brutal", 1.25], ["normal", 1]] as const) {
+      const w = world({ generator: "flat", size: 48, tribes: 2 });
+      w.spawnBuilding("hearth", 1, 30, 30);
+      w.spawnUnit("shaper", 1, 32, 32);
+      w.controllers.push(makeBot({ type: "opponent", tribe: 1, personality: "turtle", difficulty, offset: 0 }));
+      for (let k = 0; k < 70; k++) w.step([]);
+      expect(w.tribes[1].eco.incomeMult).toBe(want);
+      expect(w.tribes[0].eco.incomeMult).toBe(1);
+    }
+    expect(world({ generator: "flat", size: 32, tribes: 2 }).cfg.pack.ai.difficulties.find((d) => d.id === "brutal")!.resourceMultiplier).toBe(1.25);
+  });
+
   it("opponent matches are deterministic", () => {
     const run = () => {
       const p = basePack();

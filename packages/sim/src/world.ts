@@ -451,6 +451,8 @@ export class World {
       if (t.casting) mf.u32(t.casting.spell).f64(t.casting.x).f64(t.casting.y).u32(t.casting.startedAt).u32(t.casting.resolveAt);
       if (t.pending) mf.u32(t.pending.spell + 1000).f64(t.pending.x).f64(t.pending.y).f64(t.pending.best);
       mf.bytes(t.eco.charges).bytes(t.eco.progress).bytes(t.eco.auto).bytes(t.eco.unlocked);
+      // BACKLOG 6: hashed only when set, so worlds without a handicap keep their hashes
+      if (t.eco.incomeMult !== 1) mf.u32(6006).f64(t.eco.incomeMult);
     }
     this.worship.hashInto(mf);
     this.level?.hashInto(mf);
