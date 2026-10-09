@@ -1,0 +1,134 @@
+// Settings and save slots in browser storage (M8). Every access is guarded: storage can be missing,
+// full or throw (private windows, blocked site data), and then the game keeps working with an
+// in-memory fallback and says so in the menus.
+import { defaultKeymap, sanitizeKeymap, type Keymap } from "@hearthfall/ui";
+import { decodeSave, encodeSave, type SaveGame } from "./session.ts";
+
+export interface KV {
+  getItem(k: string): string | null;
+  setItem(k: string, v: string): void;
+  removeItem(k: string): void;
+}
+
+/** In-memory storage used when the browser's is unavailable. */
+export class MemoryKV implements KV {
+  private m = new Map<string, string>();
+  getItem(k: string): string | null {
+    return this.m.get(k) ?? null;
+  }
+  setItem(k: string, v: string): void {
+    this.m.set(k, v);
+  }
+  removeItem(k: string): void {
+    this.m.delete(k);
+  }
+}
+
+/** window.localStorage when it works, else a MemoryKV (persistent false). */
+export function browserKV(): { kv: KV; persistent: boolean } {
+  try {
+    const ls = globalThis.localStorage;
+    const probe = "hearthfall.probe";
+    ls.setItem(probe, "1");
+    ls.removeItem(probe);
+    return { kv: ls, persistent: true };
+  } catch {
+    return { kv: new MemoryKV(), persistent: false };
+  }
+}
+
+export const QUALITIES = ["high", "medium", "low"] as const;
+/** render resolution scale per quality (the retro pass keeps its look at any scale) */
+export const QUALITY_SCALE: Record<string, number> = { high: 1, medium: 0.75, low: 0.5 };
+
+export interface Settings {
+  quality: (typeof QUALITIES)[number];
+  master: number;
+  music: number;
+  sfx: number;
+  keymap: Keymap;
+}
+
+const SETTINGS_KEY = "hearthfall.settings.v1";
+
+export function defaultSettings(): Settings {
+  return { quality: "high", master: 80, music: 60, sfx: 80, keymap: defaultKeymap() };
+}
+
+const vol = (v: unknown, d: number) => (typeof v === "number" && Number.isFinite(v) ? Math.min(100, Math.max(0, Math.round(v))) : d);
+
+export function loadSettings(kv: KV): Settings {
+  const d = defaultSettings();
+  try {
+    const raw = kv.getItem(SETTINGS_KEY);
+    if (!raw) return d;
+    const o = JSON.parse(raw) as Partial<Settings>;
+    return {
+      quality: (QUALITIES as readonly string[]).includes(o.quality as string) ? (o.quality as Settings["quality"]) : d.quality,
+      master: vol(o.master, d.master),
+      music: vol(o.music, d.music),
+      sfx: vol(o.sfx, d.sfx),
+      keymap: sanitizeKeymap(o.keymap),
+    };
+  } catch {
+    return d;
+  }
+}
+
+export function storeSettings(kv: KV, s: Settings): boolean {
+  try {
+    kv.setItem(SETTINGS_KEY, JSON.stringify(s));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export const SLOTS = 3;
+const slotKey = (n: number) => `hearthfall.save.${n}`;
+const metaKey = (n: number) => `hearthfall.save.${n}.meta`;
+
+export interface SlotMeta {
+  savedAt: string;
+  tick: number;
+  map: string;
+  opponents: string;
+}
+
+export function slotMeta(kv: KV, n: number): SlotMeta | null {
+  try {
+    const raw = kv.getItem(metaKey(n));
+    return raw ? (JSON.parse(raw) as SlotMeta) : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Write a save; the error is player-readable (storage full, unavailable). */
+export function writeSlot(kv: KV, n: number, s: SaveGame): string | null {
+  const meta: SlotMeta = { savedAt: s.savedAt, tick: s.tick, map: `${s.params.level} ${s.params.size}, seed ${s.params.seed}`, opponents: `${s.params.ai.join(", ")} (${s.params.difficulty})` };
+  try {
+    kv.setItem(slotKey(n), encodeSave(s));
+    kv.setItem(metaKey(n), JSON.stringify(meta));
+    return null;
+  } catch (e) {
+    kv.removeItem(slotKey(n));
+    kv.removeItem(metaKey(n));
+    return `could not save: ${String((e as Error).message ?? e).slice(0, 80)}`;
+  }
+}
+
+export function readSlot(kv: KV, n: number): SaveGame {
+  const raw = kv.getItem(slotKey(n));
+  if (!raw) throw new Error("slot is empty");
+  return decodeSave(raw);
+}
+
+export function deleteSlot(kv: KV, n: number): void {
+  try {
+    kv.removeItem(slotKey(n));
+    kv.removeItem(metaKey(n));
+  } catch {
+    // nothing to do: the slot stays as it was
+  }
+}

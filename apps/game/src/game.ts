@@ -1,11 +1,15 @@
 // Game wiring: data pack + sim World + renderer + input + the window.__game debug API.
 // The sim advances at a fixed tickHz with an accumulator; in fixedStep mode it advances only through
 // step(n), and every time-driven visual reads the frame counter, so captures are deterministic.
+// M8: the game flow (main menu, skirmish, pause, saves, settings, end screen) is a `screen` here; the
+// sim only runs while no menu screen is up. menuBridge.ts turns this state into the menu view model.
 import { validatePack, type ValidatedPack } from "@hearthfall/data";
 import { CAT, World, commandsByTick, createScenarioWorld, shaperIndex, wrapDelta, type Command, type ScenarioDef, type SimEvent } from "@hearthfall/sim";
 import { ThreeRenderer, type CameraState } from "@hearthfall/render";
-import { DEFAULT_AI, opponentsFor } from "./opponents.ts";
-import { spellSlot } from "@hearthfall/ui";
+import { DEFAULT_AI } from "./opponents.ts";
+import { actionFor, spellSlot, type KeyAction, type Screen } from "@hearthfall/ui";
+import { LOG_TAIL, createSkirmish, type SaveGame, type SkirmishParams } from "./session.ts";
+import { QUALITY_SCALE, browserKV, loadSettings, type KV, type Settings } from "./storage.ts";
 import { AudioHooks } from "@hearthfall/audio";
 import { buildingAt, troopCommand, type TroopIntent } from "./troops.ts";
 
@@ -35,7 +39,10 @@ export interface GameParams {
   paused: boolean;
   fixedStep: boolean;
   debug: boolean;
-  quality: string;
+  /** render quality override (high, medium, low); null uses the stored setting */
+  quality: string | null;
+  /** start on the main menu: no URL params at all, or menu=1 (any other params boot straight into play) */
+  menu: boolean;
   /** opponent controller per non-local tribe in order: a personality id, "economy" or "none" (cycled) */
   ai: string[];
   difficulty: string;
@@ -54,7 +61,8 @@ export function parseParams(search: string): GameParams {
     paused: q.get("paused") === "1",
     fixedStep: q.get("fixedStep") === "1",
     debug: q.get("debug") === "1",
-    quality: q.get("quality") ?? "high",
+    quality: q.get("quality"),
+    menu: [...q.keys()].length === 0 || q.get("menu") === "1",
     ai: q.get("ai") ? q.get("ai")!.split(",").filter(Boolean) : DEFAULT_AI,
     difficulty: q.get("difficulty") ?? "normal",
   };
@@ -105,14 +113,48 @@ export class Game {
 
   readonly canvas: HTMLCanvasElement;
 
+  // ---- M8 game flow
+  screen: Screen = "none";
+  /** screens to return to with Back or Escape */
+  backStack: Screen[] = [];
+  /** true while a match is loaded (pause menu, saving); false on the main menu backdrop */
+  inGame = true;
+  /** the running skirmish (null for scenarios and the menu backdrop): what a save rebuilds from */
+  skirmish: SkirmishParams | null = null;
+  /** local commands applied so far this session (tail kept), stored in saves */
+  log: Command[] = [];
+  ended: { won: boolean } | null = null;
+  stats = { kills: 0, lost: 0 };
+  readonly kv: KV;
+  readonly persistent: boolean;
+  settings: Settings;
+  /** key action waiting for its new key in the settings screen */
+  rebinding: KeyAction | null = null;
+  /** set by the menu bridge while a key binding waits for its key */
+  onRebindKey: ((e: KeyboardEvent) => void) | null = null;
+  lastSave: { tick: number; hash: string } | null = null;
+  lastLoad: { tick: number; hash: string } | null = null;
+
   constructor(canvas: HTMLCanvasElement, params: GameParams) {
     this.canvas = canvas;
     this.params = params;
     this.paused = params.paused || params.fixedStep;
     this.renderer = new ThreeRenderer({ canvas, style: this.pack.files.style, heightUnitsPerWorldUnit: this.pack.files.balance.terrain.heightUnitsPerWorldUnit });
     this.audio = new AudioHooks(this.pack.files.style.audio?.cues ?? {}, new Set());
-    this.load();
+    const store = browserKV();
+    this.kv = store.kv;
+    this.persistent = store.persistent;
+    this.settings = loadSettings(this.kv);
+    this.applyQuality();
+    if (params.menu && !params.scenario) this.showMainMenu();
+    else this.load();
     this.bindInput();
+  }
+
+  /** Render scale from the URL override or the stored setting. */
+  applyQuality(): void {
+    const q = this.params.quality ?? this.settings.quality;
+    this.renderer.setRenderScale(QUALITY_SCALE[q] ?? 1);
   }
 
   /** (Re)build the world from params: a scenario id, or a procedural planet. */
@@ -120,17 +162,143 @@ export class Game {
     const p = this.pack;
     const def = scenarioId ? findScenario(scenarioId) : undefined;
     if (scenarioId && !def) throw new Error(`unknown scenario ${scenarioId}`);
-    this.world = def ? createScenarioWorld(def, p.files, p.hash) : new World({ pack: p.files, packHash: p.hash, seed: this.params.seed, map: { generator: this.params.level, size: this.params.size, tribes: this.params.tribes } });
+    const sp: SkirmishParams = { seed: this.params.seed, level: this.params.level, size: this.params.size, tribes: this.params.tribes, ai: [...this.params.ai], difficulty: this.params.difficulty };
+    this.world = def ? createScenarioWorld(def, p.files, p.hash) : createSkirmish(p, sp);
     this.scenarioCmds = def ? commandsByTick(def.commands) : null;
+    this.afterWorld();
+    this.skirmish = def ? null : sp;
+    this.inGame = true;
+    this.screen = "none";
+    this.backStack = [];
+    this.onChange();
+  }
+
+  /** Reset the per-match UI state and point the renderer and camera at the current world. */
+  private afterWorld(): void {
     this.selection.clear();
+    this.selectedBuilding = -1;
     this.placing = null;
-    if (!def) for (const c of opponentsFor(this.world.tribes.length, this.localTribe, this.params)) this.world.controllers.push(c);
+    this.placeAt = null;
+    this.targeting = null;
+    this.pointing = null;
+    this.attackMode = false;
+    this.queue = [];
+    this.events = [];
+    this.log = [];
+    this.ended = null;
+    this.stats = { kills: 0, lost: 0 };
+    this.renderer.setPlacement(null);
+    this.renderer.setTargeting(null);
     this.renderer.setWorld(this.world);
     const home = this.world.tribes[0] ? this.world.ents.index(this.world.tribes[0].hearth) : -1;
     const size = this.world.terrain.size;
     this.renderer.setCamera({ x: home >= 0 ? this.world.ents.x[home] : size / 2, z: home >= 0 ? this.world.ents.y[home] + 1 : size / 2 });
     this.renderer.setCamera(this.params.camera ?? "default");
+  }
+
+  // ---------------------------------------------------------------- game flow (M8)
+  /** A new skirmish from the setup screen (or Play again): the params replace the URL ones. */
+  startSkirmish(sp: SkirmishParams): void {
+    this.params = { ...this.params, seed: sp.seed, level: sp.level, size: sp.size, tribes: sp.tribes, ai: [...sp.ai], difficulty: sp.difficulty, scenario: null, camera: null };
+    this.load(null);
+    this.paused = this.params.fixedStep;
+  }
+
+  /** The main menu over a still planet (no opponents, the sim does not run). */
+  showMainMenu(): void {
+    const sk = this.pack.files.balance.skirmish;
+    this.params = { ...this.params, scenario: null };
+    this.world = createSkirmish(this.pack, { seed: this.params.seed, level: sk.maps[0], size: sk.defaultSize, tribes: 2, ai: ["none"], difficulty: sk.defaultDifficulty });
+    this.scenarioCmds = null;
+    this.afterWorld();
+    this.skirmish = null;
+    this.inGame = false;
+    this.screen = "main";
+    this.backStack = [];
     this.onChange();
+  }
+
+  /** Take over a world restored from a save (session.restoreSave checked its hash). */
+  adoptSave(w: World, s: SaveGame): void {
+    const sp = s.params;
+    this.params = { ...this.params, seed: sp.seed, level: sp.level, size: sp.size, tribes: sp.tribes, ai: [...sp.ai], difficulty: sp.difficulty, scenario: null, camera: null };
+    this.world = w;
+    this.scenarioCmds = null;
+    this.afterWorld();
+    this.skirmish = { ...sp, ai: [...sp.ai] };
+    this.log = [...s.log];
+    this.queue = s.pending.map((c) => ({ ...c }));
+    this.inGame = true;
+    this.lastLoad = { tick: w.tick, hash: w.hash().all };
+    this.screen = "none";
+    this.backStack = [];
+    this.paused = this.params.fixedStep;
+    this.onChange();
+  }
+
+  go(screen: Screen): void {
+    this.backStack.push(this.screen);
+    this.screen = screen;
+    this.rebinding = null;
+    this.onChange();
+  }
+
+  /** Back button and Escape on a menu screen. */
+  menuBack(): void {
+    if (this.screen === "pause") return this.resume();
+    if (this.screen === "main" || this.screen === "end" || this.screen === "none") return;
+    this.screen = this.backStack.pop() ?? (this.inGame ? "pause" : "main");
+    this.rebinding = null;
+    this.onChange();
+  }
+
+  openPause(): void {
+    if (!this.inGame || this.ended) return;
+    this.cancelModes();
+    this.screen = "pause";
+    this.backStack = [];
+    this.onChange();
+  }
+
+  resume(): void {
+    this.screen = "none";
+    this.backStack = [];
+    this.rebinding = null;
+    this.onChange();
+  }
+
+  /** Clear every pointer mode (targeting, placing, rally pick, attack-move). */
+  private cancelModes(): void {
+    this.targeting = null;
+    this.renderer.setTargeting(null);
+    this.placing = null;
+    this.placeAt = null;
+    this.renderer.setPlacement(null);
+    this.pointing = null;
+    this.attackMode = false;
+  }
+
+  private hasMode(): boolean {
+    return Boolean(this.targeting || this.placing || this.pointing || this.attackMode || this.selection.size || this.selectedBuilding >= 0);
+  }
+
+  /** Victory when every rival tribe is eliminated, defeat when the local tribe is (skirmish only). */
+  private checkEnd(): void {
+    if (!this.skirmish || this.ended || this.world.tribes.length < 2) return;
+    const ts = this.world.tribes;
+    const me = ts[this.localTribe];
+    const rivalsOut = ts.every((t) => t.index === this.localTribe || !t.alive);
+    if (me?.alive && !rivalsOut) return;
+    this.ended = { won: Boolean(me?.alive) };
+    this.cancelModes();
+    this.screen = "end";
+    this.backStack = [];
+    this.onChange();
+  }
+
+  /** Commands queued for the next tick (saved with the game). */
+  pendingCommands(): Command[] {
+    return this.queue.map((c) => ({ ...c }));
   }
 
   /** Queue a command from the local player (applied on the next tick). */
@@ -139,14 +307,26 @@ export class Game {
   }
 
   private stepOnce(): void {
-    const cmds = [...(this.scenarioCmds ? this.scenarioCmds(this.world.tick) : []), ...this.queue.map((c) => ({ ...c, tick: this.world.tick }))];
+    const local = this.queue.map((c) => ({ ...c, tick: this.world.tick }));
+    const cmds = [...(this.scenarioCmds ? this.scenarioCmds(this.world.tick) : []), ...local];
     this.queue = [];
     this.world.step(cmds);
-    for (const e of this.world.events) this.events.push(e);
+    if (this.skirmish && local.length) {
+      this.log.push(...local);
+      if (this.log.length > 2 * LOG_TAIL) this.log = this.log.slice(-LOG_TAIL);
+    }
+    for (const e of this.world.events) {
+      this.events.push(e);
+      if ((e.type === "killed" || e.type === "drowned") && e.cat === CAT.unit) {
+        if (e.tribe === this.localTribe) this.stats.lost++;
+        else if (e.by === this.localTribe && typeof e.tribe === "number" && e.tribe >= 0) this.stats.kills++;
+      }
+    }
+    this.checkEnd();
   }
 
   step(n = 1): number {
-    for (let i = 0; i < n; i++) this.stepOnce();
+    for (let i = 0; i < n && !this.ended; i++) this.stepOnce();
     this.onChange();
     return this.world.tick;
   }
@@ -154,17 +334,19 @@ export class Game {
   frame(now: number): void {
     const dt = this.last ? Math.min(0.25, (now - this.last) / 1000) : 0;
     this.last = now;
-    if (!this.paused) {
+    if (!this.paused && this.screen === "none") {
       this.acc += dt;
       const tickDt = 1 / this.world.cfg.tickHz;
       let n = 0;
-      while (this.acc >= tickDt && n < 8) {
+      while (this.acc >= tickDt && n < 8 && !this.ended) {
         this.stepOnce();
         this.acc -= tickDt;
         n++;
       }
       if (n) this.onChange();
-    }
+    } else this.acc = 0;
+    // the main menu backdrop turns slowly (not in fixedStep captures)
+    if (this.screen === "main" && !this.params.fixedStep && !this.debugFlags.freezeCamera) this.renderer.setCamera({ yaw: this.renderer.cam.yaw + 0.04 * dt });
     this.pollKeys(dt);
     this.pruneSelection();
     this.renderer.selected = this.selection;
@@ -406,57 +588,7 @@ export class Game {
       this.box = null;
       this.onChange();
     });
-    window.addEventListener("keydown", (e) => {
-      const k = e.key.toLowerCase();
-      if (k === "d" && !e.ctrlKey) this.startPlacing("dwelling");
-      if (k === "t" && !e.ctrlKey) this.startPlacing("watchtower");
-      if (k === "r" && !e.ctrlKey && this.selection.size) this.troop({ kind: "retreat" });
-      if (k === "g" && !e.ctrlKey && this.selection.size) this.troop({ kind: "garrison" });
-      if (k === "h") {
-        this.showHelp = !this.showHelp;
-        this.onChange();
-      }
-      const slot = spellSlot(e);
-      if (slot >= 0) {
-        const sp = this.castable()[slot];
-        if (sp) this.startTargeting(sp);
-      }
-      if (k === "backspace") this.command({ tribe: this.localTribe, type: "cancelCast", args: {} });
-      if (k === "escape") {
-        this.cancelTargeting();
-        this.cancelPlacing();
-        this.selection.clear();
-        this.selectedBuilding = -1;
-        this.pointing = null;
-        this.attackMode = false;
-        this.onChange();
-      }
-      if (k === "a" && this.selection.size) this.attackMode = true;
-      if (k === "s" && !e.ctrlKey) this.selectKind("shaper");
-      if (/^[0-9]$/.test(k)) {
-        const g = Number(k);
-        const E = this.world.ents;
-        if (e.ctrlKey) {
-          e.preventDefault();
-          this.groups[g] = [...this.selection].map((i) => E.idOf(i));
-        } else {
-          this.selection = new Set(this.groups[g].map((id) => E.index(id)).filter((i) => i >= 0));
-          this.onChange();
-        }
-      }
-    });
-    window.addEventListener("keydown", (e) => {
-      this.keys.add(e.key.toLowerCase());
-      const k = e.key;
-      if (k === "m" && !e.shiftKey && !e.ctrlKey) this.renderer.setCamera({ map: !this.renderer.cam.map });
-      if (k === " ") this.paused = !this.paused;
-      const f = ["F1", "F2", "F3", "F4"].indexOf(k);
-      if (f >= 0) {
-        e.preventDefault();
-        if (e.ctrlKey || e.shiftKey) this.bookmarks[f] = { ...this.renderer.cam };
-        else if (this.bookmarks[f]) this.renderer.setCamera(this.bookmarks[f]!);
-      }
-    });
+    window.addEventListener("keydown", (e) => this.onKey(e));
     window.addEventListener("keyup", (e) => this.keys.delete(e.key.toLowerCase()));
     window.addEventListener("blur", () => this.keys.clear());
     this.canvas.addEventListener("wheel", (e) => {
@@ -483,6 +615,90 @@ export class Game {
     });
   }
 
+  /** Keyboard: rebinding first, then menus (Escape goes back), then play. Rebindable actions use the keymap. */
+  private onKey(e: KeyboardEvent): void {
+    if (this.rebinding) {
+      e.preventDefault();
+      this.onRebindKey?.(e);
+      return;
+    }
+    if (this.screen !== "none") {
+      if (e.key === "Escape") this.menuBack();
+      return;
+    }
+    const k = e.key.toLowerCase();
+    this.keys.add(k);
+    const sel = this.selection.size > 0;
+    switch (actionFor(this.settings.keymap, e)) {
+      case "buildDwelling":
+        this.startPlacing("dwelling");
+        break;
+      case "buildTower":
+        this.startPlacing("watchtower");
+        break;
+      case "retreat":
+        if (sel) this.troop({ kind: "retreat" });
+        break;
+      case "garrison":
+        if (sel) this.troop({ kind: "garrison" });
+        break;
+      case "attackMove":
+        if (sel) this.attackMode = true;
+        break;
+      case "selectShaper":
+        this.selectKind("shaper");
+        break;
+      case "toggleMap":
+        this.renderer.setCamera({ map: !this.renderer.cam.map });
+        break;
+      case "help":
+        this.showHelp = !this.showHelp;
+        this.onChange();
+        break;
+      case "cancelCast":
+        this.command({ tribe: this.localTribe, type: "cancelCast", args: {} });
+        break;
+      case "pauseMenu":
+        return this.openPause();
+      default:
+        break;
+    }
+    const slot = spellSlot(e);
+    if (slot >= 0) {
+      const sp = this.castable()[slot];
+      if (sp) this.startTargeting(sp);
+    }
+    if (k === "escape") {
+      if (!this.hasMode()) return this.openPause();
+      this.cancelModes();
+      this.selection.clear();
+      this.selectedBuilding = -1;
+      this.onChange();
+    }
+    if (/^[0-9]$/.test(k)) {
+      const g = Number(k);
+      const E = this.world.ents;
+      if (e.ctrlKey) {
+        e.preventDefault();
+        this.groups[g] = [...this.selection].map((i) => E.idOf(i));
+      } else {
+        this.selection = new Set(this.groups[g].map((id) => E.index(id)).filter((i) => i >= 0));
+        this.onChange();
+      }
+    }
+    if (k === " ") {
+      e.preventDefault();
+      this.paused = !this.paused;
+      this.onChange();
+    }
+    const f = ["F1", "F2", "F3", "F4"].indexOf(e.key);
+    if (f >= 0) {
+      e.preventDefault();
+      if (e.ctrlKey || e.shiftKey) this.bookmarks[f] = { ...this.renderer.cam };
+      else if (this.bookmarks[f]) this.renderer.setCamera(this.bookmarks[f]!);
+    }
+  }
+
   private pan(right: number, forward: number): void {
     const c = this.renderer.cam;
     const s = 1 + c.zoom * 6;
@@ -495,8 +711,9 @@ export class Game {
     if (this.debugFlags.freezeCamera) return;
     const k = this.keys;
     const sp = 18 * dt;
-    if (k.has("q")) this.renderer.setCamera({ yaw: this.renderer.cam.yaw + 1.6 * dt });
-    if (k.has("e")) this.renderer.setCamera({ yaw: this.renderer.cam.yaw - 1.6 * dt });
+    const km = this.settings.keymap;
+    if (k.has(km.rotateLeft.toLowerCase())) this.renderer.setCamera({ yaw: this.renderer.cam.yaw + 1.6 * dt });
+    if (k.has(km.rotateRight.toLowerCase())) this.renderer.setCamera({ yaw: this.renderer.cam.yaw - 1.6 * dt });
     if (k.has("arrowleft")) this.pan(-sp, 0);
     if (k.has("arrowright")) this.pan(sp, 0);
     if (k.has("arrowup")) this.pan(0, sp);
@@ -510,6 +727,8 @@ export class Game {
     return {
       tick: w.tick,
       paused: this.paused,
+      screen: this.screen,
+      ended: this.ended,
       seed: w.seed,
       map: { ...w.mapInfo, size: w.terrain.size },
       packHash: w.cfg.packHash,

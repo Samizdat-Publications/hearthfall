@@ -22,6 +22,9 @@ export interface Controller {
   readonly every: number;
   readonly offset: number;
   decide(w: World): Command[];
+  /** M8 save games: controller memory that is not in the world (JSON-safe), and its restore after World.restore */
+  saveState?(): unknown;
+  loadState?(state: unknown): void;
 }
 
 export interface SimEvent {

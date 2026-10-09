@@ -124,6 +124,21 @@ export const BalanceSchema = z.strictObject({
       .array(z.strictObject({ ...comment, id: z.string(), followers: z.number().int().min(0), buildings: z.array(z.string()) }))
       .min(1),
   }),
+  /**
+   * M8 skirmish setup choices (map sizes are multiples of the 32 cell render chunk; tribes = opponents + 1, at most 4).
+   * App only, never read by the sim; the default lets packs frozen before M8 (golden replays) still validate.
+   */
+  skirmish: z
+    .strictObject({
+      ...comment,
+      mapSizes: z.array(z.number().int().min(64).multipleOf(32)).min(1),
+      defaultSize: z.number().int(),
+      maps: z.array(z.string()).min(1),
+      maxOpponents: z.number().int().min(1).max(3),
+      defaultOpponents: z.array(z.string()).min(1),
+      defaultDifficulty: z.string(),
+    })
+    .default({ mapSizes: [96, 128, 192], defaultSize: 128, maps: ["continents", "islands"], maxOpponents: 3, defaultOpponents: ["aggressive"], defaultDifficulty: "normal" }),
   gates: z.strictObject({
     ...comment,
     counterTriangleMinWinPct: z.number(),

@@ -3,16 +3,27 @@
 import type { TroopIntent } from "./troops.ts";
 import { Game, parseParams, type DebugFlags } from "./game.ts";
 import { mountGameHud } from "./hudBridge.ts";
+import { mountGameMenus } from "./menuBridge.ts";
 import type { CameraState } from "@hearthfall/render";
 import { validatePack } from "@hearthfall/data";
 import { commandsByTick, createScenarioWorld, type ScenarioDef } from "@hearthfall/sim";
 
 const canvas = document.getElementById("view") as HTMLCanvasElement;
 const game = new Game(canvas, parseParams(location.search));
-const hud = mountGameHud(document.getElementById("hud")!, game);
-game.onChange = hud.refresh;
+const hudEl = document.getElementById("hud")!;
+const hud = mountGameHud(hudEl, game);
+const menus = mountGameMenus(document.getElementById("menus")!, game);
+game.onChange = () => {
+  // the HUD hides under a menu screen (and so stays out of the menus' DOM layout checks)
+  hudEl.style.display = game.screen === "none" ? "" : "none";
+  hud.refresh();
+  menus.refresh();
+};
+game.onChange();
 // mana and charges change every tick: refresh the HUD a few times a second
-setInterval(() => hud.refresh(), 250);
+setInterval(() => {
+  if (game.screen === "none") hud.refresh();
+}, 250);
 
 function resize() {
   game.renderer.resize(window.innerWidth, window.innerHeight);
@@ -80,6 +91,15 @@ if (__DEBUG_API__ || game.params.debug) {
       return i >= 0 && u ? [u.screenX[i], u.screenY[i]] : null;
     },
     setDebug: (f: DebugFlags) => game.setDebug(f),
+    /** M8 game flow: current menu screen, a forced win (god mode eliminate of every rival), save and load records */
+    screen: () => game.screen,
+    forceWin: () => {
+      for (const t of game.world.tribes) if (t.index !== game.localTribe && t.alive) game.command({ tribe: -1, type: "eliminate", args: { tribe: t.index } });
+      game.step(1);
+      return game.ended;
+    },
+    lastSave: () => game.lastSave,
+    lastLoad: () => game.lastLoad,
     /** Run a scenario-style definition headless in this page (cross-engine determinism check). */
     runDef: (def: ScenarioDef, rawPack: Record<string, unknown>, every = 100) => {
       const res = validatePack(rawPack);

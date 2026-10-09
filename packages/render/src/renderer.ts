@@ -78,6 +78,7 @@ export class ThreeRenderer implements Renderer {
   private areaRing: THREE.Mesh;
   private viewW = 1280;
   private viewH = 720;
+  private renderScale = 1;
 
   constructor(o: RendererOptions) {
     this.gl = new THREE.WebGLRenderer({ canvas: o.canvas, antialias: true, preserveDrawingBuffer: true, powerPreference: "high-performance" });
@@ -238,11 +239,20 @@ export class ThreeRenderer implements Renderer {
     this.cam.z = ((this.cam.z % size) + size) % size;
   }
 
+  /** Internal render resolution scale (settings quality: 1, 0.75, 0.5). Picking and HUD keep CSS pixels. */
+  setRenderScale(s: number): void {
+    this.renderScale = Math.min(1, Math.max(0.25, s));
+    this.resize(this.viewW, this.viewH);
+  }
+
   resize(w: number, h: number): void {
     this.viewW = w;
     this.viewH = h;
-    this.retro.setSize(w, h);
-    this.gl.setSize(w, h, false);
+    const s = this.renderScale;
+    // the retro pass renders the scene into a low-res target: scale that; without it scale the canvas buffer
+    this.retro.setSize(w * s, h * s);
+    if (this.retro.enabled) this.gl.setSize(w, h, false);
+    else this.gl.setSize(Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s)), false);
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
   }

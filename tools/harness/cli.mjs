@@ -53,6 +53,10 @@ async function main() {
       const { qaFull } = await import("./qa.mjs");
       return qaFull(out, args);
     }
+    case "e2e": {
+      const { default: e2eCmd } = await import("./e2e.mjs");
+      return e2eCmd(out, args);
+    }
     case "making-of": {
       const { makingOfCmd } = await import("./makingof.mjs");
       return makingOfCmd(out, args);
@@ -93,7 +97,7 @@ async function main() {
       return mod.default(out, cmd, args);
     }
     default:
-      console.log("usage: node tools/harness/cli.mjs <typecheck|check|unit|qa-fast|qa|doctor|data-check|data-docs|build|build-test|shot|shot-approve|sheet|visionqa|visionqa-probe|scenarios|replays|rebless|soak|bench|bench-render>");
+      console.log("usage: node tools/harness/cli.mjs <typecheck|check|unit|qa-fast|qa|e2e|doctor|data-check|data-docs|build|build-test|shot|shot-approve|sheet|visionqa|visionqa-probe|scenarios|replays|rebless|soak|bench|bench-render>");
       console.log("RESULT: FAIL 1 (unknown command)");
       return 1;
   }

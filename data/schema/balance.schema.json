@@ -616,6 +616,77 @@
       ],
       "additionalProperties": false
     },
+    "skirmish": {
+      "default": {
+        "mapSizes": [
+          96,
+          128,
+          192
+        ],
+        "defaultSize": 128,
+        "maps": [
+          "continents",
+          "islands"
+        ],
+        "maxOpponents": 3,
+        "defaultOpponents": [
+          "aggressive"
+        ],
+        "defaultDifficulty": "normal"
+      },
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "mapSizes": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 64,
+            "maximum": 9007199254740991,
+            "multipleOf": 32
+          }
+        },
+        "defaultSize": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "maps": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "maxOpponents": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3
+        },
+        "defaultOpponents": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "defaultDifficulty": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "mapSizes",
+        "defaultSize",
+        "maps",
+        "maxOpponents",
+        "defaultOpponents",
+        "defaultDifficulty"
+      ],
+      "additionalProperties": false
+    },
     "gates": {
       "type": "object",
       "properties": {

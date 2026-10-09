@@ -114,3 +114,16 @@ describe("spells (M5 review follow-ups, BACKLOG 54)", () => {
     expect(b.eventCounts.get("spellCast")).toBe(1);
   });
 });
+
+describe("eliminate (M8 debug forced win)", () => {
+  it("god mode eliminate kills the Shaper and Hearth and the tribe is out the same tick; players cannot use it", () => {
+    const w = world({ generator: "continents", size: 96, tribes: 2 });
+    w.step(cmd(0, "eliminate", { tribe: 1 }));
+    expect(w.tribes[1].alive).toBe(true);
+    expect(w.eventCounts.get("commandRejected")).toBe(1);
+    w.step(cmd(-1, "eliminate", { tribe: 1 }));
+    expect(w.tribes[1].alive).toBe(false);
+    expect(w.eventCounts.get("tribeEliminated")).toBe(1);
+    expect(w.tribes[0].alive).toBe(true);
+  });
+});

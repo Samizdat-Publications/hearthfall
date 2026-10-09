@@ -34,10 +34,11 @@ export function colorCoverage(pngPath) {
   return { green: +(green / n).toFixed(3), blue: +(blue / n).toFixed(3), other: +((n - green - blue) / n).toFixed(3) };
 }
 
-function domCheckFn() {
+export function domCheckFn() {
   const els = [...document.querySelectorAll("[data-hud]")].filter((e) => {
     const cs = getComputedStyle(e);
-    return cs.display !== "none" && cs.visibility !== "hidden";
+    // getClientRects is empty under a display:none ancestor (the HUD while a menu is up)
+    return cs.display !== "none" && cs.visibility !== "hidden" && e.getClientRects().length > 0;
   });
   const W = innerWidth;
   const H = innerHeight;

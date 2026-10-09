@@ -98,6 +98,23 @@ registerCommand("grantCharges", {
   },
 });
 
+/** Debug and tests (M8 e2e forced win): kill a tribe's Shaper and Hearth; step 6 then eliminates it. God mode only. */
+registerCommand("eliminate", {
+  validate(w, c) {
+    if (c.tribe !== -1 && !w.godMode) return "eliminate is god mode only";
+    const t = w.tribes[Number(c.args.tribe)];
+    if (!t) return "no tribe";
+    return t.alive ? null : "tribe already eliminated";
+  },
+  apply(w, c) {
+    const t = w.tribes[Number(c.args.tribe)];
+    const si = shaperIndex(w, t.index);
+    if (si >= 0) w.kill(si, "killed");
+    const h = w.ents.index(t.hearth);
+    if (h >= 0) w.kill(h, "destroyed");
+  },
+});
+
 /** Undo a misclick: refunds the charge while the cast window is still open; also drops a queued cast. */
 registerCommand("cancelCast", {
   validate(w, c) {

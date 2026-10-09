@@ -18,6 +18,12 @@ export interface Personality {
   towerAffinity: number;
 }
 
+export interface OpponentState {
+  known: number[];
+  scout: number;
+  stats: OpponentStats;
+}
+
 export interface OpponentOptions {
   tribe: number;
   /** personality id from ai_personalities.json, or an inline personality (test bots) */
@@ -101,6 +107,19 @@ export class OpponentAI implements Controller {
       { id: "attack", score: (c) => this.attackScore(c), act: (c, out) => this.attack(c, out) },
       { id: "cast", score: (c) => this.castScore(c), act: (c, out) => this.cast(c, out) },
     ];
+  }
+
+  /** Save game memory: scouted tribes, the scout and the stats (decisions also gate the one-time setup). */
+  saveState(): OpponentState {
+    const st = this.stats;
+    return { known: [...this.known], scout: this.scout, stats: { ...st, actions: { ...st.actions }, casts: { ...st.casts } } };
+  }
+
+  loadState(state: unknown): void {
+    const o = state as OpponentState;
+    this.known = new Set(o.known);
+    this.scout = o.scout;
+    Object.assign(this.stats, { ...o.stats, actions: { ...o.stats.actions }, casts: { ...o.stats.casts } });
   }
 
   get personality(): Personality {

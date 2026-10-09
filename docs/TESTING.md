@@ -23,6 +23,7 @@ All commands are npm scripts that call `node tools/harness/...` with a hard inte
 | `npm run bench` | sim perf, median of 5 runs after warmup | 4 min |
 | `npm run bench:render` | renderer CPU ms per frame in Playwright (measured inside the frame, not rAF intervals, which vsync caps) | 4 min |
 | `npm run shot -- --set smoke` | Playwright captures + pixel checks + baseline diff + DOM layout checks | 5 min |
+| `npm run e2e` | M8 game flow in Playwright at 1280x720 and 2560x1440: main menu, settings rebind, skirmish setup, play, pause, save, load (same tick and hash), forced win, end screen, main menu; DOM layout check on every screen, any console error fails; screens in `reports/latest/e2e/` | 5 min |
 | `npm run visionqa -- --set smoke` | Decisions checks on the latest shots (no-op if provider is off) | 3 min |
 | `npm run visionqa:calibrate` | capture the labeled calibration set (good and broken variants), pick per-check thresholds | 5 min |
 | `npm run making-of -- add <file> ...` | archive an image for the making-of story (`making-of/README.md`) | 1 min |
@@ -112,7 +113,7 @@ Automatic checks per image, all in code (sharp or pngjs + pixelmatch), no model 
 - **blank check:** luminance standard deviation above threshold, not mostly one color (catches black, white, magenta-missing-texture frames)
 - **coverage checks:** fraction of terrain-colored, water-colored, sky-colored pixels inside expected ranges for that preset
 - **baseline diff:** pixelmatch against `reports/baselines/shots/<set>/<id>.png` on the same machine and Chromium build; fail if changed pixels over threshold
-- **DOM layout checks** (HUD shots): Playwright reads bounding boxes of all HUD elements; fail on any overlap, element off-screen, or text overflow (`scrollWidth > clientWidth`). This replaces most "UI overlap" visual judging and costs nothing.
+- **DOM layout checks** (HUD shots and every e2e screen): Playwright reads bounding boxes of all visible `[data-hud]` elements (elements under a `display:none` ancestor, like the HUD while a menu is up, are skipped); fail on any overlap, panels closer than 4 px, element off-screen, or text overflow (`scrollWidth > clientWidth`). This replaces most "UI overlap" visual judging and costs nothing.
 - **console check:** any browser console error or WebGL warning fails the shot
 
 Outputs: `reports/latest/shots/*.png`, a **contact sheet** `reports/latest/sheet.png` (1280 px wide, at most 9 labeled tiles; bigger sets produce several sheets), and `shots.json` with per-check results.
