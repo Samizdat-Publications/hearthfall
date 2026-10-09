@@ -4,7 +4,7 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 
 ## Now
 - Run started: 2026-10-08T21:25:00Z
-- Milestone: M10 gate met, exit ritual in progress. M10 shipped: real GLB models (tribe tint split by the azure marker, banners, tree root trim, placeholder fallback, `?models=0`), HUD icons, Web Audio player (buses, spatial falloff, music director, cue aliases, live volume settings; BACKLOG 77), bench:render (4.6 ms median at 1440p with 1000 units, budget 6), all shot sets re-approved after the contact sheet review. Placeholders logged in docs/ASSETS.md (4 models, 5 cues). M9 done (tag m9-done).
+- Milestone: M10 done (tag m10-done; Sonnet review blocker fixed: music director runs every frame and resets on a new world). Next: M11. M10 shipped: real GLB models (tribe tint split by the azure marker, banners, tree root trim, placeholder fallback, `?models=0`), HUD icons, Web Audio player (buses, spatial falloff, music director, cue aliases, live volume settings; BACKLOG 77), bench:render in npm run qa (3.5 ms median of per-frame minima, raw 5.4, at 1440p with 1000 units; budget 6), all shot sets re-approved after the contact sheet review. Placeholders logged in docs/ASSETS.md (4 models, 5 cues). M9 done (tag m9-done).
 - M1 shipped: sfc32 rng streams, FNV hash parts, SoA entities, torus terrain with all ops + dirty cursor (dirtySince), tileable fbm generator (continents, islands, flat test maps) with connected Hearth sites, trees, wild people; Command registry (god-mode terrainOp is tribe -1 or godMode only); World step order, drowning, snapshot/restore; scenario runner + safe DSL (4 scenarios); golden replay with frozen pack (terrain_ops_continents). 66 unit tests. qa:fast now includes replays.
 - M2 shipped: renderer (faceted chunks, water, curved world, wrap, sky, trees), camera rig, debug API, shot pipeline (pixel-exact baselines in fixedStep), VisionQA calibrated, browser replay determinism.
 - M3 shipped: SoA movement columns, pathing (A* + component labels + budget, flow fields, spatial hash separation, route-progress stuck detection; ADR-004), move/stop/impulse commands, Controller hook + WanderBot, starting Shaper + 5 settlers per Hearth, unit and building placeholder layers with tribe tint and interpolation, selection (click, box, groups) + right-click move via bent-terrain picking, 7 pathing scenarios, soak (8 seeds x 10 min x 1000 units clean), bench (2000 units avg 3.3 ms, algorithmic p99 2.2 ms).
@@ -21,9 +21,9 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 - Subagents: project agents are registered again (milestone-reviewer, qa-runner, ...); call them by type.
 
 ## Next 3 actions
-1. M10 exit ritual: npm run qa PASS, PROGRESS_LOG line, data:docs, contact sheet in making-of, Sonnet milestone-reviewer, fix blockers, commit, tag m10-done.
-2. M11 per ROADMAP.
-3. BACKLOG 64, 65, 72 to 92 after (90 and 91 are M10 visual follow-ups).
+1. M11 per ROADMAP (read the M11 section first).
+2. M11 exit ritual (Opus milestone-reviewer), tag m11-done.
+3. BACKLOG P1 top down, then 64, 65, 72 to 93 (90, 91 are M10 visual follow-ups, 93 the M10 review list).
 
 ## Blocked
 (none)
