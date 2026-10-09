@@ -187,7 +187,7 @@ Agents read `getSummary()` and headless harness output first. Screenshots are th
 
 | Measure | Budget |
 |---|---|
-| Sim tick, 2000 units mid-battle, Node | under 8 ms average, under 20 ms p99 (bench measure F since M6; met by a per-tribe coarse grid that lets `acquire` skip empty neighborhoods exactly, a per-tick building list, `idleAcquireSeconds` for unengaged units, and the A* straight-line shortcut) |
+| Sim tick, 2000 units mid-battle, Node | under 8 ms average, under 20 ms p99 (bench measure F since M6; met by a per-tribe coarse grid that lets `acquire` skip empty neighborhoods exactly, a per-tick building list, `idleAcquireSeconds` for unengaged units, and the A* straight-line shortcut; since BACKLOG 7 removed the Chanter freeze about twice as many units fight at once, so `acquire` also skips box-corner buckets beyond reach plus one bucket and rejects by squared distance before the exact test, and a non-freezing chant scans its radius only on its last tick; a unit test checks the pruned scan against a full scan) |
 | Soak run, 4 tribes, 30 game minutes, headless | under 60 s wall time |
 | Terrain op (Quake radius 8) incl. path invalidation | under 2 ms |
 | Renderer CPU time per frame, 1440p, 1000 visible units (`npm run bench:render`) | under 6 ms median (M10 with real models: 3.5 ms median of per-frame minima over 3 rounds, raw median 5.4 ms on a busy PC, 45 draw calls, 1.7M triangles) |

@@ -190,8 +190,18 @@ export class CombatSystem {
     let best = -1;
     let bestScore = Infinity;
     const scan = this.enemyInBuckets(tr, bx, by, br);
+    // buckets whose rectangle lies farther than r + one bucket (units move well under a bucket between
+    // the hash rebuild and here, the same slack the extra ring gives) are skipped: the box corners
+    const reachB = (r + H.bs) * (r + H.bs);
+    // squared pre-check with a hair of slack so the exact sqrt test below decides every border case
+    const r2 = (r + 1e-6) * (r + 1e-6);
+    const fx = Math.floor(x / H.bs) * H.bs;
+    const fy = Math.floor(y / H.bs) * H.bs;
     for (let oy = -br; scan && oy <= br; oy++) {
+      const ry = Math.max(0, fy + oy * H.bs - y, y - (fy + (oy + 1) * H.bs));
       for (let ox = -br; ox <= br; ox++) {
+        const rx = Math.max(0, fx + ox * H.bs - x, x - (fx + (ox + 1) * H.bs));
+        if (rx * rx + ry * ry > reachB) continue;
         const b = ((bx + ox + c * 4) % c) + ((by + oy + c * 4) % c) * c;
         for (let j = H.head[b]; j !== -1; j = H.next[j]) {
           // cheap rejections first (friends and out of range), the full check last
@@ -199,7 +209,9 @@ export class CombatSystem {
           if (tj < 0 || tj === tr) continue;
           const dx = wrapDelta(E.x[j] - x, n);
           const dy = wrapDelta(E.y[j] - y, n);
-          const d = Math.sqrt(dx * dx + dy * dy);
+          const dd = dx * dx + dy * dy;
+          if (dd > r2) continue;
+          const d = Math.sqrt(dd);
           if (d > r || d < minR || !this.validTarget(i, j) || !this.canReach(i, j, d)) continue;
           const s = d - (pref.has(E.type[j]) ? bonus : 0);
           if (s < bestScore || (s === bestScore && j < best)) {
@@ -495,10 +507,12 @@ export class CombatSystem {
     const E = w.ents;
     const cv = w.cfg.pack.units.units[E.type[i]].convert!;
     const tr = E.tribe[i];
-    const near = this.inRadius(i, cv.radius);
-    for (const j of near) if (cv.entrancedFreeze) E.trance[j] = Math.max(E.trance[j], 2);
+    // the radius scan runs only when it matters (a freezing chant each tick, else the final tick):
+    // a 6 s channel scanning every tick was a quarter of the 2000-unit battle bench
+    if (cv.entrancedFreeze) for (const j of this.inRadius(i, cv.radius)) E.trance[j] = Math.max(E.trance[j], 2);
     E.chant[i]--;
     if (E.chant[i] > 0) return;
+    const near = this.inRadius(i, cv.radius);
     E.cd[i] = this.chantCool;
     let converted = 0;
     for (const j of near) {

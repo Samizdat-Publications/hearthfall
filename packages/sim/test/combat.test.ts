@@ -432,3 +432,60 @@ describe("combat (M6)", () => {
     expect(BSTATE.done).toBe(3);
   });
 });
+
+describe("target acquisition (bench regression, BACKLOG 0a)", () => {
+  it("the pruned bucket scan picks exactly the target a full scan picks, across the wrap seam", () => {
+    const w = arena(64);
+    const E = w.ents;
+    let s = 12345;
+    const rnd = () => ((s = (s * 1103515245 + 12345) % 2147483648) / 2147483648);
+    const kinds = ["warden", "firecaller", "chanter"];
+    for (let k = 0; k < 600; k++) w.spawnUnit(kinds[k % 3], k % 2, rnd() * 64, 40 + rnd() * 30);
+    w.step([]);
+    // private access: the system's own acquire against a brute-force pass over every unit
+    const C = w.combat as unknown as {
+      acquire(i: number, r: number): number;
+      validTarget(i: number, j: number): boolean;
+      canReach(i: number, j: number, d: number): boolean;
+      prefers: Set<number>[];
+      minRange: number[];
+    };
+    const bonus = w.cfg.pack.balance.combat.preferTargetBonus;
+    const n = w.terrain.size;
+    const wrap = (d: number) => {
+      let v = d % n;
+      if (v > n / 2) v -= n;
+      else if (v < -n / 2) v += n;
+      return v;
+    };
+    let checked = 0;
+    let found = 0;
+    for (let i = 0; i < E.hi; i++) {
+      if (!E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] < 0 || E.type[i] === w.cfg.unitIndex.get("shaper")) continue;
+      for (const r of [3, 7]) {
+        let best = -1;
+        let bestScore = Infinity;
+        for (let j = 0; j < E.hi; j++) {
+          if (!E.alive[j] || E.cat[j] !== CAT.unit || E.inside[j] >= 0) continue;
+          const dx = wrap(E.x[j] - E.x[i]);
+          const dy = wrap(E.y[j] - E.y[i]);
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d > r || d < C.minRange[E.type[i]] || !C.validTarget(i, j) || !C.canReach(i, j, d)) continue;
+          const sc = d - (C.prefers[E.type[i]].has(E.type[j]) ? bonus : 0);
+          if (sc < bestScore || (sc === bestScore && j < best)) {
+            bestScore = sc;
+            best = j;
+          }
+        }
+        const got = C.acquire(i, r);
+        if (best >= 0) {
+          expect(got).toBe(best);
+          found++;
+        }
+        checked++;
+      }
+    }
+    expect(checked).toBeGreaterThan(1000);
+    expect(found).toBeGreaterThan(300);
+  });
+});
