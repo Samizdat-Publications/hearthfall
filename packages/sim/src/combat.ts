@@ -226,6 +226,8 @@ export class CombatSystem {
     const by = ((Math.floor(y / H.bs) % c) + c) % c;
     let best = -1;
     let bestScore = Infinity;
+    /** this unit's walkable component, looked up once on first need (-2 not yet) */
+    let compI = -2;
     const scan = this.enemyInBuckets(tr, bx, by, br);
     // buckets whose rectangle lies farther than r + one bucket (units move well under a bucket between
     // the hash rebuild and here, the same slack the extra ring gives) are skipped: the box corners
@@ -249,12 +251,18 @@ export class CombatSystem {
           const dd = dx * dx + dy * dy;
           if (dd > r2) continue;
           const d = Math.sqrt(dd);
-          if (d > r || d < minR || !this.validTarget(i, j) || !this.canReach(i, j, d)) continue;
+          if (d > r || d < minR) continue;
+          // score first: a candidate that cannot beat the best so far is never picked, valid or not, so the
+          // pure validity and reach checks (two nearest-walkable lookups) run only for contenders
           const s = d - (pref.has(E.type[j]) ? bonus : 0);
-          if (s < bestScore || (s === bestScore && j < best)) {
-            bestScore = s;
-            best = j;
+          if (!(s < bestScore || (s === bestScore && j < best))) continue;
+          if (!this.validTarget(i, j)) continue;
+          if (E.inside[i] < 0 && d > this.reachOf(i, j)) {
+            if (compI === -2) compI = this.compAt(x, y);
+            if (compI !== this.compAt(E.x[j], E.y[j])) continue;
           }
+          bestScore = s;
+          best = j;
         }
       }
     }

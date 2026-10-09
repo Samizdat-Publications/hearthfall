@@ -35,6 +35,10 @@ export function wrap(i: number, n: number): number {
 
 /** Shortest signed delta on a ring of length n. */
 export function wrapDelta(d: number, n: number): number {
+  // fast path (bit-identical: within half the ring the remainder below returns d unchanged); the float
+  // remainder was 18 percent of the 2000-unit battle bench
+  const h = n / 2;
+  if (d <= h && d >= -h) return d;
   let r = d % n;
   if (r > n / 2) r -= n;
   else if (r < -n / 2) r += n;
