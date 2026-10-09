@@ -28,6 +28,21 @@ async function bootFailure(browser, url) {
   } finally {
     await page.close().catch(() => {});
   }
+  // a frame that throws every time must stop the loop with the fatal panel, not spin behind a notice
+  const p2 = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+  try {
+    await p2.goto(url + "?seed=7", { waitUntil: "load", timeout: 30000 });
+    await p2.waitForFunction(() => window.__game && window.__game.frames() > 0, null, { timeout: 30000 });
+    await p2.evaluate(() => window.__game.forceFrameError());
+    await p2.waitForFunction(() => getComputedStyle(document.getElementById("fatal")).display !== "none", null, { timeout: 30000 });
+    const why = await p2.evaluate(() => document.getElementById("fatal-why").textContent);
+    if (!/repeated errors/.test(why)) res.problems.push(`frame failure panel text: ${why}`);
+    res.screens.push("fatal-frame");
+  } catch (e) {
+    res.problems.push(`frame failure never showed the fatal panel: ${String(e.message).split("\n")[0]}`);
+  } finally {
+    await p2.close().catch(() => {});
+  }
   res.ok = res.problems.length === 0;
   return res;
 }

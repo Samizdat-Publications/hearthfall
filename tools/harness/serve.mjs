@@ -4,7 +4,7 @@
 //                            the first frame, all models loaded, no console errors, boot screen gone
 import { createServer } from "node:http";
 import { existsSync, readFileSync, statSync } from "node:fs";
-import { extname, join, normalize } from "node:path";
+import { extname, join, resolve, sep } from "node:path";
 import { ROOT, writeReport } from "./lib.mjs";
 import { launch, openGame, shotMode, viteBuild } from "./web.mjs";
 
@@ -23,21 +23,36 @@ const TYPES = {
 
 /** Serve a folder of static files on 127.0.0.1; returns {url, close}. */
 export function startStatic(dir = DIST, port = 5182) {
+  const base = resolve(dir) + sep;
   const server = createServer((req, res) => {
-    const path = decodeURIComponent((req.url ?? "/").split("?")[0]);
-    const file = normalize(join(dir, path.endsWith("/") ? path + "index.html" : path));
-    if (!file.startsWith(normalize(dir)) || !existsSync(file) || !statSync(file).isFile()) {
-      res.writeHead(404).end("not found");
-      return;
+    try {
+      let path;
+      try {
+        path = decodeURIComponent((req.url ?? "/").split("?")[0]);
+      } catch {
+        res.writeHead(400).end("bad request");
+        return;
+      }
+      // resolved path must stay inside the folder (the trailing separator keeps sibling folders such as dist-test out)
+      const file = resolve(join(base, path.endsWith("/") ? path + "index.html" : path));
+      if (!file.startsWith(base) || !existsSync(file) || !statSync(file).isFile()) {
+        res.writeHead(404).end("not found");
+        return;
+      }
+      res.writeHead(200, { "content-type": TYPES[extname(file)] ?? "application/octet-stream" });
+      res.end(readFileSync(file));
+    } catch {
+      if (!res.headersSent) res.writeHead(500);
+      res.end();
     }
-    res.writeHead(200, { "content-type": TYPES[extname(file)] ?? "application/octet-stream" });
-    res.end(readFileSync(file));
   });
-  return new Promise((resolve, reject) => {
+  return new Promise((done, reject) => {
     server.once("error", reject);
-    server.listen(port, "127.0.0.1", () =>
-      resolve({ url: `http://127.0.0.1:${port}/`, close: () => new Promise((r) => server.close(() => r())) }),
-    );
+    server.listen(port, "127.0.0.1", () => {
+      const at = server.address();
+      const p = typeof at === "object" && at ? at.port : port;
+      done({ url: `http://127.0.0.1:${p}/`, close: () => new Promise((r) => server.close(() => r())) });
+    });
   });
 }
 

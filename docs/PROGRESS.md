@@ -59,7 +59,7 @@ npm run serve
 ```
 Then open http://127.0.0.1:5182/ in Chrome or Edge. Pick Skirmish (try continents, normal) or Campaign.
 - Mouse: drag to box-select, click a unit or building to select it, right click to move (on your tower: garrison), wheel to zoom, Q and E to rotate.
-- Keys: A attack-move, R retreat, G garrison, S select the Shaper, Z to N cast spells (then click a target, Esc cancels), D place a Dwelling, T a Watchtower, M map view, H help, Esc pause.
+- Keys: A attack-move, R retreat, G garrison, S select the Shaper, D place a Dwelling, T a Watchtower, M map view, H help, P or Esc pause menu (Esc first cancels targeting or a selection). Spells: Z, X, C, V, B, N for the first six, Shift+M and Shift+N for the last two (then click a target); Backspace undoes a cast during its short undo window. Most keys can be rebound in Settings.
 - The top-left slider splits followers between praying for mana (Spells) and training troops (Training). Reach 10 followers to unlock the Watchtower and Warden Lodge, more for the other lodges.
 - Tip: keep the Shaper safe. If she dies she respawns at the Hearth after a delay, and her killer can steal spell charges.
 

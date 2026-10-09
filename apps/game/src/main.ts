@@ -13,13 +13,26 @@ const canvas = document.getElementById("view") as HTMLCanvasElement;
 const bootEl = document.getElementById("boot");
 const noticeEl = document.getElementById("notice");
 
-/** M11: a startup failure (no WebGL, a broken pack, an unknown scenario) shows a readable panel. */
-function fatal(e: unknown): never {
+/** M11: a failure the game cannot recover from shows a readable panel with its cause. */
+function showFatal(e: unknown, why?: string): void {
   if (bootEl) bootEl.style.display = "none";
+  const msg = String((e as Error)?.message ?? e);
+  const w = document.getElementById("fatal-why");
+  if (w)
+    w.textContent =
+      why ??
+      (/webgl/i.test(msg)
+        ? "The game could not start. It needs a browser with WebGL 2 (a recent Chrome, Edge or Firefox) and hardware acceleration turned on."
+        : "The game could not start. The reason is below; details are in the browser console (F12).");
+  const m = document.getElementById("fatal-msg");
+  if (m) m.textContent = msg.slice(0, 300);
   const f = document.getElementById("fatal");
   if (f) f.style.display = "flex";
-  const m = document.getElementById("fatal-msg");
-  if (m) m.textContent = String((e as Error)?.message ?? e).slice(0, 300);
+}
+
+/** Startup failure (no WebGL, a broken pack, an unknown scenario, a HUD mount error): panel, then rethrow. */
+function fatal(e: unknown): never {
+  showFatal(e);
   throw e;
 }
 
@@ -33,57 +46,81 @@ function notice(text: string, ms = 6000): void {
   if (ms > 0) noticeTimer = window.setTimeout(() => (noticeEl.style.display = "none"), ms);
 }
 
+// lost graphics context: three.js restores it itself; if it has not come back after 20 s, give up visibly
+let contextTimer = 0;
+canvas.addEventListener("webglcontextlost", () => {
+  notice("Graphics context lost; restoring...", 0);
+  clearTimeout(contextTimer);
+  contextTimer = window.setTimeout(() => showFatal(new Error("WebGL context lost and not restored"), "The graphics context was lost and did not come back. Reload the page."), 20000);
+});
+canvas.addEventListener("webglcontextrestored", () => {
+  clearTimeout(contextTimer);
+  notice("Graphics restored.", 3000);
+});
+const hudEl = document.getElementById("hud")!;
+function resize() {
+  game.renderer.resize(window.innerWidth, window.innerHeight);
+}
+
+// everything up to the first frame counts as startup: any throw here shows the fatal panel
 let game: Game;
+let hud: ReturnType<typeof mountGameHud>;
 try {
   game = new Game(canvas, parseParams(location.search));
+  hud = mountGameHud(hudEl, game);
+  const menus = mountGameMenus(document.getElementById("menus")!, game);
+  game.onChange = () => {
+    // the HUD hides under a menu screen (and so stays out of the menus' DOM layout checks)
+    hudEl.style.display = game.screen === "none" ? "" : "none";
+    hud.refresh();
+    menus.refresh();
+  };
+  game.onChange();
+  window.addEventListener("resize", resize);
+  resize();
 } catch (e) {
   fatal(e);
 }
-canvas.addEventListener("webglcontextlost", () => notice("Graphics context lost; restoring...", 0));
-canvas.addEventListener("webglcontextrestored", () => notice("Graphics restored.", 3000));
-const hudEl = document.getElementById("hud")!;
-const hud = mountGameHud(hudEl, game);
-const menus = mountGameMenus(document.getElementById("menus")!, game);
-game.onChange = () => {
-  // the HUD hides under a menu screen (and so stays out of the menus' DOM layout checks)
-  hudEl.style.display = game.screen === "none" ? "" : "none";
-  hud.refresh();
-  menus.refresh();
-};
-game.onChange();
 // mana and charges change every tick: refresh the HUD a few times a second
 setInterval(() => {
   if (game.screen === "none") hud.refresh();
 }, 250);
 
-function resize() {
-  game.renderer.resize(window.innerWidth, window.innerHeight);
-}
-window.addEventListener("resize", resize);
-resize();
-
 // a camera move redraws the HUD (minimap footprint) on the next frame, also while paused, so captures
 // taken a few frames after setCamera never show the previous view
 let camKey = "";
 let frameErrors = 0;
+let errorStreak = 0;
+/** frames in a row that may throw before the loop gives up and shows the fatal panel */
+const FATAL_STREAK = 60;
+let forceFrameError = false;
 const bootStart = performance.now();
 function frame(now: number) {
   try {
+    if (forceFrameError) throw new Error("forced frame error (debug)");
     game.frame(now);
+    // the boot screen stays until the first frame is drawn and the models are in (or 6 s have passed)
+    if (bootEl && bootEl.style.display !== "none" && game.renderer.frames > 0 && (!game.renderer.modelStatus().pending || now - bootStart > 6000)) bootEl.style.display = "none";
+    const c = game.renderer.cam;
+    const k = `${c.x} ${c.z} ${c.yaw} ${c.zoom} ${c.map}`;
+    if (k !== camKey && game.screen === "none") {
+      camKey = k;
+      hud.refresh();
+    }
+    errorStreak = 0;
   } catch (e) {
-    // keep the loop alive; report the first error and every 100th after it
+    // a stray error keeps the loop alive (reported the first time and every 100th after it); a frame
+    // that fails every time, or a game that never drew its first frame, stops with the fatal panel
+    errorStreak++;
     if (frameErrors++ % 100 === 0) {
       console.error("frame error", e);
       notice("Something went wrong in this frame; the game keeps running. Details are in the browser console (F12).");
     }
-  }
-  // the boot screen stays until the first frame is drawn and the models are in (or 6 s have passed)
-  if (bootEl && bootEl.style.display !== "none" && game.renderer.frames > 0 && (!game.renderer.modelStatus().pending || now - bootStart > 6000)) bootEl.style.display = "none";
-  const c = game.renderer.cam;
-  const k = `${c.x} ${c.z} ${c.yaw} ${c.zoom} ${c.map}`;
-  if (k !== camKey && game.screen === "none") {
-    camKey = k;
-    hud.refresh();
+    if (errorStreak >= FATAL_STREAK || (game.renderer.frames === 0 && now - bootStart > 6000)) {
+      console.error("frame loop stopped", e);
+      showFatal(e, "The game stopped after repeated errors in its frame loop. Reload the page; details are in the browser console (F12).");
+      return;
+    }
   }
   requestAnimationFrame(frame);
 }
@@ -92,6 +129,10 @@ requestAnimationFrame(frame);
 if (__DEBUG_API__ || game.params.debug) {
   (window as unknown as { __game: unknown }).__game = {
     frames: () => game.renderer.frames,
+    /** e2e (M11 review): make every frame throw, to check the loop stops with the fatal panel */
+    forceFrameError: () => {
+      forceFrameError = true;
+    },
     getSummary: () => game.summary(),
     getState: (paths?: string[]) => {
       const s = game.summary() as Record<string, unknown>;
