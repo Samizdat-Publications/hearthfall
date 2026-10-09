@@ -1,11 +1,12 @@
 {
- "$comment": "BACKLOG 1 spell shots: the eight spells earned at worship sites, each while its effect is live, from its scenario (a separate set so each shot command stays under 9 minutes).",
+ "$comment": "BACKLOG 1 spell shots: the eight spells earned at worship sites, each while its effect is live, from its scenario (a separate set so each shot command stays under 9 minutes). Scenario shots pass reveal=1 (BACKLOG 3): they check spell and combat visuals, not the fog of war.",
  "shots": [
   {
    "id": "veil",
    "params": {
     "scenario": "spell_veil_hides",
-    "camera": "default"
+    "camera": "default",
+    "reveal": "1"
    },
    "steps": [
     {
@@ -36,7 +37,8 @@
    "id": "ward",
    "params": {
     "scenario": "spell_ward_shields",
-    "camera": "default"
+    "camera": "default",
+    "reveal": "1"
    },
    "steps": [
     {
@@ -67,7 +69,8 @@
    "id": "beguile",
    "params": {
     "scenario": "spell_beguile_turns",
-    "camera": "default"
+    "camera": "default",
+    "reveal": "1"
    },
    "steps": [
     {
@@ -98,7 +101,8 @@
    "id": "whirlwind",
    "params": {
     "scenario": "spell_whirlwind_flings",
-    "camera": "default"
+    "camera": "default",
+    "reveal": "1"
    },
    "steps": [
     {
@@ -129,7 +133,8 @@
    "id": "mire",
    "params": {
     "scenario": "spell_mire_swallows",
-    "camera": "default"
+    "camera": "default",
+    "reveal": "1"
    },
    "steps": [
     {
@@ -160,7 +165,8 @@
    "id": "erode",
    "params": {
     "scenario": "spell_erode_sinks",
-    "camera": "default"
+    "camera": "default",
+    "reveal": "1"
    },
    "steps": [
     {
@@ -191,7 +197,8 @@
    "id": "firerain",
    "params": {
     "scenario": "spell_firerain_storm",
-    "camera": "default"
+    "camera": "default",
+    "reveal": "1"
    },
    "steps": [
     {
@@ -222,7 +229,8 @@
    "id": "wraith",
    "params": {
     "scenario": "spell_wraith_hunts",
-    "camera": "default"
+    "camera": "default",
+    "reveal": "1"
    },
    "steps": [
     {

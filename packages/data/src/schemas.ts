@@ -118,6 +118,18 @@ export const BalanceSchema = z.strictObject({
     burning: z.strictObject({ damagePerSecond: pos }),
     buildingFire: z.strictObject({ ...comment, seconds: pos, hpPctPerSecond: pos }).optional(),
   }),
+  /** BACKLOG 3: fog of war (sight radii in cells; `sight` overrides per unit or building id) */
+  vision: z
+    .strictObject({
+      ...comment,
+      enabled: z.boolean(),
+      cellSize: z.number().int().min(1).max(8),
+      everySeconds: pos,
+      unitSight: pos,
+      buildingSight: pos,
+      sight: z.record(id, pos),
+    })
+    .optional(),
   progression: z.strictObject({
     ...comment,
     /** in-match unlock tiers (DESIGN 3a): a tier opens once the tribe's followers reach `followers` (peak, never lost) */
@@ -487,6 +499,8 @@ export const DifficultySchema = z.strictObject({
   id,
   reactionSeconds: pos,
   decisionNoise: z.number().min(0).max(1),
+  /** BACKLOG 3: the AI ignores fog of war (sees every unit and building) */
+  mapHack: z.boolean().optional(),
   resourceMultiplier: z.number().positive(),
 });
 export const AiFileSchema = z.strictObject({

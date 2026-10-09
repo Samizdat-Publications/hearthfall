@@ -70,6 +70,8 @@ export interface GameParams {
   campaign: string | null;
   /** M10: load the real GLB models (models=0 keeps the procedural placeholders) */
   models: boolean;
+  /** BACKLOG 3: reveal=1 draws the whole map through the fog of war (render only; the sim and AI keep it) */
+  reveal: boolean;
 }
 
 export function parseParams(search: string): GameParams {
@@ -91,6 +93,7 @@ export function parseParams(search: string): GameParams {
     difficulty: q.get("difficulty") ?? "normal",
     campaign: q.get("campaign"),
     models: q.get("models") !== "0",
+    reveal: q.get("reveal") === "1",
   };
 }
 
@@ -255,6 +258,8 @@ export class Game {
     this.renderer.setPlacement(null);
     this.renderer.setTargeting(null);
     this.renderer.setWorld(this.world);
+    this.renderer.viewTribe = this.localTribe;
+    this.renderer.revealFog = this.params.reveal;
     const home = this.world.tribes[0] ? this.world.ents.index(this.world.tribes[0].hearth) : -1;
     const size = this.world.terrain.size;
     this.renderer.setCamera({ x: home >= 0 ? this.world.ents.x[home] : size / 2, z: home >= 0 ? this.world.ents.y[home] + 1 : size / 2 });
@@ -967,8 +972,10 @@ export class Game {
           hearth: h >= 0 ? [+E.x[h].toFixed(2), +E.y[h].toFixed(2)] : null,
           units: w.count((i) => E.cat[i] === CAT.unit && E.tribe[i] === t.index),
           buildings: w.count((i) => E.cat[i] === CAT.building && E.tribe[i] === t.index),
+          explored: +w.vision.exploredShare(t.index).toFixed(3),
         };
       }),
+      fog: { on: w.vision.on, revealed: this.renderer.revealFog, visibleEnemyUnits: w.count((i) => E.cat[i] === CAT.unit && E.tribe[i] !== this.localTribe && E.tribe[i] >= 0 && w.vision.seesEntity(this.localTribe, i)) },
       counts: { trees: w.count((i) => E.cat[i] === CAT.tree), wild: w.count((i) => E.cat[i] === CAT.unit && E.tribe[i] === -1), entities: E.count },
       terrainVersion: w.terrain.version,
       sites: w.worship.sites.map((s) => {

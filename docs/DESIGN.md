@@ -175,7 +175,12 @@ Spell UX: hover shows exact area preview on the curved terrain, range ring aroun
 
 - Utility-based AI driven by **personality data**: aggressive (Crimson: early Warden rushes, Bolt harassment), sneaky (Amber: Chanters, Shades, Veil, skirmish raids), turtle (Jade: towers, Mire, Quake from range).
 - Same command API as the player. Spell preferences are filtered to spells the AI actually has unlocked. No hidden cheats by default; difficulty scales decision quality, reaction time and optional resource multipliers declared in data.
+- Plays under the same fog of war as the player (section 13a); only a difficulty with `mapHack` in data sees through it (brutal).
 - Must scout, contest shrines and reliquaries, adapt army composition to what it sees, and react to Shaper threats. Show AI intent subtly in-world (gathering banners before an attack) so losses feel fair.
+
+## 13a. Fog of war (BACKLOG 3)
+
+Each tribe sees around its own units (7 cells; the Shaper 10, Shades 8) and buildings (6; Hearth 9, Watchtower 12). Ground never seen is dark; ground seen before is dimmed and keeps the buildings that stood there when it was last in view; only ground in sight shows units and live effects. The minimap shares the same three states. A tribe that loses its Hearth is revealed to everyone, so the end of a match is never a hunt for one hidden Shaper. Spells may be cast into the fog (commands do not check sight). Watchtowers double as the long-sight scouting building. Numbers live in `balance.vision`; a map spec may turn fog off.
 
 ## 14. Modes
 

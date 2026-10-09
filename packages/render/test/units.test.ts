@@ -52,4 +52,23 @@ describe("unit layer", () => {
     layer.update(w, 1, 12, 10, 1, 0, 1000, new THREE.PerspectiveCamera(), 0, 100, 100, new Set());
     expect(layer.disc.count).toBe(2);
   });
+
+  it("hides enemy units in the fog of war unless revealAll (BACKLOG 3)", () => {
+    const pack = basePack();
+    const w = new World({ pack: pack.files, packHash: pack.hash, seed: 3, map: { generator: "flat", size: 64, tribes: 2 } });
+    w.spawnBuilding("hearth", 0, 8, 8);
+    w.spawnBuilding("hearth", 1, 40, 40);
+    w.spawnUnit("settler", 0, 10, 10);
+    w.spawnUnit("settler", 1, 12, 10);
+    w.spawnUnit("settler", 1, 30, 30);
+    w.step([]);
+    const layer = new UnitLayer(new THREE.MeshBasicMaterial(), new THREE.MeshBasicMaterial(), pack.files.units.units.map((u) => u.id), { azure: "#2e6fd8", crimson: "#d83a2e" }, ["azure", "crimson"]);
+    const draw = () => layer.update(w, 1, 20, 20, 1, 0, 1000, new THREE.PerspectiveCamera(), 0, 100, 100, new Set());
+    draw();
+    // own settler and the enemy one next to it; the far one stays in the fog
+    expect(layer.disc.count).toBe(2);
+    layer.revealAll = true;
+    draw();
+    expect(layer.disc.count).toBe(3);
+  });
 });

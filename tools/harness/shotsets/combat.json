@@ -1,11 +1,12 @@
 {
- "$comment": "M6 combat VFX: each shot steps its scenario until the event fires, then captures while the effect is alive (expectVfx).",
+ "$comment": "M6 combat VFX: each shot steps its scenario until the event fires, then captures while the effect is alive (expectVfx). Scenario shots pass reveal=1 (BACKLOG 3): they check spell and combat visuals, not the fog of war.",
  "shots": [
   {
    "id": "fireball",
    "params": {
     "scenario": "combat_firecaller_splash_from_range",
-    "camera": "default"
+    "camera": "default",
+    "reveal": "1"
    },
    "steps": [
     {
@@ -39,7 +40,8 @@
    "id": "chant",
    "params": {
     "scenario": "combat_chanter_converts",
-    "camera": "default"
+    "camera": "default",
+    "reveal": "1"
    },
    "steps": [
     {
@@ -70,7 +72,8 @@
    "id": "melee",
    "params": {
     "scenario": "combat_warden_melee_kills",
-    "camera": "default"
+    "camera": "default",
+    "reveal": "1"
    },
    "steps": [
     {

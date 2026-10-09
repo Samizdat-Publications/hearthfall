@@ -99,3 +99,9 @@ One line per entry: `MM/DD/YYYY HH:MM  M<n>  what happened`. Never read this fil
 - Scenarios shade_burns_dwelling, shade_detected_by_tower; sim test shade.test.ts (4), AI test. Replays reblessed (new column). Smoke hud_troops now expects 5 locked buildings at start.
 - Soaks: economy median 61; ai-idle all 12 (sneaky 11 to 13 min); ai wins aggressive 3, sneaky 3, turtle 2, median 16.6 min; bots PASS. Shot sets smoke, spells, spells2, combat, levels re-approved (Shade Den row in the build panel).
 - Full npm run qa PASS after BACKLOG 2. VisionQA flagged spells2/beguile (artifact_suspect 0.64, pink Beguile rings); Claude looked, false positive. New: `npm run visionqa -- --reviewed <id> --reason ...` records a reviewed flag by PNG sha256 in tools/visionqa/reviewed.json (docs/VISIONQA.md).
+
+## 2026-10-09 BACKLOG 3: fog of war
+- `packages/sim/src/vision.ts`: per tribe explored and visible grids (cell 2, every 0.5 s, sight radii in balance.vision), hashed and saved only when on; Hearthless tribes revealed to all; MapSpec fog:false. ADR-011.
+- AI: threats, enemiesNear, spell targets, clusters and Shade targets filtered by sight; difficulty mapHack (brutal) skips it. Test: an unseen raid draws no defense on normal, does on brutal.
+- Render: fog texture in the shared bend uniforms (unexplored 0.16, explored 0.55), units, halos and buildings hidden, minimap fog overlay; reveal=1 and __game.setReveal render only; summary fog block.
+- Golden replays unchanged (frozen packs have no vision block). Soaks: economy 61, ai-idle 12/12, ai sneaky 5 aggressive 2 turtle 1 median 15.2, bots PASS. Spell and combat scenario shots pass reveal=1; smoke, spells2, levels re-approved.

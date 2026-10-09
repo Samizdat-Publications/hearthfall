@@ -16,6 +16,7 @@ import { updateEffects } from "./effects.ts";
 import { CombatSystem } from "./combat.ts";
 import { WorshipSystem, type WorshipState } from "./worship.ts";
 import { LevelRuntime, type LevelInit, type LevelSaved } from "./level.ts";
+import { VisionSystem, type VisionState } from "./vision.ts";
 
 /** Deterministic in-sim decision maker (AI opponent or test bot); emits Commands at its cadence. */
 export interface Controller {
@@ -85,6 +86,8 @@ export interface WorldSnapshot {
   unitsTerrainVersion: number;
   /** M9: present only when the world has worship sites or granted buildings */
   worship?: WorshipState;
+  /** BACKLOG 3: present only with fog of war on */
+  vision?: VisionState;
   level?: LevelSaved;
 }
 
@@ -107,6 +110,8 @@ export class World {
   economy: EconomySystem;
   combat: CombatSystem;
   worship: WorshipSystem;
+  /** BACKLOG 3: fog of war (per tribe explored and visible grids) */
+  vision: VisionSystem;
   /** null outside campaign levels */
   level: LevelRuntime | null;
   controllers: Controller[] = [];
@@ -125,7 +130,9 @@ export class World {
     this.combat = new CombatSystem(this);
     this.worship = new WorshipSystem(this);
     this.level = init.level ? new LevelRuntime(this, init.level.def) : null;
+    this.vision = new VisionSystem(this, init.map.fog);
     const tribeCount = init.map.tribes ?? gen.hearths.length;
+    this.vision.init(tribeCount);
     for (let t = 0; t < tribeCount; t++) this.tribes.push({ index: t, color: TRIBE_COLORS[t % 4], hearth: NO_ENTITY, alive: true, eco: newTribeEco(this), shaper: NO_ENTITY, respawnAt: -1, casting: null, pending: null });
     if (init.populate !== false) {
       gen.hearths.forEach((h, t) => this.spawnBuilding("hearth", t, h.x, h.y));
@@ -136,6 +143,7 @@ export class World {
       // skirmish only: a level places its own sites
       if (!init.level) this.worship.placeSkirmishSites(gen.hearths);
     }
+    this.vision.update(true);
   }
 
   // ---------------------------------------------------------------- spawning (setup and effects)
@@ -293,6 +301,7 @@ export class World {
     this.flushTerrain();
     // 10. periodic upkeep
     if (this.tick % this.cfg.tickHz === this.cfg.tickHz - 1) this.terrain.healScars();
+    this.vision.update();
     this.tick++;
   }
 
@@ -445,6 +454,7 @@ export class World {
     }
     this.worship.hashInto(mf);
     this.level?.hashInto(mf);
+    this.vision.hashInto(mf);
     const meta = mf.hex();
     const all = new Fnv().u32(parseInt(terrain, 16)).u32(parseInt(entities, 16)).u32(parseInt(rng, 16)).u32(parseInt(meta, 16)).hex();
     return { all, terrain, entities, rng, meta };
@@ -473,6 +483,7 @@ export class World {
       unitsTerrainVersion: this.units.lastVersion,
       ...(this.worship.sites.length || this.worship.granted.some((g) => g.length) ? { worship: this.worship.save() } : {}),
       ...(this.level ? { level: this.level.save() } : {}),
+      ...(this.vision.on ? { vision: this.vision.save() } : {}),
     };
   }
 
@@ -498,6 +509,7 @@ export class World {
     w.units.lastVersion = snap.unitsTerrainVersion;
     if (snap.worship) w.worship.load(snap.worship);
     if (snap.level && w.level) w.level.load(snap.level);
+    if (snap.vision && w.vision.on) w.vision.load(snap.vision);
     return w;
   }
 

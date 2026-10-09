@@ -127,6 +127,9 @@
             "minimum": 0,
             "maximum": 1
           },
+          "mapHack": {
+            "type": "boolean"
+          },
           "resourceMultiplier": {
             "type": "number",
             "exclusiveMinimum": 0

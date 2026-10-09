@@ -1,7 +1,8 @@
 // Curved world: every world material is patched so vertices bend down with the squared horizontal
 // distance from the camera focus, in world space after the instance matrix
 // (worldPos.y -= k * |worldPos.xz - focus|^2). A radial fade to the horizon color past `fadeStart`
-// hides the nearest-copy wrap jump of the torus (docs/ARCHITECTURE.md section 7).
+// hides the nearest-copy wrap jump of the torus (docs/ARCHITECTURE.md section 7). BACKLOG 3: the same
+// patch darkens everything by the viewer's fog of war texture (unexplored, explored, visible).
 import * as THREE from "three";
 
 export interface BendUniforms {
@@ -10,6 +11,12 @@ export interface BendUniforms {
   uFadeStart: { value: number };
   uFadeEnd: { value: number };
   uHorizon: { value: THREE.Color };
+  /** BACKLOG 3: fog of war: R channel 0 unexplored, 0.5 explored, 1 visible, tiled over uFogSize map cells */
+  uFogTex: { value: THREE.Texture };
+  uFogSize: { value: number };
+  uFogOn: { value: number };
+  /** brightness of unexplored and of explored but unseen ground */
+  uFogDark: { value: THREE.Vector2 };
 }
 
 export function makeBendUniforms(): BendUniforms {
@@ -19,6 +26,10 @@ export function makeBendUniforms(): BendUniforms {
     uFadeStart: { value: 50 },
     uFadeEnd: { value: 60 },
     uHorizon: { value: new THREE.Color("#f3d9b1") },
+    uFogTex: { value: new THREE.DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1) },
+    uFogSize: { value: 1 },
+    uFogOn: { value: 0 },
+    uFogDark: { value: new THREE.Vector2(0.16, 0.55) },
   };
 }
 
@@ -26,6 +37,7 @@ export const BEND_VERTEX_PARS = /* glsl */ `
 uniform float uBendK;
 uniform vec2 uBendFocus;
 varying float vBendDist;
+varying vec2 vHfXZ;
 `;
 
 /** Replaces three's project_vertex chunk; `transformed` is the local position. */
@@ -38,6 +50,7 @@ vec4 hfWorld = vec4( transformed, 1.0 );
   hfWorld = instanceMatrix * hfWorld;
 #endif
 hfWorld = modelMatrix * hfWorld;
+vHfXZ = hfWorld.xz;
 vec2 hfD = hfWorld.xz - uBendFocus;
 float hfR2 = dot( hfD, hfD );
 vBendDist = sqrt( hfR2 );
@@ -51,10 +64,19 @@ uniform float uFadeStart;
 uniform float uFadeEnd;
 uniform vec3 uHorizon;
 varying float vBendDist;
+varying vec2 vHfXZ;
+uniform sampler2D uFogTex;
+uniform float uFogSize;
+uniform float uFogOn;
+uniform vec2 uFogDark;
 `;
 
 export const BEND_FRAGMENT_FADE = /* glsl */ `
 if ( vBendDist > uFadeEnd ) discard;
+if ( uFogOn > 0.5 ) {
+  float hfFog = texture2D( uFogTex, vHfXZ / uFogSize ).r;
+  gl_FragColor.rgb *= hfFog < 0.5 ? mix( uFogDark.x, uFogDark.y, hfFog * 2.0 ) : mix( uFogDark.y, 1.0, hfFog * 2.0 - 1.0 );
+}
 gl_FragColor.rgb = mix( gl_FragColor.rgb, uHorizon, smoothstep( uFadeStart, uFadeEnd, vBendDist ) );
 `;
 

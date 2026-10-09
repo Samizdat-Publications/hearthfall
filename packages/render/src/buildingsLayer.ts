@@ -128,6 +128,10 @@ export class BuildingLayer {
     }
   }
 
+  /** BACKLOG 3: fog of war viewer; enemy buildings show once their ground was seen */
+  viewTribe = 0;
+  revealAll = false;
+
   update(w: World, focusX: number, focusZ: number, heightScale: number): void {
     const E = w.ents;
     const n = w.terrain.size;
@@ -136,6 +140,7 @@ export class BuildingLayer {
     const counts = this.kinds.map((v) => new Int32Array(v.length));
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.building) continue;
+      if (!this.revealAll && !w.vision.seenEntity(this.viewTribe, i)) continue;
       const k = E.type[i];
       const vs = this.kinds[k];
       if (!vs) continue;

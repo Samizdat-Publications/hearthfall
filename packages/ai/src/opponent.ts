@@ -90,6 +90,8 @@ export class OpponentAI implements Controller {
   private periodTicks = 0;
   private p!: Personality;
   private noise = 0;
+  /** BACKLOG 3: difficulty data lets this AI see through fog of war */
+  private mapHack = false;
   private eco: EconomyBot;
   private ready = false;
   private known = new Set<number>();
@@ -156,6 +158,7 @@ export class OpponentAI implements Controller {
     const d = ai.difficulties.find((x) => x.id === this.difficulty);
     if (!d) throw new Error(`unknown difficulty ${this.difficulty}`);
     this.noise = d.decisionNoise;
+    this.mapHack = d.mapHack ?? false;
     this.periodTicks = this.periodOverride ?? Math.max(1, Math.round(d.reactionSeconds * w.cfg.tickHz));
     if (this.phase >= this.periodTicks) throw new Error("offset must be below the decision period");
     this.ready = true;
@@ -235,8 +238,8 @@ export class OpponentAI implements Controller {
             if (E.inside[i] < 0 && E.mode[i] === 0 && E.order[i] === 0 && E.atk[i] === NO_ENTITY && i !== E.index(this.scout)) c.idle.push(i);
           }
         }
-      } else if (E.tribe[i] >= 0 && E.cat[i] === CAT.unit && E.veil[i] === 0 && !w.combat.disguised(i) && w.tribes[E.tribe[i]]?.alive) {
-        // veiled enemies and disguised Shades are invisible to the AI as they are to a player (no map hacks)
+      } else if (E.tribe[i] >= 0 && E.cat[i] === CAT.unit && E.veil[i] === 0 && !w.combat.disguised(i) && w.tribes[E.tribe[i]]?.alive && this.sees(w, i)) {
+        // veiled enemies, disguised Shades and units in the fog are invisible to the AI as they are to a player
         const def = units[E.type[i]];
         if (!def.trainedAt && !def.isCaster) continue;
         const dx = wrapDelta(E.x[i] - E.x[h], n);
@@ -268,6 +271,16 @@ export class OpponentAI implements Controller {
     ds.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
     c.enemies = ds.map(([, t, eh]) => [t, eh]);
     return c;
+  }
+
+  /** BACKLOG 3: can this AI see enemy entity i now (fog of war; a map hack sees everything) */
+  private sees(w: World, i: number): boolean {
+    return this.mapHack || w.vision.seesEntity(this.tribe, i);
+  }
+
+  /** ...or has it seen the ground a building stands on (buildings stay mapped once seen) */
+  private seenB(w: World, i: number): boolean {
+    return this.mapHack || w.vision.seenEntity(this.tribe, i);
   }
 
   /** is any own unit within r cells of (x, y)? */
@@ -314,7 +327,7 @@ export class OpponentAI implements Controller {
     const n = w.terrain.size;
     let k = 0;
     for (let i = 0; i < E.hi; i++) {
-      if (!E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] < 0 || E.tribe[i] === this.tribe || E.veil[i] > 0 || w.combat.disguised(i)) continue;
+      if (!E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] < 0 || E.tribe[i] === this.tribe || E.veil[i] > 0 || w.combat.disguised(i) || !this.sees(w, i)) continue;
       if (!w.cfg.pack.units.units[E.type[i]].trainedAt) continue;
       const dx = wrapDelta(E.x[i] - x, n);
       const dy = wrapDelta(E.y[i] - y, n);
@@ -590,7 +603,7 @@ export class OpponentAI implements Controller {
     const guards: number[] = [];
     for (let j = 0; j < E.hi; j++) {
       if (!E.alive[j] || E.tribe[j] < 0 || E.tribe[j] === this.tribe || E.inside[j] >= 0) continue;
-      if (E.cat[j] === CAT.building ? detB.has(E.type[j]) : E.cat[j] === CAT.unit && detU.has(E.type[j])) guards.push(j);
+      if (E.cat[j] === CAT.building ? detB.has(E.type[j]) && this.seenB(w, j) : E.cat[j] === CAT.unit && detU.has(E.type[j]) && this.sees(w, j)) guards.push(j);
     }
     const r = sab.detectRadius + 3;
     let best = -1;
@@ -598,7 +611,7 @@ export class OpponentAI implements Controller {
     for (let j = 0; j < E.hi; j++) {
       if (!E.alive[j] || E.cat[j] !== CAT.building || E.state[j] !== BSTATE.done || E.burn[j] > 0) continue;
       const tj = E.tribe[j];
-      if (tj < 0 || tj === this.tribe || !this.known.has(tj) || !w.tribes[tj]?.alive || w.tribes[tj].hearth === E.idOf(j) || detB.has(E.type[j])) continue;
+      if (tj < 0 || tj === this.tribe || !this.known.has(tj) || !w.tribes[tj]?.alive || w.tribes[tj].hearth === E.idOf(j) || detB.has(E.type[j]) || !this.seenB(w, j)) continue;
       if (guards.some((g) => E.tribe[g] === tj && this.dist2(w, g, j) < r * r)) continue;
       if (this.comp(w, E.x[j], E.y[j]) !== home) continue;
       const dx = wrapDelta(E.x[j] - E.x[i], n);
@@ -803,7 +816,7 @@ export class OpponentAI implements Controller {
           if (tribe !== this.tribe || E.cat[i] !== CAT.unit || !w.cfg.pack.units.units[E.type[i]].trainedAt) continue;
           ok = kind === "ownFighting" ? E.atk[i] !== NO_ENTITY && E.ward[i] === 0 : E.order[i] !== 0 && E.atk[i] === NO_ENTITY && E.veil[i] === 0;
         } else if (kind === "wild") ok = E.cat[i] === CAT.unit && E.type[i] === w.economy.typeWild;
-        else if (tribe >= 0 && tribe !== this.tribe && w.tribes[tribe]?.alive) ok = kind === "buildings" ? E.cat[i] === CAT.building && E.state[i] === BSTATE.done : E.cat[i] === CAT.unit && E.veil[i] === 0 && !w.combat.disguised(i);
+        else if (tribe >= 0 && tribe !== this.tribe && w.tribes[tribe]?.alive) ok = kind === "buildings" ? E.cat[i] === CAT.building && E.state[i] === BSTATE.done && this.seenB(w, i) : E.cat[i] === CAT.unit && E.veil[i] === 0 && !w.combat.disguised(i) && this.sees(w, i);
         if (!ok) continue;
         const dx = wrapDelta(E.x[i] - E.x[c.si], n);
         const dy = wrapDelta(E.y[i] - E.y[c.si], n);
@@ -835,7 +848,7 @@ export class OpponentAI implements Controller {
     const n = w.terrain.size;
     let k = 0;
     for (let j = 0; j < E.hi; j++) {
-      if (!E.alive[j] || E.cat[j] !== CAT.unit || E.veil[j] > 0 || w.combat.disguised(j)) continue;
+      if (!E.alive[j] || E.cat[j] !== CAT.unit || E.veil[j] > 0 || w.combat.disguised(j) || !this.sees(w, j)) continue;
       if (wild ? E.type[j] !== w.economy.typeWild : E.tribe[j] !== E.tribe[i]) continue;
       const dx = wrapDelta(E.x[j] - E.x[i], n);
       const dy = wrapDelta(E.y[j] - E.y[i], n);

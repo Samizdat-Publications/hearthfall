@@ -593,6 +593,54 @@
       ],
       "additionalProperties": false
     },
+    "vision": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "cellSize": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "everySeconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "unitSight": {
+          "type": "number",
+          "minimum": 0
+        },
+        "buildingSight": {
+          "type": "number",
+          "minimum": 0
+        },
+        "sight": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0
+          }
+        }
+      },
+      "required": [
+        "enabled",
+        "cellSize",
+        "everySeconds",
+        "unitSight",
+        "buildingSight",
+        "sight"
+      ],
+      "additionalProperties": false
+    },
     "progression": {
       "type": "object",
       "properties": {

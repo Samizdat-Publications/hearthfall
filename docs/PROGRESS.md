@@ -4,7 +4,8 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 
 ## Now
 - Run started: 2026-10-08T21:25:00Z
-- BACKLOG 2 DONE: Shade and Shade Den (disguise, sabotage fire on buildings and trees, Shaper and Watchtower detection, damage breaks the channel), sneaky AI keeps two Shades, 2 scenarios, alloc status-leak fix, models and icons ($0.67, total $9.15 of $30). Soaks economy (61), ai-idle (all 12), ai (aggressive 3, sneaky 3, turtle 2, median 16.6 min), bots PASS; all shot sets re-approved (Shade Den row in the build panel).
+- BACKLOG 3 DONE: fog of war (sim VisionSystem, per tribe explored and visible grids, ADR-011), AI sees only what its tribe sees (brutal has mapHack), shader fog on every bent material, units and buildings hidden, minimap fog, reveal=1 and __game.setReveal. Soaks with fog: economy 61, ai-idle all 12, ai (sneaky 5, aggressive 2, turtle 1, median 15.2 min), bots PASS; smoke, spells2 and levels re-approved, spell and combat shots use reveal=1.
+- BACKLOG 2 DONE: Shade and Shade Den, sneaky AI keeps two Shades, alloc status-leak fix ($0.67, total $9.15 of $30).
 - BACKLOG 0c DONE: stone from rock outcrops (rocks, quarry and haul jobs, stone costs on towers and lodges, plan blockers, AI site checks, rock rendering).
 - BACKLOG 0a DONE: tall conifers and Hearth grove rings, HUD icon audit (unit icons on troop chips), village scale 1.3x, terraced plateaus (generator terrace, walled-in pads refused, bot picks least-flatten sites), volcano ash column; battle bench 4.9 ms. Terrace soaks (economy, ai-idle, ai, bots) and all shot sets PASS. Full npm run qa PASS at 6988e09 (2026-10-09T16:50Z).
 - BACKLOG 7 DONE (soft gates, misses below): fair lodge payments (the AI trained only Wardens), Chanter rework (6 s channel, no freeze, melee breaks it), AI hunts a Hearthless Shaper (bridge or Lightning), personality data, detour and drowning fixes. ai-idle, ai and bots soaks PASS.
@@ -26,9 +27,9 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 - Subagents: project agents are registered again (milestone-reviewer, qa-runner, ...); call them by type.
 
 ## Next 3 actions
-1. BACKLOG P1 3 (fog of war and scouting). Full npm run qa PASS after BACKLOG 2 (18:30Z); next due by 22:30Z.
-2. Then BACKLOG P1 4, 5, 6, 8 in order.
-3. Re-run the full soak and shot sets every 3 backlog items (next after 4).
+1. BACKLOG P1 4 (command UX polish: formations, double-click type select, control group jump, spell previews, undo window).
+2. Then BACKLOG P1 5, 6, 8 in order. Full npm run qa at least every 4 hours (last PASS after BACKLOG 3).
+3. Re-run the full soak and shot sets every 3 backlog items (next after 6).
 
 ## Blocked
 (none)

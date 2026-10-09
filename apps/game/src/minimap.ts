@@ -2,7 +2,8 @@
 // terrain version; units, buildings, Shapers and the camera view are drawn on top every refresh.
 // M8: the view outline is the screen border picked onto the curved sea-level surface (pickGround,
 // hills ignored so the footprint stays smooth), so it widens toward the horizon and stops at it;
-// cached per camera state.
+// cached per camera state. BACKLOG 3: fog of war darkens unexplored and unseen ground and hides what
+// the local tribe cannot see (renderer.revealFog shows everything).
 import { CAT } from "@hearthfall/sim";
 import type { Game } from "./game.ts";
 
@@ -46,6 +47,36 @@ function terrainImage(game: Game, ctx: CanvasRenderingContext2D): ImageData {
     }
   }
   cache = { version: t.version, scar: t.scarVersion, size: n, img };
+  return img;
+}
+
+let fogCache: { key: string; img: ImageData } | null = null;
+
+/** The terrain image darkened by the local tribe's fog of war (cached per vision and terrain version). */
+function fogImage(game: Game, ctx: CanvasRenderingContext2D, base: ImageData): ImageData {
+  const v = game.world.vision;
+  const tribe = game.renderer.viewTribe;
+  if (!v.on || game.renderer.revealFog || tribe < 0 || tribe >= v.visible.length) return base;
+  const t = game.world.terrain;
+  const key = `${v.version} ${tribe} ${t.version} ${t.scarVersion} ${t.size}`;
+  if (fogCache?.key === key) return fogCache.img;
+  const n = t.size;
+  const img = ctx.createImageData(n, n);
+  const vis = v.visible[tribe];
+  const exp = v.explored[tribe];
+  for (let y = 0; y < n; y++) {
+    const row = Math.floor(y / v.cell) * v.gw;
+    for (let x = 0; x < n; x++) {
+      const k = row + Math.floor(x / v.cell);
+      const f = vis[k] ? 1 : exp[k] ? 0.6 : 0.2;
+      const o = (y * n + x) * 4;
+      img.data[o] = base.data[o] * f;
+      img.data[o + 1] = base.data[o + 1] * f;
+      img.data[o + 2] = base.data[o + 2] * f;
+      img.data[o + 3] = 255;
+    }
+  }
+  fogCache = { key, img };
   return img;
 }
 
@@ -112,8 +143,10 @@ export function drawMinimap(game: Game, canvas: HTMLCanvasElement): void {
   }
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
-  ctx.putImageData(terrainImage(game, ctx), 0, 0);
+  ctx.putImageData(fogImage(game, ctx, terrainImage(game, ctx)), 0, 0);
   const E = w.ents;
+  const viewer = game.renderer.viewTribe;
+  const reveal = game.renderer.revealFog;
   const pal = game.pack.files.style.palette;
   const defs = w.cfg.pack.units.units;
   const shapers: number[] = [];
@@ -121,6 +154,8 @@ export function drawMinimap(game: Game, canvas: HTMLCanvasElement): void {
     if (!E.alive[i]) continue;
     const cat = E.cat[i];
     if (cat !== CAT.unit && cat !== CAT.building) continue;
+    if (!reveal && !(cat === CAT.unit ? w.vision.seesEntity(viewer, i) : w.vision.seenEntity(viewer, i))) continue;
+    if (cat === CAT.unit && E.veil[i] > 0 && E.tribe[i] !== viewer) continue;
     if (cat === CAT.unit && defs[E.type[i]].isCaster) {
       shapers.push(i);
       continue;

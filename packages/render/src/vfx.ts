@@ -90,6 +90,8 @@ export class VfxLayer {
   private seq = 0;
   /** The local player's tribe: its veiled units keep a pale halo, other tribes' are hidden. */
   viewTribe = 0;
+  /** BACKLOG 3: show effects on units in the fog too */
+  revealAll = false;
 
   constructor(bend: BendUniforms, cap = 512) {
     const add = (geo: THREE.BufferGeometry, opacity = 1, blending: THREE.Blending = THREE.AdditiveBlending) => {
@@ -338,6 +340,7 @@ export class VfxLayer {
       if (E.cat[i] === CAT.unit && E.inside[i] < 0 && (E.ward[i] > 0 || E.beguile[i] > 0 || E.veil[i] > 0)) {
         // another tribe's veiled unit is not drawn, so it gets no halo either
         if (E.veil[i] > 0 && E.tribe[i] !== this.viewTribe) continue;
+        if (!this.revealAll && !w.vision.seesEntity(this.viewTribe, i)) continue;
         const col = E.ward[i] > 0 ? STATUS_COLORS.ward : E.beguile[i] > 0 ? STATUS_COLORS.beguile : STATUS_COLORS.veil;
         const pulse = 0.7 + 0.3 * Math.sin(now * 4 + i);
         dot(E.x[i], Math.max(w.terrain.heightAt(E.x[i], E.y[i]), w.terrain.sea) * heightScale + 0.07, E.y[i], 0.55, this.c.set(col).multiplyScalar(pulse), this.halos, "halo");

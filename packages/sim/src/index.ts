@@ -18,3 +18,4 @@ export { CombatSystem, STANCE, STANCE_NAMES, CMODE } from "./combat.ts";
 export { WorshipSystem, applyReward, type Site, type WorshipState } from "./worship.ts";
 export { LevelRuntime, createLevelWorld, levelMap, OUTCOME, PLAYER, type CampaignCarry, type LevelInit, type LevelSaved } from "./level.ts";
 export { runMatchup, type MatchupResult } from "./matchup.ts";
+export { VisionSystem, type VisionState } from "./vision.ts";

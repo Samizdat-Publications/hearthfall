@@ -238,4 +238,26 @@ describe("OpponentAI (M7)", () => {
     const t = vsIdle("turtle", 1003, 12).ai.stats;
     expect(t.actions.buildDen ?? 0).toBe(0);
   }, 90000);
+
+  it("respects fog of war: a warband hidden near the Hearth draws no defense unless the difficulty has mapHack (BACKLOG 3)", () => {
+    const run = (difficulty: string) => {
+      const w = world({ generator: "flat", size: 64, tribes: 2 });
+      w.spawnBuilding("hearth", 0, 8, 8);
+      w.spawnBuilding("hearth", 1, 44, 44);
+      w.spawnUnit("shaper", 0, 6, 6);
+      for (let k = 0; k < 6; k++) w.spawnUnit("settler", 0, 4 + k, 4);
+      for (let k = 0; k < 3; k++) w.spawnUnit("warden", 0, 5 + k, 5);
+      w.spawnUnit("settler", 1, 46, 46);
+      // 13 cells from the Hearth: inside the AI's threat radius, outside every own sight disc
+      const raiders = [0, 1, 2].map((k) => w.spawnUnit("warden", 1, 7 + k, 21));
+      const ai = new OpponentAI({ tribe: 0, personality: "turtle", difficulty, every: 1 });
+      w.controllers.push(ai);
+      w.run(5);
+      return { w, ai, raiders };
+    };
+    const normal = run("normal");
+    expect(normal.w.vision.seesEntity(0, normal.w.ents.index(normal.raiders[0]))).toBe(false);
+    expect(normal.ai.stats.actions.defend ?? 0).toBe(0);
+    expect(run("brutal").ai.stats.actions.defend ?? 0).toBeGreaterThan(0);
+  });
 });

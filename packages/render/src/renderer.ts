@@ -194,6 +194,43 @@ export class ThreeRenderer implements Renderer {
     this.buildLayers(world);
   }
 
+  /** BACKLOG 3: the tribe whose fog of war is drawn (the local player) */
+  viewTribe = 0;
+  /** BACKLOG 3: draw the whole map (debug and god view); the sim keeps its fog */
+  revealFog = false;
+  private fogTex: THREE.DataTexture | null = null;
+  private fogKey = "";
+
+  /** Upload the viewer's explored and visible grids to the fog texture when they change. */
+  private syncFog(w: World): void {
+    const v = w.vision;
+    for (const l of [this.units, this.buildings, this.vfx]) {
+      if (!l) continue;
+      l.viewTribe = this.viewTribe;
+      l.revealAll = this.revealFog;
+    }
+    const on = v.on && !this.revealFog && this.viewTribe >= 0 && this.viewTribe < v.visible.length;
+    this.bend.uFogOn.value = on ? 1 : 0;
+    if (!on) return;
+    const key = `${v.version}|${this.viewTribe}|${v.gw}`;
+    if (key === this.fogKey && this.fogTex) return;
+    this.fogKey = key;
+    const g = v.gw;
+    if (!this.fogTex || this.fogTex.image.width !== g) {
+      this.fogTex?.dispose();
+      this.fogTex = new THREE.DataTexture(new Uint8Array(g * g), g, g, THREE.RedFormat, THREE.UnsignedByteType);
+      this.fogTex.wrapS = this.fogTex.wrapT = THREE.RepeatWrapping;
+      this.fogTex.magFilter = this.fogTex.minFilter = THREE.LinearFilter;
+      this.bend.uFogTex.value = this.fogTex;
+      this.bend.uFogSize.value = g * v.cell;
+    }
+    const data = this.fogTex.image.data as Uint8Array;
+    const vis = v.visible[this.viewTribe];
+    const exp = v.explored[this.viewTribe];
+    for (let k = 0; k < data.length; k++) data[k] = vis[k] ? 255 : exp[k] ? 128 : 0;
+    this.fogTex.needsUpdate = true;
+  }
+
   /** (Re)create the entity layers for a world, with the real models when they are loaded. */
   private buildLayers(world: World): void {
     const colors = world.tribes.map((t) => t.color);
@@ -326,6 +363,7 @@ export class ThreeRenderer implements Renderer {
       fog.near = r.fogNear;
       fog.far = r.fogFar;
       for (const c of this.chunks) c.place(this.cam.x, this.cam.z, size);
+      this.syncFog(w);
       this.trees.update(w, this.cam.x, this.cam.z, this.palette.heightScale);
       this.buildings?.update(w, this.cam.x, this.cam.z, this.palette.heightScale);
       this.worship?.update(w, this.cam.x, this.cam.z, this.palette.heightScale);

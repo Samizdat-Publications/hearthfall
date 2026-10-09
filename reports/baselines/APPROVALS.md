@@ -52,3 +52,6 @@
 - 2026-10-09T17:57 set combat (3 shots): BACKLOG 2: Shade Den row in the build panel
 - 2026-10-09T17:57 set levels (2 shots): BACKLOG 2: Shade Den row in the build panel
 - 2026-10-09T17:58 set smoke (12 shots): BACKLOG 2: Shade Den row in the build panel (5 locked at start)
+- 2026-10-09T18:17 set smoke (12 shots): BACKLOG 3: fog of war darkens unexplored ground, hides unseen units, minimap fog
+- 2026-10-09T18:19 set spells2 (9 shots): BACKLOG 3: hud_all_spells under fog of war
+- 2026-10-09T18:19 set levels (2 shots): BACKLOG 3: levels under fog of war (shrines stay as dim landmarks on unexplored ground)

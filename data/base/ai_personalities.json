@@ -101,7 +101,8 @@
       "id": "brutal",
       "reactionSeconds": 1,
       "decisionNoise": 0,
-      "resourceMultiplier": 1.25
+      "resourceMultiplier": 1.25,
+      "mapHack": true
     }
   ]
 }

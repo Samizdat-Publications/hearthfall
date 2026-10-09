@@ -18,6 +18,8 @@ export interface MapSpec {
   landAboveSea?: number;
   /** flat maps (levels, M9): shapes painted over the base height in order */
   paint?: PaintSpec[];
+  /** BACKLOG 3: false turns fog of war off for this map (default: balance.vision.enabled) */
+  fog?: boolean;
 }
 
 /** A disc (r) or rectangle (size) set to sea + aboveSea, blended into its surroundings over `falloff` cells. */

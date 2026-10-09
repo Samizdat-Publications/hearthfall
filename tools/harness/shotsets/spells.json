@@ -1,11 +1,12 @@
 {
- "$comment": "M5 spell shots: each v1 spell just after it resolves, from its scenario (docs/ROADMAP.md M5 gate).",
+ "$comment": "M5 spell shots: each v1 spell just after it resolves, from its scenario (docs/ROADMAP.md M5 gate). Scenario shots pass reveal=1 (BACKLOG 3): they check spell and combat visuals, not the fog of war.",
  "shots": [
   {
    "id": "bolt",
    "params": {
     "scenario": "spell_bolt_knocks_into_water",
-    "camera": "default"
+    "camera": "default",
+    "reveal": "1"
    },
    "steps": [
     {
@@ -36,7 +37,8 @@
    "id": "call",
    "params": {
     "scenario": "spell_call_converts_wild",
-    "camera": "default"
+    "camera": "default",
+    "reveal": "1"
    },
    "steps": [
     {
@@ -67,7 +69,8 @@
    "id": "lightning",
    "params": {
     "scenario": "spell_lightning_kills_shaper",
-    "camera": "default"
+    "camera": "default",
+    "reveal": "1"
    },
    "steps": [
     {
@@ -98,7 +101,8 @@
    "id": "raise_land",
    "params": {
     "scenario": "spell_raise_land_bridges",
-    "camera": "default"
+    "camera": "default",
+    "reveal": "1"
    },
    "steps": [
     {
@@ -129,7 +133,8 @@
    "id": "flatten",
    "params": {
     "scenario": "spell_flatten_levels",
-    "camera": "default"
+    "camera": "default",
+    "reveal": "1"
    },
    "steps": [
     {
@@ -160,7 +165,8 @@
    "id": "quake",
    "params": {
     "scenario": "spell_quake_breaks_buildings",
-    "camera": "default"
+    "camera": "default",
+    "reveal": "1"
    },
    "steps": [
     {
@@ -191,7 +197,8 @@
    "id": "hornets",
    "params": {
     "scenario": "spell_hornets_swarm",
-    "camera": "default"
+    "camera": "default",
+    "reveal": "1"
    },
    "steps": [
     {
@@ -222,7 +229,8 @@
    "id": "volcano",
    "params": {
     "scenario": "spell_volcano_erupts",
-    "camera": "default"
+    "camera": "default",
+    "reveal": "1"
    },
    "steps": [
     {

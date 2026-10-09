@@ -720,6 +720,16 @@
       "when": "2026-10-09T17:40:30.450Z",
       "source": "external:assets_shade_den_sheet.png",
       "bytes": 129108
+    },
+    {
+      "file": "b1/20261009-1821_fog-of-war.png",
+      "milestone": "B1",
+      "kind": "screenshot",
+      "caption": "BACKLOG 3: fog of war. The home island in sight, the rest of the planet dark until scouted.",
+      "highlight": false,
+      "when": "2026-10-09T18:21:32.573Z",
+      "source": "external:overview.png",
+      "bytes": 191425
     }
   ]
 }

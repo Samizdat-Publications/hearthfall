@@ -73,6 +73,8 @@ export class UnitLayer {
   readonly group = new THREE.Group();
   /** The local player's tribe: other tribes' veiled units are not drawn (BACKLOG 1). */
   viewTribe = 0;
+  /** BACKLOG 3: draw every unit regardless of fog of war (debug, god view) */
+  revealAll = false;
   private kinds: { body: THREE.InstancedMesh; detail: THREE.InstancedMesh }[] = [];
   /** model ids drawn by this layer (the rest are placeholders) */
   readonly modelIds: string[] = [];
@@ -155,6 +157,7 @@ export class UnitLayer {
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.unit || E.inside[i] >= 0) continue;
       if (E.veil[i] > 0 && E.tribe[i] !== this.viewTribe) continue;
+      if (!this.revealAll && !w.vision.seesEntity(this.viewTribe, i)) continue;
       // BACKLOG 2: a disguised enemy Shade wears the viewer's own color (cloth and ring)
       const shown = E.tribe[i] >= 0 && E.tribe[i] !== this.viewTribe && w.combat.disguised(i) ? this.viewTribe : E.tribe[i];
       const k = E.type[i];

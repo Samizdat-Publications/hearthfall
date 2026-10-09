@@ -144,6 +144,11 @@ if (__DEBUG_API__ || game.params.debug) {
       game.paused = p;
     },
     setCamera: (c: string | Partial<CameraState>) => game.renderer.setCamera(c),
+    /** BACKLOG 3: draw through the fog of war (render only) */
+    setReveal: (on = true) => {
+      game.renderer.revealFog = on;
+      game.onChange();
+    },
     loadScenario: (id: string) => game.load(id),
     select: (ids: number[]) => {
       game.selection = new Set(ids.map((id) => game.world.ents.index(id)).filter((i) => i >= 0));
