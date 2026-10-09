@@ -38,7 +38,7 @@ async function triangle(out, seeds) {
   const softMet = pairs.every((q) => q.winPct >= target);
   const draws = pairs.reduce((x, q) => x + q.draws, 0);
   const metrics = { mode: "triangle", seeds, wallSec: +((Date.now() - t0) / 1000).toFixed(1), softTargetPct: target, softMet, draws, pairs: pairs.map(({ results: _r, ...q }) => q) };
-  writeReport("soak.json", { metrics, pairs });
+  writeReport("soak-triangle.json", { metrics, pairs });
   for (const q of pairs) out.line(`${q.counter} vs ${q.victim}: ${q.wins}/${seeds} (${q.winPct}%), draws ${q.draws}, avg ${q.avgEndSec}s`);
   out.line(`triangle soft target ${target}% ${softMet ? "met" : "missed"}`);
   return draws ? out.finish("FAIL", `${draws} matchups ended without a winner`) : out.finish("PASS", "");

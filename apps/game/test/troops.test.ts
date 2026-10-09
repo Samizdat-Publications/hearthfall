@@ -54,7 +54,14 @@ describe("HUD troop controls (M6)", () => {
     w.run(20);
     expect(w.ents.occupants[tower]).toBe(0);
     expect(sel.every((i) => w.ents.task[i] !== TASK.garrison)).toBe(true);
-    run(w, troopCommand(w, 0, sel, -1, { kind: "retreat" }));
+    const far = w.ents.index(w.spawnUnit("warden", 0, 12, 30));
+    run(w, troopCommand(w, 0, [...sel, far], -1, { kind: "retreat" }));
+    w.run(20 * 30);
+    // two retreat into the tower (2 slots), the rest run home to the Hearth
+    expect(w.ents.occupants[tower]).toBe(2);
+    const n = w.terrain.size;
+    const atHome = [...sel, far].filter((i) => w.ents.inside[i] !== tower && Math.hypot(((w.ents.x[i] - 4 + n / 2) % n) - n / 2, ((w.ents.y[i] - 4 + n / 2) % n) - n / 2) < 6);
+    expect(atHome.length).toBe(2);
   });
 
   it("intents the selection cannot do give no command; enemy units are filtered out", () => {
