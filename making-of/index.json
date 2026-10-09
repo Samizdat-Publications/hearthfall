@@ -760,6 +760,16 @@
       "when": "2026-10-09T19:27:39.042Z",
       "source": "external:anim_gallery.png",
       "bytes": 173011
+    },
+    {
+      "file": "b6/20261009-2021_difficulty-soak.png",
+      "milestone": "B6",
+      "kind": "diagram",
+      "caption": "BACKLOG 6, difficulty levels: each level fought a normal opponent of the same personality for 20 minutes on 8 seeds. Easy was retuned (slower reactions, 0.7x income) and now wins 1 of 8, while hard and brutal win 7 of 8. Brutal's 1.25x income goes through the sim as a visible handicap command, not hidden AI code.",
+      "highlight": false,
+      "when": "2026-10-09T20:21:16.403Z",
+      "source": "external:soak-difficulty.png",
+      "bytes": 24527
     }
   ]
 }
