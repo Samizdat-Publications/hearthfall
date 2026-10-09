@@ -68,6 +68,17 @@ export function parseParams(search: string): GameParams {
   };
 }
 
+export interface Note {
+  id: number;
+  text: string;
+  kind: "good" | "bad" | "info";
+  /** tick the note disappears */
+  until: number;
+}
+
+const NOTE_SECONDS = 8;
+const MAX_NOTES = 4;
+
 export interface DebugFlags {
   hideTerrain?: boolean;
   blackCanvas?: boolean;
@@ -132,6 +143,10 @@ export class Game {
   rebinding: KeyAction | null = null;
   /** set by the menu bridge while a key binding waits for its key */
   onRebindKey: ((e: KeyboardEvent) => void) | null = null;
+  /** HUD notifications (sim ticks, so fixedStep captures see the same list); newest last */
+  notes: Note[] = [];
+  private noteSeq = 0;
+  private noteLast = new Map<string, number>();
   lastSave: { tick: number; hash: string } | null = null;
   lastLoad: { tick: number; hash: string } | null = null;
 
@@ -187,6 +202,8 @@ export class Game {
     this.log = [];
     this.ended = null;
     this.stats = { kills: 0, lost: 0 };
+    this.notes = [];
+    this.noteLast.clear();
     this.renderer.setPlacement(null);
     this.renderer.setTargeting(null);
     this.renderer.setWorld(this.world);
@@ -321,8 +338,56 @@ export class Game {
         if (e.tribe === this.localTribe) this.stats.lost++;
         else if (e.by === this.localTribe && typeof e.tribe === "number" && e.tribe >= 0) this.stats.kills++;
       }
+      this.noteFor(e);
     }
+    const si = shaperIndex(this.world, this.localTribe);
+    const E = this.world.ents;
+    if (si >= 0 && E.hitTick[si] === this.world.tick - 1 && E.lastHit[si] >= 0 && E.lastHit[si] !== this.localTribe) this.notify("shaperHit", "Your Shaper is under attack!", "bad", 15);
     this.checkEnd();
+  }
+
+  /** Add a HUD notification; `key` throttles repeats to one per `throttleSec` of game time. */
+  notify(key: string, text: string, kind: Note["kind"], throttleSec = 0): void {
+    const hz = this.world.cfg.tickHz;
+    const t = this.world.tick;
+    const last = this.noteLast.get(key);
+    if (last !== undefined && t - last < throttleSec * hz) return;
+    this.noteLast.set(key, t);
+    this.notes = [...this.notes.filter((n) => n.until > t), { id: ++this.noteSeq, text, kind, until: t + NOTE_SECONDS * hz }].slice(-MAX_NOTES);
+  }
+
+  private noteFor(e: SimEvent): void {
+    const me = this.localTribe;
+    const rival = (t: unknown) => typeof t === "number" && t >= 0 && t !== me;
+    switch (e.type) {
+      case "shaperDied":
+        if (e.tribe === me) this.notify("shaperDied", "Your Shaper has fallen and will return at the Hearth.", "bad");
+        break;
+      case "shaperRespawned":
+        if (e.tribe === me) this.notify("shaperBack", "Your Shaper is back at the Hearth.", "good");
+        break;
+      case "killed":
+        if (e.tribe === me && rival(e.by)) this.notify("underAttack", "Your followers are under attack!", "bad", 20);
+        break;
+      case "destroyed":
+        if (e.tribe === me) this.notify("lostBuilding", "One of your buildings was destroyed.", "bad", 5);
+        break;
+      case "tribeEliminated":
+        if (rival(e.tribe)) {
+          const left = this.world.tribes.filter((t) => t.index !== me && t.alive).length;
+          const name = this.world.tribes[e.tribe as number]?.color ?? "rival";
+          this.notify(`out${e.tribe}`, `The ${name} tribe has fallen${left ? `: ${left} left` : ""}.`, "good");
+        }
+        break;
+      case "tierReached":
+        if (e.tribe === me) this.notify(`tier${e.tier}`, `New tier: ${String(e.id).replace(/_/g, " ")}. New buildings are open.`, "good");
+        break;
+      case "castFailed":
+        if (e.tribe === me) this.notify("castFailed", "The spell failed: the Shaper could not reach the target.", "info", 3);
+        break;
+      default:
+        break;
+    }
   }
 
   step(n = 1): number {

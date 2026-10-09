@@ -18,6 +18,8 @@ export interface SpellView {
   auto: boolean;
   charging: boolean;
   hotkey: string;
+  /** time to the next charge ("12s", "3m"), "" when full, manual or without income */
+  eta: string;
 }
 
 /** M6 troop panel: what the selection can be told to do. */
@@ -36,6 +38,21 @@ export interface TroopView {
   rally: boolean;
   /** lodge or tower is still being built */
   building: boolean;
+  /** unit selection by kind (M8 selected units panel) */
+  units: { name: string; count: number; hpFrac: number }[];
+}
+
+export interface NoteView {
+  id: number;
+  text: string;
+  kind: "good" | "bad" | "info";
+}
+
+export interface ObjectiveView {
+  text: string;
+  done: boolean;
+  /** data-hud-part tag for tests */
+  part?: string;
 }
 
 export const STANCES = ["aggressive", "defensive", "passive"] as const;
@@ -59,7 +76,9 @@ export interface HudModel {
   /** build tools; `locked` says what progression still needs ("needs 10 followers") */
   buildable: { id: string; name: string; wood: number; key: string; locked: string | null }[];
   /** next progression tier: name, followers needed and what it opens; null when all are open */
-  nextUnlock: { name: string; followers: number; opens: string[] } | null;
+  /** M8: objectives panel (rivals left, Hearth, next tier) and event notifications, newest last */
+  objectives: ObjectiveView[];
+  notes: NoteView[];
   box: { x0: number; y0: number; x1: number; y1: number } | null;
   showHelp: boolean;
   priorities: { build: number; upgrade: number; breed: number };
@@ -98,6 +117,16 @@ function Troops({ t, act, pointing }: { t: TroopView; act: HudActions; pointing:
   return (
     <div data-hud="troops" class="hud-panel hud-troops">
       <span class="troops-label">{t.label}</span>
+      {t.units.length ? (
+        <div class="troops-units">
+          {t.units.map((u) => (
+            <span key={u.name} class="unit-chip" title={`${u.count} ${u.name}, health ${Math.round(u.hpFrac * 100)}%`}>
+              <b>{u.count}</b> {u.name}
+              <span class="unit-hp" style={{ width: Math.round(u.hpFrac * 100) + "%" }} />
+            </span>
+          ))}
+        </div>
+      ) : null}
       {t.kind === "units" ? (
         <div class="troops-row">
           {STANCES.map((s) => (
@@ -159,6 +188,7 @@ function SpellButton({ s, act }: { s: SpellView; act: HudActions }) {
         </text>
       </svg>
       <span class="charges">{s.charges}</span>
+      {s.eta ? <span class="eta">{s.eta}</span> : null}
       <span class="hotkey">{s.hotkey}</span>
     </button>
   );
@@ -245,11 +275,6 @@ function Hud({ act }: { act: HudActions }) {
           <input type="range" min="0" max="100" step="5" value={m.spellsPct} onInput={(e) => act.setSplit(Number((e.target as HTMLInputElement).value))} aria-label="Mana split between spells and training" />
           <span class="res-label">Training</span>
         </label>
-        {m.nextUnlock ? (
-          <span data-hud-part="next-unlock" class="next-unlock" title={`Reach ${m.nextUnlock.followers} followers to open ${m.nextUnlock.opens.join(", ")}`}>
-            Next: {m.nextUnlock.name} at {m.nextUnlock.followers} followers ({m.nextUnlock.opens.join(", ")})
-          </span>
-        ) : null}
         <div class="res-row priorities" title="What idle settlers do on their own">
           {(["build", "upgrade", "breed"] as const).map((k) => (
             <button key={k} class={"prio" + (m.priorities[k] > 0 ? " on" : "")} onClick={() => act.togglePriority(k)}>
@@ -258,7 +283,7 @@ function Hud({ act }: { act: HudActions }) {
           ))}
         </div>
       </div>
-      <div data-hud="spellbar" class="hud-panel hud-spellbar">
+      <div data-hud="spellbar" class={"hud-panel hud-spellbar" + (m.wasting ? " wasting" : "")} title={m.wasting ? "Mana is wasting: no spell is auto-charging and nothing is training. Right click a spell to auto-charge it." : undefined}>
         {m.spells.map((s) => (
           <SpellButton key={s.id} s={s} act={act} />
         ))}
@@ -278,6 +303,26 @@ function Hud({ act }: { act: HudActions }) {
         </span>
       </div>
       <Minimap m={m} act={act} />
+      {m.objectives.length ? (
+        <div data-hud="objectives" class="hud-panel hud-objectives">
+          <span class="obj-head">Objectives</span>
+          {m.objectives.map((o) => (
+            <span key={o.text} class={"obj" + (o.done ? " done" : "")} data-hud-part={o.part}>
+              {o.done ? "\u2713 " : "\u25c7 "}
+              {o.text}
+            </span>
+          ))}
+        </div>
+      ) : null}
+      {m.notes.length ? (
+        <div data-hud="notes" class="hud-panel hud-notes">
+          {m.notes.map((n) => (
+            <span key={n.id} class={"note " + n.kind}>
+              {n.text}
+            </span>
+          ))}
+        </div>
+      ) : null}
       <Troops t={m.troops} act={act} pointing={m.pointing} />
       {m.selected > 0 || m.placing || m.targeting || m.pointing ? (
         <div data-hud="selection" class="hud-panel hud-selection">

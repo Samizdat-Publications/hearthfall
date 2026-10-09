@@ -73,3 +73,22 @@ describe("HUD troop controls (M6)", () => {
     expect(troopView(w, 0, [foe], -1).kind).toBe("none");
   });
 });
+
+describe("selected units panel (M8)", () => {
+  it("groups the selection by kind in data order with mean health", () => {
+    const w = arena();
+    const E = w.ents;
+    const a = E.index(w.spawnUnit("settler", 0, 10, 10));
+    const b = E.index(w.spawnUnit("settler", 0, 11, 10));
+    const s = E.index(w.spawnUnit("shaper", 0, 12, 10));
+    E.hp[b] = E.hp[b] / 2;
+    const v = troopView(w, 0, [s, a, b], -1);
+    // units.json order: shaper before settler
+    expect(v.units.map((u) => [u.name, u.count])).toEqual([
+      ["Shaper", 1],
+      ["Settlers", 2],
+    ]);
+    expect(v.units.find((u) => u.count === 2)!.hpFrac).toBeCloseTo(0.75, 3);
+    expect(troopView(w, 0, [], -1).units).toEqual([]);
+  });
+});

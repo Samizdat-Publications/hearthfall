@@ -1,10 +1,11 @@
 // Builds the HUD view model from the Game each refresh and maps HUD intents to Commands.
-import { SPELL_KEYS, hudModel, mountHud, type HudModel, type SpellView } from "@hearthfall/ui";
+import { SPELL_KEYS, hudModel, mountHud, type HudModel, type ObjectiveView, type SpellView } from "@hearthfall/ui";
 import "../../../packages/ui/src/hud.css";
 import { shaperIndex } from "@hearthfall/sim";
 import type { Game } from "./game.ts";
 import { drawMinimap } from "./minimap.ts";
 import { troopView } from "./troops.ts";
+import { etaLabel, spellEtas } from "./eta.ts";
 
 /** build tool hotkeys (the rest of the build column is click only) */
 const BUILD_KEYS: Record<string, string> = { dwelling: "D", watchtower: "T" };
@@ -17,11 +18,13 @@ export function hudFor(game: Game): HudModel {
   const spells = w.cfg.pack.spells.spells;
   const sv: SpellView[] = [];
   if (tr) {
-    const cursor = w.economy.nextSpell(tr.eco);
+    const e = tr.eco;
+    const cursor = w.economy.nextSpell(e);
+    const etas = spellEtas({ costs: spells.map((s) => s.cost), maxCharges: spells.map((s) => s.maxCharges), charges: e.charges, progress: e.progress, auto: e.auto, unlocked: e.unlocked, cursor: e.cursor, incomePerMin: e.incomePerMin, spellsPct: e.spellsPct, trainDemand: e.trainDemand });
     let k = 0;
     spells.forEach((s, i) => {
-      if (!tr.eco.unlocked[i]) return;
-      sv.push({ id: s.id, name: title(s.id), tier: s.tier, cost: s.cost, charges: tr.eco.charges[i], max: s.maxCharges, progress: tr.eco.progress[i] / s.cost, auto: tr.eco.auto[i] === 1, charging: cursor === i, hotkey: SPELL_KEYS[k++] ?? "" });
+      if (!e.unlocked[i]) return;
+      sv.push({ id: s.id, name: title(s.id), tier: s.tier, cost: s.cost, charges: e.charges[i], max: s.maxCharges, progress: e.progress[i] / s.cost, auto: e.auto[i] === 1, charging: cursor === i, hotkey: SPELL_KEYS[k++] ?? "", eta: etaLabel(etas[i]) });
     });
   }
   const bdefs = w.cfg.pack.buildings.buildings;
@@ -47,7 +50,8 @@ export function hudFor(game: Game): HudModel {
     placeBlocked: game.placeBlocked,
     targeting: game.targeting,
     buildable: bdefs.filter((b) => b.buildable !== false && b.milestone !== "backlog").map((b) => ({ id: b.id, name: title(b.id), wood: b.levels?.[0]?.wood ?? b.wood ?? 0, key: BUILD_KEYS[b.id] ?? "", locked: tr ? w.economy.buildingLock(tr.index, w.cfg.buildingIndex.get(b.id)!) : null })),
-    nextUnlock: nextTier ? { name: title(nextTier.id), followers: nextTier.followers, opens: nextTier.buildings.map(title) } : null,
+    objectives: objectivesFor(game, nextTier ? { name: title(nextTier.id), followers: nextTier.followers, opens: nextTier.buildings.map(title) } : null),
+    notes: game.notes.filter((n) => n.until > w.tick).map((n) => ({ id: n.id, text: n.text, kind: n.kind })),
     box: game.box,
     showHelp: game.showHelp,
     priorities: tr ? { ...tr.eco.priorities } : { build: 1, upgrade: 1, breed: 1 },
@@ -56,6 +60,22 @@ export function hudFor(game: Game): HudModel {
     troops: troopView(w, game.localTribe, [...game.selection], game.selectedBuilding),
     pointing: game.pointing,
   };
+}
+
+/** Objectives (M8): rivals left in a skirmish, keep the Hearth standing, and the next unlock tier. */
+function objectivesFor(game: Game, next: { name: string; followers: number; opens: string[] } | null): ObjectiveView[] {
+  const w = game.world;
+  const me = w.tribes[game.localTribe];
+  const out: ObjectiveView[] = [];
+  if (!me) return out;
+  if (game.skirmish && w.tribes.length > 1) {
+    const rivals = w.tribes.filter((t) => t.index !== me.index);
+    const left = rivals.filter((t) => t.alive).length;
+    out.push({ text: left ? `Defeat the rival tribes: ${left} of ${rivals.length} left` : "Every rival tribe has fallen", done: left === 0 });
+    out.push({ text: w.ents.index(me.hearth) >= 0 ? "Keep your Hearth standing" : "Your Hearth has fallen: protect your Shaper", done: false });
+  }
+  if (next) out.push({ text: `Reach ${next.followers} followers for ${next.name} (${next.opens.join(", ")})`, done: false, part: "next-unlock" });
+  return out;
 }
 
 export function mountGameHud(el: HTMLElement, game: Game): { refresh: () => void } {

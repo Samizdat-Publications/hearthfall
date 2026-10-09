@@ -375,6 +375,21 @@ export class ThreeRenderer implements Renderer {
    * map coordinates or null when the ray misses the world.
    */
   pickTerrain(px: number, py: number): { x: number; z: number } | null {
+    const p = this.march(px, py, false);
+    if (!p) return null;
+    const n = this.world!.terrain.size;
+    return { x: ((p.x % n) + n) % n, z: ((p.z % n) + n) % n };
+  }
+
+  /**
+   * Point under a screen pixel on the bent sea-level surface, ignoring hills, NOT wrapped (so a
+   * view footprint stays one connected shape). The minimap view outline uses it.
+   */
+  pickGround(px: number, py: number): { x: number; z: number } | null {
+    return this.march(px, py, true);
+  }
+
+  private march(px: number, py: number, flat: boolean): { x: number; z: number } | null {
     const w = this.world;
     if (!w) return null;
     const t = w.terrain;
@@ -391,7 +406,7 @@ export class ThreeRenderer implements Renderer {
     const above = (dist: number) => {
       const x = o.x + d.x * dist;
       const z = o.z + d.z * dist;
-      const ground = Math.max(t.heightAt(((x % n) + n) % n, ((z % n) + n) % n), t.sea) * s;
+      const ground = flat ? t.sea * s : Math.max(t.heightAt(((x % n) + n) % n, ((z % n) + n) % n), t.sea) * s;
       const ddx = x - fx;
       const ddz = z - fz;
       return o.y + d.y * dist - (ground - k * (ddx * ddx + ddz * ddz));
@@ -408,9 +423,7 @@ export class ThreeRenderer implements Renderer {
           if (above(mid) > 0) lo = mid;
           else hi = mid;
         }
-        const x = o.x + d.x * hi;
-        const z = o.z + d.z * hi;
-        return { x: ((x % n) + n) % n, z: ((z % n) + n) % n };
+        return { x: o.x + d.x * hi, z: o.z + d.z * hi };
       }
       prev = dist;
     }

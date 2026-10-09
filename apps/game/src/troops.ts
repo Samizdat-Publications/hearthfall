@@ -24,9 +24,23 @@ export function towerFor(w: World, sel: readonly number[]): number {
   return i === undefined ? -1 : w.combat.nearestTower(i, w.combat.queued());
 }
 
+/** Selection by unit kind, in data order: count and mean health fraction. */
+export function unitMix(w: World, units: readonly number[]): { name: string; count: number; hpFrac: number }[] {
+  const E = w.ents;
+  const defs = w.cfg.pack.units.units;
+  const by = new Map<number, { count: number; hp: number }>();
+  for (const i of units) {
+    const k = by.get(E.type[i]) ?? { count: 0, hp: 0 };
+    k.count++;
+    k.hp += Math.min(1, Math.max(0, E.hp[i] / Math.max(1, defs[E.type[i]].hp)));
+    by.set(E.type[i], k);
+  }
+  return [...by.entries()].sort((a, b) => a[0] - b[0]).map(([t, k]) => ({ name: title(defs[t].id) + (k.count > 1 ? "s" : ""), count: k.count, hpFrac: +(k.hp / k.count).toFixed(3) }));
+}
+
 export function troopView(w: World, tribe: number, sel: readonly number[], b: number): TroopView {
   const E = w.ents;
-  const none: TroopView = { kind: "none", label: "", stance: null, canGarrison: false, count: 0, max: 0, rally: false, building: false };
+  const none: TroopView = { kind: "none", label: "", stance: null, canGarrison: false, count: 0, max: 0, rally: false, building: false, units: [] };
   if (b >= 0 && E.alive[b] && E.cat[b] === CAT.building && E.tribe[b] === tribe) {
     const def = w.cfg.pack.buildings.buildings[E.type[b]];
     const building = E.state[b] !== BSTATE.done;
@@ -44,7 +58,7 @@ export function troopView(w: World, tribe: number, sel: readonly number[], b: nu
   if (!units.length) return none;
   const s0 = E.stance[units[0]];
   const same = units.every((i) => E.stance[i] === s0);
-  return { ...none, kind: "units", label: `${units.length} selected`, stance: same ? STANCE_NAMES[s0] : null, canGarrison: towerFor(w, units) >= 0 };
+  return { ...none, kind: "units", label: `${units.length} selected`, stance: same ? STANCE_NAMES[s0] : null, canGarrison: towerFor(w, units) >= 0, units: unitMix(w, units) };
 }
 
 /** A Command without its tick (Game.command stamps it). */

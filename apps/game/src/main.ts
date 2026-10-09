@@ -4,6 +4,7 @@ import type { TroopIntent } from "./troops.ts";
 import { Game, parseParams, type DebugFlags } from "./game.ts";
 import { mountGameHud } from "./hudBridge.ts";
 import { mountGameMenus } from "./menuBridge.ts";
+import { viewOutline } from "./minimap.ts";
 import type { CameraState } from "@hearthfall/render";
 import { validatePack } from "@hearthfall/data";
 import { commandsByTick, createScenarioWorld, type ScenarioDef } from "@hearthfall/sim";
@@ -98,6 +99,8 @@ if (__DEBUG_API__ || game.params.debug) {
       game.step(1);
       return game.ended;
     },
+    /** minimap camera outline: screen border samples picked onto the terrain (unwrapped around the view center) */
+    viewOutline: () => viewOutline(game),
     lastSave: () => game.lastSave,
     lastLoad: () => game.lastLoad,
     /** Run a scenario-style definition headless in this page (cross-engine determinism check). */

@@ -19,3 +19,6 @@
 - 2026-10-09T05:08 set spells (8 shots): progression: locked build buttons and a next-unlock line in the resources panel; help panel moved down
 - 2026-10-09T05:08 set combat (3 shots): progression: locked build buttons and a next-unlock line in the resources panel; help panel moved down
 - 2026-10-09T05:56 set smoke (1 shots): units_select_move: click moved to (1100,420); the old target was an unwalkable spot 1 to 2 cells from the units and only passed by overshooting toward it (M7 snapped-goal arrival fix)
+- 2026-10-09T06:29 set combat (3 shots): M8 HUD v2: objectives panel, spell ETA, unit chips, minimap view footprint and Shaper markers
+- 2026-10-09T06:29 set smoke (12 shots): M8 HUD v2: objectives panel, spell ETA, unit chips, minimap view footprint and Shaper markers
+- 2026-10-09T06:29 set spells (8 shots): M8 HUD v2: objectives panel, spell ETA, unit chips, minimap view footprint and Shaper markers
