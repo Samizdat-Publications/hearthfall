@@ -93,6 +93,7 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 79. [S] End screen stats (kills, units lost) are not saved, so they restart at 0 after a load: put them in the save's controller state.
 80. [S] Minimap footprint on small flat maps can fold into a V where the view crosses the wrap; clip the footprint to one map copy or fall back to the focus cross when edges cross (M8 shots).
 81. [S] Menu polish: a title illustration on the main menu, the settings panel left column has unused height, menu text is small at 1280x720 (M8 contact sheet).
+82. [S] Regression tests for two M8 review fixes that have none: control groups and bookmarks reset on a new world (e2e: assign a group, load, group is empty) and replaced render layers disposed (renderer stats geometries count stable across 3 restarts) (M8 re-review).
 36. [S] Spells that drown units need a readable lead-in (rumble, crack VFX, short delay) so players see cause and effect (M5, M1 review).
 
 ## Parking lot (ideas, unranked)

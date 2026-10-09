@@ -112,7 +112,9 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
     const sp: SkirmishParams = { seed, level: setup.map, size: setup.size, tribes: 1 + setup.opponents.length, ai: [...setup.opponents], difficulty: setup.difficulty };
     try {
       game.startSkirmish(sp);
-    } catch {
+    } catch (e) {
+      // only the planet generator's give-up is a player-facing setup problem; anything else is a bug
+      if (!/planet generator failed/.test(String((e as Error)?.message ?? e))) throw e;
       setup.error = "This map could not be generated with these settings. Try another seed, a larger map or fewer opponents.";
       refresh();
     }

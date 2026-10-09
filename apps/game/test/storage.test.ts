@@ -47,9 +47,9 @@ describe("settings and save slots (M8)", () => {
     const second = makeSave(w, params, [], [], "2026-10-09T00:01:00.000Z");
     const kv = new MemoryKV();
     expect(writeSlot(kv, 1, first)).toBeNull();
-    let fail = false;
-    const flaky: KV = { getItem: (k) => kv.getItem(k), setItem: (k, v) => { if (fail) throw new Error("QuotaExceededError"); kv.setItem(k, v); }, removeItem: (k) => kv.removeItem(k) };
-    fail = true;
+    // the save write succeeds and the meta write fails: the old save and meta must both come back
+    let metaFails = 1;
+    const flaky: KV = { getItem: (k) => kv.getItem(k), setItem: (k, v) => { if (k.endsWith(".meta") && metaFails-- > 0) throw new Error("QuotaExceededError"); kv.setItem(k, v); }, removeItem: (k) => kv.removeItem(k) };
     expect(writeSlot(flaky, 1, second)).toMatch(/could not save/);
     expect(readSlot(kv, 1).hash).toBe(first.hash);
     expect(slotMeta(kv, 1)?.tick).toBe(first.tick);

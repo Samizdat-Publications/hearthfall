@@ -116,13 +116,10 @@ export function writeSlot(kv: KV, n: number, s: SaveGame): string | null {
     return null;
   } catch (e) {
     try {
-      if (prevSlot !== null && prevMeta !== null) {
-        kv.setItem(slotKey(n), prevSlot);
-        kv.setItem(metaKey(n), prevMeta);
-      } else {
-        kv.removeItem(slotKey(n));
-        kv.removeItem(metaKey(n));
-      }
+      if (prevSlot !== null) kv.setItem(slotKey(n), prevSlot);
+      else kv.removeItem(slotKey(n));
+      if (prevMeta !== null) kv.setItem(metaKey(n), prevMeta);
+      else kv.removeItem(metaKey(n));
     } catch {
       // storage refuses even the old value; nothing more to do
     }
