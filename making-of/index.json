@@ -640,6 +640,26 @@
       "when": "2026-10-09T13:24:19.499Z",
       "source": "external:m11_combat_sheet.png",
       "bytes": 367893
+    },
+    {
+      "file": "b1/20261009-1454_spells2.png",
+      "milestone": "B1",
+      "kind": "contact-sheet",
+      "caption": "BACKLOG 1: the eight later spells in play (Veil, Ward, Beguile, Whirlwind, Mire, Erode, Firerain, Wraith) and the 16-slot spell bar",
+      "highlight": true,
+      "when": "2026-10-09T14:54:40.861Z",
+      "source": "external:spells2_sheet.png",
+      "bytes": 1144674
+    },
+    {
+      "file": "b1/20261009-1454_icons-16.png",
+      "milestone": "B1",
+      "kind": "asset-sheet",
+      "caption": "BACKLOG 1: icon sheet with the eight new spell icons beside the M10 set",
+      "highlight": false,
+      "when": "2026-10-09T14:54:53.172Z",
+      "source": "external:assets_icons_sheet.png",
+      "bytes": 1101098
     }
   ]
 }

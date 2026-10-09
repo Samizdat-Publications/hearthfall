@@ -71,6 +71,8 @@ const SHAPER_DISC = 1.5;
 
 export class UnitLayer {
   readonly group = new THREE.Group();
+  /** The local player's tribe: other tribes' veiled units are not drawn (BACKLOG 1). */
+  viewTribe = 0;
   private kinds: { body: THREE.InstancedMesh; detail: THREE.InstancedMesh }[] = [];
   /** model ids drawn by this layer (the rest are placeholders) */
   readonly modelIds: string[] = [];
@@ -152,6 +154,7 @@ export class UnitLayer {
     const fade2 = fadeEnd * fadeEnd;
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.unit || E.inside[i] >= 0) continue;
+      if (E.veil[i] > 0 && E.tribe[i] !== this.viewTribe) continue;
       const k = E.type[i];
       if (k >= this.kinds.length) continue;
       // interpolate with wrap-aware delta

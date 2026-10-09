@@ -140,6 +140,31 @@ export const BalanceSchema = z.strictObject({
       defaultDifficulty: z.string(),
     })
     .optional(),
+  /**
+   * BACKLOG 1: worship sites on generated (skirmish) maps, at points equidistant from each pair of Hearths
+   * and at that point's opposite on the wrapped planet; sites take the list entries in turn. Optional so
+   * frozen packs keep their hash.
+   */
+  skirmishWorship: z
+    .strictObject({
+      ...comment,
+      maxSites: z.number().int().min(0).max(12),
+      minSpacing: pos,
+      minHearthDistance: pos,
+      searchRadius: z.number().int().min(0).max(32),
+      sites: z
+        .array(
+          z.strictObject({
+            ...comment,
+            kind: id,
+            worshippers: z.number().int().min(1).max(8).optional(),
+            prayerSeconds: pos.optional(),
+            rewards: z.array(z.lazy(() => RewardSchema)).min(1),
+          }),
+        )
+        .min(1),
+    })
+    .optional(),
   gates: z.strictObject({
     ...comment,
     counterTriangleMinWinPct: z.number(),
@@ -400,7 +425,8 @@ export const SpellSchema = z.strictObject({
   range: pos,
   v1: z.boolean().optional(),
   /** opponent AI targeting hint (M7): enemy unit clusters, enemy buildings, wild people, or a land bridge toward an enemy */
-  aiTarget: z.enum(["units", "buildings", "wild", "bridge", "none"]).optional(),
+  /** how the opponent AI aims it; ownFighting (Ward) and ownMarching (Veil) aim at the AI's own troops (BACKLOG 1) */
+  aiTarget: z.enum(["units", "buildings", "wild", "bridge", "ownFighting", "ownMarching", "none"]).optional(),
   effects: z.array(Effect).min(1),
 });
 export const SpellsFileSchema = z.strictObject({

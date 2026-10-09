@@ -33,4 +33,23 @@ describe("unit layer", () => {
     expect(color(0)).toBe(new THREE.Color(pal.azure).getHexString());
     expect(color(1)).toBe(new THREE.Color(pal.crimson).getHexString());
   });
+
+  it("hides other tribes' veiled units from the local player but keeps its own (BACKLOG 1)", () => {
+    const pack = basePack();
+    const w = new World({ pack: pack.files, packHash: pack.hash, seed: 3, map: { generator: "flat", size: 64, tribes: 2 } });
+    const own = w.ents.index(w.spawnUnit("settler", 0, 10, 10));
+    const foe = w.ents.index(w.spawnUnit("settler", 1, 12, 10));
+    w.ents.veil[own] = 100;
+    w.ents.veil[foe] = 100;
+    const layer = new UnitLayer(new THREE.MeshBasicMaterial(), new THREE.MeshBasicMaterial(), pack.files.units.units.map((u) => u.id), { azure: "#2e6fd8", crimson: "#d83a2e" }, ["azure", "crimson"]);
+    layer.update(w, 1, 12, 10, 1, 0, 1000, new THREE.PerspectiveCamera(), 0, 100, 100, new Set());
+    expect(layer.disc.count).toBe(1);
+    layer.viewTribe = 1;
+    layer.update(w, 1, 12, 10, 1, 0, 1000, new THREE.PerspectiveCamera(), 0, 100, 100, new Set());
+    expect(layer.disc.count).toBe(1);
+    layer.viewTribe = 0;
+    w.ents.veil[foe] = 0;
+    layer.update(w, 1, 12, 10, 1, 0, 1000, new THREE.PerspectiveCamera(), 0, 100, 100, new Set());
+    expect(layer.disc.count).toBe(2);
+  });
 });

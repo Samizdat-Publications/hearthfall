@@ -61,3 +61,9 @@ One line per entry: `MM/DD/YYYY HH:MM  M<n>  what happened`. Never read this fil
 - 2026-10-09 M10 exit: Sonnet review FIX FIRST (music director only ran on event frames, kept old fight after a new world); fixed with a regression test and an e2e check, Shaper bark local only, model load catch; bench:render made noise robust (min of 3 rounds); BACKLOG 93; npm run qa PASS; tag m10-done.
 - 2026-10-09 M11 polish and handoff: tribe rings and larger Shaper, lighter trees, combat VFX readability (57), boot screen, fatal panel, frame and context error handling, static production server with prod qa layer, harness shot routing fix with a regression test, State of the game written, BACKLOG re-ranked (94 to 96).
 - 2026-10-09 M11 exit: Opus review DO NOT TAG with 3 blockers (frame loop could fail forever behind the boot screen, static server path prefix and malformed-escape crash, wrong spell keys in How to play); all fixed with tests (e2e forceFrameError, serve.test.mjs). Bench needed one rerun at 85 percent CPU from other processes (sim unchanged). npm run qa PASS. Tagged m11-done.
+
+## 2026-10-09 BACKLOG 1: the eight later spells
+- Sim (c75a715): statuses veil, ward, beguiled (own-target statusApply), effect kinds erode, storm, mover, trap, wraith; 9 scenarios; goldens reblessed (schema change).
+- Then: VFX and status halos, veiled enemies hidden (viewTribe), skirmish Reliquaries (balance.skirmishWorship, ADR-010), AI aiTarget ownFighting and ownMarching plus setup every decision, 16 spell keys and a wrapping spell bar, 8 icons via asset-producer (Gemini, $0.27).
+- Bug found by the bots soak: a unit beguiled into a tower stayed inside when it went home (invariant: unit inside another tribe's building). Fix: convertUnit leaves the building first; regression test in effects.test.ts.
+- Soaks (8 seeds, 30 min): ai PASS (wins sneaky 5, aggressive 1, turtle 1), ai-idle PASS, bots PASS. spells2 shots 9/9 approved; qa:fast PASS.

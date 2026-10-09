@@ -538,6 +538,9 @@ export class CombatSystem {
   convertUnit(j: number, tribe: number): void {
     const w = this.w;
     const E = w.ents;
+    // a garrisoned unit steps out first: it may not stay in the old side's building (a beguiled unit
+    // going home from its captor's tower, bots soak regression)
+    if (E.inside[j] >= 0) this.leave(j);
     E.tribe[j] = tribe;
     // a side change ends spell statuses that belong to the old side (a beguiled unit converted for good stays)
     E.beguile[j] = 0;

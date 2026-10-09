@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generated": "2026-10-09T00:44:21Z",
+  "generated": "2026-10-09T14:44:13Z",
   "sizes": [
     128,
     256
   ],
-  "count": 27,
+  "count": 35,
   "entries": {
     "icon.building.chant_house": {
       "file_256": "assets/icons/icon.building.chant_house.png",
@@ -98,6 +98,13 @@
       "source": "gemini + ref_04",
       "prompt": "three small stylized tribal people standing close together in simple tunics, resource icon"
     },
+    "icon.spell.beguile": {
+      "file_256": "assets/icons/icon.spell.beguile.png",
+      "file_128": "assets/icons/icon.spell.beguile_128.png",
+      "kind": "spell",
+      "source": "gemini + ref_04",
+      "prompt": "a glowing pink-violet heart-shaped charm swirling with sparkles and a looping ribbon of magic, spell icon"
+    },
     "icon.spell.bolt": {
       "file_256": "assets/icons/icon.spell.bolt.png",
       "file_128": "assets/icons/icon.spell.bolt_128.png",
@@ -111,6 +118,20 @@
       "kind": "spell",
       "source": "gemini + ref_04",
       "prompt": "a carved wooden horn with three glowing pale green sound rings radiating from it, spell icon"
+    },
+    "icon.spell.erode": {
+      "file_256": "assets/icons/icon.spell.erode.png",
+      "file_128": "assets/icons/icon.spell.erode_128.png",
+      "kind": "spell",
+      "source": "gemini + ref_04",
+      "prompt": "a chunk of brown land crumbling and sinking into rippling blue water, with a foamy shoreline, spell icon"
+    },
+    "icon.spell.firerain": {
+      "file_256": "assets/icons/icon.spell.firerain.png",
+      "file_128": "assets/icons/icon.spell.firerain_128.png",
+      "kind": "spell",
+      "source": "gemini + ref_04",
+      "prompt": "three flaming meteors falling diagonally from above, trailing orange and yellow fire, spell icon"
     },
     "icon.spell.flatten": {
       "file_256": "assets/icons/icon.spell.flatten.png",
@@ -133,6 +154,13 @@
       "source": "gemini + ref_04",
       "prompt": "a bright blue-white forked lightning bolt striking down out of a dark storm cloud, spell icon"
     },
+    "icon.spell.mire": {
+      "file_256": "assets/icons/icon.spell.mire.png",
+      "file_128": "assets/icons/icon.spell.mire_128.png",
+      "kind": "spell",
+      "source": "gemini + ref_04",
+      "prompt": "an olive-green sucking bog, a swirling whirlpool of dark mud with bubbles and a few grasping reeds, spell icon"
+    },
     "icon.spell.quake": {
       "file_256": "assets/icons/icon.spell.quake.png",
       "file_128": "assets/icons/icon.spell.quake_128.png",
@@ -147,12 +175,40 @@
       "source": "gemini + ref_04",
       "prompt": "a jagged brown earthen ridge of rock rising up out of flat green ground with lifting chunks, spell icon"
     },
+    "icon.spell.veil": {
+      "file_256": "assets/icons/icon.spell.veil.png",
+      "file_128": "assets/icons/icon.spell.veil_128.png",
+      "kind": "spell",
+      "source": "gemini + ref_04",
+      "prompt": "a pale blue-grey translucent shroud of mist draped like a hooded cloak, hiding small shadowy figures within it, spell icon"
+    },
     "icon.spell.volcano": {
       "file_256": "assets/icons/icon.spell.volcano.png",
       "file_128": "assets/icons/icon.spell.volcano_128.png",
       "kind": "spell",
       "source": "gemini + ref_04",
       "prompt": "a small volcano cone erupting with glowing orange lava and dark smoke, spell icon"
+    },
+    "icon.spell.ward": {
+      "file_256": "assets/icons/icon.spell.ward.png",
+      "file_128": "assets/icons/icon.spell.ward_128.png",
+      "kind": "spell",
+      "source": "gemini + ref_04",
+      "prompt": "a golden protective dome shield of glowing light with a bright rim and a simple rune on its face, spell icon"
+    },
+    "icon.spell.whirlwind": {
+      "file_256": "assets/icons/icon.spell.whirlwind.png",
+      "file_128": "assets/icons/icon.spell.whirlwind_128.png",
+      "kind": "spell",
+      "source": "gemini + ref_04",
+      "prompt": "a dusty white tornado funnel spinning with swirling bands of wind, dust and small flying debris, spell icon"
+    },
+    "icon.spell.wraith": {
+      "file_256": "assets/icons/icon.spell.wraith.png",
+      "file_128": "assets/icons/icon.spell.wraith_128.png",
+      "kind": "spell",
+      "source": "gemini + ref_04",
+      "prompt": "a pale cyan flying ghost hunter, a streamlined spectral wisp with glowing eyes and a trailing tail, spell icon"
     },
     "icon.unit.chanter": {
       "file_256": "assets/icons/icon.unit.chanter.png",

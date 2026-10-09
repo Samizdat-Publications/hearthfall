@@ -132,6 +132,8 @@ export class World {
       gen.hearths.forEach((h, t) => this.spawnStartUnits(t, h.x, h.y));
       for (const tr of gen.trees) this.spawnTree(tr.x, tr.y);
       for (const w of gen.wild) this.spawnUnit("wild", -1, w.x, w.y);
+      // skirmish only: a level places its own sites
+      if (!init.level) this.worship.placeSkirmishSites(gen.hearths);
     }
   }
 

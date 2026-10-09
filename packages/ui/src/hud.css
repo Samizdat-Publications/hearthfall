@@ -43,7 +43,8 @@ body.debug-overlap-hud .hud-overlap { display: block; }
 .bar-pop .bar-fill { background: repeating-linear-gradient(90deg, #2fa36b 0 6px, #46bf80 6px 8px); }
 .bar-text { position: relative; padding-left: 6px; font-size: 11px; line-height: 14px; }
 .waste { font-size: 11px; color: #fff; background: #c8312e; padding: 0 5px; align-self: flex-start; }
-.hud-spellbar { left: 50%; top: 10px; transform: translateX(-50%); display: flex; gap: 4px; padding: 4px 8px; pointer-events: auto; }
+.hud-spellbar { left: 50%; top: 10px; transform: translateX(-50%); display: flex; flex-wrap: wrap; justify-content: center; max-width: 440px; gap: 4px; padding: 4px 8px; pointer-events: auto; }
+/* BACKLOG 1: more than 8 spells (worship site unlocks) wrap into a second row of 8 under the first */
 .hud-build { right: 12px; top: 136px; display: flex; flex-direction: column; gap: 6px; padding: 6px; pointer-events: auto; }
 .build-btn { border: 2px solid #8a8378; background: #5a3d26; color: #f4e6c8; border-radius: 0; padding: 6px 8px; font: 600 12px system-ui; cursor: pointer; min-width: 84px; text-align: left; }
 .hud-minimap { right: 12px; bottom: 12px; width: 156px; padding: 6px; display: flex; flex-direction: column; gap: 4px; pointer-events: auto; }

@@ -157,7 +157,8 @@ export class OpponentAI implements Controller {
     if (!c) return [];
     const out = this.eco.decide(w);
     this.stats.decisions++;
-    if (this.stats.decisions === 1) this.setup(w, out);
+    // every decision: spells unlocked mid-match (worship sites) start charging too
+    this.setup(w, out);
     const acts = w.worship.sites.length ? this.actions : this.actions.filter((a) => a.id !== "worship");
     const scored = acts.map((a, k) => ({ a, k, s: a.score(c) + (w.rng.float("ai") - 0.5) * 2 * this.noise }));
     scored.sort((x, y) => y.s - x.s || x.k - y.k);
@@ -174,7 +175,7 @@ export class OpponentAI implements Controller {
     return out.map((x) => ({ ...x, tick: w.tick, tribe: this.tribe }));
   }
 
-  /** first decision: auto-charge the preferred spells the tribe has unlocked */
+  /** auto-charge the preferred spells the tribe has unlocked (once each: only when not yet on) */
   private setup(w: World, out: Command[]): void {
     const eco = w.tribes[this.tribe].eco;
     for (const id of this.p.spellPrefs) {
@@ -617,7 +618,11 @@ export class OpponentAI implements Controller {
         if (!E.alive[i]) continue;
         const tribe = E.tribe[i];
         let ok = false;
-        if (kind === "wild") ok = E.cat[i] === CAT.unit && E.type[i] === w.economy.typeWild;
+        if (kind === "ownFighting" || kind === "ownMarching") {
+          // own trained troops: Ward on those already fighting, Veil on a wave still on its way
+          if (tribe !== this.tribe || E.cat[i] !== CAT.unit || !w.cfg.pack.units.units[E.type[i]].trainedAt) continue;
+          ok = kind === "ownFighting" ? E.atk[i] !== NO_ENTITY && E.ward[i] === 0 : E.order[i] !== 0 && E.atk[i] === NO_ENTITY && E.veil[i] === 0;
+        } else if (kind === "wild") ok = E.cat[i] === CAT.unit && E.type[i] === w.economy.typeWild;
         else if (tribe >= 0 && tribe !== this.tribe && w.tribes[tribe]?.alive) ok = kind === "buildings" ? E.cat[i] === CAT.building && E.state[i] === BSTATE.done : E.cat[i] === CAT.unit && E.veil[i] === 0;
         if (!ok) continue;
         const dx = wrapDelta(E.x[i] - E.x[c.si], n);
@@ -625,6 +630,8 @@ export class OpponentAI implements Controller {
         if (dx * dx + dy * dy > reach * reach) continue;
         // value: units in a cluster (or the building's own worth) near the point
         const score = kind === "buildings" ? 2 + (w.cfg.pack.buildings.buildings[E.type[i]].id === "hearth" ? 3 : 0) : this.clusterAt(w, i, kind === "wild");
+        // own-troop spells need a real group (a lone soldier is not worth the charge)
+        if ((kind === "ownFighting" || kind === "ownMarching") && score < 3) continue;
         if (score > bestScore) {
           bestScore = score;
           best = i;

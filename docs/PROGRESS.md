@@ -4,6 +4,7 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 
 ## Now
 - Run started: 2026-10-08T21:25:00Z
+- BACKLOG (after M11, top down): 1 DONE (and 53): all 16 spells. Veil, Ward, Beguile, Whirlwind, Mire, Erode, Firerain, Wraith as data plus primitives, 9 scenarios, spells2 shot set (approved), icons, AI targeting, skirmish Reliquaries teach them (ADR-010), second hotkey row. Soak note for 7: sneaky won 5 of 8.
 - Milestone: M11 done (tag m11-done; roadmap complete, now BACKLOG top down). M11 shipped: tribe rings under units and a larger Shaper, lighter trees, combat VFX readability (BACKLOG 57), boot screen, fatal panel with cause, frame loop failure and context loss handling, production build served statically (npm run serve, prod qa layer), State of the game section below. Opus review: 3 blockers fixed (frame error handling, static server containment, controls text), follow-ups in BACKLOG 96. M10 done (tag m10-done).
 - M1 shipped: sfc32 rng streams, FNV hash parts, SoA entities, torus terrain with all ops + dirty cursor (dirtySince), tileable fbm generator (continents, islands, flat test maps) with connected Hearth sites, trees, wild people; Command registry (god-mode terrainOp is tribe -1 or godMode only); World step order, drowning, snapshot/restore; scenario runner + safe DSL (4 scenarios); golden replay with frozen pack (terrain_ops_continents). 66 unit tests. qa:fast now includes replays.
 - M2 shipped: renderer (faceted chunks, water, curved world, wrap, sky, trees), camera rig, debug API, shot pipeline (pixel-exact baselines in fixedStep), VisionQA calibrated, browser replay determinism.
@@ -21,9 +22,9 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 - Subagents: project agents are registered again (milestone-reviewer, qa-runner, ...); call them by type.
 
 ## Next 3 actions
-1. BACKLOG P1 item 1: the eight remaining spells (Veil, Ward, Beguile, Whirlwind, Mire, Erode, Firerain, Wraith), one sim primitive or data entry, scenario and shot each; split into commits of two or three spells.
-2. BACKLOG P1 item 7: balance pass (absorbs 60, 64, 65, 71, 83) with playtest-analyst proposals.
-3. BACKLOG P1 0a, 0c, 2 to 6, 8 in order; re-run full soak and shot sets every 3 backlog items (ROADMAP After M11).
+1. BACKLOG P1 item 7: balance pass (absorbs 60, 64, 65, 71, 83) with playtest-analyst proposals; start with sneaky dominance (Beguile, Veil).
+2. BACKLOG P1 0a (look v2 follow-ups), then 0c, 2 to 6, 8 in order.
+3. Re-run the full soak and shot sets every 3 backlog items (next after 0a); full npm run qa at least every 4 hours.
 
 ## Blocked
 (none)
@@ -59,7 +60,7 @@ npm run serve
 ```
 Then open http://127.0.0.1:5182/ in Chrome or Edge. Pick Skirmish (try continents, normal) or Campaign.
 - Mouse: drag to box-select, click a unit or building to select it, right click to move (on your tower: garrison), wheel to zoom, Q and E to rotate.
-- Keys: A attack-move, R retreat, G garrison, S select the Shaper, D place a Dwelling, T a Watchtower, M map view, H help, P or Esc pause menu (Esc first cancels targeting or a selection). Spells: Z, X, C, V, B, N for the first six, Shift+M and Shift+N for the last two (then click a target); Backspace undoes a cast during its short undo window. Most keys can be rebound in Settings.
+- Keys: A attack-move, R retreat, G garrison, S select the Shaper, D place a Dwelling, T a Watchtower, M map view, H help, P or Esc pause menu (Esc first cancels targeting or a selection). Spells: Z, X, C, V, B, N for the first six, Shift+M and Shift+N for the next two, and Shift+Z X C V B J K L for the eight spells taught at the Reliquaries between the villages (then click a target); Backspace undoes a cast during its short undo window. Most keys can be rebound in Settings.
 - The top-left slider splits followers between praying for mana (Spells) and training troops (Training). Reach 10 followers to unlock the Watchtower and Warden Lodge, more for the other lodges.
 - Tip: keep the Shaper safe. If she dies she respawns at the Hearth after a delay, and her killer can steal spell charges.
 

@@ -83,6 +83,61 @@ export class WorshipSystem {
     return id;
   }
 
+  /**
+   * Skirmish worship sites (BACKLOG 1, balance.skirmishWorship): for each pair of Hearths the point
+   * halfway between them and its opposite on the wrapped planet (both equally far from the two), each
+   * moved to the nearest dry walkable cell clear of every Hearth; sites closer than minSpacing are dropped.
+   */
+  placeSkirmishSites(hearths: readonly { x: number; y: number }[]): void {
+    const sw = this.w.cfg.pack.balance.skirmishWorship;
+    if (!sw || sw.maxSites === 0 || hearths.length < 2) return;
+    const n = this.w.terrain.size;
+    const cands: { x: number; y: number }[] = [];
+    for (let a = 0; a < hearths.length; a++) {
+      for (let b = a + 1; b < hearths.length; b++) {
+        const mx = hearths[a].x + wrapDelta(hearths[b].x - hearths[a].x, n) / 2;
+        const my = hearths[a].y + wrapDelta(hearths[b].y - hearths[a].y, n) / 2;
+        cands.push({ x: wrap(mx, n), y: wrap(my, n) }, { x: wrap(mx + n / 2, n), y: wrap(my + n / 2, n) });
+      }
+    }
+    const placed: { x: number; y: number }[] = [];
+    const far = (p: { x: number; y: number }, q: { x: number; y: number }, d: number) => {
+      const dx = wrapDelta(p.x - q.x, n);
+      const dy = wrapDelta(p.y - q.y, n);
+      return dx * dx + dy * dy >= d * d;
+    };
+    for (const c of cands) {
+      if (placed.length >= sw.maxSites) break;
+      const p = this.dryCellNear(c.x, c.y, sw.searchRadius, (q) => hearths.every((h) => far(q, h, sw.minHearthDistance)));
+      if (p && placed.every((q) => far(p, q, sw.minSpacing))) placed.push(p);
+    }
+    placed.forEach((p, j) => {
+      const s = sw.sites[j % sw.sites.length];
+      this.addSite(s.kind, p.x, p.y, { worshippers: s.worshippers, prayerSeconds: s.prayerSeconds, rewards: s.rewards });
+    });
+  }
+
+  /** Nearest cell (square rings outward) where the site and its prayer ring stand on dry walkable land. */
+  private dryCellNear(x: number, y: number, radius: number, ok: (p: { x: number; y: number }) => boolean): { x: number; y: number } | null {
+    const t = this.w.terrain;
+    const n = t.size;
+    const r0 = this.radius();
+    const dry = (px: number, py: number) => t.walkable(Math.round(wrap(px, n)) % n, Math.round(wrap(py, n)) % n) && !t.drowns(wrap(px, n), wrap(py, n));
+    const cx = Math.round(x);
+    const cy = Math.round(y);
+    for (let r = 0; r <= radius; r++) {
+      for (let dy = -r; dy <= r; dy++) {
+        for (let dx = -r; dx <= r; dx++) {
+          if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
+          const p = { x: wrap(cx + dx, n), y: wrap(cy + dy, n) };
+          if (!dry(p.x, p.y) || !dry(p.x + r0, p.y) || !dry(p.x - r0, p.y) || !dry(p.x, p.y + r0) || !dry(p.x, p.y - r0)) continue;
+          if (ok(p)) return p;
+        }
+      }
+    }
+    return null;
+  }
+
   /** Site record for an entity index, a site entity id, or a tag. */
   find(arg: unknown): Site | undefined {
     if (typeof arg === "string") return this.sites.find((s) => s.tag === arg);

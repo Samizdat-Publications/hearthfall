@@ -153,4 +153,29 @@ describe("worship sites", () => {
     expect(r.hash().all).toBe(w.hash().all);
     expect(r.eventCounts.get("worshipComplete")).toBe(1);
   });
+
+  it("generated skirmish maps place Reliquaries on dry land equally far from each pair of Hearths (BACKLOG 1)", () => {
+    for (const [generator, size, tribes, seed] of [["continents", 128, 2, 3], ["islands", 96, 2, 8], ["continents", 128, 4, 5]] as const) {
+      const w = world({ generator, size, tribes }, seed);
+      const n = w.terrain.size;
+      const hearths = w.tribes.map((t) => w.ents.index(t.hearth));
+      const sites = w.worship.sites;
+      expect(sites.length, `${generator} ${tribes}`).toBeGreaterThan(0);
+      expect(sites.length).toBeLessThanOrEqual(4);
+      for (const s of sites) {
+        const i = w.ents.index(s.ent);
+        expect(w.terrain.drowns(w.ents.x[i], w.ents.y[i])).toBe(false);
+        const d = hearths.map((h) => {
+          const dx = Math.abs(w.ents.x[i] - w.ents.x[h]);
+          const dy = Math.abs(w.ents.y[i] - w.ents.y[h]);
+          return Math.hypot(Math.min(dx, n - dx), Math.min(dy, n - dy));
+        });
+        expect(Math.min(...d)).toBeGreaterThanOrEqual(12);
+        if (tribes === 2) expect(Math.abs(d[0] - d[1])).toBeLessThan(2 * 10 * Math.SQRT2 + 1);
+      }
+      expect(sites[0].rewards.map((r) => (r.type === "unlockSpell" ? r.spell : "")).join()).toBe("veil,ward,beguile,whirlwind");
+    }
+    // handmade test maps (scenarios, levels) have no generated Hearths, so they never get skirmish sites
+    expect(world({ generator: "flat", size: 64, tribes: 2 }).worship.sites.length).toBe(0);
+  });
 });

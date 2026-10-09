@@ -35,3 +35,4 @@
 - 2026-10-09T12:47 set combat (3 shots): M11: tribe rings instead of filled discs, violet chant halo, melee dust and flash (BACKLOG 57); sheet reviewed
 - 2026-10-09T12:51 set smoke (12 shots): M11: tribe rings instead of filled discs; close shot reviewed
 - 2026-10-09T12:55 set spells (8 shots): M11: tribe rings instead of filled discs (within tolerance, rebaselined to keep diffs exact)
+- 2026-10-09T14:48 set spells2 (9 shots): BACKLOG 1: first baselines for the eight new spells and the 16-slot two-row spell bar

@@ -113,7 +113,7 @@ The pipeline stops a class when its cap is reached and logs the shortfall in PRO
 | ElevenLabs SFX, 21 clips of 0.5 to 2 s | ~$0.002 per second | 28 s total, $0.052 at list price; response header `character-cost` 3 credits for 0.5 s. One 0.5 s clip came back near silent (peak -50 dB) and was regenerated for another $0.001, so budget 5 percent for redraws | 2026-10-08 |
 | ElevenLabs Voice Design (one call, 3 previews, then save preview 0) | not published | accepted; ledger assumes $0.01, real cost not visible in the response | 2026-10-08 |
 | ElevenLabs TTS `eleven_v4`, 5 short invented-language barks (10 to 25 chars) | $0.08 per 1K chars | 94 chars total, $0.0076 at list price (the ledger estimate; the promo rate would be lower) | 2026-10-08 |
-| Gemini 1K image on pure black (VFX) and on magenta with ref_04 (icons) | $0.034 | $0.0336 each, `generateContent` route; 17 images = $0.571, no redraws needed (magenta pockets fixed in the key, not by regenerating) | 2026-10-08 |
+| Gemini 1K image on pure black (VFX) and on magenta with ref_04 (icons) | $0.034 | $0.0336 each, `generateContent` route; 17 images = $0.571, no redraws needed (magenta pockets fixed in the key, not by regenerating); 8 more spell icons (veil to wraith) $0.269, same $0.0336 each | 2026-10-08 |
 
 ## 8. Keys and safety
 

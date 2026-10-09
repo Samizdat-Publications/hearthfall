@@ -135,6 +135,18 @@ function crossCheck(p: PackFiles): PackIssue[] {
     for (const s of per.spellPrefs) need("ai_personalities.json", `${per.id}.spellPrefs`, spells, s, "spell");
     for (const u of Object.keys(per.armyMix)) need("ai_personalities.json", `${per.id}.armyMix`, units, u, "unit");
   }
+  const kinds = new Set((p.buildings.worship.kinds ?? []).map((k) => k.id));
+  p.balance.skirmishWorship?.sites.forEach((site, k) => {
+    const at = `skirmishWorship.sites.${k}`;
+    need("balance.json", `${at}.kind`, kinds, site.kind, "worship kind");
+    site.rewards.forEach((r, j) => {
+      if (r.type === "charges" || r.type === "unlockSpell" || r.type === "spell") need("balance.json", `${at}.rewards.${j}`, spells, r.spell, "spell");
+      else if (r.type === "unlockBuilding") need("balance.json", `${at}.rewards.${j}`, buildings, r.building, "building");
+      else if (r.type === "spawn") need("balance.json", `${at}.rewards.${j}`, units, r.unit, "unit");
+      // a skirmish map has no fixed tribes or points to name
+      if (r.type === "raid" || (r.type === "spawn" && r.tribe !== undefined) || ("at" in r && r.at)) issues.push({ file: "balance.json", path: `${at}.rewards.${j}`, message: `skirmish site rewards cannot name a tribe or a point` });
+    });
+  });
   const b = p.balance.terrain.bands;
   const order = [p.balance.terrain.seaLevel, b.shore, b.lowland, b.grass, b.highland, b.rock, b.peak];
   for (let i = 1; i < order.length; i++) if (order[i] <= order[i - 1]) issues.push({ file: "balance.json", path: "terrain.bands", message: "bands must rise strictly above sea level" });

@@ -85,7 +85,7 @@
       "cost": 500,
       "maxCharges": 4,
       "range": 8,
-      "aiTarget": "none",
+      "aiTarget": "ownMarching",
       "effects": [
         {
           "type": "statusApply",
@@ -104,7 +104,7 @@
       "cost": 600,
       "maxCharges": 4,
       "range": 8,
-      "aiTarget": "none",
+      "aiTarget": "ownFighting",
       "effects": [
         {
           "type": "statusApply",

@@ -34,4 +34,35 @@ describe("vfx layer", () => {
     expect(d.flash).toBe(1);
     expect(d.spark).toBe(1);
   });
+
+  it("draws the new spell effects: a gold Ward halo, a wraith, a whirlwind funnel, a falling meteor (BACKLOG 1)", () => {
+    const w = world();
+    const v = new VfxLayer(makeBendUniforms());
+    const u = w.ents.index(w.spawnUnit("settler", 0, 20, 20));
+    w.ents.ward[u] = 50;
+    v.update(w, 0, 20, 20, 1);
+    expect(v.drawnBy().halo).toBe(1);
+    const c = v.haloColor(0);
+    expect(c.r).toBeGreaterThan(c.b);
+    expect(c.g).toBeGreaterThan(c.b);
+    w.ents.ward[u] = 0;
+    const fx = (spell: string, state: number) => {
+      const i = w.ents.index(w.ents.alloc(4, 0, 0, 30, 30, 1));
+      w.ents.state[i] = state;
+      w.ents.progress[i] = 1.6;
+      w.ents.type[i] = w.cfg.spellIndex.get(spell) ?? 0;
+      return i;
+    };
+    const wr = fx("wraith", 6);
+    v.update(w, 0, 30, 30, 1);
+    expect(v.drawnBy().flash).toBe(1);
+    expect(v.drawnBy().spark).toBe(10);
+    w.ents.free(w.ents.idOf(wr));
+    fx("whirlwind", 4);
+    v.update(w, 0, 30, 30, 1);
+    expect(v.drawnBy().spark).toBe(48);
+    v.consume([{ type: "meteor", x: 25, y: 25, r: 1.2 } as unknown as SimEvent], w, () => 1, 1);
+    v.update(w, 1.4, 25, 25, 1);
+    expect(v.drawnBy().ring).toBe(1);
+  });
 });

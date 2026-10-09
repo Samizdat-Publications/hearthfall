@@ -12,6 +12,10 @@ describe("spell hotkeys (M5 review regression)", () => {
     expect(spellSlot({ key: "z", shiftKey: false, ctrlKey: true })).toBe(-1);
     expect(spellSlot({ key: "Escape", shiftKey: false, ctrlKey: false })).toBe(-1);
   });
+  it("the second row (Shift plus a letter) reaches slots 9 to 16 for spells earned at worship sites (BACKLOG 1)", () => {
+    expect(["Z", "X", "C", "V", "B", "J", "K", "L"].map((key) => spellSlot({ key, shiftKey: true, ctrlKey: false }))).toEqual([8, 9, 10, 11, 12, 13, 14, 15]);
+    expect(new Set(SPELL_KEYS).size).toBe(16);
+  });
   it("there is a key for every v1 spell", async () => {
     const { basePack } = await import("../../sim/test/helpers.ts");
     const v1 = basePack().files.spells.spells.filter((s) => s.v1).length;
@@ -47,7 +51,7 @@ describe("rebindable keys (M8 settings)", () => {
   it("held camera keys never take a Shift combo (the held key set only sees the bare key)", () => {
     const km = defaultKeymap();
     expect(rebind(km, "rotateLeft", "Shift+Q").error).toMatch(/Shift/);
-    const withShift = rebind(km, "help", "Shift+K").keymap;
+    const withShift = rebind(km, "help", "Shift+Y").keymap;
     expect(rebind(withShift, "help", "Q").error).toMatch(/Shift/);
     expect(sanitizeKeymap({ rotateRight: "Shift+E" }).rotateRight).toBe("E");
   });

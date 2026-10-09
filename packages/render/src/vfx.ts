@@ -25,6 +25,14 @@ const SPELL_COLORS: Record<string, string> = {
   flatten: "#d9cbb0",
   quake: "#8a6a4a",
   volcano: "#ff3b10",
+  veil: "#9fb4c8",
+  ward: "#ffd76a",
+  beguile: "#ff7ad9",
+  whirlwind: "#d8d2c0",
+  mire: "#6b7a2a",
+  erode: "#4f7f95",
+  firerain: "#ff5a1f",
+  wraith: "#b8f0ff",
 };
 
 /** Per-spell impact recipe: flashes, rings, beams, sparks (data-like table, render only). */
@@ -37,7 +45,23 @@ const IMPACTS: Record<string, { flash?: number; ring?: number; beam?: boolean; s
   flatten: { ring: 5, sparks: 14, dur: 1.6 },
   quake: { ring: 7, sparks: 20, dur: 2 },
   volcano: { flash: 2.6, ring: 7, sparks: 24, dur: 2.2 },
+  veil: { ring: 2, sparks: 6, dur: 1.2 },
+  ward: { flash: 1, ring: 2.5, sparks: 8 },
+  beguile: { ring: 2.5, sparks: 10, dur: 1.3 },
+  whirlwind: { ring: 1.6, sparks: 12 },
+  mire: { ring: 2.5, sparks: 8, dur: 1.4 },
+  erode: { ring: 6, sparks: 16, dur: 1.8 },
+  firerain: { flash: 1.5, ring: 6, dur: 1.2 },
+  wraith: { flash: 1.4, ring: 1.5, sparks: 10, dur: 1.2 },
 };
+
+/** Persistent unit status halos (BACKLOG 1): Ward gold, Beguile pink, Veil pale (own units only, the rest are hidden). */
+const STATUS_COLORS = { ward: "#ffd76a", beguile: "#ff7ad9", veil: "#9fb4c8" };
+
+/** Effect entity kinds as the sim numbers them (packages/sim/src/effects.ts FX). */
+const FX_STORM = 3;
+const FX_MOVER = 4;
+const FX_WRAITH = 6;
 
 export class VfxLayer {
   readonly group = new THREE.Group();
@@ -55,6 +79,8 @@ export class VfxLayer {
   private readonly p = new THREE.Vector3();
   private readonly c = new THREE.Color();
   private seq = 0;
+  /** The local player's tribe: its veiled units keep a pale halo, other tribes' are hidden. */
+  viewTribe = 0;
 
   constructor(bend: BendUniforms, cap = 512) {
     const add = (geo: THREE.BufferGeometry, opacity = 1, blending: THREE.Blending = THREE.AdditiveBlending) => {
@@ -162,6 +188,30 @@ export class VfxLayer {
           this.fx.push({ kind: "halo", x: px, z: pz, y: ground(px, pz) + 0.08, t0: now, dur: 0.45, size: 0.7, color: new THREE.Color("#c8b48a") });
           this.fx.push({ kind: "flash", x: px, z: pz, y: ground(px, pz) + 0.55, t0: now, dur: 0.18, size: 0.3, color: new THREE.Color("#fff2d0") });
         }
+      } else if (e.type === "meteor" && Number.isFinite(x)) {
+        // BACKLOG 1: a meteor falls in a short streak, then a flash and a scorch ring the size of its impact
+        const col = new THREE.Color(SPELL_COLORS.firerain);
+        const gy = ground(x, y);
+        const fall = 0.35;
+        for (let k = 0; k < 5; k++) {
+          const q = k / 5;
+          this.fx.push({ kind: "spark", x: x - 2.4 * (1 - q), z: y - 1.2 * (1 - q), y: gy + 0.4 + 7 * (1 - q), t0: now + q * fall, dur: 0.14, size: 0.5, color: col });
+        }
+        this.fx.push({ kind: "flash", x, z: y, y: gy + 0.4, t0: now + fall, dur: 0.4, size: 1.1, color: col });
+        this.fx.push({ kind: "ring", x, z: y, y: gy + 0.1, t0: now + fall, dur: 0.7, size: Number(e.r ?? 1.2), color: col });
+      } else if ((e.type === "flung" || e.type === "mired" || e.type === "wraithKill" || e.type === "wardPopped") && Number.isFinite(x)) {
+        const gy = ground(x, y);
+        if (e.type === "flung") this.fx.push({ kind: "spark", x, z: y, y: gy + 0.6, t0: now, dur: 0.4, size: 0.45, color: new THREE.Color(SPELL_COLORS.whirlwind) });
+        else if (e.type === "mired") {
+          this.fx.push({ kind: "halo", x, z: y, y: gy + 0.08, t0: now, dur: 0.9, size: 0.9, color: new THREE.Color("#3f4a18") });
+          this.fx.push({ kind: "spark", x, z: y, y: gy + 0.2, t0: now, dur: 0.6, size: 0.35, color: new THREE.Color(SPELL_COLORS.mire) });
+        } else if (e.type === "wraithKill") {
+          this.fx.push({ kind: "flash", x, z: y, y: gy + 0.6, t0: now, dur: 0.45, size: 0.7, color: new THREE.Color(SPELL_COLORS.wraith) });
+          this.fx.push({ kind: "ring", x, z: y, y: gy + 0.1, t0: now, dur: 0.8, size: 1, color: new THREE.Color(SPELL_COLORS.wraith) });
+        } else {
+          this.fx.push({ kind: "flash", x, z: y, y: gy + 0.6, t0: now, dur: 0.35, size: 0.8, color: new THREE.Color(SPELL_COLORS.ward) });
+          this.fx.push({ kind: "ring", x, z: y, y: gy + 0.1, t0: now, dur: 0.6, size: 1.2, color: new THREE.Color(SPELL_COLORS.ward) });
+        }
       } else if ((e.type === "drowned" || e.type === "flooded") && Number.isFinite(x)) {
         this.fx.push({ kind: "ring", x, z: y, y: t.sea * heightScale + 0.05, t0: now, dur: 1.2, size: 1.2, color: new THREE.Color("#e6f4f8") });
         this.fx.push({ kind: "flash", x, z: y, y: t.sea * heightScale + 0.2, t0: now, dur: 0.4, size: 0.5, color: new THREE.Color("#e6f4f8") });
@@ -220,14 +270,58 @@ export class VfxLayer {
       const level = f.kind === "halo" ? 0.55 + 0.45 * fade : fade * (f.kind === "beam" ? 0.9 : 1);
       im.setColorAt(k, this.c.copy(f.color).multiplyScalar(level));
     }
-    // persistent effect entities: hornet swarms (buzzing dots) and lava pools (pulsing discs)
+    // persistent effect entities: hornet swarms (buzzing dots), lava pools, bogs and sinking land
+    // (pulsing discs), the whirlwind funnel, the wraith and the firerain zone; then unit status halos
     const E = w.ents;
     let pools = 0;
+    const dot = (x: number, y: number, z: number, scale: number, color: THREE.Color | string, im: THREE.InstancedMesh, kind: "spark" | "flash" | "halo" | "ring") => {
+      if (counts[kind] >= im.instanceMatrix.count) return;
+      this.p.set(wrapX(x), y, wrapZ(z));
+      this.s.setScalar(scale);
+      this.m.compose(this.p, this.q.identity(), this.s);
+      im.setMatrixAt(counts[kind], this.m);
+      im.setColorAt(counts[kind]++, typeof color === "string" ? this.c.set(color) : color);
+    };
     for (let i = 0; i < E.hi; i++) {
-      if (!E.alive[i] || E.cat[i] !== CAT.effect) continue;
+      if (!E.alive[i]) continue;
+      if (E.cat[i] === CAT.unit && E.inside[i] < 0 && (E.ward[i] > 0 || E.beguile[i] > 0 || E.veil[i] > 0)) {
+        // another tribe's veiled unit is not drawn, so it gets no halo either
+        if (E.veil[i] > 0 && E.tribe[i] !== this.viewTribe) continue;
+        const col = E.ward[i] > 0 ? STATUS_COLORS.ward : E.beguile[i] > 0 ? STATUS_COLORS.beguile : STATUS_COLORS.veil;
+        const pulse = 0.7 + 0.3 * Math.sin(now * 4 + i);
+        dot(E.x[i], Math.max(w.terrain.heightAt(E.x[i], E.y[i]), w.terrain.sea) * heightScale + 0.07, E.y[i], 0.55, this.c.set(col).multiplyScalar(pulse), this.halos, "halo");
+        continue;
+      }
+      if (E.cat[i] !== CAT.effect) continue;
       const spell = w.cfg.pack.spells.spells[E.type[i]]?.id ?? "";
       const r = E.progress[i];
       const gy = Math.max(w.terrain.heightAt(E.x[i], E.y[i]), w.terrain.sea) * heightScale;
+      const kind = E.state[i];
+      if (kind === FX_MOVER) {
+        // whirlwind: a funnel of dust that widens with height and spins
+        for (let k = 0; k < 48; k++) {
+          const hgt = this.hash(k * 5 + 1) * 3.2;
+          const ph = now * (5 + 2 * this.hash(k)) + this.hash(k * 11) * 6.28;
+          const rr = r * (0.25 + 0.3 * hgt);
+          dot(E.x[i] + Math.cos(ph) * rr, gy + 0.2 + hgt, E.y[i] + Math.sin(ph) * rr, 1.4, SPELL_COLORS.whirlwind, this.swarm, "spark");
+        }
+        continue;
+      }
+      if (kind === FX_WRAITH) {
+        // wraith: a pale core with a circling ring of motes
+        const bob = 1.4 + 0.25 * Math.sin(now * 3 + i);
+        dot(E.x[i], gy + bob, E.y[i], 0.35, SPELL_COLORS.wraith, this.flashes, "flash");
+        for (let k = 0; k < 10; k++) {
+          const ph = now * 4 + k * 0.628;
+          dot(E.x[i] + Math.cos(ph) * 0.5, gy + bob - 0.2 + 0.1 * Math.sin(ph * 2), E.y[i] + Math.sin(ph) * 0.5, 1, SPELL_COLORS.wraith, this.swarm, "spark");
+        }
+        continue;
+      }
+      if (kind === FX_STORM) {
+        // firerain: a thin smouldering edge where the meteors can fall (dim, so the impacts stay the loud part)
+        dot(E.x[i], gy + 0.09, E.y[i], r, this.c.set(SPELL_COLORS.firerain).multiplyScalar(0.3 + 0.1 * Math.sin(now * 6)), this.rings, "ring");
+        continue;
+      }
       if (spell === "hornets") {
         for (let k = 0; k < 40 && counts.spark < this.swarm.instanceMatrix.count; k++) {
           const ph = now * (2 + this.hash(k + i * 97) * 3) + this.hash(k * 13 + i) * 6.28;

@@ -1,5 +1,6 @@
-// Spell bar hotkeys (DESIGN section 12): slot k of the bar uses SPELL_KEYS[k].
-export const SPELL_KEYS = ["Z", "X", "C", "V", "B", "N", "Shift+M", "Shift+N"] as const;
+// Spell bar hotkeys (DESIGN section 12): slot k of the bar uses SPELL_KEYS[k]. The second row (BACKLOG 1
+// and 53) covers the spells earned at worship sites, so all 16 can be on the bar at once.
+export const SPELL_KEYS = ["Z", "X", "C", "V", "B", "N", "Shift+M", "Shift+N", "Shift+Z", "Shift+X", "Shift+C", "Shift+V", "Shift+B", "Shift+J", "Shift+K", "Shift+L"] as const;
 
 /** Spell bar slot for a key event, or -1. Ctrl combos never cast. e.key is "M" when Shift is held. */
 export function spellSlot(e: { key: string; shiftKey: boolean; ctrlKey: boolean }): number {

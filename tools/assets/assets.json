@@ -12107,6 +12107,950 @@
       "request_hash": null,
       "approved": false,
       "qa": {}
+    },
+    {
+      "id": "icon.spell.veil",
+      "class": "icons",
+      "prompt": "a pale blue-grey translucent shroud of mist draped like a hooded cloak, hiding small shadowy figures within it, spell icon",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "icon"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-09T14:40:02Z",
+          "finished": "2026-10-09T14:40:24Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/icon.spell.veil/concept.jpg",
+          "sha256": "9602e2571a5771d8b1abf8c605cba4797629a342847bd24616f87b599d610e4d",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 426745,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "2907afb1e885cedeaa36ff2585f550b9fb24f1f695617ef47e76429e6e17628c"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T14:40:24Z",
+          "finished": "2026-10-09T14:40:28Z",
+          "cost": null,
+          "output_path": "assets/icons/icon.spell.veil.png",
+          "sha256": "ea1a377fa952c69c5ad8e3f4d7b88dd2421871f2bc2d0a453e7f5aa38333726b",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "output_128": "assets/icons/icon.spell.veil_128.png",
+            "size": [
+              256,
+              256
+            ],
+            "warnings": [],
+            "bg_frac": 0.6087198257446289,
+            "band_frac": 0.00974273681640625,
+            "pocket_frac": 0.0
+          },
+          "request_hash": "7e36b40e48b72884a210a8b02249b5a7d1eabc17a80a6a615dbd87cd81ca9e7e"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "icon.spell.ward",
+      "class": "icons",
+      "prompt": "a golden protective dome shield of glowing light with a bright rim and a simple rune on its face, spell icon",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "icon"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-09T14:40:28Z",
+          "finished": "2026-10-09T14:40:57Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/icon.spell.ward/concept.jpg",
+          "sha256": "4dbd291ae7f85d31d838791420ea53ee49cf306acdace6e994b34ac73aa1c7b4",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 459703,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "269dea08a466a34f8eb12aa27e53ad92827cda696268ee032ec5f7050fd51366"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T14:40:57Z",
+          "finished": "2026-10-09T14:40:58Z",
+          "cost": null,
+          "output_path": "assets/icons/icon.spell.ward.png",
+          "sha256": "73d2aec4994ec8884ad93d5bdf6875e18416e0a045a37f101b1eaa16a08720f1",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "output_128": "assets/icons/icon.spell.ward_128.png",
+            "size": [
+              256,
+              256
+            ],
+            "warnings": [],
+            "bg_frac": 0.5811166763305664,
+            "band_frac": 0.012984275817871094,
+            "pocket_frac": 0.0
+          },
+          "request_hash": "eefe3e2e944c83a2acf07e0ac132a79454c80a9c6d47e4679494046e748d52c1"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "icon.spell.beguile",
+      "class": "icons",
+      "prompt": "a glowing pink-violet heart-shaped charm swirling with sparkles and a looping ribbon of magic, spell icon",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "icon"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-09T14:40:58Z",
+          "finished": "2026-10-09T14:41:24Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/icon.spell.beguile/concept.jpg",
+          "sha256": "cb24c892043186b757f1995836a4f9769dece7ce6304f1260597fbb90cf2b734",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 452208,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "76f9728f83da1f9964a678e195ddcefee65242b7d65bf37f807be3920451a95f"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T14:41:24Z",
+          "finished": "2026-10-09T14:41:26Z",
+          "cost": null,
+          "output_path": "assets/icons/icon.spell.beguile.png",
+          "sha256": "b746a0ee88955d246ff7fae59d1b6362aaffa8fd8760fe8c1d74b3ee13bac4dc",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "output_128": "assets/icons/icon.spell.beguile_128.png",
+            "size": [
+              256,
+              256
+            ],
+            "warnings": [],
+            "bg_frac": 0.6978387832641602,
+            "band_frac": 0.029491424560546875,
+            "pocket_frac": 0.06131458282470703
+          },
+          "request_hash": "3e27f5476ba56f069672ac9ff9e10c9436b50adf41d5f3d0a62f457331281a47"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "icon.spell.whirlwind",
+      "class": "icons",
+      "prompt": "a dusty white tornado funnel spinning with swirling bands of wind, dust and small flying debris, spell icon",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "icon"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-09T14:41:26Z",
+          "finished": "2026-10-09T14:41:43Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/icon.spell.whirlwind/concept.jpg",
+          "sha256": "64d04240dde93e9dccac8c03a467ae87aeee212add89ced6031d1c42816669bd",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 437002,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "9975e4f5c4c0631fe61961adde50a668a32518b23bf6cf59377e978843ae6552"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T14:41:43Z",
+          "finished": "2026-10-09T14:41:44Z",
+          "cost": null,
+          "output_path": "assets/icons/icon.spell.whirlwind.png",
+          "sha256": "5c6ba237640e9da058a5b22c73a3b7580f1e6db31ff8512392d740dd6660942a",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "output_128": "assets/icons/icon.spell.whirlwind_128.png",
+            "size": [
+              256,
+              256
+            ],
+            "warnings": [],
+            "bg_frac": 0.7124319076538086,
+            "band_frac": 0.026830673217773438,
+            "pocket_frac": 0.012518882751464844
+          },
+          "request_hash": "fc87b8c8c41af189e682a46bdaa969861cd4550891bc76138ef29a0896830019"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "icon.spell.mire",
+      "class": "icons",
+      "prompt": "an olive-green sucking bog, a swirling whirlpool of dark mud with bubbles and a few grasping reeds, spell icon",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "icon"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-09T14:41:44Z",
+          "finished": "2026-10-09T14:42:02Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/icon.spell.mire/concept.jpg",
+          "sha256": "e2153050894aa3a78cf56afaefac24cd3469b02c3949f5622a5b8f5b23258088",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 500528,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "079297980369591fbcfdfbe66b91dc059ceb8b29fbcb367cc44dd9bd035b22e2"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T14:42:02Z",
+          "finished": "2026-10-09T14:42:04Z",
+          "cost": null,
+          "output_path": "assets/icons/icon.spell.mire.png",
+          "sha256": "b5a945e5578b96701e69a3d3695e515ec42324d069f30202448cf466bdd0fd68",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "output_128": "assets/icons/icon.spell.mire_128.png",
+            "size": [
+              256,
+              256
+            ],
+            "warnings": [],
+            "bg_frac": 0.5031223297119141,
+            "band_frac": 0.012476921081542969,
+            "pocket_frac": 0.0
+          },
+          "request_hash": "4293b2546d97abc493748cb4936fbd3d6a1871596e138bbac870bd762a20d98c"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "icon.spell.erode",
+      "class": "icons",
+      "prompt": "a chunk of brown land crumbling and sinking into rippling blue water, with a foamy shoreline, spell icon",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "icon"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-09T14:42:04Z",
+          "finished": "2026-10-09T14:42:23Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/icon.spell.erode/concept.jpg",
+          "sha256": "ebe5307992473d3f90df3dfee60ce0836ac2b1a3f5e81ff7cabadc5c84e034a8",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 377475,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "c2f0d3dd4245102e47ed0ffec173d5fa2e350cb9a24597cae77b2b5216cfab7a"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T14:42:23Z",
+          "finished": "2026-10-09T14:42:24Z",
+          "cost": null,
+          "output_path": "assets/icons/icon.spell.erode.png",
+          "sha256": "5e1a9e7b9fe56336d8e0137f69855d01bcb810bf93f7c5bb457f2845d56d8ae4",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "output_128": "assets/icons/icon.spell.erode_128.png",
+            "size": [
+              256,
+              256
+            ],
+            "warnings": [],
+            "bg_frac": 0.6206512451171875,
+            "band_frac": 0.011472702026367188,
+            "pocket_frac": 0.0
+          },
+          "request_hash": "f2f5d0eaa36cfcfbfb2d402ca520dc61891585ef36994805808230f5e68ed477"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "icon.spell.firerain",
+      "class": "icons",
+      "prompt": "three flaming meteors falling diagonally from above, trailing orange and yellow fire, spell icon",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "icon"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-09T14:42:24Z",
+          "finished": "2026-10-09T14:42:51Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/icon.spell.firerain/concept.jpg",
+          "sha256": "744cf4af3277696f33c743696b9c504c1f3ccbc9f307e181b7fc20e9d1c044e7",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 418871,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "9dc585fbec5dfe36d0cd65b3e6c92413d626af965fe7178a0cd2a1fa6cfadd02"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T14:42:51Z",
+          "finished": "2026-10-09T14:42:53Z",
+          "cost": null,
+          "output_path": "assets/icons/icon.spell.firerain.png",
+          "sha256": "121d9b4876fd704c23b118d297c408343c82b34d5e6186d42ceb1c458015d7ee",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "output_128": "assets/icons/icon.spell.firerain_128.png",
+            "size": [
+              256,
+              256
+            ],
+            "warnings": [],
+            "bg_frac": 0.6712274551391602,
+            "band_frac": 0.02019214630126953,
+            "pocket_frac": 0.0
+          },
+          "request_hash": "d080abc7fd3f9a2e7d8c5d88693ba9625e508c773d5e525411d3eeb33ce9137f"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "icon.spell.wraith",
+      "class": "icons",
+      "prompt": "a pale cyan flying ghost hunter, a streamlined spectral wisp with glowing eyes and a trailing tail, spell icon",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "icon"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-09T14:42:54Z",
+          "finished": "2026-10-09T14:43:15Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/icon.spell.wraith/concept.jpg",
+          "sha256": "24f563e4c750ce274b6ff5719adc0bf6bc96d7f884e28d113b2a17e6902df008",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 370364,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "d5c2aa2cbd35c733ca28a3e2164841b011e30b3087d2c4a46efedeca4f55b08d"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T14:43:15Z",
+          "finished": "2026-10-09T14:43:17Z",
+          "cost": null,
+          "output_path": "assets/icons/icon.spell.wraith.png",
+          "sha256": "49d813d039d121e1938246e6f94f83952ca5951626b7bddc7366bcb96d63097b",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "output_128": "assets/icons/icon.spell.wraith_128.png",
+            "size": [
+              256,
+              256
+            ],
+            "warnings": [],
+            "bg_frac": 0.8267087936401367,
+            "band_frac": 0.016000747680664062,
+            "pocket_frac": 0.0
+          },
+          "request_hash": "a97d0820e34f2bb28410cfcd32229cc555531f6f9efc38d1b3a5bc181b851799"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
     }
   ]
 }

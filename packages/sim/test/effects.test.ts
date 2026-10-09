@@ -61,4 +61,23 @@ describe("charge steal (M5 review regression)", () => {
     expect(gained).toBeCloseTo(Math.floor((stored * pct) / 100), 6);
     expect(e.charges[idx("quake")]).toBe(1);
   });
+
+  it("a beguiled unit garrisoned in its captor's tower steps out when it goes home (bots soak regression, BACKLOG 1)", () => {
+    const w = world({ generator: "flat", size: 64, tribes: 2 });
+    w.spawnBuilding("hearth", 0, 2, 2);
+    w.spawnBuilding("hearth", 1, 40, 2);
+    w.spawnUnit("shaper", 0, 4, 4);
+    w.spawnUnit("shaper", 1, 20, 24);
+    const tower = w.spawnBuilding("watchtower", 1, 30, 30);
+    const g = w.spawnUnit("warden", 0, 28, 28);
+    applyEffects({ w, tribe: 1, spell: "beguile", x: 28, y: 28, casterX: 20, casterY: 24 }, [{ type: "statusApply", status: "beguiled", seconds: 12, radius: 2 }]);
+    expect(w.ents.tribe[w.ents.index(g)]).toBe(1);
+    w.step([{ tick: 0, tribe: 1, type: "garrison", args: { units: [g], building: tower } }]);
+    w.run(8 * 20);
+    expect(w.ents.inside[w.ents.index(g)]).toBe(w.ents.index(tower));
+    w.run(5 * 20);
+    expect(w.ents.tribe[w.ents.index(g)]).toBe(0);
+    expect(w.ents.inside[w.ents.index(g)]).toBe(-1);
+    expect(w.invariants()).toEqual([]);
+  });
 });

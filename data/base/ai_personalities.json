@@ -13,6 +13,10 @@
       "aggression": 0.85,
       "firstAttackMinute": 5,
       "spellPrefs": [
+        "wraith",
+        "firerain",
+        "whirlwind",
+        "ward",
         "bolt",
         "lightning",
         "quake"
@@ -32,6 +36,10 @@
       "aggression": 0.45,
       "firstAttackMinute": 10,
       "spellPrefs": [
+        "beguile",
+        "veil",
+        "whirlwind",
+        "wraith",
         "call",
         "raise_land",
         "bolt",
@@ -52,6 +60,10 @@
       "aggression": 0.3,
       "firstAttackMinute": 12,
       "spellPrefs": [
+        "firerain",
+        "erode",
+        "mire",
+        "ward",
         "lightning",
         "flatten",
         "quake",
