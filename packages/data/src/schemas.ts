@@ -358,6 +358,8 @@ const Effect = z.discriminatedUnion("type", [
     seconds: pos,
     radius: pos.optional(),
     max: z.number().int().positive().optional(),
+    /** who it lands on (default enemy): Veil and Ward are cast on your own units */
+    targets: z.enum(["enemy", "own"]).optional(),
     poppedBy: z.array(id).optional(),
     breaksOnCasterDeath: z.boolean().optional(),
   }),
@@ -371,15 +373,21 @@ const Effect = z.discriminatedUnion("type", [
     radius: pos.optional(),
     minHeightAboveSea: z.number().optional(),
     depth: z.number().optional(),
+    /** lowerTowardSea only: spread over this many seconds, `depth` applied once per second */
     seconds: pos.optional(),
     shape: z.string().optional(),
     height: z.number().optional(),
   }),
-  z.strictObject({ type: z.literal("moverPath"), entity: id, seconds: pos, wander: z.boolean().optional(), flingForce: pos.optional(), damagesBuildings: z.boolean().optional() }),
-  z.strictObject({ type: z.literal("spawnEntity"), entity: id, radius: pos.optional(), killsFirst: z.number().int().optional(), visible: z.boolean().optional(), count: z.number().int().positive().optional() }),
+  /** a vortex that wanders from the target (cells per second), flings units it touches and wears down buildings */
+  z.strictObject({ type: z.literal("moverPath"), entity: id, seconds: pos, radius: pos, speed: pos, wander: z.boolean().optional(), flingForce: pos, buildingDamagePctPerSecond: z.number().min(0).max(100).optional() }),
+  z.strictObject({ type: z.literal("spawnEntity"), entity: id, radius: pos.optional(), count: z.number().int().positive().optional() }),
+  /** a visible bog: kills the first `kills` non-caster units of other tribes that stand in it */
+  z.strictObject({ type: z.literal("trap"), radius: pos, kills: z.number().int().positive(), seconds: pos }),
   z.strictObject({ type: z.literal("damageBuildingsRadius"), radius: pos, damagePct: z.number().min(0).max(100) }),
-  z.strictObject({ type: z.literal("projectileStorm"), count: z.number().int().positive(), radius: pos, seconds: pos, damage: pos, knockback: pos.optional() }),
-  z.strictObject({ type: z.literal("summon"), entity: id, seconds: pos, maxKills: z.number().int().positive().optional() }),
+  /** `count` impacts spread evenly over `seconds`, each at a random point within `radius`, hitting units and buildings within `impactRadius` */
+  z.strictObject({ type: z.literal("projectileStorm"), count: z.number().int().positive(), radius: pos, impactRadius: pos, seconds: pos, damage: pos, knockback: pos.optional() }),
+  /** a flying hunter: flies (cells per second) to the nearest enemy unit within huntRadius and kills it, one kill per killSeconds */
+  z.strictObject({ type: z.literal("summon"), entity: id, seconds: pos, speed: pos, huntRadius: pos, killSeconds: pos, maxKills: z.number().int().positive().max(255) }),
   z.strictObject({ type: z.literal("scar"), radius: pos, healSeconds: pos }),
 ]);
 export type EffectDef = z.infer<typeof Effect>;

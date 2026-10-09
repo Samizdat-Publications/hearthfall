@@ -4,7 +4,7 @@
 import { CAT, NO_ENTITY } from "./entities.ts";
 import { registerCommand } from "./commands.ts";
 import { secondsToTicks } from "./config.ts";
-import { applyEffects } from "./effects.ts";
+import { applyEffects, breakBeguiles } from "./effects.ts";
 import { ORDER } from "./units.ts";
 import { wrapDelta } from "./terrain.ts";
 import type { World } from "./world.ts";
@@ -206,6 +206,8 @@ export function onShaperDeath(w: World, tribe: number, drowned: boolean, killer:
   t.casting = null;
   t.pending = null;
   w.emit("shaperDied", { tribe, killer, drowned: drowned ? 1 : 0 });
+  // Beguile breaks on the caster's death (DESIGN section 6 anti-degenerate rule)
+  breakBeguiles(w, tribe);
   if (killer < 0 || killer === tribe || !w.tribes[killer]) return;
   const pct = w.cfg.pack.spells.chargeRules.killChargeStealPct;
   const spells = w.cfg.pack.spells.spells;

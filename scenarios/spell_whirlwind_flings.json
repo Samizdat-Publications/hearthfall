@@ -1,0 +1,95 @@
+{
+  "id": "spell_whirlwind_flings",
+  "description": "Whirlwind wanders off from the target, flinging the enemies it touches and wearing down buildings; it ends after 12 s.",
+  "tags": [
+    "fast",
+    "spells"
+  ],
+  "seed": 45,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2,
+    "landAboveSea": 80
+  },
+  "setup": [
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        20,
+        32
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        50,
+        50
+      ]
+    },
+    {
+      "spawn": "dwelling",
+      "tribe": 1,
+      "at": [
+        30,
+        32
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        27,
+        33
+      ],
+      "count": 6
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": -1,
+      "type": "grantCharges",
+      "args": {
+        "tribe": 0,
+        "spell": "whirlwind",
+        "n": 1
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 1,
+      "tribe": 0,
+      "type": "cast",
+      "args": {
+        "spell": "whirlwind",
+        "target": [
+          26,
+          32
+        ]
+      }
+    }
+  ],
+  "runTicks": 300,
+  "assert": [
+    {
+      "at": 30,
+      "expr": "count(effects) == 1 && events.count('flung') >= 3"
+    },
+    {
+      "at": 300,
+      "expr": "count(effects) == 0 && events.count('effectEnded') == 1 && hp(tribe1.dwellings) < 1200 && invariants() == 0"
+    }
+  ]
+}

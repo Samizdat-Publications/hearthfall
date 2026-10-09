@@ -1,0 +1,123 @@
+{
+  "id": "spell_beguile_turns",
+  "description": "Beguile turns up to 8 enemy units (never a Shaper) for 40 s, then they go home.",
+  "tags": [
+    "fast",
+    "spells"
+  ],
+  "seed": 43,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2,
+    "landAboveSea": 80
+  },
+  "setup": [
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        20,
+        32
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        8,
+        8
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        50,
+        50
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        27,
+        33
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        26,
+        32
+      ],
+      "count": 10,
+      "spacing": 0.5
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": -1,
+      "type": "grantCharges",
+      "args": {
+        "tribe": 0,
+        "spell": "beguile",
+        "n": 1
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 0,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setStance",
+      "args": {
+        "units": "tribe1.shapers",
+        "stance": "passive"
+      }
+    },
+    {
+      "tick": 1,
+      "tribe": 0,
+      "type": "cast",
+      "args": {
+        "spell": "beguile",
+        "target": [
+          26,
+          32
+        ]
+      }
+    }
+  ],
+  "runTicks": 860,
+  "assert": [
+    {
+      "at": 25,
+      "expr": "count(tribe0.settlers) == 8 && count(tribe0.settlers, beguiled) == 8 && count(tribe1.shapers) == 1 && events.count('beguiled') == 8"
+    },
+    {
+      "at": 860,
+      "expr": "count(tribe0.settlers) == 0 && count(tribe1.settlers) == 10 && events.count('beguileEnded') == 8 && invariants() == 0"
+    }
+  ]
+}

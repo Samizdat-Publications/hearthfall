@@ -212,7 +212,8 @@ export class OpponentAI implements Controller {
             if (E.inside[i] < 0 && E.mode[i] === 0 && E.order[i] === 0 && E.atk[i] === NO_ENTITY && i !== E.index(this.scout)) c.idle.push(i);
           }
         }
-      } else if (E.tribe[i] >= 0 && E.cat[i] === CAT.unit && w.tribes[E.tribe[i]]?.alive) {
+      } else if (E.tribe[i] >= 0 && E.cat[i] === CAT.unit && E.veil[i] === 0 && w.tribes[E.tribe[i]]?.alive) {
+        // veiled enemies are invisible to the AI as they are to a player (no map hacks)
         const def = units[E.type[i]];
         if (!def.trainedAt && !def.isCaster) continue;
         const dx = wrapDelta(E.x[i] - E.x[h], n);
@@ -283,7 +284,7 @@ export class OpponentAI implements Controller {
     const n = w.terrain.size;
     let k = 0;
     for (let i = 0; i < E.hi; i++) {
-      if (!E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] < 0 || E.tribe[i] === this.tribe) continue;
+      if (!E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] < 0 || E.tribe[i] === this.tribe || E.veil[i] > 0) continue;
       if (!w.cfg.pack.units.units[E.type[i]].trainedAt) continue;
       const dx = wrapDelta(E.x[i] - x, n);
       const dy = wrapDelta(E.y[i] - y, n);
@@ -617,7 +618,7 @@ export class OpponentAI implements Controller {
         const tribe = E.tribe[i];
         let ok = false;
         if (kind === "wild") ok = E.cat[i] === CAT.unit && E.type[i] === w.economy.typeWild;
-        else if (tribe >= 0 && tribe !== this.tribe && w.tribes[tribe]?.alive) ok = kind === "buildings" ? E.cat[i] === CAT.building && E.state[i] === BSTATE.done : E.cat[i] === CAT.unit;
+        else if (tribe >= 0 && tribe !== this.tribe && w.tribes[tribe]?.alive) ok = kind === "buildings" ? E.cat[i] === CAT.building && E.state[i] === BSTATE.done : E.cat[i] === CAT.unit && E.veil[i] === 0;
         if (!ok) continue;
         const dx = wrapDelta(E.x[i] - E.x[c.si], n);
         const dy = wrapDelta(E.y[i] - E.y[c.si], n);
@@ -640,7 +641,7 @@ export class OpponentAI implements Controller {
     const n = w.terrain.size;
     let k = 0;
     for (let j = 0; j < E.hi; j++) {
-      if (!E.alive[j] || E.cat[j] !== CAT.unit) continue;
+      if (!E.alive[j] || E.cat[j] !== CAT.unit || E.veil[j] > 0) continue;
       if (wild ? E.type[j] !== w.economy.typeWild : E.tribe[j] !== E.tribe[i]) continue;
       const dx = wrapDelta(E.x[j] - E.x[i], n);
       const dy = wrapDelta(E.y[j] - E.y[i], n);

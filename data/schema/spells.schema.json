@@ -251,6 +251,13 @@
                       "exclusiveMinimum": 0,
                       "maximum": 9007199254740991
                     },
+                    "targets": {
+                      "type": "string",
+                      "enum": [
+                        "enemy",
+                        "own"
+                      ]
+                    },
                     "poppedBy": {
                       "type": "array",
                       "items": {
@@ -351,6 +358,14 @@
                       "type": "number",
                       "minimum": 0
                     },
+                    "radius": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "speed": {
+                      "type": "number",
+                      "minimum": 0
+                    },
                     "wander": {
                       "type": "boolean"
                     },
@@ -358,14 +373,19 @@
                       "type": "number",
                       "minimum": 0
                     },
-                    "damagesBuildings": {
-                      "type": "boolean"
+                    "buildingDamagePctPerSecond": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
                     }
                   },
                   "required": [
                     "type",
                     "entity",
-                    "seconds"
+                    "seconds",
+                    "radius",
+                    "speed",
+                    "flingForce"
                   ],
                   "additionalProperties": false
                 },
@@ -384,14 +404,6 @@
                       "type": "number",
                       "minimum": 0
                     },
-                    "killsFirst": {
-                      "type": "integer",
-                      "minimum": -9007199254740991,
-                      "maximum": 9007199254740991
-                    },
-                    "visible": {
-                      "type": "boolean"
-                    },
                     "count": {
                       "type": "integer",
                       "exclusiveMinimum": 0,
@@ -401,6 +413,35 @@
                   "required": [
                     "type",
                     "entity"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "trap"
+                    },
+                    "radius": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "kills": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "seconds": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "radius",
+                    "kills",
+                    "seconds"
                   ],
                   "additionalProperties": false
                 },
@@ -444,6 +485,10 @@
                       "type": "number",
                       "minimum": 0
                     },
+                    "impactRadius": {
+                      "type": "number",
+                      "minimum": 0
+                    },
                     "seconds": {
                       "type": "number",
                       "minimum": 0
@@ -461,6 +506,7 @@
                     "type",
                     "count",
                     "radius",
+                    "impactRadius",
                     "seconds",
                     "damage"
                   ],
@@ -481,16 +527,32 @@
                       "type": "number",
                       "minimum": 0
                     },
+                    "speed": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "huntRadius": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "killSeconds": {
+                      "type": "number",
+                      "minimum": 0
+                    },
                     "maxKills": {
                       "type": "integer",
                       "exclusiveMinimum": 0,
-                      "maximum": 9007199254740991
+                      "maximum": 255
                     }
                   },
                   "required": [
                     "type",
                     "entity",
-                    "seconds"
+                    "seconds",
+                    "speed",
+                    "huntRadius",
+                    "killSeconds",
+                    "maxKills"
                   ],
                   "additionalProperties": false
                 },
@@ -709,6 +771,13 @@
                       "exclusiveMinimum": 0,
                       "maximum": 9007199254740991
                     },
+                    "targets": {
+                      "type": "string",
+                      "enum": [
+                        "enemy",
+                        "own"
+                      ]
+                    },
                     "poppedBy": {
                       "type": "array",
                       "items": {
@@ -809,6 +878,14 @@
                       "type": "number",
                       "minimum": 0
                     },
+                    "radius": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "speed": {
+                      "type": "number",
+                      "minimum": 0
+                    },
                     "wander": {
                       "type": "boolean"
                     },
@@ -816,14 +893,19 @@
                       "type": "number",
                       "minimum": 0
                     },
-                    "damagesBuildings": {
-                      "type": "boolean"
+                    "buildingDamagePctPerSecond": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
                     }
                   },
                   "required": [
                     "type",
                     "entity",
-                    "seconds"
+                    "seconds",
+                    "radius",
+                    "speed",
+                    "flingForce"
                   ],
                   "additionalProperties": false
                 },
@@ -842,14 +924,6 @@
                       "type": "number",
                       "minimum": 0
                     },
-                    "killsFirst": {
-                      "type": "integer",
-                      "minimum": -9007199254740991,
-                      "maximum": 9007199254740991
-                    },
-                    "visible": {
-                      "type": "boolean"
-                    },
                     "count": {
                       "type": "integer",
                       "exclusiveMinimum": 0,
@@ -859,6 +933,35 @@
                   "required": [
                     "type",
                     "entity"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "trap"
+                    },
+                    "radius": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "kills": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "seconds": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "radius",
+                    "kills",
+                    "seconds"
                   ],
                   "additionalProperties": false
                 },
@@ -902,6 +1005,10 @@
                       "type": "number",
                       "minimum": 0
                     },
+                    "impactRadius": {
+                      "type": "number",
+                      "minimum": 0
+                    },
                     "seconds": {
                       "type": "number",
                       "minimum": 0
@@ -919,6 +1026,7 @@
                     "type",
                     "count",
                     "radius",
+                    "impactRadius",
                     "seconds",
                     "damage"
                   ],
@@ -939,16 +1047,32 @@
                       "type": "number",
                       "minimum": 0
                     },
+                    "speed": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "huntRadius": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "killSeconds": {
+                      "type": "number",
+                      "minimum": 0
+                    },
                     "maxKills": {
                       "type": "integer",
                       "exclusiveMinimum": 0,
-                      "maximum": 9007199254740991
+                      "maximum": 255
                     }
                   },
                   "required": [
                     "type",
                     "entity",
-                    "seconds"
+                    "seconds",
+                    "speed",
+                    "huntRadius",
+                    "killSeconds",
+                    "maxKills"
                   ],
                   "additionalProperties": false
                 },

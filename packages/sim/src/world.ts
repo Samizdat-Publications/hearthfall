@@ -185,6 +185,8 @@ export class World {
     const E = this.ents;
     if (!E.alive[i] || amount <= 0) return;
     if (E.cat[i] === CAT.unit && E.inside[i] >= 0) return;
+    // Ward (BACKLOG 1): a shielded unit takes no damage until the shield ends or is popped
+    if (E.cat[i] === CAT.unit && E.ward[i] > 0) return;
     if (fromTribe >= 0) E.lastHit[i] = fromTribe;
     E.hitTick[i] = this.tick;
     if (!melee && E.chant[i] > 0) this.combat.interruptChant(i, "hit");

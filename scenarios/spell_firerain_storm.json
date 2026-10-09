@@ -1,0 +1,95 @@
+{
+  "id": "spell_firerain_storm",
+  "description": "Firerain drops 30 meteors over 8 s across its radius, hurting units and buildings near each impact.",
+  "tags": [
+    "fast",
+    "spells"
+  ],
+  "seed": 48,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2,
+    "landAboveSea": 80
+  },
+  "setup": [
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        20,
+        32
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        50,
+        50
+      ]
+    },
+    {
+      "spawn": "dwelling",
+      "tribe": 1,
+      "at": [
+        27,
+        32
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        25,
+        34
+      ],
+      "count": 6
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": -1,
+      "type": "grantCharges",
+      "args": {
+        "tribe": 0,
+        "spell": "firerain",
+        "n": 1
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 1,
+      "tribe": 0,
+      "type": "cast",
+      "args": {
+        "spell": "firerain",
+        "target": [
+          27,
+          32
+        ]
+      }
+    }
+  ],
+  "runTicks": 200,
+  "assert": [
+    {
+      "at": 100,
+      "expr": "events.count('meteor') > 5 && events.count('meteor') < 25"
+    },
+    {
+      "at": 200,
+      "expr": "events.count('meteor') == 30 && count(effects) == 0 && hp(tribe1.dwellings) < 1200 && hp(tribe1.settlers) < 6000 && invariants() == 0"
+    }
+  ]
+}

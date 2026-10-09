@@ -80,14 +80,17 @@
     },
     {
       "id": "veil",
+      "$comment": "Own units in the radius turn invisible to other tribes (their units, towers and AI) until it ends or the unit attacks.",
       "tier": 2,
       "cost": 500,
       "maxCharges": 4,
       "range": 8,
+      "aiTarget": "none",
       "effects": [
         {
           "type": "statusApply",
           "status": "veil",
+          "targets": "own",
           "seconds": 60,
           "radius": 2,
           "max": 10
@@ -96,15 +99,19 @@
     },
     {
       "id": "ward",
+      "$comment": "A shield on up to 6 own units: no damage and no knockback until it ends; Lightning pops it. Water still drowns.",
       "tier": 2,
       "cost": 600,
       "maxCharges": 4,
       "range": 8,
+      "aiTarget": "none",
       "effects": [
         {
           "type": "statusApply",
           "status": "ward",
+          "targets": "own",
           "seconds": 120,
+          "radius": 2.5,
           "max": 6,
           "poppedBy": [
             "lightning"
@@ -158,10 +165,12 @@
     },
     {
       "id": "beguile",
+      "$comment": "Up to 8 enemy units (never a Shaper) fight for the caster for 40 s, then return; all return at once if the caster's Shaper dies.",
       "tier": 2,
       "cost": 850,
       "maxCharges": 3,
       "range": 8,
+      "aiTarget": "units",
       "effects": [
         {
           "type": "statusApply",
@@ -175,34 +184,39 @@
     },
     {
       "id": "whirlwind",
+      "$comment": "A vortex that wanders off from the target, flinging units it touches (into water, off cliffs) and wearing down buildings.",
       "tier": 2,
       "cost": 900,
       "maxCharges": 3,
       "range": 8,
+      "aiTarget": "buildings",
       "effects": [
         {
           "type": "moverPath",
           "entity": "whirlwind",
           "seconds": 12,
+          "radius": 1.6,
+          "speed": 1.2,
           "wander": true,
           "flingForce": 4,
-          "damagesBuildings": true
+          "buildingDamagePctPerSecond": 12
         }
       ]
     },
     {
       "id": "mire",
+      "$comment": "A visible bog that swallows the first 10 units of other tribes to stand in it (never a Shaper), for up to 90 s.",
       "tier": 3,
       "cost": 1000,
       "maxCharges": 3,
       "range": 8,
+      "aiTarget": "units",
       "effects": [
         {
-          "type": "spawnEntity",
-          "entity": "mire",
+          "type": "trap",
           "radius": 2.5,
-          "killsFirst": 10,
-          "visible": true
+          "kills": 10,
+          "seconds": 90
         }
       ]
     },
@@ -253,31 +267,36 @@
     },
     {
       "id": "erode",
+      "$comment": "Sinks the land toward the sea over 10 s (depth per second), drowning what stands there and swamping buildings.",
       "tier": 3,
       "cost": 2100,
       "maxCharges": 2,
       "range": 8,
+      "aiTarget": "buildings",
       "effects": [
         {
           "type": "terrainOp",
           "op": "lowerTowardSea",
           "radius": 6,
-          "depth": 12,
+          "depth": 10,
           "seconds": 10
         }
       ]
     },
     {
       "id": "firerain",
+      "$comment": "30 meteors over 8 s at random points in the radius; each hits units and buildings near its impact.",
       "tier": 4,
       "cost": 4000,
       "maxCharges": 2,
       "range": 8,
+      "aiTarget": "buildings",
       "effects": [
         {
           "type": "projectileStorm",
           "count": 30,
           "radius": 6,
+          "impactRadius": 1.2,
           "seconds": 8,
           "damage": 400,
           "knockback": 2
@@ -286,15 +305,20 @@
     },
     {
       "id": "wraith",
+      "$comment": "A flying hunter: kills the nearest enemy unit it can find (never a Shaper), one per second, until 200 s or 40 kills.",
       "tier": 4,
       "cost": 5100,
       "maxCharges": 1,
       "range": 6,
+      "aiTarget": "units",
       "effects": [
         {
           "type": "summon",
           "entity": "wraith",
           "seconds": 200,
+          "speed": 3,
+          "huntRadius": 24,
+          "killSeconds": 1,
           "maxKills": 40
         }
       ]

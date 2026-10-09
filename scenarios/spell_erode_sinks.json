@@ -1,0 +1,88 @@
+{
+  "id": "spell_erode_sinks",
+  "description": "Erode sinks the land toward the sea one step a second for 10 s, drowning the units standing there.",
+  "tags": [
+    "fast",
+    "spells",
+    "terrain"
+  ],
+  "seed": 47,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2,
+    "landAboveSea": 60
+  },
+  "setup": [
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        20,
+        32
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        50,
+        50
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        27,
+        32
+      ],
+      "count": 3
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": -1,
+      "type": "grantCharges",
+      "args": {
+        "tribe": 0,
+        "spell": "erode",
+        "n": 1
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 1,
+      "tribe": 0,
+      "type": "cast",
+      "args": {
+        "spell": "erode",
+        "target": [
+          27,
+          32
+        ]
+      }
+    }
+  ],
+  "runTicks": 260,
+  "assert": [
+    {
+      "at": 25,
+      "expr": "terrain.height([27,32]) < sea + 60 && terrain.height([27,32]) > sea + 30"
+    },
+    {
+      "at": 260,
+      "expr": "terrain.drowns([27,32]) && count(effects) == 0 && count(tribe1.settlers) == 0 && invariants() == 0"
+    }
+  ]
+}

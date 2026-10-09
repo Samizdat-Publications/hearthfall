@@ -88,8 +88,8 @@ export const SPELL_TERRAIN_OPS: Record<string, readonly string[] | undefined> = 
   lower: ["radius", "depth"],
 };
 
-/** statusApply statuses the sim implements; the rest belong to backlog spells and throw when cast. */
-export const IMPLEMENTED_STATUSES = ["panic", "burning"] as const;
+/** statusApply statuses the sim implements ("entranced" is the Chanter's channel, not a spell status). */
+export const IMPLEMENTED_STATUSES = ["panic", "burning", "veil", "ward", "beguiled"] as const;
 
 function crossCheck(p: PackFiles): PackIssue[] {
   const issues: PackIssue[] = [];
@@ -124,6 +124,11 @@ function crossCheck(p: PackFiles): PackIssue[] {
       }
       if (e.type === "spawnEntity" && e.radius === undefined) issues.push({ file: "spells.json", path: at, message: "spawnEntity needs radius" });
       if (e.type === "statusApply" && (IMPLEMENTED_STATUSES as readonly string[]).includes(e.status) && e.radius === undefined) issues.push({ file: "spells.json", path: at, message: `statusApply ${e.status} needs radius` });
+      if (e.type === "statusApply" && !(IMPLEMENTED_STATUSES as readonly string[]).includes(e.status)) issues.push({ file: "spells.json", path: at, message: `statusApply ${e.status} is not a spell status` });
+      if (e.type === "statusApply" && (e.status === "veil" || e.status === "ward") && e.targets !== "own") issues.push({ file: "spells.json", path: at, message: `statusApply ${e.status} must target own units` });
+      if (e.type === "terrainOp" && e.seconds !== undefined && e.op !== "lowerTowardSea") issues.push({ file: "spells.json", path: at, message: `terrainOp ${e.op} cannot take seconds` });
+      if (e.type === "summon" || e.type === "moverPath") if (e.entity !== s.id) issues.push({ file: "spells.json", path: at, message: `${e.type} entity must be the spell id (${s.id})` });
+      if (e.type === "statusApply") for (const x of e.poppedBy ?? []) need("spells.json", `${at}.poppedBy`, spells, x, "spell");
     });
   }
   for (const per of p.ai.personalities) {

@@ -1,0 +1,91 @@
+{
+  "id": "spell_wraith_hunts",
+  "description": "The Wraith flies to the nearest enemy unit and kills one a second; it never touches a Shaper.",
+  "tags": [
+    "fast",
+    "spells"
+  ],
+  "seed": 49,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2,
+    "landAboveSea": 80
+  },
+  "setup": [
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        20,
+        32
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        50,
+        50
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        30,
+        40
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        34,
+        32
+      ],
+      "count": 5
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": -1,
+      "type": "grantCharges",
+      "args": {
+        "tribe": 0,
+        "spell": "wraith",
+        "n": 1
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 1,
+      "tribe": 0,
+      "type": "cast",
+      "args": {
+        "spell": "wraith",
+        "target": [
+          24,
+          32
+        ]
+      }
+    }
+  ],
+  "runTicks": 400,
+  "assert": [
+    {
+      "at": 400,
+      "expr": "events.count('wraithKill') == 5 && count(tribe1.settlers) == 0 && count(tribe1.shapers) == 1 && count(effects) == 1 && invariants() == 0"
+    }
+  ]
+}

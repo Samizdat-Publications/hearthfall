@@ -1,0 +1,376 @@
+{
+  "$comment": "Cost in mana, range in cells from the Shaper, heights in height units (32 per world unit). Effects are compositions of primitives; parameter names are suggestions for the schema.",
+  "chargeRules": {
+    "startMana": 300,
+    "defaultSplitSpellsPct": 50,
+    "singleSinkGetsAll": true,
+    "killChargeStealPct": 25,
+    "castSeconds": 1,
+    "undoSeconds": 1
+  },
+  "spells": [
+    {
+      "id": "bolt",
+      "aiTarget": "units",
+      "tier": 1,
+      "cost": 100,
+      "maxCharges": 4,
+      "range": 6,
+      "v1": true,
+      "effects": [
+        {
+          "type": "damageRadius",
+          "radius": 1.5,
+          "damage": 350,
+          "downhillBonusPct": 30
+        },
+        {
+          "type": "knockback",
+          "radius": 2,
+          "force": 3,
+          "edgeFalloff": 0.6
+        }
+      ]
+    },
+    {
+      "id": "call",
+      "aiTarget": "wild",
+      "tier": 1,
+      "cost": 100,
+      "maxCharges": 4,
+      "range": 16,
+      "v1": true,
+      "effects": [
+        {
+          "type": "convertRadius",
+          "radius": 2.5,
+          "max": 4,
+          "excludes": [
+            "shaper",
+            "chanter"
+          ],
+          "targets": [
+            "wild"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hornets",
+      "aiTarget": "units",
+      "tier": 2,
+      "cost": 400,
+      "maxCharges": 4,
+      "range": 12,
+      "v1": true,
+      "effects": [
+        {
+          "type": "areaOverTime",
+          "radius": 3,
+          "seconds": 8,
+          "damagePerSecond": 20
+        },
+        {
+          "type": "statusApply",
+          "status": "panic",
+          "seconds": 8,
+          "radius": 3
+        }
+      ]
+    },
+    {
+      "id": "veil",
+      "$comment": "Own units in the radius turn invisible to other tribes (their units, towers and AI) until it ends or the unit attacks.",
+      "tier": 2,
+      "cost": 500,
+      "maxCharges": 4,
+      "range": 8,
+      "aiTarget": "none",
+      "effects": [
+        {
+          "type": "statusApply",
+          "status": "veil",
+          "targets": "own",
+          "seconds": 60,
+          "radius": 2,
+          "max": 10
+        }
+      ]
+    },
+    {
+      "id": "ward",
+      "$comment": "A shield on up to 6 own units: no damage and no knockback until it ends; Lightning pops it. Water still drowns.",
+      "tier": 2,
+      "cost": 600,
+      "maxCharges": 4,
+      "range": 8,
+      "aiTarget": "none",
+      "effects": [
+        {
+          "type": "statusApply",
+          "status": "ward",
+          "targets": "own",
+          "seconds": 120,
+          "radius": 2.5,
+          "max": 6,
+          "poppedBy": [
+            "lightning"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "raise_land",
+      "aiTarget": "bridge",
+      "tier": 2,
+      "cost": 650,
+      "maxCharges": 4,
+      "range": 10,
+      "v1": true,
+      "effects": [
+        {
+          "type": "terrainOp",
+          "op": "ridgeLine",
+          "from": "caster",
+          "width": 2,
+          "heightAboveSea": 24,
+          "length": 10
+        }
+      ]
+    },
+    {
+      "id": "lightning",
+      "aiTarget": "units",
+      "tier": 2,
+      "cost": 800,
+      "maxCharges": 4,
+      "range": 12,
+      "v1": true,
+      "effects": [
+        {
+          "type": "damageRadius",
+          "radius": 0.6,
+          "damage": 2600,
+          "canKill": [
+            "shaper"
+          ]
+        },
+        {
+          "type": "statusApply",
+          "status": "burning",
+          "seconds": 3,
+          "radius": 1
+        }
+      ]
+    },
+    {
+      "id": "beguile",
+      "$comment": "Up to 8 enemy units (never a Shaper) fight for the caster for 40 s, then return; all return at once if the caster's Shaper dies.",
+      "tier": 2,
+      "cost": 850,
+      "maxCharges": 3,
+      "range": 8,
+      "aiTarget": "units",
+      "effects": [
+        {
+          "type": "statusApply",
+          "status": "beguiled",
+          "seconds": 40,
+          "radius": 2.5,
+          "max": 8,
+          "breaksOnCasterDeath": true
+        }
+      ]
+    },
+    {
+      "id": "whirlwind",
+      "$comment": "A vortex that wanders off from the target, flinging units it touches (into water, off cliffs) and wearing down buildings.",
+      "tier": 2,
+      "cost": 900,
+      "maxCharges": 3,
+      "range": 8,
+      "aiTarget": "buildings",
+      "effects": [
+        {
+          "type": "moverPath",
+          "entity": "whirlwind",
+          "seconds": 12,
+          "radius": 1.6,
+          "speed": 1.2,
+          "wander": true,
+          "flingForce": 4,
+          "buildingDamagePctPerSecond": 12
+        }
+      ]
+    },
+    {
+      "id": "mire",
+      "$comment": "A visible bog that swallows the first 10 units of other tribes to stand in it (never a Shaper), for up to 90 s.",
+      "tier": 3,
+      "cost": 1000,
+      "maxCharges": 3,
+      "range": 8,
+      "aiTarget": "units",
+      "effects": [
+        {
+          "type": "trap",
+          "radius": 2.5,
+          "kills": 10,
+          "seconds": 90
+        }
+      ]
+    },
+    {
+      "id": "flatten",
+      "aiTarget": "buildings",
+      "tier": 3,
+      "cost": 1250,
+      "maxCharges": 3,
+      "range": 8,
+      "v1": true,
+      "effects": [
+        {
+          "type": "terrainOp",
+          "op": "flattenToAverage",
+          "radius": 5,
+          "minHeightAboveSea": 4
+        }
+      ]
+    },
+    {
+      "id": "quake",
+      "aiTarget": "buildings",
+      "tier": 3,
+      "cost": 1750,
+      "maxCharges": 2,
+      "range": 8,
+      "v1": true,
+      "effects": [
+        {
+          "type": "terrainOp",
+          "op": "noiseScar",
+          "radius": 7,
+          "depth": 24
+        },
+        {
+          "type": "damageBuildingsRadius",
+          "radius": 7,
+          "damagePct": 70
+        },
+        {
+          "type": "statusApply",
+          "status": "panic",
+          "seconds": 5,
+          "radius": 7
+        }
+      ]
+    },
+    {
+      "id": "erode",
+      "$comment": "Sinks the land toward the sea over 10 s (depth per second), drowning what stands there and swamping buildings.",
+      "tier": 3,
+      "cost": 2100,
+      "maxCharges": 2,
+      "range": 8,
+      "aiTarget": "buildings",
+      "effects": [
+        {
+          "type": "terrainOp",
+          "op": "lowerTowardSea",
+          "radius": 6,
+          "depth": 10,
+          "seconds": 10
+        }
+      ]
+    },
+    {
+      "id": "firerain",
+      "$comment": "30 meteors over 8 s at random points in the radius; each hits units and buildings near its impact.",
+      "tier": 4,
+      "cost": 4000,
+      "maxCharges": 2,
+      "range": 8,
+      "aiTarget": "buildings",
+      "effects": [
+        {
+          "type": "projectileStorm",
+          "count": 30,
+          "radius": 6,
+          "impactRadius": 1.2,
+          "seconds": 8,
+          "damage": 400,
+          "knockback": 2
+        }
+      ]
+    },
+    {
+      "id": "wraith",
+      "$comment": "A flying hunter: kills the nearest enemy unit it can find (never a Shaper), one per second, until 200 s or 40 kills.",
+      "tier": 4,
+      "cost": 5100,
+      "maxCharges": 1,
+      "range": 6,
+      "aiTarget": "units",
+      "effects": [
+        {
+          "type": "summon",
+          "entity": "wraith",
+          "seconds": 200,
+          "speed": 3,
+          "huntRadius": 24,
+          "killSeconds": 1,
+          "maxKills": 40
+        }
+      ]
+    },
+    {
+      "id": "volcano",
+      "aiTarget": "buildings",
+      "tier": 4,
+      "cost": 8000,
+      "maxCharges": 1,
+      "range": 6,
+      "v1": true,
+      "effects": [
+        {
+          "type": "terrainOp",
+          "op": "crater",
+          "shape": "cone",
+          "radius": 7,
+          "height": 120
+        },
+        {
+          "type": "areaOverTime",
+          "radius": 4,
+          "seconds": 20,
+          "damagePerSecond": 150
+        },
+        {
+          "type": "scar",
+          "radius": 8,
+          "healSeconds": 600
+        },
+        {
+          "type": "spawnEntity",
+          "entity": "lava_rock",
+          "count": 12,
+          "radius": 6
+        }
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "id": "lava_rock",
+      "$comment": "Molten rocks the volcano throws: each lands at a random point within the spawn radius and burns a small area.",
+      "effects": [
+        {
+          "type": "areaOverTime",
+          "radius": 1.2,
+          "seconds": 6,
+          "damagePerSecond": 60
+        }
+      ]
+    }
+  ]
+}

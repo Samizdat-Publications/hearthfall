@@ -69,3 +69,8 @@ Reason: M6 battle perf: idleAcquireSeconds throttle for unengaged units, A* stra
 Reason: progression tiers: balance.progression in the pack, eco.tier hashed
 - spells_duel: final 623c6efc -> 6ff81161 (pack d811a61b)
 - terrain_ops_continents: final 911ea2a2 -> 73828506 (pack d811a61b)
+
+## 2026-10-09 14:12 UTC
+Reason: BACKLOG 1: spell status columns veil, ward, beguile, home in the entity hash; new effect primitives
+- spells_duel: final 6ff81161 -> 3bcafa10 (pack 29cf9d51)
+- terrain_ops_continents: final 73828506 -> a7bf943b (pack 29cf9d51)

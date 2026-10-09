@@ -39,6 +39,20 @@ describe("data pack", () => {
     expect(validatePack(raw4).issues.some((i) => i.message.includes("must increase"))).toBe(true);
   });
 
+  it("rejects spell statuses aimed at the wrong side or unknown, and Ward poppers that are not spells (BACKLOG 1)", () => {
+    type Fx = { type: string; status?: string; targets?: string; poppedBy?: string[] };
+    const spellFx = (raw: Record<string, unknown>, id: string) => (raw["spells.json"] as { spells: { id: string; effects: Fx[] }[] }).spells.find((s) => s.id === id)!.effects[0];
+    const raw = loadBase();
+    delete spellFx(raw, "veil").targets;
+    expect(validatePack(raw).issues.some((i) => i.message.includes("veil must target own units"))).toBe(true);
+    const raw2 = loadBase();
+    spellFx(raw2, "ward").poppedBy = ["thunder"];
+    expect(validatePack(raw2).issues.some((i) => i.message.includes("thunder"))).toBe(true);
+    const raw3 = loadBase();
+    spellFx(raw3, "beguile").status = "charmed";
+    expect(validatePack(raw3).issues.length).toBeGreaterThan(0);
+  });
+
   it("canonical json ignores key order", () => {
     expect(canonicalJson({ b: 1, a: [2, { d: 3, c: 4 }] })).toBe(canonicalJson({ a: [2, { c: 4, d: 3 }], b: 1 }));
   });

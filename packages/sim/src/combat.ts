@@ -149,6 +149,7 @@ export class CombatSystem {
     const tj = E.tribe[j];
     if (tj < 0 || tj === E.tribe[i] || !w.tribes[tj]?.alive) return false;
     const c = E.cat[j];
+    if (c === CAT.unit && E.veil[j] > 0) return false;
     if (this.kind[E.type[i]] === KIND.chanter) return c === CAT.unit && E.inside[j] < 0 && this.convertible[E.type[j]];
     if (c === CAT.unit) return E.inside[j] < 0;
     return c === CAT.building;
@@ -443,6 +444,8 @@ export class CombatSystem {
     const tr = E.tribe[i];
     const k = this.kind[ty];
     E.cd[i] = this.cool[ty];
+    // attacking (a swing, a shot or a chant) reveals a veiled unit
+    E.veil[i] = 0;
     if (k === KIND.melee) {
       const dmg = this.hit[ty] * (E.cat[t] === CAT.building ? cb.buildingDamageFactor : 1);
       w.emit("melee", { id: E.idOf(i), tribe: tr, kind: ty, x: E.x[t], y: E.y[t] });
@@ -521,11 +524,25 @@ export class CombatSystem {
     return out.map((o) => o.j);
   }
 
+  /** A unit without a tribe becomes a wild person (elimination, a beguiled unit whose tribe is gone). */
+  makeWild(i: number): void {
+    const E = this.w.ents;
+    const wild = this.typeWild;
+    if (wild < 0) return;
+    E.type[i] = wild;
+    E.hp[i] = Math.min(E.hp[i], this.w.cfg.pack.units.units[wild].hp);
+    E.stance[i] = this.defaultStance(wild);
+  }
+
   /** Change a unit's side in place: drops its job, fight, chant and orders. */
   convertUnit(j: number, tribe: number): void {
     const w = this.w;
     const E = w.ents;
     E.tribe[j] = tribe;
+    // a side change ends spell statuses that belong to the old side (a beguiled unit converted for good stays)
+    E.beguile[j] = 0;
+    E.veil[j] = 0;
+    E.ward[j] = 0;
     E.atk[j] = NO_ENTITY;
     E.mode[j] = CMODE.none;
     E.chant[j] = 0;
@@ -716,11 +733,7 @@ export class CombatSystem {
       if (!E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] !== tribe) continue;
       if (E.inside[i] >= 0) this.leave(i);
       this.convertUnit(i, -1);
-      if (wild >= 0) {
-        E.type[i] = wild;
-        E.hp[i] = Math.min(E.hp[i], w.cfg.pack.units.units[wild].hp);
-        E.stance[i] = this.defaultStance(wild);
-      }
+      if (wild >= 0) this.makeWild(i);
       released++;
     }
     w.tribes[tribe].eco.trainDemand = 0;

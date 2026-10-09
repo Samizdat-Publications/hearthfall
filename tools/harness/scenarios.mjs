@@ -85,6 +85,10 @@ export function makeCtx(w) {
     idle: (i) => E.order[i] === 0,
     invariants: () => w.invariants().length,
     onLand: (i) => t.heightAt(E.x[i], E.y[i]) >= t.sea,
+    /** spell statuses (BACKLOG 1) */
+    veiled: (i) => E.veil[i] > 0,
+    warded: (i) => E.ward[i] > 0,
+    beguiled: (i) => E.beguile[i] > 0,
     effects: sel((i) => E.cat[i] === CAT.effect),
     charges: (tribe, spell) => w.tribes[tribe]?.eco.charges[w.cfg.spellIndex.get(spell)] ?? -1,
     alive: (tribe) => w.tribes[tribe]?.alive ?? false,

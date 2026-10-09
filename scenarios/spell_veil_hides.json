@@ -1,0 +1,149 @@
+{
+  "id": "spell_veil_hides",
+  "description": "Veil hides own units: aggressive enemy Wardens standing beside veiled Settlers ignore them and kill the one left outside the veil.",
+  "tags": [
+    "fast",
+    "spells"
+  ],
+  "seed": 41,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2,
+    "landAboveSea": 80
+  },
+  "setup": [
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        24,
+        32
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        8,
+        8
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "at": [
+        30,
+        32
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "at": [
+        30,
+        33
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "at": [
+        31,
+        32
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "at": [
+        31,
+        36
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        50,
+        50
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        44,
+        32
+      ],
+      "count": 2
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": -1,
+      "type": "grantCharges",
+      "args": {
+        "tribe": 0,
+        "spell": "veil",
+        "n": 1
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 0,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 1,
+      "tribe": 0,
+      "type": "cast",
+      "args": {
+        "spell": "veil",
+        "target": [
+          30,
+          32
+        ]
+      }
+    },
+    {
+      "tick": 30,
+      "tribe": 1,
+      "type": "move",
+      "args": {
+        "units": "tribe1.wardens",
+        "to": [
+          31,
+          34
+        ]
+      }
+    }
+  ],
+  "runTicks": 300,
+  "assert": [
+    {
+      "at": 25,
+      "expr": "count(tribe0.settlers, veiled) == 3 && count(tribe0.shapers, veiled) == 0 && events.count('veiled') == 3"
+    },
+    {
+      "at": 300,
+      "expr": "count(tribe0.settlers) == 3 && hp(tribe0.settlers) == 3000 && count(tribe0.settlers, veiled) == 3 && invariants() == 0"
+    }
+  ]
+}

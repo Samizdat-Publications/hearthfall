@@ -1,0 +1,90 @@
+{
+  "$comment": "Utility weights 0..1 unless noted. spellPrefs are filtered at runtime to spells the tribe has unlocked. Difficulty scales reactionSeconds and decisionNoise, not hidden resources (resourceMultiplier stays 1.0 unless a difficulty explicitly sets it).",
+  "personalities": [
+    {
+      "id": "aggressive",
+      "tribeColorDefault": "crimson",
+      "economyTargetPop": 40,
+      "armyMix": {
+        "warden": 0.6,
+        "firecaller": 0.3,
+        "chanter": 0.1
+      },
+      "aggression": 0.85,
+      "firstAttackMinute": 5,
+      "spellPrefs": [
+        "bolt",
+        "lightning",
+        "quake"
+      ],
+      "scouting": 0.6,
+      "towerAffinity": 0.2
+    },
+    {
+      "id": "sneaky",
+      "tribeColorDefault": "amber",
+      "economyTargetPop": 50,
+      "armyMix": {
+        "warden": 0.35,
+        "firecaller": 0.3,
+        "chanter": 0.35
+      },
+      "aggression": 0.45,
+      "firstAttackMinute": 10,
+      "spellPrefs": [
+        "call",
+        "raise_land",
+        "bolt",
+        "hornets"
+      ],
+      "scouting": 0.9,
+      "towerAffinity": 0.3
+    },
+    {
+      "id": "turtle",
+      "tribeColorDefault": "jade",
+      "economyTargetPop": 55,
+      "armyMix": {
+        "warden": 0.45,
+        "firecaller": 0.45,
+        "chanter": 0.1
+      },
+      "aggression": 0.3,
+      "firstAttackMinute": 12,
+      "spellPrefs": [
+        "lightning",
+        "flatten",
+        "quake",
+        "volcano"
+      ],
+      "scouting": 0.4,
+      "towerAffinity": 0.9
+    }
+  ],
+  "difficulties": [
+    {
+      "id": "easy",
+      "reactionSeconds": 6,
+      "decisionNoise": 0.35,
+      "resourceMultiplier": 1
+    },
+    {
+      "id": "normal",
+      "reactionSeconds": 3,
+      "decisionNoise": 0.15,
+      "resourceMultiplier": 1
+    },
+    {
+      "id": "hard",
+      "reactionSeconds": 1.5,
+      "decisionNoise": 0.05,
+      "resourceMultiplier": 1
+    },
+    {
+      "id": "brutal",
+      "reactionSeconds": 1,
+      "decisionNoise": 0,
+      "resourceMultiplier": 1.25
+    }
+  ]
+}

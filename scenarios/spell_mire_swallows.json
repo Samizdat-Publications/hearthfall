@@ -1,0 +1,96 @@
+{
+  "id": "spell_mire_swallows",
+  "description": "Mire swallows the first 10 enemy units to stand in it, never a Shaper, and then dries up.",
+  "tags": [
+    "fast",
+    "spells"
+  ],
+  "seed": 46,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2,
+    "landAboveSea": 80
+  },
+  "setup": [
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        20,
+        32
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        50,
+        50
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        27,
+        31
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        27,
+        32
+      ],
+      "count": 14,
+      "spacing": 0.45
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": -1,
+      "type": "grantCharges",
+      "args": {
+        "tribe": 0,
+        "spell": "mire",
+        "n": 1
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 1,
+      "tribe": 0,
+      "type": "cast",
+      "args": {
+        "spell": "mire",
+        "target": [
+          27,
+          32
+        ]
+      }
+    }
+  ],
+  "runTicks": 60,
+  "assert": [
+    {
+      "at": 30,
+      "expr": "events.count('mired') == 10 && count(tribe1.settlers) == 4 && count(tribe1.shapers) == 1"
+    },
+    {
+      "at": 60,
+      "expr": "count(effects) == 0 && events.count('mired') == 10 && invariants() == 0"
+    }
+  ]
+}

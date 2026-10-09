@@ -50,7 +50,12 @@ describe("spells (M5 review follow-ups, BACKLOG 54)", () => {
       let own = 0;
       for (let i = 0; i < w.ents.hi; i++) if (w.ents.alive[i] && w.ents.tribe[i] === 0 && w.ents.panic[i] > 0) own++;
       expect(own).toBe(0);
-      expect(() => apply({ w, tribe: 0, spell: "veil", x: 30, y: 30, casterX: 10, casterY: 10 }, [{ type: "statusApply", status: "veil", seconds: 5, radius: 2 }])).toThrow(/not implemented/);
+      // own-target statuses (BACKLOG 1) land on the caster's units only, and max counts those
+      apply({ w, tribe: 0, spell: "veil", x: 30.5, y: 30.2, casterX: 10, casterY: 10 }, [{ type: "statusApply", status: "veil", targets: "own", seconds: 5, radius: 3, max: 4 }]);
+      let veiled = 0;
+      for (let i = 0; i < w.ents.hi; i++) if (w.ents.alive[i] && w.ents.veil[i] > 0) veiled += w.ents.tribe[i] === 0 ? 1 : 100;
+      expect(veiled).toBe(4);
+      expect(() => apply({ w, tribe: 0, spell: "veil", x: 30, y: 30, casterX: 10, casterY: 10 }, [{ type: "statusApply", status: "entranced", seconds: 5, radius: 2 }])).toThrow(/not a spell status/);
     });
   });
 

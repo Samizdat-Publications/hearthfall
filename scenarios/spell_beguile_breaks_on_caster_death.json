@@ -1,0 +1,137 @@
+{
+  "id": "spell_beguile_breaks_on_caster_death",
+  "description": "Beguiled units go home at once when the caster tribe's Shaper dies.",
+  "tags": [
+    "fast",
+    "spells",
+    "shaper"
+  ],
+  "seed": 44,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2,
+    "landAboveSea": 80
+  },
+  "setup": [
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        20,
+        32
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        8,
+        8
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        50,
+        50
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        28,
+        40
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        26,
+        32
+      ],
+      "count": 4,
+      "spacing": 0.5
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": -1,
+      "type": "grantCharges",
+      "args": {
+        "tribe": 0,
+        "spell": "beguile",
+        "n": 1
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": -1,
+      "type": "grantCharges",
+      "args": {
+        "tribe": 1,
+        "spell": "lightning",
+        "n": 1
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 0,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 1,
+      "tribe": 0,
+      "type": "cast",
+      "args": {
+        "spell": "beguile",
+        "target": [
+          26,
+          32
+        ]
+      }
+    },
+    {
+      "tick": 30,
+      "tribe": 1,
+      "type": "cast",
+      "args": {
+        "spell": "lightning",
+        "target": [
+          20,
+          32
+        ]
+      }
+    }
+  ],
+  "runTicks": 80,
+  "assert": [
+    {
+      "at": 25,
+      "expr": "count(tribe0.settlers, beguiled) == 4"
+    },
+    {
+      "at": 80,
+      "expr": "events.count('shaperDied') == 1 && count(tribe0.settlers) == 0 && count(tribe1.settlers) == 4 && events.count('beguileEnded') == 4 && invariants() == 0"
+    }
+  ]
+}

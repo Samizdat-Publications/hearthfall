@@ -66,6 +66,11 @@ const COLUMNS: Record<string, ColCtor> = {
   trance: Int32Array,
   chant: Int32Array,
   hitTick: Int32Array,
+  // spell statuses (BACKLOG 1): ticks left of Veil, Ward and Beguile, and the tribe a beguiled unit returns to
+  veil: Int32Array,
+  ward: Int32Array,
+  beguile: Int32Array,
+  home: Int8Array,
 };
 export const COLUMN_NAMES = Object.keys(COLUMNS);
 
@@ -121,6 +126,10 @@ export class Entities {
   trance!: Int32Array;
   chant!: Int32Array;
   hitTick!: Int32Array;
+  veil!: Int32Array;
+  ward!: Int32Array;
+  beguile!: Int32Array;
+  home!: Int8Array;
 
   constructor(cap = 1024) {
     this.cap = cap;
