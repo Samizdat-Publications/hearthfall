@@ -680,6 +680,16 @@
       "when": "2026-10-09T17:03:48.101Z",
       "source": "external:overview.png",
       "bytes": 221426
+    },
+    {
+      "file": "b1/20261009-1706_volcano-smoke.png",
+      "milestone": "B1",
+      "kind": "screenshot",
+      "caption": "BACKLOG 0a: the volcano now throws a dark ash column with embers at the vent",
+      "highlight": false,
+      "when": "2026-10-09T17:06:22.614Z",
+      "source": "external:volcano_smoke.png",
+      "bytes": 167494
     }
   ]
 }

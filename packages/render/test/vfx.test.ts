@@ -65,4 +65,26 @@ describe("vfx layer", () => {
     v.update(w, 1.4, 25, 25, 1);
     expect(v.drawnBy().ring).toBe(1);
   });
+
+  it("an erupting volcano draws a smoke column well above its cone, its lava rocks do not (BACKLOG 0a)", () => {
+    const w = world();
+    const v = new VfxLayer(makeBendUniforms());
+    const fx = (r: number) => {
+      const i = w.ents.index(w.ents.alloc(4, 0, 0, 30, 30, 1));
+      w.ents.progress[i] = r;
+      w.ents.type[i] = w.cfg.spellIndex.get("volcano") ?? 0;
+      return i;
+    };
+    const rock = fx(1.2);
+    v.update(w, 3, 30, 30, 1);
+    expect(v.drawnBy().smoke).toBe(0);
+    w.ents.free(w.ents.idOf(rock));
+    fx(4);
+    const gy = Math.max(w.terrain.heightAt(30, 30), w.terrain.sea);
+    for (const now of [0, 2.5, 7.1]) {
+      v.update(w, now, 30, 30, 1);
+      expect(v.drawnBy().smoke).toBe(30);
+      expect(v.smokeTop()).toBeGreaterThan(gy + 8);
+    }
+  });
 });

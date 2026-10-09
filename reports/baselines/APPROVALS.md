@@ -44,3 +44,4 @@
 - 2026-10-09T16:47 set levels (2 shots): BACKLOG 0a: building models at 1.3x (style.render.buildingScale); baseline diff only
 - 2026-10-09T17:03 set smoke (12 shots): BACKLOG 0a: terraced plateaus (generator terrace step 30, flat 0.6, rampSlope 18), trees on slopes up to 20
 - 2026-10-09T17:03 set spells2 (9 shots): BACKLOG 0a: terraced plateaus (generator terrace step 30, flat 0.6, rampSlope 18), trees on slopes up to 20
+- 2026-10-09T17:06 set spells (8 shots): BACKLOG 0a: volcano smoke column (dark ash puffs and embers over the erupting cone)

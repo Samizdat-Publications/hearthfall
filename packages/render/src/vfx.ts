@@ -63,6 +63,11 @@ const FX_STORM = 3;
 const FX_MOVER = 4;
 const FX_WRAITH = 6;
 
+/** Volcano smoke column (BACKLOG 0a): puffs per erupting cone, column height and rise rate (render only). */
+const SMOKE_PUFFS = 30;
+const SMOKE_HEIGHT = 13;
+const SMOKE_RISE = 0.09;
+
 export class VfxLayer {
   readonly group = new THREE.Group();
   private fx: Fx[] = [];
@@ -73,6 +78,8 @@ export class VfxLayer {
   private pools: THREE.InstancedMesh;
   /** Normal-blended rings (M11): colors that must keep their hue on bright ground (chant violet, melee dust). */
   private halos: THREE.InstancedMesh;
+  /** Normal-blended ash puffs (BACKLOG 0a): the volcano's smoke column must read dark against the sky. */
+  private smoke: THREE.InstancedMesh;
   private readonly m = new THREE.Matrix4();
   private readonly q = new THREE.Quaternion();
   private readonly s = new THREE.Vector3();
@@ -99,16 +106,27 @@ export class VfxLayer {
     this.swarm = add(new THREE.OctahedronGeometry(0.08));
     this.pools = add(new THREE.CircleGeometry(1, 20).rotateX(-Math.PI / 2), 0.45);
     this.halos = add(new THREE.RingGeometry(0.78, 1, 32).rotateX(-Math.PI / 2), 0.85, THREE.NormalBlending);
+    this.smoke = add(new THREE.IcosahedronGeometry(1, 1), 0.62, THREE.NormalBlending);
   }
 
   /** Effect instances drawn in the last update (shot checks: spell shots must show their VFX). */
   drawn(): number {
-    return this.flashes.count + this.rings.count + this.beams.count + this.swarm.count + this.pools.count + this.halos.count;
+    return this.flashes.count + this.rings.count + this.beams.count + this.swarm.count + this.pools.count + this.halos.count + this.smoke.count;
   }
 
   /** Drawn instances per kind in the last update (render tests). */
-  drawnBy(): { halo: number; ring: number; spark: number; flash: number } {
-    return { halo: this.halos.count, ring: this.rings.count, spark: this.swarm.count, flash: this.flashes.count };
+  drawnBy(): { halo: number; ring: number; spark: number; flash: number; smoke: number } {
+    return { halo: this.halos.count, ring: this.rings.count, spark: this.swarm.count, flash: this.flashes.count, smoke: this.smoke.count };
+  }
+
+  /** World-space top of the drawn smoke column (render tests): the highest puff center. */
+  smokeTop(): number {
+    let top = -Infinity;
+    for (let k = 0; k < this.smoke.count; k++) {
+      this.smoke.getMatrixAt(k, this.m);
+      top = Math.max(top, this.m.elements[13]);
+    }
+    return top;
   }
 
   /** Color of a drawn halo instance (render tests). */
@@ -240,8 +258,8 @@ export class VfxLayer {
     const n = w.terrain.size;
     const wrapX = (x: number) => focusX + (x - focusX - Math.round((x - focusX) / n) * n);
     const wrapZ = (z: number) => focusZ + (z - focusZ - Math.round((z - focusZ) / n) * n);
-    const counts = { flash: 0, ring: 0, beam: 0, spark: 0, halo: 0 };
-    const target = { flash: this.flashes, ring: this.rings, beam: this.beams, spark: this.swarm, halo: this.halos };
+    const counts = { flash: 0, ring: 0, beam: 0, spark: 0, halo: 0, smoke: 0 };
+    const target = { flash: this.flashes, ring: this.rings, beam: this.beams, spark: this.swarm, halo: this.halos, smoke: this.smoke };
     this.fx = this.fx.filter((f) => now - f.t0 < f.dur);
     for (const f of this.fx) {
       const a = (now - f.t0) / f.dur;
@@ -274,7 +292,7 @@ export class VfxLayer {
     // (pulsing discs), the whirlwind funnel, the wraith and the firerain zone; then unit status halos
     const E = w.ents;
     let pools = 0;
-    const dot = (x: number, y: number, z: number, scale: number, color: THREE.Color | string, im: THREE.InstancedMesh, kind: "spark" | "flash" | "halo" | "ring") => {
+    const dot = (x: number, y: number, z: number, scale: number, color: THREE.Color | string, im: THREE.InstancedMesh, kind: "spark" | "flash" | "halo" | "ring" | "smoke") => {
       if (counts[kind] >= im.instanceMatrix.count) return;
       this.p.set(wrapX(x), y, wrapZ(z));
       this.s.setScalar(scale);
@@ -321,6 +339,23 @@ export class VfxLayer {
         // firerain: a thin smouldering edge where the meteors can fall (dim, so the impacts stay the loud part)
         dot(E.x[i], gy + 0.09, E.y[i], r, this.c.set(SPELL_COLORS.firerain).multiplyScalar(0.3 + 0.1 * Math.sin(now * 6)), this.rings, "ring");
         continue;
+      }
+      if (spell === "volcano" && r >= 3) {
+        // the erupting cone (not its lava rocks): a leaning column of ash puffs that grow and pale as
+        // they rise, shrinking away at the top so the loop never pops, and embers spitting from the vent
+        for (let k = 0; k < SMOKE_PUFFS; k++) {
+          const p = (now * SMOKE_RISE + this.hash(k * 17 + i)) % 1;
+          const lean = p * p * 4;
+          const sway = 0.5 * p * Math.sin(now * 0.7 + k);
+          const size = (0.5 + 2.4 * p) * Math.min(1, (1 - p) * 5);
+          const shade = 0.035 + 0.13 * p;
+          dot(E.x[i] + lean + sway, gy + 0.6 + p * SMOKE_HEIGHT, E.y[i] + lean * 0.5 - sway, size, this.c.setRGB(shade, shade * 0.95, shade * 0.9), this.smoke, "smoke");
+        }
+        for (let k = 0; k < 8; k++) {
+          const p = (now * 0.8 + this.hash(k * 29 + i)) % 1;
+          const a = this.hash(k * 3 + i) * 6.28;
+          dot(E.x[i] + Math.cos(a) * p * 0.8, gy + 0.3 + p * 2.2, E.y[i] + Math.sin(a) * p * 0.8, 1.6 * (1 - p) + 0.2, SPELL_COLORS.volcano, this.swarm, "spark");
+        }
       }
       if (spell === "hornets") {
         for (let k = 0; k < 40 && counts.spark < this.swarm.instanceMatrix.count; k++) {
