@@ -275,7 +275,7 @@ export class CombatSystem {
     E.atk[i] = NO_ENTITY;
     E.mode[i] = CMODE.none;
     if (E.chant[i] > 0) this.interruptChant(i, "order");
-    if (E.inside[i] < 0 && (E.task[i] === TASK.toTrain || E.task[i] === TASK.toGarrison)) {
+    if (E.inside[i] < 0 && (E.task[i] === TASK.toTrain || E.task[i] === TASK.toGarrison || E.task[i] === TASK.toWorship || E.task[i] === TASK.worship)) {
       E.task[i] = TASK.idle;
       E.target[i] = NO_ENTITY;
     }

@@ -308,7 +308,37 @@ export const BuildingsFileSchema = z.strictObject({
     chopSecondsPerWood: pos,
     spread: z.strictObject({ enabled: z.boolean(), chancePerMinute: z.number().min(0).max(1) }),
   }),
-  worship: z.strictObject({ shrinePrayerSeconds: pos, missingWorshipperSpeedFactor: z.number().min(0).max(1) }),
+  /**
+   * Worship objects (DESIGN 10, M9). The M9 fields are optional so packs frozen before M9 keep their hash;
+   * a pack without `kinds` has no worship objects.
+   */
+  worship: z.strictObject({
+    ...comment,
+    shrinePrayerSeconds: pos,
+    missingWorshipperSpeedFactor: z.number().min(0).max(1),
+    /** a unit prays when within this many cells of the object */
+    radius: pos.optional(),
+    /** share of full progress lost per second while a tribe with progress has nobody praying */
+    decayPerSecond: z.number().min(0).max(1).optional(),
+    kinds: z
+      .array(
+        z.strictObject({
+          ...comment,
+          id,
+          /** default worshippers needed for full speed (1 to 8); a site can override */
+          worshippers: z.number().int().min(1).max(8),
+          /** default full-speed prayer seconds (else shrinePrayerSeconds) */
+          prayerSeconds: pos.optional(),
+          /** default number of times it grants its rewards */
+          uses: z.number().int().min(1),
+          /** removed from the map when its uses run out (a shrine sinks) */
+          sinks: z.boolean(),
+          /** only the Shaper's prayer counts (and it counts as all worshippers) */
+          shaperOnly: z.boolean().optional(),
+        }),
+      )
+      .optional(),
+  }),
 });
 export type BuildingDef = z.infer<typeof BuildingSchema>;
 export type BuildingsFile = z.infer<typeof BuildingsFileSchema>;
@@ -469,3 +499,96 @@ export interface PackFiles {
 
 /** Skirmish setup used when a pack has no `balance.skirmish` (packs frozen before M8). */
 export const SKIRMISH_DEFAULTS = { mapSizes: [96, 128, 192], defaultSize: 128, maps: ["continents", "islands"], maxOpponents: 3, defaultOpponents: ["aggressive"], defaultDifficulty: "normal" };
+
+// ---------------------------------------------------------------- worship sites, levels (M9, data/levels/*.json)
+const point = z.tuple([z.number(), z.number()]);
+
+/** What a worship site (or a level trigger) gives. Rewards go to the tribe that completed the prayer. */
+export const RewardSchema = z.discriminatedUnion("type", [
+  /** one-shot charges: usable even when the spell is not unlocked, never recharged unless it is */
+  z.strictObject({ type: z.literal("charges"), spell: id, n: z.number().int().min(1) }),
+  /** permanent spell unlock (reliquary) */
+  z.strictObject({ type: z.literal("unlockSpell"), spell: id }),
+  /** permanent building unlock, ignoring follower tiers and level limits */
+  z.strictObject({ type: z.literal("unlockBuilding"), building: id }),
+  /** a spell's effects at a point (the site when `at` is absent), cast by nobody: totem land bridges */
+  z.strictObject({ type: z.literal("spell"), spell: id, at: point.optional() }),
+  /** units for the rewarded tribe (or `tribe`, -1 for wild people) near a point (the site by default) */
+  z.strictObject({ type: z.literal("spawn"), unit: id, n: z.number().int().min(1).max(50), tribe: z.number().int().min(-1).optional(), at: point.optional() }),
+  /** a message for the player (HUD notification) */
+  z.strictObject({ type: z.literal("message"), text: z.string().min(1).max(160) }),
+]);
+export type Reward = z.infer<typeof RewardSchema>;
+
+/** One worship object on a map. Unset fields come from its kind in buildings.json worship.kinds. */
+export const SiteSpecSchema = z.strictObject({
+  tag: id.optional(),
+  worshippers: z.number().int().min(1).max(8).optional(),
+  prayerSeconds: pos.optional(),
+  uses: z.number().int().min(1).optional(),
+  rewards: z.array(RewardSchema),
+});
+export type SiteSpec = z.infer<typeof SiteSpecSchema>;
+
+const LevelSetup = z.strictObject({
+  /** unit, building, worship kind or "tree" */
+  spawn: id,
+  tribe: z.number().int().min(-1).optional(),
+  at: point.optional(),
+  near: point.optional(),
+  count: z.number().int().min(1).max(200).optional(),
+  spacing: pos.optional(),
+  site: SiteSpecSchema.optional(),
+});
+
+export const ObjectiveSchema = z.discriminatedUnion("type", [
+  z.strictObject({ type: z.literal("eliminateAll"), text: z.string().optional() }),
+  z.strictObject({ type: z.literal("worship"), site: id, text: z.string().optional() }),
+  z.strictObject({ type: z.literal("survive"), seconds: pos, text: z.string().optional() }),
+  z.strictObject({ type: z.literal("followers"), n: z.number().int().min(1), text: z.string().optional() }),
+]);
+export type Objective = z.infer<typeof ObjectiveSchema>;
+
+export const LoseSchema = z.discriminatedUnion("type", [
+  /** the player's tribe is eliminated (always on) */
+  z.strictObject({ type: z.literal("eliminated") }),
+  z.strictObject({ type: z.literal("timeLimit"), seconds: pos }),
+  /** a rival completes this site first */
+  z.strictObject({ type: z.literal("siteLost"), site: id }),
+]);
+export type LoseCondition = z.infer<typeof LoseSchema>;
+
+export const TriggerSchema = z.strictObject({
+  when: z.discriminatedUnion("type", [
+    z.strictObject({ type: z.literal("time"), seconds: pos }),
+    z.strictObject({ type: z.literal("worship"), site: id }),
+    z.strictObject({ type: z.literal("objective"), index: z.number().int().min(0) }),
+  ]),
+  /** actions use the reward vocabulary; the receiving tribe is the player (0) unless the trigger is a worship by another tribe */
+  do: z.array(RewardSchema).min(1),
+});
+export type Trigger = z.infer<typeof TriggerSchema>;
+
+export const LevelSchema = z.strictObject({
+  ...comment,
+  id,
+  name: z.string().min(1).max(40),
+  /** campaign order (1 first) */
+  order: z.number().int().min(1),
+  description: z.string().min(1).max(300),
+  seed: z.number().int(),
+  map: z.strictObject({ generator: z.string(), size: z.number().int().min(32).multipleOf(32), landAboveSea: z.number().optional() }),
+  /** tribe 0 is the player; the others are AI opponents by personality */
+  tribes: z.array(z.strictObject({ ai: id.optional(), difficulty: id.optional() })).min(1).max(4),
+  /** spells unlocked at the start for every tribe (campaign unlocks are added for the player) */
+  spells: z.array(id),
+  /** buildings every tribe may build (others need an unlockBuilding reward); absent means all */
+  buildings: z.array(id).optional(),
+  setup: z.array(LevelSetup).min(1),
+  objectives: z.array(ObjectiveSchema).min(1),
+  lose: z.array(LoseSchema).optional(),
+  triggers: z.array(TriggerSchema).optional(),
+  /** carried forward in the campaign when the level is won */
+  unlocks: z.strictObject({ spells: z.array(id).optional(), buildings: z.array(id).optional() }).optional(),
+});
+export type LevelDef = z.infer<typeof LevelSchema>;

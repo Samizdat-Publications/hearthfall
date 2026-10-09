@@ -14,6 +14,7 @@ import { BSTATE, cloneEco, EconomySystem, newTribeEco, type TribeEco } from "./e
 import { isShaper, onShaperDeath, updateSpells, type CastState, type PendingCast } from "./spells.ts";
 import { updateEffects } from "./effects.ts";
 import { CombatSystem } from "./combat.ts";
+import { WorshipSystem, type WorshipState } from "./worship.ts";
 
 /** Deterministic in-sim decision maker (AI opponent or test bot); emits Commands at its cadence. */
 export interface Controller {
@@ -79,6 +80,8 @@ export interface WorldSnapshot {
   paths: [number, Int32Array][];
   pathQueue: number[];
   unitsTerrainVersion: number;
+  /** M9: present only when the world has worship sites or granted buildings */
+  worship?: WorshipState;
 }
 
 export class World {
@@ -99,6 +102,7 @@ export class World {
   units: UnitSystem;
   economy: EconomySystem;
   combat: CombatSystem;
+  worship: WorshipSystem;
   controllers: Controller[] = [];
   readonly mapInfo: { generator: string; seedUsed: number; rerolls: number; landFraction: number };
 
@@ -113,6 +117,7 @@ export class World {
     this.units = new UnitSystem(this);
     this.economy = new EconomySystem(this);
     this.combat = new CombatSystem(this);
+    this.worship = new WorshipSystem(this);
     const tribeCount = init.map.tribes ?? gen.hearths.length;
     for (let t = 0; t < tribeCount; t++) this.tribes.push({ index: t, color: TRIBE_COLORS[t % 4], hearth: NO_ENTITY, alive: true, eco: newTribeEco(this), shaper: NO_ENTITY, respawnAt: -1, casting: null, pending: null });
     if (init.populate !== false) {
@@ -248,15 +253,12 @@ export class World {
     // 6b. combat: targeting, swings and shots, chants, training queues, garrisons, Shaper regen
     this.combat.update();
     // 7. terrain ops (breaking nearby chants), then drowning
-    if (this.terrainQueue.length) {
-      this.combat.onTerrainOps(this.terrainQueue);
-      for (const op of this.terrainQueue) this.terrain.apply(op);
-      this.terrainQueue = [];
-      this.drownCheck();
-    }
+    this.flushTerrain();
     // 8. economy: construction, dwellings, breeding, trees, mana
     this.economy.update();
-    // 9. worship, triggers, objectives: land in M9
+    // 9. worship (rewards may queue terrain ops: applied in the same tick so snapshots stay legal)
+    this.worship.update();
+    this.flushTerrain();
     // 10. periodic upkeep
     if (this.tick % this.cfg.tickHz === this.cfg.tickHz - 1) this.terrain.healScars();
     this.tick++;
@@ -364,6 +366,14 @@ export class World {
     return out;
   }
 
+  private flushTerrain(): void {
+    if (!this.terrainQueue.length) return;
+    this.combat.onTerrainOps(this.terrainQueue);
+    for (const op of this.terrainQueue) this.terrain.apply(op);
+    this.terrainQueue = [];
+    this.drownCheck();
+  }
+
   /** Units standing in water deeper than drownDepth drown; trees under water are lost. */
   drownCheck(): void {
     const e = this.ents;
@@ -401,6 +411,7 @@ export class World {
       if (t.pending) mf.u32(t.pending.spell + 1000).f64(t.pending.x).f64(t.pending.y).f64(t.pending.best);
       mf.bytes(t.eco.charges).bytes(t.eco.progress).bytes(t.eco.auto).bytes(t.eco.unlocked);
     }
+    this.worship.hashInto(mf);
     const meta = mf.hex();
     const all = new Fnv().u32(parseInt(terrain, 16)).u32(parseInt(entities, 16)).u32(parseInt(rng, 16)).u32(parseInt(meta, 16)).hex();
     return { all, terrain, entities, rng, meta };
@@ -427,6 +438,7 @@ export class World {
       paths: this.units.paths.map((p, i) => (p ? ([i, p.slice()] as [number, Int32Array]) : null)).filter((x): x is [number, Int32Array] => x !== null),
       pathQueue: this.units.queue.slice(),
       unitsTerrainVersion: this.units.lastVersion,
+      ...(this.worship.sites.length || this.worship.granted.some((g) => g.length) ? { worship: this.worship.save() } : {}),
     };
   }
 
@@ -450,6 +462,7 @@ export class World {
     for (const [i, p] of snap.paths) w.units.paths[i] = p.slice();
     w.units.queue = snap.pathQueue.slice();
     w.units.lastVersion = snap.unitsTerrainVersion;
+    if (snap.worship) w.worship.load(snap.worship);
     return w;
   }
 

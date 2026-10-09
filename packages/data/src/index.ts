@@ -1,6 +1,6 @@
 // Data pack loading: validation, cross references, canonical hashing and mod merge rules.
 // Browser safe (no node imports); disk access lives in tools/harness.
-import { PACK_FILES, type PackFileName, type PackFiles } from "./schemas.ts";
+import { LevelSchema, PACK_FILES, type LevelDef, type PackFileName, type PackFiles, type Reward } from "./schemas.ts";
 
 export * from "./schemas.ts";
 
@@ -160,3 +160,66 @@ export function secondsToTicks(seconds: number, tickHz: number): number {
   if (seconds <= 0) return 0;
   return Math.max(1, Math.round(seconds * tickHz));
 }
+
+/**
+ * Validate one level file (data/levels/<id>.json, M9) against its schema and a pack: every spell,
+ * building, unit, worship kind, personality and difficulty exists, and site tags that objectives,
+ * lose conditions and triggers name are placed in the setup. Levels are not part of the pack hash.
+ */
+export function validateLevel(raw: unknown, pack: PackFiles, file = "level"): { issues: PackIssue[]; level?: LevelDef } {
+  const res = LevelSchema.safeParse(raw);
+  if (!res.success) return { issues: res.error.issues.map((i) => ({ file, path: i.path.join("."), message: i.message })) };
+  const lv = res.data;
+  const issues: PackIssue[] = [];
+  const bad = (path: string, message: string) => issues.push({ file, path, message });
+  const spells = new Set(pack.spells.spells.map((s) => s.id));
+  const buildings = new Set(pack.buildings.buildings.map((b) => b.id));
+  const units = new Set(pack.units.units.map((u) => u.id));
+  const kinds = new Set((pack.buildings.worship.kinds ?? []).map((k) => k.id));
+  const persons = new Set(pack.ai.personalities.map((p) => p.id));
+  const diffs = new Set(pack.ai.difficulties.map((d) => d.id));
+  lv.spells.forEach((s, k) => spells.has(s) || bad(`spells.${k}`, `unknown spell ${s}`));
+  lv.buildings?.forEach((b, k) => buildings.has(b) || bad(`buildings.${k}`, `unknown building ${b}`));
+  lv.unlocks?.spells?.forEach((s, k) => spells.has(s) || bad(`unlocks.spells.${k}`, `unknown spell ${s}`));
+  lv.unlocks?.buildings?.forEach((b, k) => buildings.has(b) || bad(`unlocks.buildings.${k}`, `unknown building ${b}`));
+  lv.tribes.forEach((t, k) => {
+    if (k === 0 && t.ai) bad("tribes.0.ai", "tribe 0 is the player");
+    if (k > 0 && !t.ai) bad(`tribes.${k}.ai`, "opponents need a personality");
+    if (t.ai && !persons.has(t.ai)) bad(`tribes.${k}.ai`, `unknown personality ${t.ai}`);
+    if (t.difficulty && !diffs.has(t.difficulty)) bad(`tribes.${k}.difficulty`, `unknown difficulty ${t.difficulty}`);
+  });
+  const reward = (r: Reward, path: string) => {
+    if ((r.type === "charges" || r.type === "unlockSpell" || r.type === "spell") && !spells.has(r.spell)) bad(path, `unknown spell ${r.spell}`);
+    if (r.type === "unlockBuilding" && !buildings.has(r.building)) bad(path, `unknown building ${r.building}`);
+    if (r.type === "spawn" && !units.has(r.unit)) bad(path, `unknown unit ${r.unit}`);
+    if (r.type === "spawn" && r.tribe !== undefined && r.tribe >= lv.tribes.length) bad(path, `no tribe ${r.tribe}`);
+  };
+  const tags = new Set<string>();
+  const hearths = new Set<number>();
+  lv.setup.forEach((s, k) => {
+    const path = `setup.${k}`;
+    if (!s.at && !s.near) bad(path, "needs at or near");
+    if (s.tribe !== undefined && s.tribe >= lv.tribes.length) bad(path, `no tribe ${s.tribe}`);
+    if (kinds.has(s.spawn)) {
+      if (!s.site) bad(path, `worship object ${s.spawn} needs a site`);
+      if (s.site?.tag) {
+        if (tags.has(s.site.tag)) bad(path, `duplicate site tag ${s.site.tag}`);
+        tags.add(s.site.tag);
+      }
+      s.site?.rewards.forEach((r, j) => reward(r, `${path}.site.rewards.${j}`));
+    } else if (s.site) bad(path, `${s.spawn} is not a worship object`);
+    else if (s.spawn !== "tree" && !units.has(s.spawn) && !buildings.has(s.spawn)) bad(path, `unknown spawn ${s.spawn}`);
+    if (s.spawn === "hearth" && s.tribe !== undefined && s.tribe >= 0) hearths.add(s.tribe);
+  });
+  lv.tribes.forEach((_, k) => hearths.has(k) || bad("setup", `tribe ${k} has no hearth`));
+  lv.objectives.forEach((o, k) => o.type === "worship" && !tags.has(o.site) && bad(`objectives.${k}`, `no site tagged ${o.site}`));
+  lv.lose?.forEach((o, k) => o.type === "siteLost" && !tags.has(o.site) && bad(`lose.${k}`, `no site tagged ${o.site}`));
+  lv.triggers?.forEach((t, k) => {
+    if (t.when.type === "worship" && !tags.has(t.when.site)) bad(`triggers.${k}.when`, `no site tagged ${t.when.site}`);
+    if (t.when.type === "objective" && t.when.index >= lv.objectives.length) bad(`triggers.${k}.when`, `no objective ${t.when.index}`);
+    t.do.forEach((r, j) => reward(r, `triggers.${k}.do.${j}`));
+  });
+  if (lv.objectives.some((o) => o.type === "eliminateAll") && lv.tribes.length < 2) bad("objectives", "eliminateAll needs an opponent");
+  return issues.length ? { issues } : { issues, level: lv };
+}
+

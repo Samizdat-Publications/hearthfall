@@ -57,7 +57,8 @@ registerCommand("cast", {
     const s = w.cfg.spellIndex.get(String(c.args.spell));
     if (s === undefined) return `unknown spell ${String(c.args.spell)}`;
     const t = w.tribes[c.tribe];
-    if (!t.eco.unlocked[s]) return "spell not unlocked";
+    // a locked spell can still be cast from one-shot charges (shrine rewards, M9)
+    if (!t.eco.unlocked[s] && t.eco.charges[s] <= 0) return "spell not unlocked";
     if (t.eco.charges[s] <= 0) return "no charge";
     if (t.casting) return "already casting";
     if (shaperIndex(w, c.tribe) < 0) return "the Shaper is dead";

@@ -208,6 +208,9 @@
     "worship": {
       "type": "object",
       "properties": {
+        "$comment": {
+          "type": "string"
+        },
         "shrinePrayerSeconds": {
           "type": "number",
           "minimum": 0
@@ -216,6 +219,57 @@
           "type": "number",
           "minimum": 0,
           "maximum": 1
+        },
+        "radius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "decayPerSecond": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "kinds": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "$comment": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*$"
+              },
+              "worshippers": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 8
+              },
+              "prayerSeconds": {
+                "type": "number",
+                "minimum": 0
+              },
+              "uses": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "sinks": {
+                "type": "boolean"
+              },
+              "shaperOnly": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "worshippers",
+              "uses",
+              "sinks"
+            ],
+            "additionalProperties": false
+          }
         }
       },
       "required": [

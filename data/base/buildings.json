@@ -141,6 +141,13 @@
   },
   "worship": {
     "shrinePrayerSeconds": 37.5,
-    "missingWorshipperSpeedFactor": 0.5
+    "missingWorshipperSpeedFactor": 0.5,
+    "radius": 3,
+    "decayPerSecond": 0.02,
+    "kinds": [
+      { "$comment": "one-shot spell charges or a building, then sinks", "id": "shrine", "worshippers": 4, "uses": 1, "sinks": true },
+      { "$comment": "permanent spell or building unlock; stays as a spent landmark", "id": "reliquary", "worshippers": 6, "prayerSeconds": 60, "uses": 1, "sinks": false },
+      { "$comment": "level-scripted trigger: only the Shaper's prayer counts", "id": "totem", "worshippers": 1, "prayerSeconds": 8, "uses": 1, "sinks": false, "shaperOnly": true }
+    ]
   }
 }

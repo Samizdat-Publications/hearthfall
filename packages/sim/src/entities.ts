@@ -6,7 +6,7 @@ export type EntityId = number;
 export const NO_ENTITY = 0xffffffff;
 
 /** Entity categories. `type` indexes the matching data list (units, buildings) or 0. */
-export const CAT = { none: 0, tree: 1, building: 2, unit: 3, effect: 4 } as const;
+export const CAT = { none: 0, tree: 1, building: 2, unit: 3, effect: 4, worship: 5 } as const;
 
 type Col = Int8Array | Uint8Array | Uint16Array | Int32Array | Uint32Array | Float64Array;
 type ColCtor = new (n: number) => Col;

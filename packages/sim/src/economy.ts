@@ -9,7 +9,7 @@ import type { World } from "./world.ts";
 
 /** Settler task states. */
 /** Unit tasks. 9 to 12 (training and garrison) are driven by the combat system (M6). */
-export const TASK = { idle: 0, toTree: 1, chop: 2, haul: 3, toWork: 4, work: 5, toHome: 6, home: 7, wander: 8, toTrain: 9, training: 10, toGarrison: 11, garrison: 12 } as const;
+export const TASK = { idle: 0, toTree: 1, chop: 2, haul: 3, toWork: 4, work: 5, toHome: 6, home: 7, wander: 8, toTrain: 9, training: 10, toGarrison: 11, garrison: 12, toWorship: 13, worship: 14 } as const;
 /** Building states (state column). */
 export const BSTATE = { plan: 0, flatten: 1, build: 2, done: 3 } as const;
 /** Tree state: 0 normal, 1 doomed (inside a plan footprint, removed when chopped out). */
@@ -99,6 +99,8 @@ export class EconomySystem {
     const t = this.w.tribes[tribe];
     if (!t) return null;
     const id = this.w.cfg.pack.buildings.buildings[type].id;
+    // M9: a worship reward opens a building regardless of tier
+    if (this.w.worship.isGranted(tribe, type)) return null;
     const tiers = this.w.cfg.pack.balance.progression.tiers;
     const k = tiers.findIndex((x) => x.buildings.includes(id));
     return k > t.eco.tier ? `needs ${tiers[k].followers} followers` : null;
@@ -159,6 +161,15 @@ export class EconomySystem {
       const dx = Math.abs(wrapDelta(E.x[i] - (x0 + fw / 2), t.size));
       const dy = Math.abs(wrapDelta(E.y[i] - (y0 + fh / 2), t.size));
       if (dx < (fw + od.footprint[0]) / 2 + gap && dy < (fh + od.footprint[1]) / 2 + gap) return "overlaps a building";
+    }
+    // M9: keep the prayer ring around worship objects clear
+    const keep = w.worship.radius();
+    for (const s of w.worship.sites) {
+      const si = E.index(s.ent);
+      if (si < 0) continue;
+      const dx = Math.abs(wrapDelta(E.x[si] - (x0 + fw / 2), t.size));
+      const dy = Math.abs(wrapDelta(E.y[si] - (y0 + fh / 2), t.size));
+      if (dx < fw / 2 + keep && dy < fh / 2 + keep) return "too close to a worship site";
     }
     return null;
   }
