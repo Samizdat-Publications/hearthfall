@@ -290,6 +290,26 @@ export class World {
     return out;
   }
 
+  /**
+   * Entity argument of a command: an entity id, or a selector "tribeN.<unit or building id>s" naming
+   * the lowest-index living match (scenarios cannot know ids). Returns the index or -1.
+   */
+  resolveEntity(arg: unknown): number {
+    const E = this.ents;
+    if (typeof arg === "number") return E.index(arg);
+    if (typeof arg !== "string") return -1;
+    const m = arg.match(/^tribe(\d)\.([a-z_]+)s$/);
+    if (!m) return -1;
+    const tribe = Number(m[1]);
+    const u = this.cfg.unitIndex.get(m[2]);
+    const b = this.cfg.buildingIndex.get(m[2]);
+    for (let i = 0; i < E.hi; i++) {
+      if (!E.alive[i] || E.tribe[i] !== tribe) continue;
+      if ((u !== undefined && E.cat[i] === CAT.unit && E.type[i] === u) || (b !== undefined && E.cat[i] === CAT.building && E.type[i] === b)) return i;
+    }
+    return -1;
+  }
+
   /** Invariant violations at the current tick (soak and tests). Empty when healthy. */
   invariants(): string[] {
     const E = this.ents;

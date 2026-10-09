@@ -1,0 +1,128 @@
+{
+  "id": "combat_lodge_trains_to_rally",
+  "description": "A Warden lodge trains two queued settlers once the training sink has collected their mana (idle settlers only, so it takes about two minutes), then sends them to its rally point.",
+  "tags": [
+    "fast",
+    "combat"
+  ],
+  "seed": 61,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2
+  },
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        4,
+        4
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        8,
+        8
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        36,
+        4
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        40,
+        8
+      ]
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 0,
+      "at": [
+        20,
+        20
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        24,
+        24
+      ],
+      "count": 6,
+      "spacing": 0.8
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": 0,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 0,
+      "type": "setSplit",
+      "args": {
+        "spellsPct": 0
+      }
+    },
+    {
+      "tick": 1,
+      "tribe": 0,
+      "type": "setRally",
+      "args": {
+        "building": "tribe0.warden_lodges",
+        "at": [
+          30,
+          20
+        ]
+      }
+    },
+    {
+      "tick": 2,
+      "tribe": 0,
+      "type": "train",
+      "args": {
+        "building": "tribe0.warden_lodges",
+        "count": 2
+      }
+    }
+  ],
+  "runTicks": 3600,
+  "assert": [
+    {
+      "at": 400,
+      "expr": "events.count('trainOrdered') == 1 && events.count('trained') == 0"
+    },
+    {
+      "at": 3600,
+      "expr": "events.count('trained') == 2 && count(tribe0.wardens, near([30,20], 3)) == 2 && count(tribe0.settlers) == 4 && invariants() == 0"
+    }
+  ]
+}

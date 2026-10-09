@@ -1,0 +1,113 @@
+{
+  "id": "combat_tower_retreat_and_range",
+  "description": "Retreat sends troops into the nearest Watchtower; the garrison shoots enemies out of normal range and cannot be hit.",
+  "tags": [
+    "fast",
+    "combat"
+  ],
+  "seed": 61,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2
+  },
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        4,
+        4
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        8,
+        8
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        36,
+        4
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        40,
+        8
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 0,
+      "at": [
+        20,
+        30
+      ]
+    },
+    {
+      "spawn": "firecaller",
+      "tribe": 0,
+      "at": [
+        22,
+        32
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "at": [
+        22,
+        33
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": 0,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 0,
+      "type": "retreat",
+      "args": {
+        "units": "tribe0.units"
+      }
+    }
+  ],
+  "runTicks": 600,
+  "assert": [
+    {
+      "at": 200,
+      "expr": "events.count('garrisoned') == 2"
+    },
+    {
+      "at": 600,
+      "expr": "invariants() == 0"
+    }
+  ]
+}

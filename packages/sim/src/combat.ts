@@ -723,7 +723,7 @@ function ownUnits(w: World, c: Command): number[] | string {
 
 /** An own finished building by id, or an error string. */
 function ownBuilding(w: World, c: Command, field = "building"): number | string {
-  const b = w.ents.index(Number(c.args[field]));
+  const b = w.resolveEntity(c.args[field]);
   if (b < 0 || w.ents.cat[b] !== CAT.building) return "no such building";
   if (c.tribe !== -1 && w.ents.tribe[b] !== c.tribe) return "not your building";
   if (w.ents.state[b] !== BSTATE.done) return "building not finished";
@@ -735,14 +735,14 @@ registerCommand("attack", {
   validate(w, c) {
     const idx = ownUnits(w, c);
     if (typeof idx === "string") return idx;
-    const t = w.ents.index(Number(c.args.target));
+    const t = w.resolveEntity(c.args.target);
     if (t < 0 || (w.ents.cat[t] !== CAT.unit && w.ents.cat[t] !== CAT.building)) return "no such target";
     if (w.ents.tribe[t] < 0 || w.ents.tribe[t] === w.ents.tribe[idx[0]]) return "target is not an enemy";
     return null;
   },
   apply(w, c) {
     const E = w.ents;
-    const t = E.index(Number(c.args.target));
+    const t = w.resolveEntity(c.args.target);
     for (const i of w.selectUnits(c.args.units)) {
       for (const tr of w.tribes) if (tr.pending && E.index(tr.shaper) === i) tr.pending = null;
       w.combat.clear(i);
@@ -789,7 +789,7 @@ registerCommand("train", {
   },
   apply(w, c) {
     const E = w.ents;
-    const b = E.index(Number(c.args.building));
+    const b = w.resolveEntity(c.args.building);
     const room = (w.cfg.pack.buildings.buildings[E.type[b]].queueMax ?? 5) - (w.combat.queued().get(b) ?? 0);
     let pick: number[];
     if (c.args.units !== undefined) pick = w.selectUnits(c.args.units);
@@ -826,7 +826,7 @@ registerCommand("setRally", {
   },
   apply(w, c) {
     const E = w.ents;
-    const b = E.index(Number(c.args.building));
+    const b = w.resolveEntity(c.args.building);
     if (c.args.at === null) {
       E.mode[b] = 0;
       return;
@@ -851,7 +851,7 @@ registerCommand("garrison", {
     return null;
   },
   apply(w, c) {
-    const b = w.ents.index(Number(c.args.building));
+    const b = w.resolveEntity(c.args.building);
     let room = w.combat.garrisonOf(w.ents.type[b]) - (w.combat.queued().get(b) ?? 0);
     for (const i of w.selectUnits(c.args.units)) {
       if (room <= 0) break;
@@ -871,7 +871,7 @@ registerCommand("ungarrison", {
   },
   apply(w, c) {
     const E = w.ents;
-    const b = E.index(Number(c.args.building));
+    const b = w.resolveEntity(c.args.building);
     for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.cat[i] === CAT.unit && E.inside[i] === b && E.task[i] === TASK.garrison) w.combat.leave(i);
   },
 });

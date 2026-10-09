@@ -1,0 +1,97 @@
+{
+  "id": "combat_warden_melee_kills",
+  "description": "An idle aggressive Warden acquires an enemy settler inside acquireRadius and kills it with melee swings.",
+  "tags": [
+    "fast",
+    "combat"
+  ],
+  "seed": 61,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2
+  },
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        4,
+        4
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        8,
+        8
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        36,
+        4
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        40,
+        8
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "at": [
+        30,
+        30
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "at": [
+        34,
+        30
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": 0,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    }
+  ],
+  "runTicks": 400,
+  "assert": [
+    {
+      "at": 0,
+      "expr": "count(tribe1.settlers) == 1"
+    },
+    {
+      "at": 400,
+      "expr": "count(tribe1.settlers) == 0 && events.count('melee') > 0 && count(tribe0.wardens) == 1 && invariants() == 0"
+    }
+  ]
+}

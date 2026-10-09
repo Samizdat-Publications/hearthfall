@@ -1,0 +1,115 @@
+{
+  "id": "combat_attack_move_fights_then_arrives",
+  "description": "Attack-move fights an enemy met on the way, then resumes to the goal.",
+  "tags": [
+    "fast",
+    "combat"
+  ],
+  "seed": 61,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2
+  },
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        4,
+        4
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        8,
+        8
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        36,
+        4
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        40,
+        8
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "at": [
+        10,
+        30
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "at": [
+        20,
+        31
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": 0,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setStance",
+      "args": {
+        "units": "tribe1.settlers",
+        "stance": "passive"
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.wardens",
+        "to": [
+          40,
+          30
+        ],
+        "attack": true
+      }
+    }
+  ],
+  "runTicks": 900,
+  "assert": [
+    {
+      "at": 900,
+      "expr": "count(tribe1.settlers) == 0 && count(tribe0.wardens, near([40,30], 2)) == 1 && invariants() == 0"
+    }
+  ]
+}

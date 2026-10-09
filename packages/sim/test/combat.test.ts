@@ -300,6 +300,20 @@ describe("combat (M6)", () => {
     expect(w.invariants()).toEqual([]);
   });
 
+  it("entity arguments accept a tribe selector (scenarios cannot know ids)", () => {
+    const w = arena();
+    const lodge = w.spawnBuilding("warden_lodge", 0, 20, 20);
+    const t = w.spawnUnit("settler", 1, 40, 40);
+    expect(w.resolveEntity("tribe0.warden_lodges")).toBe(w.ents.index(lodge));
+    expect(w.resolveEntity(lodge)).toBe(w.ents.index(lodge));
+    expect(w.resolveEntity("tribe1.settlers")).toBe(w.ents.index(t));
+    for (const bad of ["tribe1.warden_lodges", "tribe0.nothings", "warden_lodges", {}, null]) expect(w.resolveEntity(bad)).toBe(-1);
+    w.step(cmd(0, "setRally", { building: "tribe0.warden_lodges", at: [30, 20] }));
+    expect(w.eventCounts.get("commandRejected") ?? 0).toBe(0);
+    w.step(cmd(0, "setRally", { building: "tribe1.warden_lodges", at: [30, 20] }));
+    expect(w.eventCounts.get("commandRejected")).toBe(1);
+  });
+
   it("setStance validates and applies", () => {
     const w = arena();
     const a = w.spawnUnit("warden", 0, 20, 30);

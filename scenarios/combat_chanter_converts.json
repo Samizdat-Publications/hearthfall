@@ -1,0 +1,104 @@
+{
+  "id": "combat_chanter_converts",
+  "description": "A Chanter channels next to enemy Wardens, entrances them and converts up to its per-channel cap.",
+  "tags": [
+    "fast",
+    "combat"
+  ],
+  "seed": 61,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2
+  },
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        4,
+        4
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        8,
+        8
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        36,
+        4
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        40,
+        8
+      ]
+    },
+    {
+      "spawn": "chanter",
+      "tribe": 0,
+      "at": [
+        20,
+        30
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        23,
+        30
+      ],
+      "count": 4,
+      "spacing": 0.6
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": 0,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setStance",
+      "args": {
+        "units": "tribe1.wardens",
+        "stance": "passive"
+      }
+    }
+  ],
+  "runTicks": 200,
+  "assert": [
+    {
+      "at": 200,
+      "expr": "events.count('chantBegun') >= 1 && events.count('converted') == 3 && count(tribe0.wardens) == 3 && count(tribe1.wardens) == 1 && invariants() == 0"
+    }
+  ]
+}

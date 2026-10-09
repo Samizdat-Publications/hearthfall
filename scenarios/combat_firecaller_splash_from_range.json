@@ -1,0 +1,104 @@
+{
+  "id": "combat_firecaller_splash_from_range",
+  "description": "A Firecaller shoots a clustered group from range: fireballs splash several targets (total damage beyond single hits) and knock them apart.",
+  "tags": [
+    "fast",
+    "combat"
+  ],
+  "seed": 61,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2
+  },
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        4,
+        4
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        8,
+        8
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        36,
+        4
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        40,
+        8
+      ]
+    },
+    {
+      "spawn": "firecaller",
+      "tribe": 0,
+      "at": [
+        20,
+        32
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        26,
+        32
+      ],
+      "count": 4,
+      "spacing": 0.6
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": 0,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setStance",
+      "args": {
+        "units": "tribe1.settlers",
+        "stance": "passive"
+      }
+    }
+  ],
+  "runTicks": 600,
+  "assert": [
+    {
+      "at": 600,
+      "expr": "events.count('fireball') >= 5 && hp(tribe1.settlers) < 3000 && count(tribe1.settlers, near([26,32], 1)) < 4 && count(tribe0.firecallers) == 1 && invariants() == 0"
+    }
+  ]
+}
