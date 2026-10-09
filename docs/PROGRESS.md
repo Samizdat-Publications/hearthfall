@@ -4,6 +4,7 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 
 ## Now
 - Run started: 2026-10-08T21:25:00Z
+- BACKLOG 0a PARTLY DONE: tall conifers (70 percent of trees) and a grove ring around every Hearth; soak fixes (AI casts only within reach across landmasses, train by count picks reachable settlers); battle bench back to 4.9 ms (acquire corner pruning, chant scans once). Full npm run qa PASS at 6988e09 (2026-10-09T16:50Z).
 - BACKLOG 7 DONE (soft gates, misses below): fair lodge payments (the AI trained only Wardens), Chanter rework (6 s channel, no freeze, melee breaks it), AI hunts a Hearthless Shaper (bridge or Lightning), personality data, detour and drowning fixes. ai-idle, ai and bots soaks PASS.
 - BACKLOG (after M11, top down): 1 DONE (and 53): all 16 spells. Veil, Ward, Beguile, Whirlwind, Mire, Erode, Firerain, Wraith as data plus primitives, 9 scenarios, spells2 shot set (approved), icons, AI targeting, skirmish Reliquaries teach them (ADR-010), second hotkey row. Soak note for 7: sneaky won 5 of 8.
 - Milestone: M11 done (tag m11-done; roadmap complete, now BACKLOG top down). M11 shipped: tribe rings under units and a larger Shaper, lighter trees, combat VFX readability (BACKLOG 57), boot screen, fatal panel with cause, frame loop failure and context loss handling, production build served statically (npm run serve, prod qa layer), State of the game section below. Opus review: 3 blockers fixed (frame error handling, static server containment, controls text), follow-ups in BACKLOG 96. M10 done (tag m10-done).
@@ -23,9 +24,9 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 - Subagents: project agents are registered again (milestone-reviewer, qa-runner, ...); call them by type.
 
 ## Next 3 actions
-1. BACKLOG P1 0a: tall conifers are in props.ts (uncommitted, tested); view the smoke sheet, approve baselines, then pine belts around Hearths, terraced plateaus, volcano smoke, village scale.
-2. Full npm run qa (due), then BACKLOG P1 0c, 2 to 6, 8 in order.
-3. Re-run the full soak and shot sets every 3 backlog items (next after 0c); full npm run qa at least every 4 hours.
+1. BACKLOG P1 0a rest: HUD icon audit, village scale, terraced plateaus (generator, data), volcano smoke column.
+2. Then BACKLOG P1 0c, 2 to 6, 8 in order.
+3. Re-run the full soak and shot sets every 3 backlog items (next after 0c); full npm run qa at least every 4 hours (last 16:50Z).
 
 ## Blocked
 (none)
