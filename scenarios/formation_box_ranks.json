@@ -1,0 +1,162 @@
+{
+  "id": "formation_box_ranks",
+  "description": "BACKLOG 4: a group move with formation box spreads the group into slots around the goal (wardens in front, ranged and the Shaper behind) instead of crowding the point.",
+  "tags": [
+    "fast",
+    "combat"
+  ],
+  "seed": 62,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2
+  },
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        4,
+        4
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        8,
+        30
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        36,
+        4
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        40,
+        8
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "at": [
+        9,
+        27
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "at": [
+        10,
+        27
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "at": [
+        11,
+        27
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "at": [
+        9,
+        29
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "at": [
+        10,
+        29
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "at": [
+        11,
+        29
+      ]
+    },
+    {
+      "spawn": "firecaller",
+      "tribe": 0,
+      "at": [
+        9,
+        31
+      ]
+    },
+    {
+      "spawn": "firecaller",
+      "tribe": 0,
+      "at": [
+        10,
+        31
+      ]
+    },
+    {
+      "spawn": "chanter",
+      "tribe": 0,
+      "at": [
+        11,
+        31
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": 0,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.units",
+        "to": [
+          40,
+          30
+        ],
+        "formation": "box"
+      }
+    }
+  ],
+  "runTicks": 900,
+  "assert": [
+    {
+      "at": 900,
+      "expr": "count(tribe0.units, near([40,30], 4), idle) == 10 && count(tribe0.units, near([40,30], 0.45)) <= 1 && count(tribe0.wardens, near([40.6,30], 2.7)) == 3 && invariants() == 0"
+    }
+  ]
+}

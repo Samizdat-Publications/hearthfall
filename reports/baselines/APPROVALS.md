@@ -55,3 +55,9 @@
 - 2026-10-09T18:17 set smoke (12 shots): BACKLOG 3: fog of war darkens unexplored ground, hides unseen units, minimap fog
 - 2026-10-09T18:19 set spells2 (9 shots): BACKLOG 3: hud_all_spells under fog of war
 - 2026-10-09T18:19 set levels (2 shots): BACKLOG 3: levels under fog of war (shrines stay as dim landmarks on unexplored ground)
+- 2026-10-09T18:45 set combat (4 shots): BACKLOG 4: formation shot added (box formation, wardens in front), help line mentions double-click, group jump and formations
+- 2026-10-09T18:47 set combat (4 shots): BACKLOG 4: formation shot; shorter help line (double-click, groups)
+- 2026-10-09T18:47 set smoke (12 shots): BACKLOG 4: shorter help line mentions double-click and control group jump; units_select_move now marches the 6 selected units in a box formation
+- 2026-10-09T18:48 set spells2 (9 shots): BACKLOG 4: shorter help line (double-click, control groups)
+- 2026-10-09T18:48 set spells (8 shots): BACKLOG 4: shorter help line (double-click, control groups)
+- 2026-10-09T18:49 set levels (2 shots): BACKLOG 4: shorter help line (double-click, control groups)

@@ -223,6 +223,25 @@
           "type": "integer",
           "exclusiveMinimum": 0,
           "maximum": 9007199254740991
+        },
+        "formation": {
+          "type": "object",
+          "properties": {
+            "spacing": {
+              "type": "number",
+              "minimum": 0
+            },
+            "maxUnits": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "spacing",
+            "maxUnits"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [

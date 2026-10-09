@@ -79,6 +79,7 @@ Every concept reference, style pick, bake-off comparison and class contact sheet
 
 ### Decisions so far
 - Art direction (A1, 10/08/2026): concept.ref_04 crisp flat-shaded polygon, lit like ref_05 (warm golden hour); recorded in `data/base/style.json` `direction`.
+- Second reference (Stewart, 10/09/2026): `making-of/a1/20261008-2206_style-ref-06.jpg` (tilt-shift tabletop miniature). He likes its trees, thatched huts, water and the tilt-shift view (not its people) and prefers it to the current look; it guides the next look pass (BACKLOG 14a) without replacing the retro direction outright.
 - Unit route (A1 bake-off, 10/08/2026): Meshy image-to-3D (meshy-t2, smart-topology, textured, about 1400 tris, 15 credits) from a Gemini single-unit concept that uses ref_04 as a style reference. Chunkier, more readable silhouettes than text-to-3D and colors come from the texture. Text-to-3D (5 credits) stays the fallback. Tripo was not evaluated (no key).
 
 ## 6. Budgets (defaults in `.env`, change freely)

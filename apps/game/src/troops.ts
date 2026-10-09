@@ -111,3 +111,62 @@ export function troopCommand(w: World, tribe: number, sel: readonly number[], b:
       return ids.length ? c("setStance", { units: ids, stance: it.stance }) : null;
   }
 }
+
+// ---------------------------------------------------------------- BACKLOG 4: command UX helpers
+
+/** Own living units of the same type as unit i within r cells of it (double-click select), i included. */
+export function sameTypeNear(w: World, tribe: number, i: number, r: number): number[] {
+  const E = w.ents;
+  const n = w.terrain.size;
+  const out: number[] = [];
+  if (i < 0 || !E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] !== tribe) return out;
+  for (let k = 0; k < E.hi; k++) {
+    if (!E.alive[k] || E.cat[k] !== CAT.unit || E.tribe[k] !== tribe || E.type[k] !== E.type[i]) continue;
+    const dx = wrapDelta(E.x[k] - E.x[i], n);
+    const dy = wrapDelta(E.y[k] - E.y[i], n);
+    if (dx * dx + dy * dy <= r * r) out.push(k);
+  }
+  return out;
+}
+
+/** Wrap-aware center of a set of entities (control group camera jump), or null when none is alive. */
+export function groupCenter(w: World, idx: readonly number[]): [number, number] | null {
+  const E = w.ents;
+  const n = w.terrain.size;
+  const live = idx.filter((i) => i >= 0 && E.alive[i]);
+  if (!live.length) return null;
+  const o = live[0];
+  let sx = 0;
+  let sy = 0;
+  for (const i of live) {
+    sx += wrapDelta(E.x[i] - E.x[o], n);
+    sy += wrapDelta(E.y[i] - E.y[o], n);
+  }
+  const wrap = (v: number) => ((v % n) + n) % n;
+  return [wrap(E.x[o] + sx / live.length), wrap(E.y[o] + sy / live.length)];
+}
+
+/** Units inside a spell's area as the caster's tribe sees it: enemies it can see, and its own. */
+export function areaCounts(w: World, tribe: number, x: number, y: number, r: number): { enemies: number; own: number } {
+  const E = w.ents;
+  const n = w.terrain.size;
+  let enemies = 0;
+  let own = 0;
+  for (let k = 0; k < E.hi; k++) {
+    if (!E.alive[k] || E.cat[k] !== CAT.unit) continue;
+    const dx = wrapDelta(E.x[k] - x, n);
+    const dy = wrapDelta(E.y[k] - y, n);
+    if (dx * dx + dy * dy > r * r) continue;
+    if (E.tribe[k] === tribe) own++;
+    else if (E.tribe[k] >= 0 && w.vision.seesEntity(tribe, k)) enemies++;
+  }
+  return { enemies, own };
+}
+
+/** Seconds left to undo the tribe's cast in progress (Backspace), or -1 when there is nothing to undo. */
+export function undoLeft(w: World, tribe: number): number {
+  const t = w.tribes[tribe];
+  if (!t?.casting) return -1;
+  const left = w.cfg.pack.spells.chargeRules.undoSeconds - (w.tick - t.casting.startedAt) / w.cfg.tickHz;
+  return left > 0 ? left : -1;
+}

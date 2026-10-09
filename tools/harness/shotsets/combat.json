@@ -99,6 +99,37 @@
     ]
    },
    "expectVfx": 1
+  },
+  {
+   "id": "formation",
+   "params": {
+    "scenario": "formation_box_ranks",
+    "camera": "default",
+    "reveal": "1"
+   },
+   "steps": [
+    {
+     "setCamera": {
+      "x": 38,
+      "z": 30,
+      "zoom": 0.08,
+      "yaw": 0.9
+     }
+    },
+    {
+     "eval": "__game.step(700)"
+    },
+    {
+     "step": 4
+    }
+   ],
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.02,
+     0.99
+    ]
+   }
   }
  ]
 }

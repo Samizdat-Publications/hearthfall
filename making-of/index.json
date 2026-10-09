@@ -105,8 +105,8 @@
       "file": "a1/20261008-2206_style-ref-06.jpg",
       "milestone": "A1",
       "kind": "concept",
-      "caption": "Tilt-shift tabletop miniature: candidate art direction 6 of 6",
-      "highlight": false,
+      "caption": "Tilt-shift tabletop miniature: candidate art direction 6 of 6. Not picked on day one, but on 10/09 Stewart called it his favorite (trees, thatched huts, water, the tilt-shift view), so it became the second reference and BACKLOG 14a",
+      "highlight": true,
       "when": "2026-10-08T22:06:39.554Z",
       "source": "tools/assets/raw/gemini/concept.ref_06/concept.jpg",
       "bytes": 748661
@@ -740,6 +740,16 @@
       "when": "2026-10-09T18:32:04.959Z",
       "source": "external:close.png",
       "bytes": 184137
+    },
+    {
+      "file": "b4/20261009-1850_formation-box.png",
+      "milestone": "B4",
+      "kind": "screenshot",
+      "caption": "BACKLOG 4 added formations: a mixed group ordered across the field settles into a box, Wardens with clubs in front, settlers in the middle, Firecallers, the Chanter and the Shaper behind, instead of crowding one point. Also new: double-click type select, control group camera jump, spell preview counts and an undo countdown",
+      "highlight": false,
+      "when": "2026-10-09T18:50:33.441Z",
+      "source": "external:formation.png",
+      "bytes": 172448
     }
   ]
 }

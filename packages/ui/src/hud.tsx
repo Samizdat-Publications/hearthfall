@@ -97,6 +97,18 @@ export interface HudModel {
   troops: TroopView;
   /** "rally" while the next left click sets the selected lodge's rally point */
   pointing: string | null;
+  /** BACKLOG 4: units inside the spell preview (enemies the tribe can see, own units) */
+  targetCounts?: { enemies: number; own: number } | null;
+  /** BACKLOG 4: seconds left to undo the cast in progress with Backspace (absent or negative: none) */
+  undoSec?: number;
+}
+
+const plural = (k: number, one: string, many: string) => `${k} ${k === 1 ? one : many}`;
+/** BACKLOG 4: the spell preview line, e.g. "3 enemies, 1 of yours in the area" */
+export function areaLine(c: { enemies: number; own: number } | null | undefined): string {
+  if (!c) return "";
+  if (!c.enemies && !c.own) return "nobody in the area";
+  return `${plural(c.enemies, "enemy", "enemies")}, ${c.own} of yours in the area`;
 }
 
 export interface HudActions {
@@ -338,14 +350,19 @@ function Hud({ act }: { act: HudActions }) {
         </div>
       ) : null}
       <Troops t={m.troops} act={act} pointing={m.pointing} />
+      {m.undoSec !== undefined && m.undoSec > 0 ? (
+        <div data-hud="undo" class="hud-panel hud-undo">
+          Backspace undoes this cast ({m.undoSec.toFixed(1)} s)
+        </div>
+      ) : null}
       {m.selected > 0 || m.placing || m.targeting || m.pointing ? (
         <div data-hud="selection" class="hud-panel hud-selection">
-          {m.pointing === "rally" ? "Rally point: left click the ground, right click or Esc to cancel" : m.targeting ? `Casting ${m.targeting.replace("_", " ")}: left click a target, right click or Esc to cancel, Backspace undoes a cast` : m.placing ? `Placing ${m.placing}: left click to place, Esc to cancel${m.placeBlocked ? ` (${m.placeBlocked})` : ""}` : `${m.selected} selected${m.attack ? " | attack-move: click a target" : " | right click to move"}`}
+          {m.pointing === "rally" ? "Rally point: left click the ground, right click or Esc to cancel" : m.targeting ? `Casting ${m.targeting.replace("_", " ")}: left click a target, right click or Esc to cancel${m.targetCounts ? ` | ${areaLine(m.targetCounts)}` : ""}` : m.placing ? `Placing ${m.placing}: left click to place, Esc to cancel${m.placeBlocked ? ` (${m.placeBlocked})` : ""}` : `${m.selected} selected${m.attack ? " | attack-move: click a target" : " | right click to move"}`}
         </div>
       ) : null}
       {m.showHelp ? (
         <div data-hud="help" class="hud-panel hud-help">
-          Drag select | click a building to select it | right click move (on a tower: garrison) | A attack-move | R retreat | G garrison | S Shaper | Z-N spells | D dwelling | T tower | Q/E rotate | wheel zoom | M map | H help
+          Drag select | double-click: same type | Ctrl+0-9 set group, 0-9 select, twice to jump | click a building to select it | right click move (on a tower: garrison) | A attack-move | R retreat | G garrison | S Shaper | Z-N spells | D dwelling | T tower | Q/E rotate | wheel zoom | M map | H help
         </div>
       ) : null}
       <div data-hud="debug-overlap" class="hud-panel hud-overlap">

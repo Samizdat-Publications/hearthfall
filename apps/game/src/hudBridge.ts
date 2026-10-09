@@ -4,7 +4,7 @@ import "../../../packages/ui/src/hud.css";
 import { shaperIndex } from "@hearthfall/sim";
 import type { Game } from "./game.ts";
 import { drawMinimap } from "./minimap.ts";
-import { troopView } from "./troops.ts";
+import { troopView, undoLeft } from "./troops.ts";
 import { etaLabel, spellEtas } from "./eta.ts";
 import { buildingIcon, resourceIcon, spellIcon, unitIcon } from "./icons.ts";
 
@@ -62,6 +62,8 @@ export function hudFor(game: Game): HudModel {
     manaFrac: tr && cursor >= 0 ? tr.eco.progress[cursor] / spells[cursor].cost : 0,
     troops: withUnitIcons(troopView(w, game.localTribe, [...game.selection], game.selectedBuilding)),
     pointing: game.pointing,
+    targetCounts: game.targetCounts,
+    undoSec: tr ? undoLeft(w, tr.index) : -1,
   };
 }
 

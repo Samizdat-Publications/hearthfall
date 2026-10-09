@@ -45,7 +45,8 @@
     "separationScale": 0.1,
     "snapRadius": 6,
     "maxFlowBuildsPerTick": 1,
-    "flowCacheSize": 16
+    "flowCacheSize": 16,
+    "formation": { "spacing": 1.2, "maxUnits": 30 }
   },
   "economy": {
     "$comment": "Settler autonomy, construction and mana (M4). Seconds and cells; mana rates per unit live in units.json manaPerMin.",

@@ -13,7 +13,7 @@ import { LOG_TAIL, campaignParams, createSkirmish, type SaveGame, type SkirmishP
 import { campaignCarry, levelOpen, loadProgress, nextLevel, ordered, recordWin } from "./campaign.ts";
 import { QUALITY_SCALE, browserKV, loadSettings, type KV, type Settings } from "./storage.ts";
 import { AudioHooks, MusicDirector, WebAudioPlayer } from "@hearthfall/audio";
-import { buildingAt, siteAt, troopCommand, type TroopIntent } from "./troops.ts";
+import { areaCounts, buildingAt, groupCenter, sameTypeNear, siteAt, troopCommand, type TroopIntent } from "./troops.ts";
 
 const packFiles = import.meta.glob("../../../data/base/*.json", { eager: true, import: "default" });
 const scenarioFiles = import.meta.glob("../../../scenarios/*.json", { eager: true, import: "default" });
@@ -107,6 +107,10 @@ export interface Note {
 
 const NOTE_SECONDS = 8;
 const MAX_NOTES = 4;
+/** BACKLOG 4: double-click selects own units of the clicked type within this many cells */
+const SAME_TYPE_RADIUS = 14;
+/** BACKLOG 4: a control group key pressed twice within this many milliseconds centers the camera */
+const GROUP_JUMP_MS = 400;
 
 export interface DebugFlags {
   hideTerrain?: boolean;
@@ -146,6 +150,9 @@ export class Game {
   showHelp = true;
   /** spell id being targeted (preview follows the cursor) */
   targeting: string | null = null;
+  /** BACKLOG 4: units under the spell preview (enemies the tribe can see, and its own) */
+  targetCounts: { enemies: number; own: number } | null = null;
+  private lastGroupKey = { g: -1, at: 0 };
   /** M6: selected own building index (lodge or tower panel), -1 for none; "rally" while picking a rally point */
   selectedBuilding = -1;
   pointing: string | null = null;
@@ -653,7 +660,9 @@ export class Game {
       this.command({ tribe: this.localTribe, type: "worship", args: { units: [...this.selection].map((i) => E.idOf(i)), site } });
       return true;
     }
-    this.command({ tribe: this.localTribe, type: "move", args: { units: [...this.selection].map((i) => E.idOf(i)), to: [p.x, p.z], attack } });
+    // BACKLOG 4: two or more units march in a box (melee in front, ranged and the Shaper behind)
+    const formation = this.selection.size >= 2 ? { formation: "box" } : {};
+    this.command({ tribe: this.localTribe, type: "move", args: { units: [...this.selection].map((i) => E.idOf(i)), to: [p.x, p.z], attack, ...formation } });
     this.orderSound();
     return true;
   }
@@ -719,6 +728,7 @@ export class Game {
 
   cancelTargeting(): void {
     this.targeting = null;
+    this.targetCounts = null;
     this.renderer.setTargeting(null);
     this.onChange();
   }
@@ -738,6 +748,11 @@ export class Game {
     const dy = wrapDelta(p.z - w.ents.y[si], n);
     const radius = Math.max(0.8, ...s.effects.map((e) => ("radius" in e && typeof e.radius === "number" ? e.radius : 0)));
     this.renderer.setTargeting({ cx: w.ents.x[si], cz: w.ents.y[si], range: s.range, x: p.x, z: p.z, r: radius, inRange: Math.sqrt(dx * dx + dy * dy) <= s.range });
+    const counts = areaCounts(w, this.localTribe, p.x, p.z, radius);
+    if (counts.enemies !== this.targetCounts?.enemies || counts.own !== this.targetCounts?.own) {
+      this.targetCounts = counts;
+      this.onChange();
+    }
   }
 
   castAt(px: number, py: number): boolean {
@@ -807,7 +822,11 @@ export class Game {
       } else {
         const i = this.unitAt(e.clientX, e.clientY);
         if (!e.shiftKey) this.selection.clear();
-        if (i >= 0) {
+        if (i >= 0 && e.detail === 2) {
+          // BACKLOG 4: double-click selects every own unit of that type nearby
+          this.selectedBuilding = -1;
+          for (const k of sameTypeNear(this.world, this.localTribe, i, SAME_TYPE_RADIUS)) this.selection.add(k);
+        } else if (i >= 0) {
           this.selectedBuilding = -1;
           if (e.shiftKey && this.selection.has(i)) this.selection.delete(i);
           else this.selection.add(i);
@@ -913,6 +932,13 @@ export class Game {
         this.groups[g] = [...this.selection].map((i) => E.idOf(i));
       } else {
         this.selection = new Set(this.groups[g].map((id) => E.index(id)).filter((i) => i >= 0));
+        // BACKLOG 4: pressing the group key again quickly centers the camera on the group
+        const now = performance.now();
+        if (this.lastGroupKey.g === g && now - this.lastGroupKey.at < GROUP_JUMP_MS) {
+          const c = groupCenter(this.world, [...this.selection]);
+          if (c) this.renderer.setCamera({ x: c[0], z: c[1] });
+        }
+        this.lastGroupKey = { g, at: now };
         this.onChange();
       }
     }

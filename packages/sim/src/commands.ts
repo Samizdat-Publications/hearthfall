@@ -5,6 +5,7 @@ import { CAT } from "./entities.ts";
 import { BSTATE, TASK } from "./economy.ts";
 import type { World } from "./world.ts";
 import { STREAMS } from "./rng.ts";
+import { FORMATIONS, formationSlots, type FormationShape } from "./formation.ts";
 
 export interface Command {
   tick: number;
@@ -70,6 +71,7 @@ registerCommand("move", {
     const idx = w.selectUnits(c.args.units);
     if (!idx.length) return "no units selected";
     if (c.tribe !== -1 && idx.some((i) => w.ents.tribe[i] !== c.tribe)) return "units belong to another tribe";
+    if (c.args.formation !== undefined && !FORMATIONS.includes(c.args.formation as FormationShape)) return `formation must be one of ${FORMATIONS.join(", ")}`;
     return null;
   },
   apply(w, c) {
@@ -82,7 +84,17 @@ registerCommand("move", {
       if (w.ents.inside[i] >= 0 && (w.ents.task[i] === TASK.training || w.ents.task[i] === TASK.garrison)) w.combat.leave(i);
       w.combat.clear(i);
     }
-    w.units.order(idx, ((x % n) + n) % n, ((y % n) + n) % n, c.args.attack ? 2 : 1);
+    const kind = c.args.attack ? 2 : 1;
+    const wrap = (v: number) => ((v % n) + n) % n;
+    const fm = w.cfg.pack.balance.movement.formation;
+    // BACKLOG 4: a formation gives each unit its own slot (front to back by role); without one, or for groups
+    // too big for it, every unit heads for the point and the crowd settles around it
+    if (c.args.formation !== undefined && fm && idx.length >= 2 && idx.length <= fm.maxUnits) {
+      const slots = formationSlots(w, idx, x, y, c.args.formation as FormationShape, fm.spacing);
+      for (let j = 0; j < idx.length; j++) w.units.order([idx[j]], wrap(slots[j][0]), wrap(slots[j][1]), kind);
+      return;
+    }
+    w.units.order(idx, wrap(x), wrap(y), kind);
   },
 });
 

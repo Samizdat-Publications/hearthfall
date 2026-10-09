@@ -52,6 +52,8 @@ export const BalanceSchema = z.strictObject({
     snapRadius: z.number().int().positive(),
     maxFlowBuildsPerTick: z.number().int().positive(),
     flowCacheSize: z.number().int().positive(),
+    /** BACKLOG 4: move orders with a formation give each unit a slot (cells apart); bigger groups keep the shared flow field */
+    formation: z.strictObject({ spacing: pos, maxUnits: z.number().int().min(2) }).optional(),
   }),
   economy: z.strictObject({
     ...comment,
