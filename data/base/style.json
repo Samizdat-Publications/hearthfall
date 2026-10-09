@@ -58,6 +58,7 @@
       "distance": 9
     },
     "ambientIntensity": 0.95,
+    "buildingScale": 1.3,
     "space": {
       "$comment": "Space backdrop around the curved world (look v2): sky gradient, star density 0..1, planet rim haze color.",
       "top": "#04060f",

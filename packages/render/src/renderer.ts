@@ -201,7 +201,7 @@ export class ThreeRenderer implements Renderer {
     this.units = new UnitLayer(this.propMat, this.ringMat, world.cfg.pack.units.units.map((u) => u.id), this.pal, colors, this.models);
     this.scene.add(this.units.group);
     if (this.buildings) disposeGroup(this.scene, this.buildings.group);
-    this.buildings = new BuildingLayer(this.propMat, world.cfg.pack.buildings.buildings, this.pal, colors, this.models);
+    this.buildings = new BuildingLayer(this.propMat, world.cfg.pack.buildings.buildings, this.pal, colors, this.models, 2048, this.styleRender?.buildingScale ?? 1);
     this.scene.add(this.buildings.group);
     if (this.worship) disposeGroup(this.scene, this.worship.group);
     this.worship = new WorshipLayer(this.propMat, world.cfg.pack.buildings.worship.kinds ?? [], this.pal, colors, this.models);

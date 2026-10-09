@@ -170,6 +170,11 @@
           "type": "number",
           "minimum": 0,
           "maximum": 1
+        },
+        "buildingScale": {
+          "type": "number",
+          "minimum": 0.5,
+          "maximum": 2
         }
       },
       "required": [

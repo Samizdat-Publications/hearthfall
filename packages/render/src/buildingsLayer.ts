@@ -67,7 +67,7 @@ function buildingGeometry(id: string, pal: Record<string, string>): { body: THRE
 interface Variant {
   body: THREE.InstancedMesh;
   tint: THREE.InstancedMesh;
-  /** uniform scale: footprint based for placeholders, 1 for models (already in world units) */
+  /** uniform scale: footprint based for placeholders, style.render.buildingScale for models (already in world units) */
   scale: number;
   /** placeholders grow with the dwelling level; models have a variant per level instead */
   grows: boolean;
@@ -94,6 +94,8 @@ export class BuildingLayer {
     tribeColorNames: string[],
     models: ReadonlyMap<string, ModelParts> | null = null,
     cap = 2048,
+    /** BACKLOG 0a: draw scale of the real models (style.render.buildingScale) */
+    modelScale = 1,
   ) {
     this.tribeColors = tribeColorNames.map((c) => new THREE.Color(pal[c] ?? "#ffffff"));
     this.neutral = new THREE.Color(pal.cloth ?? "#d9cbb0");
@@ -116,7 +118,7 @@ export class BuildingLayer {
           ids.map((id) => {
             const m = withBanner(models.get(id)!, wood);
             this.modelIds.push(id);
-            return make(m.body!, m.tint!, 1, false);
+            return make(m.body!, m.tint!, modelScale, false);
           }),
         );
         continue;

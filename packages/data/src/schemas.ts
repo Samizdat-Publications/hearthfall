@@ -206,6 +206,9 @@ export const StyleSchema = z.strictObject({
       space: z.strictObject({ ...comment, top: hex, horizon: hex, stars: z.number().min(0).max(1), rim: hex }).optional(),
       /** look v2: density of white foam strokes on open water (0 turns them off) */
       foamStrokes: z.number().min(0).max(1).optional(),
+      /** look v2 (BACKLOG 0a): draw scale of the building models, so villages read as villages next to the
+       * 1.3x readability-scaled units; keep (scale - 1) x the largest footprint within the building gap */
+      buildingScale: z.number().min(0.5).max(2).optional(),
     })
     .optional(),
   /** sim event type to audio cue (packages/audio AudioHooks); cues without an asset play as silent stubs */
