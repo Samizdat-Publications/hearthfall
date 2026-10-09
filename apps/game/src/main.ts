@@ -100,7 +100,7 @@ if (__DEBUG_API__ || game.params.debug) {
       return game.ended;
     },
     /** minimap camera outline: screen border samples picked onto the terrain (unwrapped around the view center) */
-    viewOutline: () => viewOutline(game),
+    viewOutline: (fresh = false) => viewOutline(game, fresh),
     lastSave: () => game.lastSave,
     lastLoad: () => game.lastLoad,
     /** Run a scenario-style definition headless in this page (cross-engine determinism check). */

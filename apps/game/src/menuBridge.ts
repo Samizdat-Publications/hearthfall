@@ -1,5 +1,6 @@
 // Builds the menu view model from the Game and maps menu intents to game flow calls (M8). The
 // setup screen state lives here: it only becomes SkirmishParams when Start is pressed.
+import { SKIRMISH_DEFAULTS } from "@hearthfall/data";
 import { KEY_ACTIONS, defaultKeymap, keyLabel, menuModel, mountMenus, rebind, type Choice, type MenuModel, type SetupPatch } from "@hearthfall/ui";
 import "../../../packages/ui/src/menus.css";
 import type { Game } from "./game.ts";
@@ -25,7 +26,7 @@ interface SetupState {
 }
 
 export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => void } {
-  const sk = game.pack.files.balance.skirmish;
+  const sk = game.pack.files.balance.skirmish ?? SKIRMISH_DEFAULTS;
   const ai = game.pack.files.ai;
   const setup: SetupState = { map: sk.maps[0], size: sk.defaultSize, seed: 1, opponents: [...sk.defaultOpponents], difficulty: sk.defaultDifficulty, error: null };
   const saves = { mode: "load" as "save" | "load", message: null as string | null };

@@ -12,6 +12,18 @@ describe("data pack", () => {
     expect(res.pack?.hash).toMatch(/^[0-9a-f]{8}$/);
   });
 
+  it("packs frozen for golden replays still hash to their folder name (schema defaults must not change old packs)", () => {
+    const golden = new URL("../../../replays/golden/", import.meta.url);
+    const frozen = new URL("pack/", golden);
+    const used = new Set(readdirSync(golden).filter((f) => f.endsWith(".json")).map((f) => JSON.parse(readFileSync(new URL(f, golden), "utf8")).packHash as string));
+    expect(used.size).toBeGreaterThan(0);
+    for (const h of used) {
+      const d = new URL(h + "/", frozen);
+      const raw = Object.fromEntries(readdirSync(d).filter((f) => f.endsWith(".json")).map((f) => [f, JSON.parse(readFileSync(new URL(f, d), "utf8"))]));
+      expect(validatePack(raw).pack?.hash, h).toBe(h);
+    }
+  });
+
   it("rejects typos and broken references", () => {
     const raw = loadBase();
     (raw["units.json"] as { units: { speeed?: number }[] }).units[0].speeed = 2;

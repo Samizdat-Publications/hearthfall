@@ -126,7 +126,8 @@ export const BalanceSchema = z.strictObject({
   }),
   /**
    * M8 skirmish setup choices (map sizes are multiples of the 32 cell render chunk; tribes = opponents + 1, at most 4).
-   * App only, never read by the sim; the default lets packs frozen before M8 (golden replays) still validate.
+   * App only, never read by the sim. Optional so packs frozen before M8 (golden replays) validate with an
+   * unchanged hash (a zod default would add the key and change it); the app falls back to SKIRMISH_DEFAULTS.
    */
   skirmish: z
     .strictObject({
@@ -138,7 +139,7 @@ export const BalanceSchema = z.strictObject({
       defaultOpponents: z.array(z.string()).min(1),
       defaultDifficulty: z.string(),
     })
-    .default({ mapSizes: [96, 128, 192], defaultSize: 128, maps: ["continents", "islands"], maxOpponents: 3, defaultOpponents: ["aggressive"], defaultDifficulty: "normal" }),
+    .optional(),
   gates: z.strictObject({
     ...comment,
     counterTriangleMinWinPct: z.number(),
@@ -465,3 +466,6 @@ export interface PackFiles {
   ai: AiFile;
   terrain: TerrainFile;
 }
+
+/** Skirmish setup used when a pack has no `balance.skirmish` (packs frozen before M8). */
+export const SKIRMISH_DEFAULTS = { mapSizes: [96, 128, 192], defaultSize: 128, maps: ["continents", "islands"], maxOpponents: 3, defaultOpponents: ["aggressive"], defaultDifficulty: "normal" };

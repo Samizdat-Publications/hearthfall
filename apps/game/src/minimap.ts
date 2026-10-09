@@ -52,13 +52,13 @@ function terrainImage(game: Game, ctx: CanvasRenderingContext2D): ImageData {
 let view: { key: string; pts: [number, number][] | null } | null = null;
 
 /** Screen border samples projected onto the curved ground in unwrapped map units; null when the center misses. */
-export function viewOutline(game: Game): [number, number][] | null {
+export function viewOutline(game: Game, fresh = false): [number, number][] | null {
   const W = game.canvas.clientWidth;
   const H = game.canvas.clientHeight;
   const cam = game.renderer.cam;
   const t = game.world.terrain;
   const key = `${W}x${H} ${cam.x} ${cam.z} ${cam.yaw} ${cam.zoom} ${cam.map} ${t.version} ${t.size}`;
-  if (view && view.key === key) return view.pts;
+  if (!fresh && view && view.key === key) return view.pts;
   const pick = (x: number, y: number) => game.renderer.pickGround(x, y);
   const cx = W / 2;
   const cy = H / 2;

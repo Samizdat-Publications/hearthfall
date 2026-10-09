@@ -262,13 +262,9 @@ export class ThreeRenderer implements Renderer {
     this.time.value = visualTime;
     this.syncTerrain();
     const w = this.world;
-    if (w) {
-      const t = w.terrain;
-      const size = t.size;
-      const focusY = Math.max(t.heightAt(this.cam.x, this.cam.z), t.sea) * this.palette.heightScale;
-      const r = applyCamera(this.camera, this.cam, focusY, size);
-      this.bend.uBendK.value = r.bendK;
-      this.bend.uBendFocus.value.set(this.cam.x, this.cam.z);
+    const r = this.syncCamera();
+    if (w && r) {
+      const size = w.terrain.size;
       const half = size / 2;
       this.bend.uFadeEnd.value = this.cam.map ? 1e6 : half - 2;
       this.bend.uFadeStart.value = this.cam.map ? 1e6 : half - 14;
@@ -278,7 +274,6 @@ export class ThreeRenderer implements Renderer {
       for (const c of this.chunks) c.place(this.cam.x, this.cam.z, size);
       this.trees.update(w, this.cam.x, this.cam.z, this.palette.heightScale);
       this.buildings?.update(w, this.cam.x, this.cam.z, this.palette.heightScale);
-      this.camera.updateMatrixWorld();
       this.units?.update(w, this.alpha, this.cam.x, this.cam.z, this.palette.heightScale, visualTime, this.bend.uFadeEnd.value, this.camera, this.bend.uBendK.value, this.viewW, this.viewH, this.selected);
       this.stats.unitsDrawn = this.units?.drawn ?? 0;
       this.vfx.update(w, visualTime, this.cam.x, this.cam.z, this.palette.heightScale);
@@ -389,9 +384,26 @@ export class ThreeRenderer implements Renderer {
     return this.march(px, py, true);
   }
 
+  /**
+   * Apply the camera rig state to the three.js camera and the bend uniforms. render() calls it every frame;
+   * picking calls it too, so a pick right after setCamera (before the next frame) sees the new view.
+   */
+  private syncCamera(): ReturnType<typeof applyCamera> | null {
+    const w = this.world;
+    if (!w) return null;
+    const t = w.terrain;
+    const focusY = Math.max(t.heightAt(this.cam.x, this.cam.z), t.sea) * this.palette.heightScale;
+    const r = applyCamera(this.camera, this.cam, focusY, t.size);
+    this.bend.uBendK.value = r.bendK;
+    this.bend.uBendFocus.value.set(this.cam.x, this.cam.z);
+    this.camera.updateMatrixWorld();
+    return r;
+  }
+
   private march(px: number, py: number, flat: boolean): { x: number; z: number } | null {
     const w = this.world;
     if (!w) return null;
+    this.syncCamera();
     const t = w.terrain;
     const n = t.size;
     const s = this.palette.heightScale;

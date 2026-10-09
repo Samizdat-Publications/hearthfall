@@ -3,7 +3,7 @@
 // step(n), and every time-driven visual reads the frame counter, so captures are deterministic.
 // M8: the game flow (main menu, skirmish, pause, saves, settings, end screen) is a `screen` here; the
 // sim only runs while no menu screen is up. menuBridge.ts turns this state into the menu view model.
-import { validatePack, type ValidatedPack } from "@hearthfall/data";
+import { SKIRMISH_DEFAULTS, validatePack, type ValidatedPack } from "@hearthfall/data";
 import { CAT, World, commandsByTick, createScenarioWorld, shaperIndex, wrapDelta, type Command, type ScenarioDef, type SimEvent } from "@hearthfall/sim";
 import { ThreeRenderer, type CameraState } from "@hearthfall/render";
 import { DEFAULT_AI } from "./opponents.ts";
@@ -223,7 +223,7 @@ export class Game {
 
   /** The main menu over a still planet (no opponents, the sim does not run). */
   showMainMenu(): void {
-    const sk = this.pack.files.balance.skirmish;
+    const sk = this.pack.files.balance.skirmish ?? SKIRMISH_DEFAULTS;
     this.params = { ...this.params, scenario: null };
     this.world = createSkirmish(this.pack, { seed: this.params.seed, level: sk.maps[0], size: sk.defaultSize, tribes: 2, ai: ["none"], difficulty: sk.defaultDifficulty });
     this.scenarioCmds = null;

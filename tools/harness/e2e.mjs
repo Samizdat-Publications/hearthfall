@@ -61,6 +61,16 @@ async function flow(browser, url, vp) {
     if (tribes !== 3) problem(`skirmish has ${tribes} tribes, expected 3`);
     await page.evaluate(() => window.__game.step(200));
     await check("play");
+    // the minimap footprint must not depend on whether a frame was rendered since the camera moved
+    await page.evaluate(() => window.__game.setCamera("mid"));
+    await settle();
+    const before = await page.evaluate(() => {
+      window.__game.setCamera({ yaw: 1.1, zoom: 0.2 });
+      return window.__game.viewOutline(true);
+    });
+    await settle();
+    const after = await page.evaluate(() => window.__game.viewOutline(true));
+    if (JSON.stringify(before) !== JSON.stringify(after)) problem(`minimap footprint before the next frame differs from after it: ${JSON.stringify(before?.slice(0, 2))} vs ${JSON.stringify(after?.slice(0, 2))}`);
     // pause, save to slot 1, load it back
     await page.keyboard.press("p");
     await screenIs("pause");

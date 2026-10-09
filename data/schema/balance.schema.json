@@ -617,23 +617,6 @@
       "additionalProperties": false
     },
     "skirmish": {
-      "default": {
-        "mapSizes": [
-          96,
-          128,
-          192
-        ],
-        "defaultSize": 128,
-        "maps": [
-          "continents",
-          "islands"
-        ],
-        "maxOpponents": 3,
-        "defaultOpponents": [
-          "aggressive"
-        ],
-        "defaultDifficulty": "normal"
-      },
       "type": "object",
       "properties": {
         "$comment": {

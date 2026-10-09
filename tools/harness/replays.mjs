@@ -30,6 +30,7 @@ function frozenPack(hash) {
   if (parseErrors.length) return { error: parseErrors[0].message };
   const res = validatePack(raw);
   if (!res.pack) return { error: `frozen pack ${hash} no longer validates: ${res.issues[0]?.file} ${res.issues[0]?.path} ${res.issues[0]?.message}` };
+  if (res.pack.hash !== hash) return { error: `frozen pack ${hash} now hashes to ${res.pack.hash} (a schema default changed it)` };
   return { pack: res.pack };
 }
 
