@@ -1,0 +1,92 @@
+{
+  "id": "spell_volcano_erupts",
+  "description": "Volcano raises a cone, scars the land so it cannot be built on, burns enemies with lava for 20 seconds and throws lava rocks around it.",
+  "tags": [
+    "fast",
+    "spells",
+    "terrain"
+  ],
+  "seed": 38,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2
+  },
+  "setup": [
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        27,
+        32
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        50,
+        50
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        33,
+        33
+      ],
+      "count": 4,
+      "spacing": 0.6
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": -1,
+      "type": "grantCharges",
+      "args": {
+        "tribe": 0,
+        "spell": "volcano",
+        "n": 1
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 1,
+      "tribe": 0,
+      "type": "cast",
+      "args": {
+        "spell": "volcano",
+        "target": [
+          32,
+          32
+        ]
+      }
+    }
+  ],
+  "runTicks": 500,
+  "assert": [
+    {
+      "at": 25,
+      "expr": "terrain.height([33,32]) > sea + 100 && terrain.scar([32,32]) > 0 && !terrain.buildable([35,31],2,2)"
+    },
+    {
+      "at": 25,
+      "expr": "count(effects) == 13"
+    },
+    {
+      "at": 500,
+      "expr": "count(effects) == 0 && count(tribe1.settlers) < 4 && invariants() == 0"
+    }
+  ]
+}

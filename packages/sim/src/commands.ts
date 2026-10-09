@@ -74,7 +74,9 @@ registerCommand("move", {
   apply(w, c) {
     const [x, y] = c.args.to as [number, number];
     const n = w.terrain.size;
-    w.units.order(w.selectUnits(c.args.units), ((x % n) + n) % n, ((y % n) + n) % n, c.args.attack ? 2 : 1);
+    const idx = w.selectUnits(c.args.units);
+    for (const t of w.tribes) if (t.pending && idx.includes(w.ents.index(t.shaper))) t.pending = null;
+    w.units.order(idx, ((x % n) + n) % n, ((y % n) + n) % n, c.args.attack ? 2 : 1);
   },
 });
 

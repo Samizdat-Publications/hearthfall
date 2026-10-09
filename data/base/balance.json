@@ -79,7 +79,10 @@
   },
   "combat": {
     "heightRangedBonusPctPerBand": 10,
-    "stuckSeconds": 10
+    "stuckSeconds": 10,
+    "knockbackTicks": 6,
+    "knockbackDecay": 0.75,
+    "shaperMinHpFromNonLethal": 1
   },
   "gates": {
     "counterTriangleMinWinPct": 65,
@@ -95,5 +98,15 @@
     "maxStalematePct": 10,
     "$comment": "Soft gates: guide tuning, never block a milestone (see docs/ROADMAP.md).",
     "aiEliminatesIdleMinutes": 25
+  },
+  "statuses": {
+    "$comment": "Status effects applied by spells (M5). Seconds and cells.",
+    "panic": {
+      "fleeDistance": 5,
+      "repickSeconds": 1.5
+    },
+    "burning": {
+      "damagePerSecond": 40
+    }
   }
 }

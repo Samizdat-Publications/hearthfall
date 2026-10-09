@@ -1,0 +1,72 @@
+{
+  "id": "spell_cast_walk_and_undo",
+  "description": "A cast out of range makes the Shaper walk into range and then cast; a cast undone within the window refunds its charge and never resolves.",
+  "tags": [
+    "fast",
+    "spells",
+    "shaper"
+  ],
+  "seed": 39,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 1
+  },
+  "setup": [
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        10,
+        10
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "tick": 1,
+      "tribe": 0,
+      "type": "cast",
+      "args": {
+        "spell": "bolt",
+        "target": [
+          26,
+          10
+        ]
+      }
+    },
+    {
+      "tick": 300,
+      "tribe": 0,
+      "type": "cast",
+      "args": {
+        "spell": "bolt",
+        "target": [
+          24,
+          12
+        ]
+      }
+    },
+    {
+      "tick": 305,
+      "tribe": 0,
+      "type": "cancelCast",
+      "args": {}
+    }
+  ],
+  "runTicks": 360,
+  "assert": [
+    {
+      "at": 2,
+      "expr": "events.count('castQueued') == 1 && charges(0, 'bolt') == 3"
+    },
+    {
+      "at": 290,
+      "expr": "events.count('spellCast') == 1 && charges(0, 'bolt') == 2 && count(tribe0.shapers, near([20,10], 1.5)) == 1"
+    },
+    {
+      "at": 360,
+      "expr": "events.count('castCancelled') == 1 && events.count('spellCast') == 1 && charges(0, 'bolt') == 2"
+    }
+  ]
+}

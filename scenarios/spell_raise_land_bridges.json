@@ -1,0 +1,60 @@
+{
+  "id": "spell_raise_land_bridges",
+  "description": "Raise Land lifts a ridge from the Shaper toward the target across a deep channel.",
+  "tags": [
+    "fast",
+    "spells",
+    "terrain"
+  ],
+  "seed": 34,
+  "map": {
+    "generator": "flat_with_channel",
+    "size": 64,
+    "tribes": 1
+  },
+  "setup": [
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        14,
+        32
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": -1,
+      "type": "grantCharges",
+      "args": {
+        "tribe": 0,
+        "spell": "raise_land",
+        "n": 1
+      }
+    },
+    {
+      "tick": 1,
+      "tribe": 0,
+      "type": "cast",
+      "args": {
+        "spell": "raise_land",
+        "target": [
+          24,
+          32
+        ]
+      }
+    }
+  ],
+  "runTicks": 40,
+  "assert": [
+    {
+      "at": 1,
+      "expr": "terrain.minHeightAlong([15,32],[22,32]) < sea"
+    },
+    {
+      "at": 40,
+      "expr": "terrain.minHeightAlong([15,32],[22,32]) >= sea + 20 && terrain.walkable([18,32]) && invariants() == 0"
+    }
+  ]
+}

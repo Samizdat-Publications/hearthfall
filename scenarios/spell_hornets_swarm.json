@@ -1,0 +1,91 @@
+{
+  "id": "spell_hornets_swarm",
+  "description": "Hornets leave a swarm that stings enemies for 8 seconds and panics them; the swarm then disperses.",
+  "tags": [
+    "fast",
+    "spells"
+  ],
+  "seed": 37,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2
+  },
+  "setup": [
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        24,
+        32
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        50,
+        50
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        32,
+        32
+      ],
+      "count": 5,
+      "spacing": 0.6
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": -1,
+      "type": "grantCharges",
+      "args": {
+        "tribe": 0,
+        "spell": "hornets",
+        "n": 1
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 1,
+      "tribe": 0,
+      "type": "cast",
+      "args": {
+        "spell": "hornets",
+        "target": [
+          32,
+          32
+        ]
+      }
+    }
+  ],
+  "runTicks": 260,
+  "assert": [
+    {
+      "at": 25,
+      "expr": "count(effects) == 1 && count(tribe1.settlers, moving) == 5"
+    },
+    {
+      "at": 120,
+      "expr": "hp(tribe1.settlers) < 5000"
+    },
+    {
+      "at": 260,
+      "expr": "count(effects) == 0 && events.count('effectEnded') == 1 && invariants() == 0"
+    }
+  ]
+}

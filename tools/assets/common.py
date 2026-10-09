@@ -51,6 +51,8 @@ PRICING = {
     "tripo_credits": {"image_to_model_smart_low_poly": 40},
     "elevenlabs_sfx_usd_per_second": 0.002,
     "elevenlabs_music_usd_per_minute": 0.15,
+    "elevenlabs_tts_usd_per_1k_chars": 0.08,
+    "elevenlabs_voice_design_usd": 0.01,  # not published; assumed, one call per voice
 }
 
 PROVIDERS = ["gemini", "meshy", "tripo", "elevenlabs", "pixellab"]

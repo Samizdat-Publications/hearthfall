@@ -4,7 +4,9 @@
     "startMana": 300,
     "defaultSplitSpellsPct": 50,
     "singleSinkGetsAll": true,
-    "killChargeStealPct": 25
+    "killChargeStealPct": 25,
+    "castSeconds": 1,
+    "undoSeconds": 1
   },
   "spells": [
     {
@@ -23,8 +25,8 @@
         },
         {
           "type": "knockback",
-          "radius": 2.0,
-          "force": 3.0
+          "radius": 2,
+          "force": 3
         }
       ]
     },
@@ -317,7 +319,22 @@
         {
           "type": "spawnEntity",
           "entity": "lava_rock",
-          "count": 12
+          "count": 12,
+          "radius": 6
+        }
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "id": "lava_rock",
+      "$comment": "Molten rocks the volcano throws: each lands at a random point within the spawn radius and burns a small area.",
+      "effects": [
+        {
+          "type": "areaOverTime",
+          "radius": 1.2,
+          "seconds": 6,
+          "damagePerSecond": 60
         }
       ]
     }

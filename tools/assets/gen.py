@@ -26,7 +26,7 @@ import common as C  # noqa: E402
 from common import log, warn  # noqa: E402
 from providers import ProviderError  # noqa: E402
 
-CLASSES = ["concept", "buildings", "props", "units", "sfx", "music"]
+CLASSES = ["concept", "buildings", "props", "units", "sfx", "music", "voice", "vfx", "icons"]
 POLL_SECONDS = 5
 MIN_JOB_SECONDS = 45  # do not start a new job with less than this left in the run window
 
@@ -34,6 +34,17 @@ MIN_JOB_SECONDS = 45  # do not start a new job with less than this left in the r
 # ------------------------------------------------------------------ prompts
 def concept_prompt(a: dict) -> str:
     sp = C.style_prompt()
+    if a["class"] == "vfx":
+        return (f"{a['prompt']}, {sp['vfx_suffix']}, flat-shaded faceted stylized game effect texture, crisp angular shapes matching a low-poly look, "
+                "the glow fades to pure black well before every edge of the image, nothing touches the border, no text. "
+                f"Avoid: {sp['negative']}, grey or colored background, frame, border.")
+    if a["class"] == "icons":
+        text = (f"{a['prompt']}. Square game UI icon: one bold readable emblem centered, with a clean silhouette, crisp flat-shaded facets, chunky shapes, "
+                "warm golden-hour light, set on a plain solid pure magenta (#FF00FF) background with a margin around the emblem, no text, no letters, no numbers. "
+                "Do not use magenta or pink anywhere on the emblem itself.")
+        if a.get("refs") and sp.get("style_ref_note"):
+            text += " " + sp["style_ref_note"]
+        return text
     parts = [a["prompt"]]
     if a["class"] == "units":
         parts.append(sp["unit_pose"])
@@ -53,6 +64,8 @@ def mesh_text_prompt(a: dict) -> str:
 
 def audio_prompt(a: dict) -> str:
     sp = C.style_prompt()
+    if a["class"] == "voice":
+        return a["params"]["text"]
     tpl = sp["music_template"] if a["class"] == "music" else sp["sfx_template"]
     return tpl.format(subject=a["prompt"])
 
@@ -78,6 +91,9 @@ def est_cost(a: dict, step: str):
         if a["class"] == "music":
             mins = a["params"].get("length_ms", 60000) / 60000
             return "elevenlabs", mins * P["elevenlabs_music_usd_per_minute"], f"{mins:.1f} min music"
+        if a["class"] == "voice":
+            n = len(a["params"]["text"])
+            return "elevenlabs", n / 1000 * P["elevenlabs_tts_usd_per_1k_chars"], f"{n} chars tts"
         d = a["params"].get("duration_seconds", 1.0)
         return "elevenlabs", d * P["elevenlabs_sfx_usd_per_second"], f"{d}s sfx"
     return None
@@ -324,7 +340,14 @@ class Runner:
         self.budget.commit(prov, usd)
         prompt = audio_prompt(a)
         try:
-            if a["class"] == "music":
+            if a["class"] == "voice":
+                vid = (C.load_json(C.ASSETS_DIR / "voices.json", {}) or {}).get(a["params"]["voice_key"], {}).get("voice_id")
+                if not vid:
+                    raise ProviderError("elevenlabs", None, f"no designed voice '{a['params']['voice_key']}' in tools/assets/voices.json (run a3_voice.py design)")
+                res = elevenlabs.tts(vid, prompt, model_id=a["params"].get("model_id", "eleven_v4"),
+                                     output_format=a["params"].get("output_format", "mp3_44100_128"),
+                                     voice_settings=a["params"].get("voice_settings"), seed=a["params"].get("seed"))
+            elif a["class"] == "music":
                 res = elevenlabs.music(prompt, length_ms=a["params"]["length_ms"], output_format=a["params"].get("output_format", "mp3_44100_128"))
             else:
                 res = elevenlabs.sound_effect(prompt, duration_seconds=a["params"].get("duration_seconds"),
@@ -341,8 +364,8 @@ class Runner:
         out = C.RAW / "elevenlabs" / a["id"] / f"{a['id']}.mp3"
         C.write_atomic_bytes(out, res["bytes"])
         sha = C.sha256_file(out)
-        unit = "seconds" if a["class"] != "music" else "ms"
-        units = a["params"].get("duration_seconds") if a["class"] != "music" else a["params"]["length_ms"]
+        unit = {"music": "ms", "voice": "chars"}.get(a["class"], "seconds")
+        units = {"music": a["params"].get("length_ms"), "voice": len(a["params"].get("text", ""))}.get(a["class"], a["params"].get("duration_seconds"))
         C.ledger_append({"provider": "elevenlabs", "asset": a["id"], "step": "model", "attempt": st["attempts"], "kind": "call",
                          "usd": usd, "units": units, "unit": unit, "headers": res["headers"]})
         st.update(status="done", finished=C.now_iso(), cost={"usd": usd, "source": "computed"}, output_path=C.rel(out), sha256=sha,
@@ -438,10 +461,14 @@ class Runner:
         st.update(status="submitted", started=C.now_iso(), attempts=st["attempts"] + 1, error=None)
         self.save()
         try:
-            if a["class"] in ("sfx", "music"):
+            if a["class"] in ("sfx", "music", "voice"):
                 import audio_post
 
                 res = audio_post.post_asset(a)
+            elif a["class"] in ("vfx", "icons"):
+                import keying
+
+                res = keying.post_asset(a)
             else:
                 import blender_run
 
@@ -458,7 +485,7 @@ class Runner:
                   meta={k: v for k, v in res.items() if k not in ("output_path",)}, request_hash=C.request_hash(a, "post", upstream_hashes(a, "post")))
         self.save()
         log(f"  post {a['id']} -> {res['output_path']}")
-        if a["class"] not in ("sfx", "music"):
+        if a["class"] not in ("sfx", "music", "voice", "vfx", "icons"):
             try:
                 import qa
 

@@ -6,5 +6,5 @@
   "unit_pose": "single character, full body visible from head to feet, relaxed standing pose, arms slightly away from the body, feet shoulder width apart, never an A-pose or a T-pose",
   "vfx_suffix": "on a pure black background, centered, glowing, soft falloff, no text",
   "sfx_template": "{subject}, dry, no reverb, close perspective, clean game sound effect",
-  "music_template": "{subject}, instrumental, warm hand-played folk instruments and soft percussion, loop friendly, no vocals"
+  "music_template": "{subject}, instrumental, tribal percussion with a warm hand-played wooden flute, loop friendly, no vocals"
 }

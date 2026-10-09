@@ -700,11 +700,23 @@ export class EconomySystem {
       const tr = E.tribe[i];
       if (tr >= 0 && tr < rates.length) rates[tr] += this.manaRate(i);
     }
-    const spells = w.cfg.pack.spells.spells;
     for (const tr of w.tribes) {
+      tr.eco.incomePerMin = tr.alive ? rates[tr.index] : 0;
+      this.distribute(tr.index, tr.alive ? rates[tr.index] / per : 0);
+    }
+  }
+
+  /** Inject mana outside the per-tick income (charge steal); flows through the same sinks. */
+  addMana(tribe: number, amount: number): void {
+    if (this.w.tribes[tribe]) this.distribute(tribe, amount);
+  }
+
+  private distribute(tribe: number, income: number): void {
+    const w = this.w;
+    const spells = w.cfg.pack.spells.spells;
+    {
+      const tr = w.tribes[tribe];
       const e = tr.eco;
-      e.incomePerMin = rates[tr.index];
-      const income = rates[tr.index] / per;
       const spellSink = this.nextSpell(e) >= 0;
       const trainSink = e.trainDemand > 0;
       let toSpells = 0;

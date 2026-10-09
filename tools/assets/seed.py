@@ -162,9 +162,9 @@ def _sfx():
 
 def _music():
     rows = [
-        ("music.calm", "calm peaceful village theme, slow tempo, soft flute and plucked strings, gentle drone", 60000),
-        ("music.tension", "rising tension theme, slow pulsing low drums, sparse minor-key strings, uneasy", 60000),
-        ("music.battle", "driving battle theme, fast hand drums, bold brass-like horns, urgent and heroic", 60000),
+        ("music.calm", "calm peaceful village theme at 70 bpm, soft tribal frame drums, a warm wooden flute melody, gentle drone, relaxed", 75000),
+        ("music.tension", "slow building tension at 80 bpm, low tribal floor toms pulsing, sparse wooden flute fragments in a minor mode, uneasy", 75000),
+        ("music.battle", "driving battle theme at 130 bpm, fast tribal hand drums and war drums, urgent wooden flute riffs, heroic and fierce", 75000),
     ]
     out = []
     for aid, subject, ms in rows:
@@ -180,8 +180,131 @@ def _music():
     return out
 
 
+# ----------------------------------------------------------------------------- A3 (audio, voice, VFX, icons)
+REF04 = "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+
+
+def _a3_sfx():
+    # (id, subject, seconds). Sim event types and UI actions, then the v1 spells' cast and impact sounds.
+    rows = [
+        ("sfx.unit_selected", "a soft wooden click, a light tap of wood on wood", 0.5),
+        ("sfx.order_move", "one short tribal hand drum tap, a warm acknowledgement", 0.6),
+        ("sfx.chop", "a single axe chop into a log, with a wood crack", 0.7),
+        ("sfx.wood_delivered", "a dull wooden thunk of a log dropped onto a pile of logs", 0.8),
+        ("sfx.building_done", "a warm soft chime followed by two hammer knocks on wood", 1.5),
+        ("sfx.born", "a soft rising wooden flute note, gentle and bright", 1.2),
+        ("sfx.drowned", "a splash followed by a short gurgle of water closing over", 1.5),
+        ("sfx.died", "a low dull thud, quiet and final", 0.8),
+        ("sfx.plan_placed", "a wooden stake driven into soft earth, a thump and a little soil", 0.8),
+        ("sfx.charged", "a magical shimmer, a rising sparkle with a soft chime", 1.2),
+        ("sfx.ui_error", "a dull wooden knock, low and short, a refusal", 0.5),
+        ("sfx.bolt_cast", "a quick fiery bolt launch, a hiss and a short whoosh", 0.9),
+        ("sfx.bolt_impact", "a sharp electric crackle and a short blast", 1.2),
+        ("sfx.call_cast", "a gentle chant swell of soft humming voices rising", 1.8),
+        ("sfx.lightning_impact", "a thunder crack, a sharp lightning strike then a short rolling rumble", 2.0),
+        ("sfx.raise_land", "a deep rumble of rising earth, rocks grinding upward", 2.0),
+        ("sfx.flatten", "a grinding settle of earth, heavy stones sliding and compacting", 1.5),
+        ("sfx.quake", "a long heavy rumble with cracking rock and crumbling earth", 2.0),
+        ("sfx.hornets", "an angry buzzing swarm of hornets", 2.0),
+        ("sfx.volcano", "a volcanic eruption roar with an explosive blast and deep rumble", 2.0),
+    ]
+    out = []
+    for aid, subject, dur in rows:
+        steps = {s: new_step("skipped") for s in ("concept", "rig", "animate", "thumb")}
+        steps["model"] = new_step("pending", "elevenlabs")
+        steps["post"] = new_step("pending", "local")
+        out.append({
+            "id": aid, "class": "sfx", "prompt": subject, "refs": [], "provider": "elevenlabs",
+            "params": {"duration_seconds": dur, "prompt_influence": 0.45, "output_format": "mp3_44100_128", "loop": False},
+            "steps": steps,
+        })
+    return out
+
+
+SHAPER_VOICE = {
+    "key": "shaper",
+    "name": "Hearthfall Shaper",
+    "description": ("An older woman with a warm, low, resonant voice and great natural authority, calm and commanding like a tribal elder "
+                    "and ritual caller. Slight gravel and breath, steady pace, melodic, speaking an invented chanting language."),
+    "sample_text": ("Ihra sovenu, kael thuora vessen alu. Marun tevi sorrenu, ahe dru kaleshi vo. "
+                    "Ora venai, thessa ruun alai, ihra sovenu mor."),
+}
+
+
+def _a3_voice():
+    # Invented-language barks: not real words, nothing from the 1998 game. Ids voice.shaper.*
+    rows = [
+        ("voice.shaper.acknowledged", "Ihra sovenu.", "acknowledged an order, calm and brief"),
+        ("voice.shaper.acknowledged_b", "Vael tanuri.", "acknowledged an order, a second variant"),
+        ("voice.shaper.casting", "Kael-thu ora, vessen alu!", "casting a spell, rising and commanding"),
+        ("voice.shaper.under_attack", "Dru karesh! Alun mor!", "under attack, sharp and urgent"),
+        ("voice.shaper.victory", "Ohe thavuni, sorrenu ai!", "victory, proud and ringing"),
+    ]
+    out = []
+    for aid, text, note in rows:
+        steps = {s: new_step("skipped") for s in ("concept", "rig", "animate", "thumb")}
+        steps["model"] = new_step("pending", "elevenlabs")
+        steps["post"] = new_step("pending", "local")
+        out.append({
+            "id": aid, "class": "voice", "prompt": note, "refs": [], "provider": "elevenlabs",
+            "params": {"voice_key": "shaper", "text": text, "model_id": "eleven_v4", "output_format": "mp3_44100_128",
+                       "voice_settings": {"stability": 0.5, "similarity_boost": 0.8, "style": 0.35}},
+            "steps": steps,
+        })
+    return out
+
+
+def _a3_vfx():
+    rows = [
+        ("vfx.bolt_burst", "a radial burst of hot orange and white energy with angular spark shards, a starburst impact flash"),
+        ("vfx.lightning_streak", "a single jagged branching streak of pale blue-white lightning with a bright core, floating centered with tapering ends"),
+        ("vfx.hornet_swarm", "a loose cloud of many tiny glowing amber hornet shapes with faint motion streaks, a swarm particle sprite"),
+        ("vfx.lava_splash", "a splash of molten lava, red-orange droplets and chunky blobs flying outward from a bright yellow core"),
+        ("vfx.magic_glow_ring", "a thin glowing violet magic ring, perfectly circular and centered, soft inner glow and a few sparkles, empty center"),
+        ("vfx.dust_puff", "a soft puff of warm tan earthen dust, rounded faceted billows, centered"),
+        ("vfx.water_splash", "a crown-shaped splash of blue and white water droplets and foam, stylized angular droplets, centered"),
+    ]
+    out = []
+    for aid, subject in rows:
+        steps = {s: new_step("skipped") for s in ("model", "rig", "animate", "thumb")}
+        steps["concept"] = new_step("pending", "gemini")
+        steps["post"] = new_step("pending", "local")
+        out.append({
+            "id": aid, "class": "vfx", "prompt": subject, "refs": [], "provider": "gemini",
+            "params": {**CONCEPT_PARAMS, "kind": "vfx"},
+            "steps": steps,
+        })
+    return out
+
+
+def _a3_icons():
+    rows = [
+        ("icon.spell.bolt", "a hurled bolt of fiery orange and white energy with a short comet tail, spell icon"),
+        ("icon.spell.call", "a carved wooden horn with three glowing pale green sound rings radiating from it, spell icon"),
+        ("icon.spell.hornets", "three angry amber and black striped hornets swarming together, spell icon"),
+        ("icon.spell.raise_land", "a jagged brown earthen ridge of rock rising up out of flat green ground with lifting chunks, spell icon"),
+        ("icon.spell.lightning", "a bright blue-white forked lightning bolt striking down out of a dark storm cloud, spell icon"),
+        ("icon.spell.flatten", "a perfectly level slab of earth with a smooth flat top and a heavy stone pressing down on it, spell icon"),
+        ("icon.spell.quake", "cracked ground split by a deep jagged fissure with flying rock chunks, spell icon"),
+        ("icon.spell.volcano", "a small volcano cone erupting with glowing orange lava and dark smoke, spell icon"),
+        ("icon.resource.mana", "a glowing blue-violet crystal droplet of magical energy with a few small sparkles, resource icon"),
+        ("icon.resource.population", "three small stylized tribal people standing close together in simple tunics, resource icon"),
+    ]
+    out = []
+    for aid, subject in rows:
+        steps = {s: new_step("skipped") for s in ("model", "rig", "animate", "thumb")}
+        steps["concept"] = new_step("pending", "gemini")
+        steps["post"] = new_step("pending", "local")
+        out.append({
+            "id": aid, "class": "icons", "prompt": subject, "refs": [REF04], "provider": "gemini",
+            "params": {**CONCEPT_PARAMS, "kind": "icon"},
+            "steps": steps,
+        })
+    return out
+
+
 def v1_assets() -> list:
-    rows = _concepts() + _buildings() + _props() + _units() + _bakeoff_units() + _sfx() + _music()
+    rows = _concepts() + _buildings() + _props() + _units() + _bakeoff_units() + _sfx() + _music() + _a3_sfx() + _a3_voice() + _a3_vfx() + _a3_icons()
     for r in rows:
         r.setdefault("style_version", 1)
         r.setdefault("request_hash", None)

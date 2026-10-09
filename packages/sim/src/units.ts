@@ -4,6 +4,7 @@
 import { CAT } from "./entities.ts";
 import { Pathfinder, SpatialHash } from "./pathing.ts";
 import { secondsToTicks } from "./config.ts";
+import { cos as cosT, sin as sinT } from "./dmath.ts";
 import type { World } from "./world.ts";
 
 export const ORDER = { none: 0, move: 1, attackMove: 2 } as const;
@@ -180,6 +181,32 @@ export class UnitSystem {
       }
       E.px[i] = E.x[i];
       E.py[i] = E.y[i];
+      // knockback: displacement that ignores walkability (cliffs and water are the point)
+      if (E.ktick[i] > 0) {
+        E.ktick[i]--;
+        const kx = E.kvx[i];
+        const ky = E.kvy[i];
+        E.kvx[i] *= w.cfg.pack.balance.combat.knockbackDecay;
+        E.kvy[i] *= w.cfg.pack.balance.combat.knockbackDecay;
+        E.x[i] = (((E.x[i] + kx) % n) + n) % n;
+        E.y[i] = (((E.y[i] + ky) % n) + n) % n;
+        E.vx[i] = kx;
+        E.vy[i] = ky;
+        continue;
+      }
+      // panic: run to random nearby points until it wears off
+      if (E.panic[i] > 0) {
+        E.panic[i]--;
+        const st = w.cfg.pack.balance.statuses.panic;
+        if (E.order[i] === ORDER.none || E.panic[i] % secondsToTicks(st.repickSeconds, hz) === 0) {
+          const a = w.rng.float("combat") * 6.283185307179586;
+          const fx = (((E.x[i] + cosT(a) * st.fleeDistance) % n) + n) % n;
+          const fy = (((E.y[i] + sinT(a) * st.fleeDistance) % n) + n) % n;
+          this.order([i], fx, fy);
+          this.ordersIssued--;
+        }
+        if (E.panic[i] === 0) this.stop(i);
+      }
       let dx = 0;
       let dy = 0;
       if (E.order[i] !== ORDER.none && !E.waitPath[i]) {

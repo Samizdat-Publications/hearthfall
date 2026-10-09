@@ -1,0 +1,107 @@
+{
+  "id": "spell_bolt_knocks_into_water",
+  "description": "Bolt blasts enemy settlers on a shore: everyone in the blast is hurt, and the blast throws the nearest ones into the deep channel, where they drown.",
+  "tags": [
+    "fast",
+    "spells"
+  ],
+  "seed": 31,
+  "map": {
+    "generator": "flat_with_channel",
+    "size": 64,
+    "tribes": 2
+  },
+  "setup": [
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        10,
+        30
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        40,
+        40
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "at": [
+        14.9,
+        30
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "at": [
+        14.9,
+        30.6
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "at": [
+        12.6,
+        30
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "at": [
+        12.6,
+        30.6
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 1,
+      "tribe": 0,
+      "type": "cast",
+      "args": {
+        "spell": "bolt",
+        "target": [
+          13.6,
+          30
+        ]
+      }
+    }
+  ],
+  "runTicks": 80,
+  "assert": [
+    {
+      "at": 1,
+      "expr": "charges(0, 'bolt') == 3 && hp(tribe1.settlers) == 4000"
+    },
+    {
+      "at": 2,
+      "expr": "charges(0, 'bolt') == 2 && events.count('castBegun') == 1"
+    },
+    {
+      "at": 80,
+      "expr": "events.count('spellCast') == 1 && events.count('drowned') == 2 && count(tribe1.settlers) == 2"
+    },
+    {
+      "at": 80,
+      "expr": "hp(tribe1.settlers) < 2000 && invariants() == 0"
+    }
+  ]
+}

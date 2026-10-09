@@ -76,7 +76,12 @@ export const BalanceSchema = z.strictObject({
     nearCapSlowdownStartPct: z.number().min(0).max(100),
     nearCapFactorAtCap: z.number().min(1),
   }),
-  combat: z.strictObject({ heightRangedBonusPctPerBand: z.number(), stuckSeconds: pos }),
+  combat: z.strictObject({ heightRangedBonusPctPerBand: z.number(), stuckSeconds: pos, knockbackTicks: z.number().int().positive(), knockbackDecay: z.number().min(0).max(1), shaperMinHpFromNonLethal: pos }),
+  statuses: z.strictObject({
+    ...comment,
+    panic: z.strictObject({ fleeDistance: pos, repickSeconds: pos }),
+    burning: z.strictObject({ damagePerSecond: pos }),
+  }),
   gates: z.strictObject({
     ...comment,
     counterTriangleMinWinPct: z.number(),
@@ -263,8 +268,12 @@ export const SpellsFileSchema = z.strictObject({
     defaultSplitSpellsPct: z.number().min(0).max(100),
     singleSinkGetsAll: z.boolean(),
     killChargeStealPct: z.number().min(0).max(100),
+    castSeconds: pos,
+    undoSeconds: pos,
   }),
   spells: z.array(SpellSchema),
+  /** sub-entities spells can spawn (spawnEntity), each a list of effects applied where it lands */
+  entities: z.array(z.strictObject({ ...comment, id, effects: z.array(Effect).min(1) })).default([]),
 });
 export type SpellDef = z.infer<typeof SpellSchema>;
 export type SpellsFile = z.infer<typeof SpellsFileSchema>;

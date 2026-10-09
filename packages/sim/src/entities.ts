@@ -47,6 +47,13 @@ const COLUMNS: Record<string, ColCtor> = {
   progress2: Float64Array,
   level: Uint8Array,
   occupants: Uint8Array,
+  /** combat (M5): knockback velocity and ticks left, panic and burning ticks, last attacker tribe */
+  kvx: Float64Array,
+  kvy: Float64Array,
+  ktick: Int32Array,
+  panic: Int32Array,
+  burn: Int32Array,
+  lastHit: Int8Array,
 };
 export const COLUMN_NAMES = Object.keys(COLUMNS);
 
@@ -87,6 +94,12 @@ export class Entities {
   progress2!: Float64Array;
   level!: Uint8Array;
   occupants!: Uint8Array;
+  kvx!: Float64Array;
+  kvy!: Float64Array;
+  ktick!: Int32Array;
+  panic!: Int32Array;
+  burn!: Int32Array;
+  lastHit!: Int8Array;
 
   constructor(cap = 1024) {
     this.cap = cap;
@@ -147,6 +160,12 @@ export class Entities {
     this.progress2[i] = 0;
     this.level[i] = 0;
     this.occupants[i] = 0;
+    this.kvx[i] = 0;
+    this.kvy[i] = 0;
+    this.ktick[i] = 0;
+    this.panic[i] = 0;
+    this.burn[i] = 0;
+    this.lastHit[i] = -1;
     this.count++;
     return (i | ((this.gen[i] & 0x7fff) << 16)) >>> 0;
   }

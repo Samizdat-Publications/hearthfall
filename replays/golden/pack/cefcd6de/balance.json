@@ -1,0 +1,112 @@
+{
+  "sim": {
+    "tickHz": 20,
+    "hashEverySeconds": 5
+  },
+  "terrain": {
+    "defaultSize": 128,
+    "heightMax": 1023,
+    "heightUnitsPerWorldUnit": 32,
+    "seaLevel": 120,
+    "generatorRange": [
+      60,
+      520
+    ],
+    "bands": {
+      "shore": 124,
+      "lowland": 160,
+      "grass": 230,
+      "highland": 320,
+      "rock": 420,
+      "peak": 520
+    },
+    "maxWalkSlope": 20,
+    "maxBuildSlope": 6,
+    "drownDepthHeightUnits": 8,
+    "skirmishRequiresConnectedLand": true,
+    "maxBuildRange": 48
+  },
+  "movement": {
+    "$comment": "Unit movement and pathing (M3). Distances in cells, times in seconds. Budgets are per sim tick.",
+    "separationRadius": 0.6,
+    "separationStrength": 0.3,
+    "waypointRadius": 0.4,
+    "arriveRadius": 0.5,
+    "crowdArriveRadius": 3,
+    "repathSeconds": 2,
+    "giveUpSeconds": 6,
+    "pathBudgetPerTick": 6000,
+    "maxExpandPerSearch": 20000,
+    "groupFlowMinUnits": 6,
+    "flowLookaheadCost": 2,
+    "sightRadius": 3,
+    "progressEpsilon": 0.05,
+    "overlapNudge": 0.01,
+    "separationScale": 0.1,
+    "snapRadius": 6,
+    "maxFlowBuildsPerTick": 1,
+    "flowCacheSize": 16
+  },
+  "economy": {
+    "$comment": "Settler autonomy, construction and mana (M4). Seconds and cells; mana rates per unit live in units.json manaPerMin.",
+    "decideEverySeconds": 1,
+    "flattenStepPerWorkerSecond": 6,
+    "flattenMaxRange": 48,
+    "carryWood": 1,
+    "workRange": 1.6,
+    "keepOneOccupantForBreeding": true,
+    "maxOpenPlansPerTribe": 3,
+    "buildingGapCells": 1,
+    "defaultAutoCharge": [
+      "bolt",
+      "call"
+    ],
+    "skirmishSpells": "v1",
+    "wildWanderRadius": 6,
+    "wildWanderChancePerSecond": 0.15,
+    "doorOffset": 1.6,
+    "priorities": {
+      "build": 1,
+      "upgrade": 0.7,
+      "breed": 0.5
+    },
+    "startWoodPerSettler": 1
+  },
+  "breeding": {
+    "formula": "base / (0.5 + 0.5 * occupants) * nearCapFactor",
+    "nearCapSlowdownStartPct": 70,
+    "nearCapFactorAtCap": 3
+  },
+  "combat": {
+    "heightRangedBonusPctPerBand": 10,
+    "stuckSeconds": 10,
+    "knockbackTicks": 6,
+    "knockbackDecay": 0.75,
+    "shaperMinHpFromNonLethal": 1
+  },
+  "gates": {
+    "counterTriangleMinWinPct": 65,
+    "maxPersonalityWinPct": 70,
+    "medianMatchMinutes": [
+      12,
+      35
+    ],
+    "unharassedPopulationAtMinute10": {
+      "target": 60,
+      "tolerancePct": 20
+    },
+    "maxStalematePct": 10,
+    "$comment": "Soft gates: guide tuning, never block a milestone (see docs/ROADMAP.md).",
+    "aiEliminatesIdleMinutes": 25
+  },
+  "statuses": {
+    "$comment": "Status effects applied by spells (M5). Seconds and cells.",
+    "panic": {
+      "fleeDistance": 5,
+      "repickSeconds": 1.5
+    },
+    "burning": {
+      "damagePerSecond": 40
+    }
+  }
+}

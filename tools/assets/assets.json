@@ -5246,28 +5246,46 @@
           "error": null
         },
         "model": {
-          "status": "pending",
+          "status": "done",
           "provider": "elevenlabs",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:27:31Z",
+          "finished": "2026-10-09T00:27:34Z",
+          "cost": {
+            "usd": 0.001,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.ui_click/sfx.ui_click.mp3",
+          "sha256": "3ebde2007ec35e0dd042e48c85918c2fda111e1f39a5774d4b8e6da1c606ce44",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 8821,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "3"
+            }
+          },
+          "request_hash": "4564d5546c89b78942f35429aeff88c054c49996c201dddf7a942c666cbf7447"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:27:34Z",
+          "finished": "2026-10-09T00:27:36Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/audio/sfx.ui_click.ogg",
+          "sha256": "eec638344dcc6d182c765650a84d1aced44ded8ac2027afe14d2cc896cac6aff",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 4305,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "555cf0f2b0462df77da3e97bfe726c93e454b03370870fbda414d9188c4c11b8"
         }
       },
       "style_version": 1,
@@ -6205,11 +6223,11 @@
     {
       "id": "music.calm",
       "class": "music",
-      "prompt": "calm peaceful village theme, slow tempo, soft flute and plucked strings, gentle drone",
+      "prompt": "calm peaceful village theme at 70 bpm, soft tribal frame drums, a warm wooden flute melody, gentle drone, relaxed",
       "refs": [],
       "provider": "elevenlabs",
       "params": {
-        "length_ms": 60000,
+        "length_ms": 75000,
         "model_id": "music_v2_5",
         "force_instrumental": true,
         "output_format": "mp3_44100_128",
@@ -6265,28 +6283,46 @@
           "error": null
         },
         "model": {
-          "status": "pending",
+          "status": "done",
           "provider": "elevenlabs",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:29:16Z",
+          "finished": "2026-10-09T00:29:28Z",
+          "cost": {
+            "usd": 0.1875,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/music.calm/music.calm.mp3",
+          "sha256": "6bfa32eb722970293cb75f121b747f1941c5b27b10d9b40c8b1dc5b858822f96",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 1200841,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "song-id": "DPnF3dKejnkcWXzd6AfQ"
+            }
+          },
+          "request_hash": "e5e05b764bf2a5f9a803e4571363a4bec74e91a8b098ce0bed3acd46704c3ba8"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:29:28Z",
+          "finished": "2026-10-09T00:29:51Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/audio/music.calm.ogg",
+          "sha256": "8e174484b1f2f1a2b27098dc053f08d876bebdc0bdc142ee5740e0a2c180772c",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 1378934,
+            "loudness_target_lufs": -16.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": 2.0
+          },
+          "request_hash": "5abeef89ea91ea854141ff272a03094dd5190397b3f683a301a00b01f8fa13e6"
         }
       },
       "style_version": 1,
@@ -6297,11 +6333,11 @@
     {
       "id": "music.tension",
       "class": "music",
-      "prompt": "rising tension theme, slow pulsing low drums, sparse minor-key strings, uneasy",
+      "prompt": "slow building tension at 80 bpm, low tribal floor toms pulsing, sparse wooden flute fragments in a minor mode, uneasy",
       "refs": [],
       "provider": "elevenlabs",
       "params": {
-        "length_ms": 60000,
+        "length_ms": 75000,
         "model_id": "music_v2_5",
         "force_instrumental": true,
         "output_format": "mp3_44100_128",
@@ -6357,28 +6393,46 @@
           "error": null
         },
         "model": {
-          "status": "pending",
+          "status": "done",
           "provider": "elevenlabs",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:30:11Z",
+          "finished": "2026-10-09T00:30:28Z",
+          "cost": {
+            "usd": 0.1875,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/music.tension/music.tension.mp3",
+          "sha256": "9093a9edd7612f00697a520bfa6bca39ffdcf15f9aa15f3cd1b3df5fecd60714",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 1200841,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "song-id": "FIgky5tFuOrpNPoURPa4"
+            }
+          },
+          "request_hash": "b9da702d4d59a37cdeaf8b00d3198d0cf5e810708c52da35e86f1885bb1d9870"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:30:29Z",
+          "finished": "2026-10-09T00:31:04Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/audio/music.tension.ogg",
+          "sha256": "5dccf20f9c133309d0c18cde108629f933fa9132f12ac0a053240311376a4384",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 1368236,
+            "loudness_target_lufs": -16.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": 2.0
+          },
+          "request_hash": "3ec5e013ca1a5c5891d8d4fd9d01cd004d96f66dc6cfebf000a2f4102669db4e"
         }
       },
       "style_version": 1,
@@ -6389,11 +6443,11 @@
     {
       "id": "music.battle",
       "class": "music",
-      "prompt": "driving battle theme, fast hand drums, bold brass-like horns, urgent and heroic",
+      "prompt": "driving battle theme at 130 bpm, fast tribal hand drums and war drums, urgent wooden flute riffs, heroic and fierce",
       "refs": [],
       "provider": "elevenlabs",
       "params": {
-        "length_ms": 60000,
+        "length_ms": 75000,
         "model_id": "music_v2_5",
         "force_instrumental": true,
         "output_format": "mp3_44100_128",
@@ -6449,15 +6503,15 @@
           "error": null
         },
         "model": {
-          "status": "pending",
+          "status": "submitted",
           "provider": "elevenlabs",
           "remote_id": null,
-          "started": null,
+          "started": "2026-10-09T00:31:05Z",
           "finished": null,
           "cost": null,
           "output_path": null,
           "sha256": null,
-          "attempts": 0,
+          "attempts": 1,
           "error": null
         },
         "post": {
@@ -7273,6 +7327,4216 @@
         "nonmanifold_edges": 0,
         "warnings": []
       }
+    },
+    {
+      "id": "sfx.unit_selected",
+      "class": "sfx",
+      "prompt": "a soft wooden click, a light tap of wood on wood",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 0.5,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-09T00:27:36Z",
+          "finished": "2026-10-09T00:27:39Z",
+          "cost": {
+            "usd": 0.001,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.unit_selected/sfx.unit_selected.mp3",
+          "sha256": "b2ba0bf2c7f55e041233d9c89d50b1d870d7301b7026a9e7cd45452eafc59a13",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 8821,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "3"
+            }
+          },
+          "request_hash": "d5c72128e3e92c856de52aef60e023368f73fc493803a28b78dab3b329fe7f7e"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T00:27:39Z",
+          "finished": "2026-10-09T00:27:40Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.unit_selected.ogg",
+          "sha256": "1980cf8e132970824b41c2ce09233c6345d7e767db4dc4f57c693afb42a749f9",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 12659,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "7a9cc2c579e3a6385f37f0d3ec16d5bcc9667738c172a10f264fd5b448889151"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.order_move",
+      "class": "sfx",
+      "prompt": "one short tribal hand drum tap, a warm acknowledgement",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 0.6,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-09T00:27:40Z",
+          "finished": "2026-10-09T00:27:43Z",
+          "cost": {
+            "usd": 0.0012,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.order_move/sfx.order_move.mp3",
+          "sha256": "376495366c6afc463674181a716ce95dbb9e529bc69be9e35173387f3ac413c2",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 10493,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "3"
+            }
+          },
+          "request_hash": "f30fddc1977c9b4095de0b60cc956c234542addccda3ff82ceafc8210aef2a9d"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T00:27:43Z",
+          "finished": "2026-10-09T00:27:44Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.order_move.ogg",
+          "sha256": "50f9719921f483d495fa8c51ee9c7d222c2cb570a06201ebe36533d5e150e809",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 14745,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "d9421e4c209b7463964324c70aec9435404291c54409e275c8fe627ac4e03a80"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.chop",
+      "class": "sfx",
+      "prompt": "a single axe chop into a log, with a wood crack",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 0.7,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-09T00:27:44Z",
+          "finished": "2026-10-09T00:27:47Z",
+          "cost": {
+            "usd": 0.0014,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.chop/sfx.chop.mp3",
+          "sha256": "fcbbf6d44fe0a351cb05a6cb7d832693c62e552fe9580fb8a1c9884e3b34057d",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 12164,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "4"
+            }
+          },
+          "request_hash": "c12b15d952432b5b64be25082e1a9f795bc59b1ae5c7a29b40e17f3d16622375"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T00:27:47Z",
+          "finished": "2026-10-09T00:27:48Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.chop.ogg",
+          "sha256": "4f832d8f90fb744e8d154f63f8f6f635789d359f8303707b3ca95eb4f658760b",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 15802,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "f189f2db2b339ccf20cd21f1355e4e1975675278e1fac770b16605e891e10e6e"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.wood_delivered",
+      "class": "sfx",
+      "prompt": "a dull wooden thunk of a log dropped onto a pile of logs",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 0.8,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-09T00:27:48Z",
+          "finished": "2026-10-09T00:27:51Z",
+          "cost": {
+            "usd": 0.0016,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.wood_delivered/sfx.wood_delivered.mp3",
+          "sha256": "6961ee8614b7b2fe95b0146c9071507483bc0bef5f6c95a2d897c264dc262442",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 13836,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "4"
+            }
+          },
+          "request_hash": "66afaa09c7bf72079410644ea0af96f7306214092148a6f30be92b79d2063b1a"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T00:27:51Z",
+          "finished": "2026-10-09T00:27:52Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.wood_delivered.ogg",
+          "sha256": "2f5a6941c89332e110a4969413adc4e26efa8146c45f7fe8c4ac6220bddc9e03",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 17210,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "6abf14c5072bad7a351e402fe1a2c911cf38035f34b1e66afd9b0e1441e5afdc"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.building_done",
+      "class": "sfx",
+      "prompt": "a warm soft chime followed by two hammer knocks on wood",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.5,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-09T00:27:52Z",
+          "finished": "2026-10-09T00:27:55Z",
+          "cost": {
+            "usd": 0.003,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.building_done/sfx.building_done.mp3",
+          "sha256": "960595a2e3d2c4888cf15abb32a424ad3c917b42f4b544a78e42a55eeb733a8b",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 24703,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "8"
+            }
+          },
+          "request_hash": "f849490e22499c87f0fcea594c8d2e486fa4cd09bd6d6aa644d5859910f058bc"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T00:27:55Z",
+          "finished": "2026-10-09T00:27:56Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.building_done.ogg",
+          "sha256": "af2596ddf3cc21e03e1463e7732513075088d72f7e01a50f7f07d969c43493e1",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 29171,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "4741fa501f53f5ae4dbe2c427b0e891e7323cdc6faf3d843aa620eb47788ef92"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.born",
+      "class": "sfx",
+      "prompt": "a soft rising wooden flute note, gentle and bright",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.2,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-09T00:27:56Z",
+          "finished": "2026-10-09T00:27:59Z",
+          "cost": {
+            "usd": 0.0024,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.born/sfx.born.mp3",
+          "sha256": "7a3a53f8532b503a2e4b74613211baa47e8fb2b36ecf16deba290bf3aa5ad9f1",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 20106,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "7"
+            }
+          },
+          "request_hash": "a09f8ace2f3dc9701b75a16ca64d354fcf4653e816dbad640cdcf084b7e84ea7"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T00:27:59Z",
+          "finished": "2026-10-09T00:28:00Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.born.ogg",
+          "sha256": "9a71748576b077d82af5df2865e8987dd2b2e0d7c718cb3dfa5b10e5d51661db",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 24358,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "cb95da912bd0f5412f5d20a9797eac2296eec2d5d69308ac4748a7e1c76dac49"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.drowned",
+      "class": "sfx",
+      "prompt": "a splash followed by a short gurgle of water closing over",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.5,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:00Z",
+          "finished": "2026-10-09T00:28:04Z",
+          "cost": {
+            "usd": 0.003,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.drowned/sfx.drowned.mp3",
+          "sha256": "c595b4ce6a53f9af6caabe2fabf8001e3bde3406ddebc40d7352b969656379d7",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 24703,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "8"
+            }
+          },
+          "request_hash": "9b038a4bca4c3d8d52b54d69b9d42252d93dd452d4bd28aa842870296e1fd602"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:04Z",
+          "finished": "2026-10-09T00:28:04Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.drowned.ogg",
+          "sha256": "17bbaaab1ea8f5d7bce57735f020bab8cf7270504ac81513b3fd7920879f6650",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 28192,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "1cec1ad0b4bdf19be1383ec670433113a99002171b2392b5536efaeacfeb3ebc"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.died",
+      "class": "sfx",
+      "prompt": "a low dull thud, quiet and final",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 0.8,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:04Z",
+          "finished": "2026-10-09T00:28:08Z",
+          "cost": {
+            "usd": 0.0016,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.died/sfx.died.mp3",
+          "sha256": "baaeebff24ac0da7f78e7890edd3470a4bb8f828f3bcb5ac06b3aa81886e3de6",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 13836,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "4"
+            }
+          },
+          "request_hash": "98b6e710b3e42f5840a21d871c01e734c8e6114c7e0cd9a1657c7fe4f07ccf52"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:08Z",
+          "finished": "2026-10-09T00:28:08Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.died.ogg",
+          "sha256": "c55beb31427b31ae292a176a7b234d322223536701177924096f8b72ef214c93",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 18240,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "7890786474aa85292a28646c1e5986835a19b3c44533b42d43c856fef60f1b6e"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.plan_placed",
+      "class": "sfx",
+      "prompt": "a wooden stake driven into soft earth, a thump and a little soil",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 0.8,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:08Z",
+          "finished": "2026-10-09T00:28:11Z",
+          "cost": {
+            "usd": 0.0016,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.plan_placed/sfx.plan_placed.mp3",
+          "sha256": "324e4b4551f88b42455aefc570556c67a02d1c1cfb3421c2b1fae2bc6bcb2245",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 13836,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "4"
+            }
+          },
+          "request_hash": "fe66b597ce713b6c1e638a322826e663785bd169805a5b6360005fb39fca52ed"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:11Z",
+          "finished": "2026-10-09T00:28:12Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.plan_placed.ogg",
+          "sha256": "de9da831c07a08eb7ff5448ec782af66ebbefc88cbb47d37af18c3432f964826",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 17354,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "edcd1cf08f33665433d66341bdf1c4e86c0074141277bca24986837763485815"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.charged",
+      "class": "sfx",
+      "prompt": "a magical shimmer, a rising sparkle with a soft chime",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.2,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:12Z",
+          "finished": "2026-10-09T00:28:16Z",
+          "cost": {
+            "usd": 0.0024,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.charged/sfx.charged.mp3",
+          "sha256": "d34b17673e6122fc379ecf2c17ec2c7a302f5d39b2f28cf10294c9e63147e513",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 20106,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "7"
+            }
+          },
+          "request_hash": "680ade159a5647d17e4384f7fbdb63eab696d51cabce7362eedf0d20c0dbad08"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:16Z",
+          "finished": "2026-10-09T00:28:17Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.charged.ogg",
+          "sha256": "6d1f08fd6226afb7298ce711eb66eebdf921499ceb4999a031302ba4a50efc5d",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 26052,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "49f95c14abbeb8602ae74c3be1bda6df32e2862998f59172bc74c3561b2b6c8e"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.ui_error",
+      "class": "sfx",
+      "prompt": "a dull wooden knock, low and short, a refusal",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 0.5,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:17Z",
+          "finished": "2026-10-09T00:28:20Z",
+          "cost": {
+            "usd": 0.001,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.ui_error/sfx.ui_error.mp3",
+          "sha256": "4ae987067eb83a2bf2dbd378a3103deba403a80048cb5db3d48db9a5b16c8b5e",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 8821,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "3"
+            }
+          },
+          "request_hash": "e4aded5a58dd69710781877b77427b86da78d56e8f25fcfe841c6f6fa4ee25e6"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:20Z",
+          "finished": "2026-10-09T00:28:22Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.ui_error.ogg",
+          "sha256": "253c0ab8eedc115357947c775ecb6fdd74ddbdc6b6b1d51a5c22eba4c9bddc6c",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 12973,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "83ee18087bdc7356fbf049a502edb2605aaeb1c46ab81f6a364073c91bf84640"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.bolt_cast",
+      "class": "sfx",
+      "prompt": "a quick fiery bolt launch, a hiss and a short whoosh",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 0.9,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:22Z",
+          "finished": "2026-10-09T00:28:26Z",
+          "cost": {
+            "usd": 0.0018000000000000002,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.bolt_cast/sfx.bolt_cast.mp3",
+          "sha256": "875c36ebef0ff20dfc6807ec0cff3befc6b475fb0575c1faee539eee8955631a",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 15090,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "5"
+            }
+          },
+          "request_hash": "558ff965f6300e037ec92b5bef018d882990890ac985484f07cae45eca1af664"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:26Z",
+          "finished": "2026-10-09T00:28:27Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.bolt_cast.ogg",
+          "sha256": "b115044f3a4b24c425a7fdf539408788800fb7527ba8c3beb2c88572780bc84d",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 19780,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "853eb835e6f20f12c03b28fc53f0637c206ce7d2e7ed1fd74522450fadd11363"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.bolt_impact",
+      "class": "sfx",
+      "prompt": "a sharp electric crackle and a short blast",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.2,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:27Z",
+          "finished": "2026-10-09T00:28:30Z",
+          "cost": {
+            "usd": 0.0024,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.bolt_impact/sfx.bolt_impact.mp3",
+          "sha256": "5d82d8104c51539aee315e58a30adb62bbe25be483a937e20bdfaebe7cb4015b",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 20106,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "7"
+            }
+          },
+          "request_hash": "0bca06a667e03bbd2c06126dca8b952db2df69e8c9271cf4bc04fca8ca386d68"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:31Z",
+          "finished": "2026-10-09T00:28:31Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.bolt_impact.ogg",
+          "sha256": "8aa5c34e0a179b33eabd699a8c23242bf77375e4b40e5145853322bd277c760c",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 28874,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "1fcd6f32891d8ff7a6dafc732b209dac677ec3f3efe080114dfe20dba1ff49df"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.call_cast",
+      "class": "sfx",
+      "prompt": "a gentle chant swell of soft humming voices rising",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.8,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:31Z",
+          "finished": "2026-10-09T00:28:35Z",
+          "cost": {
+            "usd": 0.0036000000000000003,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.call_cast/sfx.call_cast.mp3",
+          "sha256": "5aa44e95e11a010a60303c4b7d485e2acb2183a097c0d102456d883cadb3e118",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 29301,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "10"
+            }
+          },
+          "request_hash": "db1bb54a8052e07b4ad011f34393b262617d978225803ce3113c52fe528b6c17"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:35Z",
+          "finished": "2026-10-09T00:28:36Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.call_cast.ogg",
+          "sha256": "2ca574abf2abb7a9773d47bc18879447c9083aeb7ea26b99758bd9f3fc6b2aac",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 33614,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "a6cff0480374cfc84b8c0d399aa7916e2db688a28137c419e5706bf71a12ef0d"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.lightning_impact",
+      "class": "sfx",
+      "prompt": "a thunder crack, a sharp lightning strike then a short rolling rumble",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 2.0,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:36Z",
+          "finished": "2026-10-09T00:28:40Z",
+          "cost": {
+            "usd": 0.004,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.lightning_impact/sfx.lightning_impact.mp3",
+          "sha256": "8d005bea71c151c683207dc3504fbd8c214dbc3519f6741d93463ff4c7315909",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 33062,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "11"
+            }
+          },
+          "request_hash": "962335eb305abd8a2628053f47ccd0875ead6a5b0c6f61e2efea17c3c55e27ca"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:40Z",
+          "finished": "2026-10-09T00:28:41Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.lightning_impact.ogg",
+          "sha256": "50d047a35c14bd5648c4b8a59e7bd5fed860632c51549c47ac54ad56202e1782",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 38309,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "624b7a85615c6419b7d5e4480ce9453092c61d274159fcffcd1a6ef6414458d5"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.raise_land",
+      "class": "sfx",
+      "prompt": "a deep rumble of rising earth, rocks grinding upward",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 2.0,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:41Z",
+          "finished": "2026-10-09T00:28:44Z",
+          "cost": {
+            "usd": 0.004,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.raise_land/sfx.raise_land.mp3",
+          "sha256": "ffb97795ec401db989af764218738fec9039648b519df5fcc865c36a3913a1cc",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 33062,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "11"
+            }
+          },
+          "request_hash": "821ccc04c8b7301933976e38e64141ee8bd0d9f480f61ef9d690c7370e333c10"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:44Z",
+          "finished": "2026-10-09T00:28:45Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.raise_land.ogg",
+          "sha256": "f4be3055ad880fc5e943b7694116a041c3f0aaaa2290df71f58b9c5e20aef472",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 34917,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "71f27182217f386ba28db7f3651d9133bc19a2c7fcacf18d074387b0b500c40e"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.flatten",
+      "class": "sfx",
+      "prompt": "a grinding settle of earth, heavy stones sliding and compacting",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.5,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:45Z",
+          "finished": "2026-10-09T00:28:48Z",
+          "cost": {
+            "usd": 0.003,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.flatten/sfx.flatten.mp3",
+          "sha256": "0b1306985da5947d8711e1ce76c087674f1c1f852907215b5ea75b116b778e8f",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 24703,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "8"
+            }
+          },
+          "request_hash": "0be96fa1288bae48e6a711df7c43d6f1671cbd6214c57b13c5f57651c1a21250"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:48Z",
+          "finished": "2026-10-09T00:28:49Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.flatten.ogg",
+          "sha256": "090877d448b34f64e01a7e4f5ee9f4e4d2ef0274f91b0a31c6ff6d49fff92fb7",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 31736,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "f0295f5ad1b733ea25f13288fc3442d841189c9cdb82bed4145e3ef3e9bcc0a5"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.quake",
+      "class": "sfx",
+      "prompt": "a long heavy rumble with cracking rock and crumbling earth",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 2.0,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:49Z",
+          "finished": "2026-10-09T00:28:53Z",
+          "cost": {
+            "usd": 0.004,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.quake/sfx.quake.mp3",
+          "sha256": "ae9513ccfa488b5c6ef0fcdb3206fb73b553c27b4bb67ff871a9feff9ee3fd89",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 33062,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "11"
+            }
+          },
+          "request_hash": "4a15403b7e5f32324b67fe88d969d3f196213fccf0e47aa3aaa6aaacb35ae195"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:53Z",
+          "finished": "2026-10-09T00:28:53Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.quake.ogg",
+          "sha256": "64b8adcad84fa7d3eeb81ee94e901fc0fb8f2bafd69aa0674350fd677a4bacf3",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 34042,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "5cd90377e67a1f9b1cb991b21c9fb3c272dc6a572b69a1431a23171567afe2b1"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.hornets",
+      "class": "sfx",
+      "prompt": "an angry buzzing swarm of hornets",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 2.0,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:54Z",
+          "finished": "2026-10-09T00:28:57Z",
+          "cost": {
+            "usd": 0.004,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.hornets/sfx.hornets.mp3",
+          "sha256": "3ee5c51484720216f2fa571c5203ed0d539087aaa6da1858506f52627170cca4",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 33062,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "11"
+            }
+          },
+          "request_hash": "bf6c3b481bd3cddd1a31eee0629826b8739c85aa1a1c5487eed511c70e8e6769"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:57Z",
+          "finished": "2026-10-09T00:28:58Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.hornets.ogg",
+          "sha256": "1a439834763b878002907f6606b47ef9fef216a4a98d6e006cf77bdb91f980e9",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 42762,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "948b0259d837baaa9c057663bfcdc1fd64cb2b799eb267fa585a9cd702b903d0"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.volcano",
+      "class": "sfx",
+      "prompt": "a volcanic eruption roar with an explosive blast and deep rumble",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 2.0,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-09T00:28:58Z",
+          "finished": "2026-10-09T00:29:02Z",
+          "cost": {
+            "usd": 0.004,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.volcano/sfx.volcano.mp3",
+          "sha256": "876febe0fe78b190b3f299ab859ececc9b0323732db0bd766b32b97b2b9bedd3",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 33062,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "11"
+            }
+          },
+          "request_hash": "6e0c94f0b7f69f95e50e7bb4169ba58d03c37b9135ccc4fab09b439a96b4123d"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-09T00:29:02Z",
+          "finished": "2026-10-09T00:29:03Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.volcano.ogg",
+          "sha256": "ceecc2142aaab2759b2991c8740d317e86f358f17f2b8336730700ab01729ad1",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 34794,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "06d4c964a17524b3583b9fdbf2458a2a6592408bf1bacde3d59680888fba7150"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "voice.shaper.acknowledged",
+      "class": "voice",
+      "prompt": "acknowledged an order, calm and brief",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "voice_key": "shaper",
+        "text": "Ihra sovenu.",
+        "model_id": "eleven_v4",
+        "output_format": "mp3_44100_128",
+        "voice_settings": {
+          "stability": 0.5,
+          "similarity_boost": 0.8,
+          "style": 0.35
+        }
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "voice.shaper.acknowledged_b",
+      "class": "voice",
+      "prompt": "acknowledged an order, a second variant",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "voice_key": "shaper",
+        "text": "Vael tanuri.",
+        "model_id": "eleven_v4",
+        "output_format": "mp3_44100_128",
+        "voice_settings": {
+          "stability": 0.5,
+          "similarity_boost": 0.8,
+          "style": 0.35
+        }
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "voice.shaper.casting",
+      "class": "voice",
+      "prompt": "casting a spell, rising and commanding",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "voice_key": "shaper",
+        "text": "Kael-thu ora, vessen alu!",
+        "model_id": "eleven_v4",
+        "output_format": "mp3_44100_128",
+        "voice_settings": {
+          "stability": 0.5,
+          "similarity_boost": 0.8,
+          "style": 0.35
+        }
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "voice.shaper.under_attack",
+      "class": "voice",
+      "prompt": "under attack, sharp and urgent",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "voice_key": "shaper",
+        "text": "Dru karesh! Alun mor!",
+        "model_id": "eleven_v4",
+        "output_format": "mp3_44100_128",
+        "voice_settings": {
+          "stability": 0.5,
+          "similarity_boost": 0.8,
+          "style": 0.35
+        }
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "voice.shaper.victory",
+      "class": "voice",
+      "prompt": "victory, proud and ringing",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "voice_key": "shaper",
+        "text": "Ohe thavuni, sorrenu ai!",
+        "model_id": "eleven_v4",
+        "output_format": "mp3_44100_128",
+        "voice_settings": {
+          "stability": 0.5,
+          "similarity_boost": 0.8,
+          "style": 0.35
+        }
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "pending",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "vfx.bolt_burst",
+      "class": "vfx",
+      "prompt": "a radial burst of hot orange and white energy with angular spark shards, a starburst impact flash",
+      "refs": [],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "vfx"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "vfx.lightning_streak",
+      "class": "vfx",
+      "prompt": "a single jagged branching streak of pale blue-white lightning with a bright core, floating centered with tapering ends",
+      "refs": [],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "vfx"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "vfx.hornet_swarm",
+      "class": "vfx",
+      "prompt": "a loose cloud of many tiny glowing amber hornet shapes with faint motion streaks, a swarm particle sprite",
+      "refs": [],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "vfx"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "vfx.lava_splash",
+      "class": "vfx",
+      "prompt": "a splash of molten lava, red-orange droplets and chunky blobs flying outward from a bright yellow core",
+      "refs": [],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "vfx"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "vfx.magic_glow_ring",
+      "class": "vfx",
+      "prompt": "a thin glowing violet magic ring, perfectly circular and centered, soft inner glow and a few sparkles, empty center",
+      "refs": [],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "vfx"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "vfx.dust_puff",
+      "class": "vfx",
+      "prompt": "a soft puff of warm tan earthen dust, rounded faceted billows, centered",
+      "refs": [],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "vfx"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "vfx.water_splash",
+      "class": "vfx",
+      "prompt": "a crown-shaped splash of blue and white water droplets and foam, stylized angular droplets, centered",
+      "refs": [],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "vfx"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "icon.spell.bolt",
+      "class": "icons",
+      "prompt": "a hurled bolt of fiery orange and white energy with a short comet tail, spell icon",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "icon"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "icon.spell.call",
+      "class": "icons",
+      "prompt": "a carved wooden horn with three glowing pale green sound rings radiating from it, spell icon",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "icon"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "icon.spell.hornets",
+      "class": "icons",
+      "prompt": "three angry amber and black striped hornets swarming together, spell icon",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "icon"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "icon.spell.raise_land",
+      "class": "icons",
+      "prompt": "a jagged brown earthen ridge of rock rising up out of flat green ground with lifting chunks, spell icon",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "icon"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "icon.spell.lightning",
+      "class": "icons",
+      "prompt": "a bright blue-white forked lightning bolt striking down out of a dark storm cloud, spell icon",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "icon"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "icon.spell.flatten",
+      "class": "icons",
+      "prompt": "a perfectly level slab of earth with a smooth flat top and a heavy stone pressing down on it, spell icon",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "icon"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "icon.spell.quake",
+      "class": "icons",
+      "prompt": "cracked ground split by a deep jagged fissure with flying rock chunks, spell icon",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "icon"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "icon.spell.volcano",
+      "class": "icons",
+      "prompt": "a small volcano cone erupting with glowing orange lava and dark smoke, spell icon",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "icon"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "icon.resource.mana",
+      "class": "icons",
+      "prompt": "a glowing blue-violet crystal droplet of magical energy with a few small sparkles, resource icon",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "icon"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "icon.resource.population",
+      "class": "icons",
+      "prompt": "three small stylized tribal people standing close together in simple tunics, resource icon",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "icon"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "pending",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "pending",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
     }
   ]
 }

@@ -1,0 +1,133 @@
+{
+  "id": "shaper_elimination",
+  "description": "A tribe whose Shaper is dead is eliminated when its Hearth is destroyed; a living Shaper or a standing Hearth keeps it in the game.",
+  "tags": [
+    "fast",
+    "spells",
+    "shaper"
+  ],
+  "seed": 40,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2
+  },
+  "setup": [
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        20,
+        20
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        26,
+        20
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        26,
+        26
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        40,
+        40
+      ],
+      "count": 2
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": -1,
+      "type": "grantCharges",
+      "args": {
+        "tribe": 0,
+        "spell": "lightning",
+        "n": 1
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": -1,
+      "type": "grantCharges",
+      "args": {
+        "tribe": 0,
+        "spell": "quake",
+        "n": 2
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 1,
+      "tribe": 0,
+      "type": "cast",
+      "args": {
+        "spell": "lightning",
+        "target": [
+          26,
+          20
+        ]
+      }
+    },
+    {
+      "tick": 40,
+      "tribe": 0,
+      "type": "cast",
+      "args": {
+        "spell": "quake",
+        "target": [
+          26,
+          26
+        ]
+      }
+    },
+    {
+      "tick": 80,
+      "tribe": 0,
+      "type": "cast",
+      "args": {
+        "spell": "quake",
+        "target": [
+          26,
+          26
+        ]
+      }
+    }
+  ],
+  "runTicks": 140,
+  "assert": [
+    {
+      "at": 39,
+      "expr": "events.count('shaperDied') == 1 && alive(1) && count(tribe1.hearths) == 1"
+    },
+    {
+      "at": 75,
+      "expr": "alive(1) && hp(tribe1.hearths) == 1200"
+    },
+    {
+      "at": 140,
+      "expr": "count(tribe1.hearths) == 0 && !alive(1) && events.count('tribeEliminated') == 1 && alive(0) && invariants() == 0"
+    }
+  ]
+}

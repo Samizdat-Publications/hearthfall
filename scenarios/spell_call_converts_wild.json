@@ -1,0 +1,103 @@
+{
+  "id": "spell_call_converts_wild",
+  "description": "Call converts up to 4 wild people in its radius into settlers of the caster's tribe, limited by free housing.",
+  "tags": [
+    "fast",
+    "spells"
+  ],
+  "seed": 32,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 1
+  },
+  "setup": [
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        10,
+        10
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        6,
+        6
+      ]
+    },
+    {
+      "spawn": "dwelling",
+      "tribe": 0,
+      "at": [
+        14,
+        6
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        8,
+        12
+      ],
+      "count": 2
+    },
+    {
+      "spawn": "wild",
+      "near": [
+        20,
+        10
+      ],
+      "count": 6,
+      "spacing": 0.5
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": 0,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 1,
+      "tribe": -1,
+      "type": "grantCharges",
+      "args": {
+        "tribe": 0,
+        "spell": "call",
+        "n": 1
+      }
+    },
+    {
+      "tick": 2,
+      "tribe": 0,
+      "type": "cast",
+      "args": {
+        "spell": "call",
+        "target": [
+          20,
+          10
+        ]
+      }
+    }
+  ],
+  "runTicks": 40,
+  "assert": [
+    {
+      "at": 1,
+      "expr": "count(wild) == 6 && count(tribe0.settlers) == 2"
+    },
+    {
+      "at": 40,
+      "expr": "events.count('converted') == 4 && count(tribe0.settlers) == 6 && count(wild) == 2 && invariants() == 0"
+    }
+  ]
+}

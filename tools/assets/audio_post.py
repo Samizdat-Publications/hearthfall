@@ -19,7 +19,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import common as C  # noqa: E402
 from common import log  # noqa: E402
 
-LOUDNESS = {"sfx": -18.0, "music": -16.0}  # integrated LUFS targets, one per class
+LOUDNESS = {"sfx": -18.0, "music": -16.0, "voice": -18.0}
+LOOP_XFADE_S = 2.0  # music: tail crossfaded into the head so the file loops seamlessly  # integrated LUFS targets, one per class
 
 
 def find_ffmpeg():
@@ -30,7 +31,33 @@ def find_ffmpeg():
     return guess if os.path.isfile(guess) else None
 
 
-def ffmpeg_cmd(ff, src, dst, cls):
+def duration_s(ff, src):
+    import re
+
+    exe = shutil.which("ffprobe")
+    if not exe:
+        cand = os.path.join(os.path.dirname(ff), "ffprobe.exe")
+        exe = cand if os.path.isfile(cand) else None
+    if exe:
+        r = subprocess.run([exe, "-v", "error", "-show_entries", "format=duration", "-of", "default=nw=1:nk=1", str(src)],
+                           capture_output=True, text=True, timeout=60)
+        try:
+            return float(r.stdout.strip())
+        except ValueError:
+            pass
+    r = subprocess.run([ff, "-i", str(src)], capture_output=True, text=True, timeout=60)
+    m = re.search(r"Duration: (\d+):(\d+):([\d.]+)", r.stderr)
+    return int(m.group(1)) * 3600 + int(m.group(2)) * 60 + float(m.group(3)) if m else 0.0
+
+
+def ffmpeg_cmd(ff, src, dst, cls, length=None):
+    if cls == "music" and length and length > 4 * LOOP_XFADE_S:
+        x, L = LOOP_XFADE_S, length
+        graph = (f"[0:a]asplit=3[a][b][c];[a]atrim=0:{x},asetpts=PTS-STARTPTS[head];[b]atrim={L - x:.3f}:{L:.3f},asetpts=PTS-STARTPTS[tail];"
+                 f"[c]atrim={x}:{L - x:.3f},asetpts=PTS-STARTPTS[mid];[tail][head]acrossfade=d={x}:c1=tri:c2=tri[xf];"
+                 f"[xf][mid]concat=n=2:v=0:a=1,loudnorm=I={LOUDNESS[cls]}:TP=-1.5:LRA=11[out]")
+        return [ff, "-y", "-hide_banner", "-loglevel", "error", "-i", str(src), "-filter_complex", graph, "-map", "[out]",
+                "-c:a", "libvorbis", "-q:a", "4", str(dst)]
     chain = "silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.02"
     chain += f",loudnorm=I={LOUDNESS[cls]}:TP=-1.5:LRA=11"
     return [ff, "-y", "-hide_banner", "-loglevel", "error", "-i", str(src), "-af", chain, "-c:a", "libvorbis", "-q:a", "4", str(dst)]
@@ -43,8 +70,10 @@ def post_asset(a: dict) -> dict:
     ff = find_ffmpeg()
     if not ff:
         return {"status": "stub", "message": f"ffmpeg missing: would run `{' '.join(ffmpeg_cmd('ffmpeg', src, dst, a['class']))}`"}
-    subprocess.run(ffmpeg_cmd(ff, src, dst, a["class"]), check=True, timeout=120, capture_output=True)
-    return {"output_path": C.rel(dst), "bytes": dst.stat().st_size, "loudness_target_lufs": LOUDNESS[a["class"]], "ffmpeg": "ok"}
+    length = duration_s(ff, src) if a["class"] == "music" else None
+    subprocess.run(ffmpeg_cmd(ff, src, dst, a["class"], length), check=True, timeout=180, capture_output=True)
+    return {"output_path": C.rel(dst), "bytes": dst.stat().st_size, "loudness_target_lufs": LOUDNESS[a["class"]], "ffmpeg": "ok",
+            "loop_crossfade_s": LOOP_XFADE_S if length else None}
 
 
 def main() -> int:
@@ -59,7 +88,7 @@ def main() -> int:
     m = C.load_manifest()
     n = 0
     for a in m["assets"]:
-        if a["class"] not in ("sfx", "music"):
+        if a["class"] not in ("sfx", "music", "voice"):
             continue
         st, mod = a["steps"]["post"], a["steps"]["model"]
         if mod["status"] != "done" or st["status"] == "done":

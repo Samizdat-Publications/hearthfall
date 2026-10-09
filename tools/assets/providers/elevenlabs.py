@@ -53,3 +53,20 @@ def tts(voice_id: str, text: str, *, model_id="eleven_v4", output_format="mp3_44
     r = http("elevenlabs", "POST", f"{BASE}/v1/text-to-speech/{voice_id}", headers=_h(), json=body,
              params={"output_format": output_format}, timeout=120)
     return {"bytes": r.content, "headers": _keep(r.headers), "content_type": r.headers.get("content-type")}
+
+
+def design_voice(description: str, text: str, *, model_id="eleven_multilingual_ttv_v2", seed=None, guidance_scale=5) -> dict:
+    """POST /v1/text-to-voice/design -> previews (generated_voice_id + base64 mp3). Source: ElevenLabs API reference, checked 2026-10-08."""
+    body = {"voice_description": description, "text": text, "model_id": model_id, "guidance_scale": guidance_scale}
+    if seed is not None:
+        body["seed"] = seed
+    r = http("elevenlabs", "POST", f"{BASE}/v1/text-to-voice/design", headers=_h(), json=body,
+             params={"output_format": "mp3_44100_128"}, timeout=180)
+    return {"json": r.json(), "headers": _keep(r.headers)}
+
+
+def create_voice_from_preview(name: str, description: str, generated_voice_id: str) -> dict:
+    """POST /v1/text-to-voice -> saved voice (voice_id)."""
+    body = {"voice_name": name, "voice_description": description, "generated_voice_id": generated_voice_id}
+    r = http("elevenlabs", "POST", f"{BASE}/v1/text-to-voice", headers=_h(), json=body, timeout=60)
+    return {"json": r.json(), "headers": _keep(r.headers)}

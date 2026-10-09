@@ -33,3 +33,7 @@ Reason: M3 soak fix: line of sight refuses torus-ambiguous half-map segments, ch
 ## 2026-10-08 23:51 UTC
 Reason: M4: starting settlers carry startWoodPerSettler and deliver it first; spawns wrap positions; economy data schema grew
 - terrain_ops_continents: final ea078df0 -> 1fea2859 (pack 52b4ba78)
+
+## 2026-10-09 00:30 UTC
+Reason: M5: combat and status entity columns, Shaper and cast state in the tribe hash, spells and effect primitives in the step
+- terrain_ops_continents: final 1fea2859 -> 38553ea7 (pack cefcd6de)

@@ -11,6 +11,8 @@ import { cos, sin, TWO_PI } from "./dmath.ts";
 import type { Terrain, TerrainOpSpec } from "./terrain.ts";
 import { ORDER, UnitSystem } from "./units.ts";
 import { BSTATE, cloneEco, EconomySystem, newTribeEco, type TribeEco } from "./economy.ts";
+import { isShaper, onShaperDeath, updateSpells, type CastState, type PendingCast } from "./spells.ts";
+import { updateEffects } from "./effects.ts";
 
 /** Deterministic in-sim decision maker (AI opponent or test bot); emits Commands at its cadence. */
 export interface Controller {
@@ -35,6 +37,11 @@ export interface Tribe {
   hearth: EntityId;
   alive: boolean;
   eco: TribeEco;
+  /** the tribe's Shaper (NO_ENTITY while dead), respawn tick (-1 none), cast in progress, queued cast */
+  shaper: EntityId;
+  respawnAt: number;
+  casting: CastState | null;
+  pending: PendingCast | null;
 }
 
 export interface WorldInit {
@@ -101,7 +108,7 @@ export class World {
     this.units = new UnitSystem(this);
     this.economy = new EconomySystem(this);
     const tribeCount = init.map.tribes ?? gen.hearths.length;
-    for (let t = 0; t < tribeCount; t++) this.tribes.push({ index: t, color: TRIBE_COLORS[t % 4], hearth: NO_ENTITY, alive: true, eco: newTribeEco(this) });
+    for (let t = 0; t < tribeCount; t++) this.tribes.push({ index: t, color: TRIBE_COLORS[t % 4], hearth: NO_ENTITY, alive: true, eco: newTribeEco(this), shaper: NO_ENTITY, respawnAt: -1, casting: null, pending: null });
     if (init.populate !== false) {
       gen.hearths.forEach((h, t) => this.spawnBuilding("hearth", t, h.x, h.y));
       gen.hearths.forEach((h, t) => this.spawnStartUnits(t, h.x, h.y));
@@ -145,7 +152,24 @@ export class World {
     y = ((y % n) + n) % n;
     const type = this.cfg.unitIndex.get(kind);
     if (type === undefined) throw new Error(`unknown unit kind ${kind}`);
-    return this.ents.alloc(CAT.unit, type, tribe, x, y, this.cfg.pack.units.units[type].hp);
+    const id = this.ents.alloc(CAT.unit, type, tribe, x, y, this.cfg.pack.units.units[type].hp);
+    if (this.cfg.pack.units.units[type].isCaster && tribe >= 0 && tribe < this.tribes.length) this.tribes[tribe].shaper = id;
+    return id;
+  }
+
+  /**
+   * Damage a unit or building. Shapers only die to effects allowed to kill them (lethal); other
+   * damage leaves them at least shaperMinHpFromNonLethal. Units inside buildings are safe.
+   */
+  damage(i: number, amount: number, fromTribe: number, lethal: boolean): void {
+    const E = this.ents;
+    if (!E.alive[i] || amount <= 0) return;
+    if (E.cat[i] === CAT.unit && E.inside[i] >= 0) return;
+    if (fromTribe >= 0) E.lastHit[i] = fromTribe;
+    let hp = E.hp[i] - amount;
+    if (E.cat[i] === CAT.unit && isShaper(this, i) && !lethal) hp = Math.max(hp, this.cfg.pack.balance.combat.shaperMinHpFromNonLethal);
+    E.hp[i] = hp;
+    if (hp <= 0) this.kill(i, E.cat[i] === CAT.building ? "destroyed" : "killed");
   }
 
   spawnBuilding(kind: string, tribe: number, x: number, y: number): EntityId {
@@ -165,6 +189,7 @@ export class World {
 
   kill(i: number, cause: string): void {
     const e = this.ents;
+    if (e.cat[i] === CAT.unit && isShaper(this, i) && e.tribe[i] >= 0) onShaperDeath(this, e.tribe[i], cause === "drowned", e.lastHit[i]);
     this.units.paths[i] = null;
     if (e.cat[i] === CAT.tree) this.treeVersion++;
     if (e.cat[i] === CAT.unit && e.inside[i] >= 0) {
@@ -181,7 +206,7 @@ export class World {
         }
       }
     }
-    this.emit(cause, { id: e.idOf(i), cat: e.cat[i], kind: e.type[i], tribe: e.tribe[i], x: e.x[i], y: e.y[i] });
+    this.emit(cause, { id: e.idOf(i), cat: e.cat[i], kind: e.type[i], tribe: e.tribe[i], x: e.x[i], y: e.y[i], by: e.lastHit[i] });
     e.free(e.idOf(i));
   }
 
@@ -206,7 +231,9 @@ export class World {
     this.economy.updateTasks();
     // 4-5. pathing requests (budgeted) and movement
     this.units.update();
-    // 6. combat, projectiles, spells and effects: land in M5 and M6
+    // 6. spells (queued and resolving casts, respawns, elimination) and persistent effects; combat in M6
+    updateSpells(this);
+    updateEffects(this);
     // 7. terrain ops, then drowning
     if (this.terrainQueue.length) {
       for (const op of this.terrainQueue) this.terrain.apply(op);
@@ -322,6 +349,9 @@ export class World {
     const mf = new Fnv().u32(this.tick);
     for (const t of this.tribes) {
       mf.u32(t.hearth).u32(t.alive ? 1 : 0).f64(t.eco.wasted).f64(t.eco.spellsPct).u32(t.eco.cursor).f64(t.eco.trainMana);
+      mf.u32(t.shaper).f64(t.respawnAt);
+      if (t.casting) mf.u32(t.casting.spell).f64(t.casting.x).f64(t.casting.y).u32(t.casting.startedAt).u32(t.casting.resolveAt);
+      if (t.pending) mf.u32(t.pending.spell + 1000).f64(t.pending.x).f64(t.pending.y);
       mf.bytes(t.eco.charges).bytes(t.eco.progress).bytes(t.eco.auto).bytes(t.eco.unlocked);
     }
     const meta = mf.hex();
@@ -345,7 +375,7 @@ export class World {
       terrainVersion: this.terrain.version,
       rng: this.rng.state.slice(),
       ents: { hi: this.ents.hi, count: this.ents.count, freeList: this.ents.freeList.slice(), columns },
-      tribes: this.tribes.map((t) => ({ ...t, eco: cloneEco(t.eco) })),
+      tribes: this.tribes.map((t) => ({ ...t, eco: cloneEco(t.eco), casting: t.casting ? { ...t.casting } : null, pending: t.pending ? { ...t.pending } : null })),
       eventCounts: [...this.eventCounts],
       paths: this.units.paths.map((p, i) => (p ? ([i, p.slice()] as [number, Int32Array]) : null)).filter((x): x is [number, Int32Array] => x !== null),
       pathQueue: this.units.queue.slice(),
@@ -368,7 +398,7 @@ export class World {
     e.hi = snap.ents.hi;
     e.count = snap.ents.count;
     e.freeList = snap.ents.freeList.slice();
-    w.tribes = snap.tribes.map((t) => ({ ...t, eco: cloneEco(t.eco) }));
+    w.tribes = snap.tribes.map((t) => ({ ...t, eco: cloneEco(t.eco), casting: t.casting ? { ...t.casting } : null, pending: t.pending ? { ...t.pending } : null }));
     w.eventCounts = new Map(snap.eventCounts);
     for (const [i, p] of snap.paths) w.units.paths[i] = p.slice();
     w.units.queue = snap.pathQueue.slice();
