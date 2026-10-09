@@ -290,6 +290,16 @@
       "when": "2026-10-08T23:14:53.711Z",
       "source": "tools/assets/raw/gemini/unit.shaper/concept.jpg",
       "bytes": 371948
+    },
+    {
+      "file": "m4/20261009-0003_village-grows.png",
+      "milestone": "M4",
+      "kind": "screenshot",
+      "caption": "A village grows: the first dwelling built by settlers, HUD v1 with population, mana income, split slider and spell charges",
+      "highlight": true,
+      "when": "2026-10-09T00:03:31.020Z",
+      "source": "reports/latest/shots/hud_economy.png",
+      "bytes": 447777
     }
   ]
 }

@@ -44,7 +44,7 @@ Match arc: settle (0 to 5 min), expand and claim shrines (5 to 15 min), war and 
 
 ## 4. Win and loss
 
-- Starting state: a Hearth, the Shaper, 5 settlers, and a few wild people wandering nearby.
+- Starting state: a Hearth, the Shaper, 5 settlers (each carrying 1 wood of starting supplies, `balance.economy.startWoodPerSettler`), and a few wild people wandering nearby.
 - The **Hearth** has 4000 HP and can be destroyed by troops and spells. It never rebuilds in v1.
 - A tribe is **eliminated** when its Shaper is dead and either its Hearth is destroyed or it has zero settlers and troops.
 - Skirmish victory: last tribe (or alliance) standing. Optional victory variants in data: hold all reliquaries for N minutes, timed survival.
@@ -72,7 +72,7 @@ Rules:
 
 - Start 5 settlers + Shaper. Population cap: `popCap = min(200, 5 + sum of dwelling supply)` (data).
 - Dwellings: capacity small 3, medium 4, large 5; supply contribution 3/5/7. Dwellings auto-upgrade when occupied and wood is available (upgrade needs 3 wood delivered, consumes 2).
-- Breeding: each dwelling has a progress bar. `breedSeconds = base / (0.5 + 0.5 * occupants) * nearCapFactor`, with base small 200 s, medium 150 s, large 100 s; `nearCapFactor` rises from 1 once population passes 70 percent of popCap. A dwelling with zero occupants does not breed. Tune in data with soak tests (target: an unharassed tribe reaches ~60 population at 10 minutes).
+- Breeding: each dwelling has a progress bar. `breedSeconds = base / (0.5 + 0.5 * occupants) * nearCapFactor`, with base small 200 s, medium 150 s, large 100 s; `nearCapFactor` rises from 1 once population passes 70 percent of popCap. A dwelling with zero occupants does not breed. Tune in data with soak tests (target: an unharassed tribe reaches ~60 population at 10 minutes). Tuned at M4 with `npm run soak -- --mode economy`: base 50 / 80 / 100 s, chop 3 s per wood, build 2.5 s per wood; median 59 at minute 10 across 8 seeds, every tribe growing every minute. Settlers live inside dwellings (hidden, counted as housed for mana); one occupant always stays to breed while others leave for jobs.
 
 ## 7. Units
 
@@ -155,7 +155,7 @@ Spell UX: hover shows exact area preview on the curved terrain, range ring aroun
 - Selection: click, box select that works on the curved surface, double-click selects all of that type on screen, control groups 1 to 9, tab cycles unit types in selection.
 - Orders: right click move/attack/garrison/worship, attack-move (A), stances (aggressive, defensive, hold), formations for groups, rally points on lodges, queued orders (Shift), "retreat to nearest tower" (R).
 - Shaper: hotkey S selects and centers her. Spells on Z X C V B N M (in spell bar order) or click the HUD. No Alt chords (a lone Alt press steals focus in Chrome on Windows).
-- Settlers are mostly autonomous with a tribe-wide priority panel (build / chop / breed / pray), so the player manages intent, not individuals.
+- Settlers are mostly autonomous with a tribe-wide priority panel (build / chop / breed / pray), so the player manages intent, not individuals. As built (M4): toggles Build, Upgrade, Breed in the resource panel; chopping happens on demand for sites and upgrades; D places a dwelling plan (Z X C V B N M stay reserved for spells).
 
 ## 13. AI opponents
 

@@ -1,0 +1,34 @@
+.hud-panel { position: absolute; color: #3a2a22; background: rgba(244, 241, 234, 0.86); border-radius: 10px; padding: 6px 12px; font-size: 13px; box-shadow: 0 1px 5px rgba(58, 42, 34, 0.28); white-space: nowrap; pointer-events: none; }
+.hud-title { left: 16px; top: 12px; display: flex; gap: 10px; align-items: baseline; }
+.hud-name { font-weight: 800; font-size: 18px; letter-spacing: 0.5px; }
+.hud-sub { font-size: 12px; opacity: 0.85; }
+.hud-resources { right: 16px; top: 12px; display: flex; flex-direction: column; gap: 3px; min-width: 210px; pointer-events: auto; }
+.res-row { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+.res-row b.warn { color: #c8312e; }
+.res-label { font-size: 12px; opacity: 0.8; }
+.res-row.split input { flex: 1; min-width: 70px; accent-color: #b07cff; }
+.priorities { gap: 4px; }
+.prio { flex: 1; border: 1px solid #d9cbb0; background: #f4f1ea; color: #8a8378; border-radius: 6px; font: 600 11px system-ui; padding: 2px 4px; cursor: pointer; }
+.prio.on { background: #8dbf5a; border-color: #5e8c3a; color: #fff; }
+.waste { font-size: 11px; color: #fff; background: #c8312e; border-radius: 6px; padding: 0 5px; }
+.hud-spellbar { left: 50%; bottom: 12px; transform: translateX(-50%); display: flex; gap: 4px; padding: 5px 8px; pointer-events: auto; }
+.spell { position: relative; width: 48px; height: 48px; border: none; background: transparent; padding: 0; cursor: pointer; opacity: 0.55; }
+.spell.auto { opacity: 1; }
+.spell .ring-bg { fill: #f4f1ea; stroke: #d9cbb0; stroke-width: 4; }
+.spell .ring { fill: none; stroke: #b07cff; stroke-width: 4; stroke-linecap: round; }
+.spell[data-tier="1"] .ring { stroke: #2e6fd8; }
+.spell[data-tier="3"] .ring { stroke: #e0a12a; }
+.spell[data-tier="4"] .ring { stroke: #c8312e; }
+.spell.full .ring-bg { fill: #fff6d8; }
+.spell .glyph { font: 700 13px system-ui, sans-serif; fill: #3a2a22; }
+.spell .charges { position: absolute; right: 1px; bottom: 1px; font: 700 11px system-ui; background: #3a2a22; color: #f4f1ea; border-radius: 7px; min-width: 14px; height: 14px; line-height: 14px; text-align: center; }
+.spell .hotkey, .build-btn .hotkey { position: absolute; left: 2px; top: 0; font-size: 9px; opacity: 0.6; }
+.build-btn .hotkey { position: static; margin-left: 4px; }
+.hud-build { left: 16px; bottom: 12px; display: flex; gap: 6px; padding: 5px 8px; pointer-events: auto; }
+.build-btn { border: 1px solid #c9a65a; background: #fff8e6; color: #3a2a22; border-radius: 8px; padding: 4px 10px; font: 600 12px system-ui; cursor: pointer; }
+.build-btn.active { background: #e0a12a; color: #fff; }
+.hud-selection { left: 16px; bottom: 64px; font-weight: 600; }
+.hud-help { left: 50%; top: 56px; transform: translateX(-50%); font-size: 11px; }
+.hud-overlap { display: none; left: 40px; top: 18px; }
+body.debug-overlap-hud .hud-overlap { display: block; }
+.hud-box { position: absolute; border: 1.5px solid rgba(230, 244, 248, 0.95); background: rgba(230, 244, 248, 0.12); pointer-events: none; }

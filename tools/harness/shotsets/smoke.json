@@ -218,6 +218,61 @@
     ]
    },
    "minHud": 3
+  },
+  {
+   "id": "hud_economy",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "default"
+   },
+   "steps": [
+    {
+     "eval": "__game.pause(true)"
+    },
+    {
+     "assert": "__game.placeAtScreen('dwelling', 760, 400) === null"
+    },
+    {
+     "step": 900
+    },
+    {
+     "assert": "__game.getSummary().lastEvents.some((e) => e.type === 'buildingDone') || __game.getSummary().tribes[0].buildings >= 2"
+    }
+   ],
+   "kind": "hud",
+   "coverage": {
+    "green": [
+     0.03,
+     0.95
+    ]
+   },
+   "minHud": 5
+  },
+  {
+   "id": "hud_1440p",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "default"
+   },
+   "width": 2560,
+   "height": 1440,
+   "steps": [
+    {
+     "step": 200
+    }
+   ],
+   "kind": "hud",
+   "coverage": {
+    "green": [
+     0.03,
+     0.95
+    ]
+   },
+   "minHud": 5
   }
  ]
 }

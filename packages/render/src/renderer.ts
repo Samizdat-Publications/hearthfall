@@ -66,6 +66,7 @@ export class ThreeRenderer implements Renderer {
   /** sim tick interpolation factor in [0, 1] and the selection to ring (entity indices) */
   alpha = 1;
   selected: ReadonlySet<number> = new Set();
+  private ghost: THREE.Mesh;
   private viewW = 1280;
   private viewH = 720;
 
@@ -109,6 +110,10 @@ export class ThreeRenderer implements Renderer {
     this.ringMat = bendMaterial(new THREE.MeshBasicMaterial({ color: pal.foam ?? "#e6f4f8", transparent: true, opacity: 0.9, depthWrite: false }), this.bend);
     this.trees = new TreeLayer(this.propMat, pal);
     for (const m of this.trees.meshes) this.scene.add(m);
+    this.ghost = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 4, 4).rotateX(-Math.PI / 2), bendMaterial(new THREE.MeshBasicMaterial({ color: "#8dbf5a", transparent: true, opacity: 0.55, depthWrite: false }), this.bend));
+    this.ghost.visible = false;
+    this.ghost.frustumCulled = false;
+    this.scene.add(this.ghost);
     this.sky = makeSky(L.skyTop, L.skyHorizon);
     this.gl.setClearColor(pal.water ?? "#2f7fb8", 1);
     this.scene.add(this.sky);
@@ -238,6 +243,26 @@ export class ThreeRenderer implements Renderer {
     this.stats.drawCalls = this.gl.info.render.calls;
     this.stats.triangles = this.gl.info.render.triangles;
     this.stats.cpuMs = performance.now() - t0;
+  }
+
+  /** Show or hide the building placement ghost (footprint quad, green when buildable, red when not). */
+  setPlacement(p: { x: number; z: number; w: number; h: number; ok: boolean } | null): void {
+    if (!p || !this.world) {
+      this.ghost.visible = false;
+      return;
+    }
+    const t = this.world.terrain;
+    let top = t.sea;
+    for (let y = 0; y <= p.h; y++) for (let x = 0; x <= p.w; x++) top = Math.max(top, t.get(Math.round(p.x - p.w / 2) + x, Math.round(p.z - p.h / 2) + y));
+    this.ghost.visible = true;
+    this.ghost.scale.set(p.w + 0.4, 1, p.h + 0.4);
+    let ox = p.x - this.cam.x;
+    let oz = p.z - this.cam.z;
+    const n = t.size;
+    ox -= Math.round(ox / n) * n;
+    oz -= Math.round(oz / n) * n;
+    this.ghost.position.set(this.cam.x + ox, top * this.palette.heightScale + 0.08, this.cam.z + oz);
+    (this.ghost.material as THREE.MeshBasicMaterial).color.set(p.ok ? "#8dbf5a" : "#c8312e");
   }
 
   /**

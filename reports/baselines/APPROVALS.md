@@ -2,3 +2,6 @@
 - 2026-10-08T22:47 set smoke (8 shots): M2 review: fixedStep visuals now follow the sim tick (deterministic water and foam); added hud_overlap_negative
 - 2026-10-08T23:03 set smoke (9 shots): M3: units (Shaper, settlers, wild) and placeholder buildings render; HUD selection panel; units_select_move e2e
 - 2026-10-08T23:39 set smoke (9 shots): M3 review movement fixes change unit positions in units_select_move
+- 2026-10-09T00:00 set smoke (11 shots): M4: HUD v1 (resources, split slider, spell bar, build menu), housed units hidden, plans and dwelling levels rendered, AI tribes run the economy bot
+- 2026-10-09T00:09 set smoke (11 shots): M4: tribe priority toggles in the resource panel
+- 2026-10-09T00:18 set smoke (11 shots): M4: help bar moved below the title row after a VisionQA overlap flag; DOM check now requires a 4 px gap

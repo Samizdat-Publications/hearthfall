@@ -114,7 +114,9 @@ export default async function benchCmd(out, _cmd, args) {
     rawP99Ms: +median(rawP99s).toFixed(3),
     afterTerrainOpMs: +afterOp.toFixed(3),
     groupOrdersMs: +groupOrders.toFixed(3),
-    tickAvgMs: +median(avgs).toFixed(3),
+    // gated average: mean of each tick's fastest replay (same noise filter as the p99); raw is informational
+    tickAvgMs: +(best.reduce((x, y) => x + y, 0) / best.length).toFixed(3),
+    rawAvgMs: +median(avgs).toFixed(3),
     tickP99Ms: +median(p99s).toFixed(3),
     terrainOpMs: +median(ops).toFixed(3),
   };

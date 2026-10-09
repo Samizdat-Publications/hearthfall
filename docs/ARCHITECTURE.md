@@ -90,6 +90,9 @@ Torus heightmap `Int16Array(w*h)`, modulo indexing everywhere through one helper
 ### Pathfinding
 Cost field per cell from slope and water. Hierarchical: 16x16 cell sectors with portal graph for long routes (A* on portals), flow fields for group moves to one target, local steering and separation for crowds. Dirty terrain invalidates only touched sectors. Per-tick path budget; units waiting on a path keep their last order. Invariant tested: no unit stays "stuck" (no progress, has order) longer than 10 s in soak runs. As built (M3, ADR-004): full-grid A* with component labels and a per-tick expansion budget, flow fields for groups of `groupFlowMinUnits` or more, torus spatial hash separation, route-progress stuck detection with repath and give-up; sectors and portals deferred until a bench warns. AI controllers (`Controller` in `packages/sim/src/world.ts`, implementations in `packages/ai`) run in system step 2 and issue ordinary Commands.
 
+### Economy (M4)
+`packages/sim/src/economy.ts`: settler job state machine and per-tribe assignment (system step 3: chop, haul, flatten, build, move home; one occupant stays to breed), construction sites and dwellings with occupancy, auto-upgrade and breeding under the population cap, tree regrowth and spread, mana income by follower state into the spell and training sinks with the split slider (step 8). Tribe economy state (`TribeEco`) is part of the hash and snapshots. The economy bot (`packages/ai/src/economyBot.ts`) only places dwelling plans; everything else is autonomy.
+
 ## 4. Data packs (`data/`, `packages/data`)
 
 - Files: `units.json, buildings.json, spells.json, effects.json, ai_personalities.json, balance.json, terrain.json, style.json, levels/*.json`.

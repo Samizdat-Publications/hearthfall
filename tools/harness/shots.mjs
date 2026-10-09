@@ -54,6 +54,8 @@ function domCheckFn() {
       const ix = Math.min(A.right, B.right) - Math.max(A.left, B.left);
       const iy = Math.min(A.bottom, B.bottom) - Math.max(A.top, B.top);
       if (ix > 2 && iy > 2) issues.push(`${rects[a].id} overlaps ${rects[b].id}`);
+      // panels closer than 4 px read as touching or overlapping to players
+      else if (ix > -4 && iy > -4) issues.push(`${rects[a].id} crowds ${rects[b].id}`);
     }
   }
   return { count: els.length, issues };

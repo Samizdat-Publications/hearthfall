@@ -93,9 +93,8 @@ export class BuildingLayer {
   update(w: World, focusX: number, focusZ: number, heightScale: number): void {
     const E = w.ents;
     const n = w.terrain.size;
-    const key = `${focusX.toFixed(2)}|${focusZ.toFixed(2)}|${w.terrain.version}|${E.count}|${E.hi}`;
-    if (key === this.lastKey) return;
-    this.lastKey = key;
+    // buildings are few; rebuild every frame so plans, construction progress and levels stay current
+    void this.lastKey;
     const counts = new Int32Array(this.kinds.length);
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.building) continue;
@@ -108,7 +107,13 @@ export class BuildingLayer {
       oz -= Math.round(oz / n) * n;
       const y = Math.max(w.terrain.heightAt(E.x[i], E.y[i]), w.terrain.sea) * heightScale;
       this.p.set(focusX + ox, y - 0.05, focusZ + oz);
-      this.s.setScalar(kind.scale * 1.15);
+      // plans rise with construction; dwellings grow with their level
+      const st = E.state[i];
+      const def = w.cfg.pack.buildings.buildings[k];
+      const total = (def.wood ?? def.levels?.[0]?.wood ?? 1) * w.cfg.pack.buildings.construction.buildSecondsPerWood;
+      const rise = st === 3 ? 1 : st === 2 ? 0.25 + 0.75 * Math.min(1, E.progress[i] / total) : 0.12;
+      const lv = def.levels ? 1 + 0.16 * Math.max(0, E.level[i] - 1) : 1;
+      this.s.set(kind.scale * 1.15 * lv, kind.scale * 1.15 * lv * rise, kind.scale * 1.15 * lv);
       this.q.setFromAxisAngle(THREE.Object3D.DEFAULT_UP, ((i * 2654435761) >>> 0) / 4294967296 * Math.PI * 2);
       this.m.compose(this.p, this.q, this.s);
       const c = counts[k]++;

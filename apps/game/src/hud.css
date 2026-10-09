@@ -1,9 +1,0 @@
-.hud-panel { position: absolute; pointer-events: none; color: #3a2a22; background: rgba(244, 241, 234, 0.82); border-radius: 8px; padding: 6px 12px; font-size: 13px; box-shadow: 0 1px 4px rgba(58, 42, 34, 0.25); white-space: nowrap; }
-.hud-title { left: 16px; top: 12px; display: flex; gap: 10px; align-items: baseline; }
-.hud-name { font-weight: 800; font-size: 18px; letter-spacing: 0.5px; }
-.hud-sub { font-size: 12px; opacity: 0.85; }
-.hud-help { left: 50%; bottom: 12px; transform: translateX(-50%); font-size: 12px; }
-.hud-overlap { display: none; left: 40px; top: 18px; }
-.hud-selection { left: 16px; bottom: 48px; font-weight: 600; }
-.hud-box { position: absolute; border: 1.5px solid rgba(230, 244, 248, 0.95); background: rgba(230, 244, 248, 0.12); pointer-events: none; }
-body.debug-overlap-hud .hud-overlap { display: block; }

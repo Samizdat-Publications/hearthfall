@@ -4,6 +4,7 @@
 import { validatePack, type ValidatedPack } from "@hearthfall/data";
 import { CAT, World, commandsByTick, createScenarioWorld, type Command, type ScenarioDef } from "@hearthfall/sim";
 import { ThreeRenderer, type CameraState } from "@hearthfall/render";
+import { makeBot } from "@hearthfall/ai";
 
 const packFiles = import.meta.glob("../../../data/base/*.json", { eager: true, import: "default" });
 const scenarioFiles = import.meta.glob("../../../scenarios/*.json", { eager: true, import: "default" });
@@ -79,6 +80,11 @@ export class Game {
   /** box select rectangle in screen pixels while dragging (for the HUD overlay) */
   box: { x0: number; y0: number; x1: number; y1: number } | null = null;
   readonly localTribe = 0;
+  /** building id being placed (ghost follows the cursor), and why the current spot is blocked */
+  placing: string | null = null;
+  placeBlocked: string | null = null;
+  private placeAt: [number, number] | null = null;
+  showHelp = true;
   onChange: () => void = () => {};
 
   readonly canvas: HTMLCanvasElement;
@@ -100,6 +106,9 @@ export class Game {
     this.world = def ? createScenarioWorld(def, p.files, p.hash) : new World({ pack: p.files, packHash: p.hash, seed: this.params.seed, map: { generator: this.params.level, size: this.params.size, tribes: this.params.tribes } });
     this.scenarioCmds = def ? commandsByTick(def.commands) : null;
     this.selection.clear();
+    this.placing = null;
+    // until the opponent AI lands (M7), other tribes run the economy bot so the world feels alive
+    if (!def) for (const t of this.world.tribes) if (t.index !== this.localTribe) this.world.controllers.push(makeBot({ type: "economy", tribe: t.index, offset: t.index }));
     this.renderer.setWorld(this.world);
     const home = this.world.tribes[0] ? this.world.ents.index(this.world.tribes[0].hearth) : -1;
     const size = this.world.terrain.size;
@@ -198,6 +207,47 @@ export class Game {
     return true;
   }
 
+  startPlacing(building: string): void {
+    this.placing = building;
+    this.attackMode = false;
+    this.onChange();
+  }
+
+  cancelPlacing(): void {
+    this.placing = null;
+    this.placeAt = null;
+    this.renderer.setPlacement(null);
+    this.onChange();
+  }
+
+  /** Move the placement ghost to the terrain under a screen pixel (snapped to the footprint grid). */
+  updatePlacement(px: number, py: number): void {
+    if (!this.placing) return;
+    const w = this.world;
+    const type = w.cfg.buildingIndex.get(this.placing);
+    const p = this.renderer.pickTerrain(px, py);
+    if (type === undefined || !p) {
+      this.renderer.setPlacement(null);
+      return;
+    }
+    const [fw, fh] = w.cfg.pack.buildings.buildings[type].footprint;
+    const cx = Math.round(p.x - fw / 2) + fw / 2;
+    const cy = Math.round(p.z - fh / 2) + fh / 2;
+    const blocker = w.economy.planBlocker(type, cx, cy);
+    this.placeAt = [cx, cy];
+    if (blocker !== this.placeBlocked) {
+      this.placeBlocked = blocker;
+      this.onChange();
+    }
+    this.renderer.setPlacement({ x: cx, z: cy, w: fw, h: fh, ok: !blocker });
+  }
+
+  confirmPlacement(): void {
+    if (!this.placing || !this.placeAt || this.placeBlocked) return;
+    this.command({ tribe: this.localTribe, type: "placePlan", args: { building: this.placing, at: this.placeAt } });
+    this.cancelPlacing();
+  }
+
   selectKind(kind: string, center = true): void {
     const idx = this.world.selectUnits(`tribe${this.localTribe}.${kind}s`);
     this.selection = new Set(idx);
@@ -210,6 +260,11 @@ export class Game {
     let down: { x: number; y: number } | null = null;
     this.canvas.addEventListener("contextmenu", (e) => e.preventDefault());
     this.canvas.addEventListener("mousedown", (e) => {
+      if (this.placing) {
+        if (e.button === 0) this.confirmPlacement();
+        else this.cancelPlacing();
+        return;
+      }
       if (e.button === 0) down = { x: e.clientX, y: e.clientY };
       if (e.button === 2) {
         this.orderAt(e.clientX, e.clientY, this.attackMode);
@@ -217,6 +272,7 @@ export class Game {
       }
     });
     window.addEventListener("mousemove", (e) => {
+      if (this.placing) this.updatePlacement(e.clientX, e.clientY);
       if (down && (Math.abs(e.clientX - down.x) > 4 || Math.abs(e.clientY - down.y) > 4)) {
         this.box = { x0: down.x, y0: down.y, x1: e.clientX, y1: e.clientY };
         this.onChange();
@@ -243,7 +299,13 @@ export class Game {
     });
     window.addEventListener("keydown", (e) => {
       const k = e.key.toLowerCase();
+      if (k === "d" && !e.ctrlKey) this.startPlacing("dwelling");
+      if (k === "h") {
+        this.showHelp = !this.showHelp;
+        this.onChange();
+      }
       if (k === "escape") {
+        this.cancelPlacing();
         this.selection.clear();
         this.attackMode = false;
         this.onChange();

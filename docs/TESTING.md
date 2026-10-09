@@ -86,7 +86,7 @@ When a change intentionally alters simulation results: run `npm run replays:rebl
 - no unit with an order makes zero progress for more than 10 s ("stuck")
 - every tribe either still alive or has an elimination event
 
-Matches still running at `--minutes` count as stalemates. Tick time is recorded as a metric only (wall clock flakes on a busy desktop). **Metrics** written to `reports/latest/soak.json`: winner distribution by personality, match length, time to first dwelling, population curve, mana income per tribe, spells cast by type, kills by unit type matchup (counter triangle check), drownings, stalemates (no tribe lost a building in 10 minutes).
+`--mode economy` (M4 gate) runs each tribe with only the economy bot and fails any tribe that does not grow in some minute; it reports population at the end against the soft target. Matches still running at `--minutes` count as stalemates. Tick time is recorded as a metric only (wall clock flakes on a busy desktop). **Metrics** written to `reports/latest/soak.json`: winner distribution by personality, match length, time to first dwelling, population curve, mana income per tribe, spells cast by type, kills by unit type matchup (counter triangle check), drownings, stalemates (no tribe lost a building in 10 minutes).
 
 **Counter triangle matchup** (fixed definition): flat 64x64 map, two groups of 10 placed 20 cells apart, both attack-move, no spells, no Shapers, 10 seeds; the side with survivors at 90 s wins.
 

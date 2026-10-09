@@ -1,16 +1,17 @@
 // Entry point: builds the Game from URL params, mounts the HUD, runs the frame loop and exposes
 // window.__game in dev and test builds (docs/ARCHITECTURE.md section 8).
 import { Game, parseParams, type DebugFlags } from "./game.ts";
-import { mountHud } from "./hud.tsx";
-import "./hud.css";
+import { mountGameHud } from "./hudBridge.ts";
 import type { CameraState } from "@hearthfall/render";
 import { validatePack } from "@hearthfall/data";
 import { commandsByTick, createScenarioWorld, type ScenarioDef } from "@hearthfall/sim";
 
 const canvas = document.getElementById("view") as HTMLCanvasElement;
 const game = new Game(canvas, parseParams(location.search));
-const hud = mountHud(document.getElementById("hud")!, game);
+const hud = mountGameHud(document.getElementById("hud")!, game);
 game.onChange = hud.refresh;
+// mana and charges change every tick: refresh the HUD a few times a second
+setInterval(() => hud.refresh(), 250);
 
 function resize() {
   game.renderer.resize(window.innerWidth, window.innerHeight);
@@ -47,6 +48,14 @@ if (__DEBUG_API__ || game.params.debug) {
     getSelection: () => [...game.selection].map((i) => game.world.ents.idOf(i)),
     pickTerrain: (px: number, py: number) => game.renderer.pickTerrain(px, py),
     orderAt: (px: number, py: number) => game.orderAt(px, py),
+    /** Placement through the real input path: ghost at a screen pixel, then confirm. */
+    placeAtScreen: (building: string, px: number, py: number) => {
+      game.startPlacing(building);
+      game.updatePlacement(px, py);
+      const blocked = game.placeBlocked;
+      game.confirmPlacement();
+      return blocked;
+    },
     unitPos: (id: number) => {
       const i = game.world.ents.index(id);
       return i >= 0 ? [game.world.ents.x[i], game.world.ents.y[i]] : null;

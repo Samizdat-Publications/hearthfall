@@ -124,7 +124,7 @@ export class UnitLayer {
     this.drawn = 0;
     const fade2 = fadeEnd * fadeEnd;
     for (let i = 0; i < E.hi; i++) {
-      if (!E.alive[i] || E.cat[i] !== CAT.unit) continue;
+      if (!E.alive[i] || E.cat[i] !== CAT.unit || E.inside[i] >= 0) continue;
       const k = E.type[i];
       if (k >= this.kinds.length) continue;
       // interpolate with wrap-aware delta
