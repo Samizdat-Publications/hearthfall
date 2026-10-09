@@ -6,7 +6,7 @@ export type EntityId = number;
 export const NO_ENTITY = 0xffffffff;
 
 /** Entity categories. `type` indexes the matching data list (units, buildings) or 0. */
-export const CAT = { none: 0, tree: 1, building: 2, unit: 3, effect: 4, worship: 5 } as const;
+export const CAT = { none: 0, tree: 1, building: 2, unit: 3, effect: 4, worship: 5, rock: 6 } as const;
 
 type Col = Int8Array | Uint8Array | Uint16Array | Int32Array | Uint32Array | Float64Array;
 type ColCtor = new (n: number) => Col;
@@ -71,6 +71,8 @@ const COLUMNS: Record<string, ColCtor> = {
   ward: Int32Array,
   beguile: Int32Array,
   home: Int8Array,
+  // stone (BACKLOG 0c): a rock's stone left, a construction site's stone delivered
+  stone: Uint8Array,
 };
 export const COLUMN_NAMES = Object.keys(COLUMNS);
 
@@ -89,6 +91,7 @@ export class Entities {
   y!: Float64Array;
   hp!: Float64Array;
   wood!: Uint8Array;
+  stone!: Uint8Array;
   state!: Uint8Array;
   timer!: Int32Array;
   px!: Float64Array;

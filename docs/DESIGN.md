@@ -46,7 +46,7 @@ Match arc: settle (0 to 5 min), expand and claim shrines (5 to 15 min), war and 
 
 The heart of the loop: the Shaper gathers followers, followers make mana, and growth unlocks new options. Progression must be felt within a match and across a campaign:
 - In a match: tiers unlocked by population and by worship. Dwellings first; lodges and the Watchtower unlock at follower thresholds (data); stronger spells come from Shrines (one-shot) and Reliquaries (permanent). The HUD shows the next unlock and what it needs.
-- Harvesting: settlers chop and haul wood today; a second gathered resource (stone or clay from rocks, for towers and lodges) is a good candidate to deepen the harvest loop.
+- Harvesting: settlers chop and haul wood, and quarry stone from rock outcrops for towers and lodges (BACKLOG 0c).
 - Across a campaign: each level unlocks spells and buildings carried forward (M9 level data, BACKLOG campaign item).
 Tone: traditional tribal villagers and a Shaper in feathers and hides, not a glossy mobile look (ADR-005).
 
@@ -105,17 +105,19 @@ Counter triangle (must be statistically verified by soak tests): Warden beats Fi
 
 ## 8. Buildings
 
-| Building | Wood | Footprint | Notes |
-|---|---|---|---|
-| Dwelling (small) | 3 | 2x2 | Upgrades to medium, large |
-| Watchtower | 5 | 1x1 | Garrison 1 to 2, range bonus |
-| Warden Lodge / Fire Lodge / Chant House / Shade Den | 8 | 3x3 | Training queues |
-| Boathouse | 5 | 3x3 | Boats carry 5 (later milestone) |
-| Skyloft | 11 | 3x3 | Balloons carry 2, only Firecallers fire from vehicles (later) |
+| Building | Wood | Stone | Footprint | Notes |
+|---|---|---|---|---|
+| Dwelling (small) | 3 | 0 | 2x2 | Upgrades to medium, large |
+| Watchtower | 5 | 2 | 1x1 | Garrison 1 to 2, range bonus |
+| Warden Lodge / Fire Lodge / Chant House / Shade Den | 8 | 3 | 3x3 | Training queues |
+| Boathouse | 5 | 0 | 3x3 | Boats carry 5 (later milestone) |
+| Skyloft | 11 | 4 | 3x3 | Balloons carry 2, only Firecallers fire from vehicles (later) |
 
 Construction: player places a plan; settlers auto-assign, flatten the footprint toward its average height, deliver wood, build. Footprint must be above water and below a max slope after flattening. Plans blocked by trees or units resolve automatically (units step aside, trees get chopped first).
 
 Wood: trees hold up to 4 wood, regrow 1 wood per 68 s, regrow fully from a stump in 330 s. Forests spread slowly onto suitable land (data toggle).
+
+Stone (BACKLOG 0c): rock outcrops hold 16 stone and never regrow; a settler quarries 1 stone per 4 s and carries it to the site. The generator puts 3 outcrops 8 to 14 cells from each Hearth on its landmass, plus a light scatter. A building that costs stone cannot be planned without an outcrop on its landmass, and its construction only runs as far as its delivered stone allows. Emptied outcrops vanish; flooded ones are lost. Live numbers: `data/base/buildings.json` `rocks` and per-building `stone`, `data/base/terrain.json` `rocks`.
 
 ## 9. Spells
 

@@ -62,6 +62,8 @@ export interface GeneratedMap {
   hearths: { x: number; y: number }[];
   trees: { x: number; y: number }[];
   wild: { tribe: number; x: number; y: number }[];
+  /** BACKLOG 0c: stone outcrops (vertex positions) */
+  rocks: { x: number; y: number }[];
   landFraction: number;
 }
 
@@ -94,7 +96,7 @@ function testMap(cfg: SimConfig, spec: MapSpec): GeneratedMap {
     }
   } else if (spec.generator !== "flat") throw new Error(`unknown map generator "${spec.generator}"`);
   for (const p of spec.paint ?? []) paintShape(t, cfg.sea, p);
-  return { terrain: t, seedUsed: 0, rerolls: 0, hearths: [], trees: [], wild: [], landFraction: 1 };
+  return { terrain: t, seedUsed: 0, rerolls: 0, hearths: [], trees: [], wild: [], rocks: [], landFraction: 1 };
 }
 
 /** Label 4-connected walkable components; returns labels (0 = not walkable) and the largest label. */
@@ -310,9 +312,48 @@ export function generateMap(cfg: SimConfig, spec: MapSpec, seed: number): Genera
         }
       }
     });
+    // 5. stone outcrops (BACKLOG 0c): a few around each Hearth on its landmass, then a scatter over all
+    // land; drawn after everything else so maps without rocks generate exactly as before
+    const rocks: { x: number; y: number }[] = [];
+    const rk = tf.rocks;
+    if (rk) {
+      const clearH = tf.trees.clearRadiusAroundHearth + 3;
+      const fits = (x: number, y: number, comp: number) =>
+        t.get(x, y) >= cfg.sea + 4 &&
+        t.slope(x, y) <= tf.trees.maxSlope &&
+        (comp < 0 ? finalComp.labels[t.idx(x, y)] > 0 : finalComp.labels[t.idx(x, y)] === comp) &&
+        !hearths.some((hh) => torusDist2(n, x, y, hh.x, hh.y) < clearH * clearH) &&
+        !rocks.some((o) => torusDist2(n, x, y, o.x, o.y) < 9);
+      const [rMin, rMax] = rk.distance;
+      for (const h of hearths) {
+        for (let k = 0; k < rk.perHearth; k++) {
+          for (let tryN = 0; tryN < 24; tryN++) {
+            const a = ((k + rng.float("gen")) / rk.perHearth) * TWO_PI;
+            const d = rMin + rng.float("gen") * (rMax - rMin);
+            const x = Math.round(wrap(h.x + cos(a) * d, n)) % n;
+            const y = Math.round(wrap(h.y + sin(a) * d, n)) % n;
+            if (!fits(x, y, home)) continue;
+            rocks.push({ x, y });
+            break;
+          }
+        }
+      }
+      const scatter = Math.round((landN * rk.scatterPerThousandLand) / 1000);
+      for (let k = 0; k < scatter; k++) {
+        for (let tryN = 0; tryN < 24; tryN++) {
+          const x = rng.int("gen", n);
+          const y = rng.int("gen", n);
+          if (!fits(x, y, -1)) continue;
+          rocks.push({ x, y });
+          break;
+        }
+      }
+      const c2 = rk.clearTreesRadius * rk.clearTreesRadius;
+      for (let k = trees.length - 1; k >= 0; k--) if (rocks.some((o) => torusDist2(n, trees[k].x, trees[k].y, o.x, o.y) < c2)) trees.splice(k, 1);
+    }
     t.takeDirty();
     t.version = 0;
-    return { terrain: t, seedUsed: s, rerolls: attempt, hearths, trees, wild, landFraction: landN / (n * n) };
+    return { terrain: t, seedUsed: s, rerolls: attempt, hearths, trees, wild, rocks, landFraction: landN / (n * n) };
   }
   throw new Error(`planet generator failed after ${tf.maxRerolls + 1} attempts: ${lastErr}`);
 }

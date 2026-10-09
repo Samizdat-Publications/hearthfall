@@ -62,6 +62,7 @@ export function makeCtx(w) {
     },
     events: { count: (type) => w.eventCounts.get(type) ?? 0 },
     trees: sel((i) => E.cat[i] === CAT.tree),
+    rocks: sel((i) => E.cat[i] === CAT.rock),
     units: unitOf(null, null),
     buildings: buildingOf(null, null),
     wild: unitOf("wild", -1),

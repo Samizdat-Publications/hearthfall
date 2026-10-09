@@ -8,6 +8,8 @@ function camp(settlers: number) {
   w.spawnBuilding("hearth", 1, 40, 40);
   w.spawnUnit("shaper", 0, 10, 10);
   w.spawnUnit("shaper", 1, 42, 42);
+  // BACKLOG 0c: lodges and towers need stone in reach
+  w.spawnRock(20, 8);
   for (let k = 0; k < settlers; k++) w.spawnUnit("settler", 0, 12 + (k % 6), 12 + Math.floor(k / 6));
   return w;
 }

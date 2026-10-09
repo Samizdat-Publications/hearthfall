@@ -867,7 +867,7 @@ registerCommand("train", {
         if (tk === TASK.home) {
           if (E.occupants[E.inside[i]] <= 1) continue;
           housed = 1;
-        } else if (tk !== TASK.idle && tk !== TASK.wander && tk !== TASK.toTree && tk !== TASK.toWork && tk !== TASK.work && tk !== TASK.toHome) continue;
+        } else if (tk !== TASK.idle && tk !== TASK.wander && tk !== TASK.toTree && tk !== TASK.toRock && tk !== TASK.toWork && tk !== TASK.work && tk !== TASK.toHome) continue;
         if (lc > 0 && w.economy.compOf(i) !== lc) continue;
         const dx = wrapDelta(E.x[i] - E.x[b], n);
         const dy = wrapDelta(E.y[i] - E.y[b], n);

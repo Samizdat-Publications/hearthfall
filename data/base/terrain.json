@@ -59,5 +59,15 @@
       16
     ]
   },
+  "rocks": {
+    "$comment": "BACKLOG 0c: stone outcrops, perHearth on the Hearth's landmass at distance cells, plus a scatter over all land; trees within clearTreesRadius of a rock are not planted.",
+    "perHearth": 3,
+    "distance": [
+      8,
+      14
+    ],
+    "scatterPerThousandLand": 1.2,
+    "clearTreesRadius": 1.5
+  },
   "maxRerolls": 12
 }

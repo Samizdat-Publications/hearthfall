@@ -74,3 +74,8 @@ Reason: progression tiers: balance.progression in the pack, eco.tier hashed
 Reason: BACKLOG 1: spell status columns veil, ward, beguile, home in the entity hash; new effect primitives
 - spells_duel: final 6ff81161 -> 3bcafa10 (pack 29cf9d51)
 - terrain_ops_continents: final 73828506 -> a7bf943b (pack 29cf9d51)
+
+## 2026-10-09 17:27 UTC
+Reason: BACKLOG 0c: entity column stone added (rocks, stone costs)
+- spells_duel: final 3bcafa10 -> 025f1738 (pack a549da99)
+- terrain_ops_continents: final a7bf943b -> 98d0419c (pack a549da99)

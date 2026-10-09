@@ -218,6 +218,48 @@
       ],
       "additionalProperties": false
     },
+    "rocks": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "perHearth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "distance": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "scatterPerThousandLand": {
+          "type": "number",
+          "minimum": 0
+        },
+        "clearTreesRadius": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "perHearth",
+        "distance",
+        "scatterPerThousandLand",
+        "clearTreesRadius"
+      ],
+      "additionalProperties": false
+    },
     "maxRerolls": {
       "type": "integer",
       "minimum": 0,

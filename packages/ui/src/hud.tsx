@@ -58,6 +58,9 @@ export interface ObjectiveView {
   part?: string;
 }
 
+/** Build button cost text, "5 wood" or "5 wood, 2 stone" (BACKLOG 0c). */
+export const costText = (c: { wood: number; stone: number }): string => `${c.wood} wood${c.stone > 0 ? `, ${c.stone} stone` : ""}`;
+
 export const STANCES = ["aggressive", "defensive", "passive"] as const;
 
 export interface HudModel {
@@ -77,7 +80,7 @@ export interface HudModel {
   placeBlocked: string | null;
   targeting: string | null;
   /** build tools; `locked` says what progression still needs ("needs 10 followers") */
-  buildable: { id: string; name: string; wood: number; key: string; locked: string | null; icon?: string }[];
+  buildable: { id: string; name: string; wood: number; stone: number; key: string; locked: string | null; icon?: string }[];
   /** M10: resource icons for the mana and follower bars (text glyphs without them) */
   icons?: { mana?: string; pop?: string };
   /** next progression tier: name, followers needed and what it opens; null when all are open */
@@ -300,7 +303,7 @@ function Hud({ act }: { act: HudActions }) {
       </div>
       <div data-hud="build" class="hud-panel hud-build">
         {m.buildable.map((bd) => (
-          <button key={bd.id} class={"build-btn" + (m.placing === bd.id ? " active" : "") + (bd.locked ? " locked" : "")} disabled={bd.locked !== null} onClick={() => (m.placing === bd.id ? act.cancel() : act.startPlacing(bd.id))} title={`${bd.name}: ${bd.wood} wood${bd.key ? ` (${bd.key})` : ""}${bd.locked ? `, locked: ${bd.locked}` : ""}`}>
+          <button key={bd.id} class={"build-btn" + (m.placing === bd.id ? " active" : "") + (bd.locked ? " locked" : "")} disabled={bd.locked !== null} onClick={() => (m.placing === bd.id ? act.cancel() : act.startPlacing(bd.id))} title={`${bd.name}: ${costText(bd)}${bd.key ? ` (${bd.key})` : ""}${bd.locked ? `, locked: ${bd.locked}` : ""}`}>
             {bd.icon ? <img class="build-icon" src={bd.icon} alt="" /> : null}
             {bd.name} {bd.key ? <span class="hotkey">{bd.key}</span> : null}
           </button>

@@ -54,6 +54,8 @@ export class EconomyBot implements Controller {
    * BACKLOG 0a: on terraced land the first spot found often straddled a step and took a minute to level.
    */
   findSpot(w: World, building: string, hx: number, hy: number): [number, number] | null {
+    // BACKLOG 0c: every candidate would be refused for want of stone, so skip the ring scan
+    if ((w.cfg.pack.buildings.buildings[w.cfg.buildingIndex.get(building)!].stone ?? 0) > 0 && !w.economy.stoneInReach(hx, hy)) return null;
     // prefer tree-free ground; fall back to wooded spots (trees in a footprint are chopped out first)
     return this.scan(w, building, hx, hy, true) ?? this.scan(w, building, hx, hy, false);
   }

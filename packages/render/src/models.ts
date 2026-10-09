@@ -28,6 +28,8 @@ export function buildingModelIds(id: string, levels: number): string[] {
 export const unitModelId = (id: string) => (id === "wild" ? "unit.wild_person" : `unit.${id}`);
 export const worshipModelId = (id: string) => `building.${id}`;
 export const TREE_MODELS = ["prop.tree_a", "prop.tree_b", "prop.tree_c"];
+/** BACKLOG 0c: stone outcrops */
+export const ROCK_MODELS = ["prop.rock_a", "prop.rock_b", "prop.rock_c"];
 
 /** sRGB hex of a linear vertex color, to compare against palette hex exactly as the pipeline snapped it. */
 const scratch = new THREE.Color();

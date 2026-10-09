@@ -430,7 +430,7 @@ export class OpponentAI implements Controller {
   private lodgeScore(c: Census): number {
     if (c.open >= c.w.cfg.pack.balance.economy.maxOpenPlansPerTribe || c.settlers.length < this.keep() * 0.6) return 0;
     const l = this.missingLodge(c);
-    if (!l) return 0;
+    if (!l || !this.supplied(c, l)) return 0;
     const unit = c.w.cfg.pack.units.units.find((u) => u.trainedAt === l)!;
     return 0.45 + 0.45 * (this.p.armyMix[unit.id] ?? 0) + 0.1 * this.p.aggression;
   }
@@ -442,9 +442,15 @@ export class OpponentAI implements Controller {
 
   private towerScore(c: Census): number {
     if (c.open >= c.w.cfg.pack.balance.economy.maxOpenPlansPerTribe || c.settlers.length < this.keep() * 0.5) return 0;
-    if (c.w.economy.buildingLock(this.tribe, c.w.cfg.buildingIndex.get("watchtower")!)) return 0;
+    if (c.w.economy.buildingLock(this.tribe, c.w.cfg.buildingIndex.get("watchtower")!) || !this.supplied(c, "watchtower")) return 0;
     const want = Math.round(this.p.towerAffinity * 3);
     return c.towers.length < want ? 0.3 + 0.6 * this.p.towerAffinity : 0;
+  }
+
+  /** BACKLOG 0c: a building that needs stone is only worth planning with a rock on the Hearth's landmass. */
+  private supplied(c: Census, building: string): boolean {
+    const def = c.w.cfg.pack.buildings.buildings[c.w.cfg.buildingIndex.get(building)!];
+    return !(def.stone ?? 0) || c.w.economy.stoneInReach(c.w.ents.x[c.h], c.w.ents.y[c.h]);
   }
 
   private build(c: Census, out: Command[], building: string): void {

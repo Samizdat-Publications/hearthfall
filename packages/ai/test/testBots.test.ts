@@ -32,7 +32,8 @@ describe("test bots (M7)", () => {
   }, 60000);
 
   it("the rusher attacks early and the turtle bot never leaves home", () => {
-    const r = match("rusher", 1007, 6).b as unknown as { stats: { waves: number } };
+    // BACKLOG 0c: the lodge waits on stone too, so the first wave lands in minute 7
+    const r = match("rusher", 1007, 7).b as unknown as { stats: { waves: number } };
     const t = match("turtleBot", 1007, 6).b as unknown as { stats: { waves: number; actions: Record<string, number> } };
     expect(r.stats.waves).toBeGreaterThan(0);
     expect(t.stats.waves).toBe(0);
@@ -64,5 +65,20 @@ describe("economy bot sites (BACKLOG 0a terraces, economy soak seed 1003)", () =
     expect(w.economy.planBlocker(d, b[0], b[1])).toBeNull();
     expect(w.economy.flattenWork(d, b[0], b[1])).toBe(0);
     expect(Math.hypot(b[0] - 32, b[1] - 32)).toBeLessThan(6.5);
+  });
+});
+
+describe("stone buildings (BACKLOG 0c)", () => {
+  it("the bots find no site for a tower without a rock in reach, and one once a rock stands nearby", async () => {
+    const { EconomyBot } = await import("../src/economyBot.ts");
+    const p = basePack();
+    const w = new World({ pack: p.files, packHash: p.hash, seed: 1, map: { generator: "flat", size: 64, tribes: 1 } });
+    w.spawnBuilding("hearth", 0, 32, 32);
+    const bot = new EconomyBot({ tribe: 0 });
+    expect(bot.findSpot(w, "watchtower", 32, 32)).toBeNull();
+    expect(bot.findSpot(w, "dwelling", 32, 32)).not.toBeNull();
+    w.spawnRock(44, 44);
+    const s = bot.findSpot(w, "watchtower", 32, 32)!;
+    expect(w.economy.planBlocker(w.cfg.buildingIndex.get("watchtower")!, s[0], s[1])).toBeNull();
   });
 });

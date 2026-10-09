@@ -1,0 +1,86 @@
+{
+  "id": "eco_stone_watchtower",
+  "description": "BACKLOG 0c: a village quarries stone from a rock and chops wood for a planned Watchtower; the tower finishes only with both delivered, and the rock gives up exactly the stone the tower costs.",
+  "tags": [
+    "fast",
+    "economy"
+  ],
+  "seed": 22,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 1
+  },
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        32,
+        32
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        30,
+        30
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        34,
+        28
+      ],
+      "count": 10
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        22,
+        22
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "at": [
+        44,
+        38
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "tick": 2,
+      "tribe": 0,
+      "type": "placePlan",
+      "args": {
+        "building": "watchtower",
+        "at": [
+          36,
+          38
+        ]
+      }
+    }
+  ],
+  "runTicks": 1800,
+  "assert": [
+    {
+      "at": 3,
+      "expr": "count(tribe0.watchtowers) == 1 && count(rocks) == 1"
+    },
+    {
+      "at": 1800,
+      "expr": "events.count('buildingDone') == 1 && events.count('stoneDelivered') == 2 && events.count('woodDelivered') >= 5"
+    },
+    {
+      "at": 1800,
+      "expr": "invariants() == 0"
+    }
+  ]
+}

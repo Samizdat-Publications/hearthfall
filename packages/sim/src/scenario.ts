@@ -8,7 +8,7 @@ import { wrap } from "./terrain.ts";
 import { World } from "./world.ts";
 
 export interface SetupEntry {
-  /** unit id (settler, shaper, wild...), building id (hearth, dwelling...) or "tree" */
+  /** unit id (settler, shaper, wild...), building id (hearth, dwelling...), "tree" or "rock" (BACKLOG 0c) */
   spawn: string;
   tribe?: number;
   at?: [number, number];
@@ -62,6 +62,7 @@ export function applySetup(w: World, setup: readonly SetupEntry[]): void {
       x = wrap(x, n);
       y = wrap(y, n);
       if (s.spawn === "tree") w.spawnTree(x, y);
+      else if (s.spawn === "rock") w.spawnRock(x, y);
       else if (w.cfg.unitIndex.has(s.spawn)) w.spawnUnit(s.spawn, tribe, x, y);
       else if (w.cfg.buildingIndex.has(s.spawn)) w.spawnBuilding(s.spawn, tribe, x, y);
       else if (w.worship.kindIndex(s.spawn) >= 0) w.worship.addSite(s.spawn, x, y, s.site ?? { rewards: [] });

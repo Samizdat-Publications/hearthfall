@@ -690,6 +690,16 @@
       "when": "2026-10-09T17:06:22.614Z",
       "source": "external:volcano_smoke.png",
       "bytes": 167494
+    },
+    {
+      "file": "b1/20261009-1731_rocks-village.png",
+      "milestone": "B1",
+      "kind": "screenshot",
+      "caption": "BACKLOG 0c: stone arrives. A grey outcrop stands in a clearing near the first Dwelling; settlers quarry it for towers and lodges, and it shrinks as they do.",
+      "highlight": false,
+      "when": "2026-10-09T17:31:39.836Z",
+      "source": "external:rocks_village.png",
+      "bytes": 222227
     }
   ]
 }

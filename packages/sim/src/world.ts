@@ -132,19 +132,28 @@ export class World {
       gen.hearths.forEach((h, t) => this.spawnStartUnits(t, h.x, h.y));
       for (const tr of gen.trees) this.spawnTree(tr.x, tr.y);
       for (const w of gen.wild) this.spawnUnit("wild", -1, w.x, w.y);
+      for (const r of gen.rocks) this.spawnRock(r.x, r.y);
       // skirmish only: a level places its own sites
       if (!init.level) this.worship.placeSkirmishSites(gen.hearths);
     }
   }
 
   // ---------------------------------------------------------------- spawning (setup and effects)
-  /** bumps whenever a tree appears, vanishes or changes wood (render cache key; not hashed) */
+  /** bumps whenever a tree or rock appears, vanishes or changes wood or stone (render cache key; not hashed) */
   treeVersion = 0;
 
   spawnTree(x: number, y: number): EntityId {
     this.treeVersion++;
     const id = this.ents.alloc(CAT.tree, 0, -1, x, y, 1);
     this.ents.wood[this.ents.index(id)] = this.cfg.pack.buildings.trees.maxWood;
+    return id;
+  }
+
+  /** A stone outcrop (BACKLOG 0c) holding `stone` (default buildings.rocks.maxStone); quarried away when empty. */
+  spawnRock(x: number, y: number, stone?: number): EntityId {
+    this.treeVersion++;
+    const id = this.ents.alloc(CAT.rock, 0, -1, x, y, 1);
+    this.ents.stone[this.ents.index(id)] = Math.min(255, stone ?? this.cfg.pack.buildings.rocks?.maxStone ?? 16);
     return id;
   }
 
@@ -221,7 +230,7 @@ export class World {
     const e = this.ents;
     if (e.cat[i] === CAT.unit && isShaper(this, i) && e.tribe[i] >= 0) onShaperDeath(this, e.tribe[i], cause === "drowned", e.lastHit[i]);
     this.units.paths[i] = null;
-    if (e.cat[i] === CAT.tree) this.treeVersion++;
+    if (e.cat[i] === CAT.tree || e.cat[i] === CAT.rock) this.treeVersion++;
     if (e.cat[i] === CAT.unit && e.inside[i] >= 0) {
       const h = e.inside[i];
       if (e.occupants[h] > 0) e.occupants[h]--;
@@ -395,13 +404,13 @@ export class World {
     this.drownCheck();
   }
 
-  /** Units standing in water deeper than drownDepth drown; trees under water are lost. */
+  /** Units standing in water deeper than drownDepth drown; trees and rocks under water are lost. */
   drownCheck(): void {
     const e = this.ents;
     for (let i = 0; i < e.hi; i++) {
       if (!e.alive[i]) continue;
       const c = e.cat[i];
-      if ((c === CAT.unit || c === CAT.tree) && (c !== CAT.unit || e.inside[i] < 0) && this.terrain.drowns(e.x[i], e.y[i])) this.kill(i, c === CAT.unit ? "drowned" : "flooded");
+      if ((c === CAT.unit || c === CAT.tree || c === CAT.rock) && (c !== CAT.unit || e.inside[i] < 0) && this.terrain.drowns(e.x[i], e.y[i])) this.kill(i, c === CAT.unit ? "drowned" : "flooded");
     }
   }
 

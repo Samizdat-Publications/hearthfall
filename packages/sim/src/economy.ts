@@ -9,7 +9,7 @@ import type { World } from "./world.ts";
 
 /** Settler task states. */
 /** Unit tasks. 9 to 12 (training and garrison) are driven by the combat system (M6). */
-export const TASK = { idle: 0, toTree: 1, chop: 2, haul: 3, toWork: 4, work: 5, toHome: 6, home: 7, wander: 8, toTrain: 9, training: 10, toGarrison: 11, garrison: 12, toWorship: 13, worship: 14 } as const;
+export const TASK = { idle: 0, toTree: 1, chop: 2, haul: 3, toWork: 4, work: 5, toHome: 6, home: 7, wander: 8, toTrain: 9, training: 10, toGarrison: 11, garrison: 12, toWorship: 13, worship: 14, toRock: 15, mine: 16, haulStone: 17 } as const;
 /** Building states (state column). */
 export const BSTATE = { plan: 0, flatten: 1, build: 2, done: 3 } as const;
 /** cells beyond a plan's pad its flattened ground must reach on foot (BACKLOG 0a, `padConnects`) */
@@ -135,6 +135,37 @@ export class EconomySystem {
     return lv;
   }
 
+  /** Stone a site needs in total (BACKLOG 0c construction cost; 0 for most buildings). */
+  stoneCost(i: number): number {
+    return this.w.cfg.pack.buildings.buildings[this.w.ents.type[i]].stone ?? 0;
+  }
+
+  /**
+   * Walkable components that hold a rock with stone left (BACKLOG 0c), cached until the tick, the rocks
+   * (treeVersion) or the terrain change, so a cached answer always equals a fresh one.
+   */
+  private stoneComps = { key: "", comps: new Set<number>() };
+
+  /**
+   * Whether a rock with stone stands on the walkable landmass at (x, y) (BACKLOG 0c): a plan that needs
+   * stone is refused without one, and the bots skip such buildings instead of scanning every ring.
+   */
+  stoneInReach(x: number, y: number): boolean {
+    const w = this.w;
+    const E = w.ents;
+    const key = `${w.tick}|${w.treeVersion}|${w.terrain.version}`;
+    if (this.stoneComps.key !== key) {
+      this.stoneComps.key = key;
+      this.stoneComps.comps.clear();
+      for (let k = 0; k < E.hi; k++) if (E.alive[k] && E.cat[k] === CAT.rock && E.stone[k] > 0) this.stoneComps.comps.add(this.compOf(k));
+    }
+    const pf = w.units.pf;
+    pf.refresh();
+    const n = w.terrain.size;
+    const v = pf.nearestWalkable((((Math.round(x) % n) + n) % n) + (((Math.round(y) % n) + n) % n) * n, w.cfg.pack.balance.movement.snapRadius);
+    return v >= 0 && pf.comp[v] > 0 && this.stoneComps.comps.has(pf.comp[v]);
+  }
+
   /** Wood a site needs in total (construction cost). */
   woodCost(i: number): number {
     const def = this.w.cfg.pack.buildings.buildings[this.w.ents.type[i]];
@@ -182,6 +213,12 @@ export class EconomySystem {
     if (!t.padConnects(x0, y0, fw, fh, this.flattenTarget(x0, y0, fw, fh), PAD_REACH)) return "site would be walled in";
     const gap = w.cfg.pack.balance.economy.buildingGapCells;
     for (let i = 0; i < E.hi; i++) {
+      if (E.alive[i] && E.cat[i] === CAT.rock) {
+        const dx = Math.abs(wrapDelta(E.x[i] - (x0 + fw / 2), t.size));
+        const dy = Math.abs(wrapDelta(E.y[i] - (y0 + fh / 2), t.size));
+        if (dx <= fw / 2 + 0.5 && dy <= fh / 2 + 0.5) return "a rock is in the way";
+        continue;
+      }
       if (!E.alive[i] || E.cat[i] !== CAT.building) continue;
       const od = w.cfg.pack.buildings.buildings[E.type[i]];
       const dx = Math.abs(wrapDelta(E.x[i] - (x0 + fw / 2), t.size));
@@ -197,6 +234,7 @@ export class EconomySystem {
       const dy = Math.abs(wrapDelta(E.y[si] - (y0 + fh / 2), t.size));
       if (dx < fw / 2 + keep && dy < fh / 2 + keep) return "too close to a worship site";
     }
+    if ((def.stone ?? 0) > 0 && !this.stoneInReach(x0 + fw / 2, y0 + fh / 2)) return "no stone in reach";
     return null;
   }
 
@@ -214,6 +252,7 @@ export class EconomySystem {
     E.state[i] = BSTATE.plan;
     E.hp[i] = 1;
     E.wood[i] = 0;
+    E.stone[i] = 0;
     E.progress[i] = 0;
     E.progress2[i] = this.flattenTarget(x0, y0, fw, fh);
     for (let k = 0; k < E.hi; k++) {
@@ -283,6 +322,22 @@ export class EconomySystem {
     return best;
   }
 
+  /** Nearest rock with stone a settler can walk to (BACKLOG 0c, same rule as trees). */
+  private nearestRock(from: number, maxR = 64): number {
+    const E = this.w.ents;
+    const home = this.compOf(from);
+    let best = -1;
+    let bd = maxR * maxR;
+    for (let k = 0; k < E.hi; k++) {
+      if (!E.alive[k] || E.cat[k] !== CAT.rock || E.stone[k] === 0) continue;
+      const d = this.dist2(from, k);
+      if (d >= bd || this.compOf(k) !== home) continue;
+      bd = d;
+      best = k;
+    }
+    return best;
+  }
+
   private goTo(i: number, target: number, task: number): void {
     const E = this.w.ents;
     const tid = E.idOf(target);
@@ -291,6 +346,7 @@ export class EconomySystem {
     else if (task === TASK.toWork) inc(this.jobs.work, tid);
     else if (task === TASK.toHome) inc(this.jobs.home, tid);
     else if (task === TASK.haul) inc(this.jobs.wood, tid);
+    else if (task === TASK.haulStone) inc(this.jobs.stone, tid);
     E.task[i] = task;
     E.target[i] = E.idOf(target);
     E.timer[i] = 0;
@@ -335,6 +391,7 @@ export class EconomySystem {
     const hz = w.cfg.tickHz;
     const eco = w.cfg.pack.balance.economy;
     const chopTicks = secondsToTicks(w.cfg.pack.buildings.trees.chopSecondsPerWood, hz);
+    const mineTicks = secondsToTicks(w.cfg.pack.buildings.rocks?.mineSecondsPerStone ?? 4, hz);
     // per-settler state machine
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.unit) continue;
@@ -381,6 +438,40 @@ export class EconomySystem {
               E.wood[t] = Math.min(255, E.wood[t] + E.carry[i]);
               E.carry[i] = 0;
               w.emit("woodDelivered", { site: E.idOf(t), tribe: E.tribe[i] });
+              E.task[i] = TASK.idle;
+            } else this.drop(i);
+          }
+          break;
+        case TASK.toRock:
+          if (E.stone[t] === 0) this.drop(i);
+          else if (!moving) {
+            if (this.near(i, t)) {
+              E.task[i] = TASK.mine;
+              E.timer[i] = 0;
+            } else this.drop(i);
+          }
+          break;
+        case TASK.mine:
+          if (E.stone[t] === 0) {
+            this.drop(i);
+            break;
+          }
+          if (++E.timer[i] >= mineTicks) {
+            E.stone[t]--;
+            w.treeVersion++;
+            E.carry[i] = 1;
+            if (E.stone[t] === 0) w.kill(t, "quarried");
+            const site = E.index(E.progress[i]);
+            if (site < 0) this.drop(i);
+            else this.goTo(i, site, TASK.haulStone);
+          }
+          break;
+        case TASK.haulStone:
+          if (!moving) {
+            if (this.near(i, t)) {
+              E.stone[t] = Math.min(255, E.stone[t] + E.carry[i]);
+              E.carry[i] = 0;
+              w.emit("stoneDelivered", { site: E.idOf(t), tribe: E.tribe[i] });
               E.task[i] = TASK.idle;
             } else this.drop(i);
           }
@@ -432,7 +523,7 @@ export class EconomySystem {
     }
   }
 
-  /** Abandon the current job; carried wood is lost. */
+  /** Abandon the current job; carried wood or stone is lost. */
   private drop(i: number): void {
     const E = this.w.ents;
     E.task[i] = TASK.idle;
@@ -440,13 +531,14 @@ export class EconomySystem {
     E.carry[i] = 0;
   }
 
-  /** Per-pass job counts: wood jobs and work jobs per site, home arrivals per dwelling, choppers per tree. */
-  private jobs = { wood: new Map<number, number>(), work: new Map<number, number>(), home: new Map<number, number>(), tree: new Map<number, number>() };
+  /** Per-pass job counts: wood, stone and work jobs per site, home arrivals per dwelling, choppers per tree. */
+  private jobs = { wood: new Map<number, number>(), stone: new Map<number, number>(), work: new Map<number, number>(), home: new Map<number, number>(), tree: new Map<number, number>() };
 
   private countJobs(): void {
     const E = this.w.ents;
     const j = this.jobs;
     j.wood.clear();
+    j.stone.clear();
     j.work.clear();
     j.home.clear();
     j.tree.clear();
@@ -458,6 +550,8 @@ export class EconomySystem {
         inc(j.wood, E.progress[i]);
         inc(j.tree, E.target[i]);
       } else if (t === TASK.haul) inc(j.wood, E.target[i]);
+      else if (t === TASK.toRock || t === TASK.mine) inc(j.stone, E.progress[i]);
+      else if (t === TASK.haulStone) inc(j.stone, E.target[i]);
       else if (t === TASK.toWork || t === TASK.work) inc(j.work, E.target[i]);
       else if (t === TASK.toHome) inc(j.home, E.target[i]);
     }
@@ -556,24 +650,43 @@ export class EconomySystem {
           this.goTo(i, s, TASK.haul);
           need -= E.carry[i];
         }
-        for (let k = 0; k < need; k++) {
-          const i = take(s);
-          if (i < 0) return;
-          if (E.carry[i] > 0) {
-            this.goTo(i, s, TASK.haul);
-            continue;
+        // BACKLOG 0c: stone runs alongside wood, one quarrier per wood fetcher while both are short
+        let stoneNeed = this.stoneCost(s) - E.stone[s] - (this.jobs.stone.get(E.idOf(s)) ?? 0);
+        while (need > 0 || stoneNeed > 0) {
+          if (need > 0) {
+            need--;
+            const i = take(s);
+            if (i < 0) return;
+            if (E.carry[i] > 0) this.goTo(i, s, TASK.haul);
+            else {
+              const tree = this.nearestTree(i);
+              if (tree < 0) {
+                free.push(i);
+                need = 0;
+              } else {
+                this.goTo(i, tree, TASK.toTree);
+                E.progress[i] = E.idOf(s);
+                this.jobs.wood.set(E.idOf(s), (this.jobs.wood.get(E.idOf(s)) ?? 0) + 1);
+              }
+            }
           }
-          const tree = this.nearestTree(i);
-          if (tree < 0) {
-            free.push(i);
-            break;
+          if (stoneNeed > 0) {
+            stoneNeed--;
+            const i = take(s);
+            if (i < 0) return;
+            const rock = this.nearestRock(i);
+            if (rock < 0) {
+              free.push(i);
+              stoneNeed = 0;
+            } else {
+              this.goTo(i, rock, TASK.toRock);
+              E.progress[i] = E.idOf(s);
+              this.jobs.stone.set(E.idOf(s), (this.jobs.stone.get(E.idOf(s)) ?? 0) + 1);
+            }
           }
-          this.goTo(i, tree, TASK.toTree);
-          E.progress[i] = E.idOf(s);
-          this.jobs.wood.set(E.idOf(s), (this.jobs.wood.get(E.idOf(s)) ?? 0) + 1);
         }
         const slots = bdefs.construction.workersPerSite - this.inbound(s, [TASK.toWork, TASK.work]);
-        const canWork = E.state[s] !== BSTATE.build || E.wood[s] * bdefs.construction.buildSecondsPerWood > E.progress[s];
+        const canWork = E.state[s] !== BSTATE.build || this.buildCap(s) > E.progress[s];
         for (let k = 0; k < slots && canWork; k++) {
           const i = take(s);
           if (i < 0) return;
@@ -622,6 +735,18 @@ export class EconomySystem {
     }
   }
 
+  /**
+   * Build seconds the delivered materials pay for: wood at buildSecondsPerWood each, held back to the
+   * delivered share of the stone cost when the building needs stone (BACKLOG 0c).
+   */
+  private buildCap(s: number): number {
+    const E = this.w.ents;
+    const spw = this.w.cfg.pack.buildings.construction.buildSecondsPerWood;
+    const woodCap = E.wood[s] * spw;
+    const stone = this.stoneCost(s);
+    return stone > 0 ? Math.min(woodCap, (Math.min(E.stone[s], stone) / stone) * this.woodCost(s) * spw) : woodCap;
+  }
+
   private inboundTree(tree: number): number {
     return this.jobs.tree.get(this.w.ents.idOf(tree)) ?? 0;
   }
@@ -651,13 +776,13 @@ export class EconomySystem {
       }
       if (E.state[s] === BSTATE.build && workers > 0) {
         const total = this.woodCost(s) * bdefs.construction.buildSecondsPerWood;
-        const cap = E.wood[s] * bdefs.construction.buildSecondsPerWood;
-        E.progress[s] = Math.min(cap, E.progress[s] + workers / hz);
+        E.progress[s] = Math.min(this.buildCap(s), E.progress[s] + workers / hz);
         if (E.progress[s] >= total) {
           E.state[s] = BSTATE.done;
           const def = bdefs.buildings[E.type[s]];
           E.hp[s] = def.hp;
           E.wood[s] = 0;
+          E.stone[s] = 0;
           E.progress[s] = 0;
           if (E.type[s] === this.typeDwelling) E.level[s] = 1;
           w.emit("buildingDone", { id: sid, tribe: E.tribe[s], kind: E.type[s] });

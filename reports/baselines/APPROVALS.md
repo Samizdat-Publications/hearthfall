@@ -45,3 +45,5 @@
 - 2026-10-09T17:03 set smoke (12 shots): BACKLOG 0a: terraced plateaus (generator terrace step 30, flat 0.6, rampSlope 18), trees on slopes up to 20
 - 2026-10-09T17:03 set spells2 (9 shots): BACKLOG 0a: terraced plateaus (generator terrace step 30, flat 0.6, rampSlope 18), trees on slopes up to 20
 - 2026-10-09T17:06 set spells (8 shots): BACKLOG 0a: volcano smoke column (dark ash puffs and embers over the erupting cone)
+- 2026-10-09T17:31 set smoke (12 shots): BACKLOG 0c: stone outcrops drawn by Hearths (trees cleared around them), build tooltips carry stone
+- 2026-10-09T17:32 set spells2 (9 shots): BACKLOG 0c: stone outcrops in frame

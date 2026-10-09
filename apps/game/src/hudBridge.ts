@@ -51,7 +51,7 @@ export function hudFor(game: Game): HudModel {
     placing: game.placing,
     placeBlocked: game.placeBlocked,
     targeting: game.targeting,
-    buildable: bdefs.filter((b) => b.buildable !== false && b.milestone !== "backlog").map((b) => ({ id: b.id, name: title(b.id), wood: b.levels?.[0]?.wood ?? b.wood ?? 0, key: BUILD_KEYS[b.id] ?? "", locked: tr ? w.economy.buildingLock(tr.index, w.cfg.buildingIndex.get(b.id)!) : null, icon: buildingIcon(b.id) })),
+    buildable: bdefs.filter((b) => b.buildable !== false && b.milestone !== "backlog").map((b) => ({ id: b.id, name: title(b.id), wood: b.levels?.[0]?.wood ?? b.wood ?? 0, stone: b.stone ?? 0, key: BUILD_KEYS[b.id] ?? "", locked: tr ? w.economy.buildingLock(tr.index, w.cfg.buildingIndex.get(b.id)!) : null, icon: buildingIcon(b.id) })),
     icons: { mana: resourceIcon("mana"), pop: resourceIcon("population") },
     objectives: objectivesFor(game, nextTier ? { name: title(nextTier.id), followers: nextTier.followers, opens: nextTier.buildings.map(title) } : null),
     notes: game.notes.filter((n) => n.until > w.tick).map((n) => ({ id: n.id, text: n.text, kind: n.kind })),

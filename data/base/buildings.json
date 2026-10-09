@@ -41,6 +41,7 @@
         1
       ],
       "wood": 5,
+      "stone": 2,
       "garrison": 2,
       "rangeBonus": 3,
       "hp": 1500
@@ -52,6 +53,7 @@
         3
       ],
       "wood": 8,
+      "stone": 3,
       "trains": "warden",
       "hp": 2000,
       "queueMax": 5
@@ -63,6 +65,7 @@
         3
       ],
       "wood": 8,
+      "stone": 3,
       "trains": "firecaller",
       "hp": 2000,
       "queueMax": 5
@@ -74,6 +77,7 @@
         3
       ],
       "wood": 8,
+      "stone": 3,
       "trains": "chanter",
       "hp": 2000,
       "queueMax": 5
@@ -85,6 +89,7 @@
         3
       ],
       "wood": 8,
+      "stone": 3,
       "trains": "shade",
       "milestone": "backlog",
       "hp": 2000,
@@ -107,6 +112,7 @@
         3
       ],
       "wood": 11,
+      "stone": 4,
       "milestone": "backlog",
       "hp": 1500
     },
@@ -139,15 +145,41 @@
       "chancePerMinute": 0.02
     }
   },
+  "rocks": {
+    "$comment": "BACKLOG 0c: stone outcrops; a settler quarries one stone per mineSecondsPerStone and carries it to a site. A rock is gone when empty.",
+    "maxStone": 16,
+    "mineSecondsPerStone": 4
+  },
   "worship": {
     "shrinePrayerSeconds": 37.5,
     "missingWorshipperSpeedFactor": 0.5,
     "radius": 3,
     "decayPerSecond": 0.02,
     "kinds": [
-      { "$comment": "one-shot spell charges or a building, then sinks", "id": "shrine", "worshippers": 4, "uses": 1, "sinks": true },
-      { "$comment": "permanent spell or building unlock; stays as a spent landmark", "id": "reliquary", "worshippers": 6, "prayerSeconds": 60, "uses": 1, "sinks": false },
-      { "$comment": "level-scripted trigger: only the Shaper's prayer counts", "id": "totem", "worshippers": 1, "prayerSeconds": 8, "uses": 1, "sinks": false, "shaperOnly": true }
+      {
+        "$comment": "one-shot spell charges or a building, then sinks",
+        "id": "shrine",
+        "worshippers": 4,
+        "uses": 1,
+        "sinks": true
+      },
+      {
+        "$comment": "permanent spell or building unlock; stays as a spent landmark",
+        "id": "reliquary",
+        "worshippers": 6,
+        "prayerSeconds": 60,
+        "uses": 1,
+        "sinks": false
+      },
+      {
+        "$comment": "level-scripted trigger: only the Shaper's prayer counts",
+        "id": "totem",
+        "worshippers": 1,
+        "prayerSeconds": 8,
+        "uses": 1,
+        "sinks": false,
+        "shaperOnly": true
+      }
     ]
   }
 }

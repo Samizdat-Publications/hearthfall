@@ -311,6 +311,8 @@ export const BuildingSchema = z.strictObject({
   id,
   footprint: z.tuple([z.number().int().positive(), z.number().int().positive()]),
   wood: z.number().int().nonnegative().optional(),
+  /** BACKLOG 0c: stone quarried from rocks, delivered like wood before the site can finish */
+  stone: z.number().int().nonnegative().optional(),
   levels: z.array(DwellingLevel).optional(),
   garrison: z.number().int().nonnegative().optional(),
   rangeBonus: z.number().optional(),
@@ -339,6 +341,8 @@ export const BuildingsFileSchema = z.strictObject({
     chopSecondsPerWood: pos,
     spread: z.strictObject({ enabled: z.boolean(), chancePerMinute: z.number().min(0).max(1) }),
   }),
+  /** BACKLOG 0c: stone outcrops (optional so frozen packs keep their hash; without it no rock holds stone) */
+  rocks: z.strictObject({ ...comment, maxStone: z.number().int().positive().max(255), mineSecondsPerStone: pos }).optional(),
   /**
    * Worship objects (DESIGN 10, M9). The M9 fields are optional so packs frozen before M9 keep their hash;
    * a pack without `kinds` has no worship objects.
@@ -507,6 +511,10 @@ export const TerrainFileSchema = z.strictObject({
   }),
   hearth: z.strictObject({ flatRadius: pos, minHeightAboveSea: pos, maxSiteRange: pos, minSpacingFracOfSize: z.number().min(0).max(0.5) }),
   wild: z.strictObject({ distance: range2 }),
+  /** BACKLOG 0c: stone outcrops per Hearth (cells from its center) and scattered over the land (per 1000 land vertices) */
+  rocks: z
+    .strictObject({ ...comment, perHearth: z.number().int().min(0), distance: range2, scatterPerThousandLand: z.number().min(0), clearTreesRadius: z.number().min(0) })
+    .optional(),
   maxRerolls: z.number().int().min(0).max(100),
 });
 export type TerrainFile = z.infer<typeof TerrainFileSchema>;
