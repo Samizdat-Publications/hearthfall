@@ -17,7 +17,7 @@ export function run() {
   const scripts = JSON.parse(readFileSync(ROOT + "package.json", "utf8")).scripts;
   const testing = readFileSync(ROOT + "docs/TESTING.md", "utf8");
   const sec = testing.slice(testing.indexOf("## 1. Commands"), testing.indexOf("## 2."));
-  for (const m of sec.matchAll(/`npm run ([a-z:-]+)/g)) if (!scripts[m[1]]) issues.push({ file: "docs/TESTING.md", line: 0, msg: `command "npm run ${m[1]}" missing from package.json` });
+  for (const m of sec.matchAll(/`npm run ([a-z0-9:-]+)/g)) if (!scripts[m[1]]) issues.push({ file: "docs/TESTING.md", line: 0, msg: `command "npm run ${m[1]}" missing from package.json` });
   return { name: "docs", issues };
 }
 
