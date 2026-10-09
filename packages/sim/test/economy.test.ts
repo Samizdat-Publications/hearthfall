@@ -156,3 +156,22 @@ describe("plans and trees (M4 review regressions)", () => {
     expect([TASK.toHome, TASK.toWork, TASK.haul, TASK.toTree].includes(w.ents.task[s] as never)).toBe(false);
   });
 });
+
+describe("plans stay reachable (BACKLOG 0a terraces, economy soak seed 1003)", () => {
+  it("a site whose flattened pad would be walled in is refused; open ground is fine", () => {
+    const w = flat();
+    const t = w.terrain;
+    const dwelling = w.cfg.buildingIndex.get("dwelling")!;
+    const land = t.get(10, 10);
+    // a dry pit 36 units deep (steeper than the walk slope; the level pad passes the range check) under a 2 x 2 site
+    for (let y = 30; y <= 32; y++) for (let x = 30; x <= 32; x++) t.heights[t.idx(x, y)] = land - 36;
+    t.version++;
+    expect(t.buildable(30, 30, 2, 2, w.cfg.pack.balance.economy.flattenMaxRange)).toBe(true);
+    expect(w.economy.planBlocker(dwelling, 31, 31)).toBe("site would be walled in");
+    expect(w.economy.planBlocker(dwelling, 15, 15)).toBeNull();
+    // a shallow dip (within the walk slope) stays plannable
+    for (let y = 40; y <= 42; y++) for (let x = 40; x <= 42; x++) t.heights[t.idx(x, y)] = land - 12;
+    t.version++;
+    expect(w.economy.planBlocker(dwelling, 41, 41)).toBeNull();
+  });
+});

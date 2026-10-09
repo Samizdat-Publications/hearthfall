@@ -670,6 +670,16 @@
       "when": "2026-10-09T16:47:59.243Z",
       "source": "external:econ_pair.png",
       "bytes": 44004
+    },
+    {
+      "file": "b1/20261009-1703_overview.png",
+      "milestone": "B1",
+      "kind": "screenshot",
+      "caption": "BACKLOG 0a: terraced plateaus, level bands and cliff steps from the generator",
+      "highlight": false,
+      "when": "2026-10-09T17:03:48.101Z",
+      "source": "external:overview.png",
+      "bytes": 221426
     }
   ]
 }

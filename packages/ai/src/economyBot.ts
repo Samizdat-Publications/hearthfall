@@ -13,6 +13,9 @@ export interface EconomyBotOptions {
   maxRing?: number;
 }
 
+/** flattening work (height units summed over the pad) that one ring farther from the Hearth is worth */
+const RING_COST = 24;
+
 export class EconomyBot implements Controller {
   readonly tribe: number;
   readonly every: number;
@@ -45,7 +48,11 @@ export class EconomyBot implements Controller {
     return spot ? [{ tick: w.tick, tribe: this.tribe, type: "placePlan", args: { building: "dwelling", at: spot } }] : [];
   }
 
-  /** First buildable, tree-free spot for a building on rings around the Hearth (deterministic order). */
+  /**
+   * Buildable, tree-free spot for a building on rings around the Hearth (deterministic order): the least
+   * flattening work over the first ring with a spot and the next one (one ring farther costs RING_COST).
+   * BACKLOG 0a: on terraced land the first spot found often straddled a step and took a minute to level.
+   */
   findSpot(w: World, building: string, hx: number, hy: number): [number, number] | null {
     // prefer tree-free ground; fall back to wooded spots (trees in a footprint are chopped out first)
     return this.scan(w, building, hx, hy, true) ?? this.scan(w, building, hx, hy, false);
@@ -56,7 +63,11 @@ export class EconomyBot implements Controller {
     const [fw, fh] = w.cfg.pack.buildings.buildings[type].footprint;
     const n = w.terrain.size;
     const E = w.ents;
+    let best: [number, number] | null = null;
+    let bestScore = Infinity;
+    let firstRing = -1;
     for (let r = this.minRing; r <= this.maxRing; r++) {
+      if (firstRing >= 0 && r > firstRing + 1) break;
       const steps = Math.max(6, Math.floor(r * 2));
       for (let k = 0; k < steps; k++) {
         const a = (k / steps) * dmath.TWO_PI + r * 0.37;
@@ -72,9 +83,15 @@ export class EconomyBot implements Controller {
           if (dy > n / 2) dy = n - dy;
           if (dx <= fw / 2 + 0.6 && dy <= fh / 2 + 0.6) tree = true;
         }
-        if (!tree) return [cx, cy];
+        if (tree) continue;
+        if (firstRing < 0) firstRing = r;
+        const score = w.economy.flattenWork(type, cx, cy) + RING_COST * (r - firstRing);
+        if (score < bestScore) {
+          bestScore = score;
+          best = [cx, cy];
+        }
       }
     }
-    return null;
+    return best;
   }
 }

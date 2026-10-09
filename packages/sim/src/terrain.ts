@@ -144,6 +144,55 @@ export class Terrain {
     return hi - lo <= maxRange;
   }
 
+  /**
+   * Would a w x h footprint at (x, y), flattened to `target`, still connect to the land around it? Walks
+   * walkable vertices (the pad at target, everything else as is) from the pad and succeeds on reaching
+   * `reach` cells beyond it. BACKLOG 0a: a pad on a terrace edge flattened to its average could raise
+   * cliffs on every side and wall its builders and the people born there into a pocket.
+   */
+  padConnects(x: number, y: number, w: number, h: number, target: number, reach: number): boolean {
+    const n = this.size;
+    const side = Math.max(w, h) + 2 * reach + 1;
+    // local window coordinates: (lx, ly) = (x - reach + lx, y - reach + ly)
+    const W = w + 2 * reach + 1;
+    const H = h + 2 * reach + 1;
+    if (side >= n) return true;
+    const hAt = (lx: number, ly: number): number => {
+      const px = lx - reach;
+      const py = ly - reach;
+      return px >= 0 && px <= w && py >= 0 && py <= h ? target : this.get(x + px, y + py);
+    };
+    const walk = (lx: number, ly: number): boolean => {
+      const v = hAt(lx, ly);
+      if (v < this.sea) return false;
+      return Math.abs(v - hAt(lx + 1, ly)) <= this.maxWalkSlope && Math.abs(v - hAt(lx - 1, ly)) <= this.maxWalkSlope && Math.abs(v - hAt(lx, ly + 1)) <= this.maxWalkSlope && Math.abs(v - hAt(lx, ly - 1)) <= this.maxWalkSlope;
+    };
+    const seen = new Uint8Array(W * H);
+    const queue: number[] = [];
+    for (let j = 0; j <= h; j++) {
+      for (let i = 0; i <= w; i++) {
+        const lx = reach + i;
+        const ly = reach + j;
+        if (walk(lx, ly)) {
+          seen[lx + ly * W] = 1;
+          queue.push(lx + ly * W);
+        }
+      }
+    }
+    for (let q = 0; q < queue.length; q++) {
+      const lx = queue[q] % W;
+      const ly = (queue[q] - lx) / W;
+      if (lx === 0 || ly === 0 || lx === W - 1 || ly === H - 1) return true;
+      for (const [ax, ay] of [[lx + 1, ly], [lx - 1, ly], [lx, ly + 1], [lx, ly - 1]]) {
+        const k = ax + ay * W;
+        if (seen[k] || !walk(ax, ay)) continue;
+        seen[k] = 1;
+        queue.push(k);
+      }
+    }
+    return false;
+  }
+
   /** Minimum sampled height along a straight (shortest-wrap) segment, every quarter cell. */
   minHeightAlong(ax: number, ay: number, bx: number, by: number): number {
     const dx = wrapDelta(bx - ax, this.size);

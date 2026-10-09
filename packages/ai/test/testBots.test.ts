@@ -39,3 +39,30 @@ describe("test bots (M7)", () => {
     expect(t.stats.actions.buildTower ?? 0).toBeGreaterThan(0);
   }, 60000);
 });
+
+describe("economy bot sites (BACKLOG 0a terraces, economy soak seed 1003)", () => {
+  it("picks the spot with the least flattening over its first two rings, on level ground the nearest", async () => {
+    const { EconomyBot } = await import("../src/economyBot.ts");
+    const p = basePack();
+    const make = () => {
+      const w = new World({ pack: p.files, packHash: p.hash, seed: 1, map: { generator: "flat", size: 64, tribes: 1 } });
+      w.spawnBuilding("hearth", 0, 32, 32);
+      return w;
+    };
+    const bot = new EconomyBot({ tribe: 0 });
+    const flat = make();
+    const d = flat.cfg.buildingIndex.get("dwelling")!;
+    const a = bot.findSpot(flat, "dwelling", 32, 32)!;
+    expect(Math.hypot(a[0] - 32, a[1] - 32)).toBeLessThan(5.5);
+    // tilt everything but a western wedge: the bot leaves the first spot it would have found for level ground
+    const w = make();
+    const t = w.terrain;
+    const land = t.get(5, 5);
+    for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) if (x >= 30) t.heights[t.idx(x, y)] = land + 5 * (x - 29);
+    t.version++;
+    const b = bot.findSpot(w, "dwelling", 32, 32)!;
+    expect(w.economy.planBlocker(d, b[0], b[1])).toBeNull();
+    expect(w.economy.flattenWork(d, b[0], b[1])).toBe(0);
+    expect(Math.hypot(b[0] - 32, b[1] - 32)).toBeLessThan(6.5);
+  });
+});

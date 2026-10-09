@@ -42,6 +42,30 @@
             "type": "number",
             "minimum": 0,
             "maximum": 1
+          },
+          "terrace": {
+            "type": "object",
+            "properties": {
+              "step": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "flat": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 0.9
+              },
+              "rampSlope": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            },
+            "required": [
+              "step",
+              "flat",
+              "rampSlope"
+            ],
+            "additionalProperties": false
           }
         },
         "required": [

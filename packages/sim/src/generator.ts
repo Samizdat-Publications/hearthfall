@@ -168,17 +168,38 @@ export function generateMap(cfg: SimConfig, spec: MapSpec, seed: number): Genera
     for (let i = 0; i < n * n; i++) vmax = Math.max(vmax, v[i]);
     const span = vmax > thr ? vmax - thr : 1;
     let landN = 0;
+    // land height above sea + 2 per vertex (-1 for water), terraced in a second pass
+    const above = new Float64Array(n * n);
     for (let i = 0; i < n * n; i++) {
       const f = v[i];
-      let h: number;
-      if (f < thr) h = genMin + (cfg.sea - 2 - genMin) * (f / thr);
-      else {
-        const u = (f - thr) / span;
-        const curved = u * (1 - preset.peakiness) + u * u * preset.peakiness;
-        h = cfg.sea + 2 + (genMax - cfg.sea - 2) * curved;
-        landN++;
+      if (f < thr) {
+        above[i] = -1;
+        t.heights[i] = Math.round(genMin + (cfg.sea - 2 - genMin) * (f / thr));
+        continue;
       }
-      t.heights[i] = Math.round(h);
+      const u = (f - thr) / span;
+      const curved = u * (1 - preset.peakiness) + u * u * preset.peakiness;
+      above[i] = (genMax - cfg.sea - 2) * curved;
+      landN++;
+    }
+    // BACKLOG 0a terraced plateaus: each step level for its lower share, then a linear ramp; the level share
+    // shrinks with the local slope so a ramp stays near rampSlope (cliff colored yet walkable)
+    const tc = preset.terrace;
+    for (let y = 0; y < n; y++) {
+      for (let x = 0; x < n; x++) {
+        const i = x + y * n;
+        let a = above[i];
+        if (a < 0) continue;
+        if (tc) {
+          let s0 = 0;
+          for (const k of [((x + 1) % n) + y * n, ((x + n - 1) % n) + y * n, x + ((y + 1) % n) * n, x + ((y + n - 1) % n) * n]) s0 = Math.max(s0, Math.abs(Math.max(0, above[k]) - a));
+          const flat = Math.min(tc.flat, Math.max(0, 1 - s0 / tc.rampSlope));
+          const q = Math.floor(a / tc.step);
+          const g = a / tc.step - q;
+          a = (q + (g < flat ? 0 : (g - flat) / (1 - flat))) * tc.step;
+        }
+        t.heights[i] = Math.round(cfg.sea + 2 + a);
+      }
     }
     // 2. Hearth sites on the largest walkable component, spread by farthest-point sampling
     const comp = walkableComponents(t);

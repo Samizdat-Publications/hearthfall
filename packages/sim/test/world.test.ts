@@ -59,6 +59,42 @@ describe("planet generator", () => {
     }
   }
 
+  it("terraced presets (BACKLOG 0a): level plateaus and cliff bands, and the walkable land stays connected", async () => {
+    const { basePack } = await import("./helpers.ts");
+    const { World } = await import("../src/world.ts");
+    const on = basePack();
+    const offFiles = structuredClone(on.files);
+    for (const p of offFiles.terrain.presets) delete p.terrace;
+    const stats = (files: typeof on.files, generator: string, seed: number) => {
+      const w = new World({ pack: files, packHash: on.hash, seed, map: { generator, size: 128, tribes: 2 } });
+      const t = w.terrain;
+      let land = 0;
+      let level = 0;
+      let cliff = 0;
+      for (let y = 0; y < 128; y++) {
+        for (let x = 0; x < 128; x++) {
+          if (!t.isLand(x, y)) continue;
+          land++;
+          const s = t.slope(x, y);
+          if (s <= 2) level++;
+          if (s > t.maxWalkSlope * 0.85) cliff++;
+        }
+      }
+      const c = walkableComponents(t);
+      return { level: level / land, cliff: cliff / land, connected: c.sizes[c.largest] / land };
+    };
+    for (const generator of ["continents", "islands"]) {
+      expect(on.files.terrain.presets.find((p) => p.id === generator)!.terrace).toBeDefined();
+      for (const seed of [1, 2]) {
+        const a = stats(offFiles, generator, seed);
+        const b = stats(on.files, generator, seed);
+        expect(b.level).toBeGreaterThan(2.5 * a.level);
+        expect(b.cliff).toBeGreaterThan(1.3 * a.cliff);
+        expect(b.connected).toBeGreaterThan(a.connected - 0.05);
+      }
+    }
+  });
+
   it("is deterministic: same seed, same planet; different seed, different planet", () => {
     const a = world({ generator: "continents", size: 128, tribes: 2 }, 11).hash();
     const b = world({ generator: "continents", size: 128, tribes: 2 }, 11).hash();

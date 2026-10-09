@@ -12,6 +12,8 @@ import type { World } from "./world.ts";
 export const TASK = { idle: 0, toTree: 1, chop: 2, haul: 3, toWork: 4, work: 5, toHome: 6, home: 7, wander: 8, toTrain: 9, training: 10, toGarrison: 11, garrison: 12, toWorship: 13, worship: 14 } as const;
 /** Building states (state column). */
 export const BSTATE = { plan: 0, flatten: 1, build: 2, done: 3 } as const;
+/** cells beyond a plan's pad its flattened ground must reach on foot (BACKLOG 0a, `padConnects`) */
+const PAD_REACH = 6;
 /** Tree state: 0 normal, 1 doomed (inside a plan footprint, removed when chopped out). */
 export const TREE_DOOMED = 1;
 
@@ -145,6 +147,27 @@ export class EconomySystem {
     return { x0: Math.round(this.w.ents.x[i] - fw / 2), y0: Math.round(this.w.ents.y[i] - fh / 2), fw, fh };
   }
 
+  /** Flatten target of a footprint: its vertex average, at least shore height. */
+  flattenTarget(x0: number, y0: number, fw: number, fh: number): number {
+    const t = this.w.terrain;
+    let sum = 0;
+    let cells = 0;
+    for (let y = 0; y <= fh; y++) for (let x = 0; x <= fw; x++, cells++) sum += t.get(x0 + x, y0 + y);
+    return Math.max(Math.round(sum / cells), t.sea + 4);
+  }
+
+  /** Height units a plan of `type` centered at (cx, cy) must move to level its pad (site choice). */
+  flattenWork(type: number, cx: number, cy: number): number {
+    const t = this.w.terrain;
+    const [fw, fh] = this.w.cfg.pack.buildings.buildings[type].footprint;
+    const x0 = Math.round(cx - fw / 2);
+    const y0 = Math.round(cy - fh / 2);
+    const target = this.flattenTarget(x0, y0, fw, fh);
+    let work = 0;
+    for (let y = 0; y <= fh; y++) for (let x = 0; x <= fw; x++) work += Math.abs(t.get(x0 + x, y0 + y) - target);
+    return work;
+  }
+
   /** Why a building of `type` cannot be planned with its center at (cx, cy), or null. */
   planBlocker(type: number, cx: number, cy: number): string | null {
     const w = this.w;
@@ -156,6 +179,7 @@ export class EconomySystem {
     const x0 = Math.round(cx - fw / 2);
     const y0 = Math.round(cy - fh / 2);
     if (!t.buildable(x0, y0, fw, fh, w.cfg.pack.balance.economy.flattenMaxRange)) return "ground not buildable";
+    if (!t.padConnects(x0, y0, fw, fh, this.flattenTarget(x0, y0, fw, fh), PAD_REACH)) return "site would be walled in";
     const gap = w.cfg.pack.balance.economy.buildingGapCells;
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.building) continue;
@@ -191,11 +215,7 @@ export class EconomySystem {
     E.hp[i] = 1;
     E.wood[i] = 0;
     E.progress[i] = 0;
-    // flatten target: footprint average, at least shore height
-    let sum = 0;
-    let cells = 0;
-    for (let y = 0; y <= fh; y++) for (let x = 0; x <= fw; x++, cells++) sum += w.terrain.get(x0 + x, y0 + y);
-    E.progress2[i] = Math.max(Math.round(sum / cells), w.terrain.sea + 4);
+    E.progress2[i] = this.flattenTarget(x0, y0, fw, fh);
     for (let k = 0; k < E.hi; k++) {
       if (!E.alive[k] || E.cat[k] !== CAT.tree) continue;
       const dx = wrapDelta(E.x[k] - (x0 + fw / 2), w.terrain.size);

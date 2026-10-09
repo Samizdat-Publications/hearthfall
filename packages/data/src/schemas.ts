@@ -487,6 +487,11 @@ export const TerrainPresetSchema = z.strictObject({
   persistence: z.number().min(0).max(1),
   landFraction: z.number().min(0.05).max(0.95),
   peakiness: z.number().min(0).max(1),
+  /** look v2 (BACKLOG 0a): land quantized into plateaus `step` height units apart; up to `flat` of each step
+   * is level and the rest a linear ramp. The level share shrinks where the land is already steep so a ramp
+   * stays near `rampSlope` (per cell): above the brown cliff threshold, at or under the walk limit, so the
+   * bands read as cliffs without cutting the land apart. Slopes already steeper stay untouched. */
+  terrace: z.strictObject({ step: z.number().positive(), flat: z.number().min(0).max(0.9), rampSlope: z.number().positive() }).optional(),
 });
 export const TerrainFileSchema = z.strictObject({
   ...comment,

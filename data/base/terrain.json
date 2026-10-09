@@ -7,7 +7,12 @@
       "octaves": 5,
       "persistence": 0.5,
       "landFraction": 0.56,
-      "peakiness": 0.55
+      "peakiness": 0.55,
+      "terrace": {
+        "step": 30,
+        "flat": 0.6,
+        "rampSlope": 18
+      }
     },
     {
       "id": "islands",
@@ -15,7 +20,12 @@
       "octaves": 5,
       "persistence": 0.4,
       "landFraction": 0.48,
-      "peakiness": 0.8
+      "peakiness": 0.8,
+      "terrace": {
+        "step": 30,
+        "flat": 0.6,
+        "rampSlope": 18
+      }
     }
   ],
   "trees": {
@@ -30,7 +40,7 @@
     "clusterPeriod": 10,
     "clusterThreshold": 0.42,
     "clearRadiusAroundHearth": 5,
-    "maxSlope": 14,
+    "maxSlope": 20,
     "hearthGrove": {
       "inner": 9,
       "outer": 15,
