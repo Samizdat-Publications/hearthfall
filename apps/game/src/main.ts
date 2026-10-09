@@ -1,5 +1,6 @@
 // Entry point: builds the Game from URL params, mounts the HUD, runs the frame loop and exposes
 // window.__game in dev and test builds (docs/ARCHITECTURE.md section 8).
+import type { TroopIntent } from "./troops.ts";
 import { Game, parseParams, type DebugFlags } from "./game.ts";
 import { mountGameHud } from "./hudBridge.ts";
 import type { CameraState } from "@hearthfall/render";
@@ -46,6 +47,14 @@ if (__DEBUG_API__ || game.params.debug) {
     },
     selectBox: (x0: number, y0: number, x1: number, y1: number) => game.selectBox(x0, y0, x1, y1, false),
     getSelection: () => [...game.selection].map((i) => game.world.ents.idOf(i)),
+    /** M6 troop panel: select an own building by id (lodge or tower), then send a troop intent */
+    selectBuilding: (id: number) => {
+      game.selectedBuilding = game.world.ents.index(id);
+      if (game.selectedBuilding >= 0) game.selection.clear();
+      game.onChange();
+      return game.selectedBuilding >= 0;
+    },
+    troop: (it: TroopIntent) => game.troop(it),
     pickTerrain: (px: number, py: number) => game.renderer.pickTerrain(px, py),
     orderAt: (px: number, py: number) => game.orderAt(px, py),
     /** Placement through the real input path: ghost at a screen pixel, then confirm. */

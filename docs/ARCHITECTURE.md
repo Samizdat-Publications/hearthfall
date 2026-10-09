@@ -147,6 +147,9 @@ URL params: `?seed=123&level=skirmish_small&scenario=<id>&camera=<preset>&paused
 | `frames()` | rendered frame counter, captures wait for `frames() >= n` not wall time |
 | `loadScenario(id)`, `setDebug(flags)` | test hooks, including deliberate breakage flags used to calibrate visual QA (`hideTerrain, blackCanvas, magentaMaterials, overlapHud, freezeCamera`) |
 | `pause(bool)`, `runDef(def, rawPack)`, `webgl()` | pause toggle; run a scenario definition headless in the page (cross-engine determinism); WebGL renderer string |
+| `selectBuilding(id)`, `troop(intent)` | M6 troop panel: select an own lodge or tower, then send a troop intent (`train`, `rally`, `garrison`, `ungarrison`, `retreat`, `stance`); returns false when the selection cannot do it |
+
+Troop controls (M6): `apps/game/src/troops.ts` holds pure functions of (World, tribe, selection, selected building) that build the HUD `TroopView` and turn intents into Commands; Game routes HUD buttons, the R (retreat) and G (garrison) hotkeys, and right clicks through them (right click with a lodge selected sets its rally point; with units selected on an own Watchtower it garrisons). Unit tests live in `apps/game/test/`.
 
 Agents read `getSummary()` and headless harness output first. Screenshots are the last resort.
 

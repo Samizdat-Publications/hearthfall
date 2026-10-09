@@ -12,3 +12,4 @@
 - 2026-10-09T01:16 set spells (8 shots): ADR-005 retro render pass v1
 - 2026-10-09T01:48 set spells (8 shots): look v2 (ADR-005 addendum 2): space sky, turquoise sea with foam strokes, brown cliffs, steep curved camera, HUD layout v2
 - 2026-10-09T01:49 set smoke (11 shots): look v2 (ADR-005 addendum 2): space sky, turquoise sea with foam strokes, brown cliffs, steep curved camera, HUD layout v2
+- 2026-10-09T04:46 set smoke (12 shots): M6 HUD: build column lists Watchtower and the three lodges; new troop panel shot hud_troops

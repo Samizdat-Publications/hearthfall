@@ -7,6 +7,7 @@ import { ThreeRenderer, type CameraState } from "@hearthfall/render";
 import { makeBot } from "@hearthfall/ai";
 import { spellSlot } from "@hearthfall/ui";
 import { AudioHooks } from "@hearthfall/audio";
+import { buildingAt, troopCommand, type TroopIntent } from "./troops.ts";
 
 const packFiles = import.meta.glob("../../../data/base/*.json", { eager: true, import: "default" });
 const scenarioFiles = import.meta.glob("../../../scenarios/*.json", { eager: true, import: "default" });
@@ -89,6 +90,9 @@ export class Game {
   showHelp = true;
   /** spell id being targeted (preview follows the cursor) */
   targeting: string | null = null;
+  /** M6: selected own building index (lodge or tower panel), -1 for none; "rally" while picking a rally point */
+  selectedBuilding = -1;
+  pointing: string | null = null;
   private events: SimEvent[] = [];
   /** combat and world events to audio cues; no playback sink until A4 (M10), so every cue is a silent stub */
   readonly audio: AudioHooks;
@@ -177,6 +181,7 @@ export class Game {
   private pruneSelection(): void {
     const E = this.world.ents;
     for (const i of [...this.selection]) if (!E.alive[i] || E.tribe[i] !== this.localTribe) this.selection.delete(i);
+    if (this.selectedBuilding >= 0 && !E.alive[this.selectedBuilding]) this.selectedBuilding = -1;
   }
 
   /** Own unit nearest to a screen point within 16 px, or -1. */
@@ -210,15 +215,37 @@ export class Game {
       if (Number.isNaN(sx) || !E.alive[i] || E.tribe[i] !== this.localTribe) continue;
       if (sx >= lx && sx <= hx && u.screenY[i] >= ly && u.screenY[i] <= hy) this.selection.add(i);
     }
+    if (this.selection.size) this.selectedBuilding = -1;
     this.onChange();
   }
 
-  /** Order the selection to the terrain point under a screen pixel. */
+  /** M6 troop intents (HUD buttons, hotkeys, right clicks) as Commands. */
+  troop(it: TroopIntent): boolean {
+    const c = troopCommand(this.world, this.localTribe, [...this.selection], this.selectedBuilding, it);
+    if (c) this.command(c);
+    return c !== null;
+  }
+
+  /** Select the own building under a screen pixel (clears the unit selection); -1 when none. */
+  selectBuildingAt(px: number, py: number): number {
+    const p = this.renderer.pickTerrain(px, py);
+    const b = p ? buildingAt(this.world, this.localTribe, p.x, p.z) : -1;
+    this.selectedBuilding = b;
+    if (b >= 0) this.selection.clear();
+    this.onChange();
+    return b;
+  }
+
+  /** Order the selection to the terrain point under a screen pixel. With a lodge selected, set its rally
+   * point; with units selected and an own Watchtower under the cursor, garrison there. */
   orderAt(px: number, py: number, attack = false): boolean {
-    if (!this.selection.size) return false;
     const p = this.renderer.pickTerrain(px, py);
     if (!p) return false;
+    if (!this.selection.size && this.selectedBuilding >= 0) return this.troop({ kind: "rally", at: [p.x, p.z] });
+    if (!this.selection.size) return false;
     const E = this.world.ents;
+    const b = attack ? -1 : buildingAt(this.world, this.localTribe, p.x, p.z);
+    if (b >= 0 && this.world.combat.garrisonOf(E.type[b]) > 0) return this.troop({ kind: "garrison", tower: b });
     this.command({ tribe: this.localTribe, type: "move", args: { units: [...this.selection].map((i) => E.idOf(i)), to: [p.x, p.z], attack } });
     return true;
   }
@@ -332,6 +359,12 @@ export class Game {
         else this.cancelTargeting();
         return;
       }
+      if (this.pointing) {
+        if (e.button === 0) this.orderAt(e.clientX, e.clientY);
+        this.pointing = null;
+        this.onChange();
+        return;
+      }
       if (e.button === 0) down = { x: e.clientX, y: e.clientY };
       if (e.button === 2) {
         this.orderAt(e.clientX, e.clientY, this.attackMode);
@@ -356,9 +389,10 @@ export class Game {
         const i = this.unitAt(e.clientX, e.clientY);
         if (!e.shiftKey) this.selection.clear();
         if (i >= 0) {
+          this.selectedBuilding = -1;
           if (e.shiftKey && this.selection.has(i)) this.selection.delete(i);
           else this.selection.add(i);
-        }
+        } else if (!e.shiftKey) this.selectBuildingAt(e.clientX, e.clientY);
         this.onChange();
       }
       down = null;
@@ -368,6 +402,9 @@ export class Game {
     window.addEventListener("keydown", (e) => {
       const k = e.key.toLowerCase();
       if (k === "d" && !e.ctrlKey) this.startPlacing("dwelling");
+      if (k === "t" && !e.ctrlKey) this.startPlacing("watchtower");
+      if (k === "r" && !e.ctrlKey && this.selection.size) this.troop({ kind: "retreat" });
+      if (k === "g" && !e.ctrlKey && this.selection.size) this.troop({ kind: "garrison" });
       if (k === "h") {
         this.showHelp = !this.showHelp;
         this.onChange();
@@ -382,6 +419,8 @@ export class Game {
         this.cancelTargeting();
         this.cancelPlacing();
         this.selection.clear();
+        this.selectedBuilding = -1;
+        this.pointing = null;
         this.attackMode = false;
         this.onChange();
       }

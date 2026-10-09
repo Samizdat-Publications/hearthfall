@@ -4,6 +4,10 @@ import "../../../packages/ui/src/hud.css";
 import { shaperIndex } from "@hearthfall/sim";
 import type { Game } from "./game.ts";
 import { drawMinimap } from "./minimap.ts";
+import { troopView } from "./troops.ts";
+
+/** build tool hotkeys (the rest of the build column is click only) */
+const BUILD_KEYS: Record<string, string> = { dwelling: "D", watchtower: "T" };
 
 const title = (id: string) => id.split("_").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
 
@@ -41,12 +45,14 @@ export function hudFor(game: Game): HudModel {
     placing: game.placing,
     placeBlocked: game.placeBlocked,
     targeting: game.targeting,
-    buildable: bdefs.filter((b) => b.buildable !== false && b.milestone !== "backlog" && b.id === "dwelling").map((b) => ({ id: b.id, name: title(b.id), wood: b.levels?.[0]?.wood ?? b.wood ?? 0, key: "D" })),
+    buildable: bdefs.filter((b) => b.buildable !== false && b.milestone !== "backlog").map((b) => ({ id: b.id, name: title(b.id), wood: b.levels?.[0]?.wood ?? b.wood ?? 0, key: BUILD_KEYS[b.id] ?? "" })),
     box: game.box,
     showHelp: game.showHelp,
     priorities: tr ? { ...tr.eco.priorities } : { build: 1, upgrade: 1, breed: 1 },
     shaper: { alive: si >= 0, respawnSec, hpFrac: Math.min(1, Math.max(0, shaperHp)) },
     manaFrac: tr && cursor >= 0 ? tr.eco.progress[cursor] / spells[cursor].cost : 0,
+    troops: troopView(w, game.localTribe, [...game.selection], game.selectedBuilding),
+    pointing: game.pointing,
   };
 }
 
@@ -67,6 +73,16 @@ export function mountGameHud(el: HTMLElement, game: Game): { refresh: () => void
     },
     target: (spell) => game.startTargeting(spell),
     cancel: () => game.cancelPlacing(),
+    train: (n) => game.troop({ kind: "train", n }),
+    startRally: () => {
+      game.pointing = "rally";
+      game.onChange();
+    },
+    clearRally: () => game.troop({ kind: "rally", at: null }),
+    ungarrison: () => game.troop({ kind: "ungarrison" }),
+    garrison: () => game.troop({ kind: "garrison" }),
+    retreat: () => game.troop({ kind: "retreat" }),
+    setStance: (stance) => game.troop({ kind: "stance", stance }),
     togglePriority: (key) => {
       const p = { ...(game.world.tribes[game.localTribe]?.eco.priorities ?? { build: 1, upgrade: 1, breed: 1 }) };
       p[key] = p[key] > 0 ? 0 : 1;

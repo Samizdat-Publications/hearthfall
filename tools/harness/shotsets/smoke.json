@@ -273,6 +273,45 @@
     ]
    },
    "minHud": 5
+  },
+  {
+   "id": "hud_troops",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "default"
+   },
+   "steps": [
+    {
+     "setCamera": {
+      "zoom": 0.12
+     }
+    },
+    {
+     "eval": "__game.selectBox(0, 0, 1280, 720)"
+    },
+    {
+     "assert": "__game.troop({ kind: 'stance', stance: 'defensive' }) === true"
+    },
+    {
+     "step": 2
+    },
+    {
+     "assert": "document.querySelector('[data-hud=troops]') !== null && document.querySelector('[data-hud=troops] .prio.on').textContent.trim() === 'Def'"
+    },
+    {
+     "assert": "__game.troop({ kind: 'train', n: 1 }) === false && __game.troop({ kind: 'retreat' }) === true"
+    }
+   ],
+   "kind": "hud",
+   "coverage": {
+    "green": [
+     0.03,
+     0.95
+    ]
+   },
+   "minHud": 6
   }
  ]
 }

@@ -20,6 +20,26 @@ export interface SpellView {
   hotkey: string;
 }
 
+/** M6 troop panel: what the selection can be told to do. */
+export interface TroopView {
+  kind: "none" | "units" | "lodge" | "tower";
+  label: string;
+  /** stance shared by the whole unit selection, else null (mixed) */
+  stance: "aggressive" | "defensive" | "passive" | null;
+  /** an own Watchtower with free room exists (units: Garrison button) */
+  canGarrison: boolean;
+  /** lodge: walkers and trainees queued; tower: units inside */
+  count: number;
+  /** lodge: queue size; tower: garrison slots */
+  max: number;
+  /** lodge has a rally point */
+  rally: boolean;
+  /** lodge or tower is still being built */
+  building: boolean;
+}
+
+export const STANCES = ["aggressive", "defensive", "passive"] as const;
+
 export interface HudModel {
   title: string;
   mapLine: string;
@@ -44,6 +64,9 @@ export interface HudModel {
   shaper: { alive: boolean; respawnSec: number; hpFrac: number };
   /** 0..1 progress of the spell currently charging (the mana bar) */
   manaFrac: number;
+  troops: TroopView;
+  /** "rally" while the next left click sets the selected lodge's rally point */
+  pointing: string | null;
 }
 
 export interface HudActions {
@@ -57,6 +80,65 @@ export interface HudActions {
   drawMinimap(canvas: HTMLCanvasElement): void;
   /** jump the camera to a normalized minimap point */
   minimapJump(u: number, v: number): void;
+  /** M6 troop controls */
+  train(n: number): void;
+  startRally(): void;
+  clearRally(): void;
+  ungarrison(): void;
+  garrison(): void;
+  retreat(): void;
+  setStance(s: (typeof STANCES)[number]): void;
+}
+
+function Troops({ t, act, pointing }: { t: TroopView; act: HudActions; pointing: string | null }) {
+  if (t.kind === "none") return null;
+  return (
+    <div data-hud="troops" class="hud-panel hud-troops">
+      <span class="troops-label">{t.label}</span>
+      {t.kind === "units" ? (
+        <div class="troops-row">
+          {STANCES.map((s) => (
+            <button key={s} class={"prio" + (t.stance === s ? " on" : "")} title={`Stance: ${s}`} onClick={() => act.setStance(s)}>
+              {s[0].toUpperCase() + s.slice(1, 3)}
+            </button>
+          ))}
+          <button class="prio" title="Run to the nearest own Watchtower, else the Hearth (R)" onClick={() => act.retreat()}>
+            Retreat
+          </button>
+          {t.canGarrison ? (
+            <button class="prio" title="Garrison in the nearest Watchtower with room (G)" onClick={() => act.garrison()}>
+              Garrison
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+      {t.kind === "lodge" && !t.building ? (
+        <div class="troops-row">
+          <button class="prio" title="Send the nearest free settler to train" onClick={() => act.train(1)} disabled={t.count >= t.max}>
+            Train 1
+          </button>
+          <button class="prio" title="Send up to five free settlers to train" onClick={() => act.train(5)} disabled={t.count >= t.max}>
+            Train 5
+          </button>
+          <button class={"prio" + (pointing === "rally" ? " on" : "")} title="Then left click the ground where graduates gather. With a lodge selected, right click also sets it." onClick={() => act.startRally()}>
+            Rally
+          </button>
+          {t.rally ? (
+            <button class="prio" title="Graduates stay at the lodge door" onClick={() => act.clearRally()}>
+              No rally
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+      {t.kind === "tower" && !t.building ? (
+        <div class="troops-row">
+          <button class="prio" title="Everyone inside steps out" onClick={() => act.ungarrison()} disabled={t.count <= 0}>
+            Ungarrison
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
 }
 
 export const hudModel = signal<HudModel | null>(null);
@@ -175,8 +257,8 @@ function Hud({ act }: { act: HudActions }) {
       </div>
       <div data-hud="build" class="hud-panel hud-build">
         {m.buildable.map((bd) => (
-          <button key={bd.id} class={"build-btn" + (m.placing === bd.id ? " active" : "")} onClick={() => (m.placing === bd.id ? act.cancel() : act.startPlacing(bd.id))} title={`${bd.name}: ${bd.wood} wood (${bd.key})`}>
-            {bd.name} <span class="hotkey">{bd.key}</span>
+          <button key={bd.id} class={"build-btn" + (m.placing === bd.id ? " active" : "")} onClick={() => (m.placing === bd.id ? act.cancel() : act.startPlacing(bd.id))} title={`${bd.name}: ${bd.wood} wood${bd.key ? ` (${bd.key})` : ""}`}>
+            {bd.name} {bd.key ? <span class="hotkey">{bd.key}</span> : null}
           </button>
         ))}
       </div>
@@ -188,14 +270,15 @@ function Hud({ act }: { act: HudActions }) {
         </span>
       </div>
       <Minimap m={m} act={act} />
-      {m.selected > 0 || m.placing || m.targeting ? (
+      <Troops t={m.troops} act={act} pointing={m.pointing} />
+      {m.selected > 0 || m.placing || m.targeting || m.pointing ? (
         <div data-hud="selection" class="hud-panel hud-selection">
-          {m.targeting ? `Casting ${m.targeting.replace("_", " ")}: left click a target, right click or Esc to cancel, Backspace undoes a cast` : m.placing ? `Placing ${m.placing}: left click to place, Esc to cancel${m.placeBlocked ? ` (${m.placeBlocked})` : ""}` : `${m.selected} selected${m.attack ? " | attack-move: click a target" : " | right click to move"}`}
+          {m.pointing === "rally" ? "Rally point: left click the ground, right click or Esc to cancel" : m.targeting ? `Casting ${m.targeting.replace("_", " ")}: left click a target, right click or Esc to cancel, Backspace undoes a cast` : m.placing ? `Placing ${m.placing}: left click to place, Esc to cancel${m.placeBlocked ? ` (${m.placeBlocked})` : ""}` : `${m.selected} selected${m.attack ? " | attack-move: click a target" : " | right click to move"}`}
         </div>
       ) : null}
       {m.showHelp ? (
         <div data-hud="help" class="hud-panel hud-help">
-          Drag select | right click move | A attack-move | S Shaper | Z-N spells | D dwelling | Q/E rotate | wheel zoom | M map | H help
+          Drag select | click a building to select it | right click move (on a tower: garrison) | A attack-move | R retreat | G garrison | S Shaper | Z-N spells | D dwelling | T tower | Q/E rotate | wheel zoom | M map | H help
         </div>
       ) : null}
       <div data-hud="debug-overlap" class="hud-panel hud-overlap">
