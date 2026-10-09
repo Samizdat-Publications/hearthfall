@@ -47,7 +47,7 @@ def key_black(img: Image.Image, floor: int = 10, taper_frac: float = 0.04):
         "opaque_frac": float((alpha > 0.5).mean()),
         "mean_alpha": float(alpha.mean()),
     }
-    return Image.fromarray(out, "RGBA"), stats
+    return Image.fromarray(out), stats
 
 
 # ----------------------------------------------------------------- icons
@@ -108,7 +108,7 @@ def key_magenta(img: Image.Image):
     out = np.dstack([np.clip(r2, 0, 255), g, np.clip(b2, 0, 255), alpha * 255.0]).astype(np.uint8)
     # a thin remaining pink halo: anything in the band that is still strongly magenta becomes transparent
     stats = {"bg_frac": float(bg.mean()), "band_frac": float(band.mean())}
-    return Image.fromarray(out, "RGBA"), stats
+    return Image.fromarray(out), stats
 
 
 def crop_square(im: Image.Image, margin: float = 0.07) -> Image.Image:
@@ -174,7 +174,7 @@ def key_flat_grey(im: Image.Image, tol: int = 16):
     alpha[bg] = 0.0
     alpha[band] = np.clip((dist[band] - tol) / 24.0, 0.25, 1.0)
     out = np.dstack([a.clip(0, 255).astype(np.uint8), (alpha * 255).astype(np.uint8)])
-    return Image.fromarray(out, "RGBA"), float(bg.mean())
+    return Image.fromarray(out), float(bg.mean())
 
 
 def cmd_thumbs() -> int:
@@ -190,6 +190,7 @@ def cmd_thumbs() -> int:
             log(f"  skip {aid}: no thumbnail")
             continue
         keyed, frac = key_flat_grey(Image.open(src))
+        keyed = crop_square(keyed, 0.06)
         stem = "icon." + aid
         files = save_icon_pair(keyed, stem)
         n += 1

@@ -3,7 +3,7 @@ import { hudModel, mountHud, type HudModel, type SpellView } from "@hearthfall/u
 import "../../../packages/ui/src/hud.css";
 import type { Game } from "./game.ts";
 
-const SPELL_KEYS = ["Z", "X", "C", "V", "B", "N", "M"];
+const SPELL_KEYS = ["Z", "X", "C", "V", "B", "N", "Shift+M"];
 const title = (id: string) => id.split("_").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
 
 export function hudFor(game: Game): HudModel {
@@ -35,6 +35,7 @@ export function hudFor(game: Game): HudModel {
     attack: game.attackMode,
     placing: game.placing,
     placeBlocked: game.placeBlocked,
+    targeting: game.targeting,
     buildable: bdefs.filter((b) => b.buildable !== false && b.milestone !== "backlog" && b.id === "dwelling").map((b) => ({ id: b.id, name: title(b.id), wood: b.levels?.[0]?.wood ?? b.wood ?? 0, key: "D" })),
     box: game.box,
     showHelp: game.showHelp,
@@ -52,6 +53,7 @@ export function mountGameHud(el: HTMLElement, game: Game): { refresh: () => void
       game.command({ tribe: game.localTribe, type: "setAutoCharge", args: { spell, on: !on } });
     },
     startPlacing: (b) => game.startPlacing(b),
+    target: (spell) => game.startTargeting(spell),
     cancel: () => game.cancelPlacing(),
     togglePriority: (key) => {
       const p = { ...(game.world.tribes[game.localTribe]?.eco.priorities ?? { build: 1, upgrade: 1, breed: 1 }) };

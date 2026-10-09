@@ -50,7 +50,7 @@ def duration_s(ff, src):
     return int(m.group(1)) * 3600 + int(m.group(2)) * 60 + float(m.group(3)) if m else 0.0
 
 
-def ffmpeg_cmd(ff, src, dst, cls, length=None):
+def ffmpeg_cmd(ff, src, dst, cls, length=None, loud=None):
     if cls == "music" and length and length > 4 * LOOP_XFADE_S:
         x, L = LOOP_XFADE_S, length
         graph = (f"[0:a]asplit=3[a][b][c];[a]atrim=0:{x},asetpts=PTS-STARTPTS[head];[b]atrim={L - x:.3f}:{L:.3f},asetpts=PTS-STARTPTS[tail];"
@@ -59,8 +59,29 @@ def ffmpeg_cmd(ff, src, dst, cls, length=None):
         return [ff, "-y", "-hide_banner", "-loglevel", "error", "-i", str(src), "-filter_complex", graph, "-map", "[out]",
                 "-c:a", "libvorbis", "-q:a", "4", str(dst)]
     chain = "silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.02"
-    chain += f",loudnorm=I={LOUDNESS[cls]}:TP=-1.5:LRA=11"
+    chain += "," + (loud or f"loudnorm=I={LOUDNESS[cls]}:TP=-1.5:LRA=11")
     return [ff, "-y", "-hide_banner", "-loglevel", "error", "-i", str(src), "-af", chain, "-c:a", "libvorbis", "-q:a", "4", str(dst)]
+
+
+def measure_loudnorm(ff, src, cls):
+    """First loudnorm pass on the trimmed clip; returns a second-pass filter string (linear when possible) or None."""
+    import json
+    import re
+
+    chain = f"silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.02,loudnorm=I={LOUDNESS[cls]}:TP=-1.5:LRA=11:print_format=json"
+    r = subprocess.run([ff, "-hide_banner", "-nostats", "-i", str(src), "-af", chain, "-f", "null", "-"], capture_output=True, text=True, timeout=120)
+    m = re.search(r"\{[^{}]*\"input_i\"[^{}]*\}", r.stderr, re.S)
+    if not m:
+        return None
+    try:
+        j = json.loads(m.group(0))
+        vals = {k: float(j[k]) for k in ("input_i", "input_tp", "input_lra", "input_thresh", "target_offset")}
+    except (ValueError, KeyError):
+        return None
+    if vals["input_i"] < -60:
+        return None
+    return (f"loudnorm=I={LOUDNESS[cls]}:TP=-1.5:LRA=11:measured_I={vals['input_i']}:measured_TP={vals['input_tp']}:"
+            f"measured_LRA={vals['input_lra']}:measured_thresh={vals['input_thresh']}:offset={vals['target_offset']}:linear=true")
 
 
 def post_asset(a: dict) -> dict:
@@ -71,7 +92,8 @@ def post_asset(a: dict) -> dict:
     if not ff:
         return {"status": "stub", "message": f"ffmpeg missing: would run `{' '.join(ffmpeg_cmd('ffmpeg', src, dst, a['class']))}`"}
     length = duration_s(ff, src) if a["class"] == "music" else None
-    subprocess.run(ffmpeg_cmd(ff, src, dst, a["class"], length), check=True, timeout=180, capture_output=True)
+    loud = measure_loudnorm(ff, src, a["class"]) if a["class"] != "music" else None
+    subprocess.run(ffmpeg_cmd(ff, src, dst, a["class"], length, loud), check=True, timeout=180, capture_output=True)
     return {"output_path": C.rel(dst), "bytes": dst.stat().st_size, "loudness_target_lufs": LOUDNESS[a["class"]], "ffmpeg": "ok",
             "loop_crossfade_s": LOOP_XFADE_S if length else None}
 

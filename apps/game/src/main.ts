@@ -49,6 +49,11 @@ if (__DEBUG_API__ || game.params.debug) {
     pickTerrain: (px: number, py: number) => game.renderer.pickTerrain(px, py),
     orderAt: (px: number, py: number) => game.orderAt(px, py),
     /** Placement through the real input path: ghost at a screen pixel, then confirm. */
+    castAtScreen: (spell: string, px: number, py: number) => {
+      game.startTargeting(spell);
+      game.updateTargeting(px, py);
+      return game.castAt(px, py);
+    },
     placeAtScreen: (building: string, px: number, py: number) => {
       game.startPlacing(building);
       game.updatePlacement(px, py);

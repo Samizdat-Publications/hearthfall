@@ -94,3 +94,38 @@ describe("trees", () => {
     expect(w.ents.wood[b]).toBe(tr.maxWood);
   });
 });
+
+describe("plans and trees (M4 review regressions)", () => {
+  it("a stump inside a new footprint is cleared, not doomed forever", () => {
+    const w = flat();
+    const stump = w.ents.index(w.spawnTree(30.5, 30.5));
+    w.ents.wood[stump] = 0;
+    const live = w.ents.index(w.spawnTree(31.2, 31.2));
+    w.economy.placePlan(0, w.cfg.buildingIndex.get("dwelling")!, 31, 31);
+    expect(w.ents.alive[stump]).toBe(0);
+    expect(w.ents.state[live]).toBe(1);
+  });
+
+  it("cancelling a plan releases its doomed trees so they regrow", () => {
+    const w = flat();
+    const tree = w.ents.index(w.spawnTree(31.2, 31.2));
+    const plan = w.economy.placePlan(0, w.cfg.buildingIndex.get("dwelling")!, 31, 31);
+    expect(w.ents.state[tree]).toBe(1);
+    w.step([{ tick: w.tick, tribe: 0, type: "cancelPlan", args: { id: plan } }]);
+    expect(w.ents.index(plan)).toBe(-1);
+    expect(w.ents.state[tree]).toBe(0);
+    expect(w.invariants()).toEqual([]);
+  });
+
+  it("starting wood is hauled to the first plan, never dropped for a chop job", () => {
+    const w = world({ generator: "continents", size: 128, tribes: 1 }, 5);
+    const h = w.ents.index(w.tribes[0].hearth);
+    const carried = () => w.selectUnits("tribe0.settlers").reduce((a, i) => a + w.ents.carry[i], 0);
+    expect(carried()).toBe(5);
+    const blocker = w.economy.planBlocker(w.cfg.buildingIndex.get("dwelling")!, w.ents.x[h] + 5, w.ents.y[h]);
+    if (blocker) return; // seed-specific terrain; the scenario suite covers the general case
+    w.economy.placePlan(0, w.cfg.buildingIndex.get("dwelling")!, w.ents.x[h] + 5, w.ents.y[h]);
+    w.run(20 * 20);
+    expect(w.eventCounts.get("woodDelivered") ?? 0).toBeGreaterThanOrEqual(3);
+  });
+});

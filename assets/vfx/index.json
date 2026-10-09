@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "generated": "2026-10-09T00:40:28Z",
+  "count": 7,
+  "entries": {
+    "vfx.bolt_burst": {
+      "file": "assets/vfx/vfx.bolt_burst.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "blend": "additive",
+      "note": "RGBA keyed from black; rgb * alpha reproduces the source, so additive blending (or premultiplied alpha) matches the original",
+      "mean_alpha": 0.229,
+      "border_luma": 1.6,
+      "sha256": "669926a28edffb867b294582ae181d7faed1a285a8d0b67afe00e4994dfedb29",
+      "prompt": "a radial burst of hot orange and white energy with angular spark shards, a starburst impact flash"
+    },
+    "vfx.dust_puff": {
+      "file": "assets/vfx/vfx.dust_puff.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "blend": "additive",
+      "note": "RGBA keyed from black; rgb * alpha reproduces the source, so additive blending (or premultiplied alpha) matches the original",
+      "mean_alpha": 0.212,
+      "border_luma": 1.6,
+      "sha256": "861fc39305da06ab7a229c2725640eb97a64eb23d10210e540fa1307af77a190",
+      "prompt": "a soft puff of warm tan earthen dust, rounded faceted billows, centered"
+    },
+    "vfx.hornet_swarm": {
+      "file": "assets/vfx/vfx.hornet_swarm.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "blend": "additive",
+      "note": "RGBA keyed from black; rgb * alpha reproduces the source, so additive blending (or premultiplied alpha) matches the original",
+      "mean_alpha": 0.112,
+      "border_luma": 1.7,
+      "sha256": "6fdedaab62c544d4717e47301b76006e5e0240813bae712da0c12c5a2bc71f29",
+      "prompt": "a loose cloud of many tiny glowing amber hornet shapes with faint motion streaks, a swarm particle sprite"
+    },
+    "vfx.lava_splash": {
+      "file": "assets/vfx/vfx.lava_splash.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "blend": "additive",
+      "note": "RGBA keyed from black; rgb * alpha reproduces the source, so additive blending (or premultiplied alpha) matches the original",
+      "mean_alpha": 0.261,
+      "border_luma": 1.6,
+      "sha256": "7d1d0b86bd404c36b9f6aa4fef49b7954ead0d20a804b79d7429db0c9cfe90d1",
+      "prompt": "a splash of molten lava, red-orange droplets and chunky blobs flying outward from a bright yellow core"
+    },
+    "vfx.lightning_streak": {
+      "file": "assets/vfx/vfx.lightning_streak.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "blend": "additive",
+      "note": "RGBA keyed from black; rgb * alpha reproduces the source, so additive blending (or premultiplied alpha) matches the original",
+      "mean_alpha": 0.114,
+      "border_luma": 1.8,
+      "sha256": "044850f9fc63192fb9cde5a9a6bed5e58f1eba9542065b2b6f9dcba72632efe3",
+      "prompt": "a single jagged branching streak of pale blue-white lightning with a bright core, floating centered with tapering ends"
+    },
+    "vfx.magic_glow_ring": {
+      "file": "assets/vfx/vfx.magic_glow_ring.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "blend": "additive",
+      "note": "RGBA keyed from black; rgb * alpha reproduces the source, so additive blending (or premultiplied alpha) matches the original",
+      "mean_alpha": 0.134,
+      "border_luma": 1.7,
+      "sha256": "33c4eec0f27f8ef6175bde7ccd195f55c5b2c2e0e9691367fa6c24a6cbcb6290",
+      "prompt": "a thin glowing violet magic ring, perfectly circular and centered, soft inner glow and a few sparkles, empty center"
+    },
+    "vfx.water_splash": {
+      "file": "assets/vfx/vfx.water_splash.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "blend": "additive",
+      "note": "RGBA keyed from black; rgb * alpha reproduces the source, so additive blending (or premultiplied alpha) matches the original",
+      "mean_alpha": 0.153,
+      "border_luma": 1.7,
+      "sha256": "f1abd9bbadb3b6aa1967328ca6eac1f84e667f8ddbc0f8134f32c1218fd5ef7e",
+      "prompt": "a crown-shaped splash of blue and white water droplets and foam, stylized angular droplets, centered"
+    }
+  }
+}

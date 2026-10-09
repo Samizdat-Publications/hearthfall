@@ -32,6 +32,7 @@ export interface HudModel {
   attack: boolean;
   placing: string | null;
   placeBlocked: string | null;
+  targeting: string | null;
   buildable: { id: string; name: string; wood: number; key: string }[];
   box: { x0: number; y0: number; x1: number; y1: number } | null;
   showHelp: boolean;
@@ -44,6 +45,7 @@ export interface HudActions {
   startPlacing(building: string): void;
   cancel(): void;
   togglePriority(key: "build" | "upgrade" | "breed"): void;
+  target(spell: string): void;
 }
 
 export const hudModel = signal<HudModel | null>(null);
@@ -52,7 +54,7 @@ function SpellButton({ s, act }: { s: SpellView; act: HudActions }) {
   const ring = 2 * Math.PI * 17;
   const full = s.charges >= s.max;
   return (
-    <button class={"spell" + (s.auto ? " auto" : "") + (full ? " full" : "")} title={`${s.name}: ${s.cost} mana, ${s.charges}/${s.max} charges. Click to toggle auto-charge.`} onClick={() => act.toggleAuto(s.id)} data-tier={s.tier}>
+    <button class={"spell" + (s.auto ? " auto" : "") + (full ? " full" : "")} title={`${s.name}: ${s.cost} mana, ${s.charges}/${s.max} charges. Click to cast, right click to toggle auto-charge.`} onClick={() => act.target(s.id)} onContextMenu={(e) => { e.preventDefault(); act.toggleAuto(s.id); }} data-tier={s.tier}>
       <svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true">
         <circle cx="22" cy="22" r="17" class="ring-bg" />
         <circle cx="22" cy="22" r="17" class="ring" style={{ strokeDasharray: `${ring * (full ? 1 : s.progress)} ${ring}` }} transform="rotate(-90 22 22)" />
@@ -116,14 +118,14 @@ function Hud({ act }: { act: HudActions }) {
           </button>
         ))}
       </div>
-      {m.selected > 0 || m.placing ? (
+      {m.selected > 0 || m.placing || m.targeting ? (
         <div data-hud="selection" class="hud-panel hud-selection">
-          {m.placing ? `Placing ${m.placing}: left click to place, Esc to cancel${m.placeBlocked ? ` (${m.placeBlocked})` : ""}` : `${m.selected} selected${m.attack ? " | attack-move: click a target" : " | right click to move"}`}
+          {m.targeting ? `Casting ${m.targeting.replace("_", " ")}: left click a target, right click or Esc to cancel, Backspace undoes a cast` : m.placing ? `Placing ${m.placing}: left click to place, Esc to cancel${m.placeBlocked ? ` (${m.placeBlocked})` : ""}` : `${m.selected} selected${m.attack ? " | attack-move: click a target" : " | right click to move"}`}
         </div>
       ) : null}
       {m.showHelp ? (
         <div data-hud="help" class="hud-panel hud-help">
-          Drag select | right click move | A attack-move | S Shaper | D dwelling | Q/E rotate | wheel zoom | M map | H help
+          Drag select | right click move | A attack-move | S Shaper | Z-N spells | D dwelling | Q/E rotate | wheel zoom | M map | H help
         </div>
       ) : null}
       <div data-hud="debug-overlap" class="hud-panel hud-overlap">

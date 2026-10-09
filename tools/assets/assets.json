@@ -5187,12 +5187,12 @@
     {
       "id": "sfx.ui_click",
       "class": "sfx",
-      "prompt": "a short soft wooden click",
+      "prompt": "a single crisp wooden click, a small hardwood block tapped once",
       "refs": [],
       "provider": "elevenlabs",
       "params": {
         "duration_seconds": 0.5,
-        "prompt_influence": 0.3,
+        "prompt_influence": 0.5,
         "output_format": "mp3_44100_128",
         "loop": false
       },
@@ -5249,15 +5249,15 @@
           "status": "done",
           "provider": "elevenlabs",
           "remote_id": null,
-          "started": "2026-10-09T00:27:31Z",
-          "finished": "2026-10-09T00:27:34Z",
+          "started": "2026-10-09T00:41:16Z",
+          "finished": "2026-10-09T00:41:18Z",
           "cost": {
             "usd": 0.001,
             "source": "computed"
           },
           "output_path": "tools/assets/raw/elevenlabs/sfx.ui_click/sfx.ui_click.mp3",
-          "sha256": "3ebde2007ec35e0dd042e48c85918c2fda111e1f39a5774d4b8e6da1c606ce44",
-          "attempts": 1,
+          "sha256": "bbab15898407dd4d8cb1e0f014d24ea4611d404d34c8b78f9a469b13741b3a5d",
+          "attempts": 2,
           "error": null,
           "meta": {
             "bytes": 8821,
@@ -5266,26 +5266,26 @@
               "character-cost": "3"
             }
           },
-          "request_hash": "4564d5546c89b78942f35429aeff88c054c49996c201dddf7a942c666cbf7447"
+          "request_hash": "a74e125e207cb3c4a0e3657464034588ed65c2173fad39575a19e102c7df5f48"
         },
         "post": {
           "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:27:34Z",
-          "finished": "2026-10-09T00:27:36Z",
+          "started": "2026-10-09T00:41:18Z",
+          "finished": "2026-10-09T00:41:20Z",
           "cost": null,
           "output_path": "assets/audio/sfx.ui_click.ogg",
-          "sha256": "eec638344dcc6d182c765650a84d1aced44ded8ac2027afe14d2cc896cac6aff",
-          "attempts": 1,
+          "sha256": "6d0a6b243bb5e88bcb79d4ff11d6cd4d0460bbc0045baf1bcde092b5a3ef36d7",
+          "attempts": 2,
           "error": null,
           "meta": {
-            "bytes": 4305,
+            "bytes": 11792,
             "loudness_target_lufs": -18.0,
             "ffmpeg": "ok",
             "loop_crossfade_s": null
           },
-          "request_hash": "555cf0f2b0462df77da3e97bfe726c93e454b03370870fbda414d9188c4c11b8"
+          "request_hash": "d4e9547bb03750ca2421b78f2950e5f386c19526e685cd5c9c1921d0668c8a56"
         }
       },
       "style_version": 1,
@@ -6503,28 +6503,46 @@
           "error": null
         },
         "model": {
-          "status": "submitted",
+          "status": "done",
           "provider": "elevenlabs",
           "remote_id": null,
           "started": "2026-10-09T00:31:05Z",
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
+          "finished": "2026-10-09T00:31:22Z",
+          "cost": {
+            "usd": 0.1875,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/music.battle/music.battle.mp3",
+          "sha256": "7e4ad67c327f1b51b444da54212d0f2a10d70726c40c5b26b43f5fba2521445d",
           "attempts": 1,
-          "error": null
+          "error": null,
+          "meta": {
+            "bytes": 1200841,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "song-id": "5NI1OAPtrywprNqoRP5P"
+            }
+          },
+          "request_hash": "e9773034f691266946bae833e55110d3eee5b0e123afb0e14c21a18b37481a4d"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:31:22Z",
+          "finished": "2026-10-09T00:31:48Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/audio/music.battle.ogg",
+          "sha256": "0cf7b4e36fa78538cb97bd5f5f65bf7bfc0a96c02a43a8bbf87d376f2b9ff578",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 1419967,
+            "loudness_target_lufs": -16.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": 2.0
+          },
+          "request_hash": "da7734dea4dad52afdfd3eab67cda7c5c81bd14453eb83fbaba515162250e5d2"
         }
       },
       "style_version": 1,
@@ -7416,11 +7434,11 @@
           "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:27:39Z",
-          "finished": "2026-10-09T00:27:40Z",
+          "started": "2026-10-09T00:41:29Z",
+          "finished": "2026-10-09T00:41:29Z",
           "cost": null,
           "output_path": "assets/audio/sfx.unit_selected.ogg",
-          "sha256": "1980cf8e132970824b41c2ce09233c6345d7e767db4dc4f57c693afb42a749f9",
+          "sha256": "56054caf6f0a95f3ed05f21524c6494c0d11082f64305c61cf4d3bcf006798af",
           "attempts": 1,
           "error": null,
           "meta": {
@@ -7525,11 +7543,11 @@
           "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:27:43Z",
-          "finished": "2026-10-09T00:27:44Z",
+          "started": "2026-10-09T00:41:29Z",
+          "finished": "2026-10-09T00:41:30Z",
           "cost": null,
           "output_path": "assets/audio/sfx.order_move.ogg",
-          "sha256": "50f9719921f483d495fa8c51ee9c7d222c2cb570a06201ebe36533d5e150e809",
+          "sha256": "be3b8c33b3cbf188f2d7172f79341b4a67a2ca12e1177e188f0fd9911bf6c0fa",
           "attempts": 1,
           "error": null,
           "meta": {
@@ -7634,11 +7652,11 @@
           "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:27:47Z",
-          "finished": "2026-10-09T00:27:48Z",
+          "started": "2026-10-09T00:41:30Z",
+          "finished": "2026-10-09T00:41:31Z",
           "cost": null,
           "output_path": "assets/audio/sfx.chop.ogg",
-          "sha256": "4f832d8f90fb744e8d154f63f8f6f635789d359f8303707b3ca95eb4f658760b",
+          "sha256": "baa056fa04b207777062a2210af3c489a256c0278b1c2b063fe9592e63a3a6b5",
           "attempts": 1,
           "error": null,
           "meta": {
@@ -7743,11 +7761,11 @@
           "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:27:51Z",
-          "finished": "2026-10-09T00:27:52Z",
+          "started": "2026-10-09T00:41:31Z",
+          "finished": "2026-10-09T00:41:32Z",
           "cost": null,
           "output_path": "assets/audio/sfx.wood_delivered.ogg",
-          "sha256": "2f5a6941c89332e110a4969413adc4e26efa8146c45f7fe8c4ac6220bddc9e03",
+          "sha256": "86730cea8abd2e0f114121db8c045bd82f932e0c8fd5bed14db14601c634fb9a",
           "attempts": 1,
           "error": null,
           "meta": {
@@ -7849,10 +7867,10 @@
           "request_hash": "f849490e22499c87f0fcea594c8d2e486fa4cd09bd6d6aa644d5859910f058bc"
         },
         "post": {
-          "status": "done",
+          "status": "submitted",
           "provider": "local",
           "remote_id": null,
-          "started": "2026-10-09T00:27:55Z",
+          "started": "2026-10-09T00:41:32Z",
           "finished": "2026-10-09T00:27:56Z",
           "cost": null,
           "output_path": "assets/audio/sfx.building_done.ogg",
@@ -7958,7 +7976,7 @@
           "request_hash": "a09f8ace2f3dc9701b75a16ca64d354fcf4653e816dbad640cdcf084b7e84ea7"
         },
         "post": {
-          "status": "done",
+          "status": "pending",
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:27:59Z",
@@ -7966,7 +7984,7 @@
           "cost": null,
           "output_path": "assets/audio/sfx.born.ogg",
           "sha256": "9a71748576b077d82af5df2865e8987dd2b2e0d7c718cb3dfa5b10e5d51661db",
-          "attempts": 1,
+          "attempts": 0,
           "error": null,
           "meta": {
             "bytes": 24358,
@@ -8067,7 +8085,7 @@
           "request_hash": "9b038a4bca4c3d8d52b54d69b9d42252d93dd452d4bd28aa842870296e1fd602"
         },
         "post": {
-          "status": "done",
+          "status": "pending",
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:28:04Z",
@@ -8075,7 +8093,7 @@
           "cost": null,
           "output_path": "assets/audio/sfx.drowned.ogg",
           "sha256": "17bbaaab1ea8f5d7bce57735f020bab8cf7270504ac81513b3fd7920879f6650",
-          "attempts": 1,
+          "attempts": 0,
           "error": null,
           "meta": {
             "bytes": 28192,
@@ -8176,7 +8194,7 @@
           "request_hash": "98b6e710b3e42f5840a21d871c01e734c8e6114c7e0cd9a1657c7fe4f07ccf52"
         },
         "post": {
-          "status": "done",
+          "status": "pending",
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:28:08Z",
@@ -8184,7 +8202,7 @@
           "cost": null,
           "output_path": "assets/audio/sfx.died.ogg",
           "sha256": "c55beb31427b31ae292a176a7b234d322223536701177924096f8b72ef214c93",
-          "attempts": 1,
+          "attempts": 0,
           "error": null,
           "meta": {
             "bytes": 18240,
@@ -8285,7 +8303,7 @@
           "request_hash": "fe66b597ce713b6c1e638a322826e663785bd169805a5b6360005fb39fca52ed"
         },
         "post": {
-          "status": "done",
+          "status": "pending",
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:28:11Z",
@@ -8293,7 +8311,7 @@
           "cost": null,
           "output_path": "assets/audio/sfx.plan_placed.ogg",
           "sha256": "de9da831c07a08eb7ff5448ec782af66ebbefc88cbb47d37af18c3432f964826",
-          "attempts": 1,
+          "attempts": 0,
           "error": null,
           "meta": {
             "bytes": 17354,
@@ -8394,7 +8412,7 @@
           "request_hash": "680ade159a5647d17e4384f7fbdb63eab696d51cabce7362eedf0d20c0dbad08"
         },
         "post": {
-          "status": "done",
+          "status": "pending",
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:28:16Z",
@@ -8402,7 +8420,7 @@
           "cost": null,
           "output_path": "assets/audio/sfx.charged.ogg",
           "sha256": "6d1f08fd6226afb7298ce711eb66eebdf921499ceb4999a031302ba4a50efc5d",
-          "attempts": 1,
+          "attempts": 0,
           "error": null,
           "meta": {
             "bytes": 26052,
@@ -8503,7 +8521,7 @@
           "request_hash": "e4aded5a58dd69710781877b77427b86da78d56e8f25fcfe841c6f6fa4ee25e6"
         },
         "post": {
-          "status": "done",
+          "status": "pending",
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:28:20Z",
@@ -8511,7 +8529,7 @@
           "cost": null,
           "output_path": "assets/audio/sfx.ui_error.ogg",
           "sha256": "253c0ab8eedc115357947c775ecb6fdd74ddbdc6b6b1d51a5c22eba4c9bddc6c",
-          "attempts": 1,
+          "attempts": 0,
           "error": null,
           "meta": {
             "bytes": 12973,
@@ -8612,7 +8630,7 @@
           "request_hash": "558ff965f6300e037ec92b5bef018d882990890ac985484f07cae45eca1af664"
         },
         "post": {
-          "status": "done",
+          "status": "pending",
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:28:26Z",
@@ -8620,7 +8638,7 @@
           "cost": null,
           "output_path": "assets/audio/sfx.bolt_cast.ogg",
           "sha256": "b115044f3a4b24c425a7fdf539408788800fb7527ba8c3beb2c88572780bc84d",
-          "attempts": 1,
+          "attempts": 0,
           "error": null,
           "meta": {
             "bytes": 19780,
@@ -8721,7 +8739,7 @@
           "request_hash": "0bca06a667e03bbd2c06126dca8b952db2df69e8c9271cf4bc04fca8ca386d68"
         },
         "post": {
-          "status": "done",
+          "status": "pending",
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:28:31Z",
@@ -8729,7 +8747,7 @@
           "cost": null,
           "output_path": "assets/audio/sfx.bolt_impact.ogg",
           "sha256": "8aa5c34e0a179b33eabd699a8c23242bf77375e4b40e5145853322bd277c760c",
-          "attempts": 1,
+          "attempts": 0,
           "error": null,
           "meta": {
             "bytes": 28874,
@@ -8830,7 +8848,7 @@
           "request_hash": "db1bb54a8052e07b4ad011f34393b262617d978225803ce3113c52fe528b6c17"
         },
         "post": {
-          "status": "done",
+          "status": "pending",
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:28:35Z",
@@ -8838,7 +8856,7 @@
           "cost": null,
           "output_path": "assets/audio/sfx.call_cast.ogg",
           "sha256": "2ca574abf2abb7a9773d47bc18879447c9083aeb7ea26b99758bd9f3fc6b2aac",
-          "attempts": 1,
+          "attempts": 0,
           "error": null,
           "meta": {
             "bytes": 33614,
@@ -8939,7 +8957,7 @@
           "request_hash": "962335eb305abd8a2628053f47ccd0875ead6a5b0c6f61e2efea17c3c55e27ca"
         },
         "post": {
-          "status": "done",
+          "status": "pending",
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:28:40Z",
@@ -8947,7 +8965,7 @@
           "cost": null,
           "output_path": "assets/audio/sfx.lightning_impact.ogg",
           "sha256": "50d047a35c14bd5648c4b8a59e7bd5fed860632c51549c47ac54ad56202e1782",
-          "attempts": 1,
+          "attempts": 0,
           "error": null,
           "meta": {
             "bytes": 38309,
@@ -9048,7 +9066,7 @@
           "request_hash": "821ccc04c8b7301933976e38e64141ee8bd0d9f480f61ef9d690c7370e333c10"
         },
         "post": {
-          "status": "done",
+          "status": "pending",
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:28:44Z",
@@ -9056,7 +9074,7 @@
           "cost": null,
           "output_path": "assets/audio/sfx.raise_land.ogg",
           "sha256": "f4be3055ad880fc5e943b7694116a041c3f0aaaa2290df71f58b9c5e20aef472",
-          "attempts": 1,
+          "attempts": 0,
           "error": null,
           "meta": {
             "bytes": 34917,
@@ -9157,7 +9175,7 @@
           "request_hash": "0be96fa1288bae48e6a711df7c43d6f1671cbd6214c57b13c5f57651c1a21250"
         },
         "post": {
-          "status": "done",
+          "status": "pending",
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:28:48Z",
@@ -9165,7 +9183,7 @@
           "cost": null,
           "output_path": "assets/audio/sfx.flatten.ogg",
           "sha256": "090877d448b34f64e01a7e4f5ee9f4e4d2ef0274f91b0a31c6ff6d49fff92fb7",
-          "attempts": 1,
+          "attempts": 0,
           "error": null,
           "meta": {
             "bytes": 31736,
@@ -9266,7 +9284,7 @@
           "request_hash": "4a15403b7e5f32324b67fe88d969d3f196213fccf0e47aa3aaa6aaacb35ae195"
         },
         "post": {
-          "status": "done",
+          "status": "pending",
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:28:53Z",
@@ -9274,7 +9292,7 @@
           "cost": null,
           "output_path": "assets/audio/sfx.quake.ogg",
           "sha256": "64b8adcad84fa7d3eeb81ee94e901fc0fb8f2bafd69aa0674350fd677a4bacf3",
-          "attempts": 1,
+          "attempts": 0,
           "error": null,
           "meta": {
             "bytes": 34042,
@@ -9375,7 +9393,7 @@
           "request_hash": "bf6c3b481bd3cddd1a31eee0629826b8739c85aa1a1c5487eed511c70e8e6769"
         },
         "post": {
-          "status": "done",
+          "status": "pending",
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:28:57Z",
@@ -9383,7 +9401,7 @@
           "cost": null,
           "output_path": "assets/audio/sfx.hornets.ogg",
           "sha256": "1a439834763b878002907f6606b47ef9fef216a4a98d6e006cf77bdb91f980e9",
-          "attempts": 1,
+          "attempts": 0,
           "error": null,
           "meta": {
             "bytes": 42762,
@@ -9484,7 +9502,7 @@
           "request_hash": "6e0c94f0b7f69f95e50e7bb4169ba58d03c37b9135ccc4fab09b439a96b4123d"
         },
         "post": {
-          "status": "done",
+          "status": "pending",
           "provider": "local",
           "remote_id": null,
           "started": "2026-10-09T00:29:02Z",
@@ -9492,7 +9510,7 @@
           "cost": null,
           "output_path": "assets/audio/sfx.volcano.ogg",
           "sha256": "ceecc2142aaab2759b2991c8740d317e86f358f17f2b8336730700ab01729ad1",
-          "attempts": 1,
+          "attempts": 0,
           "error": null,
           "meta": {
             "bytes": 34794,
@@ -9575,28 +9593,50 @@
           "error": null
         },
         "model": {
-          "status": "pending",
+          "status": "done",
           "provider": "elevenlabs",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:32:24Z",
+          "finished": "2026-10-09T00:32:26Z",
+          "cost": {
+            "usd": 0.00096,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/voice.shaper.acknowledged/voice.shaper.acknowledged.mp3",
+          "sha256": "fb595b67ffaefc8dbc8c626481ab010d418ec91c5b927a0689bba699c2fa2e85",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 20106,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "request-id": "uLNscJFSW3LtBouv5WGl",
+              "history-item-id": "sBgVsQw34zSklAYu6j3G",
+              "current-concurrent-requests": "1",
+              "maximum-concurrent-requests": "3",
+              "character-cost": "1"
+            }
+          },
+          "request_hash": "167eae5fbd82465eb883c72c05fe928083d0e72741dce57aec00d5943447e812"
         },
         "post": {
           "status": "pending",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:32:26Z",
+          "finished": "2026-10-09T00:32:29Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
+          "output_path": "assets/audio/voice.shaper.acknowledged.ogg",
+          "sha256": "44178387ab3afa6229e76ed6e1e0072c8f7ad2a433de8e14a759fc9be00302e2",
           "attempts": 0,
-          "error": null
+          "error": null,
+          "meta": {
+            "bytes": 17515,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "d69a07b49958da607873d259cde4ab37cb403fffd87f4f24ad958c58ef463586"
         }
       },
       "style_version": 1,
@@ -9671,28 +9711,50 @@
           "error": null
         },
         "model": {
-          "status": "pending",
+          "status": "done",
           "provider": "elevenlabs",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:32:29Z",
+          "finished": "2026-10-09T00:32:31Z",
+          "cost": {
+            "usd": 0.00096,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/voice.shaper.acknowledged_b/voice.shaper.acknowledged_b.mp3",
+          "sha256": "4f782574bc4d9cf9a7a12a4a6fb346505d77fbb3c2c61d2f426d6c67ed12f3c1",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 23031,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "request-id": "nJK04a6bQgctSxCg52ry",
+              "history-item-id": "xKCTJzMA9q7IALeBpzjA",
+              "current-concurrent-requests": "1",
+              "maximum-concurrent-requests": "3",
+              "character-cost": "1"
+            }
+          },
+          "request_hash": "91e0e0599270770cf79908e0b4b8c7ee682c41f36982aafee585687ab1889a4d"
         },
         "post": {
           "status": "pending",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:32:31Z",
+          "finished": "2026-10-09T00:32:32Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
+          "output_path": "assets/audio/voice.shaper.acknowledged_b.ogg",
+          "sha256": "d4ae0416746c4558d3973874e8b6123e37aae8b414e2e30cda8a5eb1b71c9cd1",
           "attempts": 0,
-          "error": null
+          "error": null,
+          "meta": {
+            "bytes": 19756,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "29cb0d91469b71d95788eb98aaa2a3ec48367c85e7cffa930fbcfd9ee5e1eee3"
         }
       },
       "style_version": 1,
@@ -9767,28 +9829,50 @@
           "error": null
         },
         "model": {
-          "status": "pending",
+          "status": "done",
           "provider": "elevenlabs",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:32:32Z",
+          "finished": "2026-10-09T00:32:34Z",
+          "cost": {
+            "usd": 0.002,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/voice.shaper.casting/voice.shaper.casting.mp3",
+          "sha256": "b838b1e075b9e2d967a87354eb4aeb1074944d9402636baac9283ba86dbc809a",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 40586,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "request-id": "uBfq2ePujmLfQoEFCe4R",
+              "history-item-id": "BJAVtP0oMwU70AZiNLsz",
+              "current-concurrent-requests": "1",
+              "maximum-concurrent-requests": "3",
+              "character-cost": "2"
+            }
+          },
+          "request_hash": "8b649745740ffe2193c22a44fffa9213ec4f5c5000d725a5fe7dbdc24a2d9e82"
         },
         "post": {
           "status": "pending",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:32:34Z",
+          "finished": "2026-10-09T00:32:35Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
+          "output_path": "assets/audio/voice.shaper.casting.ogg",
+          "sha256": "d798d19fba5f819029211b6724e0cf801206a6d709ded41f3c7b32abea107f1a",
           "attempts": 0,
-          "error": null
+          "error": null,
+          "meta": {
+            "bytes": 32957,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "861b4ae5b8d43e22da16f495abfb96da358b78fa872c727b6477ad92029ade3d"
         }
       },
       "style_version": 1,
@@ -9863,28 +9947,50 @@
           "error": null
         },
         "model": {
-          "status": "pending",
+          "status": "done",
           "provider": "elevenlabs",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:32:35Z",
+          "finished": "2026-10-09T00:32:37Z",
+          "cost": {
+            "usd": 0.00168,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/voice.shaper.under_attack/voice.shaper.under_attack.mp3",
+          "sha256": "f49dcc67fd89f123b0c521d38aa4b86ea56da7c7256d4f2878ecafd1abd308b2",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 38078,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "request-id": "76fZuhOFWm3UifCqsaoa",
+              "history-item-id": "BlvlJff4lIjR4eDJ8mZd",
+              "current-concurrent-requests": "1",
+              "maximum-concurrent-requests": "3",
+              "character-cost": "1"
+            }
+          },
+          "request_hash": "2abd86bc19d9b24691fe6eadeacf59975bda5d18bbbf14070d2f101a4dfd59d9"
         },
         "post": {
           "status": "pending",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:32:37Z",
+          "finished": "2026-10-09T00:32:37Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
+          "output_path": "assets/audio/voice.shaper.under_attack.ogg",
+          "sha256": "85db74c60fb9f68a9c4a2b1e8663ca32fb549092df1d273d226deff3b3ddbb69",
           "attempts": 0,
-          "error": null
+          "error": null,
+          "meta": {
+            "bytes": 31269,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "1a229e16124b408ed76618653081122419de484da9de5d750048b53e8ef99b90"
         }
       },
       "style_version": 1,
@@ -9959,28 +10065,50 @@
           "error": null
         },
         "model": {
-          "status": "pending",
+          "status": "done",
           "provider": "elevenlabs",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:32:37Z",
+          "finished": "2026-10-09T00:32:39Z",
+          "cost": {
+            "usd": 0.00192,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/voice.shaper.victory/voice.shaper.victory.mp3",
+          "sha256": "ff2e3a8b8edc41feaaafd22b61d30fd290bf3df7745162a0d0e2d306cd5d6c6f",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 41839,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "request-id": "i9b8hmYQ3DkMeQLiTc1L",
+              "history-item-id": "hN3roO3U4mYZDNcoq0cA",
+              "current-concurrent-requests": "1",
+              "maximum-concurrent-requests": "3",
+              "character-cost": "1"
+            }
+          },
+          "request_hash": "b65119ada16c22f50d07e42acba2e588e45252314fa4ec49c820bc484ba35ae0"
         },
         "post": {
           "status": "pending",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:32:39Z",
+          "finished": "2026-10-09T00:32:39Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
+          "output_path": "assets/audio/voice.shaper.victory.ogg",
+          "sha256": "e4b19d46aafb7cc6a8907a2541e897e0c51d0d91ff68ff6d2f79d8a66ea35f46",
           "attempts": 0,
-          "error": null
+          "error": null,
+          "meta": {
+            "bytes": 34064,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "8ebd37a28a1d2510e2595002e0704c47b46f0c5b167b0e365b7dee6b33d4fdde"
         }
       },
       "style_version": 1,
@@ -10049,28 +10177,54 @@
           "error": null
         },
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:32:52Z",
+          "finished": "2026-10-09T00:33:04Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/vfx.bolt_burst/concept.jpg",
+          "sha256": "2d3ceecd46db1834e75bfcb3909e62ddf5667254d6073362e0b5bf2cb78a1f42",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 477763,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "5dfa09d7b47e5644087d7cc0f2bb907a4a1cfff981c7ce251d2e1c002746fba7"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:33:04Z",
+          "finished": "2026-10-09T00:33:06Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/vfx/vfx.bolt_burst.png",
+          "sha256": "669926a28edffb867b294582ae181d7faed1a285a8d0b67afe00e4994dfedb29",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "size": [
+              1024,
+              1024
+            ],
+            "blend": "additive",
+            "warnings": [],
+            "border_luma": 1.640380859375,
+            "opaque_frac": 0.215972900390625,
+            "mean_alpha": 0.22897613048553467
+          },
+          "request_hash": "e06f53e3c6c552b86b5d418b0f845d0324061c7bfb9e35721c300062698ec2d3"
         }
       },
       "style_version": 1,
@@ -10139,28 +10293,54 @@
           "error": null
         },
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:33:06Z",
+          "finished": "2026-10-09T00:33:20Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/vfx.lightning_streak/concept.jpg",
+          "sha256": "434b128a9a7bd5523899499db9ab404508d35d6f2b501a6d1d64dce77592d876",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 399108,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "5e30155f67a67c14773945d41d8efcb42bcc8cc0c79efe3fea7f628c210279e1"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:33:20Z",
+          "finished": "2026-10-09T00:33:21Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/vfx/vfx.lightning_streak.png",
+          "sha256": "044850f9fc63192fb9cde5a9a6bed5e58f1eba9542065b2b6f9dcba72632efe3",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "size": [
+              1024,
+              1024
+            ],
+            "blend": "additive",
+            "warnings": [],
+            "border_luma": 1.763916015625,
+            "opaque_frac": 0.0921640396118164,
+            "mean_alpha": 0.11355782300233841
+          },
+          "request_hash": "fe8fc0d0b3f19feb6971f6da609555604e645bf5335961c2837a5ca28fc7a687"
         }
       },
       "style_version": 1,
@@ -10229,28 +10409,54 @@
           "error": null
         },
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:33:21Z",
+          "finished": "2026-10-09T00:33:35Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/vfx.hornet_swarm/concept.jpg",
+          "sha256": "8969f46c3600e1c83706a21a6f7f9014aa5564a87c92a6b0fec38529f02f2659",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 488286,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "8e5b373b5fbc4ee6d0973982c99c9498e8ef30c6be3a85437a998f4863f2eed8"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:33:35Z",
+          "finished": "2026-10-09T00:33:36Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/vfx/vfx.hornet_swarm.png",
+          "sha256": "6fdedaab62c544d4717e47301b76006e5e0240813bae712da0c12c5a2bc71f29",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "size": [
+              1024,
+              1024
+            ],
+            "blend": "additive",
+            "warnings": [],
+            "border_luma": 1.65673828125,
+            "opaque_frac": 0.05248832702636719,
+            "mean_alpha": 0.11151178181171417
+          },
+          "request_hash": "ffe89bfbd3bc3f2274ad92c59debe96564b752300e65dd9b1f4fb43f84d97e73"
         }
       },
       "style_version": 1,
@@ -10319,28 +10525,54 @@
           "error": null
         },
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:33:36Z",
+          "finished": "2026-10-09T00:33:50Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/vfx.lava_splash/concept.jpg",
+          "sha256": "990f63a2aae0c1fa7092ac32a1c639695bd09738cc4ee7fa14680634b24846a2",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 455537,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "3fd9f4d7429f65e2250b86b7850b6452deb139a432ca84b30f4b6accdc9b4b9c"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:33:50Z",
+          "finished": "2026-10-09T00:33:52Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/vfx/vfx.lava_splash.png",
+          "sha256": "7d1d0b86bd404c36b9f6aa4fef49b7954ead0d20a804b79d7429db0c9cfe90d1",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "size": [
+              1024,
+              1024
+            ],
+            "blend": "additive",
+            "warnings": [],
+            "border_luma": 1.595458984375,
+            "opaque_frac": 0.2508525848388672,
+            "mean_alpha": 0.26060622930526733
+          },
+          "request_hash": "2eb49eb5bac6772a9539039d8f94bb45b050cfd4adf88e906fa09f57666b0bc2"
         }
       },
       "style_version": 1,
@@ -10409,28 +10641,54 @@
           "error": null
         },
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:33:52Z",
+          "finished": "2026-10-09T00:34:07Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/vfx.magic_glow_ring/concept.jpg",
+          "sha256": "e6d60f318bd93f5eaf58845a0ca02145929e321bda118c6d2bd5182641002055",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 404599,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "aa13bbb1d0d7cdde88f71eec35eccd2c911a5fabeb882a48fbff7787df24b2b1"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:34:07Z",
+          "finished": "2026-10-09T00:34:08Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/vfx/vfx.magic_glow_ring.png",
+          "sha256": "33c4eec0f27f8ef6175bde7ccd195f55c5b2c2e0e9691367fa6c24a6cbcb6290",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "size": [
+              1024,
+              1024
+            ],
+            "blend": "additive",
+            "warnings": [],
+            "border_luma": 1.727294921875,
+            "opaque_frac": 0.09968280792236328,
+            "mean_alpha": 0.13396015763282776
+          },
+          "request_hash": "0445ec4e7461acdaa57edfb9a681ddb880f9791ff33f4d3df74410fb27bec17a"
         }
       },
       "style_version": 1,
@@ -10499,28 +10757,54 @@
           "error": null
         },
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:34:08Z",
+          "finished": "2026-10-09T00:34:25Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/vfx.dust_puff/concept.jpg",
+          "sha256": "ff160c4f6f6225d9cdd99392eca46f790533e085b2e4aa402effa8ccd3fef87f",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 378140,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "e6ee44f0ac43d7ad4d07d670a4e17a40b2d9aefd7154daca14f9354b0c72a92e"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:34:25Z",
+          "finished": "2026-10-09T00:34:25Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/vfx/vfx.dust_puff.png",
+          "sha256": "861fc39305da06ab7a229c2725640eb97a64eb23d10210e540fa1307af77a190",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "size": [
+              1024,
+              1024
+            ],
+            "blend": "additive",
+            "warnings": [],
+            "border_luma": 1.64892578125,
+            "opaque_frac": 0.26534271240234375,
+            "mean_alpha": 0.21160875260829926
+          },
+          "request_hash": "38dce165428d8786e43d10c40dff95180ad23c46df268b7731dcac431cd326d0"
         }
       },
       "style_version": 1,
@@ -10589,28 +10873,54 @@
           "error": null
         },
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:34:25Z",
+          "finished": "2026-10-09T00:34:46Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/vfx.water_splash/concept.jpg",
+          "sha256": "8ce99494e74fe183f38ab504b7be81a2fdb5e00d9643a319b1bbf0ff9977844e",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 442406,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "d20d59cd1e14211924cbc457f15568645bf96c90f46ffdeeac6db515277effe1"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:34:46Z",
+          "finished": "2026-10-09T00:34:47Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/vfx/vfx.water_splash.png",
+          "sha256": "f1abd9bbadb3b6aa1967328ca6eac1f84e667f8ddbc0f8134f32c1218fd5ef7e",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "size": [
+              1024,
+              1024
+            ],
+            "blend": "additive",
+            "warnings": [],
+            "border_luma": 1.742431640625,
+            "opaque_frac": 0.14009761810302734,
+            "mean_alpha": 0.15275070071220398
+          },
+          "request_hash": "c10c8f0758ab5daf7558ae4885d690960936d44e435ccb5fe80763daaaf22b43"
         }
       },
       "style_version": 1,
@@ -10681,28 +10991,53 @@
           "error": null
         },
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:35:08Z",
+          "finished": "2026-10-09T00:35:24Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/icon.spell.bolt/concept.jpg",
+          "sha256": "e5af84bb3c6c4a458ce6ff204ae9b536e2ec59c8e516a2c7a3845181e3a8a322",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 368369,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "b199d1f87c845efc56c4775b9a022fa2f597d8ee5198df1e15444d7ebbd22bf0"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:35:24Z",
+          "finished": "2026-10-09T00:35:37Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/icons/icon.spell.bolt.png",
+          "sha256": "06d1fbdbecb4b0c5f90f3357e97c0273457992a2e07984e1833ee0991c7a91c5",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "output_128": "assets/icons/icon.spell.bolt_128.png",
+            "size": [
+              256,
+              256
+            ],
+            "warnings": [],
+            "bg_frac": 0.7899446487426758,
+            "band_frac": 0.013197898864746094
+          },
+          "request_hash": "657ee55b73aec851974832deecbcf2d1bf5e97e3c73720fbad6fa28666949e46"
         }
       },
       "style_version": 1,
@@ -10773,28 +11108,53 @@
           "error": null
         },
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:35:37Z",
+          "finished": "2026-10-09T00:36:03Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/icon.spell.call/concept.jpg",
+          "sha256": "d5ef5d9ae66cbd38f11ac9aedc330a6ff70f04988978f2f4a6abac0ed71cd998",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 362162,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "06fad624926f8cc96c570088cdfbe0f85ee3f2c69c05e39a7e675d9f18c6dcd0"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:36:03Z",
+          "finished": "2026-10-09T00:36:07Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/icons/icon.spell.call.png",
+          "sha256": "916e54642e08f7eec203eda89dfc65ad7c4996954f17de852658cb647019c1f5",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "output_128": "assets/icons/icon.spell.call_128.png",
+            "size": [
+              256,
+              256
+            ],
+            "warnings": [],
+            "bg_frac": 0.7575187683105469,
+            "band_frac": 0.015768051147460938
+          },
+          "request_hash": "62161b275e2f22f104ea1d4d10be9d78a0070fafa59b33cd4c7e79dcb3e4466c"
         }
       },
       "style_version": 1,
@@ -10865,28 +11225,53 @@
           "error": null
         },
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:36:07Z",
+          "finished": "2026-10-09T00:36:27Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/icon.spell.hornets/concept.jpg",
+          "sha256": "34621d66934995559bc383bbcd3a78302b3cb8a8a0360e683eced243986c09e7",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 415683,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "45b7e25e519bd1b1faa15b9349f2d43e736a159c826e278aa57c8811a58b14a4"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:36:27Z",
+          "finished": "2026-10-09T00:36:32Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/icons/icon.spell.hornets.png",
+          "sha256": "5cf1156da98afe802611937d63a5a48dd5866172f2b4fbd8b3e2339645872ee0",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "output_128": "assets/icons/icon.spell.hornets_128.png",
+            "size": [
+              256,
+              256
+            ],
+            "warnings": [],
+            "bg_frac": 0.7707529067993164,
+            "band_frac": 0.029363632202148438
+          },
+          "request_hash": "24d8f54a9bd8f502f746a06a1137770efc30d52fe84f14da7e7bd09503a780e1"
         }
       },
       "style_version": 1,
@@ -10957,28 +11342,53 @@
           "error": null
         },
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:36:32Z",
+          "finished": "2026-10-09T00:36:47Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/icon.spell.raise_land/concept.jpg",
+          "sha256": "c5a4b3d7b5214e873703eaa1f2b4f5ea9e3928e5fc1a0dd22366c0ff39c7811e",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 415229,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "f6bd46bad960ebe92f84ae338ccddd5b9549f5aa40472594af3a7d74d71aa976"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:36:47Z",
+          "finished": "2026-10-09T00:36:51Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/icons/icon.spell.raise_land.png",
+          "sha256": "bcc62d345adc36124cd2819d0f1ba8be59f026636050be5d151aaae6d5683bf2",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "output_128": "assets/icons/icon.spell.raise_land_128.png",
+            "size": [
+              256,
+              256
+            ],
+            "warnings": [],
+            "bg_frac": 0.6729316711425781,
+            "band_frac": 0.014868736267089844
+          },
+          "request_hash": "da519d71d3e1343d643410efadf9f82cbdef2b404b00edf605f7270e09fc0359"
         }
       },
       "style_version": 1,
@@ -11049,28 +11459,53 @@
           "error": null
         },
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:36:51Z",
+          "finished": "2026-10-09T00:37:10Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/icon.spell.lightning/concept.jpg",
+          "sha256": "385843e49fa37dc331d002d57c3e3b42cfd5419624ff4b29e9f3711fcd11059a",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 399225,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "dd15f490d63ca652677da20f19d11fb19d296f3b62aaea2b715b4eca8a0a1747"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:37:10Z",
+          "finished": "2026-10-09T00:37:14Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/icons/icon.spell.lightning.png",
+          "sha256": "42928cc62a11fcfc40c6e23fe0460c4ad17be3a715c2b4f9f53f81817427c7cb",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "output_128": "assets/icons/icon.spell.lightning_128.png",
+            "size": [
+              256,
+              256
+            ],
+            "warnings": [],
+            "bg_frac": 0.75,
+            "band_frac": 0.023000717163085938
+          },
+          "request_hash": "9ac4f7e529adf5186712e783aa48ab0a60c9f613312cf96bbef73d73a38987bd"
         }
       },
       "style_version": 1,
@@ -11141,28 +11576,53 @@
           "error": null
         },
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:37:14Z",
+          "finished": "2026-10-09T00:37:32Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/icon.spell.flatten/concept.jpg",
+          "sha256": "89b3894580a2ce6c029912b95327e048300a46d814dfafc4f9219f5b416e2e9a",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 382377,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "c763bc55071b5f7f13996104f9904214ad6fcc58eb8b17128c1738d831fbf2d7"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:37:32Z",
+          "finished": "2026-10-09T00:37:36Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/icons/icon.spell.flatten.png",
+          "sha256": "2d74ba36f4369ef02f710ba4a6d959e3bc85597e9ce40c9ca8454297882e6714",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "output_128": "assets/icons/icon.spell.flatten_128.png",
+            "size": [
+              256,
+              256
+            ],
+            "warnings": [],
+            "bg_frac": 0.6230745315551758,
+            "band_frac": 0.009737014770507812
+          },
+          "request_hash": "6f529d7a6152a19edcfa9f83a37bf4254f391bf4f6b98be78a4fd5747f166f0e"
         }
       },
       "style_version": 1,
@@ -11233,28 +11693,53 @@
           "error": null
         },
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:37:36Z",
+          "finished": "2026-10-09T00:37:50Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/icon.spell.quake/concept.jpg",
+          "sha256": "bde9ad629c945aa4fd2a29d5da93c71f3aab8a3993fc3974dc51784d7c15776a",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 418427,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "decd5f96242b1a6b27267d0e3b90ce68df2af9c7ad3fd76518a24c793dd0a597"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:37:50Z",
+          "finished": "2026-10-09T00:37:52Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/icons/icon.spell.quake.png",
+          "sha256": "3d6470fea7acdd9a6543e6a44c6de871a92528b45bc6a075ae6eeb710d875835",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "output_128": "assets/icons/icon.spell.quake_128.png",
+            "size": [
+              256,
+              256
+            ],
+            "warnings": [],
+            "bg_frac": 0.6273984909057617,
+            "band_frac": 0.015630722045898438
+          },
+          "request_hash": "36e3df3389f23eb2eb9998bb58e161bb152880620c35b515236e736239a37a1c"
         }
       },
       "style_version": 1,
@@ -11325,28 +11810,53 @@
           "error": null
         },
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:37:52Z",
+          "finished": "2026-10-09T00:38:10Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/icon.spell.volcano/concept.jpg",
+          "sha256": "eee24006ad05e589db9ee3de89cf0ea6198ed84119ad893cd5c1535d559637f3",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 365353,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "1fc2ffa7591c2eb353aa70301ab5f2ffb63c8aaf32d56f0bd18d8da3b0fd1a55"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:38:10Z",
+          "finished": "2026-10-09T00:38:15Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/icons/icon.spell.volcano.png",
+          "sha256": "447a9156bb124cb644b18fcfa542fa3e49f204b66ace72347521864f5cf2e029",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "output_128": "assets/icons/icon.spell.volcano_128.png",
+            "size": [
+              256,
+              256
+            ],
+            "warnings": [],
+            "bg_frac": 0.7401809692382812,
+            "band_frac": 0.011974334716796875
+          },
+          "request_hash": "241e0a94903ab7efbf8a27cc40b7147233d9d358a79bcb386f1e718b7ce277f5"
         }
       },
       "style_version": 1,
@@ -11417,28 +11927,53 @@
           "error": null
         },
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:38:15Z",
+          "finished": "2026-10-09T00:38:32Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/icon.resource.mana/concept.jpg",
+          "sha256": "1999797d31fcbc69c6ee55e838c6fdf9275cbc3368b0cba5e7daf2bfcd8bfb67",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 339981,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "383450008b04d970152e5df36465317a395755ee6658eb872b62bb4e76cb8fe3"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:38:32Z",
+          "finished": "2026-10-09T00:38:37Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/icons/icon.resource.mana.png",
+          "sha256": "104ce10d673f23b9d14ebb3bb7c1441c45ad1200d5885845c23bed54b06dc738",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "output_128": "assets/icons/icon.resource.mana_128.png",
+            "size": [
+              256,
+              256
+            ],
+            "warnings": [],
+            "bg_frac": 0.7932405471801758,
+            "band_frac": 0.009810447692871094
+          },
+          "request_hash": "7ff0b23a119f7f932e8017c00558a7a8f782d41bb7f9451934aefda3b694111a"
         }
       },
       "style_version": 1,
@@ -11509,28 +12044,53 @@
           "error": null
         },
         "concept": {
-          "status": "pending",
+          "status": "done",
           "provider": "gemini",
           "remote_id": null,
-          "started": null,
-          "finished": null,
-          "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "started": "2026-10-09T00:38:37Z",
+          "finished": "2026-10-09T00:39:05Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/icon.resource.population/concept.jpg",
+          "sha256": "b7571a80d3fe6acbc1e2801ed3e7438fa5d85353284c88a95bc0b91e9a3d78d0",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 403283,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "e934815283f17913685bb6527511af002843496c7f4d58a6699efecea1774952"
         },
         "post": {
-          "status": "pending",
+          "status": "done",
           "provider": "local",
           "remote_id": null,
-          "started": null,
-          "finished": null,
+          "started": "2026-10-09T00:39:05Z",
+          "finished": "2026-10-09T00:39:08Z",
           "cost": null,
-          "output_path": null,
-          "sha256": null,
-          "attempts": 0,
-          "error": null
+          "output_path": "assets/icons/icon.resource.population.png",
+          "sha256": "f09d1fc00ed18d6c4ba7cb8be6d50dfbf528b34e634d17e6fc4f9b537f031342",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "output_128": "assets/icons/icon.resource.population_128.png",
+            "size": [
+              256,
+              256
+            ],
+            "warnings": [],
+            "bg_frac": 0.6731195449829102,
+            "band_frac": 0.013035774230957031
+          },
+          "request_hash": "3c5611864ccc3f6f20fe4fe3b9eda1dd0cdfc9e12e58b139eec57da1c1d46bdc"
         }
       },
       "style_version": 1,
@@ -11540,3 +12100,4 @@
     }
   ]
 }
+   

@@ -55,6 +55,11 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 45. [S] Player feedback when an order fails or gives up (orderFailed, orderGaveUp events): a short notification and a red marker at the target (M8 HUD v2, M3 review).
 46. [S] Before any network play: tribe -1 skips ownership and god-mode checks in move/stop/impulse, and the __game.command hook turns on with ?debug=1; gate both behind a host-only flag (M3 review).
 47. [S] Pathfinder refresh still rebuilds walkability and components for the whole map on any edit (about 4 ms at 128); make it incremental per dirty rect for 256+ maps (M3 review follow-up).
+48. [M] Economy robustness beyond the default map: islands 128 and continents 192 with 4 tribes and 20-minute runs showed stalls (homes emptied by many plans) and reachable give-ups; widen the economy soak matrix and fix (M4 review).
+49. [S] Economy bot cancels plans that cannot get wood (no reachable tree) and the HUD gets a cancel-plan control (M4 review).
+50. [S] Record controller (bot) specs in scenario and replay headers so a future command recorder never desyncs (M4 review).
+51. [S] Bench economy cost (nearestTree computes components per tree) with a bot-driven economy bench case (M4 review).
+52. [S] HUD: real spell and resource icons (A3), a short label on the training side of the split slider, narrow-width DOM check (M4 review).
 36. [S] Spells that drown units need a readable lead-in (rumble, crack VFX, short delay) so players see cause and effect (M5, M1 review).
 
 ## Parking lot (ideas, unranked)

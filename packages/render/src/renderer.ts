@@ -10,6 +10,7 @@ import { CHUNK, makeWaterMaterial, TerrainChunk, type TerrainPalette } from "./t
 import { TreeLayer } from "./props.ts";
 import { UnitLayer } from "./unitsLayer.ts";
 import { BuildingLayer } from "./buildingsLayer.ts";
+import { VfxLayer } from "./vfx.ts";
 
 export interface Renderer {
   setWorld(world: World): void;
@@ -67,6 +68,9 @@ export class ThreeRenderer implements Renderer {
   alpha = 1;
   selected: ReadonlySet<number> = new Set();
   private ghost: THREE.Mesh;
+  readonly vfx: VfxLayer;
+  private rangeRing: THREE.Mesh;
+  private areaRing: THREE.Mesh;
   private viewW = 1280;
   private viewH = 720;
 
@@ -114,6 +118,17 @@ export class ThreeRenderer implements Renderer {
     this.ghost.visible = false;
     this.ghost.frustumCulled = false;
     this.scene.add(this.ghost);
+    this.vfx = new VfxLayer(this.bend);
+    this.scene.add(this.vfx.group);
+    const ringMat = (color: string) => bendMaterial(new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.85, depthTest: false, depthWrite: false }), this.bend);
+    this.rangeRing = new THREE.Mesh(new THREE.RingGeometry(0.97, 1, 96).rotateX(-Math.PI / 2), ringMat("#f4f1ea"));
+    this.areaRing = new THREE.Mesh(new THREE.RingGeometry(0.9, 1, 64).rotateX(-Math.PI / 2), ringMat("#ffd23a"));
+    for (const r of [this.rangeRing, this.areaRing]) {
+      r.visible = false;
+      r.frustumCulled = false;
+      r.renderOrder = 10;
+      this.scene.add(r);
+    }
     this.sky = makeSky(L.skyTop, L.skyHorizon);
     this.gl.setClearColor(pal.water ?? "#2f7fb8", 1);
     this.scene.add(this.sky);
@@ -155,6 +170,11 @@ export class ThreeRenderer implements Renderer {
     this.stats.fullRebuilds++;
     this.stats.remeshTotal += this.chunks.length;
     this.stats.lastRemesh = this.chunks.length;
+  }
+
+  /** Feed sim events (collected per tick by the app) to the VFX layer. */
+  consumeEvents(events: readonly import("@hearthfall/sim").SimEvent[], timeOf: (e: import("@hearthfall/sim").SimEvent) => number): void {
+    if (this.world) this.vfx.consume(events, this.world, timeOf, this.palette.heightScale);
   }
 
   /** Remesh only chunks touched since the last sync. Returns how many were rebuilt. */
@@ -231,6 +251,7 @@ export class ThreeRenderer implements Renderer {
       this.camera.updateMatrixWorld();
       this.units?.update(w, this.alpha, this.cam.x, this.cam.z, this.palette.heightScale, visualTime, this.bend.uFadeEnd.value, this.camera, this.bend.uBendK.value, this.viewW, this.viewH, this.selected);
       this.stats.unitsDrawn = this.units?.drawn ?? 0;
+      this.vfx.update(w, visualTime, this.cam.x, this.cam.z, this.palette.heightScale);
       this.sun.target.position.set(this.cam.x, 0, this.cam.z);
       this.sun.position.set(this.cam.x + 40, 80, this.cam.z + 25);
     }
@@ -243,6 +264,30 @@ export class ThreeRenderer implements Renderer {
     this.stats.drawCalls = this.gl.info.render.calls;
     this.stats.triangles = this.gl.info.render.triangles;
     this.stats.cpuMs = performance.now() - t0;
+  }
+
+  /** Spell targeting preview: range ring around the Shaper and the effect area at the cursor. */
+  setTargeting(t: { cx: number; cz: number; range: number; x: number; z: number; r: number; inRange: boolean } | null): void {
+    if (!t || !this.world) {
+      this.rangeRing.visible = false;
+      this.areaRing.visible = false;
+      return;
+    }
+    const w = this.world;
+    const n = w.terrain.size;
+    const s = this.palette.heightScale;
+    const place = (m: THREE.Mesh, x: number, z: number, r: number) => {
+      let ox = x - this.cam.x;
+      let oz = z - this.cam.z;
+      ox -= Math.round(ox / n) * n;
+      oz -= Math.round(oz / n) * n;
+      m.position.set(this.cam.x + ox, Math.max(w.terrain.heightAt(((x % n) + n) % n, ((z % n) + n) % n), w.terrain.sea) * s + 0.15, this.cam.z + oz);
+      m.scale.set(r, 1, r);
+      m.visible = true;
+    };
+    place(this.rangeRing, t.cx, t.cz, t.range);
+    place(this.areaRing, t.x, t.z, t.r);
+    (this.areaRing.material as THREE.MeshBasicMaterial).color.set(t.inRange ? "#ffd23a" : "#e0a12a");
   }
 
   /** Show or hide the building placement ghost (footprint quad, green when buildable, red when not). */

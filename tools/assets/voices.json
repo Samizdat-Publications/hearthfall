@@ -1,0 +1,11 @@
+{
+  "shaper": {
+    "voice_id": "tHc4KOhlPbBI1AvkyFmQ",
+    "name": "Hearthfall Shaper",
+    "description": "An older woman with a warm, low, resonant voice and great natural authority, calm and commanding like a tribal elder and ritual caller. Slight gravel and breath, steady pace, melodic, speaking an invented chanting language.",
+    "designed": "2026-10-09T00:32:12Z",
+    "previews": 3,
+    "picked": 0,
+    "model": "eleven_multilingual_ttv_v2"
+  }
+}

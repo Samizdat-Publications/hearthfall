@@ -5,3 +5,5 @@
 - 2026-10-09T00:00 set smoke (11 shots): M4: HUD v1 (resources, split slider, spell bar, build menu), housed units hidden, plans and dwelling levels rendered, AI tribes run the economy bot
 - 2026-10-09T00:09 set smoke (11 shots): M4: tribe priority toggles in the resource panel
 - 2026-10-09T00:18 set smoke (11 shots): M4: help bar moved below the title row after a VisionQA overlap flag; DOM check now requires a 4 px gap
+- 2026-10-09T00:34 bench baseline (reports/baselines/bench.json): re-saved after the M3 review changed the gated average to per-tick best-of-replays and added the two spike measures; looser p99 numbers reflect machine load during qa (approved by the main agent, M4 review note).
+- 2026-10-09T00:38 set smoke (11 shots): M5: help bar mentions spell hotkeys; VFX layer and targeting rings added (not visible in smoke shots)

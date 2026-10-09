@@ -173,10 +173,18 @@ export class EconomySystem {
       if (!E.alive[k] || E.cat[k] !== CAT.tree) continue;
       const dx = wrapDelta(E.x[k] - (x0 + fw / 2), w.terrain.size);
       const dy = wrapDelta(E.y[k] - (y0 + fh / 2), w.terrain.size);
-      if (Math.abs(dx) <= fw / 2 + 0.5 && Math.abs(dy) <= fh / 2 + 0.5) E.state[k] = TREE_DOOMED;
+      if (Math.abs(dx) <= fw / 2 + 0.5 && Math.abs(dy) <= fh / 2 + 0.5) {
+        if (E.wood[k] === 0) w.kill(k, "cleared");
+        else E.state[k] = TREE_DOOMED;
+      }
     }
     w.emit("planPlaced", { id, tribe, kind: type });
     return id;
+  }
+
+  /** A plan was removed before completion: its doomed trees grow normally again. */
+  releasePlanTrees(site: number): void {
+    for (const k of this.doomedTreesIn(site)) this.w.ents.state[k] = 0;
   }
 
   private doomedTreesIn(site: number): number[] {
@@ -492,6 +500,10 @@ export class EconomySystem {
         for (let k = 0; k < need; k++) {
           const i = take(s);
           if (i < 0) return;
+          if (E.carry[i] > 0) {
+            this.goTo(i, s, TASK.haul);
+            continue;
+          }
           const tree = this.nearestTree(i);
           if (tree < 0) {
             free.push(i);
@@ -654,8 +666,8 @@ export class EconomySystem {
       const n = w.terrain.size;
       const hi = E.hi;
       for (let k = 0; k < hi; k++) {
-        if (!E.alive[k] || E.cat[k] !== CAT.tree || E.wood[k] === 0 || !w.rng.chance("misc", tr.spread.chancePerMinute)) continue;
-        const a = w.rng.float("misc") * TWO_PI;
+        if (!E.alive[k] || E.cat[k] !== CAT.tree || E.wood[k] === 0 || !w.rng.chance("spawn", tr.spread.chancePerMinute)) continue;
+        const a = w.rng.float("spawn") * TWO_PI;
         const x = (((E.x[k] + cos(a) * 2.2) % n) + n) % n;
         const y = (((E.y[k] + sin(a) * 2.2) % n) + n) % n;
         if (w.terrain.heightAt(x, y) < w.terrain.sea + 4 || w.terrain.slope(Math.round(x), Math.round(y)) > w.cfg.pack.terrain.trees.maxSlope || w.terrain.scarAt(x, y) > 0) continue;

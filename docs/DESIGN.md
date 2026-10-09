@@ -71,8 +71,8 @@ Rules:
 ## 6. Population
 
 - Start 5 settlers + Shaper. Population cap: `popCap = min(200, 5 + sum of dwelling supply)` (data).
-- Dwellings: capacity small 3, medium 4, large 5; supply contribution 3/5/7. Dwellings auto-upgrade when occupied and wood is available (upgrade needs 3 wood delivered, consumes 2).
-- Breeding: each dwelling has a progress bar. `breedSeconds = base / (0.5 + 0.5 * occupants) * nearCapFactor`, with base small 200 s, medium 150 s, large 100 s; `nearCapFactor` rises from 1 once population passes 70 percent of popCap. A dwelling with zero occupants does not breed. Tune in data with soak tests (target: an unharassed tribe reaches ~60 population at 10 minutes). Tuned at M4 with `npm run soak -- --mode economy`: base 50 / 80 / 100 s, chop 3 s per wood, build 2.5 s per wood; median 59 at minute 10 across 8 seeds, every tribe growing every minute. Settlers live inside dwellings (hidden, counted as housed for mana); one occupant always stays to breed while others leave for jobs.
+- Dwellings: capacity small 3, medium 4, large 5; supply contribution 3/5/7. Dwellings auto-upgrade when full (every bed taken) and wood is delivered (upgrade needs 3 wood delivered, consumes 2).
+- Breeding: each dwelling has a progress bar. `breedSeconds = base / (0.5 + 0.5 * occupants) * nearCapFactor`, with base small 200 s, medium 150 s, large 100 s; `nearCapFactor` rises from 1 once population passes 70 percent of popCap. A dwelling with zero occupants does not breed. Tune in data with soak tests (target: an unharassed tribe reaches ~60 population at 10 minutes). Tuned at M4 with `npm run soak -- --mode economy`: base 40 / 80 / 100 s, chop 3 s per wood, build 2.5 s per wood; median 59 at minute 10 across 8 seeds, every tribe growing every minute. Settlers live inside dwellings (hidden, counted as housed for mana); one occupant always stays to breed while others leave for jobs.
 
 ## 7. Units
 

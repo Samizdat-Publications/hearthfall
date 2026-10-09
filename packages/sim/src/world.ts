@@ -198,6 +198,7 @@ export class World {
       e.inside[i] = -1;
     }
     if (e.cat[i] === CAT.building) {
+      if (e.state[i] !== BSTATE.done) this.economy.releasePlanTrees(i);
       // occupants walk out of a destroyed building
       for (let k = 0; k < e.hi; k++) {
         if (e.alive[k] && e.inside[k] === i) {
@@ -304,9 +305,15 @@ export class World {
         if (!(e.progress[s] >= 0) || e.progress[s] >= spells[s].cost) out.push(`tribe ${t.index} spell ${s} progress ${e.progress[s]} out of range`);
       }
       if (!(e.wasted >= 0) || !(e.trainMana >= 0)) out.push(`tribe ${t.index} mana negative`);
-      const pop = this.economy.followers(t.index);
-      const cap = this.economy.popCap(t.index);
-      if (pop > cap && this.eventCounts.get("born")) out.push(`tribe ${t.index} population ${pop} above cap ${cap}`);
+    }
+    // occupancy: every dwelling's occupant count matches the units inside and fits its capacity
+    const inside = new Map<number, number>();
+    for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.cat[i] === CAT.unit && E.inside[i] >= 0) inside.set(E.inside[i], (inside.get(E.inside[i]) ?? 0) + 1);
+    for (let i = 0; i < E.hi; i++) {
+      if (!E.alive[i] || E.cat[i] !== CAT.building) continue;
+      const occ = inside.get(i) ?? 0;
+      if (E.occupants[i] !== occ) out.push(`building ${i} occupants ${E.occupants[i]} != units inside ${occ}`);
+      if (E.type[i] === this.economy.typeDwelling && E.state[i] === BSTATE.done && occ > this.economy.dwellingLevel(i).capacity) out.push(`dwelling ${i} over capacity`);
     }
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.unit || E.inside[i] < 0) continue;
@@ -349,7 +356,7 @@ export class World {
     const mf = new Fnv().u32(this.tick);
     for (const t of this.tribes) {
       mf.u32(t.hearth).u32(t.alive ? 1 : 0).f64(t.eco.wasted).f64(t.eco.spellsPct).u32(t.eco.cursor).f64(t.eco.trainMana);
-      mf.u32(t.shaper).f64(t.respawnAt);
+      mf.u32(t.shaper).f64(t.respawnAt).f64(t.eco.priorities.build).f64(t.eco.priorities.upgrade).f64(t.eco.priorities.breed);
       if (t.casting) mf.u32(t.casting.spell).f64(t.casting.x).f64(t.casting.y).u32(t.casting.startedAt).u32(t.casting.resolveAt);
       if (t.pending) mf.u32(t.pending.spell + 1000).f64(t.pending.x).f64(t.pending.y);
       mf.bytes(t.eco.charges).bytes(t.eco.progress).bytes(t.eco.auto).bytes(t.eco.unlocked);

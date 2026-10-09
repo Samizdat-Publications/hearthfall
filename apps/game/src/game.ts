@@ -2,7 +2,7 @@
 // The sim advances at a fixed tickHz with an accumulator; in fixedStep mode it advances only through
 // step(n), and every time-driven visual reads the frame counter, so captures are deterministic.
 import { validatePack, type ValidatedPack } from "@hearthfall/data";
-import { CAT, World, commandsByTick, createScenarioWorld, type Command, type ScenarioDef } from "@hearthfall/sim";
+import { CAT, World, commandsByTick, createScenarioWorld, shaperIndex, wrapDelta, type Command, type ScenarioDef, type SimEvent } from "@hearthfall/sim";
 import { ThreeRenderer, type CameraState } from "@hearthfall/render";
 import { makeBot } from "@hearthfall/ai";
 
@@ -85,6 +85,9 @@ export class Game {
   placeBlocked: string | null = null;
   private placeAt: [number, number] | null = null;
   showHelp = true;
+  /** spell id being targeted (preview follows the cursor) */
+  targeting: string | null = null;
+  private events: SimEvent[] = [];
   onChange: () => void = () => {};
 
   readonly canvas: HTMLCanvasElement;
@@ -126,6 +129,7 @@ export class Game {
     const cmds = [...(this.scenarioCmds ? this.scenarioCmds(this.world.tick) : []), ...this.queue.map((c) => ({ ...c, tick: this.world.tick }))];
     this.queue = [];
     this.world.step(cmds);
+    for (const e of this.world.events) this.events.push(e);
   }
 
   step(n = 1): number {
@@ -152,6 +156,12 @@ export class Game {
     this.pruneSelection();
     this.renderer.selected = this.selection;
     this.renderer.alpha = this.paused ? 1 : Math.min(1, this.acc * this.world.cfg.tickHz);
+    if (this.events.length) {
+      const hz = this.world.cfg.tickHz;
+      const wall = now / 1000;
+      this.renderer.consumeEvents(this.events, this.params.fixedStep ? (e) => (e.tick + 1) / hz : () => wall);
+      this.events = [];
+    }
     // fixedStep: visuals follow the sim tick, so re-rendering the same tick gives identical pixels
     const visualTime = this.params.fixedStep ? this.world.tick / this.world.cfg.tickHz : now / 1000;
     this.renderer.render(visualTime);
@@ -248,6 +258,52 @@ export class Game {
     this.cancelPlacing();
   }
 
+  /** Spells the local tribe can cast, in spell bar order (hotkeys Z X C V B N M). */
+  castable(): string[] {
+    const w = this.world;
+    const tr = w.tribes[this.localTribe];
+    if (!tr) return [];
+    return w.cfg.pack.spells.spells.filter((_, i) => tr.eco.unlocked[i]).map((s) => s.id);
+  }
+
+  startTargeting(spell: string): void {
+    this.cancelPlacing();
+    this.targeting = spell;
+    this.onChange();
+  }
+
+  cancelTargeting(): void {
+    this.targeting = null;
+    this.renderer.setTargeting(null);
+    this.onChange();
+  }
+
+  updateTargeting(px: number, py: number): void {
+    if (!this.targeting) return;
+    const w = this.world;
+    const si = shaperIndex(w, this.localTribe);
+    const s = w.cfg.pack.spells.spells[w.cfg.spellIndex.get(this.targeting)!];
+    const p = this.renderer.pickTerrain(px, py);
+    if (si < 0 || !p) {
+      this.renderer.setTargeting(null);
+      return;
+    }
+    const n = w.terrain.size;
+    const dx = wrapDelta(p.x - w.ents.x[si], n);
+    const dy = wrapDelta(p.z - w.ents.y[si], n);
+    const radius = Math.max(0.8, ...s.effects.map((e) => ("radius" in e && typeof e.radius === "number" ? e.radius : 0)));
+    this.renderer.setTargeting({ cx: w.ents.x[si], cz: w.ents.y[si], range: s.range, x: p.x, z: p.z, r: radius, inRange: Math.sqrt(dx * dx + dy * dy) <= s.range });
+  }
+
+  castAt(px: number, py: number): boolean {
+    if (!this.targeting) return false;
+    const p = this.renderer.pickTerrain(px, py);
+    if (!p) return false;
+    this.command({ tribe: this.localTribe, type: "cast", args: { spell: this.targeting, target: [p.x, p.z] } });
+    this.cancelTargeting();
+    return true;
+  }
+
   selectKind(kind: string, center = true): void {
     const idx = this.world.selectUnits(`tribe${this.localTribe}.${kind}s`);
     this.selection = new Set(idx);
@@ -265,6 +321,11 @@ export class Game {
         else this.cancelPlacing();
         return;
       }
+      if (this.targeting) {
+        if (e.button === 0) this.castAt(e.clientX, e.clientY);
+        else this.cancelTargeting();
+        return;
+      }
       if (e.button === 0) down = { x: e.clientX, y: e.clientY };
       if (e.button === 2) {
         this.orderAt(e.clientX, e.clientY, this.attackMode);
@@ -273,6 +334,7 @@ export class Game {
     });
     window.addEventListener("mousemove", (e) => {
       if (this.placing) this.updatePlacement(e.clientX, e.clientY);
+      if (this.targeting) this.updateTargeting(e.clientX, e.clientY);
       if (down && (Math.abs(e.clientX - down.x) > 4 || Math.abs(e.clientY - down.y) > 4)) {
         this.box = { x0: down.x, y0: down.y, x1: e.clientX, y1: e.clientY };
         this.onChange();
@@ -304,7 +366,14 @@ export class Game {
         this.showHelp = !this.showHelp;
         this.onChange();
       }
+      const spellKey = ["z", "x", "c", "v", "b", "n", "m"].indexOf(k);
+      if (spellKey >= 0 && !e.ctrlKey && k !== "m") {
+        const sp = this.castable()[spellKey];
+        if (sp) this.startTargeting(sp);
+      }
+      if (k === "backspace") this.command({ tribe: this.localTribe, type: "cancelCast", args: {} });
       if (k === "escape") {
+        this.cancelTargeting();
         this.cancelPlacing();
         this.selection.clear();
         this.attackMode = false;
@@ -327,7 +396,11 @@ export class Game {
     window.addEventListener("keydown", (e) => {
       this.keys.add(e.key.toLowerCase());
       const k = e.key;
-      if (k === "m" || k === "M") this.renderer.setCamera({ map: !this.renderer.cam.map });
+      if (k === "m" && !e.shiftKey) this.renderer.setCamera({ map: !this.renderer.cam.map });
+      if (k === "m" && e.shiftKey) {
+        const sp = this.castable()[6];
+        if (sp) this.startTargeting(sp);
+      }
       if (k === " ") this.paused = !this.paused;
       const f = ["F1", "F2", "F3", "F4"].indexOf(k);
       if (f >= 0) {
