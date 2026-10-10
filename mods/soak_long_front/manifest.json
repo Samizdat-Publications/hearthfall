@@ -1,0 +1,7 @@
+{
+  "id": "soak_long_front",
+  "name": "Long Front (soak test)",
+  "version": "1.0.0",
+  "loadOrder": 50,
+  "description": "Test mod for the long war soak (BACKLOG 58): Hearths are very tough, so tribes stay alive and the fighting lasts the whole run."
+}

@@ -48,7 +48,7 @@ export function soakRow(mode, metrics, results, result) {
   if (mode === "ai-idle") row.idleWins = Object.fromEntries(Object.entries(metrics.idle ?? {}).map(([k, v]) => [k, Math.round((v.won * 100) / Math.max(1, v.n))]));
   if (mode === "difficulty") row.scores = Object.fromEntries(Object.entries(metrics.difficulty ?? {}).map(([k, v]) => [k, v.score]));
   if (mode === "economy") row.popMedian = metrics.popMedian;
-  if (mode === "war") Object.assign(row, { killed: metrics.killed, converted: metrics.converted });
+  if (mode === "war" || mode === "war-long") Object.assign(row, { killed: metrics.killed, converted: metrics.converted, combatMinutes: metrics.combatMinutesMedian, lastKillMinute: metrics.lastKillMinuteMedian });
   return row;
 }
 

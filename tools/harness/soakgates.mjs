@@ -19,3 +19,16 @@ export function giveUpViolations(events, counts, limit) {
   }
   return v;
 }
+
+/** BACKLOG 58: from kills per game minute, the minutes with fighting and the last one (1-based, 0 for none). */
+export function warFront(killsByMinute) {
+  let combatMinutes = 0;
+  let lastKillMinute = 0;
+  killsByMinute.forEach((k, i) => {
+    if (k > 0) {
+      combatMinutes++;
+      lastKillMinute = i + 1;
+    }
+  });
+  return { combatMinutes, lastKillMinute };
+}

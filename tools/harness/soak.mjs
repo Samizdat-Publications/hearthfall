@@ -6,6 +6,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { availableParallelism } from "node:os";
 import { Worker } from "node:worker_threads";
 import { LATEST, writeReport } from "./lib.mjs";
+import { warFront } from "./soakgates.mjs";
 
 const WORKER = new URL("./soak-worker.mjs", import.meta.url);
 
@@ -196,7 +197,7 @@ export default async function soakCmd(out, _cmd, args) {
   const seeds = Number(args.seeds ?? 8);
   const minutes = Number(args.minutes ?? 10);
   const jobs = args.jobs && args.jobs !== "auto" ? Number(args.jobs) : Math.max(1, availableParallelism() - 2);
-  const base = { mode: typeof args.mode === "string" ? args.mode : "wander", minutes, units: Number(args.units ?? 1000), map: args.map ?? "continents", size: Number(args.size ?? 128), tribes: Number(args.tribes ?? 2), deadlineMs: 8 * 60 * 1000 - 20000, ...(typeof args.rules === "string" ? { rules: args.rules } : {}), ...(typeof args.mods === "string" ? { mods: args.mods.split(",").filter(Boolean) } : {}) };
+  const base = { mode: typeof args.mode === "string" ? args.mode : "wander", minutes, units: Number(args.units ?? 1000), map: args.map ?? "continents", size: Number(args.size ?? 128), tribes: Number(args.tribes ?? 2), deadlineMs: 8 * 60 * 1000 - 20000, ...(typeof args.rules === "string" ? { rules: args.rules } : {}), reinforce: Number(args.reinforce ?? 0), ...(typeof args.mods === "string" ? { mods: args.mods.split(",").filter(Boolean) } : {}) };
   const t0 = Date.now();
   const specs = aiSpecs(base, args, seeds, t0) ?? Array.from({ length: seeds }, (_, k) => ({ ...base, seed: 1000 + k, startMs: t0 }));
   const results = [];
@@ -223,7 +224,7 @@ export default async function soakCmd(out, _cmd, args) {
   const finish = async (status, detail) => {
     if (args.record) {
       const { appendHistory, soakRow } = await import("./history.mjs");
-      appendHistory("soak", soakRow(base.mode, metrics, results, status));
+      appendHistory("soak", soakRow(base.mode === "war" && base.reinforce > 0 ? "war-long" : base.mode, metrics, results, status));
     }
     return out.finish(status, detail);
   };
@@ -236,6 +237,18 @@ export default async function soakCmd(out, _cmd, args) {
   if (base.mode === "war") {
     for (const k of ["trained", "killed", "converted", "fireballs", "eliminated"]) metrics[k] = sum(k);
     out.line(`war: trained ${metrics.trained}, killed ${metrics.killed}, converted ${metrics.converted}, fireballs ${metrics.fireballs}, tribes eliminated ${metrics.eliminated}`);
+    // BACKLOG 58: how long the fighting lasts (minutes with a kill, the last such minute), per seed
+    const fronts = results.map((r) => warFront(r.metrics?.killsByMinute ?? []));
+    const med = (a) => [...a].sort((x, y) => x - y)[Math.floor(a.length / 2)] ?? 0;
+    metrics.combatMinutesMedian = med(fronts.map((f) => f.combatMinutes));
+    metrics.lastKillMinuteMedian = med(fronts.map((f) => f.lastKillMinute));
+    metrics.combatShareMedian = +med(fronts.map((f) => f.combatMinutes / minutes)).toFixed(2);
+    out.line(`war front: median ${metrics.combatMinutesMedian} of ${minutes} minutes with kills, median last kill in minute ${metrics.lastKillMinuteMedian}`);
+    // the long front variant exists to fight for the whole run: the median seed must still kill in the last 2 minutes
+    if (base.reinforce > 0 && metrics.lastKillMinuteMedian < minutes - 1) {
+      bad.push({ seed: "all", violations: [`long front: median last kill in minute ${metrics.lastKillMinuteMedian}, expected fighting until minute ${minutes - 1} or later`] });
+      out.line(`FAIL long front: fighting stopped at minute ${metrics.lastKillMinuteMedian} (median)`);
+    }
     writeReport("soak.json", { metrics, results });
   }
   if (base.mode === "economy") {

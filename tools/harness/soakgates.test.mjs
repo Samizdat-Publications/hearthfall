@@ -19,3 +19,11 @@ describe("BACKLOG 59: soak give-up gate", () => {
     expect(counts.get(4)).toBe(5);
   });
 });
+
+describe("BACKLOG 58: war front length", () => {
+  it("counts minutes with kills and the last one", async () => {
+    const { warFront } = await import("./soakgates.mjs");
+    expect(warFront([0, 3, 0, 1, 0])).toEqual({ combatMinutes: 2, lastKillMinute: 4 });
+    expect(warFront([])).toEqual({ combatMinutes: 0, lastKillMinute: 0 });
+  });
+});

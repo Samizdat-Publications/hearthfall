@@ -11,6 +11,8 @@ export const NIGHTLY = [
   { mode: "difficulty", seeds: 8, minutes: 20 },
   { mode: "economy", seeds: 16, minutes: 10 },
   { mode: "war", seeds: 8, minutes: 20 },
+  // BACKLOG 58: the long front, tough Hearths (test mod) and harness reinforcements keep every tribe fighting
+  { mode: "war", name: "war-long", seeds: 8, minutes: 20, extra: { mods: "soak_long_front", reinforce: "6" } },
 ];
 
 /** Captures a sub-command's lines instead of printing them. */
@@ -39,14 +41,14 @@ export function writeTrends(out) {
 export async function nightly(out, only) {
   const soak = (await import("./soak.mjs")).default;
   const runs = [];
-  for (const m of NIGHTLY.filter((x) => !only || only.includes(x.mode))) {
+  for (const m of NIGHTLY.filter((x) => !only || only.includes(x.name ?? x.mode))) {
     const q = new Quiet();
     const t0 = Date.now();
-    await soak(q, "soak", { mode: m.mode, seeds: String(m.seeds), minutes: String(m.minutes), record: true, _: [] });
+    await soak(q, "soak", { mode: m.mode, seeds: String(m.seeds), minutes: String(m.minutes), record: true, ...(m.extra ?? {}), _: [] });
     const sec = Math.round((Date.now() - t0) / 1000);
     runs.push({ ...m, status: q.status, detail: q.detail, sec, lines: q.lines });
     // the soak line with the balance numbers is the last one it printed before RESULT
-    out.line(`${m.mode} ${m.seeds}x${m.minutes}: ${q.status}${q.detail ? " " + q.detail : ""} (${sec}s) | ${(q.lines[q.lines.length - 1] ?? "").slice(0, 140)}`);
+    out.line(`${m.name ?? m.mode} ${m.seeds}x${m.minutes}: ${q.status}${q.detail ? " " + q.detail : ""} (${sec}s) | ${(q.lines[q.lines.length - 1] ?? "").slice(0, 140)}`);
   }
   writeReport("nightly.json", { runs });
   writeTrends(out);

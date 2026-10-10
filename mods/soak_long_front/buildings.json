@@ -1,0 +1,4 @@
+{
+  "$comment": "BACKLOG 58: a Hearth that waves cannot raze keeps the losing tribe alive (it respawns its Shaper and keeps breeding), so a 20 minute war soak is 20 minutes of combat.",
+  "buildings": [{ "id": "hearth", "hp": 400000 }]
+}

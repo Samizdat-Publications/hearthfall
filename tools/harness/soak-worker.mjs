@@ -78,6 +78,8 @@ const minuteTicks = 60 * w.cfg.tickHz;
 const popByMinute = w.tribes.map((tr) => [w.economy.followers(tr.index)]);
 const violations = [];
 const castsDone = [];
+// BACKLOG 58: kills per game minute, so a war soak shows how long the fighting really lasts
+const killsByMinute = [];
 // BACKLOG 59: chase give-ups are excused one by one, but a unit that keeps giving up a chase is stuck
 const chaseGiveUps = new Map();
 const chaseLimit = w.cfg.pack.balance.gates.maxChaseGiveUpsPerUnit ?? 5;
@@ -94,6 +96,10 @@ for (let k = 0; k < ticks; k++) {
   v.push(...giveUpViolations(w.events, chaseGiveUps, chaseLimit));
   for (const e of w.events) {
     // BACKLOG 67: spells that actually went off, per tribe (the AI stats count casts it ordered)
+    if (e.type === "killed") {
+      const mi = Math.floor(w.tick / (60 * w.cfg.tickHz));
+      killsByMinute[mi] = (killsByMinute[mi] ?? 0) + 1;
+    }
     if (e.type === "spellCast" && e.by !== "site") {
       const m = (castsDone[e.tribe] ??= {});
       m[e.spell] = (m[e.spell] ?? 0) + 1;
@@ -113,6 +119,17 @@ for (let k = 0; k < ticks; k++) {
     if (violations.length) break;
   }
   if (aiMode && (w.tribes.filter((t) => t.alive).length <= 1 || (w.rules && w.rules.winner >= 0))) break;
+  // BACKLOG 58 long front (war mode, --reinforce N): once a game second the harness tops each living tribe
+  // with a standing Hearth up to N settlers at its door, so losers stay in the fight for the whole run
+  if (warMode && spec.reinforce > 0 && w.tick % w.cfg.tickHz === 0) {
+    for (const tr of w.tribes) {
+      const h = w.ents.index(tr.hearth);
+      if (!tr.alive || h < 0) continue;
+      const [dx, dy] = w.economy.doorOf(h);
+      if (t.drowns(dx, dy)) continue;
+      for (let k = w.economy.followers(tr.index); k < spec.reinforce; k++) w.spawnUnit("settler", tr.index, dx, dy);
+    }
+  }
   if (k % 20 === 0) for (let i = 0; i < w.ents.hi; i++) if (w.ents.alive[i] && w.ents.stuck[i] > maxStuck) maxStuck = w.ents.stuck[i];
 }
 const ms = performance.now() - t0;
@@ -123,6 +140,6 @@ parentPort.postMessage({
   partial,
   tick: w.tick,
   violations,
-  metrics: { ticks: w.tick, avgTickMs: +(ms / Math.max(1, w.tick)).toFixed(3), drowned: ec("drowned"), orderFailed: ec("orderFailed"), orderGaveUp: ec("orderGaveUp"), moves: w.units.ordersIssued, maxStuckSec: +(maxStuck / w.cfg.tickHz).toFixed(1), maxChaseGiveUps: Math.max(0, ...chaseGiveUps.values()), chaseGiveUps: [...chaseGiveUps.values()].reduce((s, n) => s + n, 0), units: w.count((i) => w.ents.cat[i] === 3), popByMinute, born: ec("born"), buildings: ec("buildingDone"), trained: ec("trained"), killed: ec("killed"), converted: ec("converted"), fireballs: ec("fireball"), eliminated: ec("tribeEliminated"), alive: w.tribes.filter((t) => t.alive).length },
+  metrics: { ticks: w.tick, avgTickMs: +(ms / Math.max(1, w.tick)).toFixed(3), drowned: ec("drowned"), orderFailed: ec("orderFailed"), orderGaveUp: ec("orderGaveUp"), moves: w.units.ordersIssued, maxStuckSec: +(maxStuck / w.cfg.tickHz).toFixed(1), maxChaseGiveUps: Math.max(0, ...chaseGiveUps.values()), chaseGiveUps: [...chaseGiveUps.values()].reduce((s, n) => s + n, 0), units: w.count((i) => w.ents.cat[i] === 3), popByMinute, born: ec("born"), buildings: ec("buildingDone"), trained: ec("trained"), killed: ec("killed"), converted: ec("converted"), fireballs: ec("fireball"), eliminated: ec("tribeEliminated"), killsByMinute: Array.from({ length: Math.ceil(w.tick / minuteTicks) }, (_, i) => killsByMinute[i] ?? 0), alive: w.tribes.filter((t) => t.alive).length },
   ai: aiMode ? { ais: ais.map((a) => ({ tribe: a.tribe, type: a.spec.type, personality: a.spec.personality ?? null, difficulty: a.spec.difficulty ?? null, units: w.count((i) => w.ents.cat[i] === 3 && w.ents.tribe[i] === a.tribe), alive: w.tribes[a.tribe].alive, stats: a.bot.stats ?? null, castsDone: castsDone[a.tribe] ?? {} })), alive: w.rules && w.rules.winner >= 0 ? [w.rules.winner] : w.tribes.filter((t) => t.alive).map((t) => t.index), why: w.rules?.why || null, endMinute: +(w.tick / minuteTicks).toFixed(2), spellCast: ec("spellCast") } : null,
 });

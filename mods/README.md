@@ -39,6 +39,8 @@ To play with mods, add `?mods=a,b` to the game URL, for example `http://127.0.0.
 
 To balance-test a mod headless, run `npm run soak -- --mode ai --mods swift_wardens`.
 
+`soak_long_front` is a test mod for the long war soak (`docs/TESTING.md`, BACKLOG 58), not meant for play: its Hearths can hardly be razed.
+
 ## Example mods
 
 - `swift_wardens`: Wardens run faster and train for less mana. This is a list patch by id.
