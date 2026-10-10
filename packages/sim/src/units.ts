@@ -480,7 +480,8 @@ export class UnitSystem {
                 sv >= 0 && gv >= 0 && pf.comp[sv] === pf.comp[gv]
                   ? 1
                   : 0;
-              const chase = E.atk[i] !== NO_ENTITY ? 1 : 0;
+              // a walker heading for a boat chases a moving goal too (BACKLOG 10, ai soak seeds 1003 and 1009)
+              const chase = E.atk[i] !== NO_ENTITY || w.vehicles.isBoarding(i) ? 1 : 0;
               w.emit("orderGaveUp", {
                 id: E.idOf(i),
                 reachable,

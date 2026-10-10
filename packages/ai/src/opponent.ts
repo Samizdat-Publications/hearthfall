@@ -805,6 +805,16 @@ export class OpponentAI implements Controller {
       if (E.occupants[b] > 0) continue;
       const seats = w.vehicles.capacityOf(b);
       if (walkers.length < Math.min(seats, this.waveSize())) continue;
+      // board only a boat docked at our shore (ai soak seed 1009: a boat on another sea drew walkers
+      // that could never reach it, every decision); otherwise sail it to our shore when that sea is its own
+      const pf = w.units.pf;
+      const n = w.terrain.size;
+      const dock = pf.nearestWalkable((((Math.round(E.x[b]) % n) + n) % n) + (((Math.round(E.y[b]) % n) + n) % n) * n, Math.ceil(w.vehicles.boardRadiusOf(b)));
+      if (dock < 0 || pf.comp[dock] !== home) {
+        const shore = this.shore(c, E.x[c.h], E.y[c.h], home, b);
+        if (shore) out.push(this.cmd(w, "move", { units: [id], to: shore }));
+        continue;
+      }
       out.push(this.cmd(w, "board", { units: walkers.splice(0, seats).map((i) => E.idOf(i)), vehicle: id }));
     }
   }
@@ -825,30 +835,30 @@ export class OpponentAI implements Controller {
       let boarding = 0;
       for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.task[i] === TASK.toBoard && E.target[i] === id) boarding++;
       if (boarding > 0) continue;
-      const land = this.landing(c, far[1], b);
+      const eh = far[1];
+      const land = this.shore(c, E.x[eh], E.y[eh], this.comp(w, E.x[eh], E.y[eh]), b);
       if (!land) continue;
       out.push(this.cmd(w, "unload", { units: [id], to: land }));
       this.stats.ferries++;
     }
   }
 
-  /** the enemy's shore facing boat b: walk from the enemy Hearth toward the boat while still on its landmass;
-   * null when the water off that shore is not the boat's water (another sea) */
-  private landing(c: Census, eh: number, b: number): [number, number] | null {
+  /** the shore of landmass `land` facing boat b: walk from (x0, y0) toward the boat while still on that
+   * landmass; null when the water off that shore is not the boat's water (another sea) */
+  private shore(c: Census, x0: number, y0: number, land: number, b: number): [number, number] | null {
     const w = c.w;
     const E = w.ents;
     const n = w.terrain.size;
-    const theirs = this.comp(w, E.x[eh], E.y[eh]);
-    if (theirs < 0) return null;
-    const dx = wrapDelta(E.x[b] - E.x[eh], n);
-    const dy = wrapDelta(E.y[b] - E.y[eh], n);
+    if (land < 0) return null;
+    const dx = wrapDelta(E.x[b] - x0, n);
+    const dy = wrapDelta(E.y[b] - y0, n);
     const d = Math.sqrt(dx * dx + dy * dy);
-    let lx = E.x[eh];
-    let ly = E.y[eh];
+    let lx = x0;
+    let ly = y0;
     for (let k = 1; k < d; k++) {
-      const x = E.x[eh] + (dx * k) / d;
-      const y = E.y[eh] + (dy * k) / d;
-      if (this.comp(w, x, y, 1) !== theirs) break;
+      const x = x0 + (dx * k) / d;
+      const y = y0 + (dy * k) / d;
+      if (this.comp(w, x, y, 1) !== land) break;
       lx = x;
       ly = y;
     }

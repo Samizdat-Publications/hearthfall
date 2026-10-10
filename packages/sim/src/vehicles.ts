@@ -80,6 +80,16 @@ export class VehicleSystem {
     return (((Math.round(x) % n) + n) % n) + (((Math.round(y) % n) + n) % n) * n;
   }
 
+  /** Boarding reach of vehicle v (cells). */
+  boardRadiusOf(v: number): number {
+    return this.w.cfg.pack.units.units[this.w.ents.type[v]].vehicle?.boardRadius ?? 0;
+  }
+
+  /** Unit i is walking to a vehicle to board it (its goal moves while the vehicle comes to meet it). */
+  isBoarding(i: number): boolean {
+    return this.w.ents.task[i] === TASK.toBoard;
+  }
+
   /** Walk unit i to vehicle v and board it (the board command). */
   board(i: number, v: number): void {
     const w = this.w;
