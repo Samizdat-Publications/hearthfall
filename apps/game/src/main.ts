@@ -155,7 +155,7 @@ if (__DEBUG_API__ || game.params.debug) {
     },
     getSummary: () => game.summary(),
     /** BACKLOG 14a: the live look knobs (tilt-shift order, retro pixel size) */
-    look: () => ({ tilt: game.renderer.retro.opts.tilt?.order ?? "off", pixelScale: game.renderer.retro.opts.pixelScale }),
+    look: () => ({ tilt: game.renderer.retro.opts.tilt?.order ?? "off", pixelScale: game.renderer.retro.opts.pixelScale, ...game.renderer.lightingState() }),
     /**
      * BACKLOG 14a: CPU plus GPU time of one frame (render, then gl.finish waits for the GPU), with the
      * tilt-shift mode switched for the measure ("off", "pre", "post"; the setting comes back after).

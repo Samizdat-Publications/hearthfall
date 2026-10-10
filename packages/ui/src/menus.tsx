@@ -42,6 +42,11 @@ export interface SettingsView {
   /** BACKLOG 14a: tilt-shift miniature focus (default, on, off) */
   miniatures: Choice[];
   miniature: string;
+  /** BACKLOG 14: lighting preset (default, day, golden, evening) and weather (clear, rain) */
+  lightings: Choice[];
+  lighting: string;
+  weathers: Choice[];
+  weather: string;
   /** action id waiting for a key press */
   rebinding: string | null;
   message: string | null;
@@ -74,7 +79,7 @@ export interface MenuModel {
 }
 
 export type SetupPatch = Partial<Pick<SetupView, "map" | "size" | "seed" | "opponents" | "difficulty">>;
-export type SettingsPatch = Partial<Pick<SettingsView, "quality" | "master" | "music" | "sfx" | "palette" | "miniature">> & { uiScale?: number; subtitles?: boolean };
+export type SettingsPatch = Partial<Pick<SettingsView, "quality" | "master" | "music" | "sfx" | "palette" | "miniature" | "lighting" | "weather">> & { uiScale?: number; subtitles?: boolean };
 
 export interface MenuActions {
   go(screen: Screen): void;
@@ -312,6 +317,10 @@ function Settings({ s, act }: { s: SettingsView; act: MenuActions }) {
           <Select ui="set-subtitles" value={s.subtitles} options={ONOFF} onChange={(v) => act.setSetting({ subtitles: v === "on" })} />
           <label class="menu-label">Miniature focus</label>
           <Select ui="set-miniature" value={s.miniature} options={s.miniatures} onChange={(v) => act.setSetting({ miniature: v })} />
+          <label class="menu-label">Lighting</label>
+          <Select ui="set-lighting" value={s.lighting} options={s.lightings} onChange={(v) => act.setSetting({ lighting: v })} />
+          <label class="menu-label">Weather</label>
+          <Select ui="set-weather" value={s.weather} options={s.weathers} onChange={(v) => act.setSetting({ weather: v })} />
         </div>
         <div class="keys">
           {s.keys.map((k) => (

@@ -95,6 +95,14 @@ async function flow(browser, url, vp) {
     await page.selectOption('[data-ui="set-miniature"]', "default");
     const lookOn = await page.evaluate(() => window.__game.look());
     if (lookOff.tilt !== "off" || lookOn.tilt === "off") problem(`miniature setting: off gave ${lookOff.tilt}, default gave ${lookOn.tilt}`);
+    // BACKLOG 14: lighting and weather settings apply at once (evening dims the sun, rain draws streaks)
+    await page.selectOption('[data-ui="set-lighting"]', "evening");
+    await page.selectOption('[data-ui="set-weather"]', "rain");
+    const dusk = await page.evaluate(() => window.__game.look());
+    await page.selectOption('[data-ui="set-lighting"]', "default");
+    await page.selectOption('[data-ui="set-weather"]', "clear");
+    const gold = await page.evaluate(() => window.__game.look());
+    if (!(dusk.intensity < gold.intensity) || dusk.rain <= 0 || gold.rain !== 0) problem(`lighting settings: evening rain ${JSON.stringify(dusk)}, default clear ${JSON.stringify(gold)}`);
     await page.selectOption('[data-ui="set-uiscale"]', "100");
     await click("keys-reset");
     await click("back");

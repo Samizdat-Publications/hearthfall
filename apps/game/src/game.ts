@@ -77,6 +77,9 @@ export interface GameParams {
   uiScale: number | null;
   /** BACKLOG 14a: tilt-shift override (off, on, pre, post); null uses the stored setting */
   tiltshift: string | null;
+  /** BACKLOG 14: lighting preset and weather overrides; null uses the stored setting */
+  lighting: string | null;
+  weather: string | null;
   /** retro pixel size override for look comparisons (pixel=2); null uses style.json */
   pixel: number | null;
 }
@@ -104,6 +107,8 @@ export function parseParams(search: string): GameParams {
     palette: q.get("palette"),
     uiScale: q.has("uiScale") ? num("uiScale", 100) : null,
     tiltshift: q.get("tiltshift"),
+    lighting: q.get("lighting"),
+    weather: q.get("weather"),
     pixel: q.has("pixel") ? num("pixel", 3) : null,
   };
 }
@@ -247,6 +252,7 @@ export class Game {
     this.renderer.setRenderScale(QUALITY_SCALE[q] ?? 1);
     if (this.params.pixel !== null) this.renderer.setPixelScale(this.params.pixel);
     this.renderer.setTiltShift(this.params.tiltshift ?? this.settings.miniature);
+    this.renderer.setLighting(this.params.lighting ?? this.settings.lighting, this.params.weather ?? this.settings.weather);
   }
 
   /**

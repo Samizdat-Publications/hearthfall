@@ -46,6 +46,9 @@ export const PALETTES = ["default", "colorblind"] as const;
 export const UI_SCALES = [80, 90, 100, 110, 125, 150] as const;
 /** BACKLOG 14a: tilt-shift miniature focus ("default" follows style.json render.tiltShift.defaultOn) */
 export const MINIATURE = ["default", "on", "off"] as const;
+/** BACKLOG 14: lighting presets ("default" follows style.json lightingDefault) and visual weather */
+export const LIGHTING = ["default", "day", "golden", "evening"] as const;
+export const WEATHER = ["clear", "rain"] as const;
 
 export interface Settings {
   quality: (typeof QUALITIES)[number];
@@ -58,12 +61,14 @@ export interface Settings {
   uiScale: number;
   subtitles: boolean;
   miniature: (typeof MINIATURE)[number];
+  lighting: (typeof LIGHTING)[number];
+  weather: (typeof WEATHER)[number];
 }
 
 const SETTINGS_KEY = "hearthfall.settings.v1";
 
 export function defaultSettings(): Settings {
-  return { quality: "high", master: 80, music: 60, sfx: 80, keymap: defaultKeymap(), palette: "default", uiScale: 100, subtitles: true, miniature: "default" };
+  return { quality: "high", master: 80, music: 60, sfx: 80, keymap: defaultKeymap(), palette: "default", uiScale: 100, subtitles: true, miniature: "default", lighting: "default", weather: "clear" };
 }
 
 const vol = (v: unknown, d: number) => (typeof v === "number" && Number.isFinite(v) ? Math.min(100, Math.max(0, Math.round(v))) : d);
@@ -84,6 +89,8 @@ export function loadSettings(kv: KV): Settings {
       uiScale: (UI_SCALES as readonly number[]).includes(o.uiScale as number) ? (o.uiScale as number) : d.uiScale,
       subtitles: typeof o.subtitles === "boolean" ? o.subtitles : d.subtitles,
       miniature: (MINIATURE as readonly string[]).includes(o.miniature as string) ? (o.miniature as Settings["miniature"]) : d.miniature,
+      lighting: (LIGHTING as readonly string[]).includes(o.lighting as string) ? (o.lighting as Settings["lighting"]) : d.lighting,
+      weather: (WEATHER as readonly string[]).includes(o.weather as string) ? (o.weather as Settings["weather"]) : d.weather,
     };
   } catch {
     return d;

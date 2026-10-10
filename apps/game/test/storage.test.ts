@@ -27,6 +27,11 @@ describe("settings and save slots (M8)", () => {
     expect(loadSettings(kv).miniature).toBe("off");
     kv.setItem("hearthfall.settings.v1", JSON.stringify({ miniature: "blurry" }));
     expect(loadSettings(kv).miniature).toBe("default");
+    // BACKLOG 14: lighting and weather round trip and fall back
+    expect(storeSettings(kv, { ...defaultSettings(), lighting: "evening", weather: "rain" })).toBe(true);
+    expect(loadSettings(kv)).toMatchObject({ lighting: "evening", weather: "rain" });
+    kv.setItem("hearthfall.settings.v1", JSON.stringify({ lighting: "noon", weather: "snow" }));
+    expect(loadSettings(kv)).toMatchObject({ lighting: "default", weather: "clear" });
     kv.setItem("hearthfall.settings.v1", "{not json");
     expect(loadSettings(kv)).toEqual(defaultSettings());
   });

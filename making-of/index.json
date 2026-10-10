@@ -860,6 +860,16 @@
       "when": "2026-10-10T01:17:34.180Z",
       "source": "external:peak.png",
       "bytes": 792005
+    },
+    {
+      "file": "b14/20261010-0139_lighting-presets.png",
+      "milestone": "B14",
+      "kind": "comparison",
+      "caption": "Lighting presets and weather: day, golden (default) and evening, plus rain with streaks and a dimmer, greyer light; the unlit water follows the preset.",
+      "highlight": false,
+      "when": "2026-10-10T01:39:35.723Z",
+      "source": "external:lighting_sheet.png",
+      "bytes": 944208
     }
   ]
 }

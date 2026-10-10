@@ -6,6 +6,7 @@ import type { Style } from "@hearthfall/data";
 import type { World } from "@hearthfall/sim";
 import { applyCamera, CAMERA_PRESETS, type CameraState } from "./camera.ts";
 import { bendMaterial, makeBendUniforms, type BendUniforms } from "./curve.ts";
+import { RainLayer, resolveLighting, waterTint, type LightingLook } from "./weather.ts";
 import { CHUNK, fillDepth, makeWaterMaterial, TerrainChunk, type TerrainPalette } from "./terrainMesh.ts";
 import { TreeLayer } from "./props.ts";
 import { UnitLayer } from "./unitsLayer.ts";
@@ -69,6 +70,11 @@ export class ThreeRenderer implements Renderer {
   private readonly waterMat: THREE.ShaderMaterial;
   private readonly sky: THREE.Mesh;
   private readonly sun: THREE.DirectionalLight;
+  /** BACKLOG 14: lighting preset and weather in force (null without style lightingPresets) */
+  private readonly hemi: THREE.HemisphereLight;
+  private readonly baseAmbient: number;
+  private lighting: LightingLook | null = null;
+  readonly rain = new RainLayer();
   private trees: TreeLayer;
   private models: Map<string, ModelParts> | null = null;
   private modelReport: ModelLoadReport | null = null;
@@ -81,6 +87,7 @@ export class ThreeRenderer implements Renderer {
   /** BACKLOG 8: the style palette before any tribe color override */
   private basePal: Record<string, string> = {};
   private readonly styleRender: RendererOptions["style"]["render"];
+  private readonly style: RendererOptions["style"];
   units: UnitLayer | null = null;
   buildings: BuildingLayer | null = null;
   worship: WorshipLayer | null = null;
@@ -134,7 +141,10 @@ export class ThreeRenderer implements Renderer {
     // the planet limb fades to an atmospheric rim when the space backdrop is on
     this.bend.uHorizon.value.set(space?.rim ?? L.skyHorizon);
     this.scene.fog = new THREE.Fog(space?.rim ?? L.fogColor, 60, 200);
-    this.scene.add(new THREE.HemisphereLight(L.skyTop, pal.moss ?? "#5e8c3a", 1.25 * (rs?.ambientIntensity ?? 1)));
+    this.baseAmbient = 1.25 * (rs?.ambientIntensity ?? 1);
+    this.hemi = new THREE.HemisphereLight(L.skyTop, pal.moss ?? "#5e8c3a", this.baseAmbient);
+    this.scene.add(this.hemi);
+    this.scene.add(this.rain.mesh);
     this.retro = new RetroPass({ pixelScale: rs?.pixelScale ?? 1, paletteLevels: rs?.paletteLevels ?? 0, ditherStrength: rs?.ditherStrength ?? 0 });
     this.detail.amount.value = rs?.detailNoise ?? 0;
     this.detail.cells.value = rs?.detailCellsPerUnit ?? 3;
@@ -152,6 +162,7 @@ export class ThreeRenderer implements Renderer {
     this.pal = pal;
     this.basePal = pal;
     this.styleRender = o.style.render;
+    this.style = o.style;
     this.propMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend);
     this.unitMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend, undefined, true);
     this.ringMat = bendMaterial(new THREE.MeshBasicMaterial({ color: pal.foam ?? "#e6f4f8", transparent: true, opacity: 0.9, depthWrite: false }), this.bend);
@@ -175,6 +186,34 @@ export class ThreeRenderer implements Renderer {
     this.sky = space ? makeSpaceSky(space.top, space.horizon, space.stars) : makeSky(L.skyTop, L.skyHorizon);
     this.gl.setClearColor(pal.water ?? "#2f7fb8", 1);
     this.scene.add(this.sky);
+    this.setLighting("default", "clear");
+  }
+
+  /**
+   * BACKLOG 14: apply a lighting preset ("default" = style lightingDefault) and weather ("clear" or "rain")
+   * from style.json. A style without lightingPresets keeps its base lighting.
+   */
+  setLighting(preset: string, weather: string): void {
+    const st = this.style;
+    if (!st.lightingPresets) return;
+    const def = st.lightingDefault ?? "golden";
+    const look = resolveLighting(st.lightingPresets, def, preset === "default" ? def : preset, weather, st.weather?.rain);
+    this.lighting = look;
+    this.sun.color.set(look.keyColor);
+    this.sun.intensity = look.keyIntensity;
+    this.hemi.color.set(look.hemiSky);
+    this.hemi.intensity = this.baseAmbient * look.ambient;
+    if (st.render?.space) {
+      (this.scene.fog as THREE.Fog).color.set(look.rim);
+      this.bend.uHorizon.value.set(look.rim);
+    }
+    this.rain.set(look.rain);
+    waterTint(look, st.lightingPresets[def] ?? look, this.waterMat.uniforms.uLight.value);
+  }
+
+  /** Lighting and weather in force (debug API and tests). */
+  lightingState(): { key: string; intensity: number; rain: number } {
+    return { key: "#" + this.sun.color.getHexString(), intensity: this.sun.intensity, rain: this.rain.count };
   }
 
   setWorld(world: World): void {
@@ -422,7 +461,10 @@ export class ThreeRenderer implements Renderer {
       this.stats.unitsDrawn = this.units?.drawn ?? 0;
       this.vfx.update(w, visualTime, this.cam.x, this.cam.z, this.palette.heightScale);
       this.sun.target.position.set(this.cam.x, 0, this.cam.z);
-      this.sun.position.set(this.cam.x + 40, 80, this.cam.z + 25);
+      const d = this.lighting?.sunDir ?? [0.4, 0.8, 0.25];
+      const k = 95 / Math.hypot(d[0], d[1], d[2]);
+      this.sun.position.set(this.cam.x + d[0] * k, d[1] * k, this.cam.z + d[2] * k);
+      this.rain.update(this.cam.x, w.terrain.heightAt(this.cam.x, this.cam.z) * this.palette.heightScale, this.cam.z, visualTime);
     }
     this.placeHearthLights();
     this.sky.visible = !this.cam.map && this.scene.visible;
@@ -461,7 +503,7 @@ export class ThreeRenderer implements Renderer {
     found.slice(0, this.hearthLights.length).forEach((f, k) => {
       const l = this.hearthLights[k];
       l.position.set(f.x, f.y + 1.2 - this.bend.uBendK.value * f.d, f.z);
-      l.intensity = rs?.hearthLight.intensity ?? 14;
+      l.intensity = (rs?.hearthLight.intensity ?? 14) * (this.lighting?.hearthGlow ?? 1);
     });
   }
 

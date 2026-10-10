@@ -5,3 +5,4 @@ export { bendY, type BendUniforms } from "./curve.ts";
 export { CHUNK } from "./terrainMesh.ts";
 export { resolveTilt, tiltUniforms, type TiltOrder, type TiltShiftOptions } from "./retro.ts";
 export { aliasModels } from "./models.ts";
+export { resolveLighting, type LightingLook, type LightingPreset, type RainLook } from "./weather.ts";

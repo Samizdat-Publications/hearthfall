@@ -205,6 +205,28 @@ export const StyleSchema = z.strictObject({
     skyHorizon: hex,
     fogColor: hex,
   }),
+  /** BACKLOG 14: named lighting presets (render/src/weather.ts LightingPreset) and the default one */
+  lightingPresets: z
+    .record(
+      z.string().regex(/^[a-z]+$/),
+      z.strictObject({
+        keyColor: hex,
+        keyIntensity: pos,
+        hemiSky: hex,
+        ambient: pos,
+        sunDir: z.tuple([z.number(), z.number().positive(), z.number()]),
+        hearthGlow: z.number().min(0),
+        rim: hex,
+      }),
+    )
+    .optional(),
+  lightingDefault: z.string().optional(),
+  /** BACKLOG 14: visual weather (rain does not touch the sim yet) */
+  weather: z
+    .strictObject({
+      rain: z.strictObject({ drops: z.number().int().min(0).max(4000), color: hex, speed: pos, dim: z.number().min(0.1).max(1), rim: hex }),
+    })
+    .optional(),
   direction: z.strictObject({ primaryRef: z.string(), lightingRef: z.string(), chosen: z.string(), notes: z.string() }).optional(),
   /** retro render pass and look knobs (ADR-005); all optional with defaults in the renderer */
   render: z

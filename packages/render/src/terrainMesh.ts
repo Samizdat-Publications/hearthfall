@@ -247,6 +247,7 @@ export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: {
         uDepthTex: { value: new THREE.DataTexture(new Float32Array([0, 0, 0, 0]), 2, 2, THREE.RedFormat, THREE.FloatType) },
         uDepthSize: { value: 0 },
         uLook: { value: new THREE.Vector3(look.shallowDepth, look.foamWidth, look.foamRing) },
+        uLight: { value: new THREE.Color(1, 1, 1) },
       },
     ]),
     vertexShader: /* glsl */ `
@@ -277,6 +278,7 @@ export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: {
       uniform sampler2D uDepthTex;
       uniform float uDepthSize;
       uniform vec3 uLook;
+      uniform vec3 uLight;
       varying float vDepth;
       float wh(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
       // short wave strokes: rows of cells along a slowly turning swell direction, a hashed share lit
@@ -323,6 +325,8 @@ export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: {
           col = mix(col, uFoam, s1 * 0.9);
           col = mix(col, uDeep * 0.7, s2 * (1.0 - s1) * 0.5);
         }
+        // BACKLOG 14: the lighting preset and weather tint the water and its foam (white under the default preset)
+        col *= uLight;
         float alpha = mix(0.72, 0.94, t);
         gl_FragColor = vec4(col, alpha);
         #include <tonemapping_fragment>
