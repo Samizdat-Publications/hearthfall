@@ -14,6 +14,7 @@ import {
 } from "./weather.ts";
 import {
   CHUNK,
+  chunksTouched,
   fillDepth,
   makeWaterMaterial,
   TerrainChunk,
@@ -595,17 +596,7 @@ export class ThreeRenderer implements Renderer {
       this.stats.lastRemesh = 0;
       return 0;
     }
-    const n = t.size / CHUNK;
-    const touched = new Set<number>();
-    for (const r of rects) {
-      for (let y = r.y; y < r.y + r.h + 1; y += 1) {
-        const cz = Math.floor((((y % t.size) + t.size) % t.size) / CHUNK);
-        for (let x = r.x; x < r.x + r.w + 1; x += 1)
-          touched.add(
-            cz * n + Math.floor((((x % t.size) + t.size) % t.size) / CHUNK),
-          );
-      }
-    }
+    const touched = chunksTouched(rects, t.size);
     for (const i of touched) this.chunks[i].build(t, this.palette);
     this.syncDepth();
     this.cursor = t.version;

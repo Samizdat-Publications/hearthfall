@@ -96,6 +96,23 @@ export function faceColor(p: TerrainPalette, sea: number, h0: number, h1: number
   return out.multiplyScalar(j);
 }
 
+/**
+ * Chunk indices (cz * n + cx) a set of dirty rects touches on a wrapped map of `size` cells. A rect covers its
+ * cells plus the vertex row and column after it (a height edit also moves the faces that share that vertex),
+ * and wraps across the map edges.
+ */
+export function chunksTouched(rects: readonly { x: number; y: number; w: number; h: number }[], size: number): Set<number> {
+  const n = size / CHUNK;
+  const touched = new Set<number>();
+  for (const r of rects) {
+    for (let y = r.y; y < r.y + r.h + 1; y += 1) {
+      const cz = Math.floor((((y % size) + size) % size) / CHUNK);
+      for (let x = r.x; x < r.x + r.w + 1; x += 1) touched.add(cz * n + Math.floor((((x % size) + size) % size) / CHUNK));
+    }
+  }
+  return touched;
+}
+
 export class TerrainChunk {
   readonly mesh: THREE.Mesh;
   readonly water: THREE.Mesh;
