@@ -24,12 +24,27 @@ export interface TerrainPalette {
   cliff: THREE.Color;
   cliffDark: THREE.Color;
   bands: { shore: number; lowland: number; grass: number; highland: number; rock: number; peak: number };
+  /** look v3 bands (BACKLOG 14a-4, style.json render.terrainBands); omitted = the look v2 bands */
+  look?: TerrainBandsLook;
   heightScale: number;
   maxWalkSlope: number;
 }
 
+/**
+ * BACKLOG 14a-4: snow caps from snowStart (first flecks) to snowFull (solid) in height units, and terrace
+ * cliffs whose middle stratum is pale sandstone (strataSand is its sand share, 0 = plain earth).
+ */
+export interface TerrainBandsLook {
+  snowStart: number;
+  snowFull: number;
+  strataSand: number;
+  /** snow brightness over the palette color, with a slight cool tint, so caps stay white under the warm sun */
+  snowBright: number;
+}
+
 const tmp = new THREE.Color();
 const tmp2 = new THREE.Color();
+const tmp3 = new THREE.Color();
 
 function faceHash(i: number): number {
   let h = Math.imul(i ^ 0x9e3779b9, 0x85ebca6b);
@@ -52,11 +67,13 @@ export function faceColor(p: TerrainPalette, sea: number, h0: number, h1: number
     [b.highland, p.moss],
     [b.rock - 30, p.forest],
     [b.rock, p.rock],
-    [b.peak - 20, p.rock],
-    [b.peak + 10, p.snow],
+    [p.look ? p.look.snowStart : b.peak - 20, p.rock],
+    [p.look ? p.look.snowFull : b.peak + 10, p.snow],
   ];
+  const snow = p.look ? tmp3.copy(p.snow).multiply(tmp.setRGB(p.look.snowBright * 0.97, p.look.snowBright, p.look.snowBright * 1.06)) : p.snow;
+  stops[stops.length - 1][1] = snow;
   if (avg < sea) out.copy(p.sandWet).lerp(p.water, Math.min(1, (sea - avg) / 60));
-  else if (avg >= stops[stops.length - 1][0]) out.copy(p.snow);
+  else if (avg >= stops[stops.length - 1][0]) out.copy(snow);
   else {
     let k = 1;
     while (k < stops.length - 1 && avg >= stops[k][0]) k++;
@@ -70,6 +87,8 @@ export function faceColor(p: TerrainPalette, sea: number, h0: number, h1: number
     const layer = Math.floor(avg / 14) % 3;
     const high = avg >= b.rock - 10;
     tmp.copy(high ? p.rock : p.cliff).lerp(high ? p.rockDark : p.cliffDark, layer === 0 ? 0.65 : layer === 1 ? 0.2 : 0.4);
+    // look v3: the middle stratum of earth cliffs reads as a pale sandstone band
+    if (p.look && !high && layer === 1) tmp.lerp(p.sand, p.look.strataSand);
     out.lerp(tmp, Math.min(0.95, 0.5 + (span - p.maxWalkSlope * 0.85) / (p.maxWalkSlope * 0.4)));
   }
   if (scar > 0) out.lerp(p.scar, Math.min(0.85, scar / 60));

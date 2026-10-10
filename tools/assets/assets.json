@@ -13463,6 +13463,645 @@
         "nonmanifold_edges": 0,
         "warnings": []
       }
+    },
+    {
+      "id": "building.dwelling_small.bakeoff_v3",
+      "class": "buildings",
+      "prompt": "a single small round hut with a steep layered conical straw thatch roof, golden straw thatch roof in warm gold and honey tones, layered shaggy bundles, pale cream plastered mud walls, a dark wooden plank door, tilt-shift miniature village look, one clearly visible bright royal blue cloth band above the door and a small blue pennant on the roof peak (the only blue in the image)",
+      "refs": [
+        "making-of/a1/20261008-2206_style-ref-06.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1100,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "thatch",
+        "footprint": 1.8,
+        "tribe_color": "azure",
+        "textured": true,
+        "bakeoff": "dwelling_v3"
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-10T01:07:57Z",
+          "finished": "2026-10-10T01:08:13Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.dwelling_small.bakeoff_v3/concept.jpg",
+          "sha256": "aed1933e75cd980cbf4d87c883bfdfb8fe4a0281680034a446441eaed937500f",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 512737,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "083eac426cddd32fdadbd5663da240c22fb629795506e303d4673597ac67f064"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a1235a-aa51-74d0-932f-f2456ccba216",
+          "started": "2026-10-10T01:08:13Z",
+          "finished": "2026-10-10T01:08:50Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.dwelling_small.bakeoff_v3/model.glb",
+          "sha256": "6ffe01845a1d137bfcfbbb3976ebeb8744c0c1b1dd4b3d0d18afd15649154327",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "bytes": 2710708,
+            "progress": 100
+          },
+          "request_hash": "75be0b0d59dd3c50ea4288bd1204a0f3344050fe5fe515e7ba984cc4ca926d2e"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-10T01:08:51Z",
+          "finished": "2026-10-10T01:09:07Z",
+          "cost": null,
+          "output_path": "assets/models/building.dwelling_small.bakeoff_v3.glb",
+          "sha256": "32a51a2e382a2034c021065958f6f758c00d696c55f42b87598a258f50a2ca42",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1014,
+            "tris_out": 1014,
+            "decimated": false,
+            "scale": 1.8,
+            "bounds_min": [
+              -0.9,
+              -0.9,
+              0.0
+            ],
+            "bounds_max": [
+              0.9,
+              0.9,
+              1.7999
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "cloth",
+              "forest",
+              "rock",
+              "rockDark",
+              "scar",
+              "skin1",
+              "skin2",
+              "skin3",
+              "stone",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "forest": 44,
+              "rock": 2,
+              "rockDark": 20,
+              "wood": 17,
+              "woodDark": 208,
+              "thatch": 36,
+              "stone": 1,
+              "skin1": 115,
+              "skin2": 306,
+              "skin3": 95,
+              "cloth": 54,
+              "azure": 34,
+              "scar": 82
+            },
+            "tribe_faces": 34,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.296,
+              0.985
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "ee230b59aa5808d44e18bd8f2705a1b69d3f953aaf1cf05299a21c793c0c01e6"
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 1014,
+        "verts": 3042,
+        "bounds": {
+          "min": [
+            -0.9,
+            0.0,
+            -0.9
+          ],
+          "max": [
+            0.9,
+            1.7999,
+            0.9
+          ],
+          "size": [
+            1.8,
+            1.7999,
+            1.8
+          ]
+        },
+        "bytes": 129112,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 34,
+        "tribe_height_range": [
+          0.296,
+          0.985
+        ],
+        "boundary_edges": 110,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "building.dwelling_medium.bakeoff_v3",
+      "class": "buildings",
+      "prompt": "a larger round hut with a wide layered domed straw thatch roof with a smoke hole and a small covered timber porch at the door, golden straw thatch roof in warm gold and honey tones, layered shaggy bundles, pale cream plastered mud walls, a dark wooden plank door, tilt-shift miniature village look, one clearly visible bright royal blue cloth band above the door and a small blue pennant on the roof peak (the only blue in the image)",
+      "refs": [
+        "making-of/a1/20261008-2206_style-ref-06.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1400,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "thatch",
+        "footprint": 2.0,
+        "tribe_color": "azure",
+        "textured": true,
+        "bakeoff": "dwelling_v3"
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-10T01:08:15Z",
+          "finished": "2026-10-10T01:08:31Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.dwelling_medium.bakeoff_v3/concept.jpg",
+          "sha256": "710bfd9b820d95f615587c13b83bbe64fb2642753d811dd7053af1b2b2e09ce2",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 656653,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "bed551669242566fcfa43433d4c220758ad87061fdfc42b1f5e263d22e27f58b"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a1235a-f2c9-768f-b0ce-d8a47582e336",
+          "started": "2026-10-10T01:08:31Z",
+          "finished": "2026-10-10T01:09:10Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.dwelling_medium.bakeoff_v3/model.glb",
+          "sha256": "9651dcd8f6f9bda8095fa1b93e2313455cccf1b237897d652c114aafaed6e33a",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "progress": 100,
+            "bytes": 2986100
+          },
+          "request_hash": "0d9f3d81ba6379951786b8c4a52729f741c884c6e41cb9ddd983314e82a6ffd3"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-10T01:09:11Z",
+          "finished": "2026-10-10T01:09:19Z",
+          "cost": null,
+          "output_path": "assets/models/building.dwelling_medium.bakeoff_v3.glb",
+          "sha256": "c8da9dad7d8824bdd5c4dc4e44a5e0c21bd82e26d1396284c6ece4edfee9b319",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1458,
+            "tris_out": 1458,
+            "decimated": false,
+            "scale": 2.00856,
+            "bounds_min": [
+              -0.9859,
+              -1.0,
+              0.0
+            ],
+            "bounds_max": [
+              0.9859,
+              1.0,
+              1.6741
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "rock",
+              "rockDark",
+              "scar",
+              "skin1",
+              "skin2",
+              "skin3",
+              "stone",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "rock": 16,
+              "rockDark": 34,
+              "wood": 211,
+              "woodDark": 272,
+              "thatch": 69,
+              "stone": 67,
+              "skin1": 17,
+              "skin2": 405,
+              "skin3": 60,
+              "azure": 13,
+              "scar": 294
+            },
+            "tribe_faces": 13,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.92,
+              0.969
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "3738138ad3bb96e2dee7b8cae7b4a937f1b9d60388189672f71363d5bf2114be"
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 1458,
+        "verts": 4373,
+        "bounds": {
+          "min": [
+            -0.9859,
+            0.0,
+            -1.0
+          ],
+          "max": [
+            0.9859,
+            1.6741,
+            1.0
+          ],
+          "size": [
+            1.9717,
+            1.6741,
+            2.0
+          ]
+        },
+        "bytes": 185000,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 13,
+        "tribe_height_range": [
+          0.92,
+          0.969
+        ],
+        "boundary_edges": 70,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "building.dwelling_large.bakeoff_v3",
+      "class": "buildings",
+      "prompt": "a big round hut with a layered domed straw thatch roof and a smaller round annex hut attached beside it with its own small thatch roof, golden straw thatch roof in warm gold and honey tones, layered shaggy bundles, pale cream plastered mud walls, a dark wooden plank door, tilt-shift miniature village look, one clearly visible bright royal blue cloth band above the door and a small blue pennant on the roof peak (the only blue in the image)",
+      "refs": [
+        "making-of/a1/20261008-2206_style-ref-06.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1800,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "thatch",
+        "footprint": 2.2,
+        "tribe_color": "azure",
+        "textured": true,
+        "bakeoff": "dwelling_v3"
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-10T01:08:33Z",
+          "finished": "2026-10-10T01:08:45Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.dwelling_large.bakeoff_v3/concept.jpg",
+          "sha256": "9d635269188fd44372cd5e7f1c292b1b8e0c9001900c4d18f27f8c2ec59426ea",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 452406,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "f21a175520e2374357df95e907224a1a95f8109789b878ba8e135edc90735d9d"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a1235b-29a0-7598-9cb0-9f45e347db7f",
+          "started": "2026-10-10T01:08:45Z",
+          "finished": "2026-10-10T01:09:21Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.dwelling_large.bakeoff_v3/model.glb",
+          "sha256": "951186f1448c038e8aede79363df77c996c8151ca42896cad2377af10f919765",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "progress": 100,
+            "bytes": 2493688
+          },
+          "request_hash": "640bda97216e148e416b35baba3afbe353ec01652751953592e9eae9392cb261"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-10T01:09:21Z",
+          "finished": "2026-10-10T01:09:33Z",
+          "cost": null,
+          "output_path": "assets/models/building.dwelling_large.bakeoff_v3.glb",
+          "sha256": "c684de305e6aebc79f3aa3efa0756832b62c77f0bec59704c6fd757683c9f2b5",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1891,
+            "tris_out": 1891,
+            "decimated": false,
+            "scale": 2.2,
+            "bounds_min": [
+              -1.1,
+              -0.9752,
+              0.0
+            ],
+            "bounds_max": [
+              1.1,
+              0.9752,
+              1.9215
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "cloth",
+              "rock",
+              "rockDark",
+              "scar",
+              "skin1",
+              "skin2",
+              "skin3",
+              "stone",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "rock": 64,
+              "rockDark": 11,
+              "wood": 261,
+              "woodDark": 29,
+              "thatch": 208,
+              "stone": 42,
+              "skin1": 132,
+              "skin2": 793,
+              "skin3": 11,
+              "cloth": 96,
+              "azure": 82,
+              "scar": 162
+            },
+            "tribe_faces": 82,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.28,
+              0.999
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "949774f421fe84919c0269f3ee261f082e04c5fafc59a5581fa509ffa4366d51"
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 1891,
+        "verts": 5673,
+        "bounds": {
+          "min": [
+            -1.1,
+            0.0,
+            -0.9752
+          ],
+          "max": [
+            1.1,
+            1.9215,
+            0.9752
+          ],
+          "size": [
+            2.2,
+            1.9215,
+            1.9505
+          ]
+        },
+        "bytes": 239616,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 82,
+        "tribe_height_range": [
+          0.28,
+          0.999
+        ],
+        "boundary_edges": 165,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     }
   ]
 }

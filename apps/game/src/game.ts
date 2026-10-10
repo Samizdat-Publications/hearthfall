@@ -6,7 +6,7 @@
 // M9: campaign levels (data/levels) run as sessions too; the level runtime decides the end.
 import { SKIRMISH_DEFAULTS, validateLevel, validatePack, type LevelDef, type ValidatedPack } from "@hearthfall/data";
 import { CAT, OUTCOME, World, commandsByTick, createScenarioWorld, shaperIndex, wrapDelta, type Command, type ScenarioDef, type SimEvent } from "@hearthfall/sim";
-import { ThreeRenderer, type CameraState } from "@hearthfall/render";
+import { aliasModels, ThreeRenderer, type CameraState } from "@hearthfall/render";
 import { DEFAULT_AI } from "./opponents.ts";
 import { actionFor, spellSlot, type KeyAction, type Screen } from "@hearthfall/ui";
 import { LOG_TAIL, campaignParams, createSkirmish, type SaveGame, type SkirmishParams } from "./session.ts";
@@ -222,7 +222,7 @@ export class Game {
     // the game never waits for models: placeholders draw until they arrive
     if (params.models)
       void this.renderer
-        .loadModels(MODEL_URLS)
+        .loadModels(aliasModels(MODEL_URLS, this.pack.files.style.render?.modelAlias))
         .then(() => this.onChange())
         .catch((e: unknown) => console.warn("model layers kept their placeholders:", e));
     const store = browserKV();

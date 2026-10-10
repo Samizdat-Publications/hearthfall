@@ -221,6 +221,13 @@ export const StyleSchema = z.strictObject({
       space: z.strictObject({ ...comment, top: hex, horizon: hex, stars: z.number().min(0).max(1), rim: hex }).optional(),
       /** look v2: density of white foam strokes on open water (0 turns them off) */
       foamStrokes: z.number().min(0).max(1).optional(),
+      /** model id to the id of the file that replaces it (BACKLOG 14a-4, models.ts aliasModels) */
+      modelAlias: z.record(z.string().regex(/^[a-z]+\.[a-z0-9_]+$/), z.string().regex(/^[a-z]+\.[a-z0-9_]+$/)).optional(),
+      /** look v3 snow caps and sandstone strata (BACKLOG 14a-4, terrainMesh.ts TerrainBandsLook), height units */
+      terrainBands: z
+        .strictObject({ snowStart: z.number().int().min(0), snowFull: z.number().int().min(0), strataSand: z.number().min(0).max(1), snowBright: z.number().min(0.5).max(2) })
+        .refine((b) => b.snowFull > b.snowStart, "snowFull must be above snowStart")
+        .optional(),
       /** look v3 tree mix by altitude band (BACKLOG 14a-3, props.ts TreeMix) */
       trees: z
         .strictObject({

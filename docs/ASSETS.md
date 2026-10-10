@@ -107,6 +107,7 @@ The pipeline stops a class when its cap is reached and logs the shortfall in PRO
 | Meshy meshy-t2 text-to-3D preview props (trees, rocks) | 5 credits | 5 credits each, 300 to 356 tris trees, 152 to 232 tris rocks | 2026-10-08 |
 | Meshy meshy-t2 textured image-to-3D, v1 units (smart-topology, target 1400) | 15 credits | 15 credits each, 6 models (4 new plus 2 redos), $0.30 each at the ledger rate; Gemini concept with ref_04 style reference $0.0336 each; returned tris 1394 to 1520 | 2026-10-08 |
 | Meshy meshy-t2 textured image-to-3D plus Gemini concept (B1: `unit.shade`, `building.shade_den`) | 15 credits + $0.034 | 15 credits each ($0.30 at the ledger rate) + $0.0336 each = $0.667 for the pair; returned tris 1443 and 2127, no QA warnings, no redraws | 2026-10-09 |
+| Meshy meshy-t2 textured image-to-3D plus Gemini concept with the tilt-shift style-ref-06 as reference (BACKLOG 14a-4, 3 candidate dwellings `building.dwelling_*.bakeoff_v3`) | 15 credits + $0.034 each | 15 credits each ($0.30 at the ledger rate) + $0.0336 each = $1.00 for the set; returned tris 1014, 1458, 1891, no QA warnings, no redraws | 2026-10-09 |
 | Meshy rig / animation | 5 / 3 per action | | |
 | Tripo v3 image-to-3D + smart_low_poly | 30 to 40 credits | | |
 | Gemini 1K image with one reference image (unit concepts) | $0.034 | $0.0336 each, `generateContent` route again | 2026-10-08 |

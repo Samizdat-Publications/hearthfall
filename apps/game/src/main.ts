@@ -180,6 +180,13 @@ if (__DEBUG_API__ || game.params.debug) {
       game.paused = p;
     },
     setCamera: (c: string | Partial<CameraState>) => game.renderer.setCamera(c),
+    /** look shots: the highest terrain cell as [x, z, height] */
+    peak: () => {
+      const t = game.world.terrain;
+      let best = 0;
+      for (let i = 1; i < t.heights.length; i++) if (t.heights[i] > t.heights[best]) best = i;
+      return [best % t.size, Math.floor(best / t.size), t.heights[best]];
+    },
     /** look shots: the nearest low beach cell to (x, z) (land at most 6 above sea, water at least `deep` within 3 cells) */
     shore: (fx: number, fz: number, deep = 6) => {
       const t = game.world.terrain;

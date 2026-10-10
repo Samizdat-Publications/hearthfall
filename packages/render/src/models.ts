@@ -25,6 +25,21 @@ export function buildingModelIds(id: string, levels: number): string[] {
   const names = ["small", "medium", "large"];
   return Array.from({ length: levels }, (_, k) => `building.${id}_${names[Math.min(k, names.length - 1)]}`);
 }
+/**
+ * BACKLOG 14a-4: style.json `render.modelAlias` swaps a model id for another file (for example the look v3
+ * thatched dwellings, building.dwelling_small_v3) without touching the original. The target id is dropped
+ * so it is not fetched twice; an alias whose target is missing keeps the original.
+ */
+export function aliasModels(urls: Record<string, string>, alias: Record<string, string> | undefined): Record<string, string> {
+  if (!alias) return urls;
+  const out = { ...urls };
+  for (const [from, to] of Object.entries(alias)) {
+    if (!out[to]) continue;
+    out[from] = out[to];
+    delete out[to];
+  }
+  return out;
+}
 export const unitModelId = (id: string) => (id === "wild" ? "unit.wild_person" : `unit.${id}`);
 export const worshipModelId = (id: string) => `building.${id}`;
 export const TREE_MODELS = ["prop.tree_a", "prop.tree_b", "prop.tree_c"];

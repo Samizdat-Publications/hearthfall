@@ -133,6 +133,32 @@ def _bakeoff_units():
     return out
 
 
+def _dwelling_bakeoff_v3():
+    """BACKLOG 14a-4: candidate round-thatched-hut dwellings (look v3 miniature diorama). Written beside the live GLBs
+    with a `bakeoff` name so the loaders skip them; thumb step skipped (no icons for candidates)."""
+    ref = "making-of/a1/20261008-2206_style-ref-06.jpg"
+    tail = ("golden straw thatch roof in warm gold and honey tones, layered shaggy bundles, pale cream plastered mud walls, a dark wooden plank door, "
+            "tilt-shift miniature village look, one clearly visible bright royal blue cloth band above the door and a small blue pennant on the roof peak (the only blue in the image)")
+    rows = [
+        ("building.dwelling_small.bakeoff_v3", "a single small round hut with a steep layered conical straw thatch roof", 1100, 1.8),
+        ("building.dwelling_medium.bakeoff_v3", "a larger round hut with a wide layered domed straw thatch roof with a smoke hole and a small covered timber porch at the door", 1400, 2.0),
+        ("building.dwelling_large.bakeoff_v3", "a big round hut with a layered domed straw thatch roof and a smaller round annex hut attached beside it with its own small thatch roof", 1800, 2.2),
+    ]
+    out = []
+    for aid, subject, tris, fp in rows:
+        steps = {"concept": new_step("pending", "gemini"), "model": new_step("pending", "meshy"),
+                 "rig": new_step("skipped"), "animate": new_step("skipped"),
+                 "post": new_step("pending", "local"), "thumb": new_step("skipped")}
+        out.append({
+            "id": aid, "class": "buildings", "prompt": f"{subject}, {tail}", "refs": [ref], "provider": "meshy",
+            "params": {**CONCEPT_PARAMS, "route": "image", "target_polycount": tris, "budget_class": "building",
+                       "scheme": "sample", "default_color": "thatch", "footprint": fp, "tribe_color": "azure",
+                       "textured": True, "bakeoff": "dwelling_v3"},
+            "steps": steps,
+        })
+    return out
+
+
 def _sfx():
     rows = [
         ("sfx.ui_click", "a short soft wooden click", 0.5),
@@ -312,7 +338,7 @@ def _a3_icons():
 
 
 def v1_assets() -> list:
-    rows = _concepts() + _buildings() + _props() + _units() + _bakeoff_units() + _sfx() + _music() + _a3_sfx() + _a3_voice() + _a3_vfx() + _a3_icons()
+    rows = _concepts() + _buildings() + _props() + _units() + _bakeoff_units() + _dwelling_bakeoff_v3() + _sfx() + _music() + _a3_sfx() + _a3_voice() + _a3_vfx() + _a3_icons()
     for r in rows:
         r.setdefault("style_version", 1)
         r.setdefault("request_hash", None)

@@ -1,7 +1,16 @@
 // M10: HUD icons from the asset pipeline (assets/icons/icon.<kind>.<id>_128.png, docs/ASSETS.md). An id
 // without an icon returns undefined and the HUD keeps its text glyph.
+import style from "../../../data/base/style.json";
+
 const files = import.meta.glob("../../../assets/icons/icon.*_128.png", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
 const urls = new Map(Object.entries(files).map(([p, u]) => [p.split("/").pop()!.replace(/_128\.png$/, ""), u]));
+// BACKLOG 14a-4: a model swapped by style.json render.modelAlias shows the replacement's icon when it has one
+for (const [from, to] of Object.entries((style as { render?: { modelAlias?: Record<string, string> } }).render?.modelAlias ?? {})) {
+  const u = urls.get(`icon.${to}`);
+  if (!u) continue;
+  urls.set(`icon.${from}`, u);
+  urls.delete(`icon.${to}`);
+}
 
 /** Icon URL for a spell id. */
 export const spellIcon = (id: string): string | undefined => urls.get(`icon.spell.${id}`);

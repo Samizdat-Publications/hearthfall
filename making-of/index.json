@@ -830,6 +830,36 @@
       "when": "2026-10-10T01:05:33.078Z",
       "source": "external:trees.png",
       "bytes": 595870
+    },
+    {
+      "file": "b14/20261010-0117_thatched-huts-sheet.png",
+      "milestone": "B14",
+      "kind": "comparison",
+      "caption": "Look v3 dwellings: the old conical huts (top) against the new thatched round huts with cream walls and roof pennants (bottom), made for about one dollar.",
+      "highlight": true,
+      "when": "2026-10-10T01:17:28.887Z",
+      "source": "external:dwelling_v3_sheet.png",
+      "bytes": 689925
+    },
+    {
+      "file": "b14/20261010-0117_thatched-huts-ingame.png",
+      "milestone": "B14",
+      "kind": "screenshot",
+      "caption": "The thatched huts in game beside the Hearth, under the miniature focus band.",
+      "highlight": false,
+      "when": "2026-10-10T01:17:31.454Z",
+      "source": "external:huts.png",
+      "bytes": 586159
+    },
+    {
+      "file": "b14/20261010-0117_snow-caps.png",
+      "milestone": "B14",
+      "kind": "screenshot",
+      "caption": "Look v3 terrain: snow caps on the high peaks and terraced cliffs.",
+      "highlight": false,
+      "when": "2026-10-10T01:17:34.180Z",
+      "source": "external:peak.png",
+      "bytes": 792005
     }
   ]
 }

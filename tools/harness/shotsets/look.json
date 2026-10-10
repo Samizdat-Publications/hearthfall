@@ -1,5 +1,5 @@
 {
- "$comment": "Look comparisons (BACKLOG 14a, ADR-013): tilt-shift off, pre and post the palette pass at pixel sizes 3 and 2, default and close cameras, plus a coast view for painted water (14a-2).",
+ "$comment": "Look comparisons (BACKLOG 14a, ADR-013): tilt-shift off, pre and post the palette pass at pixel sizes 3 and 2, default and close cameras, plus a coast view for painted water (14a-2) and the highest peak for snow and strata, and two built dwellings near the Hearth (14a-4).",
  "shots": [
   {
    "id": "village_px3_off",
@@ -203,6 +203,69 @@
     },
     {
      "step": 40
+    }
+   ],
+   "coverage": {
+    "green": [
+     0.0,
+     0.95
+    ]
+   }
+  },
+  {
+   "id": "peak_post",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "default",
+    "tiltshift": "post",
+    "reveal": "1"
+   },
+   "kind": "world",
+   "steps": [
+    {
+     "eval": "const c = __game.peak(); __game.setCamera({ x: c[0], z: c[1], zoom: 0.26, yaw: 0.6 });"
+    },
+    {
+     "step": 5
+    }
+   ],
+   "coverage": {
+    "green": [
+     0.0,
+     0.95
+    ]
+   }
+  },
+  {
+   "id": "huts_post",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "default",
+    "tiltshift": "post"
+   },
+   "kind": "world",
+   "steps": [
+    {
+     "eval": "__game.pause(true)"
+    },
+    {
+     "assert": "__game.placeAtScreen('dwelling', 760, 400) === null"
+    },
+    {
+     "assert": "__game.placeAtScreen('dwelling', 520, 420) === null"
+    },
+    {
+     "step": 1800
+    },
+    {
+     "eval": "const h = __game.getSummary().tribes[0].hearth; __game.setCamera({ x: h[0], z: h[1], zoom: 0.12, yaw: 0.6 });"
+    },
+    {
+     "step": 1
     }
    ],
    "coverage": {

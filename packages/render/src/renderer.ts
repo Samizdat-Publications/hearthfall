@@ -124,6 +124,7 @@ export class ThreeRenderer implements Renderer {
       cliff: C("cliff", "#8f5e36"),
       cliffDark: C("cliffDark", "#5a371d"),
       bands: { shore: 0, lowland: 0, grass: 0, highland: 0, rock: 0, peak: 0 },
+      look: o.style.render?.terrainBands,
       heightScale: (o.verticalScale ?? 2.0) / o.heightUnitsPerWorldUnit,
       maxWalkSlope: 20,
     };

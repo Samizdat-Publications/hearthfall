@@ -1,9 +1,9 @@
 // Real GLB models (M10): every v1 model parses in Node, splits into body and tint by the marker color,
 // keeps every triangle, and every tribe-owned model ends up with a tint part (marker color or banner).
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import * as THREE from "three";
-import { buildingModelIds, loadModels, splitModel, trimBase, unitModelId, withBanner, worshipModelId, TREE_MODELS } from "../src/models.ts";
+import { aliasModels, buildingModelIds, loadModels, splitModel, trimBase, unitModelId, withBanner, worshipModelId, TREE_MODELS } from "../src/models.ts";
 
 const ROOT = new URL("../../../", import.meta.url);
 const style = JSON.parse(readFileSync(new URL("data/base/style.json", ROOT), "utf8"));
@@ -67,5 +67,20 @@ describe("models", () => {
     const after = trimBase(tb.body!, tb.size.y, 0.2, 0.45).getAttribute("position").count;
     expect(after).toBeLessThan(before);
     expect(after).toBeGreaterThan(before * 0.6);
+  });
+});
+
+describe("BACKLOG 14a-4 model alias", () => {
+  it("points an id at the replacement file and drops the replacement id", () => {
+    const urls = { "building.dwelling_small": "old.glb", "building.dwelling_small_v3": "new.glb", "unit.warden": "w.glb" };
+    expect(aliasModels(urls, { "building.dwelling_small": "building.dwelling_small_v3" })).toEqual({ "building.dwelling_small": "new.glb", "unit.warden": "w.glb" });
+    // a missing target keeps the original; no alias is a no-op
+    expect(aliasModels(urls, { "unit.warden": "unit.warden_v9" })["unit.warden"]).toBe("w.glb");
+    expect(aliasModels(urls, undefined)).toBe(urls);
+  });
+
+  it("every alias in style.json targets a model file that exists", () => {
+    const alias: Record<string, string> = style.render.modelAlias ?? {};
+    for (const to of Object.values(alias)) expect(existsSync(new URL(`assets/models/${to}.glb`, ROOT))).toBe(true);
   });
 });
