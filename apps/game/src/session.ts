@@ -7,7 +7,7 @@
 // campaign carry), so a save restores the level it was made in even after the level file changes.
 import type { LevelDef, ValidatedPack } from "@hearthfall/data";
 import { makeBot } from "@hearthfall/ai";
-import { World, createLevelWorld, levelWorldInit, type CampaignCarry, type Command, type WorldInit, type WorldSnapshot } from "@hearthfall/sim";
+import { World, createLevelWorld, levelWorldInit, type BotSpec, type CampaignCarry, type Command, type WorldInit, type WorldSnapshot } from "@hearthfall/sim";
 import { levelOpponents, opponentsFor } from "./opponents.ts";
 
 export interface SkirmishParams {
@@ -50,11 +50,15 @@ export function skirmishInit(pack: ValidatedPack, p: SkirmishParams): WorldInit 
   return { pack: pack.files, packHash: pack.hash, seed: p.seed, map: { generator: p.level, size: p.size, tribes: p.tribes }, ...(p.rules ? { rules: p.rules } : {}), ...(p.forge ? { forge: true } : {}), ...(p.weather === "rain" ? { weather: "rain" as const } : {}) };
 }
 
-/** A new skirmish (or campaign level) world with its opponents attached. */
-export function createSkirmish(pack: ValidatedPack, p: SkirmishParams): World {
-  if (p.campaign) return createLevelWorld({ def: p.campaign.def, carry: p.campaign.carry }, pack.files, pack.hash, makeBot);
-  const w = new World(skirmishInit(pack, p));
-  for (const c of opponentsFor(w.tribes.length, LOCAL_TRIBE, p)) w.controllers.push(c);
+/** A new skirmish (or campaign level) world with its opponents attached (BACKLOG 50: the recorded ones when given). */
+export function createSkirmish(pack: ValidatedPack, p: SkirmishParams, bots?: BotSpec[]): World {
+  let w: World;
+  if (p.campaign) w = createLevelWorld({ def: p.campaign.def, carry: p.campaign.carry }, pack.files, pack.hash, makeBot);
+  else {
+    w = new World(skirmishInit(pack, p));
+    for (const c of opponentsFor(w.tribes.length, LOCAL_TRIBE, p)) w.controllers.push(c);
+  }
+  if (bots) attachBots(w, bots);
   return w;
 }
 
@@ -77,6 +81,20 @@ export interface SaveGame {
   pending: Command[];
   /** BACKLOG 79: the local player's match stats (end screen), app side only; older saves lack it */
   stats?: Record<string, number>;
+  /** BACKLOG 50: the specs of the controllers that ran; a load rebuilds exactly these (older saves: from params) */
+  bots?: BotSpec[];
+}
+
+/** BACKLOG 50: the specs of the world's controllers, or undefined when one was not built by makeBot */
+export function recordedBots(w: World): BotSpec[] | undefined {
+  if (w.controllers.some((c) => !c.botSpec)) return undefined;
+  return w.controllers.map((c) => JSON.parse(JSON.stringify(c.botSpec)) as BotSpec);
+}
+
+/** BACKLOG 50: replace the world's controllers with ones built from recorded specs */
+export function attachBots(w: World, bots: BotSpec[]): void {
+  w.controllers.length = 0;
+  for (const b of bots) w.controllers.push(makeBot(b));
 }
 
 export const LOG_TAIL = 5000;
@@ -94,6 +112,7 @@ export function makeSave(w: World, params: SkirmishParams, log: Command[], pendi
     log: log.slice(-LOG_TAIL),
     pending: pending.map((c) => ({ ...c })),
     ...(stats ? { stats: { ...stats } } : {}),
+    ...(recordedBots(w) ? { bots: recordedBots(w) } : {}),
   };
 }
 
@@ -102,7 +121,7 @@ export function restoreSave(pack: ValidatedPack, s: SaveGame): World {
   if (s.version !== SAVE_VERSION) throw new Error(`save version ${s.version} is not supported`);
   if (s.packHash !== pack.hash) throw new Error("save was made with different game data");
   const w = World.restore(skirmishInit(pack, s.params), s.snapshot);
-  const cs = s.params.campaign ? levelOpponents(s.params.campaign.def) : opponentsFor(w.tribes.length, LOCAL_TRIBE, s.params);
+  const cs = s.bots ? s.bots.map((b) => makeBot(b)) : s.params.campaign ? levelOpponents(s.params.campaign.def) : opponentsFor(w.tribes.length, LOCAL_TRIBE, s.params);
   for (const c of cs) {
     const st = s.controllers.find((x) => x.tribe === c.tribe);
     if (st && c.loadState) c.loadState(st.state);

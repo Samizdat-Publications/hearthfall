@@ -47,6 +47,25 @@ describe("skirmish save games (M8)", () => {
     expect(() => restoreSave(pack, { ...s, hash: "0" })).toThrow(/damaged/);
   });
 
+  it("BACKLOG 50: a save records its opponents' specs and a load rebuilds exactly those, whatever the params say", () => {
+    const a = createSkirmish(pack, P);
+    a.run(400);
+    const s = decodeSave(encodeSave(makeSave(a, P, [], [], "x")));
+    expect(s.bots).toEqual([
+      { type: "opponent", tribe: 1, personality: "aggressive", difficulty: "hard", offset: 1 },
+      { type: "opponent", tribe: 2, personality: "sneaky", difficulty: "hard", offset: 2 },
+    ]);
+    // a future change to how params map to opponents must not change a recorded game
+    const b = restoreSave(pack, { ...s, params: { ...s.params, ai: ["turtle"] } });
+    expect(b.controllers.map((c) => c.botSpec)).toEqual(s.bots);
+    a.run(600);
+    b.run(600);
+    expect(b.hash().all).toBe(a.hash().all);
+    // an older save without specs still builds them from its params
+    const { bots: _b, ...old } = s;
+    expect(restoreSave(pack, old).controllers.map((c) => c.botSpec)).toEqual(s.bots);
+  });
+
   it("BACKLOG 79: the end screen stats ride along in the save; older or damaged stats load as 0", () => {
     const a = createSkirmish(pack, P);
     a.run(20);

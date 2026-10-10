@@ -4,8 +4,8 @@
 // save every `every` ticks so seeking back restores the nearest one instead of replaying from the start.
 // No renderer here, so it is unit tested in Node.
 import type { ValidatedPack } from "@hearthfall/data";
-import type { Command, World } from "@hearthfall/sim";
-import { createSkirmish, decodeData, encodeData, makeSave, restoreSave, type SaveGame, type SkirmishParams } from "./session.ts";
+import type { BotSpec, Command, World } from "@hearthfall/sim";
+import { createSkirmish, decodeData, encodeData, makeSave, recordedBots, restoreSave, type SaveGame, type SkirmishParams } from "./session.ts";
 
 export const REPLAY_VERSION = 1;
 /** browser storage key of the last finished match's replay */
@@ -24,6 +24,8 @@ export interface Replay {
   endHash: string;
   /** wall clock ISO time (app side) */
   savedAt: string;
+  /** BACKLOG 50: the specs of the opponents that ran; playback builds exactly these (older replays: from params) */
+  bots?: BotSpec[];
 }
 
 export function makeReplay(w: World, params: SkirmishParams, start: SaveGame | null, commands: Command[], savedAt: string): Replay {
@@ -36,6 +38,7 @@ export function makeReplay(w: World, params: SkirmishParams, start: SaveGame | n
     endTick: w.tick,
     endHash: w.hash().all,
     savedAt,
+    ...(recordedBots(w) ? { bots: recordedBots(w) } : {}),
   };
 }
 
@@ -78,7 +81,7 @@ export class ReplayRun {
       if (list) list.push(c);
       else this.byTick.set(c.tick, [c]);
     }
-    this.world = replay.start ? restoreSave(pack, { ...replay.start, pending: [] }) : createSkirmish(pack, replay.params);
+    this.world = replay.start ? restoreSave(pack, { ...replay.start, pending: [] }) : createSkirmish(pack, replay.params, replay.bots);
     this.startTick = this.world.tick;
     this.checkpoint();
   }

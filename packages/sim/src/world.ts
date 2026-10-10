@@ -22,8 +22,17 @@ import { VisionSystem, type VisionState } from "./vision.ts";
 import { VehicleSystem } from "./vehicles.ts";
 
 /** Deterministic in-sim decision maker (AI opponent or test bot); emits Commands at its cadence. */
+/** BACKLOG 50: the plain JSON a controller was built from (packages/ai makeBot), recorded in saves and replays */
+export interface BotSpec {
+  type: string;
+  tribe: number;
+  [k: string]: unknown;
+}
+
 export interface Controller {
   readonly tribe: number;
+  /** BACKLOG 50: set by makeBot; saves and replays rebuild the controllers from these specs */
+  readonly botSpec?: BotSpec;
   /** run when tick % every === offset */
   readonly every: number;
   readonly offset: number;

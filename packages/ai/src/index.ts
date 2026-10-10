@@ -1,5 +1,5 @@
 // @hearthfall/ai: deterministic controllers (opponents and test bots) using the Command API.
-import type { Controller } from "@hearthfall/sim";
+import type { BotSpec, Controller } from "@hearthfall/sim";
 import { WanderBot } from "./wander.ts";
 import { EconomyBot } from "./economyBot.ts";
 import { WarBot } from "./warBot.ts";
@@ -12,8 +12,15 @@ export { WarBot, type WarBotOptions } from "./warBot.ts";
 export { OpponentAI, type OpponentOptions, type OpponentState, type OpponentStats, type Personality } from "./opponent.ts";
 export { RUSHER, TURTLE_BOT, RandomLegalBot, SpellSpammerBot, rusher, turtleBot } from "./testBots.ts";
 
-/** Build a controller from a scenario or soak spec: {type: "wander", tribe, ...options}. */
-export function makeBot(spec: { type: string; tribe: number; [k: string]: unknown }): Controller {
+/**
+ * Build a controller from a scenario or soak spec: {type: "wander", tribe, ...options}. The controller keeps a
+ * JSON copy as `botSpec` (BACKLOG 50), so a save or replay rebuilds exactly these controllers.
+ */
+export function makeBot(spec: BotSpec): Controller {
+  return Object.assign(build(spec), { botSpec: JSON.parse(JSON.stringify(spec)) as BotSpec });
+}
+
+function build(spec: BotSpec): Controller {
   switch (spec.type) {
     case "wander":
       return new WanderBot(spec as never);

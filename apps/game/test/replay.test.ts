@@ -53,6 +53,18 @@ describe("replays (BACKLOG 19)", () => {
     expect(run.done).toBe(true);
   });
 
+  it("BACKLOG 50: a replay records its opponents' specs and plays them back even when the params would build others", () => {
+    const { w, log } = play(600);
+    const r = decodeReplay(encodeReplay(makeReplay(w, P, null, log, "x")), pack);
+    expect(r.bots).toEqual([{ type: "opponent", tribe: 1, personality: "aggressive", difficulty: "normal", offset: 1 }]);
+    const run = new ReplayRun(pack, { ...r, params: { ...r.params, ai: ["turtle"] } }, 200);
+    expect(run.seek(600)).toBe(true);
+    expect(run.verified()).toBe(true);
+    // a checkpoint taken during playback keeps the recorded opponents too
+    run.seek(300);
+    expect(run.world.controllers.map((c) => c.botSpec)).toEqual(r.bots);
+  });
+
   it("a replay of a session loaded from a save starts at the save", () => {
     const a = createSkirmish(pack, P);
     a.run(300);
