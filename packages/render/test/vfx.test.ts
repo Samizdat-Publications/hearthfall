@@ -9,14 +9,24 @@ import { VfxLayer } from "../src/vfx.ts";
 
 const world = () => {
   const pack = basePack();
-  return new World({ pack: pack.files, packHash: pack.hash, seed: 5, map: { generator: "flat", size: 64, tribes: 2 } });
+  return new World({
+    pack: pack.files,
+    packHash: pack.hash,
+    seed: 5,
+    map: { generator: "flat", size: 64, tribes: 2 },
+  });
 };
 
 describe("vfx layer", () => {
   it("draws a violet halo while a chant runs", () => {
     const w = world();
     const v = new VfxLayer(makeBendUniforms());
-    v.consume([{ type: "chantBegun", x: 20, y: 20 } as unknown as SimEvent], w, () => 0, 1);
+    v.consume(
+      [{ type: "chantBegun", x: 20, y: 20 } as unknown as SimEvent],
+      w,
+      () => 0,
+      1,
+    );
     v.update(w, 0.5, 20, 20, 1);
     expect(v.drawnBy().halo).toBe(1);
     const c = v.haloColor(0);
@@ -24,10 +34,43 @@ describe("vfx layer", () => {
     expect(c.r).toBeGreaterThan(c.g);
   });
 
+  it("marks a failed player order with a red ring, once per target cell, and ignores unmarked failures (BACKLOG 45)", () => {
+    const w = world();
+    const v = new VfxLayer(makeBendUniforms());
+    const ev = (o: Record<string, unknown>) =>
+      ({ tick: 3, x: 30.5, y: 22.5, ...o }) as unknown as SimEvent;
+    const a = ev({ type: "orderFailed", tribe: 0 });
+    const b = ev({ type: "orderFailed", tribe: 0 });
+    v.failedOrders.add(a);
+    v.failedOrders.add(b);
+    v.consume(
+      [
+        a,
+        b,
+        ev({ type: "orderFailed", tribe: 0 }),
+        ev({ type: "orderGaveUp", tribe: 0 }),
+      ],
+      w,
+      () => 0,
+      1,
+    );
+    v.update(w, 0.3, 30, 22, 1);
+    const d = v.drawnBy();
+    expect(d.ring).toBe(1);
+    expect(d.halo).toBe(1);
+    const c = v.haloColor(0);
+    expect(c.r).toBeGreaterThan(c.g * 2);
+  });
+
   it("marks a melee hit with a dust halo and a flash", () => {
     const w = world();
     const v = new VfxLayer(makeBendUniforms());
-    v.consume([{ type: "melee", id: 1, x: 12, y: 12 } as unknown as SimEvent], w, () => 0, 1);
+    v.consume(
+      [{ type: "melee", id: 1, x: 12, y: 12 } as unknown as SimEvent],
+      w,
+      () => 0,
+      1,
+    );
     v.update(w, 0.1, 12, 12, 1);
     const d = v.drawnBy();
     expect(d.halo).toBe(1);
@@ -61,7 +104,12 @@ describe("vfx layer", () => {
     fx("whirlwind", 4);
     v.update(w, 0, 30, 30, 1);
     expect(v.drawnBy().spark).toBe(48);
-    v.consume([{ type: "meteor", x: 25, y: 25, r: 1.2 } as unknown as SimEvent], w, () => 1, 1);
+    v.consume(
+      [{ type: "meteor", x: 25, y: 25, r: 1.2 } as unknown as SimEvent],
+      w,
+      () => 1,
+      1,
+    );
     v.update(w, 1.4, 25, 25, 1);
     expect(v.drawnBy().ring).toBe(1);
   });

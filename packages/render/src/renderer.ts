@@ -526,6 +526,11 @@ export class ThreeRenderer implements Renderer {
     this.stats.lastRemesh = this.chunks.length;
   }
 
+  /** BACKLOG 45: draw a red marker at the target of this failed or abandoned player order when it is consumed. */
+  markFailedOrder(e: import("@hearthfall/sim").SimEvent): void {
+    this.vfx.failedOrders.add(e);
+  }
+
   /** Feed sim events (collected per tick by the app) to the VFX layer. */
   consumeEvents(
     events: readonly import("@hearthfall/sim").SimEvent[],

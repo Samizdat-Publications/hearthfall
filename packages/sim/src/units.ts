@@ -39,11 +39,18 @@ export class UnitSystem {
 
   private vertexOf(x: number, y: number): number {
     const n = this.w.terrain.size;
-    return (((Math.round(x) % n) + n) % n) + (((Math.round(y) % n) + n) % n) * n;
+    return (
+      (((Math.round(x) % n) + n) % n) + (((Math.round(y) % n) + n) % n) * n
+    );
   }
 
   /** Give a move order. Groups at or above groupFlowMinUnits share a flow field to the goal. */
-  order(indices: number[], gx: number, gy: number, kind: number = ORDER.move): void {
+  order(
+    indices: number[],
+    gx: number,
+    gy: number,
+    kind: number = ORDER.move,
+  ): void {
     const E = this.w.ents;
     const m = this.w.cfg.pack.balance.movement;
     this.pf.refresh();
@@ -118,7 +125,8 @@ export class UnitSystem {
     this.flows.delete(goal);
     this.flows.set(goal, { field, version: t.version });
     // keep the cache small: drop the oldest inserted goals (insertion order is deterministic)
-    while (this.flows.size > m.flowCacheSize) this.flows.delete(this.flows.keys().next().value!);
+    while (this.flows.size > m.flowCacheSize)
+      this.flows.delete(this.flows.keys().next().value!);
     return field;
   }
 
@@ -141,10 +149,21 @@ export class UnitSystem {
       // dirty mask: changed rects grown by 2 cells
       const mask = this.dirtyMask;
       mask.fill(0);
-      if (rects) for (const r of rects) for (let yy = -2; yy <= r.h + 2; yy++) for (let xx = -2; xx <= r.w + 2; xx++) mask[((r.x + xx + n) % n) + ((r.y + yy + n) % n) * n] = 1;
-      const hits = (x: number, y: number) => !rects || mask[((x % n) + n) % n + (((y % n) + n) % n) * n] === 1;
+      if (rects)
+        for (const r of rects)
+          for (let yy = -2; yy <= r.h + 2; yy++)
+            for (let xx = -2; xx <= r.w + 2; xx++)
+              mask[((r.x + xx + n) % n) + ((r.y + yy + n) % n) * n] = 1;
+      const hits = (x: number, y: number) =>
+        !rects || mask[(((x % n) + n) % n) + (((y % n) + n) % n) * n] === 1;
       for (let i = 0; i < E.hi; i++) {
-        if (!E.alive[i] || E.cat[i] !== CAT.unit || E.order[i] === ORDER.none || E.waitPath[i]) continue;
+        if (
+          !E.alive[i] ||
+          E.cat[i] !== CAT.unit ||
+          E.order[i] === ORDER.none ||
+          E.waitPath[i]
+        )
+          continue;
         if (E.flowGoal[i] >= 0) {
           // flow fields were all dropped above and rebuild from the new terrain: the route may be
           // longer now, so progress restarts against it
@@ -162,8 +181,15 @@ export class UnitSystem {
             const by = (p[k] - bx) / n;
             const ddx = wrapD(bx - ax, n);
             const ddy = wrapD(by - ay, n);
-            const steps = Math.max(1, Math.ceil(Math.max(Math.abs(ddx), Math.abs(ddy))));
-            for (let q = 1; q <= steps && !touched; q++) touched = hits(Math.round(ax + (ddx * q) / steps), Math.round(ay + (ddy * q) / steps));
+            const steps = Math.max(
+              1,
+              Math.ceil(Math.max(Math.abs(ddx), Math.abs(ddy))),
+            );
+            for (let q = 1; q <= steps && !touched; q++)
+              touched = hits(
+                Math.round(ax + (ddx * q) / steps),
+                Math.round(ay + (ddy * q) / steps),
+              );
             ax = bx;
             ay = by;
           }
@@ -184,11 +210,23 @@ export class UnitSystem {
       const id = this.queue[this.qHead++];
       const i = E.index(id);
       if (i < 0 || E.order[i] === ORDER.none || !E.waitPath[i]) continue;
-      const start = this.pf.nearestWalkable(this.vertexOf(E.x[i], E.y[i]), m.snapRadius);
-      const goal = this.pf.nearestWalkable(this.vertexOf(E.gx[i], E.gy[i]), m.snapRadius);
+      const start = this.pf.nearestWalkable(
+        this.vertexOf(E.x[i], E.y[i]),
+        m.snapRadius,
+      );
+      const goal = this.pf.nearestWalkable(
+        this.vertexOf(E.gx[i], E.gy[i]),
+        m.snapRadius,
+      );
       E.waitPath[i] = 0;
       if (start < 0 || goal < 0) {
-        w.emit("orderFailed", { id, reason: "no walkable start or goal" });
+        w.emit("orderFailed", {
+          id,
+          reason: "no walkable start or goal",
+          tribe: E.tribe[i],
+          x: E.gx[i],
+          y: E.gy[i],
+        });
         this.stop(i);
         continue;
       }
@@ -196,7 +234,14 @@ export class UnitSystem {
       budget -= r.expanded + 1;
       expanded += r.expanded;
       if (!r.ok) {
-        w.emit("orderFailed", { id, reason: r.expanded > m.maxExpandPerSearch ? "search limit" : "unreachable" });
+        w.emit("orderFailed", {
+          id,
+          reason:
+            r.expanded > m.maxExpandPerSearch ? "search limit" : "unreachable",
+          tribe: E.tribe[i],
+          x: E.gx[i],
+          y: E.gy[i],
+        });
         this.stop(i);
         continue;
       }
@@ -206,13 +251,19 @@ export class UnitSystem {
       // route, or the unit would give up while walking it; a same-length route keeps the stuck count. Not
       // in a chase: a runner lengthens every repath, and that hopeless chase must still give up
       const len = E.atk[i] === NO_ENTITY ? this.routeLength(i, r.waypoints) : 0;
-      if (E.best[i] < 1e9 && len > E.best[i] + m.progressEpsilon) E.best[i] = len;
+      if (E.best[i] < 1e9 && len > E.best[i] + m.progressEpsilon)
+        E.best[i] = len;
     }
     this.queue = this.queue.slice(this.qHead);
     this.qHead = 0;
     this.expandedLastTick = expanded;
     // 5. movement
-    this.hash.rebuild(E.hi, (i) => E.alive[i] === 1 && E.cat[i] === CAT.unit && E.inside[i] < 0, E.x, E.y);
+    this.hash.rebuild(
+      E.hi,
+      (i) => E.alive[i] === 1 && E.cat[i] === CAT.unit && E.inside[i] < 0,
+      E.x,
+      E.y,
+    );
     const sepR = m.separationRadius;
     const sepR2 = sepR * sepR;
     const repath = secondsToTicks(m.repathSeconds, hz);
@@ -238,7 +289,11 @@ export class UnitSystem {
       if (E.ktick[i] < 0) E.ktick[i]++;
       if (E.ktick[i] > 0) {
         E.ktick[i]--;
-        if (E.ktick[i] === 0) E.ktick[i] = -secondsToTicks(w.cfg.pack.balance.combat.knockbackImmuneSeconds, hz);
+        if (E.ktick[i] === 0)
+          E.ktick[i] = -secondsToTicks(
+            w.cfg.pack.balance.combat.knockbackImmuneSeconds,
+            hz,
+          );
         const kx = E.kvx[i];
         const ky = E.kvy[i];
         E.kvx[i] *= w.cfg.pack.balance.combat.knockbackDecay;
@@ -253,7 +308,10 @@ export class UnitSystem {
       if (E.panic[i] > 0) {
         E.panic[i]--;
         const st = w.cfg.pack.balance.statuses.panic;
-        if (E.order[i] === ORDER.none || E.panic[i] % secondsToTicks(st.repickSeconds, hz) === 0) {
+        if (
+          E.order[i] === ORDER.none ||
+          E.panic[i] % secondsToTicks(st.repickSeconds, hz) === 0
+        ) {
           const a = w.rng.float("combat") * 6.283185307179586;
           const fx = (((E.x[i] + cosT(a) * st.fleeDistance) % n) + n) % n;
           const fy = (((E.y[i] + sinT(a) * st.fleeDistance) % n) + n) % n;
@@ -301,7 +359,13 @@ export class UnitSystem {
             }
           }
           if (field[v] === Infinity && best === Infinity) {
-            w.emit("orderFailed", { id: E.idOf(i), reason: "flow unreachable" });
+            w.emit("orderFailed", {
+              id: E.idOf(i),
+              reason: "flow unreachable",
+              tribe: E.tribe[i],
+              x: E.gx[i],
+              y: E.gy[i],
+            });
             this.stop(i);
             continue;
           }
@@ -321,7 +385,9 @@ export class UnitSystem {
               const d2 = ddx * ddx + ddy * ddy;
               if (E.pathPos[i] >= p.length - 1) break;
               const close = d2 < m.waypointRadius * m.waypointRadius;
-              const sees = d2 < m.sightRadius * m.sightRadius && this.pf.lineWalkableFrom(E.x[i], E.y[i], p[E.pathPos[i] + 1]);
+              const sees =
+                d2 < m.sightRadius * m.sightRadius &&
+                this.pf.lineWalkableFrom(E.x[i], E.y[i], p[E.pathPos[i] + 1]);
               if (!close && !sees) break;
               E.pathPos[i]++;
             }
@@ -343,7 +409,10 @@ export class UnitSystem {
         const gdx = wrapD(ex - E.x[i], n);
         const gdy = wrapD(ey - E.y[i], n);
         const gd = Math.sqrt(gdx * gdx + gdy * gdy);
-        if (gd < m.arriveRadius || (gd < m.crowdArriveRadius && E.stuck[i] > hz)) {
+        if (
+          gd < m.arriveRadius ||
+          (gd < m.crowdArriveRadius && E.stuck[i] > hz)
+        ) {
           this.stop(i);
         } else {
           const sx = wrapD(tx - E.x[i], n);
@@ -364,11 +433,28 @@ export class UnitSystem {
             if (E.stuck[i] >= giveUp) {
               // reachable 1 means the goal was in the unit's walkable component: a real stuck unit,
               // unless chase 1 (combat re-aims the goal at a moving target it could not close on)
-              const sv = this.pf.nearestWalkable(this.vertexOf(E.x[i], E.y[i]), 2);
-              const gv = this.pf.nearestWalkable(this.vertexOf(E.gx[i], E.gy[i]), 6);
-              const reachable = sv >= 0 && gv >= 0 && this.pf.comp[sv] === this.pf.comp[gv] ? 1 : 0;
+              const sv = this.pf.nearestWalkable(
+                this.vertexOf(E.x[i], E.y[i]),
+                2,
+              );
+              const gv = this.pf.nearestWalkable(
+                this.vertexOf(E.gx[i], E.gy[i]),
+                6,
+              );
+              const reachable =
+                sv >= 0 && gv >= 0 && this.pf.comp[sv] === this.pf.comp[gv]
+                  ? 1
+                  : 0;
               const chase = E.atk[i] !== NO_ENTITY ? 1 : 0;
-              w.emit("orderGaveUp", { id: E.idOf(i), reachable, chase, dist: +gd.toFixed(2) });
+              w.emit("orderGaveUp", {
+                id: E.idOf(i),
+                reachable,
+                chase,
+                dist: +gd.toFixed(2),
+                tribe: E.tribe[i],
+                x: E.gx[i],
+                y: E.gy[i],
+              });
               this.stop(i);
             } else if (E.stuck[i] % repath === 0 && E.flowGoal[i] < 0) {
               E.waitPath[i] = 1;
@@ -402,7 +488,8 @@ export class UnitSystem {
               continue;
             }
             const d = Math.sqrt(d2);
-            const push = ((sepR - d) / sepR) * m.separationStrength * m.separationScale;
+            const push =
+              ((sepR - d) / sepR) * m.separationStrength * m.separationScale;
             sx += (qx / d) * push;
             sy += (qy / d) * push;
           }
@@ -419,7 +506,10 @@ export class UnitSystem {
       let nx = xi + dx;
       let ny = yi + dy;
       // a unit already on an unwalkable vertex (pushed, or placed at a door on a slope) may always step out
-      if (this.pf.walkable(this.vertexOf(xi, yi)) && !this.pf.walkable(this.vertexOf(nx, ny))) {
+      if (
+        this.pf.walkable(this.vertexOf(xi, yi)) &&
+        !this.pf.walkable(this.vertexOf(nx, ny))
+      ) {
         if (this.pf.walkable(this.vertexOf(xi + dx, yi))) ny = yi;
         else if (this.pf.walkable(this.vertexOf(xi, yi + dy))) nx = xi;
         else {
@@ -447,7 +537,14 @@ export class UnitSystem {
       E.y[i] = ny;
     }
     // drowning (units pushed or standing in deep water)
-    for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.cat[i] === CAT.unit && E.inside[i] < 0 && t.drowns(E.x[i], E.y[i])) w.kill(i, "drowned");
+    for (let i = 0; i < E.hi; i++)
+      if (
+        E.alive[i] &&
+        E.cat[i] === CAT.unit &&
+        E.inside[i] < 0 &&
+        t.drowns(E.x[i], E.y[i])
+      )
+        w.kill(i, "drowned");
   }
 }
 

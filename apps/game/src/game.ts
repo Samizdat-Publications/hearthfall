@@ -4,32 +4,128 @@
 // M8: the game flow (main menu, skirmish, pause, saves, settings, end screen) is a `screen` here; the
 // sim only runs while no menu screen is up. menuBridge.ts turns this state into the menu view model.
 // M9: campaign levels (data/levels) run as sessions too; the level runtime decides the end.
-import { SKIRMISH_DEFAULTS, validateLevel, validatePack, type LevelDef, type ValidatedPack } from "@hearthfall/data";
-import { CAT, OUTCOME, World, commandsByTick, createScenarioWorld, shaperIndex, wrapDelta, type Command, type ScenarioDef, type SimEvent } from "@hearthfall/sim";
-import { aliasModels, ThreeRenderer, type CameraState } from "@hearthfall/render";
+import { orderNote } from "./orderNotes.ts";
+import {
+  SKIRMISH_DEFAULTS,
+  validateLevel,
+  validatePack,
+  type LevelDef,
+  type ValidatedPack,
+} from "@hearthfall/data";
+import {
+  CAT,
+  OUTCOME,
+  World,
+  commandsByTick,
+  createScenarioWorld,
+  shaperIndex,
+  wrapDelta,
+  type Command,
+  type ScenarioDef,
+  type SimEvent,
+} from "@hearthfall/sim";
+import {
+  aliasModels,
+  ThreeRenderer,
+  type CameraState,
+} from "@hearthfall/render";
 import { DEFAULT_AI } from "./opponents.ts";
-import { actionFor, spellSlot, type KeyAction, type Screen } from "@hearthfall/ui";
-import { LOG_TAIL, campaignParams, createSkirmish, type SaveGame, type SkirmishParams } from "./session.ts";
-import { campaignCarry, levelOpen, loadProgress, nextLevel, ordered, recordWin } from "./campaign.ts";
-import { QUALITY_SCALE, browserKV, loadSettings, type KV, type Settings } from "./storage.ts";
+import {
+  actionFor,
+  spellSlot,
+  type KeyAction,
+  type Screen,
+} from "@hearthfall/ui";
+import {
+  LOG_TAIL,
+  campaignParams,
+  createSkirmish,
+  type SaveGame,
+  type SkirmishParams,
+} from "./session.ts";
+import {
+  campaignCarry,
+  levelOpen,
+  loadProgress,
+  nextLevel,
+  ordered,
+  recordWin,
+} from "./campaign.ts";
+import {
+  QUALITY_SCALE,
+  browserKV,
+  loadSettings,
+  type KV,
+  type Settings,
+} from "./storage.ts";
 import { AudioHooks, MusicDirector, WebAudioPlayer } from "@hearthfall/audio";
-import { areaCounts, buildingAt, groupCenter, sameTypeNear, siteAt, troopCommand, type TroopIntent } from "./troops.ts";
+import {
+  areaCounts,
+  buildingAt,
+  groupCenter,
+  sameTypeNear,
+  siteAt,
+  troopCommand,
+  type TroopIntent,
+} from "./troops.ts";
 
-const packFiles = import.meta.glob("../../../data/base/*.json", { eager: true, import: "default" });
-const scenarioFiles = import.meta.glob("../../../scenarios/*.json", { eager: true, import: "default" });
-const levelFiles = import.meta.glob("../../../data/levels/*.json", { eager: true, import: "default" });
+/** BACKLOG 45: a failed or abandoned order counts as the player's for this long after the click */
+const ORDER_FEEDBACK_SEC = 60;
+const packFiles = import.meta.glob("../../../data/base/*.json", {
+  eager: true,
+  import: "default",
+});
+const scenarioFiles = import.meta.glob("../../../scenarios/*.json", {
+  eager: true,
+  import: "default",
+});
+const levelFiles = import.meta.glob("../../../data/levels/*.json", {
+  eager: true,
+  import: "default",
+});
 // M10: real GLB models by id (assets/models/<id>.glb); bake-off candidates are not game content
-const modelFiles = import.meta.glob(["../../../assets/models/*.glb", "!../../../assets/models/*bakeoff*"], { eager: true, query: "?url", import: "default" }) as Record<string, string>;
+const modelFiles = import.meta.glob(
+  ["../../../assets/models/*.glb", "!../../../assets/models/*bakeoff*"],
+  { eager: true, query: "?url", import: "default" },
+) as Record<string, string>;
 // M10: audio clips by id (assets/audio/<id>.ogg, indexed in assets/audio/index.json)
-const audioFiles = import.meta.glob("../../../assets/audio/*.ogg", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
-export const AUDIO_URLS: Record<string, string> = Object.fromEntries(Object.entries(audioFiles).map(([p, u]) => [p.split("/").pop()!.replace(/\.ogg$/, ""), u]));
-export const MODEL_URLS: Record<string, string> = Object.fromEntries(Object.entries(modelFiles).map(([p, u]) => [p.split("/").pop()!.replace(/\.glb$/, ""), u]));
+const audioFiles = import.meta.glob("../../../assets/audio/*.ogg", {
+  eager: true,
+  query: "?url",
+  import: "default",
+}) as Record<string, string>;
+export const AUDIO_URLS: Record<string, string> = Object.fromEntries(
+  Object.entries(audioFiles).map(([p, u]) => [
+    p
+      .split("/")
+      .pop()!
+      .replace(/\.ogg$/, ""),
+    u,
+  ]),
+);
+export const MODEL_URLS: Record<string, string> = Object.fromEntries(
+  Object.entries(modelFiles).map(([p, u]) => [
+    p
+      .split("/")
+      .pop()!
+      .replace(/\.glb$/, ""),
+    u,
+  ]),
+);
 
 export function loadPack(): ValidatedPack {
   const raw: Record<string, unknown> = {};
-  for (const [path, json] of Object.entries(packFiles)) raw[path.split("/").pop()!] = json;
+  for (const [path, json] of Object.entries(packFiles))
+    raw[path.split("/").pop()!] = json;
   const res = validatePack(raw);
-  if (!res.pack) throw new Error("data pack invalid: " + res.issues.slice(0, 3).map((i) => `${i.file} ${i.path} ${i.message}`).join("; "));
+  if (!res.pack)
+    throw new Error(
+      "data pack invalid: " +
+        res.issues
+          .slice(0, 3)
+          .map((i) => `${i.file} ${i.path} ${i.message}`)
+          .join("; "),
+    );
   return res.pack;
 }
 
@@ -38,14 +134,22 @@ export function loadLevels(pack: ValidatedPack): LevelDef[] {
   const out: LevelDef[] = [];
   for (const [path, json] of Object.entries(levelFiles)) {
     const res = validateLevel(json, pack.files, path.split("/").pop());
-    if (!res.level) throw new Error("level invalid: " + res.issues.slice(0, 3).map((i) => `${i.file} ${i.path} ${i.message}`).join("; "));
+    if (!res.level)
+      throw new Error(
+        "level invalid: " +
+          res.issues
+            .slice(0, 3)
+            .map((i) => `${i.file} ${i.path} ${i.message}`)
+            .join("; "),
+      );
     out.push(res.level);
   }
   return ordered(out);
 }
 
 export function findScenario(id: string): ScenarioDef | undefined {
-  for (const json of Object.values(scenarioFiles)) if ((json as ScenarioDef).id === id) return json as ScenarioDef;
+  for (const json of Object.values(scenarioFiles))
+    if ((json as ScenarioDef).id === id) return json as ScenarioDef;
   return undefined;
 }
 
@@ -86,7 +190,8 @@ export interface GameParams {
 
 export function parseParams(search: string): GameParams {
   const q = new URLSearchParams(search);
-  const num = (k: string, d: number) => (q.has(k) && Number.isFinite(Number(q.get(k))) ? Number(q.get(k)) : d);
+  const num = (k: string, d: number) =>
+    q.has(k) && Number.isFinite(Number(q.get(k))) ? Number(q.get(k)) : d;
   return {
     seed: num("seed", 1),
     level: q.get("level") ?? "continents",
@@ -215,6 +320,8 @@ export class Game {
   /** BACKLOG 8: the last voice line's subtitle, shown until the tick `until` */
   subtitle: { speaker: string; text: string; until: number } | null = null;
   private noteSeq = 0;
+  /** BACKLOG 45: entity id to the tick of the player's last move order for it */
+  private ordered = new Map<number, number>();
   private noteLast = new Map<string, number>();
   lastSave: { tick: number; hash: string } | null = null;
   lastLoad: { tick: number; hash: string } | null = null;
@@ -223,24 +330,42 @@ export class Game {
     this.canvas = canvas;
     this.params = params;
     this.paused = params.paused || params.fixedStep;
-    this.renderer = new ThreeRenderer({ canvas, style: this.pack.files.style, heightUnitsPerWorldUnit: this.pack.files.balance.terrain.heightUnitsPerWorldUnit });
+    this.renderer = new ThreeRenderer({
+      canvas,
+      style: this.pack.files.style,
+      heightUnitsPerWorldUnit:
+        this.pack.files.balance.terrain.heightUnitsPerWorldUnit,
+    });
     // the game never waits for models: placeholders draw until they arrive
     if (params.models)
       void this.renderer
-        .loadModels(aliasModels(MODEL_URLS, this.pack.files.style.render?.modelAlias))
+        .loadModels(
+          aliasModels(MODEL_URLS, this.pack.files.style.render?.modelAlias),
+        )
         .then(() => this.onChange())
-        .catch((e: unknown) => console.warn("model layers kept their placeholders:", e));
+        .catch((e: unknown) =>
+          console.warn("model layers kept their placeholders:", e),
+        );
     const store = browserKV();
     this.kv = store.kv;
     this.persistent = store.persistent;
     this.settings = loadSettings(this.kv);
-    this.player = new WebAudioPlayer(new Map(Object.entries(AUDIO_URLS)), this.settings);
+    this.player = new WebAudioPlayer(
+      new Map(Object.entries(AUDIO_URLS)),
+      this.settings,
+    );
     const st = this.pack.files.style.audio;
-    this.audio = new AudioHooks(st?.cues ?? {}, new Set(Object.keys(AUDIO_URLS)), (p) => this.player.play(p.cue, p.x, p.y), st?.alias ?? {});
+    this.audio = new AudioHooks(
+      st?.cues ?? {},
+      new Set(Object.keys(AUDIO_URLS)),
+      (p) => this.player.play(p.cue, p.x, p.y),
+      st?.alias ?? {},
+    );
     this.campaignWon = loadProgress(this.kv);
     this.applyQuality();
     this.applyA11y();
-    if (params.campaign && !params.scenario) this.playLevel(params.campaign, true);
+    if (params.campaign && !params.scenario)
+      this.playLevel(params.campaign, true);
     else if (params.menu && !params.scenario) this.showMainMenu();
     else this.load();
     this.bindInput();
@@ -250,9 +375,15 @@ export class Game {
   applyQuality(): void {
     const q = this.params.quality ?? this.settings.quality;
     this.renderer.setRenderScale(QUALITY_SCALE[q] ?? 1);
-    if (this.params.pixel !== null) this.renderer.setPixelScale(this.params.pixel);
-    this.renderer.setTiltShift(this.params.tiltshift ?? this.settings.miniature);
-    this.renderer.setLighting(this.params.lighting ?? this.settings.lighting, this.params.weather ?? this.settings.weather);
+    if (this.params.pixel !== null)
+      this.renderer.setPixelScale(this.params.pixel);
+    this.renderer.setTiltShift(
+      this.params.tiltshift ?? this.settings.miniature,
+    );
+    this.renderer.setLighting(
+      this.params.lighting ?? this.settings.lighting,
+      this.params.weather ?? this.settings.weather,
+    );
   }
 
   /**
@@ -265,25 +396,48 @@ export class Game {
     const over = style.tribePalettes?.[id] ?? null;
     this.tribePal = { ...style.palette, ...(over ?? {}) };
     this.renderer.setTribeColors(over);
-    const scale = Math.min(2, Math.max(0.5, (this.params.uiScale ?? this.settings.uiScale) / 100));
+    const scale = Math.min(
+      2,
+      Math.max(0.5, (this.params.uiScale ?? this.settings.uiScale) / 100),
+    );
     this.uiScaleWanted = scale;
-    if (typeof document !== "undefined") document.documentElement.style.setProperty("--ui-scale", String(scale));
+    if (typeof document !== "undefined")
+      document.documentElement.style.setProperty("--ui-scale", String(scale));
   }
 
   /** BACKLOG 8: play a voice cue and, with subtitles on, show its line (style.json subtitles) for a few seconds. */
   private voice(cue: string): void {
     this.player.play(cue);
-    const sub = this.settings.subtitles ? this.pack.files.style.subtitles?.[cue] : undefined;
-    if (sub) this.subtitle = { speaker: sub.speaker, text: sub.text, until: this.world.tick + SUBTITLE_SECONDS * this.world.cfg.tickHz };
+    const sub = this.settings.subtitles
+      ? this.pack.files.style.subtitles?.[cue]
+      : undefined;
+    if (sub)
+      this.subtitle = {
+        speaker: sub.speaker,
+        text: sub.text,
+        until: this.world.tick + SUBTITLE_SECONDS * this.world.cfg.tickHz,
+      };
   }
 
   /** (Re)build the world from params: a scenario id, or a procedural planet. */
-  load(scenarioId: string | null = this.params.scenario, session?: SkirmishParams): void {
+  load(
+    scenarioId: string | null = this.params.scenario,
+    session?: SkirmishParams,
+  ): void {
     const p = this.pack;
     const def = scenarioId ? findScenario(scenarioId) : undefined;
     if (scenarioId && !def) throw new Error(`unknown scenario ${scenarioId}`);
-    const sp: SkirmishParams = session ?? { seed: this.params.seed, level: this.params.level, size: this.params.size, tribes: this.params.tribes, ai: [...this.params.ai], difficulty: this.params.difficulty };
-    this.world = def ? createScenarioWorld(def, p.files, p.hash) : createSkirmish(p, sp);
+    const sp: SkirmishParams = session ?? {
+      seed: this.params.seed,
+      level: this.params.level,
+      size: this.params.size,
+      tribes: this.params.tribes,
+      ai: [...this.params.ai],
+      difficulty: this.params.difficulty,
+    };
+    this.world = def
+      ? createScenarioWorld(def, p.files, p.hash)
+      : createSkirmish(p, sp);
     this.scenarioCmds = def ? commandsByTick(def.commands) : null;
     this.afterWorld();
     this.skirmish = def ? null : sp;
@@ -317,9 +471,14 @@ export class Game {
     this.renderer.setWorld(this.world);
     this.renderer.viewTribe = this.localTribe;
     this.renderer.revealFog = this.params.reveal;
-    const home = this.world.tribes[0] ? this.world.ents.index(this.world.tribes[0].hearth) : -1;
+    const home = this.world.tribes[0]
+      ? this.world.ents.index(this.world.tribes[0].hearth)
+      : -1;
     const size = this.world.terrain.size;
-    this.renderer.setCamera({ x: home >= 0 ? this.world.ents.x[home] : size / 2, z: home >= 0 ? this.world.ents.y[home] + 1 : size / 2 });
+    this.renderer.setCamera({
+      x: home >= 0 ? this.world.ents.x[home] : size / 2,
+      z: home >= 0 ? this.world.ents.y[home] + 1 : size / 2,
+    });
     this.renderer.setCamera(this.params.camera ?? "default");
   }
 
@@ -327,7 +486,17 @@ export class Game {
   /** A new skirmish from the setup screen (or Play again): the params replace the URL ones. */
   startSkirmish(sp: SkirmishParams): void {
     const prev = this.params;
-    this.params = { ...this.params, seed: sp.seed, level: sp.level, size: sp.size, tribes: sp.tribes, ai: [...sp.ai], difficulty: sp.difficulty, scenario: null, camera: null };
+    this.params = {
+      ...this.params,
+      seed: sp.seed,
+      level: sp.level,
+      size: sp.size,
+      tribes: sp.tribes,
+      ai: [...sp.ai],
+      difficulty: sp.difficulty,
+      scenario: null,
+      camera: null,
+    };
     try {
       this.load(null, sp);
     } catch (e) {
@@ -343,7 +512,9 @@ export class Game {
     const def = this.levels.find((l) => l.id === id);
     if (!def) throw new Error(`unknown level ${id}`);
     if (!anyway && !levelOpen(this.levels, this.campaignWon, id)) return;
-    this.startSkirmish(campaignParams(def, campaignCarry(this.levels, this.campaignWon, id)));
+    this.startSkirmish(
+      campaignParams(def, campaignCarry(this.levels, this.campaignWon, id)),
+    );
   }
 
   /** The level after the current campaign level, or null. */
@@ -356,7 +527,14 @@ export class Game {
   showMainMenu(): void {
     const sk = this.pack.files.balance.skirmish ?? SKIRMISH_DEFAULTS;
     this.params = { ...this.params, scenario: null };
-    this.world = createSkirmish(this.pack, { seed: this.params.seed, level: sk.maps[0], size: sk.defaultSize, tribes: 2, ai: ["none"], difficulty: sk.defaultDifficulty });
+    this.world = createSkirmish(this.pack, {
+      seed: this.params.seed,
+      level: sk.maps[0],
+      size: sk.defaultSize,
+      tribes: 2,
+      ai: ["none"],
+      difficulty: sk.defaultDifficulty,
+    });
     this.scenarioCmds = null;
     this.afterWorld();
     this.skirmish = null;
@@ -369,7 +547,17 @@ export class Game {
   /** Take over a world restored from a save (session.restoreSave checked its hash). */
   adoptSave(w: World, s: SaveGame): void {
     const sp = s.params;
-    this.params = { ...this.params, seed: sp.seed, level: sp.level, size: sp.size, tribes: sp.tribes, ai: [...sp.ai], difficulty: sp.difficulty, scenario: null, camera: null };
+    this.params = {
+      ...this.params,
+      seed: sp.seed,
+      level: sp.level,
+      size: sp.size,
+      tribes: sp.tribes,
+      ai: [...sp.ai],
+      difficulty: sp.difficulty,
+      scenario: null,
+      camera: null,
+    };
     this.world = w;
     this.scenarioCmds = null;
     this.afterWorld();
@@ -394,7 +582,12 @@ export class Game {
   /** Back button and Escape on a menu screen. */
   menuBack(): void {
     if (this.screen === "pause") return this.resume();
-    if (this.screen === "main" || this.screen === "end" || this.screen === "none") return;
+    if (
+      this.screen === "main" ||
+      this.screen === "end" ||
+      this.screen === "none"
+    )
+      return;
     this.screen = this.backStack.pop() ?? (this.inGame ? "pause" : "main");
     this.rebinding = null;
     this.onChange();
@@ -427,7 +620,14 @@ export class Game {
   }
 
   private hasMode(): boolean {
-    return Boolean(this.targeting || this.placing || this.pointing || this.attackMode || this.selection.size || this.selectedBuilding >= 0);
+    return Boolean(
+      this.targeting ||
+      this.placing ||
+      this.pointing ||
+      this.attackMode ||
+      this.selection.size ||
+      this.selectedBuilding >= 0,
+    );
   }
 
   /** Victory when every rival tribe is eliminated, defeat when the local tribe is (skirmish only).
@@ -438,8 +638,18 @@ export class Game {
     if (lv) {
       if (lv.outcome === OUTCOME.none) return;
       const won = lv.outcome === OUTCOME.won;
-      if (won && !recordWin(this.kv, lv.def.id, this.campaignWon)) this.notify("progress", "Campaign progress could not be stored in this browser.", "info");
-      this.ended = { won, why: [...this.world.events].reverse().find((e) => e.type === "levelLost")?.why as string | undefined };
+      if (won && !recordWin(this.kv, lv.def.id, this.campaignWon))
+        this.notify(
+          "progress",
+          "Campaign progress could not be stored in this browser.",
+          "info",
+        );
+      this.ended = {
+        won,
+        why: [...this.world.events]
+          .reverse()
+          .find((e) => e.type === "levelLost")?.why as string | undefined,
+      };
       if (won) this.voice("voice.shaper.victory");
       this.cancelModes();
       this.screen = "end";
@@ -467,12 +677,20 @@ export class Game {
 
   /** Queue a command from the local player (applied on the next tick). */
   command(c: Partial<Command> & { type: string }): void {
-    this.queue.push({ tick: this.world.tick, tribe: c.tribe ?? 0, type: c.type, args: c.args ?? {} });
+    this.queue.push({
+      tick: this.world.tick,
+      tribe: c.tribe ?? 0,
+      type: c.type,
+      args: c.args ?? {},
+    });
   }
 
   private stepOnce(): void {
     const local = this.queue.map((c) => ({ ...c, tick: this.world.tick }));
-    const cmds = [...(this.scenarioCmds ? this.scenarioCmds(this.world.tick) : []), ...local];
+    const cmds = [
+      ...(this.scenarioCmds ? this.scenarioCmds(this.world.tick) : []),
+      ...local,
+    ];
     this.queue = [];
     this.world.step(cmds);
     if (this.skirmish && local.length) {
@@ -483,14 +701,25 @@ export class Game {
       this.events.push(e);
       if ((e.type === "killed" || e.type === "drowned") && e.cat === CAT.unit) {
         if (e.tribe === this.localTribe) this.stats.lost++;
-        else if (e.by === this.localTribe && typeof e.tribe === "number" && e.tribe >= 0) this.stats.kills++;
+        else if (
+          e.by === this.localTribe &&
+          typeof e.tribe === "number" &&
+          e.tribe >= 0
+        )
+          this.stats.kills++;
       }
       this.noteFor(e);
       this.cueFor(e);
     }
     const si = shaperIndex(this.world, this.localTribe);
     const E = this.world.ents;
-    if (si >= 0 && E.hitTick[si] === this.world.tick - 1 && E.lastHit[si] >= 0 && E.lastHit[si] !== this.localTribe) this.notify("shaperHit", "Your Shaper is under attack!", "bad", 15);
+    if (
+      si >= 0 &&
+      E.hitTick[si] === this.world.tick - 1 &&
+      E.lastHit[si] >= 0 &&
+      E.lastHit[si] !== this.localTribe
+    )
+      this.notify("shaperHit", "Your Shaper is under attack!", "bad", 15);
     this.checkEnd();
   }
 
@@ -501,7 +730,10 @@ export class Game {
     const last = this.noteLast.get(key);
     if (last !== undefined && t - last < throttleSec * hz) return;
     this.noteLast.set(key, t);
-    this.notes = [...this.notes.filter((n) => n.until > t), { id: ++this.noteSeq, text, kind, until: t + NOTE_SECONDS * hz }].slice(-MAX_NOTES);
+    this.notes = [
+      ...this.notes.filter((n) => n.until > t),
+      { id: ++this.noteSeq, text, kind, until: t + NOTE_SECONDS * hz },
+    ].slice(-MAX_NOTES);
   }
 
   /** Player-facing voice and UI cues the sim cue table does not cover (own tribe only). */
@@ -509,7 +741,10 @@ export class Game {
     if (e.tribe !== this.localTribe) return;
     if (e.type === "commandRejected") this.player.play("sfx.ui_error");
     else if (e.type === "shaperDied") this.voice("voice.shaper.under_attack");
-    else if (e.type === "spellCast" && this.world.tick - this.lastCastVoice > 20 * this.world.cfg.tickHz) {
+    else if (
+      e.type === "spellCast" &&
+      this.world.tick - this.lastCastVoice > 20 * this.world.cfg.tickHz
+    ) {
       this.lastCastVoice = this.world.tick;
       this.voice("voice.shaper.casting");
     }
@@ -519,7 +754,12 @@ export class Game {
   private orderSound(): void {
     this.player.play("sfx.order_move");
     const si = shaperIndex(this.world, this.localTribe);
-    if (si >= 0 && this.selection.has(si)) this.voice(this.ackFlip++ % 2 ? "voice.shaper.acknowledged_b" : "voice.shaper.acknowledged");
+    if (si >= 0 && this.selection.has(si))
+      this.voice(
+        this.ackFlip++ % 2
+          ? "voice.shaper.acknowledged_b"
+          : "voice.shaper.acknowledged",
+      );
   }
 
   private noteFor(e: SimEvent): void {
@@ -527,60 +767,157 @@ export class Game {
     const rival = (t: unknown) => typeof t === "number" && t >= 0 && t !== me;
     switch (e.type) {
       case "shaperDied":
-        if (e.tribe === me) this.notify("shaperDied", "Your Shaper has fallen and will return at the Hearth.", "bad");
+        if (e.tribe === me)
+          this.notify(
+            "shaperDied",
+            "Your Shaper has fallen and will return at the Hearth.",
+            "bad",
+          );
         break;
       case "shaperRespawned":
-        if (e.tribe === me) this.notify("shaperBack", "Your Shaper is back at the Hearth.", "good");
+        if (e.tribe === me)
+          this.notify(
+            "shaperBack",
+            "Your Shaper is back at the Hearth.",
+            "good",
+          );
         break;
       case "killed":
-        if (e.tribe === me && rival(e.by)) this.notify("underAttack", "Your followers are under attack!", "bad", 20);
+        if (e.tribe === me && rival(e.by))
+          this.notify(
+            "underAttack",
+            "Your followers are under attack!",
+            "bad",
+            20,
+          );
         break;
       case "destroyed":
-        if (e.tribe === me) this.notify("lostBuilding", "One of your buildings was destroyed.", "bad", 5);
+        if (e.tribe === me)
+          this.notify(
+            "lostBuilding",
+            "One of your buildings was destroyed.",
+            "bad",
+            5,
+          );
         break;
       case "tribeEliminated":
         if (rival(e.tribe)) {
-          const left = this.world.tribes.filter((t) => t.index !== me && t.alive).length;
+          const left = this.world.tribes.filter(
+            (t) => t.index !== me && t.alive,
+          ).length;
           const name = this.world.tribes[e.tribe as number]?.color ?? "rival";
-          this.notify(`out${e.tribe}`, `The ${name} tribe has fallen${left ? `: ${left} left` : ""}.`, "good");
+          this.notify(
+            `out${e.tribe}`,
+            `The ${name} tribe has fallen${left ? `: ${left} left` : ""}.`,
+            "good",
+          );
         }
         break;
       case "tierReached":
-        if (e.tribe === me) this.notify(`tier${e.tier}`, `New tier: ${String(e.id).replace(/_/g, " ")}. New buildings are open.`, "good");
+        if (e.tribe === me)
+          this.notify(
+            `tier${e.tier}`,
+            `New tier: ${String(e.id).replace(/_/g, " ")}. New buildings are open.`,
+            "good",
+          );
         break;
+      // BACKLOG 45: tell the player when a move order fails or units give up (combat chases excluded)
+      case "orderFailed":
+      case "orderGaveUp": {
+        const n = orderNote(
+          e,
+          me,
+          (id) =>
+            this.world.tick - (this.ordered.get(id) ?? -Infinity) <=
+            ORDER_FEEDBACK_SEC * this.world.cfg.tickHz,
+        );
+        if (!n) break;
+        this.ordered.delete(Number(e.id));
+        this.notify(n.key, n.text, "info", n.throttleSec);
+        this.renderer.markFailedOrder(e);
+        break;
+      }
       case "castFailed":
-        if (e.tribe === me) this.notify("castFailed", "The spell failed: the Shaper could not reach the target.", "info", 3);
+        if (e.tribe === me)
+          this.notify(
+            "castFailed",
+            "The spell failed: the Shaper could not reach the target.",
+            "info",
+            3,
+          );
         break;
       // M9 worship and campaign levels
       case "levelMessage":
-        if (e.tribe === me) this.notify(`msg${this.noteSeq}`, String(e.text), "info");
+        if (e.tribe === me)
+          this.notify(`msg${this.noteSeq}`, String(e.text), "info");
         break;
       case "rewardSpawn":
-        if (e.tribe === me) this.notify(`rs${this.world.tick}`, `${e.n} ${String(e.unit).replace(/_/g, " ")}${e.n === 1 ? " has" : "s have"} joined your tribe.`, "good");
+        if (e.tribe === me)
+          this.notify(
+            `rs${this.world.tick}`,
+            `${e.n} ${String(e.unit).replace(/_/g, " ")}${e.n === 1 ? " has" : "s have"} joined your tribe.`,
+            "good",
+          );
         break;
       case "objectiveComplete": {
         const o = this.world.level?.def.objectives[e.index as number];
-        this.notify(`obj${e.index}`, `Objective complete${o?.text ? `: ${o.text}` : "."}`, "good");
+        this.notify(
+          `obj${e.index}`,
+          `Objective complete${o?.text ? `: ${o.text}` : "."}`,
+          "good",
+        );
         break;
       }
       case "worshipComplete":
-        if (e.tribe === me) this.notify(`ws${e.site}`, `The prayers at the ${e.kind} were answered.`, "good");
-        else this.notify(`ws${e.site}`, `A rival tribe has claimed the ${e.kind}.`, "bad");
+        if (e.tribe === me)
+          this.notify(
+            `ws${e.site}`,
+            `The prayers at the ${e.kind} were answered.`,
+            "good",
+          );
+        else
+          this.notify(
+            `ws${e.site}`,
+            `A rival tribe has claimed the ${e.kind}.`,
+            "bad",
+          );
         break;
       case "worshipFailed":
-        if (e.tribe === me) this.notify("worshipFailed", "Your worshippers could not reach the site.", "info", 5);
+        if (e.tribe === me)
+          this.notify(
+            "worshipFailed",
+            "Your worshippers could not reach the site.",
+            "info",
+            5,
+          );
         break;
       case "spellUnlocked":
-        if (e.tribe === me) this.notify(`sp${e.spell}`, `New spell: ${String(e.spell).replace(/_/g, " ")}.`, "good");
+        if (e.tribe === me)
+          this.notify(
+            `sp${e.spell}`,
+            `New spell: ${String(e.spell).replace(/_/g, " ")}.`,
+            "good",
+          );
         break;
       case "buildingUnlocked":
-        if (e.tribe === me) this.notify(`bu${e.building}`, `New building: ${String(e.building).replace(/_/g, " ")}.`, "good");
+        if (e.tribe === me)
+          this.notify(
+            `bu${e.building}`,
+            `New building: ${String(e.building).replace(/_/g, " ")}.`,
+            "good",
+          );
         break;
       case "rewardCharges":
-        if (e.tribe === me) this.notify(`ch${e.spell}${this.world.tick}`, `Gained ${e.n} ${String(e.spell).replace(/_/g, " ")} charge${e.n === 1 ? "" : "s"}.`, "good");
+        if (e.tribe === me)
+          this.notify(
+            `ch${e.spell}${this.world.tick}`,
+            `Gained ${e.n} ${String(e.spell).replace(/_/g, " ")} charge${e.n === 1 ? "" : "s"}.`,
+            "good",
+          );
         break;
       case "raid":
-        if (e.tribe !== me) this.notify("raid", "Raiders are coming!", "bad", 10);
+        if (e.tribe !== me)
+          this.notify("raid", "Raiders are coming!", "bad", 10);
         break;
       default:
         break;
@@ -608,10 +945,17 @@ export class Game {
       if (n) this.onChange();
     } else this.acc = 0;
     // the main menu backdrop turns slowly (not in fixedStep captures)
-    if (this.screen === "main" && !this.params.fixedStep && !this.debugFlags.freezeCamera) this.renderer.setCamera({ yaw: this.renderer.cam.yaw + 0.04 * dt });
+    if (
+      this.screen === "main" &&
+      !this.params.fixedStep &&
+      !this.debugFlags.freezeCamera
+    )
+      this.renderer.setCamera({ yaw: this.renderer.cam.yaw + 0.04 * dt });
     this.pollKeys(dt);
     this.pruneSelection();
-    const sk = this.selection.size ? `${this.selection.size}:${this.selection.values().next().value}` : "";
+    const sk = this.selection.size
+      ? `${this.selection.size}:${this.selection.values().next().value}`
+      : "";
     if (sk !== this.selKey) {
       if (sk) this.player.play("sfx.unit_selected");
       this.selKey = sk;
@@ -619,28 +963,50 @@ export class Game {
     this.renderer.selected = this.selection;
     // positional audio hears around the camera focus; the radius grows as the camera pulls out
     const cam = this.renderer.cam;
-    this.player.listener = { x: cam.x, z: cam.z, size: this.world.terrain.size, radius: cam.map ? 0 : 24 + 96 * cam.zoom };
+    this.player.listener = {
+      x: cam.x,
+      z: cam.z,
+      size: this.world.terrain.size,
+      radius: cam.map ? 0 : 24 + 96 * cam.zoom,
+    };
     this.player.yaw = cam.yaw;
-    this.renderer.alpha = this.paused ? 1 : Math.min(1, this.acc * this.world.cfg.tickHz);
+    this.renderer.alpha = this.paused
+      ? 1
+      : Math.min(1, this.acc * this.world.cfg.tickHz);
     if (this.events.length) {
       const hz = this.world.cfg.tickHz;
       const wall = now / 1000;
-      this.renderer.consumeEvents(this.events, this.params.fixedStep ? (e) => (e.tick + 1) / hz : () => wall);
+      this.renderer.consumeEvents(
+        this.events,
+        this.params.fixedStep ? (e) => (e.tick + 1) / hz : () => wall,
+      );
       this.audio.consume(this.events);
     }
     // every frame, events or not: the battle, tension and hold windows only lapse when the director runs
-    this.player.setStem(this.music.update(this.world.tick / this.world.cfg.tickHz, this.events, this.player.listener, this.localTribe));
+    this.player.setStem(
+      this.music.update(
+        this.world.tick / this.world.cfg.tickHz,
+        this.events,
+        this.player.listener,
+        this.localTribe,
+      ),
+    );
     this.events = [];
     // fixedStep: visuals follow the sim tick, so re-rendering the same tick gives identical pixels
-    const visualTime = this.params.fixedStep ? this.world.tick / this.world.cfg.tickHz : now / 1000;
+    const visualTime = this.params.fixedStep
+      ? this.world.tick / this.world.cfg.tickHz
+      : now / 1000;
     this.renderer.render(visualTime);
   }
 
   // ---------------------------------------------------------------- selection and orders
   private pruneSelection(): void {
     const E = this.world.ents;
-    for (const i of [...this.selection]) if (!E.alive[i] || E.tribe[i] !== this.localTribe) this.selection.delete(i);
-    if (this.selectedBuilding >= 0 && !E.alive[this.selectedBuilding]) this.selectedBuilding = -1;
+    for (const i of [...this.selection])
+      if (!E.alive[i] || E.tribe[i] !== this.localTribe)
+        this.selection.delete(i);
+    if (this.selectedBuilding >= 0 && !E.alive[this.selectedBuilding])
+      this.selectedBuilding = -1;
   }
 
   /** Own unit nearest to a screen point within 16 px, or -1. */
@@ -652,8 +1018,10 @@ export class Game {
     let bestD = 16 * 16;
     for (let i = 0; i < E.hi; i++) {
       const sx = u.screenX[i];
-      if (Number.isNaN(sx) || !E.alive[i] || E.tribe[i] !== this.localTribe) continue;
-      const d = (sx - px) * (sx - px) + (u.screenY[i] - py) * (u.screenY[i] - py);
+      if (Number.isNaN(sx) || !E.alive[i] || E.tribe[i] !== this.localTribe)
+        continue;
+      const d =
+        (sx - px) * (sx - px) + (u.screenY[i] - py) * (u.screenY[i] - py);
       if (d < bestD) {
         bestD = d;
         best = i;
@@ -662,7 +1030,13 @@ export class Game {
     return best;
   }
 
-  selectBox(x0: number, y0: number, x1: number, y1: number, add: boolean): void {
+  selectBox(
+    x0: number,
+    y0: number,
+    x1: number,
+    y1: number,
+    add: boolean,
+  ): void {
     const u = this.renderer.units;
     if (!u) return;
     if (!add) this.selection.clear();
@@ -671,8 +1045,10 @@ export class Game {
     const [ly, hy] = y0 < y1 ? [y0, y1] : [y1, y0];
     for (let i = 0; i < E.hi; i++) {
       const sx = u.screenX[i];
-      if (Number.isNaN(sx) || !E.alive[i] || E.tribe[i] !== this.localTribe) continue;
-      if (sx >= lx && sx <= hx && u.screenY[i] >= ly && u.screenY[i] <= hy) this.selection.add(i);
+      if (Number.isNaN(sx) || !E.alive[i] || E.tribe[i] !== this.localTribe)
+        continue;
+      if (sx >= lx && sx <= hx && u.screenY[i] >= ly && u.screenY[i] <= hy)
+        this.selection.add(i);
     }
     if (this.selection.size) this.selectedBuilding = -1;
     this.onChange();
@@ -680,7 +1056,13 @@ export class Game {
 
   /** M6 troop intents (HUD buttons, hotkeys, right clicks) as Commands. */
   troop(it: TroopIntent): boolean {
-    const c = troopCommand(this.world, this.localTribe, [...this.selection], this.selectedBuilding, it);
+    const c = troopCommand(
+      this.world,
+      this.localTribe,
+      [...this.selection],
+      this.selectedBuilding,
+      it,
+    );
     if (c) this.command(c);
     return c !== null;
   }
@@ -700,19 +1082,36 @@ export class Game {
   orderAt(px: number, py: number, attack = false): boolean {
     const p = this.renderer.pickTerrain(px, py);
     if (!p) return false;
-    if (!this.selection.size && this.selectedBuilding >= 0) return this.troop({ kind: "rally", at: [p.x, p.z] });
+    if (!this.selection.size && this.selectedBuilding >= 0)
+      return this.troop({ kind: "rally", at: [p.x, p.z] });
     if (!this.selection.size) return false;
     const E = this.world.ents;
     const b = attack ? -1 : buildingAt(this.world, this.localTribe, p.x, p.z);
-    if (b >= 0 && this.world.combat.garrisonOf(E.type[b]) > 0) return this.troop({ kind: "garrison", tower: b });
+    if (b >= 0 && this.world.combat.garrisonOf(E.type[b]) > 0)
+      return this.troop({ kind: "garrison", tower: b });
     const site = attack ? null : siteAt(this.world, p.x, p.z);
     if (site) {
-      this.command({ tribe: this.localTribe, type: "worship", args: { units: [...this.selection].map((i) => E.idOf(i)), site } });
+      this.command({
+        tribe: this.localTribe,
+        type: "worship",
+        args: { units: [...this.selection].map((i) => E.idOf(i)), site },
+      });
       return true;
     }
     // BACKLOG 4: two or more units march in a box (melee in front, ranged and the Shaper behind)
     const formation = this.selection.size >= 2 ? { formation: "box" } : {};
-    this.command({ tribe: this.localTribe, type: "move", args: { units: [...this.selection].map((i) => E.idOf(i)), to: [p.x, p.z], attack, ...formation } });
+    this.command({
+      tribe: this.localTribe,
+      type: "move",
+      args: {
+        units: [...this.selection].map((i) => E.idOf(i)),
+        to: [p.x, p.z],
+        attack,
+        ...formation,
+      },
+    });
+    for (const i of this.selection)
+      this.ordered.set(E.idOf(i), this.world.tick);
     this.orderSound();
     return true;
   }
@@ -720,7 +1119,12 @@ export class Game {
   startPlacing(building: string): void {
     const type = this.world.cfg.buildingIndex.get(building);
     // progression: a locked building cannot be picked (god mode sandboxes ignore locks)
-    if (type !== undefined && !this.world.godMode && this.world.economy.buildingLock(this.localTribe, type)) return;
+    if (
+      type !== undefined &&
+      !this.world.godMode &&
+      this.world.economy.buildingLock(this.localTribe, type)
+    )
+      return;
     this.placing = building;
     this.attackMode = false;
     this.onChange();
@@ -757,7 +1161,11 @@ export class Game {
 
   confirmPlacement(): void {
     if (!this.placing || !this.placeAt || this.placeBlocked) return;
-    this.command({ tribe: this.localTribe, type: "placePlan", args: { building: this.placing, at: this.placeAt } });
+    this.command({
+      tribe: this.localTribe,
+      type: "placePlan",
+      args: { building: this.placing, at: this.placeAt },
+    });
     this.cancelPlacing();
   }
 
@@ -767,7 +1175,9 @@ export class Game {
     const tr = w.tribes[this.localTribe];
     if (!tr) return [];
     // a locked spell with charges from a shrine or a level reward is castable until they run out
-    return w.cfg.pack.spells.spells.filter((_, i) => tr.eco.unlocked[i] || tr.eco.charges[i] > 0).map((s) => s.id);
+    return w.cfg.pack.spells.spells
+      .filter((_, i) => tr.eco.unlocked[i] || tr.eco.charges[i] > 0)
+      .map((s) => s.id);
   }
 
   startTargeting(spell: string): void {
@@ -796,10 +1206,26 @@ export class Game {
     const n = w.terrain.size;
     const dx = wrapDelta(p.x - w.ents.x[si], n);
     const dy = wrapDelta(p.z - w.ents.y[si], n);
-    const radius = Math.max(0.8, ...s.effects.map((e) => ("radius" in e && typeof e.radius === "number" ? e.radius : 0)));
-    this.renderer.setTargeting({ cx: w.ents.x[si], cz: w.ents.y[si], range: s.range, x: p.x, z: p.z, r: radius, inRange: Math.sqrt(dx * dx + dy * dy) <= s.range });
+    const radius = Math.max(
+      0.8,
+      ...s.effects.map((e) =>
+        "radius" in e && typeof e.radius === "number" ? e.radius : 0,
+      ),
+    );
+    this.renderer.setTargeting({
+      cx: w.ents.x[si],
+      cz: w.ents.y[si],
+      range: s.range,
+      x: p.x,
+      z: p.z,
+      r: radius,
+      inRange: Math.sqrt(dx * dx + dy * dy) <= s.range,
+    });
     const counts = areaCounts(w, this.localTribe, p.x, p.z, radius);
-    if (counts.enemies !== this.targetCounts?.enemies || counts.own !== this.targetCounts?.own) {
+    if (
+      counts.enemies !== this.targetCounts?.enemies ||
+      counts.own !== this.targetCounts?.own
+    ) {
       this.targetCounts = counts;
       this.onChange();
     }
@@ -809,7 +1235,11 @@ export class Game {
     if (!this.targeting) return false;
     const p = this.renderer.pickTerrain(px, py);
     if (!p) return false;
-    this.command({ tribe: this.localTribe, type: "cast", args: { spell: this.targeting, target: [p.x, p.z] } });
+    this.command({
+      tribe: this.localTribe,
+      type: "cast",
+      args: { spell: this.targeting, target: [p.x, p.z] },
+    });
     this.cancelTargeting();
     return true;
   }
@@ -817,7 +1247,11 @@ export class Game {
   selectKind(kind: string, center = true): void {
     const idx = this.world.selectUnits(`tribe${this.localTribe}.${kind}s`);
     this.selection = new Set(idx);
-    if (center && idx.length) this.renderer.setCamera({ x: this.world.ents.x[idx[0]], z: this.world.ents.y[idx[0]] });
+    if (center && idx.length)
+      this.renderer.setCamera({
+        x: this.world.ents.x[idx[0]],
+        z: this.world.ents.y[idx[0]],
+      });
     this.onChange();
   }
 
@@ -828,9 +1262,14 @@ export class Game {
     const unlock = () => this.player.unlock();
     window.addEventListener("pointerdown", unlock, true);
     window.addEventListener("keydown", unlock, true);
-    document.addEventListener("click", (e) => {
-      if ((e.target as Element | null)?.closest?.("button")) this.player.play("sfx.ui_click");
-    }, true);
+    document.addEventListener(
+      "click",
+      (e) => {
+        if ((e.target as Element | null)?.closest?.("button"))
+          this.player.play("sfx.ui_click");
+      },
+      true,
+    );
     this.canvas.addEventListener("contextmenu", (e) => e.preventDefault());
     this.canvas.addEventListener("mousedown", (e) => {
       if (this.placing) {
@@ -858,14 +1297,24 @@ export class Game {
     window.addEventListener("mousemove", (e) => {
       if (this.placing) this.updatePlacement(e.clientX, e.clientY);
       if (this.targeting) this.updateTargeting(e.clientX, e.clientY);
-      if (down && (Math.abs(e.clientX - down.x) > 4 || Math.abs(e.clientY - down.y) > 4)) {
+      if (
+        down &&
+        (Math.abs(e.clientX - down.x) > 4 || Math.abs(e.clientY - down.y) > 4)
+      ) {
         this.box = { x0: down.x, y0: down.y, x1: e.clientX, y1: e.clientY };
         this.onChange();
       }
     });
     window.addEventListener("mouseup", (e) => {
       if (e.button !== 0 || !down) return;
-      if (this.box) this.selectBox(this.box.x0, this.box.y0, this.box.x1, this.box.y1, e.shiftKey);
+      if (this.box)
+        this.selectBox(
+          this.box.x0,
+          this.box.y0,
+          this.box.x1,
+          this.box.y1,
+          e.shiftKey,
+        );
       else if (this.attackMode) {
         this.orderAt(e.clientX, e.clientY, true);
         this.attackMode = false;
@@ -875,7 +1324,13 @@ export class Game {
         if (i >= 0 && e.detail === 2) {
           // BACKLOG 4: double-click selects every own unit of that type nearby
           this.selectedBuilding = -1;
-          for (const k of sameTypeNear(this.world, this.localTribe, i, SAME_TYPE_RADIUS)) this.selection.add(k);
+          for (const k of sameTypeNear(
+            this.world,
+            this.localTribe,
+            i,
+            SAME_TYPE_RADIUS,
+          ))
+            this.selection.add(k);
         } else if (i >= 0) {
           this.selectedBuilding = -1;
           if (e.shiftKey && this.selection.has(i)) this.selection.delete(i);
@@ -888,13 +1343,19 @@ export class Game {
       this.onChange();
     });
     window.addEventListener("keydown", (e) => this.onKey(e));
-    window.addEventListener("keyup", (e) => this.keys.delete(e.key.toLowerCase()));
+    window.addEventListener("keyup", (e) =>
+      this.keys.delete(e.key.toLowerCase()),
+    );
     window.addEventListener("blur", () => this.keys.clear());
-    this.canvas.addEventListener("wheel", (e) => {
-      e.preventDefault();
-      const z = this.renderer.cam.zoom + Math.sign(e.deltaY) * 0.05;
-      this.renderer.setCamera({ zoom: Math.min(1, Math.max(0, z)) });
-    }, { passive: false });
+    this.canvas.addEventListener(
+      "wheel",
+      (e) => {
+        e.preventDefault();
+        const z = this.renderer.cam.zoom + Math.sign(e.deltaY) * 0.05;
+        this.renderer.setCamera({ zoom: Math.min(1, Math.max(0, z)) });
+      },
+      { passive: false },
+    );
     let drag: { x: number; y: number; pan: boolean } | null = null;
     this.canvas.addEventListener("mousedown", (e) => {
       if (e.button === 1) {
@@ -981,10 +1442,15 @@ export class Game {
         e.preventDefault();
         this.groups[g] = [...this.selection].map((i) => E.idOf(i));
       } else {
-        this.selection = new Set(this.groups[g].map((id) => E.index(id)).filter((i) => i >= 0));
+        this.selection = new Set(
+          this.groups[g].map((id) => E.index(id)).filter((i) => i >= 0),
+        );
         // BACKLOG 4: pressing the group key again quickly centers the camera on the group
         const now = performance.now();
-        if (this.lastGroupKey.g === g && now - this.lastGroupKey.at < GROUP_JUMP_MS) {
+        if (
+          this.lastGroupKey.g === g &&
+          now - this.lastGroupKey.at < GROUP_JUMP_MS
+        ) {
           const c = groupCenter(this.world, [...this.selection]);
           if (c) this.renderer.setCamera({ x: c[0], z: c[1] });
         }
@@ -1010,7 +1476,10 @@ export class Game {
     const s = 1 + c.zoom * 6;
     const sy = Math.sin(c.yaw);
     const cy = Math.cos(c.yaw);
-    this.renderer.setCamera({ x: c.x + (cy * right - sy * forward) * s, z: c.z + (-sy * right - cy * forward) * s });
+    this.renderer.setCamera({
+      x: c.x + (cy * right - sy * forward) * s,
+      z: c.z + (-sy * right - cy * forward) * s,
+    });
   }
 
   private pollKeys(dt: number): void {
@@ -1018,8 +1487,10 @@ export class Game {
     const k = this.keys;
     const sp = 18 * dt;
     const km = this.settings.keymap;
-    if (k.has(km.rotateLeft.toLowerCase())) this.renderer.setCamera({ yaw: this.renderer.cam.yaw + 1.6 * dt });
-    if (k.has(km.rotateRight.toLowerCase())) this.renderer.setCamera({ yaw: this.renderer.cam.yaw - 1.6 * dt });
+    if (k.has(km.rotateLeft.toLowerCase()))
+      this.renderer.setCamera({ yaw: this.renderer.cam.yaw + 1.6 * dt });
+    if (k.has(km.rotateRight.toLowerCase()))
+      this.renderer.setCamera({ yaw: this.renderer.cam.yaw - 1.6 * dt });
     if (k.has("arrowleft")) this.pan(-sp, 0);
     if (k.has("arrowright")) this.pan(sp, 0);
     if (k.has("arrowup")) this.pan(0, sp);
@@ -1046,17 +1517,41 @@ export class Game {
           color: t.color,
           alive: t.alive,
           hearth: h >= 0 ? [+E.x[h].toFixed(2), +E.y[h].toFixed(2)] : null,
-          units: w.count((i) => E.cat[i] === CAT.unit && E.tribe[i] === t.index),
-          buildings: w.count((i) => E.cat[i] === CAT.building && E.tribe[i] === t.index),
+          units: w.count(
+            (i) => E.cat[i] === CAT.unit && E.tribe[i] === t.index,
+          ),
+          buildings: w.count(
+            (i) => E.cat[i] === CAT.building && E.tribe[i] === t.index,
+          ),
           explored: +w.vision.exploredShare(t.index).toFixed(3),
         };
       }),
-      fog: { on: w.vision.on, revealed: this.renderer.revealFog, visibleEnemyUnits: w.count((i) => E.cat[i] === CAT.unit && E.tribe[i] !== this.localTribe && E.tribe[i] >= 0 && w.vision.seesEntity(this.localTribe, i)) },
-      counts: { trees: w.count((i) => E.cat[i] === CAT.tree), wild: w.count((i) => E.cat[i] === CAT.unit && E.tribe[i] === -1), entities: E.count },
+      fog: {
+        on: w.vision.on,
+        revealed: this.renderer.revealFog,
+        visibleEnemyUnits: w.count(
+          (i) =>
+            E.cat[i] === CAT.unit &&
+            E.tribe[i] !== this.localTribe &&
+            E.tribe[i] >= 0 &&
+            w.vision.seesEntity(this.localTribe, i),
+        ),
+      },
+      counts: {
+        trees: w.count((i) => E.cat[i] === CAT.tree),
+        wild: w.count((i) => E.cat[i] === CAT.unit && E.tribe[i] === -1),
+        entities: E.count,
+      },
       terrainVersion: w.terrain.version,
       sites: w.worship.sites.map((s) => {
         const i = E.index(s.ent);
-        return { tag: s.tag, kind: s.kind, at: i >= 0 ? [+E.x[i].toFixed(2), +E.y[i].toFixed(2)] : null, usesLeft: s.usesLeft, lastBy: s.lastBy };
+        return {
+          tag: s.tag,
+          kind: s.kind,
+          at: i >= 0 ? [+E.x[i].toFixed(2), +E.y[i].toFixed(2)] : null,
+          usesLeft: s.usesLeft,
+          lastBy: s.lastBy,
+        };
       }),
       render: { ...this.renderer.stats, vfx: this.renderer.vfx.drawn() },
       audio: this.audio.stats(),
@@ -1069,7 +1564,10 @@ export class Game {
   setDebug(flags: DebugFlags): void {
     this.debugFlags = { ...this.debugFlags, ...flags };
     this.renderer.setDebug(this.debugFlags);
-    document.body.classList.toggle("debug-overlap-hud", Boolean(this.debugFlags.overlapHud));
+    document.body.classList.toggle(
+      "debug-overlap-hud",
+      Boolean(this.debugFlags.overlapHud),
+    );
     this.onChange();
   }
 }
