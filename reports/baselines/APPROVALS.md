@@ -87,3 +87,8 @@
 - 2026-10-10T05:20 set levels (3 shots): BACKLOG 89: worship stone lighter, prayer progress ring; new shot old_reliquary_prayer
 - 2026-10-10T05:20 set menus (4 shots): BACKLOG 9: campaign route map replaces the level list
 - 2026-10-10T05:59 set vehicles (3 shots): BACKLOG 10: first vehicle baselines (boat, balloon, Boathouse)
+- 2026-10-10T06:25 set combat (7 shots): BACKLOG 10: build panel gained Boathouse and Skyloft rows; HUD fit scale shifts every panel a few px; world unchanged
+- 2026-10-10T06:27 set spells (9 shots): BACKLOG 10: build panel gained Boathouse and Skyloft rows; HUD fit scale shifts every panel a few px; world unchanged
+- 2026-10-10T06:29 set smoke (12 shots): BACKLOG 10: build panel gained Boathouse and Skyloft rows (HUD fit scale shifts panels); hud_troops expects 7 locked buttons; world unchanged
+- 2026-10-10T06:37 set spells2 (9 shots): BACKLOG 10: build panel gained Boathouse and Skyloft rows; HUD fit scale shifts every panel a few px; world unchanged
+- 2026-10-10T06:38 set look (12 shots): BACKLOG 10: build panel gained Boathouse and Skyloft rows; HUD fit scale shifts every panel a few px; world unchanged
