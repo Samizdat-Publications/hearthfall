@@ -13,7 +13,7 @@ import { ROOT, writeReport } from "./lib.mjs";
 // ARCHITECTURE section 9 budgets fail the bench. The two spike measures added at the M3 review (tick
 // right after a quake under 2000 moving units, ten group orders in one tick) warn above 20 ms and
 // fail above 40 ms, because wall-clock maxima on this often fully loaded PC are noisy.
-const BUDGET = { tickAvgMs: 8, tickP99Ms: 20, terrainOpMs: 2, afterTerrainOpMs: 40, groupOrdersMs: 40, spellStormMs: 40, battleAvgMs: 8, battleP99Ms: 20 };
+const BUDGET = { tickAvgMs: 8, tickP99Ms: 20, terrainOpMs: 2, afterTerrainOpMs: 40, groupOrdersMs: 40, spellStormMs: 40, battleAvgMs: 8, battleP99Ms: 20, economyAvgMs: 8, economyP99Ms: 20 };
 const SPIKE_WARN = 20;
 const BASE = ROOT + "reports/baselines/bench.json";
 
@@ -61,6 +61,47 @@ function battle(pack) {
   w.step(cmds);
   for (let k = 0; k < 120; k++) w.step([]);
   return { init, snap: w.snapshot() };
+}
+
+/**
+ * G (BACKLOG 51): a bot-driven economy. Four tribes of economy bots on a continents 192 map grow for
+ * ECO_WARM_MIN game minutes (dwellings, plans, tree search with walkable components, breeding), then
+ * the snapshot is replayed: each tick keeps its fastest of 3 runs, and the economy system's own share
+ * (Economy.update, where nearestTree runs) is timed beside the whole tick.
+ */
+const ECO_WARM_MIN = 6;
+function economyWorld(pack) {
+  const init = { pack: pack.files, packHash: pack.hash, seed: 41, map: { generator: "continents", size: 192, tribes: 4 } };
+  const w = new World(init);
+  for (const t of w.tribes) w.controllers.push(makeBot({ type: "economy", tribe: t.index, offset: t.index }));
+  for (let k = 0; k < ECO_WARM_MIN * 60 * w.cfg.tickHz; k++) w.step([]);
+  return { init, snap: w.snapshot(), units: w.count((i) => w.ents.cat[i] === 3), trees: w.count((i) => w.ents.cat[i] === 1) };
+}
+
+function economyBench(pack, ticks = 400, reps = 3) {
+  const eco = economyWorld(pack);
+  const best = new Array(ticks).fill(Infinity);
+  const ecoBest = new Array(ticks).fill(Infinity);
+  for (let rep = 0; rep < reps; rep++) {
+    const ww = World.restore(eco.init, eco.snap);
+    for (const t of ww.tribes) ww.controllers.push(makeBot({ type: "economy", tribe: t.index, offset: t.index }));
+    const update = ww.economy.update.bind(ww.economy);
+    let ecoMs = 0;
+    ww.economy.update = () => {
+      const t0 = performance.now();
+      update();
+      ecoMs = performance.now() - t0;
+    };
+    for (let k = 0; k < ticks; k++) {
+      const t0 = performance.now();
+      ww.step([]);
+      const dt = performance.now() - t0;
+      if (dt < best[k]) best[k] = dt;
+      if (ecoMs < ecoBest[k]) ecoBest[k] = ecoMs;
+    }
+  }
+  const avg = (a) => a.reduce((x, y) => x + y, 0) / a.length;
+  return { avg: avg(best), p99: pct(best, 0.99), ecoAvg: avg(ecoBest), ecoP99: pct(ecoBest, 0.99), units: eco.units, trees: eco.trees };
 }
 
 const pct = (a, p) => {
@@ -194,7 +235,15 @@ export default async function benchCmd(out, _cmd, args) {
     battleUnits = ww.count((i) => ww.ents.cat[i] === 3);
     battleKills = ww.eventCounts.get("killed") ?? 0;
   }
+  // G: economy (BACKLOG 51)
+  const eb = economyBench(pack);
   const m = {
+    economyAvgMs: +eb.avg.toFixed(3),
+    economyP99Ms: +eb.p99.toFixed(3),
+    economyUpdateAvgMs: +eb.ecoAvg.toFixed(3),
+    economyUpdateP99Ms: +eb.ecoP99.toFixed(3),
+    economyUnits: eb.units,
+    economyTrees: eb.trees,
     units: w.count((i) => w.ents.cat[i] === 3),
     battleAvgMs: +(bBest.reduce((x, y) => x + y, 0) / bBest.length).toFixed(3),
     battleP99Ms: +pct(bBest, 0.99).toFixed(3),
@@ -222,12 +271,13 @@ export default async function benchCmd(out, _cmd, args) {
   // BACKLOG 25: every bench run is a point on the perf trend (npm run trends)
   if (!args["no-record"]) {
     const { appendHistory } = await import("./history.mjs");
-    const pick = ["tickAvgMs", "tickP99Ms", "battleAvgMs", "battleP99Ms", "terrainOpMs", "afterTerrainOpMs", "groupOrdersMs", "spellStormMs", "noiseRatio"];
+    const pick = ["tickAvgMs", "tickP99Ms", "battleAvgMs", "battleP99Ms", "economyAvgMs", "economyP99Ms", "economyUpdateAvgMs", "terrainOpMs", "afterTerrainOpMs", "groupOrdersMs", "spellStormMs", "noiseRatio"];
     appendHistory("bench", { ...Object.fromEntries(pick.map((k) => [k, m[k]])), result: fails.length ? "FAIL" : "PASS" });
   }
   out.line(`2000-unit wander: avg ${m.tickAvgMs} ms (budget ${BUDGET.tickAvgMs}), p99 ${m.tickP99Ms} ms (budget ${BUDGET.tickP99Ms}), units alive ${m.units}`);
   out.line(`quake r8 + path invalidation: ${m.terrainOpMs} ms (budget ${BUDGET.terrainOpMs}); worst tick after it ${m.afterTerrainOpMs} ms; 10 group orders ${m.groupOrdersMs} ms (target 20, fail 40)`);
   out.line(`2000-unit battle: avg ${m.battleAvgMs} ms (budget ${BUDGET.battleAvgMs}), p99 ${m.battleP99Ms} ms (budget ${BUDGET.battleP99Ms}), ${m.battleKills} killed, ${m.battleUnitsLeft} units left`);
+  out.line(`economy (4 tribes of economy bots, continents 192, after ${ECO_WARM_MIN} min: ${m.economyUnits} units, ${m.economyTrees} trees): avg ${m.economyAvgMs} ms, p99 ${m.economyP99Ms} ms (budget ${BUDGET.economyAvgMs} and ${BUDGET.economyP99Ms}); Economy.update avg ${m.economyUpdateAvgMs} ms, p99 ${m.economyUpdateP99Ms} ms`);
   out.line(`spell storm (${v1.length} v1 spells x 2 tribes at once): worst tick ${m.spellStormMs} ms (target 20, fail 40)`);
   out.line(`raw wall-clock p99 ${m.rawP99Ms} ms (informational: includes OS preemption and GC pauses on this machine)`);
   for (const k of warns) out.line(`WARN ${k} regressed: ${m[k]} vs baseline ${base[k]}`);
