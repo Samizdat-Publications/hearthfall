@@ -1,0 +1,40 @@
+{
+  "$comment": "Teaching level 11: the King of the Hill victory (BACKLOG 13). Three tribes fight over one hilltop Reliquary; more people on top scores the time.",
+  "id": "the_hill",
+  "name": "The Hill",
+  "order": 11,
+  "description": "Three tribes share one hill. Keep more people at the Reliquary on its top than any rival for four minutes in all, or defeat both rivals.",
+  "seed": 1111,
+  "map": {
+    "generator": "flat",
+    "size": 128,
+    "landAboveSea": 30,
+    "paint": [
+      { "shape": "disc", "at": [64, 64], "r": 9, "aboveSea": 46, "falloff": 8 },
+      { "shape": "disc", "at": [64, 22], "r": 8, "aboveSea": -30, "falloff": 4 }
+    ]
+  },
+  "tribes": [{}, { "ai": "aggressive", "difficulty": "easy", "maxTroops": 6 }, { "ai": "turtle", "difficulty": "easy", "maxTroops": 6 }],
+  "rules": "king_of_hill",
+  "spells": ["bolt", "raise_land", "lightning", "whirlwind"],
+  "setup": [
+    { "spawn": "reliquary", "at": [64, 64], "site": { "tag": "hill_reliquary", "worshippers": 4, "prayerSeconds": 40, "uses": 1, "rewards": [{ "type": "charges", "spell": "whirlwind", "n": 1 }] } },
+    { "spawn": "hearth", "tribe": 0, "at": [30, 92] },
+    { "spawn": "shaper", "tribe": 0, "at": [33, 89] },
+    { "spawn": "settler", "tribe": 0, "near": [26, 96], "count": 14 },
+    { "spawn": "warden", "tribe": 0, "near": [38, 86], "count": 4 },
+    { "spawn": "hearth", "tribe": 1, "at": [98, 92] },
+    { "spawn": "shaper", "tribe": 1, "at": [95, 89] },
+    { "spawn": "settler", "tribe": 1, "near": [102, 96], "count": 10 },
+    { "spawn": "hearth", "tribe": 2, "at": [64, 112] },
+    { "spawn": "shaper", "tribe": 2, "at": [67, 109] },
+    { "spawn": "settler", "tribe": 2, "near": [64, 118], "count": 10 },
+    { "spawn": "tree", "near": [20, 84], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [108, 84], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [24, 104], "count": 4, "spacing": 2 }
+  ],
+  "objectives": [{ "type": "victory" }],
+  "triggers": [
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Send people up the hill to the Reliquary. A tie scores nobody; more people than any rival scores." }] }
+  ]
+}

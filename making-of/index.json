@@ -980,6 +980,36 @@
       "when": "2026-10-10T07:04:41.499Z",
       "source": "external:turtle_moat.png",
       "bytes": 638839
+    },
+    {
+      "file": "b11/20261010-0738_level-the-forge.png",
+      "milestone": "B11",
+      "kind": "screenshot",
+      "caption": "Campaign level 12, The Forge: two minutes before battle, the rival digs its moat while the player's strokes wait",
+      "highlight": false,
+      "when": "2026-10-10T07:38:37.967Z",
+      "source": "external:the_forge_moat.png",
+      "bytes": 600933
+    },
+    {
+      "file": "b11/20261010-0738_level-sky-road.png",
+      "milestone": "B11",
+      "kind": "screenshot",
+      "caption": "Campaign level 9, The Sky Road: a Reliquary on a sea stack that only a balloon can reach",
+      "highlight": false,
+      "when": "2026-10-10T07:38:39.541Z",
+      "source": "external:sky_road_stack.png",
+      "bytes": 432455
+    },
+    {
+      "file": "b11/20261010-0738_campaign-route-13.png",
+      "milestone": "B11",
+      "kind": "screenshot",
+      "caption": "The campaign route grows to 13 levels: boats, balloons, both new victory types, a Forge level and a three-island finale",
+      "highlight": false,
+      "when": "2026-10-10T07:38:41.512Z",
+      "source": "external:menu_campaign13.png",
+      "bytes": 472035
     }
   ]
 }

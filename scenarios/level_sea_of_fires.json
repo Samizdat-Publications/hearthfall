@@ -1,0 +1,24 @@
+{
+  "id": "level_sea_of_fires",
+  "description": "Campaign level 13 (finale) is completable: after the Forge a hard player AI ferries waves across the sea and defeats both island tribes.",
+  "tags": [
+    "levels"
+  ],
+  "level": "sea_of_fires",
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "aggressive",
+      "difficulty": "hard",
+      "offset": 2
+    }
+  ],
+  "runTicks": 15000,
+  "assert": [
+    {
+      "at": 15000,
+      "expr": "level.won && !alive(1) && !alive(2) && events.count('boarded') > 0 && invariants() == 0"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "level_across_the_strait_idle_loses",
+  "description": "Campaign level 8 has a real loss: an idle player never crosses the strait and runs out of time.",
+  "tags": [
+    "levels"
+  ],
+  "level": "across_the_strait",
+  "runTicks": 24100,
+  "assert": [
+    {
+      "at": 24100,
+      "expr": "level.lost && alive(0) && alive(1) && invariants() == 0"
+    }
+  ]
+}

@@ -17,7 +17,7 @@ export { World, TRIBE_COLORS, type Controller, type SimEvent, type Tribe, type W
 export { applySetup, createScenarioWorld, commandsByTick, type ScenarioDef, type SetupEntry, type BotFactory } from "./scenario.ts";
 export { CombatSystem, STANCE, STANCE_NAMES, CMODE } from "./combat.ts";
 export { WorshipSystem, applyReward, type Site, type WorshipState } from "./worship.ts";
-export { LevelRuntime, createLevelWorld, levelMap, OUTCOME, PLAYER, type CampaignCarry, type LevelInit, type LevelSaved } from "./level.ts";
+export { LevelRuntime, createLevelWorld, levelMap, levelWorldInit, OUTCOME, PLAYER, type CampaignCarry, type LevelInit, type LevelSaved } from "./level.ts";
 export { RulesRuntime, type RulesSaved, type VictoryDef } from "./rules.ts";
 export { FORGE_BRUSHES, FORGE_COMMANDS, ForgeRuntime, type ForgeBrush, type ForgeDef, type ForgeSaved } from "./forge.ts";
 export { runMatchup, type MatchupResult } from "./matchup.ts";

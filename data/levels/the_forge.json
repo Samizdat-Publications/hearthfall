@@ -1,0 +1,37 @@
+{
+  "$comment": "Teaching level 12: Forge mode (BACKLOG 11). The level opens with a Forge; the turtle rival digs a moat, the player shapes a defense or a road.",
+  "id": "the_forge",
+  "name": "The Forge",
+  "order": 12,
+  "description": "Before the battle, both tribes reshape the land around their Hearths. Raise walls or dig a moat, then press Ready. The rival is a careful digger: defeat it within 25 minutes.",
+  "seed": 1212,
+  "map": {
+    "generator": "flat",
+    "size": 128,
+    "landAboveSea": 30,
+    "paint": [
+      { "shape": "disc", "at": [64, 30], "r": 8, "aboveSea": 46, "falloff": 6 },
+      { "shape": "disc", "at": [64, 98], "r": 8, "aboveSea": 46, "falloff": 6 }
+    ]
+  },
+  "tribes": [{}, { "ai": "turtle", "difficulty": "easy", "maxTroops": 10 }],
+  "forge": true,
+  "spells": ["bolt", "raise_land", "lightning", "flatten"],
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [32, 64] },
+    { "spawn": "shaper", "tribe": 0, "at": [35, 61] },
+    { "spawn": "settler", "tribe": 0, "near": [28, 70], "count": 14 },
+    { "spawn": "warden", "tribe": 0, "near": [40, 64], "count": 4 },
+    { "spawn": "hearth", "tribe": 1, "at": [96, 64] },
+    { "spawn": "shaper", "tribe": 1, "at": [93, 61] },
+    { "spawn": "settler", "tribe": 1, "near": [100, 70], "count": 12 },
+    { "spawn": "tree", "near": [22, 50], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [106, 80], "count": 12, "spacing": 1.2 },
+    { "spawn": "rock", "near": [24, 78], "count": 4, "spacing": 2 }
+  ],
+  "objectives": [{ "type": "eliminateAll", "text": "Defeat the digger tribe" }],
+  "lose": [{ "type": "timeLimit", "seconds": 1500 }],
+  "triggers": [
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "The Forge is over. Flatten or Raise Land can bridge a moat." }] }
+  ]
+}

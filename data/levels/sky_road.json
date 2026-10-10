@@ -1,0 +1,41 @@
+{
+  "$comment": "Teaching level 9: balloons (BACKLOG 10). A Reliquary crowns a sea stack that no path or boat reaches; float two followers up in a balloon.",
+  "id": "sky_road",
+  "name": "The Sky Road",
+  "order": 9,
+  "description": "A Reliquary crowns a sea stack far out from your island. Board two followers onto the balloon, float them over the water, unload on the stack and pray. Grow to 20 followers before the storms come.",
+  "seed": 909,
+  "map": {
+    "generator": "flat",
+    "size": 96,
+    "landAboveSea": -30,
+    "paint": [
+      { "shape": "disc", "at": [28, 48], "r": 18, "aboveSea": 30, "falloff": 5 },
+      { "shape": "disc", "at": [66, 48], "r": 4, "aboveSea": 60, "falloff": 2 }
+    ]
+  },
+  "tribes": [{}],
+  "spells": ["bolt", "raise_land"],
+  "buildings": ["dwelling", "watchtower", "skyloft"],
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [24, 48] },
+    { "spawn": "shaper", "tribe": 0, "at": [27, 45] },
+    { "spawn": "settler", "tribe": 0, "near": [22, 54], "count": 10 },
+    { "spawn": "firecaller", "tribe": 0, "near": [38, 48], "count": 2 },
+    { "spawn": "balloon", "tribe": 0, "at": [40, 48] },
+    { "spawn": "tree", "near": [18, 38], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [20, 60], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [32, 58], "count": 3, "spacing": 2 },
+    { "spawn": "reliquary", "at": [66, 48], "site": { "tag": "sky_reliquary", "worshippers": 2, "prayerSeconds": 20, "uses": 2, "rewards": [{ "type": "unlockSpell", "spell": "hornets" }, { "type": "charges", "spell": "hornets", "n": 1 }, { "type": "message", "text": "The sky Reliquary teaches Hornets." }] } }
+  ],
+  "objectives": [
+    { "type": "worship", "site": "sky_reliquary", "text": "Pray at the Reliquary on the sea stack" },
+    { "type": "followers", "n": 20, "text": "Grow to 20 followers" }
+  ],
+  "lose": [{ "type": "timeLimit", "seconds": 900 }],
+  "triggers": [
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Select the two firecallers and right-click the balloon to board. Send the balloon east over the water to the sea stack and unload them there." }] },
+    { "when": { "type": "worship", "site": "sky_reliquary" }, "do": [{ "type": "message", "text": "A Skyloft builds more balloons. Firecallers can shoot from them." }] }
+  ],
+  "unlocks": { "buildings": ["skyloft"] }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "level_sea_of_fires_idle_loses",
+  "description": "Campaign level 13 has a real loss: an idle player runs out of time after the Forge.",
+  "tags": [
+    "levels"
+  ],
+  "level": "sea_of_fires",
+  "runTicks": 38500,
+  "assert": [
+    {
+      "at": 38500,
+      "expr": "level.lost && alive(0) && invariants() == 0"
+    }
+  ]
+}

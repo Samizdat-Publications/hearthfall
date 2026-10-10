@@ -7,7 +7,7 @@
 // campaign carry), so a save restores the level it was made in even after the level file changes.
 import type { LevelDef, ValidatedPack } from "@hearthfall/data";
 import { makeBot } from "@hearthfall/ai";
-import { World, createLevelWorld, levelMap, type CampaignCarry, type Command, type WorldInit, type WorldSnapshot } from "@hearthfall/sim";
+import { World, createLevelWorld, levelWorldInit, type CampaignCarry, type Command, type WorldInit, type WorldSnapshot } from "@hearthfall/sim";
 import { levelOpponents, opponentsFor } from "./opponents.ts";
 
 export interface SkirmishParams {
@@ -44,7 +44,7 @@ export function campaignParams(def: LevelDef, carry: CampaignCarry): SkirmishPar
 }
 
 export function skirmishInit(pack: ValidatedPack, p: SkirmishParams): WorldInit {
-  if (p.campaign) return { pack: pack.files, packHash: pack.hash, seed: p.campaign.def.seed, map: levelMap(p.campaign.def), populate: false, level: { def: p.campaign.def, carry: p.campaign.carry } };
+  if (p.campaign) return levelWorldInit({ def: p.campaign.def, carry: p.campaign.carry }, pack.files, pack.hash);
   return { pack: pack.files, packHash: pack.hash, seed: p.seed, map: { generator: p.level, size: p.size, tribes: p.tribes }, ...(p.rules ? { rules: p.rules } : {}), ...(p.forge ? { forge: true } : {}) };
 }
 

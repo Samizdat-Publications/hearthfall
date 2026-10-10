@@ -1,0 +1,42 @@
+{
+  "$comment": "Teaching level 8: boats (BACKLOG 10). The rival lives across a strait; ferry an army over in boats from a Boathouse.",
+  "id": "across_the_strait",
+  "name": "Across the Strait",
+  "order": 8,
+  "description": "A rival tribe lives across the strait. Board followers onto your boat, sail to the far shore and unload them, build a Boathouse for more boats, and defeat the rival within 20 minutes.",
+  "seed": 808,
+  "map": {
+    "generator": "flat",
+    "size": 128,
+    "landAboveSea": 30,
+    "paint": [
+      { "shape": "rect", "at": [64, 64], "size": [18, 128], "aboveSea": -30 },
+      { "shape": "rect", "at": [0, 64], "size": [18, 128], "aboveSea": -30 }
+    ]
+  },
+  "tribes": [{}, { "ai": "turtle", "difficulty": "easy", "maxTroops": 8 }],
+  "spells": ["bolt", "lightning"],
+  "buildings": ["dwelling", "watchtower", "warden_lodge", "fire_lodge", "boathouse"],
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [32, 64] },
+    { "spawn": "shaper", "tribe": 0, "at": [35, 61] },
+    { "spawn": "settler", "tribe": 0, "near": [30, 70], "count": 14 },
+    { "spawn": "warden", "tribe": 0, "near": [42, 64], "count": 5 },
+    { "spawn": "boat", "tribe": 0, "at": [56, 64] },
+    { "spawn": "hearth", "tribe": 1, "at": [96, 64] },
+    { "spawn": "shaper", "tribe": 1, "at": [99, 61] },
+    { "spawn": "settler", "tribe": 1, "near": [98, 70], "count": 10 },
+    { "spawn": "tree", "near": [24, 48], "count": 14, "spacing": 1.2 },
+    { "spawn": "tree", "near": [26, 82], "count": 10, "spacing": 1.2 },
+    { "spawn": "tree", "near": [104, 46], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [22, 64], "count": 4, "spacing": 2 }
+  ],
+  "objectives": [{ "type": "eliminateAll", "text": "Cross the strait and defeat the rival tribe" }],
+  "lose": [{ "type": "timeLimit", "seconds": 1200 }],
+  "triggers": [
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Select wardens and right-click your boat to board. Select the boat and right-click the far shore to sail and unload." }] },
+    { "when": { "type": "time", "seconds": 90 }, "do": [{ "type": "message", "text": "One boat carries five. Build a Boathouse on the shore for more." }] },
+    { "when": { "type": "time", "seconds": 900 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+  ],
+  "unlocks": { "buildings": ["boathouse"] }
+}

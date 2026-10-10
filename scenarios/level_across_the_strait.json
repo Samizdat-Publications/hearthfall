@@ -1,0 +1,24 @@
+{
+  "id": "level_across_the_strait",
+  "description": "Campaign level 8 is completable: a hard player AI builds a Boathouse, ferries waves across the strait and defeats the rival.",
+  "tags": [
+    "levels"
+  ],
+  "level": "across_the_strait",
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "aggressive",
+      "difficulty": "hard",
+      "offset": 2
+    }
+  ],
+  "runTicks": 10000,
+  "assert": [
+    {
+      "at": 10000,
+      "expr": "level.won && !alive(1) && alive(0) && events.count('boarded') > 0 && invariants() == 0"
+    }
+  ]
+}

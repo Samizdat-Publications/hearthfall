@@ -1,0 +1,15 @@
+{
+  "id": "level_the_hill_idle_loses",
+  "description": "Campaign level 11 has a real loss: a rival out-scores the idle player on the hill (outplayed).",
+  "tags": [
+    "levels"
+  ],
+  "level": "the_hill",
+  "runTicks": 14500,
+  "assert": [
+    {
+      "at": 14500,
+      "expr": "level.lost && rules.winner > 0 && rules.why == 'kingOfHill' && alive(0) && invariants() == 0"
+    }
+  ]
+}

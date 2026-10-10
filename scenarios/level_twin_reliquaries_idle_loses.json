@@ -1,0 +1,15 @@
+{
+  "id": "level_twin_reliquaries_idle_loses",
+  "description": "Campaign level 10 has a real loss: the rival holds both Reliquaries for two minutes while the player idles (outplayed).",
+  "tags": [
+    "levels"
+  ],
+  "level": "twin_reliquaries",
+  "runTicks": 14000,
+  "assert": [
+    {
+      "at": 14000,
+      "expr": "level.lost && rules.winner == 1 && rules.why == 'holdSites' && alive(0) && invariants() == 0"
+    }
+  ]
+}

@@ -286,6 +286,11 @@ if (__DEBUG_API__ || game.params.debug) {
     /** BACKLOG 85: start any campaign level (open or not) for the e2e flow */
     playLevel: (id: string) => game.playLevel(id, true),
     winLevel: () => {
+      // a level that opens with a Forge decides nothing until it ends: every tribe readies first
+      if (game.world.forge?.running()) {
+        for (const t of game.world.tribes) game.command({ tribe: t.index, type: "forgeReady" });
+        game.step(1);
+      }
       game.command({ tribe: -1, type: "completeObjectives" });
       game.step(1);
       return game.ended;

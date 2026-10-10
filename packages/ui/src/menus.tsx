@@ -234,10 +234,10 @@ function Setup({ s, act }: { s: SetupView; act: MenuActions }) {
 /** BACKLOG 9: the campaign route: the selected level on the map (null: the frontier, the first open level not yet won) */
 const pickedLevel = signal<string | null>(null);
 
-/** node positions on the route, in percent of the map box: left to right along a gentle wave */
+/** node positions on the route, in percent of the map box: left to right, zigzagging along a gentle wave so neighbors never touch */
 function routePoint(k: number, n: number): [number, number] {
   const x = n > 1 ? 7 + (86 * k) / (n - 1) : 50;
-  const y = 50 + 30 * Math.sin(k * 1.25 + 0.4);
+  const y = 50 + (k % 2 ? 17 : -17) + 12 * Math.sin(k * 0.7 + 0.4);
   return [x, y];
 }
 

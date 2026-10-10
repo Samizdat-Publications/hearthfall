@@ -1,0 +1,55 @@
+{
+  "id": "level_sky_road",
+  "description": "Campaign level 9 is completable: two firecallers float to the sea stack in the balloon, unload and pray while an economy bot grows the tribe to 20.",
+  "tags": [
+    "fast",
+    "levels"
+  ],
+  "level": "sky_road",
+  "bots": [
+    {
+      "type": "economy",
+      "tribe": 0,
+      "offset": 0
+    }
+  ],
+  "commands": [
+    {
+      "tick": 1,
+      "tribe": 0,
+      "type": "board",
+      "args": {
+        "units": "tribe0.firecallers",
+        "vehicle": "tribe0.balloons"
+      }
+    },
+    {
+      "tick": 60,
+      "tribe": 0,
+      "type": "unload",
+      "args": {
+        "units": "tribe0.balloons",
+        "to": [
+          65,
+          48
+        ]
+      }
+    },
+    {
+      "tick": 1000,
+      "tribe": 0,
+      "type": "worship",
+      "args": {
+        "units": "tribe0.firecallers",
+        "site": "sky_reliquary"
+      }
+    }
+  ],
+  "runTicks": 3000,
+  "assert": [
+    {
+      "at": 3000,
+      "expr": "level.won && site('sky_reliquary').by == 0 && events.count('unloaded') >= 1 && invariants() == 0"
+    }
+  ]
+}

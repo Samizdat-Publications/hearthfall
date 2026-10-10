@@ -90,6 +90,64 @@
      0.99
     ]
    }
+  },
+  {
+   "id": "sky_road_stack",
+   "params": {
+    "campaign": "sky_road",
+    "camera": "default",
+    "reveal": "1"
+   },
+   "steps": [
+    {
+     "step": 20
+    },
+    {
+     "eval": "__game.setCamera({ x: 54, z: 50, zoom: 0.22, yaw: 0.5 });"
+    },
+    {
+     "step": 2
+    },
+    {
+     "assert": "__game.getSummary().sites.length === 1"
+    }
+   ],
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.005,
+     0.99
+    ]
+   }
+  },
+  {
+   "id": "the_forge_moat",
+   "params": {
+    "campaign": "the_forge",
+    "camera": "default",
+    "reveal": "1"
+   },
+   "steps": [
+    {
+     "step": 1300
+    },
+    {
+     "eval": "__game.setCamera({ x: 96, z: 66, zoom: 0.3, yaw: 0.3 });"
+    },
+    {
+     "step": 2
+    },
+    {
+     "assert": "__game.getSummary().tick > 1000"
+    }
+   ],
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.02,
+     0.99
+    ]
+   }
   }
  ]
 }

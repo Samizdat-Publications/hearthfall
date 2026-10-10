@@ -72,7 +72,7 @@ export class RulesRuntime {
     return out;
   }
 
-  /** Step 9, after the level: conquest, then the variant (presence is read once a second). */
+  /** Step 9, after worship and before the level: conquest, then the variant (presence is read once a second). */
   update(): void {
     if (this.winner >= 0) return;
     const w = this.w;

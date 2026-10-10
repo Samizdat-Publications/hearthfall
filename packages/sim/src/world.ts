@@ -335,10 +335,10 @@ export class World {
     this.flushTerrain();
     // 8. economy: construction, dwellings, breeding, trees, mana
     this.economy.update();
-    // 9. worship, then level triggers, objectives and outcome (rewards may queue terrain ops: applied in the same tick so snapshots stay legal)
+    // 9. worship, victory rules, then level triggers, objectives and outcome (a level with rules reads this tick's winner; rewards may queue terrain ops: applied in the same tick so snapshots stay legal)
     this.worship.update();
-    this.level?.update();
     this.rules?.update();
+    this.level?.update();
     this.flushTerrain();
     // 10. periodic upkeep
     if (this.tick % this.cfg.tickHz === this.cfg.tickHz - 1) this.terrain.healScars();

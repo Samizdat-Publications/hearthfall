@@ -1043,6 +1043,11 @@ export const ObjectiveSchema = z.discriminatedUnion("type", [
     n: z.number().int().min(1),
     text: z.string().optional(),
   }),
+  /** BACKLOG 13 in the campaign: win the level's victory rules (`rules`); a rival winning them loses the level */
+  z.strictObject({
+    type: z.literal("victory"),
+    text: z.string().optional(),
+  }),
 ]);
 export type Objective = z.infer<typeof ObjectiveSchema>;
 
@@ -1107,6 +1112,10 @@ export const LevelSchema = z.strictObject({
   spells: z.array(id),
   /** buildings every tribe may build (others need an unlockBuilding reward); absent means all */
   buildings: z.array(id).optional(),
+  /** BACKLOG 13: a balance.victory variant id; holdSites and kingOfHill count this level's worship sites (the first for kingOfHill) */
+  rules: id.optional(),
+  /** BACKLOG 11: the level opens with a Forge phase (balance.forge); level timers start at its end */
+  forge: z.boolean().optional(),
   setup: z.array(LevelSetup).min(1),
   objectives: z.array(ObjectiveSchema).min(1),
   lose: z.array(LoseSchema).optional(),

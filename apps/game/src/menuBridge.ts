@@ -21,6 +21,7 @@ const LOST_WHY: Record<string, string> = {
   timeLimit: "Time ran out.",
   siteLost: "A rival tribe claimed the site first.",
   hearthLost: "Your Hearth has fallen.",
+  outplayed: "A rival tribe won the day first.",
 };
 
 /** BACKLOG 13: end screen lines for a skirmish decided by the sim rules (won, lost) */

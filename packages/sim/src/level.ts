@@ -8,7 +8,7 @@ import type { Fnv } from "./hash.ts";
 import type { MapSpec } from "./generator.ts";
 import { applySetup, type BotFactory } from "./scenario.ts";
 import { applyReward } from "./worship.ts";
-import { World } from "./world.ts";
+import { World, type WorldInit } from "./world.ts";
 
 export const PLAYER = 0;
 export const OUTCOME = { none: 0, won: 1, lost: 2 } as const;
@@ -76,12 +76,16 @@ export class LevelRuntime {
         return me.alive && w.playTick + 1 >= Math.round(o.seconds * w.cfg.tickHz);
       case "followers":
         return w.economy.followers(PLAYER) >= o.n;
+      case "victory":
+        return w.rules?.winner === PLAYER;
     }
   }
 
   private lost(): string | null {
     const w = this.w;
     if (!w.tribes[PLAYER].alive) return "eliminated";
+    // BACKLOG 13: a rival won the level's victory rules
+    if (w.rules && w.rules.winner >= 0 && w.rules.winner !== PLAYER) return "outplayed";
     for (const l of this.def.lose ?? []) {
       if (l.type === "timeLimit" && w.playTick + 1 >= Math.round(l.seconds * w.cfg.tickHz)) return "timeLimit";
       if (l.type === "hearthLost" && w.ents.index(w.tribes[PLAYER].hearth) < 0) return "hearthLost";
@@ -182,13 +186,19 @@ registerCommand("completeObjectives", {
   },
 });
 
+/** The WorldInit of a level (fresh or restored from a save): its painted map, rules and Forge. */
+export function levelWorldInit(init: LevelInit, pack: PackFiles, packHash: string): WorldInit {
+  const def = init.def;
+  return { pack, packHash, seed: def.seed, map: levelMap(def), populate: false, level: init, ...(def.rules ? { rules: def.rules } : {}), ...(def.forge ? { forge: true } : {}) };
+}
+
 /**
  * Build a level world: the painted map, per-level spell unlocks (plus the campaign carry for the
  * player), setup, and AI controllers for tribes 1+ from `makeAi` (packages/ai OpponentAI).
  */
 export function createLevelWorld(init: LevelInit, pack: PackFiles, packHash: string, makeAi?: BotFactory): World {
   const def = init.def;
-  const w = new World({ pack, packHash, seed: def.seed, map: levelMap(def), populate: false, level: init });
+  const w = new World(levelWorldInit(init, pack, packHash));
   const spells = w.cfg.pack.spells.spells;
   const auto = w.cfg.pack.balance.economy.defaultAutoCharge;
   for (const t of w.tribes) {

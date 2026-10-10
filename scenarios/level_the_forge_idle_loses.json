@@ -1,0 +1,15 @@
+{
+  "id": "level_the_forge_idle_loses",
+  "description": "Campaign level 12 has a real loss: the level timer starts after the Forge and an idle player runs out of time.",
+  "tags": [
+    "levels"
+  ],
+  "level": "the_forge",
+  "runTicks": 32500,
+  "assert": [
+    {
+      "at": 32500,
+      "expr": "level.lost && forge.endedAt == 2400 && playTick >= 30000 && alive(1) && invariants() == 0"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "level_the_forge",
+  "description": "Campaign level 12 is completable: after the Forge (the turtle digs its moat) a hard player AI defeats the digger tribe.",
+  "tags": [
+    "levels"
+  ],
+  "level": "the_forge",
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "aggressive",
+      "difficulty": "hard",
+      "offset": 2
+    }
+  ],
+  "runTicks": 12000,
+  "assert": [
+    {
+      "at": 12000,
+      "expr": "level.won && forge.endedAt > 0 && forge.ops(1) > 0 && !alive(1) && invariants() == 0"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "level_twin_reliquaries",
+  "description": "Campaign level 10 is completable under Hold the Reliquaries: a hard player AI holds both sites (or defeats the rival).",
+  "tags": [
+    "levels"
+  ],
+  "level": "twin_reliquaries",
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "aggressive",
+      "difficulty": "hard",
+      "offset": 2
+    }
+  ],
+  "runTicks": 10000,
+  "assert": [
+    {
+      "at": 10000,
+      "expr": "level.won && rules.winner == 0 && invariants() == 0"
+    }
+  ]
+}

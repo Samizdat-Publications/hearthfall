@@ -2,7 +2,7 @@
 // conditions, triggers, and level state through snapshot and restore.
 import { describe, expect, it } from "vitest";
 import { validateLevel, type LevelDef } from "@hearthfall/data";
-import { createLevelWorld, levelMap, OUTCOME } from "../src/level.ts";
+import { createLevelWorld, levelMap, levelWorldInit, OUTCOME } from "../src/level.ts";
 import { World } from "../src/world.ts";
 import { basePack } from "./helpers.ts";
 
@@ -168,5 +168,72 @@ describe("campaign levels", () => {
     const msgs = validateLevel(bad, basePack().files).issues.map((i) => i.message);
     expect(msgs).toContain("no site tagged nowhere");
     expect(msgs).toContain("tribe 0 is the player");
+  });
+
+  // S2 block H: levels may name victory rules (a victory objective) and open with a Forge
+  const duel = (over: Partial<LevelDef>) =>
+    level({
+      tribes: [{}, { ai: "turtle" }],
+      buildings: undefined,
+      setup: [
+        { spawn: "hearth", tribe: 0, at: [16, 32] },
+        { spawn: "shaper", tribe: 0, at: [20, 30] },
+        { spawn: "settler", tribe: 0, near: [20, 36], count: 4 },
+        { spawn: "hearth", tribe: 1, at: [48, 32] },
+        { spawn: "shaper", tribe: 1, at: [46, 30] },
+        { spawn: "reliquary", at: [26, 32], site: { tag: "hill", rewards: [] } },
+      ],
+      map: { generator: "flat", size: 64, landAboveSea: 30 },
+      objectives: [{ type: "victory" }],
+      triggers: [],
+      ...over,
+    });
+
+  // a rival that never acts (the AI is not under test here)
+  const idleAi = (spec: { tribe: number }) => ({ tribe: spec.tribe, every: 1000, offset: 0, decide: () => [] });
+  const makeDuel = (def: LevelDef) => createLevelWorld({ def }, basePack().files, basePack().hash, idleAi);
+
+  it("a level with rules wins when the player wins them and is outplayed when a rival does", () => {
+    for (const [tribe, outcome, why] of [[0, OUTCOME.won, "objectives"], [1, OUTCOME.lost, "outplayed"]] as const) {
+      const w = makeDuel(duel({ rules: "king_of_hill" }));
+      expect(w.rules?.def.type).toBe("kingOfHill");
+      // presence only counts once a second: stand people at the hill and fast-forward the score
+      w.rules!.held[tribe] = w.rules!.goalTicks() - w.cfg.tickHz;
+      w.step([{ tick: 0, tribe, type: "move", args: { units: `tribe${tribe}.${tribe ? "shapers" : "settlers"}`, to: [26, 32] } }]);
+      w.run(20 * w.cfg.tickHz);
+      expect(w.rules!.winner).toBe(tribe);
+      expect(w.level!.outcome).toBe(outcome);
+      expect(w.eventCounts.get(outcome === OUTCOME.won ? "levelWon" : "levelLost")).toBe(1);
+      expect(w.level!.endedAt).toBe(w.rules!.endedAt);
+      if (outcome === OUTCOME.lost) expect([...w.recent].reverse().find((e) => e.type === "levelLost")?.why).toBe(why);
+    }
+  });
+
+  it("a level with a Forge freezes its timers until the Forge ends; saves keep rules and Forge", () => {
+    const def = duel({ forge: true, rules: "hold_sites", objectives: [{ type: "victory" }], lose: [{ type: "timeLimit", seconds: 3 }] });
+    const w = makeDuel(def);
+    expect(w.forge?.running()).toBe(true);
+    w.run(10 * w.cfg.tickHz);
+    expect(w.level!.outcome).toBe(OUTCOME.none);
+    const p = basePack();
+    const r = World.restore(levelWorldInit({ def }, p.files, p.hash), w.snapshot());
+    expect(r.forge?.running()).toBe(true);
+    expect(r.rules?.def.id).toBe("hold_sites");
+    expect(r.hash().all).toBe(w.hash().all);
+    for (const x of [w, r]) {
+      x.step([{ tick: x.tick, tribe: 0, type: "forgeReady", args: {} }, { tick: x.tick, tribe: 1, type: "forgeReady", args: {} }]);
+      x.run(3 * x.cfg.tickHz + 2);
+      expect(x.level!.outcome).toBe(OUTCOME.lost);
+      expect(x.level!.endedAt).toBe(x.forge!.endedAt + 3 * x.cfg.tickHz - 1);
+    }
+    expect(r.hash().all).toBe(w.hash().all);
+  });
+
+  it("validateLevel checks rules and the victory objective", () => {
+    const ok = duel({ rules: "hold_sites" });
+    const msgs = (over: object) => validateLevel({ ...ok, ...over }, basePack().files).issues.map((i) => i.message);
+    expect(msgs({ rules: undefined })).toContain("a victory objective needs level rules");
+    expect(msgs({ rules: "nope" })).toContain("unknown victory rules nope");
+    expect(msgs({ rules: "hold_sites", forge: true })).toEqual([]);
   });
 });

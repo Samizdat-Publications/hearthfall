@@ -99,9 +99,12 @@ function levelObjectives(game: Game): ObjectiveView[] {
           ? `Worship at the ${words(o.site)}`
           : o.type === "survive"
             ? `Survive ${clock(o.seconds)}${done ? "" : ` (${left(o.seconds)} left)`}`
-            : `Reach ${o.n} followers (${w.economy.followers(game.localTribe)})`;
-    // BACKLOG 89: live prayer progress and follower count after authored objective text
-    const live = done ? "" : o.type === "worship" ? prayerNote(w, o.site, game.localTribe) : o.type === "followers" && o.text ? ` (${w.economy.followers(game.localTribe)})` : "";
+            : o.type === "victory"
+              ? (rulesLine(w, game.localTribe) ?? w.rules?.def.name ?? "Win the day")
+              : `Reach ${o.n} followers (${w.economy.followers(game.localTribe)})`;
+    // BACKLOG 89: live prayer progress and follower count after authored objective text; BACKLOG 13 the rules progress
+    const rl = o.type === "victory" && o.text ? rulesLine(w, game.localTribe) : null;
+    const live = done ? "" : o.type === "worship" ? prayerNote(w, o.site, game.localTribe) : o.type === "followers" && o.text ? ` (${w.economy.followers(game.localTribe)})` : rl ? `: ${rl}` : "";
     return { text: (o.text ?? auto) + live, done, part: `objective-${k}` };
   });
   (lv.def.lose ?? []).forEach((l, k) => {

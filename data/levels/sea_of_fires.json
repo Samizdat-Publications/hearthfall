@@ -1,0 +1,44 @@
+{
+  "$comment": "Level 13, the finale: three islands, a Forge, boats and balloons, two rivals. Everything the campaign taught.",
+  "id": "sea_of_fires",
+  "name": "Sea of Fires",
+  "order": 13,
+  "description": "Three tribes on three islands. Shape your shore in the Forge, then build boats or balloons and defeat both rivals within 30 minutes.",
+  "seed": 1313,
+  "map": {
+    "generator": "flat",
+    "size": 128,
+    "landAboveSea": -30,
+    "paint": [
+      { "shape": "disc", "at": [32, 40], "r": 20, "aboveSea": 30, "falloff": 5 },
+      { "shape": "disc", "at": [96, 40], "r": 18, "aboveSea": 30, "falloff": 5 },
+      { "shape": "disc", "at": [64, 100], "r": 18, "aboveSea": 30, "falloff": 5 }
+    ]
+  },
+  "tribes": [{}, { "ai": "aggressive", "difficulty": "easy", "maxTroops": 8 }, { "ai": "sneaky", "difficulty": "easy", "maxTroops": 8 }],
+  "forge": true,
+  "spells": ["bolt", "raise_land", "lightning", "flatten", "whirlwind"],
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [30, 40] },
+    { "spawn": "shaper", "tribe": 0, "at": [33, 37] },
+    { "spawn": "settler", "tribe": 0, "near": [26, 46], "count": 16 },
+    { "spawn": "warden", "tribe": 0, "near": [38, 42], "count": 5 },
+    { "spawn": "boat", "tribe": 0, "at": [55, 44] },
+    { "spawn": "hearth", "tribe": 1, "at": [98, 40] },
+    { "spawn": "shaper", "tribe": 1, "at": [95, 37] },
+    { "spawn": "settler", "tribe": 1, "near": [102, 46], "count": 12 },
+    { "spawn": "hearth", "tribe": 2, "at": [64, 102] },
+    { "spawn": "shaper", "tribe": 2, "at": [67, 99] },
+    { "spawn": "settler", "tribe": 2, "near": [62, 108], "count": 12 },
+    { "spawn": "tree", "near": [22, 30], "count": 14, "spacing": 1.2 },
+    { "spawn": "tree", "near": [104, 30], "count": 10, "spacing": 1.2 },
+    { "spawn": "tree", "near": [56, 110], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [24, 52], "count": 4, "spacing": 2 }
+  ],
+  "objectives": [{ "type": "eliminateAll", "text": "Defeat both island tribes" }],
+  "lose": [{ "type": "timeLimit", "seconds": 1800 }],
+  "triggers": [
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Ferry wardens in your boat, or build a Skyloft and float firecallers over their villages." }] },
+    { "when": { "type": "time", "seconds": 1500 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+  ]
+}
