@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { TASK } from "../src/economy.ts";
+import { CAT } from "../src/entities.ts";
 import { world } from "./helpers.ts";
 
 const flat = () => {
@@ -134,6 +135,36 @@ describe("plans and trees (M4 review regressions)", () => {
     w.economy.placePlan(0, w.cfg.buildingIndex.get("dwelling")!, w.ents.x[h] + 5, w.ents.y[h]);
     w.run(20 * 20);
     expect(w.eventCounts.get("woodDelivered") ?? 0).toBeGreaterThanOrEqual(3);
+  });
+
+  it("BACKLOG 44: every change of a tree's wood or a rock's stone bumps treeVersion, so the tree layer rescales", () => {
+    const w = world({ generator: "continents", size: 128, tribes: 1 }, 5);
+    const h = w.ents.index(w.tribes[0].hearth);
+    for (let k = 0; k < 4; k++) w.spawnUnit("settler", 0, w.ents.x[h] + 2, w.ents.y[h] + k);
+    const E = w.ents;
+    const look = () => {
+      const s: string[] = [];
+      for (let i = 0; i < E.hi; i++) if (E.alive[i] && (E.cat[i] === CAT.tree || E.cat[i] === CAT.rock)) s.push(`${i}:${E.wood[i]}:${E.stone[i]}`);
+      return s.join(",");
+    };
+    const dwelling = w.cfg.buildingIndex.get("dwelling")!;
+    const spot = [5, -5, 7, -7].map((dx) => [w.ents.x[h] + dx, w.ents.y[h]]).find(([x, y]) => !w.economy.planBlocker(dwelling, x, y));
+    expect(spot).toBeDefined();
+    for (const dy of [0, 4]) w.economy.placePlan(0, dwelling, spot![0], spot![1] + dy);
+    let prev = look();
+    let version = w.treeVersion;
+    let changes = 0;
+    for (let t = 0; t < 90 * 20; t++) {
+      w.step([]);
+      const now = look();
+      if (now !== prev) {
+        changes++;
+        expect(w.treeVersion, `tick ${w.tick}`).not.toBe(version);
+      }
+      prev = now;
+      version = w.treeVersion;
+    }
+    expect(changes).toBeGreaterThan(5);
   });
 
   it("settlers only take homes and work on their own landmass (regression, M7 ai-idle soak)", () => {
