@@ -23,6 +23,9 @@ export interface PendingCast {
   y: number;
   /** distance to the target when the Shaper was last ordered there; a stop without progress drops the cast */
   best: number;
+  /** where she walks: the target, or the nearest reachable point within range of it (BACKLOG 62) */
+  ax: number;
+  ay: number;
 }
 
 const finite = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v);
@@ -37,6 +40,44 @@ function distTo(w: World, i: number, x: number, y: number): number {
   const dx = wrapDelta(x - w.ents.x[i], n);
   const dy = wrapDelta(y - w.ents.y[i], n);
   return Math.sqrt(dx * dx + dy * dy);
+}
+
+/**
+ * BACKLOG 62: where the Shaper walks to cast at (x, y). The target itself when its snapped vertex is on her
+ * landmass; else the cell of her landmass within range - 1 of the target nearest to her (over water, an
+ * island, across a cliff); null when no such cell exists, so the cast fails at once instead of walking off.
+ */
+function approachPoint(w: World, si: number, x: number, y: number, range: number): [number, number] | null {
+  const E = w.ents;
+  const n = w.terrain.size;
+  const pf = w.units.pfOf(si);
+  pf.refresh();
+  const snap = w.cfg.pack.balance.movement.snapRadius;
+  const v = (px: number, py: number) => (((Math.round(px) % n) + n) % n) + (((Math.round(py) % n) + n) % n) * n;
+  const here = pf.nearestWalkable(v(E.x[si], E.y[si]), snap);
+  if (here < 0) return null;
+  const home = pf.comp[here];
+  const goal = pf.nearestWalkable(v(x, y), snap);
+  if (goal >= 0 && pf.comp[goal] === home) return [x, y];
+  const r = Math.floor(range - 1);
+  const cx = Math.round(x);
+  const cy = Math.round(y);
+  let best = Infinity;
+  let bx = 0;
+  let by = 0;
+  for (let dy = -r; dy <= r; dy++)
+    for (let dx = -r; dx <= r; dx++) {
+      if (dx * dx + dy * dy > r * r) continue;
+      const k = v(cx + dx, cy + dy);
+      if (pf.comp[k] !== home) continue;
+      const d = distTo(w, si, k % n, (k - (k % n)) / n);
+      if (d < best) {
+        best = d;
+        bx = k % n;
+        by = (k - (k % n)) / n;
+      }
+    }
+  return best < Infinity ? [bx, by] : null;
 }
 
 function beginCast(w: World, tribe: number, spell: number, x: number, y: number): void {
@@ -73,12 +114,19 @@ registerCommand("cast", {
     const x = ((tx % n) + n) % n;
     const y = ((ty % n) + n) % n;
     const si = shaperIndex(w, c.tribe);
-    if (distTo(w, si, x, y) <= w.cfg.pack.spells.spells[s].range) beginCast(w, c.tribe, s, x, y);
-    else {
-      w.tribes[c.tribe].pending = { spell: s, x, y, best: distTo(w, si, x, y) };
-      w.units.order([si], x, y);
-      w.emit("castQueued", { tribe: c.tribe, spell: w.cfg.pack.spells.spells[s].id });
+    const range = w.cfg.pack.spells.spells[s].range;
+    if (distTo(w, si, x, y) <= range) {
+      beginCast(w, c.tribe, s, x, y);
+      return;
     }
+    const at = approachPoint(w, si, x, y, range);
+    if (!at) {
+      w.emit("castFailed", { tribe: c.tribe, spell: w.cfg.pack.spells.spells[s].id, reason: "unreachable" });
+      return;
+    }
+    w.tribes[c.tribe].pending = { spell: s, x, y, best: distTo(w, si, x, y), ax: at[0], ay: at[1] };
+    w.units.order([si], at[0], at[1]);
+    w.emit("castQueued", { tribe: c.tribe, spell: w.cfg.pack.spells.spells[s].id });
   },
 });
 
@@ -152,7 +200,7 @@ export function updateSpells(w: World): void {
         const d = distTo(w, si, p.x, p.y);
         if (d < p.best - 0.5) {
           p.best = d;
-          w.units.order([si], p.x, p.y);
+          w.units.order([si], p.ax ?? p.x, p.ay ?? p.y);
         } else {
           t.pending = null;
           w.emit("castFailed", { tribe: t.index, spell: spells[p.spell].id, reason: "unreachable" });

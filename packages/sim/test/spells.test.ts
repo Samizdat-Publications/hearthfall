@@ -17,15 +17,33 @@ describe("spells (M5 review follow-ups, BACKLOG 54)", () => {
   it("a queued cast at an unreachable target is dropped with castFailed instead of re-ordering forever", () => {
     const { w, s } = lakeWorld();
     expect(w.terrain.isLand(45, 32)).toBe(false);
+    // BACKLOG 62: no shore cell lies within bolt range of the lake center, so the cast fails at once
     w.step(cmd(0, "cast", { spell: "bolt", target: [45, 32] }));
-    expect(w.eventCounts.get("castQueued")).toBe(1);
+    expect(w.eventCounts.get("castQueued") ?? 0).toBe(0);
     w.run(40 * 20);
     expect(w.tribes[0].pending).toBeNull();
     expect(w.eventCounts.get("castFailed")).toBe(1);
-    expect(w.eventCounts.get("orderFailed") ?? 0).toBeLessThanOrEqual(2);
+    expect(w.eventCounts.get("orderFailed") ?? 0).toBe(0);
     expect(w.ents.alive[w.ents.index(s)]).toBe(1);
     const bolt = w.cfg.spellIndex.get("bolt")!;
     expect(w.tribes[0].eco.charges[bolt]).toBeGreaterThan(0);
+  });
+
+  it("a cast at water next to an island walks the Shaper to her own shore within range and casts (BACKLOG 62)", () => {
+    const { w } = lakeWorld();
+    const t = w.terrain;
+    // an islet in the lake: the water target snaps to the islet, which the Shaper cannot reach
+    const land = t.heights[t.idx(10, 32)];
+    for (let y = 30; y <= 34; y++) for (let x = 43; x <= 47; x++) t.heights[t.idx(x, y)] = land;
+    t.version++;
+    expect(t.isLand(40, 32)).toBe(false);
+    w.step(cmd(-1, "grantCharges", { tribe: 0, spell: "raise_land", n: 1 }));
+    w.step(cmd(0, "cast", { spell: "raise_land", target: [40, 32] }));
+    expect(w.eventCounts.get("castQueued")).toBe(1);
+    w.run(40 * 20);
+    expect(w.eventCounts.get("castFailed") ?? 0).toBe(0);
+    expect(w.eventCounts.get("orderFailed") ?? 0).toBe(0);
+    expect(w.eventCounts.get("spellCast")).toBe(1);
   });
 
   it("a queued cast survives a detour: the Shaper keeps walking while she gets closer", () => {
