@@ -411,6 +411,9 @@
         "vfxColors": {
           "type": "object",
           "properties": {
+            "$comment": {
+              "type": "string"
+            },
             "spells": {
               "type": "object",
               "propertyNames": {

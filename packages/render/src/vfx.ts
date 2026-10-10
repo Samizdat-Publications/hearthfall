@@ -127,7 +127,8 @@ export class VfxLayer {
   /** BACKLOG 3: show effects on units in the fog too */
   revealAll = false;
 
-  private readonly colors: VfxColors;
+  /** resolved effect colors (defaults overlaid by style.json render.vfxColors) */
+  readonly colors: VfxColors;
 
   constructor(bend: BendUniforms, cap = 512, colors: Partial<VfxColors> = {}) {
     this.colors = { ...DEFAULT_VFX_COLORS, ...colors, spells: { ...SPELL_COLORS, ...(colors.spells ?? {}) } };

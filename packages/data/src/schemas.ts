@@ -409,6 +409,7 @@ export const StyleSchema = z
         /** BACKLOG 96: effect colors (render/src/vfx.ts VfxColors); any key left out keeps its default */
         vfxColors: z
           .strictObject({
+            ...comment,
             spells: z.record(z.string(), z.string().regex(/^#[0-9a-fA-F]{6}$/)).optional(),
             statuses: z.strictObject({ ward: z.string(), beguile: z.string(), veil: z.string() }).optional(),
             fire: z.array(z.string().regex(/^#[0-9a-fA-F]{6}$/)).length(3).optional(),

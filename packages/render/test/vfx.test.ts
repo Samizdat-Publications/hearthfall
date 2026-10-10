@@ -151,3 +151,23 @@ describe("vfx layer", () => {
     }
   });
 });
+
+describe("BACKLOG 95: effect colors are data", () => {
+  it("every spell in the pack has a color in style.json, and the layer uses it", () => {
+    const pack = basePack().files;
+    const colors = pack.style.render?.vfxColors?.spells ?? {};
+    for (const s of pack.spells.spells) expect(colors[s.id], s.id).toMatch(/^#[0-9a-fA-F]{6}$/);
+    const v = new VfxLayer(makeBendUniforms(), undefined, { spells: { bolt: "#123456" } });
+    expect(v.colors.spells.bolt).toBe("#123456");
+    expect(v.colors.spells.quake).toBe(colors.quake);
+  });
+
+  it("a color for an unknown spell is a pack issue", async () => {
+    const { validatePack } = await import("@hearthfall/data");
+    const { readFileSync, readdirSync } = await import("node:fs");
+    const dir = new URL("../../../data/base/", import.meta.url);
+    const raw = Object.fromEntries(readdirSync(dir).filter((f) => f.endsWith(".json")).map((f) => [f, JSON.parse(readFileSync(new URL(f, dir), "utf8"))]));
+    raw["style.json"].render.vfxColors.spells.sunbeam = "#ffffff";
+    expect(validatePack(raw).issues.map((i) => i.path)).toContain("render.vfxColors.spells");
+  });
+});

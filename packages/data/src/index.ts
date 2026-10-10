@@ -128,6 +128,8 @@ function crossCheck(p: PackFiles): PackIssue[] {
     for (const s of per.spellPrefs) need("ai_personalities.json", `${per.id}.spellPrefs`, spells, s, "spell");
     for (const u of Object.keys(per.armyMix)) need("ai_personalities.json", `${per.id}.armyMix`, units, u, "unit");
   }
+  // BACKLOG 95: effect colors name real spells
+  for (const s of Object.keys(p.style.render?.vfxColors?.spells ?? {})) need("style.json", "render.vfxColors.spells", spells, s, "spell");
   const kinds = new Set((p.buildings.worship.kinds ?? []).map((k) => k.id));
   p.balance.skirmishWorship?.sites.forEach((site, k) => {
     const at = `skirmishWorship.sites.${k}`;

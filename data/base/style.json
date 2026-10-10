@@ -86,7 +86,18 @@
     "water": { "shallowDepth": 26, "foamWidth": 6, "foamRing": 14 },
     "unitScale": { "shaper": 1.2 },
     "mapFrame": { "mask": "#1b2633", "grid": "#f2e6c8", "gridOpacity": 0.14, "gridCells": 16 },
-    "vfxColors": { "chantRing": "#c39bff", "chantHalo": "#8a3cff", "melee": "#f2e6c8", "chantBreak": "#8a8378", "glow": "#ff7a2e" },
+    "vfxColors": {
+      "$comment": "BACKLOG 95: effect colors by spell (every spell in spells.json has one; vfx.test checks), own-unit status halos, fireball fire, and the rest. The impact shapes stay code in render/src/vfx.ts.",
+      "spells": {
+        "bolt": "#ff9a3c", "call": "#7fd4ff", "hornets": "#ffd23a", "raise_land": "#c9a65a", "lightning": "#8fc8ff", "flatten": "#d9cbb0",
+        "quake": "#8a6a4a", "volcano": "#ff3b10", "veil": "#9fb4c8", "ward": "#ffd76a", "beguile": "#ff7ad9", "whirlwind": "#d8d2c0",
+        "mire": "#6b7a2a", "erode": "#4f7f95", "firerain": "#ff5a1f", "wraith": "#b8f0ff"
+      },
+      "statuses": { "ward": "#ffd76a", "beguile": "#ff7ad9", "veil": "#9fb4c8" },
+      "fire": ["#ffb347", "#ff6a1f", "#ffe08a"],
+      "fallback": "#b07cff",
+      "chantRing": "#c39bff", "chantHalo": "#8a3cff", "melee": "#f2e6c8", "chantBreak": "#8a8378", "glow": "#ff7a2e"
+    },
     "tiltShift": {
       "$comment": "Tilt-shift miniature focus (BACKLOG 14a, ADR-013): sharp band at the camera focus (screen uv), blur ramps over falloff to maxBlur low-res pixels; depthWeight also blurs by distance from the focus depth. order pre = blur before palette quantization, post = after.",
       "defaultOn": true,
