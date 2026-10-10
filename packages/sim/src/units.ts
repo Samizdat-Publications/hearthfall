@@ -9,8 +9,15 @@ import type { World } from "./world.ts";
 
 export const ORDER = { none: 0, move: 1, attackMove: 2 } as const;
 
+/** Nav index per unit type (BACKLOG 10, ADR-016): 0 land, 1 water (boats), 2 air (balloons). */
+export const NAV = { land: 0, water: 1, air: 2 } as const;
+
 export class UnitSystem {
   readonly pf: Pathfinder;
+  /** pathfinders by nav index (land is pf); water and air refresh lazily when a vehicle asks */
+  readonly pfs: Pathfinder[];
+  /** nav index per unit type */
+  readonly nav: Uint8Array;
   readonly hash: SpatialHash;
   /** waypoint vertex indices per entity index (null when following a flow field or idle) */
   paths: (Int32Array | null)[] = [];
@@ -32,9 +39,18 @@ export class UnitSystem {
   constructor(w: World) {
     this.w = w;
     this.pf = new Pathfinder(w.terrain);
+    this.pfs = [this.pf, new Pathfinder(w.terrain, "water"), new Pathfinder(w.terrain, "air")];
+    this.nav = Uint8Array.from(w.cfg.pack.units.units.map((u) => (u.vehicle ? NAV[u.vehicle.nav] : NAV.land)));
     this.hash = new SpatialHash(w.terrain.size);
     this.dirtyMask = new Uint8Array(w.terrain.size * w.terrain.size);
     this.lastVersion = w.terrain.version;
+  }
+
+  /** The pathfinder unit i moves with (refreshed). */
+  pfOf(i: number): Pathfinder {
+    const pf = this.pfs[this.nav[this.w.ents.type[i]]];
+    pf.refresh();
+    return pf;
   }
 
   private vertexOf(x: number, y: number): number {
@@ -52,9 +68,18 @@ export class UnitSystem {
     kind: number = ORDER.move,
   ): void {
     const E = this.w.ents;
+    // vehicles snap the goal on their own nav layer (a boat to the nearest water); a mixed group splits
+    const navs = new Set(indices.map((i) => this.nav[E.type[i]]));
+    if (navs.size > 1) {
+      for (const k of [NAV.land, NAV.water, NAV.air] as number[])
+        if (navs.has(k)) this.order(indices.filter((i) => this.nav[E.type[i]] === k), gx, gy, kind);
+      return;
+    }
     const m = this.w.cfg.pack.balance.movement;
-    this.pf.refresh();
-    const goalV = this.pf.nearestWalkable(this.vertexOf(gx, gy), m.snapRadius);
+    const nav = indices.length ? this.nav[E.type[indices[0]]] : NAV.land;
+    const pf = this.pfs[nav];
+    pf.refresh();
+    const goalV = pf.nearestWalkable(this.vertexOf(gx, gy), m.snapRadius);
     const useFlow = indices.length >= m.groupFlowMinUnits && goalV >= 0;
     this.ordersIssued += indices.length;
     for (const i of indices) {
@@ -114,16 +139,20 @@ export class UnitSystem {
   }
 
   /** Flow field for a goal, or null when this tick's build budget is spent (the unit waits a tick). */
-  private flowFor(goal: number): Float32Array | null {
+  private flowFor(goal: number, nav: number): Float32Array | null {
     const t = this.w.terrain;
     const m = this.w.cfg.pack.balance.movement;
-    const f = this.flows.get(goal);
+    // one cache for every nav layer: the key carries the layer (land keys stay the plain goal)
+    const key = goal + nav * t.size * t.size;
+    const f = this.flows.get(key);
     if (f && f.version === t.version) return f.field;
     if (this.flowBuildsThisTick >= m.maxFlowBuildsPerTick) return null;
     this.flowBuildsThisTick++;
-    const field = this.pf.flowField(goal);
-    this.flows.delete(goal);
-    this.flows.set(goal, { field, version: t.version });
+    const pf = this.pfs[nav];
+    pf.refresh();
+    const field = pf.flowField(goal);
+    this.flows.delete(key);
+    this.flows.set(key, { field, version: t.version });
     // keep the cache small: drop the oldest inserted goals (insertion order is deterministic)
     while (this.flows.size > m.flowCacheSize)
       this.flows.delete(this.flows.keys().next().value!);
@@ -210,11 +239,12 @@ export class UnitSystem {
       const id = this.queue[this.qHead++];
       const i = E.index(id);
       if (i < 0 || E.order[i] === ORDER.none || !E.waitPath[i]) continue;
-      const start = this.pf.nearestWalkable(
+      const pf = this.pfOf(i);
+      const start = pf.nearestWalkable(
         this.vertexOf(E.x[i], E.y[i]),
         m.snapRadius,
       );
-      const goal = this.pf.nearestWalkable(
+      const goal = pf.nearestWalkable(
         this.vertexOf(E.gx[i], E.gy[i]),
         m.snapRadius,
       );
@@ -230,7 +260,7 @@ export class UnitSystem {
         this.stop(i);
         continue;
       }
-      const r = this.pf.astar(start, goal, m.maxExpandPerSearch);
+      const r = pf.astar(start, goal, m.maxExpandPerSearch);
       budget -= r.expanded + 1;
       expanded += r.expanded;
       if (!r.ok) {
@@ -260,7 +290,7 @@ export class UnitSystem {
     // 5. movement
     this.hash.rebuild(
       E.hi,
-      (i) => E.alive[i] === 1 && E.cat[i] === CAT.unit && E.inside[i] < 0,
+      (i) => E.alive[i] === 1 && E.cat[i] === CAT.unit && E.inside[i] < 0 && this.nav[E.type[i]] !== NAV.air,
       E.x,
       E.y,
     );
@@ -287,6 +317,8 @@ export class UnitSystem {
       // knockback: displacement that ignores walkability (cliffs and water are the point); a
       // negative ktick counts up through the troop knockback immunity window
       if (E.ktick[i] < 0) E.ktick[i]++;
+      // vehicles are too heavy to shove (BACKLOG 10)
+      if (E.ktick[i] > 0 && this.nav[E.type[i]] !== NAV.land) E.ktick[i] = 0;
       if (E.ktick[i] > 0) {
         E.ktick[i]--;
         if (E.ktick[i] === 0)
@@ -322,6 +354,9 @@ export class UnitSystem {
       }
       let dx = 0;
       let dy = 0;
+      const nav = this.nav[E.type[i]];
+      const pf = this.pfs[nav];
+      if (nav !== NAV.land) pf.refresh();
       if (E.order[i] !== ORDER.none && !E.waitPath[i]) {
         const speed = units[E.type[i]].speed / hz;
         const fg = E.flowGoal[i];
@@ -340,7 +375,7 @@ export class UnitSystem {
         /** remaining route length, the progress measure for stuck detection */
         let route = -1;
         if (fg >= 0) {
-          const field = this.flowFor(fg);
+          const field = this.flowFor(fg, nav);
           if (!field) continue;
           const v = this.vertexOf(E.x[i], E.y[i]);
           const vx = v % n;
@@ -387,7 +422,7 @@ export class UnitSystem {
               const close = d2 < m.waypointRadius * m.waypointRadius;
               const sees =
                 d2 < m.sightRadius * m.sightRadius &&
-                this.pf.lineWalkableFrom(E.x[i], E.y[i], p[E.pathPos[i] + 1]);
+                pf.lineWalkableFrom(E.x[i], E.y[i], p[E.pathPos[i] + 1]);
               if (!close && !sees) break;
               E.pathPos[i]++;
             }
@@ -433,16 +468,16 @@ export class UnitSystem {
             if (E.stuck[i] >= giveUp) {
               // reachable 1 means the goal was in the unit's walkable component: a real stuck unit,
               // unless chase 1 (combat re-aims the goal at a moving target it could not close on)
-              const sv = this.pf.nearestWalkable(
+              const sv = pf.nearestWalkable(
                 this.vertexOf(E.x[i], E.y[i]),
                 2,
               );
-              const gv = this.pf.nearestWalkable(
+              const gv = pf.nearestWalkable(
                 this.vertexOf(E.gx[i], E.gy[i]),
                 6,
               );
               const reachable =
-                sv >= 0 && gv >= 0 && this.pf.comp[sv] === this.pf.comp[gv]
+                sv >= 0 && gv >= 0 && pf.comp[sv] === pf.comp[gv]
                   ? 1
                   : 0;
               const chase = E.atk[i] !== NO_ENTITY ? 1 : 0;
@@ -463,7 +498,7 @@ export class UnitSystem {
           }
         }
       }
-      // separation from neighbors
+      // separation from neighbors (balloons float above the crowd)
       let sx = 0;
       let sy = 0;
       const xi = E.x[i];
@@ -473,7 +508,7 @@ export class UnitSystem {
       const hc = H.cols;
       const hbx = ((Math.floor(xi / H.bs) % hc) + hc) % hc;
       const hby = ((Math.floor(yi / H.bs) % hc) + hc) % hc;
-      for (let oy = -1; oy <= 1; oy++) {
+      for (let oy = nav === NAV.air ? 2 : -1; oy <= 1; oy++) {
         for (let ox = -1; ox <= 1; ox++) {
           const bkt = ((hbx + ox + hc) % hc) + ((hby + oy + hc) % hc) * hc;
           for (let j = H.head[bkt]; j !== -1; j = H.next[j]) {
@@ -507,11 +542,11 @@ export class UnitSystem {
       let ny = yi + dy;
       // a unit already on an unwalkable vertex (pushed, or placed at a door on a slope) may always step out
       if (
-        this.pf.walkable(this.vertexOf(xi, yi)) &&
-        !this.pf.walkable(this.vertexOf(nx, ny))
+        pf.walkable(this.vertexOf(xi, yi)) &&
+        !pf.walkable(this.vertexOf(nx, ny))
       ) {
-        if (this.pf.walkable(this.vertexOf(xi + dx, yi))) ny = yi;
-        else if (this.pf.walkable(this.vertexOf(xi, yi + dy))) nx = xi;
+        if (pf.walkable(this.vertexOf(xi + dx, yi))) ny = yi;
+        else if (pf.walkable(this.vertexOf(xi, yi + dy))) nx = xi;
         else {
           // blocked on both axes: ease back toward the center of the current (walkable) vertex
           const cx = Math.round(xi);
@@ -536,12 +571,13 @@ export class UnitSystem {
       E.x[i] = nx;
       E.y[i] = ny;
     }
-    // drowning (units pushed or standing in deep water)
+    // drowning (units pushed or standing in deep water; vehicles float)
     for (let i = 0; i < E.hi; i++)
       if (
         E.alive[i] &&
         E.cat[i] === CAT.unit &&
         E.inside[i] < 0 &&
+        this.nav[E.type[i]] === NAV.land &&
         t.drowns(E.x[i], E.y[i])
       )
         w.kill(i, "drowned");

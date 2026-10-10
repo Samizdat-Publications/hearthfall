@@ -266,6 +266,43 @@
           "wanders": {
             "type": "boolean"
           },
+          "vehicle": {
+            "type": "object",
+            "properties": {
+              "nav": {
+                "type": "string",
+                "enum": [
+                  "water",
+                  "air"
+                ]
+              },
+              "capacity": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 8
+              },
+              "boardRadius": {
+                "type": "number",
+                "minimum": 0
+              },
+              "fireFrom": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]*$"
+                }
+              },
+              "rangeBonus": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "nav",
+              "capacity",
+              "boardRadius"
+            ],
+            "additionalProperties": false
+          },
           "spawnPerTribe": {
             "type": "array",
             "prefixItems": [

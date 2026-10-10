@@ -1,0 +1,38 @@
+{
+  "id": "vehicle_ferry_crosses_strait",
+  "description": "BACKLOG 10: five walkers board a boat at the west shore, it sails across the strait and unloads them all on the east shore; the walkers could not cross on foot.",
+  "tags": ["fast", "vehicles"],
+  "seed": 101,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 1,
+    "paint": [
+      { "shape": "rect", "at": [32, 32], "size": [12, 64], "aboveSea": -30 },
+      { "shape": "rect", "at": [0, 32], "size": [12, 64], "aboveSea": -30 }
+    ]
+  },
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [12, 12] },
+    { "spawn": "shaper", "tribe": 0, "at": [14, 14] },
+    { "spawn": "boat", "tribe": 0, "at": [28, 32] },
+    { "spawn": "settler", "tribe": 0, "near": [20, 32], "count": 3 },
+    { "spawn": "warden", "tribe": 0, "near": [20, 28], "count": 2 },
+    { "spawn": "settler", "tribe": 0, "at": [18, 40] }
+  ],
+  "commands": [
+    { "tick": 0, "tribe": 0, "type": "setPriorities", "args": { "build": 0, "upgrade": 0, "breed": 0 } },
+    { "tick": 1, "tribe": 0, "type": "move", "args": { "units": "tribe0.settlers", "to": [44, 40] } },
+    { "tick": 40, "tribe": 0, "type": "board", "args": { "units": "tribe0.settlers", "vehicle": "tribe0.boats" } },
+    { "tick": 41, "tribe": 0, "type": "board", "args": { "units": "tribe0.wardens", "vehicle": "tribe0.boats" } },
+    { "tick": 300, "tribe": 0, "type": "unload", "args": { "units": "tribe0.boats", "to": [44, 32] } }
+  ],
+  "runTicks": 700,
+  "assert": [
+    { "at": 39, "expr": "count(tribe0.settlers, near([44, 40], 6)) == 0" },
+    { "at": 299, "expr": "events.count('boarded') == 5 && count(tribe0.units, riding) == 5" },
+    { "at": 700, "expr": "events.count('unloaded') == 1 && count(tribe0.units, riding) == 0" },
+    { "at": 700, "expr": "count(tribe0.settlers, near([40, 32], 5)) >= 3 && count(tribe0.wardens, near([40, 32], 5)) == 2" },
+    { "at": 700, "expr": "events.count('drowned') == 0 && count(tribe0.units, onLand) == 7 && invariants() == 0" }
+  ]
+}

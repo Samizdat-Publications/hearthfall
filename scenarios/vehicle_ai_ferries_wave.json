@@ -1,0 +1,31 @@
+{
+  "id": "vehicle_ai_ferries_wave",
+  "description": "BACKLOG 10: an aggressive opponent whose rival sits across a strait boards its idle wave onto its boat, sails across, unloads on the far shore and attacks the rival Hearth on foot.",
+  "tags": ["vehicles", "ai"],
+  "seed": 107,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2,
+    "paint": [
+      { "shape": "rect", "at": [32, 32], "size": [12, 64], "aboveSea": -30 },
+      { "shape": "rect", "at": [0, 32], "size": [12, 64], "aboveSea": -30 }
+    ]
+  },
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [52, 32] },
+    { "spawn": "shaper", "tribe": 0, "at": [54, 36] },
+    { "spawn": "hearth", "tribe": 1, "at": [12, 32] },
+    { "spawn": "shaper", "tribe": 1, "at": [14, 36] },
+    { "spawn": "boat", "tribe": 1, "at": [28, 32] },
+    { "spawn": "warden", "tribe": 1, "near": [18, 30], "count": 6 }
+  ],
+  "bots": [{ "type": "opponent", "tribe": 1, "personality": "aggressive", "difficulty": "normal" }],
+  "commands": [{ "tick": 0, "tribe": 0, "type": "setPriorities", "args": { "build": 0, "upgrade": 0, "breed": 0 } }],
+  "runTicks": 9000,
+  "assert": [
+    { "at": 5900, "expr": "events.count('boarded') == 0" },
+    { "at": 9000, "expr": "events.count('boarded') >= 5 && events.count('unloaded') >= 1" },
+    { "at": 9000, "expr": "count(tribe1.wardens, near([52, 32], 12)) >= 3 && events.count('drowned') == 0 && invariants() == 0" }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "vehicle_balloon_crosses_and_fires",
+  "description": "BACKLOG 10: a Firecaller and a settler board a balloon, it floats over the deep strait, and the Firecaller shoots a rival Warden from aboard while the Warden cannot strike back; the settler never fights.",
+  "tags": ["fast", "vehicles"],
+  "seed": 104,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2,
+    "paint": [
+      { "shape": "rect", "at": [32, 32], "size": [12, 64], "aboveSea": -30 },
+      { "shape": "rect", "at": [0, 32], "size": [12, 64], "aboveSea": -30 }
+    ]
+  },
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [12, 12] },
+    { "spawn": "shaper", "tribe": 0, "at": [14, 14] },
+    { "spawn": "hearth", "tribe": 1, "at": [52, 52] },
+    { "spawn": "shaper", "tribe": 1, "at": [50, 50] },
+    { "spawn": "balloon", "tribe": 0, "at": [18, 32] },
+    { "spawn": "firecaller", "tribe": 0, "at": [16, 30] },
+    { "spawn": "settler", "tribe": 0, "at": [16, 34] },
+    { "spawn": "warden", "tribe": 1, "at": [50, 32] }
+  ],
+  "commands": [
+    { "tick": 0, "tribe": 0, "type": "setPriorities", "args": { "build": 0, "upgrade": 0, "breed": 0 } },
+    { "tick": 0, "tribe": 1, "type": "setPriorities", "args": { "build": 0, "upgrade": 0, "breed": 0 } },
+    { "tick": 0, "tribe": 1, "type": "setStance", "args": { "units": "tribe1.wardens", "stance": "defensive" } },
+    { "tick": 0, "tribe": 0, "type": "board", "args": { "units": "tribe0.firecallers", "vehicle": "tribe0.balloons" } },
+    { "tick": 1, "tribe": 0, "type": "board", "args": { "units": "tribe0.settlers", "vehicle": "tribe0.balloons" } },
+    { "tick": 100, "tribe": 0, "type": "move", "args": { "units": "tribe0.balloons", "to": [44, 32] } }
+  ],
+  "runTicks": 1400,
+  "assert": [
+    { "at": 99, "expr": "count(tribe0.units, riding) == 2" },
+    { "at": 1400, "expr": "count(tribe0.units, riding) == 2 && count(tribe0.balloons, near([44, 32], 1.5)) == 1" },
+    { "at": 1400, "expr": "hp(tribe1.wardens) < 2600 && hp(tribe0.balloons) == 900 && hp(tribe0.settlers) == 1000" },
+    { "at": 1400, "expr": "invariants() == 0" }
+  ]
+}

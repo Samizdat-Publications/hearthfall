@@ -10,7 +10,7 @@ import { Rng } from "./rng.ts";
 import { cos, sin, TWO_PI } from "./dmath.ts";
 import type { Terrain, TerrainOpSpec } from "./terrain.ts";
 import { ORDER, UnitSystem } from "./units.ts";
-import { BSTATE, cloneEco, EconomySystem, newTribeEco, type TribeEco } from "./economy.ts";
+import { BSTATE, cloneEco, EconomySystem, newTribeEco, TASK, type TribeEco } from "./economy.ts";
 import { isShaper, onShaperDeath, updateSpells, type CastState, type PendingCast } from "./spells.ts";
 import { updateEffects } from "./effects.ts";
 import { CombatSystem } from "./combat.ts";
@@ -18,6 +18,7 @@ import { WorshipSystem, type WorshipState } from "./worship.ts";
 import { LevelRuntime, type LevelInit, type LevelSaved } from "./level.ts";
 import { RulesRuntime, type RulesSaved } from "./rules.ts";
 import { VisionSystem, type VisionState } from "./vision.ts";
+import { VehicleSystem } from "./vehicles.ts";
 
 /** Deterministic in-sim decision maker (AI opponent or test bot); emits Commands at its cadence. */
 export interface Controller {
@@ -113,6 +114,8 @@ export class World {
   units: UnitSystem;
   economy: EconomySystem;
   combat: CombatSystem;
+  /** BACKLOG 10: boats and balloons (ADR-016) */
+  vehicles: VehicleSystem;
   worship: WorshipSystem;
   /** BACKLOG 3: fog of war (per tribe explored and visible grids) */
   vision: VisionSystem;
@@ -132,6 +135,7 @@ export class World {
     this.rng = new Rng((gen.seedUsed || this.seed) ^ 0x5f3759df);
     this.mapInfo = { generator: init.map.generator, seedUsed: gen.seedUsed, rerolls: gen.rerolls, landFraction: gen.landFraction };
     this.units = new UnitSystem(this);
+    this.vehicles = new VehicleSystem(this);
     this.economy = new EconomySystem(this);
     this.combat = new CombatSystem(this);
     this.worship = new WorshipSystem(this);
@@ -258,6 +262,8 @@ export class World {
       e.inside[i] = -1;
     }
     const out: number[] = [];
+    // a lost vehicle drops its riders where it was (BACKLOG 10): in deep water they drown below
+    if (e.cat[i] === CAT.unit && e.occupants[i] > 0) out.push(...this.vehicles.spill(i));
     if (e.cat[i] === CAT.building) {
       if (e.state[i] !== BSTATE.done) this.economy.releasePlanTrees(i);
       // occupants walk out of a destroyed building
@@ -297,6 +303,8 @@ export class World {
     this.economy.updateTasks();
     // 4-5. pathing requests (budgeted) and movement
     this.units.update();
+    // 5b. vehicles: boarding, riders follow, unloading, vehicle production (BACKLOG 10)
+    this.vehicles.update();
     // 6. spells (queued and resolving casts, respawns, elimination) and persistent effects
     updateSpells(this);
     updateEffects(this);
@@ -334,7 +342,7 @@ export class World {
     if (Array.isArray(sel)) {
       for (const id of sel) {
         const i = typeof id === "number" ? E.index(id) : -1;
-        if (i >= 0 && E.cat[i] === CAT.unit) out.push(i);
+        if (i >= 0 && E.cat[i] === CAT.unit && E.task[i] !== TASK.ride) out.push(i);
       }
       return out.sort((a, b) => a - b);
     }
@@ -344,7 +352,8 @@ export class World {
     const tribe = m[3] ? -1 : Number(m[1]);
     const kind = m[3] ? "wild" : m[2] === "units" ? null : m[2].slice(0, -1);
     const type = kind === null ? -1 : (this.cfg.unitIndex.get(kind) ?? -2);
-    for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.cat[i] === CAT.unit && E.tribe[i] === tribe && (type === -1 || E.type[i] === type)) out.push(i);
+    // riders aboard a vehicle take no orders of their own (BACKLOG 10): the vehicle carries them
+    for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.cat[i] === CAT.unit && E.tribe[i] === tribe && (type === -1 || E.type[i] === type) && E.task[i] !== TASK.ride) out.push(i);
     return out;
   }
 
@@ -380,7 +389,7 @@ export class World {
       if (!Number.isFinite(E.x[i]) || !Number.isFinite(E.y[i]) || !Number.isFinite(E.hp[i])) out.push(`entity ${i} has a non-finite column`);
       if (E.x[i] < 0 || E.x[i] >= this.terrain.size || E.y[i] < 0 || E.y[i] >= this.terrain.size) out.push(`entity ${i} outside the map`);
       if (E.cat[i] === CAT.unit) {
-        if (E.inside[i] < 0 && this.terrain.drowns(E.x[i], E.y[i])) out.push(`unit ${i} stands in deep water`);
+        if (E.inside[i] < 0 && this.units.nav[E.type[i]] === 0 && this.terrain.drowns(E.x[i], E.y[i])) out.push(`unit ${i} stands in deep water`);
         if (E.order[i] !== ORDER.none && E.stuck[i] > stuckTicks) out.push(`unit ${i} stuck ${E.stuck[i]} ticks`);
         if (!(E.hp[i] > 0) || E.hp[i] > this.cfg.pack.units.units[E.type[i]].hp + 1e-6) out.push(`unit ${i} hp ${E.hp[i]} out of range`);
         if (E.tribe[i] < 0 && (E.mode[i] !== 0 || E.chant[i] > 0)) out.push(`wild unit ${i} still fighting`);
@@ -399,6 +408,13 @@ export class World {
     // occupancy: every dwelling's occupant count matches the units inside and fits its capacity
     const inside = new Map<number, number>();
     for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.cat[i] === CAT.unit && E.inside[i] >= 0) inside.set(E.inside[i], (inside.get(E.inside[i]) ?? 0) + 1);
+    // vehicles (BACKLOG 10): riders match the count and fit the capacity
+    for (let i = 0; i < E.hi; i++) {
+      if (!E.alive[i] || !this.vehicles.isVehicle(i)) continue;
+      const occ = inside.get(i) ?? 0;
+      if (E.occupants[i] !== occ) out.push(`vehicle ${i} occupants ${E.occupants[i]} != riders ${occ}`);
+      if (occ > this.vehicles.capacityOf(i)) out.push(`vehicle ${i} over capacity`);
+    }
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.building) continue;
       const occ = inside.get(i) ?? 0;
@@ -412,7 +428,7 @@ export class World {
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.unit || E.inside[i] < 0) continue;
       const h = E.inside[i];
-      if (!E.alive[h] || E.cat[h] !== CAT.building) out.push(`unit ${i} inside a missing building`);
+      if (!E.alive[h] || (E.cat[h] !== CAT.building && !this.vehicles.isVehicle(h))) out.push(`unit ${i} inside a missing building`);
       else if (E.tribe[h] !== E.tribe[i]) out.push(`unit ${i} of tribe ${E.tribe[i]} inside building ${h} of tribe ${E.tribe[h]}`);
     }
     if (E.freeList.length + E.count !== E.hi) out.push("free list inconsistent");
@@ -433,7 +449,7 @@ export class World {
     for (let i = 0; i < e.hi; i++) {
       if (!e.alive[i]) continue;
       const c = e.cat[i];
-      if ((c === CAT.unit || c === CAT.tree || c === CAT.rock) && (c !== CAT.unit || e.inside[i] < 0) && this.terrain.drowns(e.x[i], e.y[i])) this.kill(i, c === CAT.unit ? "drowned" : "flooded");
+      if ((c === CAT.unit || c === CAT.tree || c === CAT.rock) && (c !== CAT.unit || (e.inside[i] < 0 && this.units.nav[e.type[i]] === 0)) && this.terrain.drowns(e.x[i], e.y[i])) this.kill(i, c === CAT.unit ? "drowned" : "flooded");
     }
   }
 

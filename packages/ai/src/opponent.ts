@@ -4,7 +4,7 @@
 // difficulty noise from the world's "ai" rng stream, and runs the best ones (score >= 0.5, at most
 // three) through ordinary Commands. Dwelling upkeep is delegated to the EconomyBot. Deterministic:
 // entity index order, arrays only, the ai rng stream for noise and picks.
-import { BSTATE, CAT, NO_ENTITY, TASK, wrapDelta, type Command, type Controller, type World } from "@hearthfall/sim";
+import { BSTATE, CAT, NAV, NO_ENTITY, TASK, wrapDelta, type Command, type Controller, type World } from "@hearthfall/sim";
 import { EconomyBot } from "./economyBot.ts";
 
 export interface Personality {
@@ -49,6 +49,8 @@ export interface OpponentStats {
   /** waves with at least two troop types */
   mixedWaves: number;
   bridges: number;
+  /** BACKLOG 10: loaded boats sent to unload on an enemy shore */
+  ferries: number;
   scoutedAtTick: number;
 }
 
@@ -70,6 +72,9 @@ interface Census {
   threats: number[];
   /** enemy Hearths: [tribe, index], nearest first */
   enemies: [number, number][];
+  /** BACKLOG 10: own boats, and whether a Boathouse stands or is planned */
+  boats: number[];
+  boathouse: boolean;
 }
 
 type Action = { id: string; score: (c: Census) => number; act: (c: Census, out: Command[]) => void };
@@ -83,7 +88,7 @@ export class OpponentAI implements Controller {
   /** World calls the controller every tick; it decides only when tick % period === phase */
   readonly every = 1;
   readonly offset = 0;
-  readonly stats: OpponentStats = { decisions: 0, actions: {}, casts: {}, waves: 0, mixedWaves: 0, bridges: 0, scoutedAtTick: -1 };
+  readonly stats: OpponentStats = { decisions: 0, actions: {}, casts: {}, waves: 0, mixedWaves: 0, bridges: 0, ferries: 0, scoutedAtTick: -1 };
   private readonly spec: string | Personality;
   readonly difficulty: string;
   private readonly phase: number;
@@ -241,6 +246,8 @@ export class OpponentAI implements Controller {
     const c = this.census(w);
     if (!c) return [];
     const out = this.eco.decide(w);
+    this.landed(c, out);
+    this.sail(c, out);
     // BACKLOG 6: the difficulty's resource multiplier goes through the sim as a command (hashed, replayable)
     if (tr.eco.incomeMult !== this.resourceMult) out.push({ tick: w.tick, tribe: this.tribe, type: "handicap", args: { mult: this.resourceMult } });
     this.stats.decisions++;
@@ -291,7 +298,7 @@ export class OpponentAI implements Controller {
     const units = w.cfg.pack.units.units;
     const bdefs = w.cfg.pack.buildings.buildings;
     const n = w.terrain.size;
-    const c: Census = { w, h, si: E.index(tr.shaper), minute: w.tick / (60 * w.cfg.tickHz), pop: w.economy.followers(this.tribe), settlers: [], troops: new Map(), idle: [], shades: [], lodges: new Map(), towers: [], open: 0, threats: [], enemies: [] };
+    const c: Census = { w, h, si: E.index(tr.shaper), minute: w.tick / (60 * w.cfg.tickHz), pop: w.economy.followers(this.tribe), settlers: [], troops: new Map(), idle: [], shades: [], lodges: new Map(), towers: [], open: 0, threats: [], enemies: [], boats: [], boathouse: false };
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i]) continue;
       if (E.tribe[i] === this.tribe) {
@@ -300,8 +307,10 @@ export class OpponentAI implements Controller {
           const id = bdefs[E.type[i]].id;
           if (bdefs[E.type[i]].trains) c.lodges.set(id, [...(c.lodges.get(id) ?? []), i]);
           if (w.combat.garrisonOf(E.type[i]) > 0) c.towers.push(i);
+          if (bdefs[E.type[i]].makes?.unit === "boat") c.boathouse = true;
         } else if (E.cat[i] === CAT.unit) {
           const def = units[E.type[i]];
+          if (w.units.nav[E.type[i]] === NAV.water) c.boats.push(i);
           if (E.type[i] === w.economy.typeSettler) c.settlers.push(i);
           else if (w.combat.isSaboteur(E.type[i])) c.shades.push(i);
           else if (def.trainedAt) {
@@ -755,6 +764,7 @@ export class OpponentAI implements Controller {
     const target = ranked.find(([, eh]) => this.comp(w, E.x[eh], E.y[eh]) === home);
     if (!target) {
       if (E.cat[ranked[0][1]] === CAT.unit) this.approach(c, out, ranked[0][1], home);
+      this.ferry(c, out, ranked[0][1], home);
       this.bridge(c, out, ranked[0][1]);
       return;
     }
@@ -772,6 +782,104 @@ export class OpponentAI implements Controller {
     }
     const kinds = new Set(c.idle.map((i) => E.type[i]));
     if (kinds.size >= 2) this.stats.mixedWaves++;
+  }
+
+  /** BACKLOG 10: no land route to the enemy, so boats carry the wave. Without a boat the tribe raises a
+   * Boathouse once it may; an empty idle boat takes the idle troops on the home landmass; a loaded boat
+   * whose walkers have all boarded sails to the enemy shore and unloads (landed() sends them on). */
+  private ferry(c: Census, out: Command[], eh: number, home: number): void {
+    const w = c.w;
+    const E = w.ents;
+    if (!c.boats.length) {
+      const bh = w.cfg.buildingIndex.get("boathouse");
+      if (!c.boathouse && bh !== undefined && !w.economy.buildingLock(this.tribe, bh)) this.build(c, out, "boathouse");
+      return;
+    }
+    const walkers = c.idle.filter((i) => this.comp(w, E.x[i], E.y[i]) === home);
+    for (const b of c.boats) {
+      if (E.order[b] !== 0 || E.task[b] === TASK.unload) continue;
+      const id = E.idOf(b);
+      let boarding = 0;
+      for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.task[i] === TASK.toBoard && E.target[i] === id) boarding++;
+      if (boarding > 0) continue;
+      if (E.occupants[b] > 0) continue;
+      const seats = w.vehicles.capacityOf(b);
+      if (walkers.length < Math.min(seats, this.waveSize())) continue;
+      out.push(this.cmd(w, "board", { units: walkers.splice(0, seats).map((i) => E.idOf(i)), vehicle: id }));
+    }
+  }
+
+  /** BACKLOG 10: every decision, a loaded boat whose walkers have all boarded sails for the shore of the first
+   * enemy out of reach on foot (known enemies first) and unloads there */
+  private sail(c: Census, out: Command[]): void {
+    const w = c.w;
+    const E = w.ents;
+    if (!c.boats.length) return;
+    const home = this.comp(w, E.x[c.h], E.y[c.h]);
+    const ranked = [...c.enemies.filter(([t]) => this.known.has(t)), ...c.enemies.filter(([t]) => !this.known.has(t))];
+    const far = ranked.find(([, eh]) => this.comp(w, E.x[eh], E.y[eh]) !== home);
+    if (!far) return;
+    for (const b of c.boats) {
+      if (E.occupants[b] === 0 || E.order[b] !== 0 || E.task[b] === TASK.unload) continue;
+      const id = E.idOf(b);
+      let boarding = 0;
+      for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.task[i] === TASK.toBoard && E.target[i] === id) boarding++;
+      if (boarding > 0) continue;
+      const land = this.landing(c, far[1], b);
+      if (!land) continue;
+      out.push(this.cmd(w, "unload", { units: [id], to: land }));
+      this.stats.ferries++;
+    }
+  }
+
+  /** the enemy's shore facing boat b: walk from the enemy Hearth toward the boat while still on its landmass;
+   * null when the water off that shore is not the boat's water (another sea) */
+  private landing(c: Census, eh: number, b: number): [number, number] | null {
+    const w = c.w;
+    const E = w.ents;
+    const n = w.terrain.size;
+    const theirs = this.comp(w, E.x[eh], E.y[eh]);
+    if (theirs < 0) return null;
+    const dx = wrapDelta(E.x[b] - E.x[eh], n);
+    const dy = wrapDelta(E.y[b] - E.y[eh], n);
+    const d = Math.sqrt(dx * dx + dy * dy);
+    let lx = E.x[eh];
+    let ly = E.y[eh];
+    for (let k = 1; k < d; k++) {
+      const x = E.x[eh] + (dx * k) / d;
+      const y = E.y[eh] + (dy * k) / d;
+      if (this.comp(w, x, y, 1) !== theirs) break;
+      lx = x;
+      ly = y;
+    }
+    const sea = w.units.pfs[NAV.water];
+    const snap = w.cfg.pack.balance.movement.snapRadius;
+    const cell = (x: number, y: number) => (((Math.round(x) % n) + n) % n) + (((Math.round(y) % n) + n) % n) * n;
+    const off = sea.nearestWalkable(cell(lx, ly), snap);
+    const at = sea.nearestWalkable(cell(E.x[b], E.y[b]), snap);
+    if (off < 0 || at < 0 || sea.comp[off] !== sea.comp[at]) return null;
+    return [((lx % n) + n) % n, ((ly % n) + n) % n];
+  }
+
+  /** BACKLOG 10: idle troops standing on an enemy's landmass (put ashore by a boat) attack that enemy's Hearth */
+  private landed(c: Census, out: Command[]): void {
+    const w = c.w;
+    const E = w.ents;
+    const home = this.comp(w, E.x[c.h], E.y[c.h]);
+    const groups = new Map<number, number[]>();
+    for (const i of c.idle) {
+      const k = this.comp(w, E.x[i], E.y[i]);
+      if (k < 0 || k === home) continue;
+      const g = groups.get(k);
+      if (g) g.push(i);
+      else groups.set(k, [i]);
+    }
+    for (const [k, units] of groups) {
+      const target = c.enemies.find(([, eh]) => this.comp(w, E.x[eh], E.y[eh]) === k);
+      if (!target) continue;
+      out.push(this.cmd(w, "move", { units: units.map((i) => E.idOf(i)), to: [E.x[target[1]], E.y[target[1]]], attack: true }));
+      c.idle = c.idle.filter((i) => !units.includes(i));
+    }
   }
 
   /** A hunted Shaper out of reach on foot (BACKLOG 7, ai-idle seed 1003: stranded in a one-cell pocket among

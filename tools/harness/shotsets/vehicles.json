@@ -1,0 +1,38 @@
+{
+ "$comment": "BACKLOG 10 vehicles: a loaded boat crossing the strait, a balloon over the water, a Boathouse with its boats. Not part of npm run qa (making-of and review only).",
+ "shots": [
+  {
+   "id": "ferry",
+   "params": { "scenario": "vehicle_ferry_crosses_strait", "camera": "default", "reveal": "1" },
+   "steps": [
+    { "step": 400 },
+    { "eval": "const p = __game.unitPos(2); __game.setCamera({ x: p[0] + 1, z: p[1] + 1, zoom: 0.09, yaw: 0.7 });" },
+    { "step": 2 }
+   ],
+   "kind": "world",
+   "coverage": { "green": [0.02, 0.99] }
+  },
+  {
+   "id": "balloon",
+   "params": { "scenario": "vehicle_balloon_crosses_and_fires", "camera": "default", "reveal": "1" },
+   "steps": [
+    { "step": 700 },
+    { "eval": "const p = __game.unitPos(4); __game.setCamera({ x: p[0] - 1, z: p[1] - 1, zoom: 0.13, yaw: 0.7 });" },
+    { "step": 2 }
+   ],
+   "kind": "world",
+   "coverage": { "green": [0.02, 0.99] }
+  },
+  {
+   "id": "boathouse",
+   "params": { "scenario": "vehicle_boathouse_makes_boats", "camera": "default", "reveal": "1" },
+   "steps": [
+    { "step": 1850 },
+    { "setCamera": { "x": 23, "z": 32, "zoom": 0.1, "yaw": 0.7 } },
+    { "step": 2 }
+   ],
+   "kind": "world",
+   "coverage": { "green": [0.02, 0.99] }
+  }
+ ]
+}

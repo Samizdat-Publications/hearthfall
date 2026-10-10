@@ -484,6 +484,18 @@ export const UnitSchema = z.strictObject({
   /** default combat stance (M6): aggressive acquires and chases, defensive fights in reach, passive never auto-fights */
   stance: z.enum(["aggressive", "defensive", "passive"]),
   wanders: z.boolean().optional(),
+  /** BACKLOG 10 (ADR-016): a vehicle carries other units; nav water sails, air floats over everything */
+  vehicle: z
+    .strictObject({
+      nav: z.enum(["water", "air"]),
+      capacity: z.number().int().positive().max(8),
+      /** a unit boards when it comes within this many cells */
+      boardRadius: pos,
+      /** unit ids that keep fighting from aboard (others ride passive) */
+      fireFrom: z.array(id).optional(),
+      rangeBonus: z.number().optional(),
+    })
+    .optional(),
   spawnPerTribe: range2.optional(),
   milestone: z.string().optional(),
 });
@@ -528,6 +540,10 @@ export const BuildingSchema = z.strictObject({
   /** training queue length per lodge (M6) */
   queueMax: z.number().int().positive().optional(),
   respawnPoint: z.boolean().optional(),
+  /** BACKLOG 10: "shore" needs water next to the footprint (Boathouse) */
+  placement: z.enum(["shore"]).optional(),
+  /** BACKLOG 10: a finished building keeps up to max of this vehicle per building, one every seconds */
+  makes: z.strictObject({ unit: id, max: z.number().int().positive(), seconds: pos }).optional(),
   buildable: z.boolean().optional(),
   hp: pos,
   destructible: z.boolean().optional(),

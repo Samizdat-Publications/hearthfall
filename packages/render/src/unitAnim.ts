@@ -16,6 +16,8 @@ export function unitClip(w: World, i: number): number {
   const E = w.ents;
   const def = w.cfg.pack.units.units[E.type[i]];
   const moving = E.vx[i] !== 0 || E.vy[i] !== 0;
+  // BACKLOG 10: vehicles have no limbs to animate
+  if (def.vehicle) return CLIP.idle;
   if (E.panic[i] > 0) return CLIP.panic;
   if (def.isCaster && E.tribe[i] >= 0) {
     const t = w.tribes[E.tribe[i]];

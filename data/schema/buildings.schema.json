@@ -114,6 +114,36 @@
           "respawnPoint": {
             "type": "boolean"
           },
+          "placement": {
+            "type": "string",
+            "enum": [
+              "shore"
+            ]
+          },
+          "makes": {
+            "type": "object",
+            "properties": {
+              "unit": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*$"
+              },
+              "max": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              "seconds": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "unit",
+              "max",
+              "seconds"
+            ],
+            "additionalProperties": false
+          },
           "buildable": {
             "type": "boolean"
           },

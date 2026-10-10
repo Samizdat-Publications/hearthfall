@@ -113,6 +113,14 @@ function crossCheck(p: PackFiles): PackIssue[] {
     if (k > 0 && t.followers <= all[k - 1].followers) issues.push({ file: "balance.json", path: `progression.tiers.${t.id}`, message: "tier follower thresholds must increase" });
   });
   for (const b of p.buildings.buildings) if (b.trains) need("buildings.json", `${b.id}.trains`, units, b.trains, "unit");
+  // BACKLOG 10: a building makes vehicles only, and riders that fire from a vehicle are real units
+  for (const b of p.buildings.buildings) {
+    if (!b.makes) continue;
+    need("buildings.json", `${b.id}.makes.unit`, units, b.makes.unit, "unit");
+    const u = p.units.units.find((x) => x.id === b.makes!.unit);
+    if (u && !u.vehicle) issues.push({ file: "buildings.json", path: `${b.id}.makes.unit`, message: `${u.id} is not a vehicle` });
+  }
+  for (const u of p.units.units) for (const f of u.vehicle?.fireFrom ?? []) need("units.json", `${u.id}.vehicle.fireFrom`, units, f, "unit");
   for (const u of p.units.units) if (u.isCaster && !u.respawn) issues.push({ file: "units.json", path: `${u.id}.respawn`, message: "the caster needs respawn timings" });
   // effect fields the sim reads without a fallback (packages/sim/src/effects.ts)
   for (const s of p.spells.spells) {

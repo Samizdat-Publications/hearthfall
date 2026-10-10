@@ -86,3 +86,4 @@
 - 2026-10-10T05:01 set menus (4 shots): BACKLOG 13: skirmish setup gains the Victory picker and hint
 - 2026-10-10T05:20 set levels (3 shots): BACKLOG 89: worship stone lighter, prayer progress ring; new shot old_reliquary_prayer
 - 2026-10-10T05:20 set menus (4 shots): BACKLOG 9: campaign route map replaces the level list
+- 2026-10-10T05:59 set vehicles (3 shots): BACKLOG 10: first vehicle baselines (boat, balloon, Boathouse)

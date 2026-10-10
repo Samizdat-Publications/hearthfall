@@ -101,7 +101,7 @@ Training: a settler walks to a lodge (queue of `queueMax`, walkers included), pa
 
 Counter triangle (must be statistically verified by soak tests): Warden beats Firecaller, Firecaller beats Chanter, Chanter beats Warden. Height matters: units on higher ground deal +X percent ranged damage and Bolt knockback is stronger downhill.
 
-**Water is death:** any unit pushed or walking into water deeper than `drownDepthHeightUnits` drowns instantly (boats and later flyers exempt). Knockback into water is a core kill tool.
+**Water is death:** any unit pushed or walking into water deeper than `drownDepthHeightUnits` drowns instantly (boats, balloons and their riders exempt; a sunk boat drowns its riders). Knockback into water is a core kill tool.
 
 ## 8. Buildings
 
@@ -110,8 +110,8 @@ Counter triangle (must be statistically verified by soak tests): Warden beats Fi
 | Dwelling (small) | 3 | 0 | 2x2 | Upgrades to medium, large |
 | Watchtower | 5 | 2 | 1x1 | Garrison 1 to 2, range bonus |
 | Warden Lodge / Fire Lodge / Chant House / Shade Den | 8 | 3 | 3x3 | Training queues |
-| Boathouse | 5 | 0 | 3x3 | Boats carry 5 (later milestone) |
-| Skyloft | 11 | 4 | 3x3 | Balloons carry 2, only Firecallers fire from vehicles (later) |
+| Boathouse | 5 | 0 | 3x3 | Built beside water; keeps up to 2 boats (one per 45 s), each carries 5 |
+| Skyloft | 11 | 4 | 3x3 | Keeps up to 2 balloons (one per 70 s), each carries 2; only Firecallers fire from vehicles (+2 range) |
 
 Construction: player places a plan; settlers auto-assign, flatten the footprint toward its average height, deliver wood, build. Footprint must be above water and below a max slope after flattening. Plans blocked by trees or units resolve automatically (units step aside, trees get chopped first).
 
@@ -212,4 +212,4 @@ Accessibility (BACKLOG 8), all in Settings and stored with the other settings:
 
 ## 18. Out of scope for v1
 
-Online multiplayer, vehicles (boats, balloons), full campaign, mod browser, achievements, localization. All are in `docs/BACKLOG.md`.
+Online multiplayer, full campaign, mod browser, achievements, localization. All are in `docs/BACKLOG.md`.

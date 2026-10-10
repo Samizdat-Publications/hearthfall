@@ -64,7 +64,7 @@ export class RulesRuntime {
     const r = w.cfg.pack.balance.victory!.controlRadius;
     const out = w.tribes.map(() => 0);
     for (let i = 0; i < E.hi; i++) {
-      if (!E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] < 0 || E.inside[i] >= 0) continue;
+      if (!E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] < 0 || E.inside[i] >= 0 || w.vehicles.isVehicle(i)) continue;
       const dx = wrapDelta(E.x[i] - x, n);
       const dy = wrapDelta(E.y[i] - y, n);
       if (dx * dx + dy * dy <= r * r) out[E.tribe[i]]++;

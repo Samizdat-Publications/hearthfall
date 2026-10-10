@@ -101,7 +101,8 @@
         3
       ],
       "wood": 5,
-      "milestone": "backlog",
+      "placement": "shore",
+      "makes": { "unit": "boat", "max": 2, "seconds": 45 },
       "hp": 1500
     },
     {
@@ -112,7 +113,7 @@
       ],
       "wood": 11,
       "stone": 4,
-      "milestone": "backlog",
+      "makes": { "unit": "balloon", "max": 2, "seconds": 70 },
       "hp": 1500
     },
     {

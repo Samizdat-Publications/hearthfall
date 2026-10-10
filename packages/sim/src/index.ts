@@ -7,7 +7,8 @@ export { Terrain, wrap, wrapDelta, DIRTY_KEEP, type Rect, type DirtyRect, type T
 export { generateMap, walkableComponents, type MapSpec, type GeneratedMap, type PaintSpec } from "./generator.ts";
 export { makeConfig, bandOf, secondsToTicks, type SimConfig, type BandName } from "./config.ts";
 export { COMMANDS, registerCommand, type Command, type CommandHandler } from "./commands.ts";
-export { ORDER, UnitSystem } from "./units.ts";
+export { NAV, ORDER, UnitSystem } from "./units.ts";
+export { VehicleSystem } from "./vehicles.ts";
 export { BSTATE, TASK, EconomySystem, type TribeEco } from "./economy.ts";
 export { EFFECTS, FX, registerEffect, applyEffects, type EffectCtx } from "./effects.ts";
 export { shaperIndex, type CastState, type PendingCast } from "./spells.ts";

@@ -89,8 +89,12 @@ export function stepCost(t: Terrain, x: number, y: number): number {
   return 1 + t.slope(x, y) / (t.maxWalkSlope * 2);
 }
 
+/** What a pathfinder walks on (BACKLOG 10, ADR-016): land units, boats on water, balloons over everything. */
+export type NavMode = "land" | "water" | "air";
+
 export class Pathfinder {
   readonly n: number;
+  readonly mode: NavMode;
   private readonly g: Float64Array;
   private readonly parent: Int32Array;
   private readonly stamp: Int32Array;
@@ -107,8 +111,9 @@ export class Pathfinder {
 
   readonly t: Terrain;
 
-  constructor(t: Terrain) {
+  constructor(t: Terrain, mode: NavMode = "land") {
     this.t = t;
+    this.mode = mode;
     this.n = t.size;
     const nn = t.size * t.size;
     this.g = new Float64Array(nn);
@@ -128,6 +133,15 @@ export class Pathfinder {
     const H = this.t.heights;
     const sea = this.t.sea;
     const maxSlope = this.t.maxWalkSlope;
+    if (this.mode !== "land") {
+      // water: every vertex under the sea at an even cost; air: everything (one component)
+      const air = this.mode === "air";
+      for (let i = 0; i < n * n; i++) {
+        const ok = air || H[i] < sea;
+        this.walk[i] = ok ? 1 : 0;
+        this.cost[i] = ok ? 1 : 0;
+      }
+    } else {
     for (let y = 0; y < n; y++) {
       const row = y * n;
       const up = (y === 0 ? n - 1 : y - 1) * n;
@@ -150,6 +164,7 @@ export class Pathfinder {
         this.walk[i] = ok ? 1 : 0;
         this.cost[i] = ok ? 1 + sl / (maxSlope * 2) : 0;
       }
+    }
     }
     // 8-connected component labels with the search's corner rule, so unreachable goals fail fast
     const comp = this.comp;

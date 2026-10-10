@@ -44,9 +44,9 @@ describe("models", () => {
       ...buildings.worship.kinds.map((k: { id: string }) => worshipModelId(k.id)),
       ...TREE_MODELS,
     ];
-    // content still drawn by placeholders (no model yet); the M10 gate logs these in docs/ASSETS.md
+    // every model is in since BACKLOG 10 (the vehicles); a new content id without a model fails here
     const missing = want.filter((id) => !models.has(id));
-    expect(missing.sort()).toEqual(["building.boathouse", "building.skyloft"]);
+    expect(missing.sort()).toEqual([]);
     for (const [id, m] of models) {
       // nothing lost in the split
       const n = (m.body?.getAttribute("position").count ?? 0) + (m.tint?.getAttribute("position").count ?? 0);

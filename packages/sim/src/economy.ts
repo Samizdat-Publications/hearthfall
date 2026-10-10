@@ -9,7 +9,9 @@ import type { World } from "./world.ts";
 
 /** Settler task states. */
 /** Unit tasks. 9 to 12 (training and garrison) are driven by the combat system (M6). */
-export const TASK = { idle: 0, toTree: 1, chop: 2, haul: 3, toWork: 4, work: 5, toHome: 6, home: 7, wander: 8, toTrain: 9, training: 10, toGarrison: 11, garrison: 12, toWorship: 13, worship: 14, toRock: 15, mine: 16, haulStone: 17 } as const;
+export const TASK = { idle: 0, toTree: 1, chop: 2, haul: 3, toWork: 4, work: 5, toHome: 6, home: 7, wander: 8, toTrain: 9, training: 10, toGarrison: 11, garrison: 12, toWorship: 13, worship: 14, toRock: 15, mine: 16, haulStone: 17, ride: 18, toBoard: 19, unload: 20 } as const;
+/** BACKLOG 10: a shore building needs water within this many cells of its footprint edge (placement and launching). */
+export const SHORE_REACH = 3;
 /** Building states (state column). */
 export const BSTATE = { plan: 0, flatten: 1, build: 2, done: 3 } as const;
 /** cells beyond a plan's pad its flattened ground must reach on foot (BACKLOG 0a, `padConnects`) */
@@ -116,7 +118,8 @@ export class EconomySystem {
   followers(tribe: number): number {
     const E = this.w.ents;
     let n = 0;
-    for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.cat[i] === CAT.unit && E.tribe[i] === tribe && E.type[i] !== this.typeShaper) n++;
+    // vehicles are not people (BACKLOG 10)
+    for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.cat[i] === CAT.unit && E.tribe[i] === tribe && E.type[i] !== this.typeShaper && !this.w.vehicles.isVehicleType(E.type[i])) n++;
     return n;
   }
 
@@ -238,7 +241,15 @@ export class EconomySystem {
       if (dx < fw / 2 + keep && dy < fh / 2 + keep) return "too close to a worship site";
     }
     if ((def.stone ?? 0) > 0 && !this.stoneInReach(x0 + fw / 2, y0 + fh / 2)) return "no stone in reach";
+    if (def.placement === "shore" && !this.nearWater(x0, y0, fw, fh)) return "needs water beside it";
     return null;
+  }
+
+  /** BACKLOG 10: water (below the sea) within SHORE_REACH cells of a footprint's edge (a Boathouse launches boats there). */
+  nearWater(x0: number, y0: number, fw: number, fh: number): boolean {
+    const t = this.w.terrain;
+    for (let y = y0 - SHORE_REACH; y <= y0 + fh + SHORE_REACH; y++) for (let x = x0 - SHORE_REACH; x <= x0 + fw + SHORE_REACH; x++) if (t.get(x, y) < t.sea) return true;
+    return false;
   }
 
   /** Create a plan; trees inside the footprint are doomed (chopped out first). */
@@ -399,7 +410,8 @@ export class EconomySystem {
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.unit) continue;
       const task = E.task[i];
-      if (task === TASK.idle || task === TASK.home) continue;
+      // vehicle tasks (riding, boarding, unloading) belong to the vehicle system (BACKLOG 10)
+      if (task === TASK.idle || task === TASK.home || task >= TASK.ride) continue;
       if (task === TASK.wander) {
         if (E.order[i] === ORDER.none) E.task[i] = TASK.idle;
         continue;

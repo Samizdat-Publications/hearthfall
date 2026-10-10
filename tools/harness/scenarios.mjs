@@ -90,6 +90,7 @@ export function makeCtx(w) {
     veiled: (i) => E.veil[i] > 0,
     warded: (i) => E.ward[i] > 0,
     beguiled: (i) => E.beguile[i] > 0,
+    riding: (i) => E.inside[i] >= 0 && w.vehicles.isVehicle(E.inside[i]),
     effects: sel((i) => E.cat[i] === CAT.effect),
     charges: (tribe, spell) => w.tribes[tribe]?.eco.charges[w.cfg.spellIndex.get(spell)] ?? -1,
     alive: (tribe) => w.tribes[tribe]?.alive ?? false,

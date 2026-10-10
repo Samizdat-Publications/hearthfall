@@ -930,6 +930,36 @@
       "when": "2026-10-10T05:22:45.340Z",
       "source": "external:reliquary_prayer.png",
       "bytes": 534615
+    },
+    {
+      "file": "b10/20261010-0600_vehicle-ferry.png",
+      "milestone": "B10",
+      "kind": "screenshot",
+      "caption": "Boats: five settlers and wardens ride a longboat across a strait they could never walk; the sail wears the tribe color",
+      "highlight": false,
+      "when": "2026-10-10T06:00:00.862Z",
+      "source": "external:ferry.png",
+      "bytes": 459962
+    },
+    {
+      "file": "b10/20261010-0600_vehicle-balloon.png",
+      "milestone": "B10",
+      "kind": "screenshot",
+      "caption": "Balloons: a hide balloon carries a Firecaller over the water and lets it shoot from the basket; the ring below marks where it flies",
+      "highlight": false,
+      "when": "2026-10-10T06:00:02.321Z",
+      "source": "external:balloon.png",
+      "bytes": 537035
+    },
+    {
+      "file": "b10/20261010-0600_vehicle-boathouse.png",
+      "milestone": "B10",
+      "kind": "screenshot",
+      "caption": "The Boathouse must stand by the water and launches a boat every 45 seconds",
+      "highlight": false,
+      "when": "2026-10-10T06:00:04.105Z",
+      "source": "external:boathouse.png",
+      "bytes": 578865
     }
   ]
 }

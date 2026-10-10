@@ -150,6 +150,26 @@
       "stance": "passive"
     },
     {
+      "id": "boat",
+      "$comment": "BACKLOG 10 (ADR-016): a vehicle made at a Boathouse. Sails on water only, carries 5, never fights; passengers are safe aboard but drown if it sinks in deep water.",
+      "hp": 1400,
+      "speed": 2.2,
+      "manaPerMin": { "idle": 0 },
+      "vehicle": { "nav": "water", "capacity": 5, "boardRadius": 4 },
+      "convertible": false,
+      "stance": "passive"
+    },
+    {
+      "id": "balloon",
+      "$comment": "BACKLOG 10 (ADR-016): a vehicle made at a Skyloft. Floats over any terrain, carries 2, slow and fragile; Firecallers aboard can shoot from it with a range bonus.",
+      "hp": 900,
+      "speed": 1.0,
+      "manaPerMin": { "idle": 0 },
+      "vehicle": { "nav": "air", "capacity": 2, "boardRadius": 2.0, "fireFrom": ["firecaller"], "rangeBonus": 2 },
+      "convertible": false,
+      "stance": "passive"
+    },
+    {
       "id": "wild",
       "hp": 800,
       "speed": 1.2,

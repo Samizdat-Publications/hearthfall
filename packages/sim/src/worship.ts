@@ -157,7 +157,8 @@ export class WorshipSystem {
     const si = E.index(site.ent);
     if (si < 0) return;
     const ring = Math.max(0.8, this.radius() - 1);
-    units.forEach((i, k) => {
+    // vehicles do not pray (BACKLOG 10)
+    units.filter((i) => !w.vehicles.isVehicle(i)).forEach((i, k) => {
       if (E.inside[i] >= 0) w.combat.leave(i);
       w.combat.clear(i);
       E.task[i] = TASK.toWorship;

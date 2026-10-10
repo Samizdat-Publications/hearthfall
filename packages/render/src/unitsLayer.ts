@@ -10,7 +10,7 @@
 import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { unitModelId, type ModelParts } from "./models.ts";
-import { CAT, type SimEvent, type World } from "@hearthfall/sim";
+import { CAT, NAV, type SimEvent, type World } from "@hearthfall/sim";
 import { deathPose, rigGeometry, unitClip, unitPose, type Pose } from "./unitAnim.ts";
 
 /** seconds a death ghost stays on screen */
@@ -71,6 +71,21 @@ function kindGeometry(id: string, pal: Record<string, string>): KindGeo {
       const hood = colored(new THREE.ConeGeometry(0.13, 0.2, 6).translate(0, 0.92, 0), new THREE.Color(pal.cloth ?? "#d9cbb0"));
       return { body: robe, detail: mergeGeometries([head(0.8), hood])! };
     }
+    case "boat": {
+      // BACKLOG 10 placeholder: a long hull with a square sail (the sail is the tinted cloth)
+      const hull = colored(new THREE.BoxGeometry(0.7, 0.28, 2.0).translate(0, 0.14, 0), wood);
+      const bow = colored(new THREE.ConeGeometry(0.35, 0.5, 4).rotateX(Math.PI / 2).rotateZ(Math.PI / 4).translate(0, 0.16, 1.25), wood);
+      const mast = colored(new THREE.CylinderGeometry(0.03, 0.03, 1.3, 4).translate(0, 0.9, 0.1), new THREE.Color(pal.woodDark ?? "#5e3a1a"));
+      const sail = colored(new THREE.BoxGeometry(0.9, 0.7, 0.04).translate(0, 1.0, 0.12), W);
+      return { body: sail, detail: mergeGeometries([hull, bow, mast])! };
+    }
+    case "balloon": {
+      // BACKLOG 10 placeholder: a hide envelope (tinted) over a wicker basket, drawn aloft by the layer
+      const envelope = colored(new THREE.IcosahedronGeometry(0.75, 1).scale(1, 1.15, 1).translate(0, 1.55, 0), W);
+      const basket = colored(new THREE.CylinderGeometry(0.28, 0.22, 0.3, 6).translate(0, 0.15, 0), wood);
+      const ropes = colored(new THREE.CylinderGeometry(0.3, 0.3, 0.6, 6, 1, true).translate(0, 0.6, 0), new THREE.Color(pal.woodDark ?? "#5e3a1a"));
+      return { body: envelope, detail: mergeGeometries([basket, ropes])! };
+    }
     default: {
       // settler, wild and anything new: simple tunic and head
       const tunic = colored(new THREE.CylinderGeometry(0.13, 0.17, 0.5, 6).translate(0, 0.35, 0), W);
@@ -84,6 +99,8 @@ function kindGeometry(id: string, pal: Record<string, string>): KindGeo {
 export const DISC_RADIUS = 0.26;
 const SHAPER_SCALE = 1.2;
 const SHAPER_DISC = 1.5;
+/** BACKLOG 10: a balloon flies this high above the ground (world units before the readability scale) */
+export const BALLOON_LIFT = 2.2;
 
 export class UnitLayer {
   readonly group = new THREE.Group();
@@ -226,9 +243,12 @@ export class UnitLayer {
       if (ox * ox + oz * oz > fade2) continue;
       const moving = E.vx[i] !== 0 || E.vy[i] !== 0;
       if (moving) this.facing[i] = Math.atan2(E.vx[i], E.vy[i]);
-      const ground = Math.max(w.terrain.heightAt(((ix % n) + n) % n, ((iz % n) + n) % n), w.terrain.sea - 2) * heightScale;
+      // BACKLOG 10: boats ride the water surface, balloons fly above the ground; neither walks
+      const nav = w.units.nav[k];
+      const h = w.terrain.heightAt(((ix % n) + n) % n, ((iz % n) + n) % n);
+      const ground = (nav === NAV.water ? Math.max(h, w.terrain.sea) : Math.max(h, w.terrain.sea - 2)) * heightScale;
       const phase = visualTime * 9 + i * 1.7;
-      const bob = moving ? Math.abs(Math.sin(phase)) * 0.07 : 0;
+      const bob = nav === NAV.water ? Math.sin(visualTime * 2 + i) * 0.04 : nav === NAV.air ? BALLOON_LIFT + Math.sin(visualTime * 0.9 + i) * 0.15 : moving ? Math.abs(Math.sin(phase)) * 0.07 : 0;
       this.p.set(focusX + ox, ground + bob, focusZ + oz);
       this.q.setFromAxisAngle(this.up, this.facing[i]);
       const ks = this.kindScale[k];
@@ -256,7 +276,7 @@ export class UnitLayer {
       }
       // screen position of the bent unit center for picking
       const dist2 = ox * ox + oz * oz;
-      this.v.set(focusX + ox, ground + 0.45 - bendK * dist2, focusZ + oz).project(camera);
+      this.v.set(focusX + ox, ground + (nav === NAV.air ? bob + 1.5 : 0.45) - bendK * dist2, focusZ + oz).project(camera);
       if (this.v.z < 1) {
         this.screenX[i] = ((this.v.x + 1) / 2) * viewW;
         this.screenY[i] = ((1 - this.v.y) / 2) * viewH;

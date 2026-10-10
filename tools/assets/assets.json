@@ -14102,6 +14102,839 @@
         "nonmanifold_edges": 0,
         "warnings": []
       }
+    },
+    {
+      "id": "building.boathouse",
+      "class": "buildings",
+      "prompt": "small timber boathouse built on stilts over the shore, warm honey wood plank walls, a wide sloped golden straw thatch roof, an open wide water-side doorway, a short wooden jetty with a mooring post extending out, a coil of rope, one clearly visible bright royal blue cloth pennant on a pole at the roof peak (the only blue in the image)",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1800,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "wood",
+        "tribe_color": "azure",
+        "textured": true,
+        "height": 2.2
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-10T05:50:52Z",
+          "finished": "2026-10-10T05:52:02Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.boathouse/concept.jpg",
+          "sha256": "e69b543087fd362bea72f52a55bb6075e51f96db717abef21b927b5e782e70ef",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 359527,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "e4077e000d8cea93102b3dbaec968589259755372a9065528060529470fd13ef"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a1245e-83e8-768b-a4f8-4e92d17198f6",
+          "started": "2026-10-10T05:52:02Z",
+          "finished": "2026-10-10T05:52:55Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.boathouse/model.glb",
+          "sha256": "c5ea05912a1be7760c1df803caad851dfe23388cdafbe24ca387ce93206e838d",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "bytes": 1862776,
+            "progress": 100
+          },
+          "request_hash": "5673bc3635b2f12e6df66fadafbc74aaa927150eecc0450c4458ffca5676e738"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-10T05:56:43Z",
+          "finished": "2026-10-10T05:56:47Z",
+          "cost": null,
+          "output_path": "assets/models/building.boathouse.glb",
+          "sha256": "864f27a3e576ae5b6e9c7941c273710eca998856afa0207c31f979fa2ef36f86",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1886,
+            "tris_out": 1885,
+            "decimated": false,
+            "scale": 2.2,
+            "bounds_min": [
+              -0.8448,
+              -0.9775,
+              0.0
+            ],
+            "bounds_max": [
+              0.8448,
+              0.9775,
+              2.2
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "fire",
+              "forest",
+              "rock",
+              "rockDark",
+              "scar",
+              "skin2",
+              "skin3",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "forest": 1,
+              "rock": 2,
+              "rockDark": 4,
+              "wood": 813,
+              "woodDark": 8,
+              "thatch": 370,
+              "skin2": 453,
+              "skin3": 96,
+              "azure": 37,
+              "fire": 28,
+              "scar": 73
+            },
+            "tribe_faces": 37,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.866,
+              1.0
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "db16085920e9b683193d54a1c23c4628f17f3e9ddefd6615c3b157610c22952f"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-10T05:56:57Z",
+          "cost": null,
+          "output_path": "assets/icons/building.boathouse.png",
+          "sha256": "ecefd7ed973eca988104f31c8370a0806259f7ad09e64499fdc30b3dfe54ba7f",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 1885,
+        "verts": 5631,
+        "bounds": {
+          "min": [
+            -0.8448,
+            0.0,
+            -0.9775
+          ],
+          "max": [
+            0.8448,
+            2.2,
+            0.9775
+          ],
+          "size": [
+            1.6895,
+            2.2,
+            1.9551
+          ]
+        },
+        "bytes": 237904,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 37,
+        "tribe_height_range": [
+          0.866,
+          1.0
+        ],
+        "boundary_edges": 25,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "building.skyloft",
+      "class": "buildings",
+      "prompt": "tall timber scaffold tower built from lashed logs and cross braces, a wide woven wicker platform on top with a low rope rail, a tall rope mooring mast rising from the platform with ropes hanging down, a ladder up one side, one clearly visible bright royal blue cloth pennant at the top of the mast (the only blue in the image)",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 2000,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "wood",
+        "tribe_color": "azure",
+        "textured": true,
+        "height": 3.4
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-10T05:52:06Z",
+          "finished": "2026-10-10T05:52:44Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.skyloft/concept.jpg",
+          "sha256": "890e4f48daf5c37ff3434cedf2959c50f1c621f7bde1d631575ef9fb53fef5d5",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 393703,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "249f24ce9d2046046b5c27995871d192f93c1442a83ead66632d55054d96cf53"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a1245f-2736-730b-a967-91fa299a9316",
+          "started": "2026-10-10T05:52:44Z",
+          "finished": "2026-10-10T05:53:39Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.skyloft/model.glb",
+          "sha256": "ac5bc01d6d91c9c6829dff6bd87e55eeec4f733796a0ae5957dd7d9e88bbf3f7",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "progress": 100,
+            "bytes": 2986456
+          },
+          "request_hash": "c4ece0026a3008cb132d76de1e1cc640fc1d414d90004380b18bd5a78cb60304"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-10T05:56:48Z",
+          "finished": "2026-10-10T05:56:52Z",
+          "cost": null,
+          "output_path": "assets/models/building.skyloft.glb",
+          "sha256": "d73b9878618dce0c1964da7455d30bceed989b5e991b21c29ddd0eee39143a1d",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1988,
+            "tris_out": 1988,
+            "decimated": false,
+            "scale": 3.39957,
+            "bounds_min": [
+              -0.6317,
+              -0.627,
+              0.0
+            ],
+            "bounds_max": [
+              0.6317,
+              0.627,
+              3.4
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "rock",
+              "rockDark",
+              "scar",
+              "skin2",
+              "skin3",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "rock": 24,
+              "rockDark": 12,
+              "wood": 760,
+              "woodDark": 80,
+              "thatch": 20,
+              "skin2": 225,
+              "skin3": 627,
+              "azure": 11,
+              "scar": 229
+            },
+            "tribe_faces": 11,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.94,
+              0.988
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "96a647c0fe392715bd38ca76824a42593178d5227e211c62287b453fdde547b3"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-10T05:56:57Z",
+          "cost": null,
+          "output_path": "assets/icons/building.skyloft.png",
+          "sha256": "d995b1839d6279f04ae78c03628978143897858615cc52213b4b84e7ad13d59d",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 1988,
+        "verts": 5958,
+        "bounds": {
+          "min": [
+            -0.6317,
+            0.0,
+            -0.627
+          ],
+          "max": [
+            0.6317,
+            3.4,
+            0.627
+          ],
+          "size": [
+            1.2635,
+            3.4,
+            1.254
+          ]
+        },
+        "bytes": 251600,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 11,
+        "tribe_height_range": [
+          0.94,
+          0.988
+        ],
+        "boundary_edges": 46,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "unit.boat",
+      "class": "units",
+      "prompt": "a small wooden rowing longboat seen from three-quarter front, long narrow hull of honey wood planks with a pointed raised bow and stern, two rowing benches, two oars resting in oarlocks, a short mast carrying a single large square sail in solid bright royal blue cloth with no pattern (the sail is the only blue in the image), sitting on a flat base, empty of people",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1400,
+        "budget_class": "unit",
+        "scheme": "sample",
+        "default_color": "wood",
+        "footprint": 2.7,
+        "tribe_color": "azure",
+        "textured": true,
+        "no_pose": true
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-10T05:54:04Z",
+          "finished": "2026-10-10T05:54:34Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/unit.boat/concept.jpg",
+          "sha256": "e1772b831ea7643fe6f2bb055122a3d4cd60ad135ba4c1a3e8053b8f8246d9ea",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 389008,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "a69673457ef1d1003f3e3032cebbc7f83548fe06d534e7494c158f31409a2db6"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a12460-d745-7486-b00b-fe7cc292f3de",
+          "started": "2026-10-10T05:54:34Z",
+          "finished": "2026-10-10T05:55:44Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/unit.boat/model.glb",
+          "sha256": "58d5df5254a75aa0c27c4e57aed3683c277a4c2216c6e1326496c65b610541a2",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "bytes": 2184940,
+            "progress": 100
+          },
+          "request_hash": "f6c7b1f7aee27f0f2655c1a3806e6ceb11776438e5b020e40d639a839ec2518e"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-10T05:55:45Z",
+          "finished": "2026-10-10T05:55:50Z",
+          "cost": null,
+          "output_path": "assets/models/unit.boat.glb",
+          "sha256": "1d59c385f7eaca18935035633adff1c87cbf4ec28b68e5fbc31cbfad50699fd1",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1264,
+            "tris_out": 1264,
+            "decimated": false,
+            "scale": 2.7,
+            "bounds_min": [
+              -1.35,
+              -1.0515,
+              0.0
+            ],
+            "bounds_max": [
+              1.35,
+              1.0515,
+              1.8168
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "rock",
+              "rockDark",
+              "scar",
+              "skin2",
+              "skin3",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "rock": 78,
+              "rockDark": 23,
+              "wood": 362,
+              "woodDark": 32,
+              "skin2": 394,
+              "skin3": 287,
+              "azure": 82,
+              "scar": 6
+            },
+            "tribe_faces": 82,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.391,
+              0.915
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "f8e4d6da7cf0d2e676bdc36cc7e688c4781721b87a6c1d5e89f6dfa52611b362"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-10T05:56:10Z",
+          "cost": null,
+          "output_path": "assets/icons/unit.boat.png",
+          "sha256": "b2550164e2a584f4f42d98227b825a60d02a31be781e043b19c85173c77c89bc",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 1264,
+        "verts": 3790,
+        "bounds": {
+          "min": [
+            -1.35,
+            0.0,
+            -1.0515
+          ],
+          "max": [
+            1.35,
+            1.8168,
+            1.0515
+          ],
+          "size": [
+            2.7,
+            1.8168,
+            2.103
+          ]
+        },
+        "bytes": 160532,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 82,
+        "tribe_height_range": [
+          0.391,
+          0.915
+        ],
+        "boundary_edges": 178,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "unit.balloon",
+      "class": "units",
+      "prompt": "a hot-air balloon made of stitched hide patches, round envelope of warm tan hide panels with wide vertical stripes in bright royal blue cloth (the stripes are the only blue in the image), visible stitching, ropes running down to a small round woven wicker basket with a rope rim, hanging in the air, empty of people, no fire",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1400,
+        "budget_class": "unit",
+        "scheme": "sample",
+        "default_color": "cloth",
+        "height": 1.9,
+        "tribe_color": "azure",
+        "textured": true,
+        "no_pose": true
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-10T05:54:41Z",
+          "finished": "2026-10-10T05:55:10Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/unit.balloon/concept.jpg",
+          "sha256": "ad6c0d88cd37e0a591358a1bfbdf348aa3e37858d3551b4797f5fc66cd9665c9",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 399536,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "07f1c819fae11c52649a40530e2aa39ca09b99f6018370261bcba4bfad65ff94"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a12461-6689-73b8-92c5-05aa5666345f",
+          "started": "2026-10-10T05:55:10Z",
+          "finished": "2026-10-10T05:56:03Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/unit.balloon/model.glb",
+          "sha256": "14416ff3bfb118412cbe7f909f0233ec4a2bf6584091af86b9128c9e65fe64c5",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "progress": 100,
+            "bytes": 2602780
+          },
+          "request_hash": "f60ac7b8a220a27fbcf1507b8879e0eb305a3d003c6482bd29c89fa5442e50ba"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-10T05:56:03Z",
+          "finished": "2026-10-10T05:56:06Z",
+          "cost": null,
+          "output_path": "assets/models/unit.balloon.glb",
+          "sha256": "ccf9f83a77b22546c1d59d05e965a477a7da242f7b00277fe8de0999b877d900",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1426,
+            "tris_out": 1426,
+            "decimated": false,
+            "scale": 1.9,
+            "bounds_min": [
+              -0.6437,
+              -0.639,
+              0.0
+            ],
+            "bounds_max": [
+              0.6437,
+              0.639,
+              1.9
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "amber",
+              "azure",
+              "rock",
+              "rockDark",
+              "scar",
+              "skin2",
+              "skin3",
+              "stone",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "rock": 19,
+              "rockDark": 99,
+              "wood": 844,
+              "woodDark": 36,
+              "thatch": 15,
+              "stone": 1,
+              "skin2": 102,
+              "skin3": 168,
+              "azure": 94,
+              "amber": 35,
+              "scar": 13
+            },
+            "tribe_faces": 129,
+            "tribe_names": [
+              "azure",
+              "amber"
+            ],
+            "tribe_height_range": [
+              0.33,
+              0.978
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "f1a5a82ab85731709dbd0a8a6217ea45c5b2e62fc27553d159c4c75dc5b5cac6"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-10T05:56:10Z",
+          "cost": null,
+          "output_path": "assets/icons/unit.balloon.png",
+          "sha256": "d036cf7756df97ae29b8c31d25e9da10bc4a22d055a8b3e1c552c7e4857134b5",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 1426,
+        "verts": 4278,
+        "bounds": {
+          "min": [
+            -0.6437,
+            0.0,
+            -0.639
+          ],
+          "max": [
+            0.6437,
+            1.9,
+            0.639
+          ],
+          "size": [
+            1.2874,
+            1.9,
+            1.278
+          ]
+        },
+        "bytes": 181024,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 129,
+        "tribe_height_range": [
+          0.33,
+          0.978
+        ],
+        "boundary_edges": 76,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     }
   ]
 }

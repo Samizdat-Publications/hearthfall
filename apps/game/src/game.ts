@@ -70,6 +70,7 @@ import {
   siteAt,
   troopCommand,
   type TroopIntent,
+  vehicleCommand,
 } from "./troops.ts";
 
 /** BACKLOG 45: a failed or abandoned order counts as the player's for this long after the click */
@@ -1115,6 +1116,13 @@ export class Game {
       return this.troop({ kind: "rally", at: [p.x, p.z] });
     if (!this.selection.size) return false;
     const E = this.world.ents;
+    // BACKLOG 10: right click an own boat or balloon to board it; a loaded vehicle right clicked onto land unloads there
+    const vc = attack ? null : vehicleCommand(this.world, this.localTribe, [...this.selection], this.unitAt(px, py), p.x, p.z);
+    if (vc) {
+      this.command(vc);
+      this.orderSound();
+      return true;
+    }
     const b = attack ? -1 : buildingAt(this.world, this.localTribe, p.x, p.z);
     if (b >= 0 && this.world.combat.garrisonOf(E.type[b]) > 0)
       return this.troop({ kind: "garrison", tower: b });

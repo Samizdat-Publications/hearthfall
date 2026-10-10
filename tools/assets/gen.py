@@ -46,7 +46,7 @@ def concept_prompt(a: dict) -> str:
             text += " " + sp["style_ref_note"]
         return text
     parts = [a["prompt"]]
-    if a["class"] == "units":
+    if a["class"] == "units" and not a["params"].get("no_pose"):  # vehicles (boat, balloon) are not people
         parts.append(sp["unit_pose"])
     if a["params"].get("kind") != "style_ref":
         parts.append(sp["concept_camera"])

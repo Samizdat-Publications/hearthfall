@@ -119,6 +119,20 @@ export function troopCommand(w: World, tribe: number, sel: readonly number[], b:
   }
 }
 
+/** BACKLOG 10: a right click with vehicles in play. Walkers selected and an own vehicle under the cursor: board
+ * it. Only vehicles selected, at least one loaded, and land under the cursor: sail or fly there and unload. */
+export function vehicleCommand(w: World, tribe: number, sel: readonly number[], vehicle: number, x: number, y: number): TroopCommand | null {
+  const E = w.ents;
+  const own = sel.filter((i) => E.alive[i] && E.cat[i] === CAT.unit && E.tribe[i] === tribe);
+  const walkers = own.filter((i) => !w.vehicles.isVehicle(i));
+  const vehicles = own.filter((i) => w.vehicles.isVehicle(i));
+  if (vehicle >= 0 && E.alive[vehicle] && E.tribe[vehicle] === tribe && w.vehicles.isVehicle(vehicle) && walkers.length && !own.includes(vehicle))
+    return { tribe, type: "board", args: { units: walkers.map((i) => E.idOf(i)), vehicle: E.idOf(vehicle) } };
+  if (!walkers.length && vehicles.some((v) => E.occupants[v] > 0) && w.terrain.heightAt(x, y) >= w.terrain.sea)
+    return { tribe, type: "unload", args: { units: vehicles.map((i) => E.idOf(i)), to: [x, y] } };
+  return null;
+}
+
 // ---------------------------------------------------------------- BACKLOG 4: command UX helpers
 
 /** Own living units of the same type as unit i within r cells of it (double-click select), i included. */

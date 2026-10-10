@@ -149,6 +149,16 @@ export class CombatSystem {
     return Math.max(0, Math.min(cb.maxHeightBands, Math.floor(dh / cb.heightBandUnits)));
   }
 
+  /** Range bonus of a unit fighting from inside: a garrisoned tower, or a vehicle it may fire from (BACKLOG 10); null when not posted. */
+  posted(i: number): number | null {
+    const E = this.w.ents;
+    const h = E.inside[i];
+    if (h < 0) return null;
+    if (E.task[i] === TASK.garrison) return this.w.cfg.pack.buildings.buildings[E.type[h]].rangeBonus ?? 0;
+    if (E.task[i] === TASK.ride) return this.w.vehicles.firesFrom(i);
+    return null;
+  }
+
   /** Reach of unit i against entity j right now (weapon, height bonus, tower bonus, target size). */
   reachOf(i: number, j: number): number {
     const E = this.w.ents;
@@ -156,7 +166,7 @@ export class CombatSystem {
     let r = this.reach[ty];
     const k = this.kind[ty];
     if (k === KIND.ranged) r += this.bands(i, E.x[j], E.y[j]) * (this.w.cfg.pack.units.units[ty].ranged?.heightRangeBonusPerBand ?? 0);
-    if (E.inside[i] >= 0 && E.task[i] === TASK.garrison && k !== KIND.chanter) r += this.w.cfg.pack.buildings.buildings[E.type[E.inside[i]]].rangeBonus ?? 0;
+    if (k !== KIND.chanter) r += this.posted(i) ?? 0;
     if (k === KIND.chanter) r -= 0.5;
     return r + this.halfSize(j);
   }
@@ -188,7 +198,8 @@ export class CombatSystem {
     if (tj < 0 || tj === E.tribe[i] || !w.tribes[tj]?.alive) return false;
     if (c === CAT.unit && (E.veil[j] > 0 || this.disguised(j))) return false;
     if (this.kind[E.type[i]] === KIND.chanter) return c === CAT.unit && E.inside[j] < 0 && this.convertible[E.type[j]];
-    if (c === CAT.unit) return E.inside[j] < 0;
+    // melee cannot reach a boat or a balloon (BACKLOG 10); missiles and spells can
+    if (c === CAT.unit) return E.inside[j] < 0 && (this.kind[E.type[i]] !== KIND.melee || !w.vehicles.isVehicle(j));
     return c === CAT.building;
   }
 
@@ -333,7 +344,7 @@ export class CombatSystem {
     E.atk[i] = NO_ENTITY;
     E.mode[i] = CMODE.none;
     if (E.chant[i] > 0) this.interruptChant(i, "order");
-    if (E.inside[i] < 0 && (E.task[i] === TASK.toTrain || E.task[i] === TASK.toGarrison || E.task[i] === TASK.toWorship || E.task[i] === TASK.worship)) {
+    if (E.inside[i] < 0 && (E.task[i] === TASK.toTrain || E.task[i] === TASK.toGarrison || E.task[i] === TASK.toWorship || E.task[i] === TASK.worship || E.task[i] === TASK.toBoard || E.task[i] === TASK.unload)) {
       E.task[i] = TASK.idle;
       E.target[i] = NO_ENTITY;
     }
@@ -401,7 +412,9 @@ export class CombatSystem {
       const ty = E.type[i];
       const k = this.kind[ty];
       if (tr < 0 || k === KIND.none || E.ktick[i] > 0 || !w.tribes[tr]?.alive) continue;
-      const inTower = E.inside[i] >= 0 && E.task[i] === TASK.garrison;
+      // towers and balloons: posted units fight from inside without moving
+      const post = this.posted(i);
+      const inTower = post !== null;
       if (E.inside[i] >= 0 && !inTower) continue;
       if (E.chant[i] > 0) {
         if (k === KIND.saboteur) this.sabotageStep(i);
@@ -432,7 +445,7 @@ export class CombatSystem {
         const attackMoving = E.order[i] === ORDER.attackMove || E.mode[i] === CMODE.attackMove;
         const idle = E.order[i] === ORDER.none || E.mode[i] === CMODE.guard;
         let r = -1;
-        if (inTower) r = this.reach[ty] + (w.cfg.pack.buildings.buildings[E.type[E.inside[i]]].rangeBonus ?? 0);
+        if (inTower) r = this.reach[ty] + post;
         else if (attackMoving || (idle && stance === STANCE.aggressive)) r = cb.acquireRadius;
         else if (idle && stance === STANCE.defensive) r = cb.defensiveAcquireRadius;
         if (r > 0) {
@@ -896,6 +909,11 @@ export class CombatSystem {
     let released = 0;
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] !== tribe) continue;
+      // a fallen tribe's vehicles are wrecked, not set loose (their riders spill out first)
+      if (w.vehicles.isVehicle(i)) {
+        w.kill(i, "wrecked");
+        continue;
+      }
       if (E.inside[i] >= 0) this.leave(i);
       this.convertUnit(i, -1);
       if (wild >= 0) this.makeWild(i);
@@ -1053,6 +1071,7 @@ registerCommand("garrison", {
     if (typeof b === "string") return b;
     if (w.combat.garrisonOf(w.ents.type[b]) <= 0) return "this building has no garrison";
     if (idx.some((i) => w.cfg.pack.units.units[w.ents.type[i]].isCaster)) return "the Shaper cannot garrison";
+    if (idx.some((i) => w.vehicles.isVehicle(i))) return "a vehicle cannot garrison";
     return null;
   },
   apply(w, c) {

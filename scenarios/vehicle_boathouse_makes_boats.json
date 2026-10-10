@@ -1,0 +1,31 @@
+{
+  "id": "vehicle_boathouse_makes_boats",
+  "description": "BACKLOG 10: a finished Boathouse launches a boat on the nearest water every 45 seconds until its tribe has two per Boathouse, then stops.",
+  "tags": ["fast", "vehicles"],
+  "seed": 103,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 1,
+    "paint": [
+      { "shape": "rect", "at": [32, 32], "size": [12, 64], "aboveSea": -30 },
+      { "shape": "rect", "at": [0, 32], "size": [12, 64], "aboveSea": -30 }
+    ]
+  },
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [12, 12] },
+    { "spawn": "shaper", "tribe": 0, "at": [14, 14] },
+    { "spawn": "boathouse", "tribe": 0, "at": [21, 32] }
+  ],
+  "commands": [
+    { "tick": 0, "tribe": 0, "type": "setPriorities", "args": { "build": 0, "upgrade": 0, "breed": 0 } }
+  ],
+  "runTicks": 3000,
+  "assert": [
+    { "at": 899, "expr": "count(tribe0.boats) == 0" },
+    { "at": 901, "expr": "count(tribe0.boats) == 1 && count(tribe0.boats, onLand) == 0" },
+    { "at": 1801, "expr": "count(tribe0.boats) == 2" },
+    { "at": 2690, "expr": "count(tribe0.boats) == 2 && events.count('vehicleMade') == 2" },
+    { "at": 3000, "expr": "count(tribe0.boats) == 2 && invariants() == 0" }
+  ]
+}

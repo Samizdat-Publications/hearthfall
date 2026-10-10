@@ -1,0 +1,40 @@
+{
+  "id": "vehicle_sunk_drowns_riders",
+  "description": "BACKLOG 10: riders are safe aboard while a rival Firecaller shoots their boat, but when it sinks in the deep strait all three drown; a rival Warden on the shore never swings at the boat.",
+  "tags": ["fast", "vehicles"],
+  "seed": 102,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2,
+    "paint": [
+      { "shape": "rect", "at": [32, 32], "size": [12, 64], "aboveSea": -30 },
+      { "shape": "rect", "at": [0, 32], "size": [12, 64], "aboveSea": -30 }
+    ]
+  },
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [12, 12] },
+    { "spawn": "shaper", "tribe": 0, "at": [14, 14] },
+    { "spawn": "hearth", "tribe": 1, "at": [52, 52] },
+    { "spawn": "shaper", "tribe": 1, "at": [50, 50] },
+    { "spawn": "boat", "tribe": 0, "at": [27, 32] },
+    { "spawn": "settler", "tribe": 0, "near": [20, 32], "count": 3 },
+    { "spawn": "firecaller", "tribe": 1, "at": [52, 20] },
+    { "spawn": "warden", "tribe": 1, "at": [43, 36] }
+  ],
+  "commands": [
+    { "tick": 0, "tribe": 0, "type": "setPriorities", "args": { "build": 0, "upgrade": 0, "breed": 0 } },
+    { "tick": 0, "tribe": 1, "type": "setPriorities", "args": { "build": 0, "upgrade": 0, "breed": 0 } },
+    { "tick": 0, "tribe": 0, "type": "board", "args": { "units": "tribe0.settlers", "vehicle": "tribe0.boats" } },
+    { "tick": 150, "tribe": 0, "type": "move", "args": { "units": "tribe0.boats", "to": [37, 32] } },
+    { "tick": 250, "tribe": 1, "type": "move", "args": { "units": "tribe1.firecallers", "to": [42, 31], "attack": true } }
+  ],
+  "runTicks": 1600,
+  "assert": [
+    { "at": 0, "expr": "terrain.drowns([36, 32]) && terrain.drowns([37, 32])" },
+    { "at": 149, "expr": "count(tribe0.settlers, riding) == 3" },
+    { "at": 400, "expr": "count(tribe0.settlers, riding) == 3 && hp(tribe0.settlers) == 3000" },
+    { "at": 1600, "expr": "count(tribe0.boats) == 0 && count(tribe0.settlers) == 0 && events.count('drowned') == 3" },
+    { "at": 1600, "expr": "hp(tribe1.wardens) == 2600 && invariants() == 0" }
+  ]
+}
