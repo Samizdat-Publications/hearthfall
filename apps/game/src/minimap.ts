@@ -3,7 +3,9 @@
 // M8: the view outline is the screen border picked onto the curved sea-level surface (pickGround,
 // hills ignored so the footprint stays smooth), so it widens toward the horizon and stops at it;
 // cached per camera state. BACKLOG 3: fog of war darkens unexplored and unseen ground and hides what
-// the local tribe cannot see (renderer.revealFog shows everything).
+// the local tribe cannot see (renderer.revealFog shows everything). BACKLOG 80: the footprint is clipped
+// to the terrain fade radius (half the world less 2), where drawing stops, so on small maps it never
+// reaches past the antipode and folds into a V across the wrap.
 import { CAT } from "@hearthfall/sim";
 import type { Game } from "./game.ts";
 
@@ -93,6 +95,19 @@ export function viewKey(game: Game): string {
 /** viewKey of the footprint the minimap last drew (tests check it follows the camera within a few frames). */
 export let drawnViewKey = "";
 
+/**
+ * BACKLOG 80: pull every footprint point farther than `r` from the focus (cx, cz) back onto that circle,
+ * so the outline stays inside one map copy. Points are unwrapped map units; returns a new array.
+ */
+export function clipFootprint(pts: readonly [number, number][], cx: number, cz: number, r: number): [number, number][] {
+  return pts.map(([x, z]) => {
+    const dx = x - cx;
+    const dz = z - cz;
+    const d = Math.hypot(dx, dz);
+    return d > r ? [cx + (dx * r) / d, cz + (dz * r) / d] : [x, z];
+  });
+}
+
 export function viewOutline(game: Game, fresh = false): [number, number][] | null {
   const W = game.canvas.clientWidth;
   const H = game.canvas.clientHeight;
@@ -129,6 +144,8 @@ export function viewOutline(game: Game, fresh = false): [number, number][] | nul
       }
       pts.push([p.x, p.z]);
     }
+    const cam = game.renderer.cam;
+    if (!cam.map) pts = clipFootprint(pts, cam.x, cam.z, game.world.terrain.size / 2 - 2);
   }
   view = { key, pts };
   return pts;
