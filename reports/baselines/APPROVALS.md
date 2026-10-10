@@ -81,3 +81,4 @@
 - 2026-10-10T02:48 set spells (8 shots): BACKLOG 56: HUD build costs and stance icons
 - 2026-10-10T02:55 set spells2 (9 shots): BACKLOG 56: HUD build costs and stance icons
 - 2026-10-10T02:57 set levels (2 shots): BACKLOG 56: HUD build costs and stance icons
+- 2026-10-10T03:06 set menus (4 shots): BACKLOG 81: menu title art, bigger text, column heads

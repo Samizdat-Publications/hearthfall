@@ -880,6 +880,16 @@
       "when": "2026-10-10T02:23:40.668Z",
       "source": "external:look_v3_before_after.png",
       "bytes": 2181670
+    },
+    {
+      "file": "b14/20261010-0307_menu-title-art.png",
+      "milestone": "B14",
+      "kind": "screenshot",
+      "caption": "Stretch 2 polish: the main menu gets a title illustration cropped from the miniature concept art that set the look v3 direction",
+      "highlight": false,
+      "when": "2026-10-10T03:07:51.556Z",
+      "source": "external:menu_main.png",
+      "bytes": 722827
     }
   ]
 }

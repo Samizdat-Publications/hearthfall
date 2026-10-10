@@ -74,6 +74,8 @@ export interface MenuModel {
   saves: { mode: "save" | "load"; slots: SlotView[]; message: string | null };
   end: { won: boolean; title?: string; tag?: string; lines: { label: string; value: string }[]; next: boolean } | null;
   campaign: { levels: LevelView[]; message: string | null };
+  /** title illustration URL for the main menu (BACKLOG 81), omitted in tests */
+  titleArt?: string;
   /** saving needs a skirmish in progress (scenarios and the menu backdrop cannot be saved) */
   canSave: boolean;
 }
@@ -128,9 +130,10 @@ function Select({ ui, value, options, onChange }: { ui: string; value: string; o
   );
 }
 
-function Main({ act }: { act: MenuActions }) {
+function Main({ act, art }: { act: MenuActions; art?: string }) {
   return (
     <div data-hud="menu-main" class="menu-panel menu-main">
+      {art ? <img class="menu-art" src={art} alt="A tiny tribe village on a round island diorama" /> : null}
       <h1 class="menu-title">Hearthfall</h1>
       <p class="menu-tag">Shape the land. Lead your tribe. Keep them out of the sea.</p>
       <Btn ui="campaign" primary onClick={() => act.go("campaign")}>
@@ -304,6 +307,7 @@ function Settings({ s, act }: { s: SettingsView; act: MenuActions }) {
       <h2 class="menu-head">Settings</h2>
       <div class="settings-cols">
         <div class="menu-grid">
+          <h3 class="menu-sub">Display and sound</h3>
           <label class="menu-label">Quality</label>
           <Select ui="set-quality" value={s.quality} options={s.qualities} onChange={(v) => act.setSetting({ quality: v })} />
           <Slider ui="set-master" label="Master volume" value={s.master} onInput={(v) => act.setSetting({ master: v })} />
@@ -323,6 +327,7 @@ function Settings({ s, act }: { s: SettingsView; act: MenuActions }) {
           <Select ui="set-weather" value={s.weather} options={s.weathers} onChange={(v) => act.setSetting({ weather: v })} />
         </div>
         <div class="keys">
+          <h3 class="menu-sub">Keys</h3>
           {s.keys.map((k) => (
             <div key={k.id} class="key-row">
               <span class="key-label">{k.label}</span>
@@ -383,7 +388,7 @@ function Menus({ act }: { act: MenuActions }) {
   if (!m || m.screen === "none") return null;
   return (
     <div class={"menu-backdrop" + (m.screen === "main" ? " title" : "")}>
-      {m.screen === "main" ? <Main act={act} /> : null}
+      {m.screen === "main" ? <Main act={act} art={m.titleArt} /> : null}
       {m.screen === "campaign" ? <Campaign m={m} act={act} /> : null}
       {m.screen === "setup" ? <Setup s={m.setup} act={act} /> : null}
       {m.screen === "pause" ? <Pause m={m} act={act} /> : null}

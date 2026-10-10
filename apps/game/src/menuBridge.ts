@@ -3,6 +3,7 @@
 import { SKIRMISH_DEFAULTS } from "@hearthfall/data";
 import { KEY_ACTIONS, defaultKeymap, keyLabel, menuModel, mountMenus, rebind, type Choice, type MenuModel, type SetupPatch } from "@hearthfall/ui";
 import "../../../packages/ui/src/menus.css";
+import titleArt from "../../../assets/ui/title.webp?url";
 import type { Game } from "./game.ts";
 import { makeSave, restoreSave, type SkirmishParams } from "./session.ts";
 import { levelOpen } from "./campaign.ts";
@@ -123,6 +124,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
         levels: game.levels.map((l) => ({ id: l.id, name: l.name, description: l.description, open: levelOpen(game.levels, game.campaignWon, l.id), won: game.campaignWon.includes(l.id) })),
         message: game.persistent ? null : "Browser storage is unavailable: campaign progress lasts until this tab closes.",
       },
+      titleArt,
       canSave: game.inGame && game.skirmish !== null && !game.ended,
     };
   };

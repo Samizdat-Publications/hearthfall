@@ -1,39 +1,39 @@
 /* Menus (M8): same stone and wood frame as the HUD panels, centered over a dimmed world. */
 .menu-backdrop { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(8, 10, 22, 0.55); pointer-events: auto; z-index: 10; }
 .menu-backdrop.title { background: linear-gradient(180deg, rgba(8, 10, 22, 0.15) 0%, rgba(8, 10, 22, 0.55) 100%); }
-.menu-panel { position: relative; color: #f4e6c8; background: linear-gradient(180deg, #4a3423 0%, #3a281b 100%); border: 4px solid #8a8378; border-image: repeating-linear-gradient(90deg, #9a9387 0 7px, #7d766b 7px 10px, #a8a195 10px 16px) 4; box-shadow: inset 0 0 0 2px #2b1d13, 0 4px 0 #2b1d13, 0 8px 24px rgba(0, 0, 0, 0.55); padding: 18px 24px; font: 600 14px "Trebuchet MS", "Segoe UI", system-ui, sans-serif; text-shadow: 0 1px 0 #1d130c; max-height: calc(100vh - 48px); overflow-y: auto; overflow-x: hidden; box-sizing: border-box; }
-.menu-main { width: 340px; display: flex; flex-direction: column; gap: 10px; align-items: stretch; text-align: center; }
+.menu-panel { position: relative; color: #f4e6c8; background: linear-gradient(180deg, #4a3423 0%, #3a281b 100%); border: 4px solid #8a8378; border-image: repeating-linear-gradient(90deg, #9a9387 0 7px, #7d766b 7px 10px, #a8a195 10px 16px) 4; box-shadow: inset 0 0 0 2px #2b1d13, 0 4px 0 #2b1d13, 0 8px 24px rgba(0, 0, 0, 0.55); padding: 18px 24px; font: 600 15px "Trebuchet MS", "Segoe UI", system-ui, sans-serif; text-shadow: 0 1px 0 #1d130c; max-height: calc(100vh - 48px); overflow-y: auto; overflow-x: hidden; box-sizing: border-box; }
+.menu-main { width: 380px; display: flex; flex-direction: column; gap: 10px; align-items: stretch; text-align: center; }
 .menu-setup { width: 460px; display: flex; flex-direction: column; gap: 12px; }
 .menu-saves { width: 520px; display: flex; flex-direction: column; gap: 10px; }
-.menu-settings { width: 680px; display: flex; flex-direction: column; gap: 12px; }
+.menu-settings { width: 760px; display: flex; flex-direction: column; gap: 12px; }
 .menu-title { margin: 0; font-size: 40px; letter-spacing: 2px; color: #ffd27a; text-shadow: 0 3px 0 #2b1d13, 0 0 18px rgba(255, 170, 60, 0.35); }
 .menu-head { margin: 0 0 4px; font-size: 22px; color: #ffd27a; }
-.menu-tag { margin: 0 0 6px; font-size: 13px; font-weight: 400; opacity: 0.85; white-space: normal; }
+.menu-tag { margin: 0 0 6px; font-size: 14px; font-weight: 400; opacity: 0.85; white-space: normal; }
 .menu-btn { border: 2px solid #8a8378; background: #5a3d26; color: #f4e6c8; padding: 9px 12px; font: 700 15px "Trebuchet MS", system-ui, sans-serif; cursor: pointer; text-shadow: 0 1px 0 #1d130c; }
 .menu-btn:hover:not(:disabled), .menu-small:hover:not(:disabled), .key-btn:hover { background: #6e4b2f; }
 .menu-btn.primary { background: #8dbf5a; border-color: #5e8c3a; color: #fff; }
 .menu-btn.primary:hover { background: #9fd06a; }
 .menu-btn:disabled, .menu-small:disabled { opacity: 0.45; cursor: default; }
-.menu-grid { display: grid; grid-template-columns: 110px 1fr; gap: 8px 12px; align-items: center; text-align: left; }
-.menu-label { font-size: 13px; opacity: 0.85; }
+.menu-grid { display: grid; grid-template-columns: 130px 1fr; gap: 8px 12px; align-items: center; text-align: left; }
+.menu-label { font-size: 14px; opacity: 0.85; }
 .menu-row { display: flex; gap: 6px; align-items: center; min-width: 0; }
-.menu-select, .menu-input { flex: 1; min-width: 0; background: #2b1d13; color: #f4e6c8; border: 1px solid #8a8378; padding: 5px 6px; font: 600 13px system-ui; }
+.menu-select, .menu-input { flex: 1; min-width: 0; background: #2b1d13; color: #f4e6c8; border: 1px solid #8a8378; padding: 5px 6px; font: 600 14px system-ui; }
 .menu-input { width: 100px; }
-.menu-small { border: 1px solid #8a8378; background: #2b1d13; color: #e8d9b0; padding: 5px 8px; font: 600 12px system-ui; cursor: pointer; white-space: nowrap; }
+.menu-small { border: 1px solid #8a8378; background: #2b1d13; color: #e8d9b0; padding: 5px 8px; font: 600 13px system-ui; cursor: pointer; white-space: nowrap; }
 .menu-actions { display: flex; gap: 10px; justify-content: flex-end; }
 .menu-actions .menu-btn { min-width: 110px; }
-.menu-error { margin: 0; color: #ff9a7c; font-size: 13px; white-space: normal; }
-.menu-note { margin: 0; color: #e8d9b0; font-size: 12px; white-space: normal; }
+.menu-error { margin: 0; color: #ff9a7c; font-size: 14px; white-space: normal; }
+.menu-note { margin: 0; color: #e8d9b0; font-size: 13px; white-space: normal; }
 .menu-range { flex: 1; accent-color: #b07cff; min-width: 0; }
-.menu-value { width: 28px; text-align: right; font-size: 12px; }
+.menu-value { width: 30px; text-align: right; font-size: 13px; }
 .slot { display: flex; gap: 8px; align-items: center; background: rgba(0, 0, 0, 0.2); padding: 6px 8px; }
 .slot-text { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; text-align: left; }
-.slot-detail { font-size: 11px; font-weight: 400; opacity: 0.8; overflow: hidden; text-overflow: ellipsis; }
+.slot-detail { font-size: 12px; font-weight: 400; opacity: 0.8; overflow: hidden; text-overflow: ellipsis; }
 .settings-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .keys { display: flex; flex-direction: column; gap: 4px; }
 .key-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.key-label { font-size: 12px; opacity: 0.9; }
-.key-btn { min-width: 84px; border: 1px solid #8a8378; background: #2b1d13; color: #ffd27a; padding: 3px 8px; font: 700 12px system-ui; cursor: pointer; }
+.key-label { font-size: 13px; opacity: 0.9; }
+.key-btn { min-width: 84px; border: 1px solid #8a8378; background: #2b1d13; color: #ffd27a; padding: 3px 8px; font: 700 13px system-ui; cursor: pointer; }
 .key-btn.waiting { background: #e0a12a; color: #2b1d13; }
 .end-lines { margin: 4px 0 8px; }
 .menu-end.lost .menu-title, .menu-panel.lost .menu-title { color: #ff8a6a; }
@@ -41,3 +41,6 @@
 .level-desc { white-space: normal; }
 /* BACKLOG 8: the UI scale setting */
 .menu-panel { zoom: var(--ui-scale, 1); }
+/* BACKLOG 81: title illustration and column heads */
+.menu-art { display: block; box-sizing: border-box; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: 50% 40%; border: 2px solid #2b1d13; box-shadow: 0 2px 0 #1d130c; image-rendering: auto; }
+.menu-sub { grid-column: 1 / -1; margin: 0 0 2px; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: #ffd27a; opacity: 0.85; }
