@@ -148,6 +148,9 @@ export class UnitLayer {
   private readonly p = new THREE.Vector3();
   private readonly sk = new THREE.Vector3();
   private readonly up = new THREE.Vector3(0, 1, 0);
+  /** BACKLOG 94: rings under walkers lie along the ground slope, not flat into it */
+  private readonly tilt = new THREE.Quaternion();
+  private readonly normal = new THREE.Vector3();
   private readonly v = new THREE.Vector3();
 
   constructor(material: THREE.Material, ringMaterial: THREE.Material, unitIds: string[], pal: Record<string, string>, tribeColorNames: string[], models: ReadonlyMap<string, ModelParts> | null = null, cap = 8192, unitScale: Readonly<Record<string, number>> = { shaper: SHAPER_SCALE }) {
@@ -220,6 +223,34 @@ export class UnitLayer {
     this.screenY = new Float32Array(n);
   }
 
+  /**
+   * BACKLOG 94: lay a ring of `radius` on the ground at (x, z). Sets `tilt` to the surface normal from
+   * central differences half a cell either side (identity on level ground) and returns how far to lift the
+   * ring so no point of its rim, sampled every 45 degrees, sits below the terrain (slope creases, ridges).
+   * The drawn terrain is two triangles per cell, not the bilinear `heightAt`; on a twisted cell they differ
+   * by up to a quarter of the twist, so each rim sample adds that bound.
+   */
+  groundFit(w: World, x: number, z: number, n: number, heightScale: number, radius: number): number {
+    const t = w.terrain;
+    const floor = t.sea - 2;
+    const at = (a: number, b: number) => Math.max(t.heightAt(((a % n) + n) % n, ((b % n) + n) % n), floor) * heightScale;
+    const dx = at(x + 0.5, z) - at(x - 0.5, z);
+    const dz = at(x, z + 0.5) - at(x, z - 0.5);
+    if (Math.abs(dx) < 1e-3 && Math.abs(dz) < 1e-3) this.tilt.identity();
+    else this.tilt.setFromUnitVectors(this.up, this.normal.set(-dx, 1, -dz).normalize());
+    const c = at(x, z);
+    let lift = 0;
+    for (let a = 0; a < 8; a++) {
+      const ox = Math.cos(a * 0.7853981633974483) * radius;
+      const oz = Math.sin(a * 0.7853981633974483) * radius;
+      const sx = Math.floor(x + ox);
+      const sz = Math.floor(z + oz);
+      const twist = Math.abs(t.get(sx, sz) - t.get(sx + 1, sz) - t.get(sx, sz + 1) + t.get(sx + 1, sz + 1)) * 0.25 * heightScale;
+      lift = Math.max(lift, at(x + ox, z + oz) + twist - (c + dx * ox + dz * oz));
+    }
+    return Math.min(lift, 0.8);
+  }
+
   update(w: World, alpha: number, focusX: number, focusZ: number, heightScale: number, visualTime: number, fadeEnd: number, camera: THREE.Camera, bendK: number, viewW: number, viewH: number, selected: ReadonlySet<number>): void {
     const E = w.ents;
     const n = w.terrain.size;
@@ -272,17 +303,19 @@ export class UnitLayer {
       kind.detail.setMatrixAt(c, this.m);
       kind.anim.array.set(unitPose(this.forceClip ? this.forceClip(i) : unitClip(w, i), visualTime, i, this.pose), c * 4);
       kind.body.setColorAt(c, shown >= 0 ? this.tribeColors[shown % this.tribeColors.length] : this.wildColor);
+      const flat = nav !== NAV.land;
+      const lift = flat ? 0 : this.groundFit(w, ix, iz, n, heightScale, Math.max(DISC_RADIUS * (ks > 1 ? SHAPER_DISC : 1), 0.42) * this.s.x);
       if (E.tribe[i] >= 0 && discs < this.cap) {
-        this.p.y = ground + 0.02;
+        this.p.y = ground + 0.02 + lift;
         this.sk.setScalar(this.s.x * (ks > 1 ? SHAPER_DISC : 1));
-        this.m.compose(this.p, this.q, this.sk);
+        this.m.compose(this.p, flat ? this.q : this.tilt, this.sk);
         this.disc.setMatrixAt(discs, this.m);
         this.disc.setColorAt(discs++, this.tribeColors[shown % this.tribeColors.length]);
         this.p.y = ground + bob;
       }
       if (selected.has(i) && rings < 2048) {
-        this.p.y = ground + 0.03;
-        this.m.compose(this.p, this.q.identity(), this.s);
+        this.p.y = ground + 0.03 + lift;
+        this.m.compose(this.p, flat ? this.q.identity() : this.tilt, this.s);
         this.ring.setMatrixAt(rings++, this.m);
       }
       // screen position of the bent unit center for picking

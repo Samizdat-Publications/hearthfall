@@ -80,4 +80,37 @@ describe("unit layer", () => {
     expect(shared.userData.shared).toBe(true);
     expect(own.getAttribute("position").count).toBe(shared.getAttribute("position").count);
   });
+
+  it("lays tribe rings along a slope instead of sinking them into it (BACKLOG 94)", () => {
+    const pack = basePack();
+    const w = new World({ pack: pack.files, packHash: pack.hash, seed: 3, map: { generator: "flat", size: 64, tribes: 2 } });
+    const t = w.terrain;
+    const base = t.get(0, 0);
+    // a ramp rising along +x between x 16 and 32
+    for (let y = 0; y < 64; y++) for (let x = 16; x <= 32; x++) t.heights[y * 64 + x] = base + (x - 16) * 2;
+    w.spawnUnit("settler", 0, 24.3, 20.4);
+    w.spawnUnit("settler", 0, 8.3, 20.4);
+    // at the foot of the ramp (a crease) the tilted ring would cut into the rising side: it is lifted instead
+    w.spawnUnit("settler", 0, 15.9, 30.4);
+    const layer = new UnitLayer(new THREE.MeshBasicMaterial(), new THREE.MeshBasicMaterial(), pack.files.units.units.map((u) => u.id), { azure: "#2e6fd8" }, ["azure", "crimson"]);
+    layer.update(w, 1, 20, 20, 1, 0, 1000, new THREE.PerspectiveCamera(), 0, 100, 100, new Set());
+    expect(layer.disc.count).toBe(3);
+    const up = (k: number) => {
+      const m = new THREE.Matrix4();
+      layer.disc.getMatrixAt(k, m);
+      const q = new THREE.Quaternion();
+      m.decompose(new THREE.Vector3(), q, new THREE.Vector3());
+      return new THREE.Vector3(0, 1, 0).applyQuaternion(q);
+    };
+    // on the ramp (2 height units per cell, draw scale 1) the ring normal leans back down the slope
+    const slope = up(0);
+    expect(slope.x).toBeCloseTo(-2 / Math.sqrt(5), 2);
+    expect(Math.abs(slope.z)).toBeLessThan(1e-6);
+    // on level ground it stays flat
+    expect(up(1).y).toBeCloseTo(1, 6);
+    const m = new THREE.Matrix4();
+    layer.disc.getMatrixAt(2, m);
+    const y = new THREE.Vector3().setFromMatrixPosition(m).y;
+    expect(y - t.heightAt(15.9, 30.4)).toBeGreaterThan(0.1);
+  });
 });

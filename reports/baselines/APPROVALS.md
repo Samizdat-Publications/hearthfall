@@ -98,3 +98,6 @@
 - 2026-10-10T07:38 set levels (5 shots): S2 H: look v3 refresh of old level shots; new sky_road_stack and the_forge_moat
 - 2026-10-10T07:55 set menus (5 shots): BACKLOG 12: Map editor button on the main menu; new menu_editor shot of the editor panel over its live preview
 - 2026-10-10T08:45 set smoke (12 shots): BACKLOG 37/40 orthographic map view with straight edges, frame and grid
+- 2026-10-10T08:55 set smoke (12 shots): BACKLOG 94 tribe and selection rings tilt to the ground slope and lift over creases
+- 2026-10-10T08:56 set look (12 shots): BACKLOG 94 rings follow the slope on the close camera
+- 2026-10-10T08:58 set spells (9 shots): BACKLOG 94 rings follow the slope (unit rings only)
