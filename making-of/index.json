@@ -900,6 +900,16 @@
       "when": "2026-10-10T03:23:53.923Z",
       "source": "external:quake_leadin_pair.png",
       "bytes": 503103
+    },
+    {
+      "file": "b13/20261010-0507_victory-picker.png",
+      "milestone": "B13",
+      "kind": "screenshot",
+      "caption": "Stretch 2 block D: the skirmish setup picks a victory rule (Conquest, Hold the Reliquaries, King of the Hill, Last Stand), now decided inside the deterministic sim",
+      "highlight": false,
+      "when": "2026-10-10T05:07:01.470Z",
+      "source": "external:victory_setup.png",
+      "bytes": 446196
     }
   ]
 }

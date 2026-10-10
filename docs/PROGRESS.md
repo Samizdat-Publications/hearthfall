@@ -23,7 +23,7 @@ Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when
 - M1 to M5 shipped details: PROGRESS_LOG (and ARCHITECTURE).
 
 ## Next 3 actions
-1. Block D exit: full npm run qa until PASS (last PASS at 69ce521); making-of shot of the victory picker, republish the page.
+1. Block D exit DONE: full npm run qa PASS at 460fe89 plus menus re-approved (victory row), making-of b13 victory picker, page republished (v8).
 2. S2 block E campaign part 1 (ADR-015): carry spells taught at Reliquaries, level select map, worship ring (89), levels 4 to 7 with win and lose scenarios, golden replay with a level and site (84), e2e level loss and campaign complete (85, 86).
 3. Then F vehicles (ADR-016, Opus review after D and F), G Forge, H campaign 8 to 13, I map editor, J robustness.
 
