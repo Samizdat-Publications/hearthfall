@@ -250,7 +250,7 @@
           "type": "terrainOp",
           "op": "noiseScar",
           "radius": 7,
-          "depth": 24
+          "depth": 24, "leadInSeconds": 1.5
         },
         {
           "type": "damageBuildingsRadius",

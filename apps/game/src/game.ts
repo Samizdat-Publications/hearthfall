@@ -4,7 +4,7 @@
 // M8: the game flow (main menu, skirmish, pause, saves, settings, end screen) is a `screen` here; the
 // sim only runs while no menu screen is up. menuBridge.ts turns this state into the menu view model.
 // M9: campaign levels (data/levels) run as sessions too; the level runtime decides the end.
-import { orderNote } from "./orderNotes.ts";
+import { leadInWarning, orderNote } from "./orderNotes.ts";
 import {
   SKIRMISH_DEFAULTS,
   validateLevel,
@@ -836,6 +836,11 @@ export class Game {
         this.ordered.delete(Number(e.id));
         this.notify(n.key, n.text, "info", n.throttleSec);
         this.renderer.markFailedOrder(e);
+        break;
+      }
+      case "terrainLeadIn": {
+        const n = leadInWarning(e, this.world, me);
+        if (n) this.notify(n.key, n.text, "bad", n.throttleSec);
         break;
       }
       case "castFailed":

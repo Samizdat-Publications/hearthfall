@@ -73,6 +73,7 @@ const FIRE_COLORS = ["#ffb347", "#ff6a1f", "#ffe08a"];
 const FX_STORM = 3;
 const FX_MOVER = 4;
 const FX_WRAITH = 6;
+const FX_LEADIN = 7;
 
 /** Volcano smoke column (BACKLOG 0a): puffs per erupting cone, column height and rise rate (render only). */
 const SMOKE_PUFFS = 30;
@@ -243,6 +244,28 @@ export class VfxLayer {
             color: red,
           });
         }
+      } else if (e.type === "terrainLeadIn" && Number.isFinite(x)) {
+        // BACKLOG 36: cracks open and dust kicks up across the area until the land moves
+        const sec = Number(e.seconds) || 1;
+        const r = Number(e.r) || 3;
+        const crack = new THREE.Color("#2a1c12");
+        const dust = new THREE.Color("#b89a72");
+        for (let k = 0; k < 14; k++) {
+          const h = this.hash(k * 3 + this.seq);
+          const a = h * Math.PI * 2;
+          const d = r * 0.85 * Math.sqrt(this.hash(k * 11 + this.seq));
+          const cx = x + Math.cos(a) * d;
+          const cz = y + Math.sin(a) * d;
+          const t0 = now + (k / 14) * sec * 0.7;
+          this.fx.push({ kind: "halo", x: cx, z: cz, y: ground(cx, cz) + 0.06, t0, dur: now + sec + 0.4 - t0, size: 0.9 + 0.8 * this.hash(k * 5 + this.seq), color: crack });
+          this.fx.push({ kind: "spark", x: cx, z: cz, y: ground(cx, cz) + 0.2, t0: t0 + 0.05, dur: 0.9, size: 0.2, color: dust });
+        }
+        this.fx.push({ kind: "ring", x, z: y, y: ground(x, y) + 0.12, t0: now, dur: sec, size: r, color: crack });
+        this.seq += 43;
+      } else if (e.type === "terrainMoved" && Number.isFinite(x)) {
+        const r = Number(e.r) || 3;
+        this.fx.push({ kind: "ring", x, z: y, y: ground(x, y) + 0.2, t0: now, dur: 1.2, size: r * 1.1, color: new THREE.Color("#b89a72") });
+        this.fx.push({ kind: "flash", x, z: y, y: ground(x, y) + 0.3, t0: now, dur: 0.5, size: r * 0.35, color: new THREE.Color("#a08868") });
       } else if (e.type === "spellCast" && Number.isFinite(x)) {
         const spell = String(e.spell);
         const col = new THREE.Color(SPELL_COLORS[spell] ?? "#b07cff");
@@ -847,6 +870,26 @@ export class VfxLayer {
             SPELL_COLORS.wraith,
             this.swarm,
             "spark",
+          );
+        }
+        continue;
+      }
+      if (kind === FX_LEADIN) {
+        // BACKLOG 36: ground about to move: a dark trembling edge and dust puffs jumping across it
+        const shake = 0.06 * Math.sin(now * 40);
+        dot(E.x[i] + shake, gy + 0.08, E.y[i], r, this.c.set("#2a1c12"), this.halos, "halo");
+        for (let k = 0; k < 10; k++) {
+          const p = (now * 1.6 + this.hash(k * 13 + i)) % 1;
+          const a = this.hash(k * 7 + i) * 6.28;
+          const d = r * 0.9 * Math.sqrt(this.hash(k * 19 + i));
+          dot(
+            E.x[i] + Math.cos(a) * d,
+            gy + 0.15 + p * 0.9,
+            E.y[i] + Math.sin(a) * d,
+            (0.18 + 0.32 * p) * Math.min(1, (1 - p) * 4),
+            this.c.set("#b89a72"),
+            this.smoke,
+            "smoke",
           );
         }
         continue;

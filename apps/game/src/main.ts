@@ -180,6 +180,8 @@ if (__DEBUG_API__ || game.params.debug) {
       game.paused = p;
     },
     setCamera: (c: string | Partial<CameraState>) => game.renderer.setCamera(c),
+    /** shots: terrain height above sea at a cell (BACKLOG 36 quake_sunk) */
+    height: (x: number, z: number) => game.world.terrain.get(Math.round(x), Math.round(z)) - game.world.terrain.sea,
     /** look shots: the highest terrain cell as [x, z, height] */
     peak: () => {
       const t = game.world.terrain;

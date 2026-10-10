@@ -126,6 +126,10 @@
       "born": { "cue": "sfx.born", "maxPerTick": 1 },
       "woodDelivered": { "cue": "sfx.wood_delivered", "maxPerTick": 1 },
       "charged": { "cue": "sfx.charged", "maxPerTick": 1 },
+      "terrainMoved": {
+        "cue": "sfx.terrain_moved",
+        "maxPerTick": 1
+      },
       "planPlaced": { "cue": "sfx.plan_placed", "maxPerTick": 1 }
     },
     "alias": {
@@ -141,6 +145,7 @@
       "sfx.firerain_cast": "sfx.volcano",
       "sfx.whirlwind_cast": "sfx.hornets",
       "sfx.erode_cast": "sfx.flatten",
+      "sfx.terrain_moved": "sfx.flatten",
       "sfx.mire_cast": "sfx.flatten",
       "sfx.veil_cast": "sfx.call_cast",
       "sfx.ward_cast": "sfx.call_cast",

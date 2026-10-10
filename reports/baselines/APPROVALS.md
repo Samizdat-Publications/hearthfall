@@ -82,3 +82,4 @@
 - 2026-10-10T02:55 set spells2 (9 shots): BACKLOG 56: HUD build costs and stance icons
 - 2026-10-10T02:57 set levels (2 shots): BACKLOG 56: HUD build costs and stance icons
 - 2026-10-10T03:06 set menus (4 shots): BACKLOG 81: menu title art, bigger text, column heads
+- 2026-10-10T03:22 set spells (9 shots): BACKLOG 36: quake lead-in edge and dust, new quake_sunk shot

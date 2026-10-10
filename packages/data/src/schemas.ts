@@ -639,6 +639,8 @@ const Effect = z.discriminatedUnion("type", [
     depth: z.number().optional(),
     /** lowerTowardSea only: spread over this many seconds, `depth` applied once per second */
     seconds: pos.optional(),
+    /** BACKLOG 36: the land moves this many seconds after the cast (rumble and cracks first) so players see cause and effect */
+    leadInSeconds: pos.optional(),
     shape: z.string().optional(),
     height: z.number().optional(),
   }),

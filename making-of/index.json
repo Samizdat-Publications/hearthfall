@@ -890,6 +890,16 @@
       "when": "2026-10-10T03:07:51.556Z",
       "source": "external:menu_main.png",
       "bytes": 722827
+    },
+    {
+      "file": "b14/20261010-0323_quake-lead-in.png",
+      "milestone": "B14",
+      "kind": "comparison",
+      "caption": "Quake lead-in: the ground cracks and a dark edge marks the danger zone for 1.5 s, then the land drops, so players can see the cause before units drown",
+      "highlight": false,
+      "when": "2026-10-10T03:23:53.923Z",
+      "source": "external:quake_leadin_pair.png",
+      "bytes": 503103
     }
   ]
 }

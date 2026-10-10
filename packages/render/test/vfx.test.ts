@@ -62,6 +62,21 @@ describe("vfx layer", () => {
     expect(c.r).toBeGreaterThan(c.g * 2);
   });
 
+  it("a terrain lead-in opens cracks and kicks up dust before the land moves (BACKLOG 36)", () => {
+    const w = world();
+    const v = new VfxLayer(makeBendUniforms());
+    v.consume(
+      [{ type: "terrainLeadIn", tick: 2, tribe: 1, spell: "quake", x: 30, y: 30, r: 7, seconds: 1.5 } as unknown as SimEvent],
+      w,
+      () => 0,
+      1,
+    );
+    v.update(w, 1.2, 30, 30, 1);
+    const d = v.drawnBy();
+    expect(d.halo).toBe(14);
+    expect(d.ring).toBe(1);
+  });
+
   it("marks a melee hit with a dust halo and a flash", () => {
     const w = world();
     const v = new VfxLayer(makeBendUniforms());

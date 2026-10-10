@@ -18,6 +18,8 @@ export interface EffectCtx {
   y: number;
   casterX: number;
   casterY: number;
+  /** apply a terrainOp now even when it has a lead-in (the lead-in effect entity firing) */
+  now?: boolean;
 }
 
 type EffectFn = (ctx: EffectCtx, e: EffectDef) => void;
@@ -31,9 +33,10 @@ export function registerEffect(type: string, fn: EffectFn): void {
  * Effect entity kinds (state column of CAT.effect entities). Columns: type = spell index (its effect
  * data is read back each tick), progress = radius, timer = ticks left; per kind: storm level = impacts
  * left; mover ax, ay = heading; trap level = kills left; wraith level = kills, target = hunted unit,
- * cd = ticks to the next kill; erode progress2 = depth per step.
+ * cd = ticks to the next kill; erode progress2 = depth per step; leadIn (BACKLOG 36) holds a terrainOp
+ * with `leadInSeconds` until its timer runs out, ax, ay = the caster position at the cast.
  */
-export const FX = { area: 1, erode: 2, storm: 3, mover: 4, trap: 5, wraith: 6 } as const;
+export const FX = { area: 1, erode: 2, storm: 3, mover: 4, trap: 5, wraith: 6, leadIn: 7 } as const;
 
 export function applyEffects(ctx: EffectCtx, effects: readonly EffectDef[]): void {
   for (const e of effects) {
@@ -235,6 +238,15 @@ export function breakBeguiles(w: World, tribe: number): void {
 registerEffect("terrainOp", (c, e) => {
   if (e.type !== "terrainOp") return;
   const w = c.w;
+  if (e.leadInSeconds !== undefined && !c.now) {
+    // rumble first: an effect entity applies the op when its timer runs out (updateEffects)
+    const ticks = secondsToTicks(e.leadInSeconds, w.cfg.tickHz);
+    const i = fxEntity(c, FX.leadIn, e.radius ?? 1, ticks + 1);
+    w.ents.ax[i] = c.casterX;
+    w.ents.ay[i] = c.casterY;
+    w.emit("terrainLeadIn", { id: w.ents.idOf(i), tribe: c.tribe, spell: c.spell, x: c.x, y: c.y, r: e.radius ?? 1, seconds: e.leadInSeconds });
+    return;
+  }
   const sea = w.terrain.sea;
   void sea;
   switch (e.op) {
@@ -534,6 +546,14 @@ export function updateEffects(w: World): void {
           break;
         case FX.wraith:
           wraithStep(w, i);
+          break;
+        case FX.leadIn:
+          if (E.timer[i] === 1) {
+            const sp = w.cfg.pack.spells.spells[E.type[i]];
+            const ctx: EffectCtx = { w, tribe: E.tribe[i], spell: sp.id, x: E.x[i], y: E.y[i], casterX: E.ax[i], casterY: E.ay[i], now: true };
+            EFFECTS.get("terrainOp")!(ctx, effectOf(w, i, "terrainOp"));
+            w.emit("terrainMoved", { tribe: E.tribe[i], spell: sp.id, x: E.x[i], y: E.y[i], r: E.progress[i] });
+          }
           break;
       }
       if (--E.timer[i] <= 0) {

@@ -1,6 +1,6 @@
 {
   "id": "spell_quake_breaks_buildings",
-  "description": "Quake cracks and lowers the land, smashes most of a building's health and sends nearby enemies into a panic.",
+  "description": "Quake smashes most of a building's health and sends nearby enemies into a panic at once, then cracks and lowers the land after its 1.5 s lead-in (BACKLOG 36: the land still stands at tick 25).",
   "tags": [
     "fast",
     "spells",
@@ -90,11 +90,11 @@
     },
     {
       "at": 25,
-      "expr": "hp(tribe1.dwellings) == 360 && terrain.height([32,32]) < sea + 80 && count(tribe1.settlers, moving) == 3"
+      "expr": "hp(tribe1.dwellings) == 360 && terrain.height([32,32]) == sea + 80 && count(tribe1.settlers, moving) == 3"
     },
     {
       "at": 60,
-      "expr": "invariants() == 0"
+      "expr": "terrain.height([32,32]) < sea + 80 && invariants() == 0"
     }
   ]
 }
