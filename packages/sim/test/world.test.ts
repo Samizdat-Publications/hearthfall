@@ -215,6 +215,29 @@ describe("snapshot with moving units and terrain edits (M3 review regression)", 
     b.run(200);
     expect(b.hash()).toEqual(a.hash());
   });
+
+  it("a save between a terrain edit and the next unit step keeps lone A* walkers on their routes (S2 e2e regression)", async () => {
+    const { basePack } = await import("./helpers.ts");
+    const { World } = await import("../src/world.ts");
+    const p = basePack();
+    const init = { pack: p.files, packHash: p.hash, seed: 8, map: { generator: "flat_with_lake", size: 64, tribes: 1 } };
+    const a = new World(init);
+    // a lone walker follows an A* path (no flow field) far from the edit; a group follows a flow field
+    const lone = a.spawnUnit("settler", 0, 8, 50);
+    for (let k = 0; k < 12; k++) a.spawnUnit("settler", 0, 8 + (k % 4), 10 + Math.floor(k / 4));
+    a.step([{ tick: 0, tribe: 0, type: "move", args: { units: [lone], to: [30, 58] } }]);
+    a.step([{ tick: a.tick, tribe: 0, type: "move", args: { units: "tribe0.settlers", to: [56, 54] } }]);
+    a.run(20);
+    a.step([{ tick: a.tick, tribe: -1, type: "terrainOp", args: { op: "noiseScar", x: 40, y: 20, r: 4, depth: 20, seed: 3 } }]);
+    const snap = a.snapshot();
+    expect(snap.terrainDirty?.length).toBeGreaterThan(0);
+    const b = World.restore(init, snap);
+    for (let k = 0; k < 60; k++) {
+      a.step([]);
+      b.step([]);
+      expect(b.hash().all, `tick ${a.tick}`).toBe(a.hash().all);
+    }
+  });
 });
 
 describe("plans on the seam (M4 soak regression)", () => {

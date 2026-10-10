@@ -8,7 +8,7 @@ import { generateMap, type MapSpec } from "./generator.ts";
 import { Fnv } from "./hash.ts";
 import { Rng } from "./rng.ts";
 import { cos, sin, TWO_PI } from "./dmath.ts";
-import type { Terrain, TerrainOpSpec } from "./terrain.ts";
+import type { DirtyRect, Terrain, TerrainOpSpec } from "./terrain.ts";
 import { ORDER, UnitSystem } from "./units.ts";
 import { BSTATE, cloneEco, EconomySystem, newTribeEco, TASK, type TribeEco } from "./economy.ts";
 import { isShaper, onShaperDeath, updateSpells, type CastState, type PendingCast } from "./spells.ts";
@@ -93,6 +93,14 @@ export interface WorldSnapshot {
   paths: [number, Int32Array][];
   pathQueue: number[];
   unitsTerrainVersion: number;
+  /**
+   * Terrain edits the unit step has not seen yet (seq after unitsTerrainVersion). Without them a world
+   * saved between an edit and the next unit step re-planned every unit instead of those near the edit,
+   * and left the live game (e2e BACKLOG 76 check, save at tick 221). Absent in older saves: none.
+   */
+  terrainDirty?: DirtyRect[];
+  /** flow field cache goals (in cache order) valid at the save, rebuilt on restore so the per-tick build budget sees the same cache hits */
+  flowKeys?: number[];
   /** M9: present only when the world has worship sites or granted buildings */
   worship?: WorshipState;
   /** BACKLOG 3: present only with fog of war on */
@@ -550,6 +558,8 @@ export class World {
       paths: this.units.paths.map((p, i) => (p ? ([i, p.slice()] as [number, Int32Array]) : null)).filter((x): x is [number, Int32Array] => x !== null),
       pathQueue: this.units.queue.slice(),
       unitsTerrainVersion: this.units.lastVersion,
+      ...(this.terrain.dirty.some((d) => d.seq > this.units.lastVersion) ? { terrainDirty: this.terrain.dirty.filter((d) => d.seq > this.units.lastVersion).map((d) => ({ ...d })) } : {}),
+      ...(this.units.flowKeys().length ? { flowKeys: this.units.flowKeys() } : {}),
       ...(this.worship.sites.length || this.worship.granted.some((g) => g.length) ? { worship: this.worship.save() } : {}),
       ...(this.level ? { level: this.level.save() } : {}),
       ...(this.rules ? { rules: this.rules.save() } : {}),
@@ -578,6 +588,8 @@ export class World {
     for (const [i, p] of snap.paths) w.units.paths[i] = p.slice();
     w.units.queue = snap.pathQueue.slice();
     w.units.lastVersion = snap.unitsTerrainVersion;
+    w.terrain.dirty = (snap.terrainDirty ?? []).map((d) => ({ ...d }));
+    if (snap.flowKeys) w.units.loadFlows(snap.flowKeys);
     if (snap.worship) w.worship.load(snap.worship);
     if (snap.level && w.level) w.level.load(snap.level);
     if (snap.rules && w.rules) w.rules.load(snap.rules);

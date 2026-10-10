@@ -139,6 +139,27 @@ export class UnitSystem {
   }
 
   /** Flow field for a goal, or null when this tick's build budget is spent (the unit waits a tick). */
+  /** Cache keys of the flow fields valid for the current terrain, oldest first (snapshots). */
+  flowKeys(): number[] {
+    const v = this.w.terrain.version;
+    const out: number[] = [];
+    for (const [k, f] of this.flows) if (f.version === v) out.push(k);
+    return out;
+  }
+
+  /** Rebuild the flow field cache from snapshot keys (outside the per-tick build budget). */
+  loadFlows(keys: readonly number[]): void {
+    const t = this.w.terrain;
+    const cells = t.size * t.size;
+    this.flows.clear();
+    for (const key of keys) {
+      const nav = Math.floor(key / cells);
+      const pf = this.pfs[nav];
+      pf.refresh();
+      this.flows.set(key, { field: pf.flowField(key - nav * cells), version: t.version });
+    }
+  }
+
   private flowFor(goal: number, nav: number): Float32Array | null {
     const t = this.w.terrain;
     const m = this.w.cfg.pack.balance.movement;
