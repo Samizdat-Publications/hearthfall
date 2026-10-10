@@ -268,7 +268,7 @@ export class ThreeRenderer implements Renderer {
     this.rally.visible = false;
     for (const m of [pole, pennant]) m.frustumCulled = false;
     this.scene.add(this.rally);
-    this.vfx = new VfxLayer(this.bend);
+    this.vfx = new VfxLayer(this.bend, undefined, o.style.render?.vfxColors);
     this.scene.add(this.vfx.group);
     const ringMat = (color: string) =>
       bendMaterial(
@@ -435,6 +435,8 @@ export class ThreeRenderer implements Renderer {
       this.pal,
       colors,
       this.models,
+      undefined,
+      this.styleRender?.unitScale,
     );
     this.scene.add(this.units.group);
     if (this.buildings) disposeGroup(this.scene, this.buildings.group);

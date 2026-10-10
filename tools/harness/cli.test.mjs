@@ -13,7 +13,7 @@ describe("cli routing", () => {
       const text = r.stdout + r.stderr;
       expect(r.signal).toBeNull();
       expect(text).not.toMatch(/being served/);
-      expect(text).toMatch(/shotCmd|shot/);
+      expect(text).toMatch(/no shot set __none__|shot:approve needs --reason/);
     }, 70000);
   }
 });

@@ -397,6 +397,80 @@
           "minimum": 0.5,
           "maximum": 2
         },
+        "unitScale": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 2
+          }
+        },
+        "vfxColors": {
+          "type": "object",
+          "properties": {
+            "spells": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}$"
+              }
+            },
+            "statuses": {
+              "type": "object",
+              "properties": {
+                "ward": {
+                  "type": "string"
+                },
+                "beguile": {
+                  "type": "string"
+                },
+                "veil": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "ward",
+                "beguile",
+                "veil"
+              ],
+              "additionalProperties": false
+            },
+            "fire": {
+              "minItems": 3,
+              "maxItems": 3,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}$"
+              }
+            },
+            "fallback": {
+              "type": "string"
+            },
+            "chantRing": {
+              "type": "string"
+            },
+            "chantHalo": {
+              "type": "string"
+            },
+            "melee": {
+              "type": "string"
+            },
+            "chantBreak": {
+              "type": "string"
+            },
+            "glow": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
         "tiltShift": {
           "type": "object",
           "properties": {

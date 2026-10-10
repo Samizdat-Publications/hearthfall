@@ -375,6 +375,22 @@ export const StyleSchema = z
         /** look v2 (BACKLOG 0a): draw scale of the building models, so villages read as villages next to the
          * 1.3x readability-scaled units; keep (scale - 1) x the largest footprint within the building gap */
         buildingScale: z.number().min(0.5).max(2).optional(),
+        /** BACKLOG 96: per-unit-kind draw scale (default 1; the Shaper stands taller) */
+        unitScale: z.record(z.string(), z.number().min(0.5).max(2)).optional(),
+        /** BACKLOG 96: effect colors (render/src/vfx.ts VfxColors); any key left out keeps its default */
+        vfxColors: z
+          .strictObject({
+            spells: z.record(z.string(), z.string().regex(/^#[0-9a-fA-F]{6}$/)).optional(),
+            statuses: z.strictObject({ ward: z.string(), beguile: z.string(), veil: z.string() }).optional(),
+            fire: z.array(z.string().regex(/^#[0-9a-fA-F]{6}$/)).length(3).optional(),
+            fallback: z.string().optional(),
+            chantRing: z.string().optional(),
+            chantHalo: z.string().optional(),
+            melee: z.string().optional(),
+            chantBreak: z.string().optional(),
+            glow: z.string().optional(),
+          })
+          .optional(),
         /** look v3 (BACKLOG 14a, ADR-013): tilt-shift miniature focus band; `defaultOn` is the settings default */
         tiltShift: z
           .strictObject({

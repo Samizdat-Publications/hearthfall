@@ -27,7 +27,7 @@ All commands are npm scripts that call `node tools/harness/...` with a hard inte
 | `npm run visionqa -- --set smoke` | Decisions checks on the latest shots (no-op if provider is off) | 3 min |
 | `npm run visionqa:calibrate` | capture the labeled calibration set (good and broken variants), pick per-check thresholds | 5 min |
 | `npm run making-of -- add <file> ...` | archive an image for the making-of story (`making-of/README.md`) | 1 min |
-| `npm run qa` | resumable driver: runs the layers above (not soak) that have not passed for the current commit, stops before 8.5 min and prints `RESULT: PARTIAL, rerun npm run qa` if layers remain; state in `reports/qa-state.json` keyed by commit sha | 9 min per call |
+| `npm run qa` | resumable driver: runs the layers above (not soak) that have not passed for the current commit, stops before 8.5 min and prints `RESULT: PARTIAL, rerun npm run qa` if layers remain; state in `reports/qa-state.json` keyed by commit sha | 9 min per call; every run writes `reports/latest/qa-full.log` with each layer's status, cached ones included (BACKLOG 96) |
 | `npm run doctor` | environment checks (section 9) | 3 min |
 
 Output contract: the last line is `RESULT: PASS`, `RESULT: SKIP <why>`, `RESULT: PARTIAL ...` or `RESULT: FAIL <n> (see reports/latest/<file>)`. `SKIP` means the layer does not exist yet (its milestone is ahead); the qa driver counts it as passed. Reports go to `reports/latest/` (overwritten each run); machine facts the doctor found persist in `reports/doctor-env.json`. Hours since run start for the STATUS line: `node tools/harness/status.mjs`. Failures print `file:line  first error line` only. Never `cat` a full log; use `node tools/harness/q.mjs <report> <jsonpath>` or grep.

@@ -69,6 +69,26 @@ const STATUS_COLORS = { ward: "#ffd76a", beguile: "#ff7ad9", veil: "#9fb4c8" };
 /** BACKLOG 2: flame colors for burning buildings and a Shade's sabotage sparks */
 const FIRE_COLORS = ["#ffb347", "#ff6a1f", "#ffe08a"];
 
+/**
+ * BACKLOG 96: every effect color in one table; style.json `render.vfxColors` overrides any of it (the
+ * defaults here keep tests and an old style file working).
+ */
+export interface VfxColors {
+  spells: Record<string, string>;
+  statuses: { ward: string; beguile: string; veil: string };
+  fire: string[];
+  /** a spell with no color of its own */
+  fallback: string;
+  chantRing: string;
+  chantHalo: string;
+  melee: string;
+  chantBreak: string;
+  /** the hot core of a fireball's trail */
+  glow: string;
+}
+
+export const DEFAULT_VFX_COLORS: VfxColors = { spells: SPELL_COLORS, statuses: STATUS_COLORS, fire: FIRE_COLORS, fallback: "#b07cff", chantRing: "#c39bff", chantHalo: "#8a3cff", melee: "#f2e6c8", chantBreak: "#8a8378", glow: "#ff7a2e" };
+
 /** Effect entity kinds as the sim numbers them (packages/sim/src/effects.ts FX). */
 const FX_STORM = 3;
 const FX_MOVER = 4;
@@ -107,7 +127,10 @@ export class VfxLayer {
   /** BACKLOG 3: show effects on units in the fog too */
   revealAll = false;
 
-  constructor(bend: BendUniforms, cap = 512) {
+  private readonly colors: VfxColors;
+
+  constructor(bend: BendUniforms, cap = 512, colors: Partial<VfxColors> = {}) {
+    this.colors = { ...DEFAULT_VFX_COLORS, ...colors, spells: { ...SPELL_COLORS, ...(colors.spells ?? {}) } };
     const add = (
       geo: THREE.BufferGeometry,
       opacity = 1,
@@ -268,7 +291,7 @@ export class VfxLayer {
         this.fx.push({ kind: "flash", x, z: y, y: ground(x, y) + 0.3, t0: now, dur: 0.5, size: r * 0.35, color: new THREE.Color("#a08868") });
       } else if (e.type === "spellCast" && Number.isFinite(x)) {
         const spell = String(e.spell);
-        const col = new THREE.Color(SPELL_COLORS[spell] ?? "#b07cff");
+        const col = new THREE.Color(this.colors.spells[spell] ?? this.colors.fallback);
         const r = IMPACTS[spell] ?? { flash: 1, ring: 1.5 };
         const dur = r.dur ?? 1;
         const gy = ground(x, y);
@@ -322,7 +345,7 @@ export class VfxLayer {
         }
         this.seq += 31;
       } else if (e.type === "castBegun" && Number.isFinite(x)) {
-        const col = new THREE.Color(SPELL_COLORS[String(e.spell)] ?? "#b07cff");
+        const col = new THREE.Color(this.colors.spells[String(e.spell)] ?? this.colors.fallback);
         this.fx.push({
           kind: "ring",
           x,
@@ -337,8 +360,8 @@ export class VfxLayer {
         // M6: a short arc of sparks from the Firecaller to the target, then a splash flash and ring
         const fx = Number(e.fx ?? x);
         const fy = Number(e.fy ?? y);
-        const col = new THREE.Color("#ff7a2e");
-        const glow = new THREE.Color("#ff7a2e").multiplyScalar(0.55);
+        const col = new THREE.Color(this.colors.glow);
+        const glow = new THREE.Color(this.colors.glow).multiplyScalar(0.55);
         const n = w.terrain.size;
         let dx = x - fx;
         let dy = y - fy;
@@ -396,8 +419,8 @@ export class VfxLayer {
         });
       } else if (e.type === "chantBegun" && Number.isFinite(x)) {
         // M6: pulsing rings for the length of the channel (balance-free: 4 pulses over about 4 s)
-        const col = new THREE.Color("#c39bff").multiplyScalar(0.5);
-        const violet = new THREE.Color("#8a3cff");
+        const col = new THREE.Color(this.colors.chantRing).multiplyScalar(0.5);
+        const violet = new THREE.Color(this.colors.chantHalo);
         for (let k = 0; k < 4; k++) {
           this.fx.push({
             kind: "halo",
@@ -435,7 +458,7 @@ export class VfxLayer {
             t0: now,
             dur: 0.3,
             size: e.type === "melee" ? 0.4 : 0.5,
-            color: new THREE.Color(e.type === "melee" ? "#f2e6c8" : "#8a8378"),
+            color: new THREE.Color(e.type === "melee" ? this.colors.melee : this.colors.chantBreak),
           });
         if (e.type === "melee" && Number.isFinite(px)) {
           this.fx.push({
@@ -461,7 +484,7 @@ export class VfxLayer {
         }
       } else if (e.type === "meteor" && Number.isFinite(x)) {
         // BACKLOG 1: a meteor falls in a short streak, then a flash and a scorch ring the size of its impact
-        const col = new THREE.Color(SPELL_COLORS.firerain);
+        const col = new THREE.Color(this.colors.spells.firerain);
         const gy = ground(x, y);
         const fall = 0.35;
         for (let k = 0; k < 5; k++) {
@@ -514,7 +537,7 @@ export class VfxLayer {
             t0: now,
             dur: 0.4,
             size: 0.45,
-            color: new THREE.Color(SPELL_COLORS.whirlwind),
+            color: new THREE.Color(this.colors.spells.whirlwind),
           });
         else if (e.type === "mired") {
           this.fx.push({
@@ -535,7 +558,7 @@ export class VfxLayer {
             t0: now,
             dur: 0.6,
             size: 0.35,
-            color: new THREE.Color(SPELL_COLORS.mire),
+            color: new THREE.Color(this.colors.spells.mire),
           });
         } else if (e.type === "wraithKill") {
           this.fx.push({
@@ -546,7 +569,7 @@ export class VfxLayer {
             t0: now,
             dur: 0.45,
             size: 0.7,
-            color: new THREE.Color(SPELL_COLORS.wraith),
+            color: new THREE.Color(this.colors.spells.wraith),
           });
           this.fx.push({
             kind: "ring",
@@ -556,7 +579,7 @@ export class VfxLayer {
             t0: now,
             dur: 0.8,
             size: 1,
-            color: new THREE.Color(SPELL_COLORS.wraith),
+            color: new THREE.Color(this.colors.spells.wraith),
           });
         } else {
           this.fx.push({
@@ -567,7 +590,7 @@ export class VfxLayer {
             t0: now,
             dur: 0.35,
             size: 0.8,
-            color: new THREE.Color(SPELL_COLORS.ward),
+            color: new THREE.Color(this.colors.spells.ward),
           });
           this.fx.push({
             kind: "ring",
@@ -577,7 +600,7 @@ export class VfxLayer {
             t0: now,
             dur: 0.6,
             size: 1.2,
-            color: new THREE.Color(SPELL_COLORS.ward),
+            color: new THREE.Color(this.colors.spells.ward),
           });
         }
       } else if (
@@ -748,7 +771,7 @@ export class VfxLayer {
             gy + 0.6 + p * 2.2,
             E.y[i] + Math.sin(a) * rr,
             2.6 * (1 - p) + 0.4,
-            FIRE_COLORS[k % 3],
+            this.colors.fire[k % 3],
             this.swarm,
             "spark",
           );
@@ -787,7 +810,7 @@ export class VfxLayer {
               gy + 0.3 + p * 0.8,
               E.y[t] + Math.sin(a) * 0.4,
               1.4 * (1 - p) + 0.3,
-              FIRE_COLORS[k % 3],
+              this.colors.fire[k % 3],
               this.swarm,
               "spark",
             );
@@ -805,10 +828,10 @@ export class VfxLayer {
           continue;
         const col =
           E.ward[i] > 0
-            ? STATUS_COLORS.ward
+            ? this.colors.statuses.ward
             : E.beguile[i] > 0
-              ? STATUS_COLORS.beguile
-              : STATUS_COLORS.veil;
+              ? this.colors.statuses.beguile
+              : this.colors.statuses.veil;
         const pulse = 0.7 + 0.3 * Math.sin(now * 4 + i);
         dot(
           E.x[i],
@@ -841,7 +864,7 @@ export class VfxLayer {
             gy + 0.2 + hgt,
             E.y[i] + Math.sin(ph) * rr,
             1.4,
-            SPELL_COLORS.whirlwind,
+            this.colors.spells.whirlwind,
             this.swarm,
             "spark",
           );
@@ -856,7 +879,7 @@ export class VfxLayer {
           gy + bob,
           E.y[i],
           0.35,
-          SPELL_COLORS.wraith,
+          this.colors.spells.wraith,
           this.flashes,
           "flash",
         );
@@ -867,7 +890,7 @@ export class VfxLayer {
             gy + bob - 0.2 + 0.1 * Math.sin(ph * 2),
             E.y[i] + Math.sin(ph) * 0.5,
             1,
-            SPELL_COLORS.wraith,
+            this.colors.spells.wraith,
             this.swarm,
             "spark",
           );
@@ -902,7 +925,7 @@ export class VfxLayer {
           E.y[i],
           r,
           this.c
-            .set(SPELL_COLORS.firerain)
+            .set(this.colors.spells.firerain)
             .multiplyScalar(0.3 + 0.1 * Math.sin(now * 6)),
           this.rings,
           "ring",
@@ -936,7 +959,7 @@ export class VfxLayer {
             gy + 0.3 + p * 2.2,
             E.y[i] + Math.sin(a) * p * 0.8,
             1.6 * (1 - p) + 0.2,
-            SPELL_COLORS.volcano,
+            this.colors.spells.volcano,
             this.swarm,
             "spark",
           );
@@ -970,7 +993,7 @@ export class VfxLayer {
         this.pools.setMatrixAt(pools, this.m);
         this.pools.setColorAt(
           pools++,
-          this.c.set(SPELL_COLORS[spell] ?? "#ff3b10").multiplyScalar(pulse),
+          this.c.set(this.colors.spells[spell] ?? "#ff3b10").multiplyScalar(pulse),
         );
       }
     }

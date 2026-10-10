@@ -86,6 +86,10 @@ export async function qaFull(out, args) {
     if (status === "FAIL") failed++;
     if (status === "PARTIAL") remaining++;
   }
+  // BACKLOG 96: one aggregate log per run, cached layers included, so a reader sees the whole state at once
+  const verdict = failed ? "FAIL" : remaining ? "PARTIAL" : "PASS";
+  const rows = LAYERS.filter((l) => !only || only.includes(l.id)).map((l) => `${l.id.padEnd(12)} ${state.layers[l.id] ? `${state.layers[l.id].status.padEnd(7)} ${state.layers[l.id].line}` : "not run (time budget)"}`);
+  writeFileSync(ROOT + "reports/latest/qa-full.log", [`npm run qa ${new Date().toISOString()} state ${key}`, ...rows, `RESULT: ${verdict}`, ""].join(String.fromCharCode(10)));
   if (failed) return out.finish("FAIL", `${failed} (see reports/latest/qa-<layer>.log)`);
   if (remaining) return out.finish("PARTIAL", "rerun npm run qa");
   return out.finish("PASS");

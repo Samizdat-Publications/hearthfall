@@ -37,4 +37,15 @@ describe("static server", () => {
       await s.close();
     }
   });
+
+  it("a taken port rejects with EADDRINUSE, which serve turns into a readable message (BACKLOG 96)", async () => {
+    const root = mkdtempSync(join(tmpdir(), "hf-serve-"));
+    const s = await startStatic(root, 0);
+    try {
+      const port = Number(new URL(s.url).port);
+      await expect(startStatic(root, port)).rejects.toMatchObject({ code: "EADDRINUSE" });
+    } finally {
+      await s.close();
+    }
+  });
 });

@@ -56,9 +56,18 @@ export function startStatic(dir = DIST, port = 5182) {
   });
 }
 
-export async function serveCmd(out) {
+export async function serveCmd(out, args = {}) {
   if (!existsSync(DIST + "/index.html")) return out.finish("FAIL", "no production build: run npm run build first");
-  const s = await startStatic();
+  // BACKLOG 96: --port N (default 5182) and a readable message when the port is taken
+  const port = args.port === undefined ? 5182 : Number(args.port);
+  if (!Number.isInteger(port) || port < 1 || port > 65535) return out.finish("FAIL", `--port must be a port number, got ${args.port}`);
+  let s;
+  try {
+    s = await startStatic(DIST, port);
+  } catch (e) {
+    if (e?.code === "EADDRINUSE") return out.finish("FAIL", `port ${port} is in use (is Hearthfall already being served?); try npm run serve -- --port ${port + 1}`);
+    throw e;
+  }
   console.log(`Hearthfall is being served at ${s.url} (Ctrl+C to stop)`);
   await new Promise(() => {});
 }

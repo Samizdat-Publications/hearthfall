@@ -72,7 +72,7 @@ async function main() {
     }
     case "serve": {
       const { serveCmd } = await import("./serve.mjs");
-      return serveCmd(out);
+      return serveCmd(out, args);
     }
     case "prod": {
       const { prodCmd } = await import("./serve.mjs");

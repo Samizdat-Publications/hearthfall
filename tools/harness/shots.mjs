@@ -200,6 +200,8 @@ export async function buildSheets(results, title) {
 
 export async function runShots(out, cmd, args = {}) {
   const set = typeof args.set === "string" ? args.set : "smoke";
+  // BACKLOG 96: an unknown set is a plain failure, not a harness crash
+  if (!existsSync(ROOT + `tools/harness/shotsets/${set}.json`)) return out.finish("FAIL", `1 (no shot set ${set})`);
   if (cmd === "shot-approve") {
     if (typeof args.reason !== "string" || args.reason.length < 8) return out.finish("FAIL", '1 (shot:approve needs --reason "...")');
     const rep = JSON.parse(readFileSync(LATEST + "shots.json", "utf8"));

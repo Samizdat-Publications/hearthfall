@@ -140,7 +140,7 @@ export class UnitLayer {
   private readonly up = new THREE.Vector3(0, 1, 0);
   private readonly v = new THREE.Vector3();
 
-  constructor(material: THREE.Material, ringMaterial: THREE.Material, unitIds: string[], pal: Record<string, string>, tribeColorNames: string[], models: ReadonlyMap<string, ModelParts> | null = null, cap = 8192) {
+  constructor(material: THREE.Material, ringMaterial: THREE.Material, unitIds: string[], pal: Record<string, string>, tribeColorNames: string[], models: ReadonlyMap<string, ModelParts> | null = null, cap = 8192, unitScale: Readonly<Record<string, number>> = { shaper: SHAPER_SCALE }) {
     this.cap = cap;
     this.tribeColors = tribeColorNames.map((c) => new THREE.Color(pal[c] ?? "#ffffff"));
     this.wildColor = new THREE.Color(pal.cloth ?? "#d9cbb0");
@@ -172,7 +172,8 @@ export class UnitLayer {
         this.group.add(im);
       }
       this.kinds.push({ body, detail, anim });
-      this.kindScale.push(id === "shaper" ? SHAPER_SCALE : 1);
+      // BACKLOG 96: per-kind draw scale from style.json `render.unitScale` (the Shaper stands taller)
+      this.kindScale.push(unitScale[id] ?? 1);
     }
     const discGeo = colored(new THREE.RingGeometry(DISC_RADIUS * 0.58, DISC_RADIUS, 16).rotateX(-Math.PI / 2), new THREE.Color("#ffffff"));
     this.disc = new THREE.InstancedMesh(discGeo, material, cap);
