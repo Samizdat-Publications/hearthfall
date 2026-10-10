@@ -15,7 +15,7 @@
       { "shape": "rect", "at": [48, 48], "size": [20, 6], "aboveSea": 36 }
     ]
   },
-  "tribes": [{}, { "ai": "aggressive", "difficulty": "easy" }],
+  "tribes": [{}, { "ai": "aggressive", "difficulty": "easy", "maxTroops": 8 }],
   "spells": ["bolt", "raise_land"],
   "setup": [
     { "spawn": "hearth", "tribe": 0, "at": [20, 48] },
@@ -36,6 +36,6 @@
     { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Garrison the tower by the isthmus, train wardens and keep the war band away from your Hearth." }] },
     { "when": { "type": "time", "seconds": 40 }, "do": [{ "type": "raid", "tribe": 1, "to": [20, 48] }, { "type": "message", "text": "The war band is crossing the isthmus!" }] },
     { "when": { "type": "time", "seconds": 120 }, "do": [{ "type": "spawn", "unit": "warden", "n": 4, "at": [26, 48] }, { "type": "message", "text": "Allies have come down from the hills." }] },
-    { "when": { "type": "time", "seconds": 150 }, "do": [{ "type": "spawn", "unit": "warden", "n": 3, "tribe": 1, "at": [70, 48] }, { "type": "raid", "tribe": 1, "to": [20, 48] }, { "type": "message", "text": "A second wave is coming." }] }
+    { "when": { "type": "time", "seconds": 150 }, "do": [{ "type": "spawn", "unit": "warden", "n": 6, "tribe": 1, "at": [70, 48] }, { "type": "raid", "tribe": 1, "to": [20, 48] }, { "type": "message", "text": "A second wave is coming." }] }
   ]
 }

@@ -46,6 +46,11 @@ export class LevelRuntime {
   readonly allowed: Set<number> | null;
   private w: World;
 
+  /** BACKLOG 83: the level's cap on a tribe's trained troops, or -1 for none */
+  troopCap(tribe: number): number {
+    return this.def.tribes[tribe]?.maxTroops ?? -1;
+  }
+
   constructor(w: World, def: LevelDef) {
     this.w = w;
     this.def = def;

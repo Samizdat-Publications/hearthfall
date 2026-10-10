@@ -1,0 +1,10 @@
+{
+  "id": "level_hold_the_line_idle_loses",
+  "description": "BACKLOG 83: campaign level 3 is not won by doing nothing: an idle player (no commands, the tower unmanned, no training or spells) loses the Hearth to the two war bands before the five minutes are up.",
+  "tags": ["fast", "levels"],
+  "level": "hold_the_line",
+  "runTicks": 6000,
+  "assert": [
+    { "at": 6000, "expr": "level.lost && !level.won && events.count('levelLost') == 1" }
+  ]
+}

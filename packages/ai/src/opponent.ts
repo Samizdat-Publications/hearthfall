@@ -521,7 +521,7 @@ export class OpponentAI implements Controller {
   }
 
   private trainScore(c: Census): number {
-    if (!c.lodges.size || c.settlers.length <= this.floor(c)) return 0;
+    if (!c.lodges.size || c.settlers.length <= this.floor(c) || c.w.combat.troopRoom(this.tribe) <= 0) return 0;
     if (c.threats.length) return 0.85;
     const growth = clamp01(c.pop / this.p.economyTargetPop);
     return 0.25 + 0.55 * growth + 0.25 * this.p.aggression;

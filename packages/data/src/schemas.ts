@@ -1026,7 +1026,8 @@ export const LevelSchema = z.strictObject({
   }),
   /** tribe 0 is the player; the others are AI opponents by personality */
   tribes: z
-    .array(z.strictObject({ ai: id.optional(), difficulty: id.optional() }))
+    /** maxTroops (BACKLOG 83): the tribe may not train past this many troops (alive, walking to or in training) */
+    .array(z.strictObject({ ai: id.optional(), difficulty: id.optional(), maxTroops: z.number().int().min(0).optional() }))
     .min(1)
     .max(4),
   /** spells unlocked at the start for every tribe (campaign unlocks are added for the player) */

@@ -737,6 +737,24 @@ export class CombatSystem {
   }
 
   /** Units walking to or queued at lodge b (one pass map: building index -> count). */
+  /** BACKLOG 83: a tribe's trained troops plus the settlers walking to or in training (level troop caps) */
+  troopCount(tribe: number): number {
+    const E = this.w.ents;
+    const units = this.w.cfg.pack.units.units;
+    let k = 0;
+    for (let i = 0; i < E.hi; i++) {
+      if (!E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] !== tribe) continue;
+      if (units[E.type[i]].trainedAt || E.task[i] === TASK.toTrain || E.task[i] === TASK.training) k++;
+    }
+    return k;
+  }
+
+  /** how many more troops a tribe may train in this level (Infinity without a cap) */
+  troopRoom(tribe: number): number {
+    const cap = this.w.level?.troopCap(tribe) ?? -1;
+    return cap < 0 ? Infinity : Math.max(0, cap - this.troopCount(tribe));
+  }
+
   queued(): Map<number, number> {
     const E = this.w.ents;
     const m = new Map<number, number>();
@@ -961,6 +979,7 @@ registerCommand("train", {
     if (w.combat.trainsAt(w.ents.type[b]) < 0) return "this building does not train";
     const room = (w.cfg.pack.buildings.buildings[w.ents.type[b]].queueMax ?? 5) - (w.combat.queued().get(b) ?? 0);
     if (room <= 0) return "training queue full";
+    if (w.combat.troopRoom(w.ents.tribe[b]) <= 0) return "this level caps your troops";
     if (c.args.units !== undefined) {
       const idx = ownUnits(w, c);
       if (typeof idx === "string") return idx;
@@ -996,8 +1015,9 @@ registerCommand("train", {
       free.sort((a, z) => a.housed - z.housed || a.d - z.d || a.i - z.i);
       pick = free.slice(0, Math.floor(c.args.count as number)).map((f) => f.i);
     }
-    for (const i of pick.slice(0, room)) w.combat.sendTo(i, b, TASK.toTrain);
-    w.emit("trainOrdered", { tribe: E.tribe[b], lodge: E.idOf(b), n: Math.min(room, pick.length) });
+    const n = Math.min(room, pick.length, w.combat.troopRoom(E.tribe[b]));
+    for (const i of pick.slice(0, n)) w.combat.sendTo(i, b, TASK.toTrain);
+    w.emit("trainOrdered", { tribe: E.tribe[b], lodge: E.idOf(b), n });
   },
 });
 

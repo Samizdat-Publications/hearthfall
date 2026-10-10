@@ -87,6 +87,19 @@ describe("campaign levels", () => {
     expect(w.events).toContainEqual(expect.objectContaining({ type: "levelLost", why: "hearthLost" }));
   });
 
+  it("maxTroops caps a tribe's training in a level: orders are trimmed to the room left, then refused (BACKLOG 83)", () => {
+    const w = make(level({ tribes: [{ maxTroops: 2 }] }));
+    const lodge = w.spawnBuilding("warden_lodge", 0, 22, 34);
+    w.step();
+    const settlers = [0, 1, 2].map((k) => w.spawnUnit("settler", 0, 18 + k, 36));
+    w.step([{ tick: w.tick, tribe: 0, type: "train", args: { building: lodge, units: settlers } }]);
+    expect(w.combat.troopCount(0)).toBe(2);
+    expect(w.combat.troopRoom(0)).toBe(0);
+    w.step([{ tick: w.tick, tribe: 0, type: "train", args: { building: lodge, count: 1 } }]);
+    expect(w.events).toContainEqual(expect.objectContaining({ type: "commandRejected", reason: "this level caps your troops" }));
+    expect(w.combat.troopCount(0)).toBe(2);
+  });
+
   it("a time limit loses the level", () => {
     const w = make(level({ lose: [{ type: "timeLimit", seconds: 3 }] }));
     w.run(3 * w.cfg.tickHz + 5);
