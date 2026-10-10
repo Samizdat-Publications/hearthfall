@@ -1050,6 +1050,16 @@
       "when": "2026-10-10T09:56:30.357Z",
       "source": "external:replay_bar.png",
       "bytes": 806537
+    },
+    {
+      "file": "b21/20261010-1007_records.png",
+      "milestone": "B21",
+      "kind": "screenshot",
+      "caption": "Records and achievements: career stats counted from the event log and 15 achievements defined as data",
+      "highlight": false,
+      "when": "2026-10-10T10:07:09.965Z",
+      "source": "external:menu_records.png",
+      "bytes": 351847
     }
   ]
 }
