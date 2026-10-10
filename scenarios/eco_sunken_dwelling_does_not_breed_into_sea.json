@@ -1,0 +1,23 @@
+{
+  "id": "eco_sunken_dwelling_does_not_breed_into_sea",
+  "description": "Regression (nightly soak seed 1047): a dwelling whose land sank under the sea does not breed settlers into deep water; breeding waits while its door is drowned, and no unit ever ends a tick standing in deep water.",
+  "tags": ["fast", "economy", "drowning", "regression"],
+  "seed": 22,
+  "map": { "generator": "flat", "size": 64, "tribes": 1 },
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [20, 32] },
+    { "spawn": "dwelling", "tribe": 0, "at": [42, 32] },
+    { "spawn": "settler", "tribe": 0, "near": [40, 30], "count": 5 }
+  ],
+  "commands": [
+    { "tick": 0, "tribe": 0, "type": "setPriorities", "args": { "build": 0, "upgrade": 0, "breed": 1 } },
+    { "tick": 300, "tribe": -1, "type": "terrainOp", "args": { "op": "lowerTowardSea", "x": 42, "y": 32, "r": 8, "amount": 160 } }
+  ],
+  "runTicks": 3600,
+  "assert": [
+    { "at": 299, "expr": "invariants() == 0" },
+    { "at": 1200, "expr": "invariants() == 0" },
+    { "at": 2400, "expr": "invariants() == 0" },
+    { "at": 3600, "expr": "invariants() == 0 && events.count('born') == 0" }
+  ]
+}

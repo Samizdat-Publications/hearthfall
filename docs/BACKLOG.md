@@ -38,8 +38,8 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 
 ## P4: tooling and QA
 23. [M] VisionQA move picker evaluation (VISIONQA section 7) over 16 seeds; keep or remove based on diversity metrics.
-24. [S] Nightly-style full soak (64 seeds) script with trend chart of balance metrics over commits.
-25. [S] Perf trend chart from bench history.
+24. [S] Nightly-style full soak (64 seeds) script with trend chart of balance metrics over commits. DONE (10/10/2026): `npm run soak:nightly` (ai 64 x 20 plus ai-idle, difficulty, economy, war), rows in `reports/history/soak.jsonl`, chart via `npm run trends`. Its first run found a real bug (seed 1047: a dwelling on sunken land bred settlers into deep water), fixed with scenario `eco_sunken_dwelling_does_not_breed_into_sea`.
+25. [S] Perf trend chart from bench history. DONE (10/10/2026): bench and bench:render append to `reports/history/`, drawn in the same `reports/latest/trends.svg`.
 26. [S] Asset re-generation tool for a single asset with a new prompt, with before/after sheet.
 27. [S] Guard self-tests for imports, ip-names, dashes, docs and data guards; every guard asserts it scanned more than 0 files (M0 review). Done in stretch 2: each guard exports a pure check (`scan`, `missingCommands`, `check`) with planted-violation and clean-input tests in `tools/guards/guards.test.mjs`, plus a live test that every guard scans files and passes; the qa guard step fails a guard that reports 0 files.
 28. [S] Determinism guard: flag `.sort()` without a comparator, `Intl`, `Symbol` based APIs in sim/ai (M0 review). Done in stretch 2: also `.toSorted()`, `localeCompare` and `toLocale*`; sim and ai had no hits.

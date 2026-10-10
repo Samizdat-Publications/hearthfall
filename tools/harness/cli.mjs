@@ -127,8 +127,17 @@ async function main() {
       if (!mod) return out.finish("SKIP", `${layer} layer lands at ${LAYER_MILESTONE[layer]}`);
       return mod.default(out, cmd, args);
     }
+    case "nightly": {
+      const { nightly } = await import("./nightly.mjs");
+      return nightly(out, typeof args.only === "string" ? args.only.split(",") : null);
+    }
+    case "trends": {
+      const { writeTrends } = await import("./nightly.mjs");
+      const n = writeTrends(out);
+      return out.finish(n ? "PASS" : "SKIP", n ? "" : "no history yet (soak --record, soak:nightly, bench)");
+    }
     default:
-      console.log("usage: node tools/harness/cli.mjs <typecheck|check|unit|qa-fast|qa|e2e|doctor|data-check|data-docs|build|build-test|shot|shot-approve|sheet|visionqa|visionqa-probe|scenarios|replays|rebless|soak|bench|bench-render|prod|serve>");
+      console.log("usage: node tools/harness/cli.mjs <typecheck|check|unit|qa-fast|qa|e2e|doctor|data-check|data-docs|build|build-test|shot|shot-approve|sheet|visionqa|visionqa-probe|scenarios|replays|rebless|soak|nightly|trends|bench|bench-render|prod|serve>");
       console.log("RESULT: FAIL 1 (unknown command)");
       return 1;
   }

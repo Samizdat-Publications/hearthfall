@@ -22,6 +22,8 @@
     "qa:fast": "node tools/harness/cli.mjs qa-fast",
     "qa": "node --env-file-if-exists=.env tools/harness/cli.mjs qa",
     "soak": "node tools/harness/cli.mjs soak",
+    "soak:nightly": "node tools/harness/cli.mjs nightly",
+    "trends": "node tools/harness/cli.mjs trends",
     "bench": "node tools/harness/cli.mjs bench",
     "bench:render": "node tools/harness/cli.mjs bench-render",
     "shot": "node tools/harness/cli.mjs shot",

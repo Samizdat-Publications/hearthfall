@@ -888,8 +888,13 @@ export class EconomySystem {
       const ticks = ((lv.breedSeconds * hz) / (0.5 + 0.5 * occ)) * near;
       E.progress[d] += 1 / ticks;
       if (E.progress[d] >= 1) {
-        E.progress[d] = 0;
         const [bx, by] = this.doorOf(d);
+        // a dwelling whose land sank waits: no births into deep water (nightly soak, seed 1047)
+        if (w.terrain.drowns(bx, by)) {
+          E.progress[d] = 1;
+          continue;
+        }
+        E.progress[d] = 0;
         w.spawnUnit("settler", tr, bx, by);
         pops[tr]++;
         w.emit("born", { tribe: tr, home: E.idOf(d) });

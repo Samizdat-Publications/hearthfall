@@ -219,6 +219,14 @@ export default async function soakCmd(out, _cmd, args) {
       writeFileSync(LATEST + `repro/soak-seed-${r.seed}${tag}.json`, JSON.stringify({ spec, violations: r.violations?.slice(0, 20), tick: r.tick }, null, 2));
     }
   }
+  // BACKLOG 24: --record (and every nightly) appends the run's balance numbers to reports/history/soak.jsonl
+  const finish = async (status, detail) => {
+    if (args.record) {
+      const { appendHistory, soakRow } = await import("./history.mjs");
+      appendHistory("soak", soakRow(base.mode, metrics, results, status));
+    }
+    return out.finish(status, detail);
+  };
   const sum = (k) => results.reduce((a, r) => a + (r.metrics?.[k] ?? 0), 0);
   const metrics = { seeds, minutes, units: base.units, wallSec: +((Date.now() - t0) / 1000).toFixed(1), drowned: sum("drowned"), orderFailed: sum("orderFailed"), orderGaveUp: sum("orderGaveUp"), moves: sum("moves"), maxStuckSec: Math.max(...results.map((r) => r.metrics?.maxStuckSec ?? 0)), chaseGiveUps: sum("chaseGiveUps"), maxChaseGiveUps: Math.max(0, ...results.map((r) => r.metrics?.maxChaseGiveUps ?? 0)), avgTickMs: +(results.reduce((a, r) => a + (r.metrics?.avgTickMs ?? 0), 0) / results.length).toFixed(2) };
   writeReport("soak.json", { metrics, results });
@@ -246,7 +254,7 @@ export default async function soakCmd(out, _cmd, args) {
     Object.assign(metrics, r.metrics);
     for (const l of r.lines) out.line(l);
     writeReport("soak.json", { metrics, results });
-    if (!bad.length && r.fail) return out.finish("FAIL", r.fail);
+    if (!bad.length && r.fail) return finish("FAIL", r.fail);
   }
   if (base.mode === "ai-idle" || base.mode === "ai" || base.mode === "bots") {
     const { loadBasePack } = await import("./datapack.mjs");
@@ -254,9 +262,9 @@ export default async function soakCmd(out, _cmd, args) {
     Object.assign(metrics, r.metrics);
     for (const l of r.lines) out.line(l);
     writeReport("soak.json", { metrics, results });
-    if (!bad.length && r.fail) return out.finish("FAIL", r.fail);
+    if (!bad.length && r.fail) return finish("FAIL", r.fail);
   }
   const partial = results.some((r) => r.partial);
-  if (bad.length) return out.finish("FAIL", `${bad.length} (repros in reports/latest/repro/)`);
-  return out.finish(partial ? "PARTIAL" : "PASS", partial ? "deadline hit before all ticks ran (reduce --minutes or --units)" : "");
+  if (bad.length) return finish("FAIL", `${bad.length} (repros in reports/latest/repro/)`);
+  return finish(partial ? "PARTIAL" : "PASS", partial ? "deadline hit before all ticks ran (reduce --minutes or --units)" : "");
 }

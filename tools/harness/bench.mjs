@@ -219,6 +219,12 @@ export default async function benchCmd(out, _cmd, args) {
   const warns = base ? Object.keys(BUDGET).filter((k) => base[k] && m[k] > base[k] * 1.35) : [];
   if (args.save) writeFileSync(BASE, JSON.stringify({ ...m, when: new Date().toISOString() }, null, 2) + "\n");
   writeReport("bench.json", { metrics: m, budget: BUDGET, baseline: base, warns, runs: { avgs, p99s } });
+  // BACKLOG 25: every bench run is a point on the perf trend (npm run trends)
+  if (!args["no-record"]) {
+    const { appendHistory } = await import("./history.mjs");
+    const pick = ["tickAvgMs", "tickP99Ms", "battleAvgMs", "battleP99Ms", "terrainOpMs", "afterTerrainOpMs", "groupOrdersMs", "spellStormMs", "noiseRatio"];
+    appendHistory("bench", { ...Object.fromEntries(pick.map((k) => [k, m[k]])), result: fails.length ? "FAIL" : "PASS" });
+  }
   out.line(`2000-unit wander: avg ${m.tickAvgMs} ms (budget ${BUDGET.tickAvgMs}), p99 ${m.tickP99Ms} ms (budget ${BUDGET.tickP99Ms}), units alive ${m.units}`);
   out.line(`quake r8 + path invalidation: ${m.terrainOpMs} ms (budget ${BUDGET.terrainOpMs}); worst tick after it ${m.afterTerrainOpMs} ms; 10 group orders ${m.groupOrdersMs} ms (target 20, fail 40)`);
   out.line(`2000-unit battle: avg ${m.battleAvgMs} ms (budget ${BUDGET.battleAvgMs}), p99 ${m.battleP99Ms} ms (budget ${BUDGET.battleP99Ms}), ${m.battleKills} killed, ${m.battleUnitsLeft} units left`);

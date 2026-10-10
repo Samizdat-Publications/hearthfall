@@ -129,6 +129,11 @@ export default async function benchRender(out, cmd, args) {
   }
   report.fails = fails;
   report.warns = warns;
+  // BACKLOG 25: every render bench run is a point on the perf trend (npm run trends)
+  if (!args["no-record"]) {
+    const { appendHistory } = await import("./history.mjs");
+    appendHistory("bench-render", { medianMs: r.medianMs, p95Ms: r.p95Ms, gpuOffMs: r.gpuOffMs, gpuTiltMs: r.gpuTiltMs, drawCalls: r.drawCallsMedian, result: fails.length ? "FAIL" : "PASS" });
+  }
   out.line(`report ${writeReport("bench-render.json", report)}`);
   for (const w of warns) out.line(`warn: ${w}`);
   for (const f of fails) out.line(`fail: ${f}`);

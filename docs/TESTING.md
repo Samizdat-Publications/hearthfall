@@ -20,6 +20,8 @@ All commands are npm scripts that call `node tools/harness/...` with a hard inte
 | `npm run test:scenarios` | all `scenarios/*.json` headless, parallel workers | 5 min |
 | `npm run test:replays` | golden replays, compare hash checkpoints | 3 min |
 | `npm run soak -- --seeds 8 --minutes 45 --jobs auto` | bot vs AI matches headless in worker_threads (jobs = cores minus 2), invariants and metrics | 9 min |
+| `npm run soak:nightly` | BACKLOG 24: the nightly-style soak set (ai 64 seeds x 20 min, ai-idle 4 x 25, difficulty 8 x 20, economy 16 x 10, war 8 x 20), each recorded to the run history, then the trend chart; `-- --only ai,war` runs a subset; summary in `reports/latest/nightly.json` | 9 min |
+| `npm run trends` | BACKLOG 24 and 25: redraws `reports/latest/trends.svg` from the run history (ai win share, match length, failed orders, difficulty scores, economy population, sim bench ticks and spikes, render bench) | 1 min |
 | `npm run bench` | sim perf, median of 5 runs after warmup | 4 min |
 | `npm run bench:render` | renderer CPU ms per frame in Playwright (measured inside the frame, not rAF intervals, which vsync caps) | 4 min |
 | `npm run shot -- --set smoke` | Playwright captures + pixel checks + baseline diff + DOM layout checks | 5 min |
@@ -97,6 +99,8 @@ When a change intentionally alters simulation results: run `npm run replays:rebl
 **Counter triangle matchup** (fixed definition): flat 64x64 map, two groups of 10 placed 20 cells apart, both attack-move, no spells, no Shapers, 10 seeds; the side with survivors at 90 s wins. `npm run soak -- --mode triangle [--seeds 10]` runs it in process (`runMatchup` in `packages/sim/src/matchup.ts`), fails on any draw (M6 hard gate) and reports each counter's win percent against `gates.counterTriangleMinWinPct` in `soak-triangle.json` (so a war soak does not overwrite it). It also reports BACKLOG 60 variance probes, never gated: each counter outnumbered 6 to 10 in a loose formation (jitter 3 cells), and a mixed-army mirror of 9 (`runMatchup` accepts armies as `warden+firecaller+chanter`), which should sit near 50 percent. The `ai` shot set (`npm run shot -- --set ai`, no baselines, not in `npm run qa`) frames the aggressive opponent's first raid on an idle home for reviews and the making-of archive.
 
 **Balance gates are soft** (tunable in `data/base/balance.json` `gates`): they guide tuning but never block a milestone. After at most 2 `playtest-analyst` passes (45 minutes total) record the numbers under "Balance gaps" in PROGRESS and move on. Targets: counter triangle wins at least 65 percent; no personality wins more than 70 percent across seeds at equal difficulty; median skirmish length 12 to 35 minutes; unharassed tribe hits 60 population by minute 10 plus or minus 20 percent.
+
+**Run history (BACKLOG 24 and 25).** `npm run soak -- ... --record`, every `npm run soak:nightly` mode, `npm run bench` and `npm run bench:render` (unless `--no-record`) append one compact row to `reports/history/<soak|bench|bench-render>.jsonl`, stamped with the time and commit (`+` when the tree was dirty). The folder is local to this PC (reports/ is ignored) and nothing deletes it. `npm run trends` draws it as small-multiple line charts, one point per recorded run labeled by commit (`tools/harness/history.mjs`, tested in `history.test.mjs`).
 
 The `playtest-analyst` subagent reads `soak.json` and proposes data changes. Balance changes go through data only.
 

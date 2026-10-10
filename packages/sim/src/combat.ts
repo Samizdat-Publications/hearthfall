@@ -852,6 +852,12 @@ export class CombatSystem {
       }
       E.progress[b] += 1 / Math.max(1, secondsToTicks(units[into].trainSeconds ?? 10, hz));
       if (E.progress[b] < 1 - 1e-9) continue;
+      // a lodge whose land sank holds its trainee until the door is dry again
+      const [gx, gy] = this.w.economy.doorOf(b);
+      if (this.w.terrain.drowns(gx, gy)) {
+        E.progress[b] = 1;
+        continue;
+      }
       // graduate: the settler walks out as a troop
       E.progress[b] = 0;
       E.cd[b] = 0;

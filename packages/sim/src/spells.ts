@@ -219,8 +219,9 @@ export function updateSpells(w: World): void {
     // respawn at the Hearth
     if (si < 0 && t.respawnAt >= 0 && w.tick >= t.respawnAt) {
       const h = w.ents.index(t.hearth);
-      if (h >= 0) {
-        const [dx, dy] = w.economy.doorOf(h);
+      const [dx, dy] = h >= 0 ? w.economy.doorOf(h) : [0, 0];
+      // a Hearth whose land sank delays the respawn until its door is dry again
+      if (h >= 0 && !w.terrain.drowns(dx, dy)) {
         w.spawnUnit("shaper", t.index, dx, dy);
         t.respawnAt = -1;
         w.emit("shaperRespawned", { tribe: t.index });

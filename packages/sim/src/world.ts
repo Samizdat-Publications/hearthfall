@@ -399,7 +399,8 @@ export class World {
     this.rules?.update();
     this.level?.update();
     this.flushTerrain();
-    // 10. periodic upkeep
+    // 10. periodic upkeep; a unit that stepped out of a sunken building this tick drowns now, so no tick ends with one in deep water
+    this.drownCheck();
     if (this.tick % this.cfg.tickHz === this.cfg.tickHz - 1) this.terrain.healScars();
     this.vision.update();
     this.tick++;
