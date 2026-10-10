@@ -4,6 +4,7 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 
 ## Now
 Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when STOP exists). Plan: BACKLOG 14a look v3, polish, balance, rules and victory variants, campaign, boats and Skyloft, Forge, map editor (CLAUDE.md "Stretch 2").
+- S2 reserve DONE: BACKLOG 19 replay viewer (ADR-018), 21 achievements and records (ADR-019), 22 localization scaffold (ADR-020), 48 economy robustness (islands 128 and continents 192, 4 tribes, 20 min, 6/6 clean each; four economy fixes). Full npm run qa PASS at 39e154e (s2h 10.5); soaks economy, ai, bots PASS. Making-of v17.
 - S2 block J DONE (full npm run qa PASS at db865c4 plus the smoke re-approval; soaks ai, ai-idle PASS): 92 SFX cues and 98 vehicle follow-ups DONE (AI ferries to off-home Reliquaries). Full qa caught two regressions qa:fast misses (it runs only fast-tagged scenarios): BACKLOG 73 stalled workers at land goals (level_the_forge), BACKLOG 94 ring fit cost 4 ms a frame (now cached); after sim changes run the full scenarios layer too. robustness 97, 55, 70, 73, 62, 63 DONE (ai soak failed orders 882 to 71, ai-idle about 145 to 35); tests 75, 76, 82, 87, 93, 96 DONE (96 leaves the bench re-baseline); map view 37/40 (orthographic, framed, grid), 94 (rings follow slopes), 80 (minimap footprint clipped) DONE; the e2e reload check caught and fixed a BACKLOG 93 geometry leak. Making-of v13.
 - S2 block I DONE (map editor, BACKLOG 12): Main menu Map editor over a live preview planet: land, sea and hill paint, Hearths per tribe, trees, rocks, Shrines, Reliquaries, erase, undo; rival AI and difficulty, goal presets incl. Hold the Reliquaries and King of the Hill, time limit, Forge; live validateLevel, autosave to browser storage, Download level JSON, Playtest as a level session (Quit returns to the editor, no campaign progress). editor.ts unit tests, e2e flow, menu_editor shot.
 - S2 block H DONE (campaign part 2) at cf97d79: levels 8 to 13 (Across the Strait, The Sky Road, The Twin Reliquaries, The Hill, The Forge, Sea of Fires), level `rules` with a `victory` objective (a rival winning loses as outplayed) and level `forge`; bot or scripted win and idle loss scenarios each. Sonnet review: no blockers; follow-ups done (rules need a site, HUD victory line names conquest, Sky Road text, Twin Reliquaries 25 min limit, moat shot assert, probe documented).
@@ -19,8 +20,8 @@ Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when
 - Making-of archive: making-of/ via `npm run making-of -- add`; storyboard in making-of/README.md. Making-of page (Stewart's request): https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5, rebuild with `npm run making-of -- page` and republish to that URL after every backlog item (README steps).
 
 ## Next 3 actions
-1. Reserve: BACKLOG 19 replay viewer, 21 achievements, 22 localization scaffold, 48 (in that order, smallest useful slice each).
-2. Full npm run qa every 4 h (last PASS at db865c4 around s2h 10); soaks after sim or AI changes; full scenarios layer after any sim change.
+1. BACKLOG top down: 49 (plans without reachable wood, HUD cancel control), 14b (rain slows units in the sim), 27 and 28 (guard self-tests, determinism guard), 18 mod packs, then the S items in order.
+2. Full npm run qa every 4 h (last PASS at 39e154e around s2h 10.5); soaks after sim or AI changes; full scenarios layer after any sim change.
 3. At s2h >= 23 or STOP: end ritual (full qa, soaks, State of the game plus First human playtest, PROGRESS_LOG, tag s2-done, making-of, STRETCH 2 DONE).
 
 ## Blocked

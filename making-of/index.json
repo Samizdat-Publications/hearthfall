@@ -1070,6 +1070,16 @@
       "when": "2026-10-10T10:14:18.480Z",
       "source": "external:menu_settings_pseudo.png",
       "bytes": 356153
+    },
+    {
+      "file": "b48/20261010-1040_islands-pop.png",
+      "milestone": "B48",
+      "kind": "screenshot",
+      "caption": "BACKLOG 48: economy bots on islands 128 with 4 tribes for 20 minutes. Before the fixes three of six seeds stalled (a plan on an unreachable pocket froze every job; one stranded settler kept the rest from moving home). Now all six are clean; the one flat line is a tribe whose island is full.",
+      "highlight": false,
+      "when": "2026-10-10T10:40:19.511Z",
+      "source": "external:soak48_islands.png",
+      "bytes": 95153
     }
   ]
 }
