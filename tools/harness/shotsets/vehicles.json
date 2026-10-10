@@ -10,7 +10,7 @@
     { "step": 2 }
    ],
    "kind": "world",
-   "coverage": { "green": [0.02, 0.99] }
+   "coverage": { "green": [0.01, 0.99] }
   },
   {
    "id": "balloon",

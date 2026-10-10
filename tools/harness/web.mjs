@@ -70,14 +70,69 @@ export async function openGame(browser, url, { width = 1280, height = 720, minFr
 }
 
 /** Pixel statistics for the blank check: luminance std dev and the dominant 4-bit color share. */
-export function pixelStats(pngPath) {
+/**
+ * BACKLOG 32: the part of the page that shows the 3D view, measured in the page (CSS px): the game canvas
+ * rect minus every visible HUD or menu element (`[data-hud]`, `[data-ui]`), so blank and coverage checks
+ * judge the world and not the HUD drawn over it. Pass to page.evaluate.
+ */
+export function viewRegionFn() {
+  const c = document.getElementById("view");
+  if (!c) return null;
+  const r = c.getBoundingClientRect();
+  const holes = [];
+  for (const e of document.querySelectorAll("[data-hud], [data-ui]")) {
+    const cs = getComputedStyle(e);
+    if (cs.display === "none" || cs.visibility === "hidden" || !e.getClientRects().length) continue;
+    const b = e.getBoundingClientRect();
+    if (b.width > 0 && b.height > 0) holes.push([b.left, b.top, b.right, b.bottom]);
+  }
+  return { cssWidth: innerWidth, rect: [r.left, r.top, r.right, r.bottom], holes };
+}
+
+/** Pixel mask (1 = sample) for a region from viewRegionFn on an image of the given size; null samples all. */
+export function regionMask(region, width, height) {
+  if (!region) return null;
+  const s = width / region.cssWidth;
+  const box = (b) => [Math.max(0, Math.floor(b[0] * s)), Math.max(0, Math.floor(b[1] * s)), Math.min(width, Math.ceil(b[2] * s)), Math.min(height, Math.ceil(b[3] * s))];
+  const m = new Uint8Array(width * height);
+  const [x0, y0, x1, y1] = box(region.rect);
+  for (let y = y0; y < y1; y++) m.fill(1, y * width + x0, y * width + x1);
+  for (const h of region.holes) {
+    const [a, b, c, d] = box(h);
+    for (let y = b; y < d; y++) if (c > a) m.fill(0, y * width + a, y * width + c);
+  }
+  return m;
+}
+
+/** Share of the image a mask samples (1 without a mask). */
+export function maskShare(mask) {
+  if (!mask) return 1;
+  let k = 0;
+  for (let i = 0; i < mask.length; i++) k += mask[i];
+  return k / mask.length;
+}
+
+/** Below this share of visible view the region checks fall back to the whole page (a menu covers the world). */
+export const MIN_VIEW_SHARE = 0.1;
+
+/** Luma and color stats over the sampled pixels (the whole image, or the 3D view region; BACKLOG 32). */
+export function pixelStats(pngPath, region = null) {
   const png = PNG.sync.read(readFileSync(pngPath));
+  return pixelStatsOf(png, region);
+}
+
+export function pixelStatsOf(png, region = null) {
   const { data, width, height } = png;
-  const n = width * height;
+  let mask = regionMask(region, width, height);
+  const share = maskShare(mask);
+  if (share < MIN_VIEW_SHARE) mask = null;
+  let n = 0;
   let sum = 0;
   let sum2 = 0;
   const buckets = new Map();
   for (let i = 0; i < data.length; i += 4) {
+    if (mask && !mask[i >> 2]) continue;
+    n++;
     const r = data[i];
     const g = data[i + 1];
     const b = data[i + 2];
@@ -91,7 +146,7 @@ export function pixelStats(pngPath) {
   const std = Math.sqrt(Math.max(0, sum2 / n - mean * mean));
   let dom = 0;
   for (const v of buckets.values()) dom = Math.max(dom, v);
-  return { width, height, lumaMean: +mean.toFixed(2), lumaStd: +std.toFixed(2), dominantShare: +(dom / n).toFixed(4), colors: buckets.size };
+  return { width, height, sampled: mask ? "view" : "page", viewShare: +share.toFixed(3), lumaMean: +mean.toFixed(2), lumaStd: +std.toFixed(2), dominantShare: +(dom / n).toFixed(4), colors: buckets.size };
 }
 
 export function blankCheck(stats) {

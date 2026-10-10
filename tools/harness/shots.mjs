@@ -5,7 +5,7 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, appendF
 import pixelmatch from "pixelmatch";
 import { PNG } from "pngjs";
 import { LATEST, ROOT, writeReport } from "./lib.mjs";
-import { blankCheck, launch, openGame, pixelStats, shotMode, startPreview, viteBuild } from "./web.mjs";
+import { blankCheck, launch, MIN_VIEW_SHARE, maskShare, openGame, pixelStats, regionMask, shotMode, startPreview, viewRegionFn, viteBuild } from "./web.mjs";
 
 const SHOT_DIR = LATEST + "shots/";
 const BASE_DIR = (set) => ROOT + `reports/baselines/shots/${set}/`;
@@ -18,12 +18,15 @@ function loadSet(set) {
 }
 
 /** Fractions of green (vegetation), blue (water or sky) and other pixels. */
-export function colorCoverage(pngPath) {
-  const { data } = PNG.sync.read(readFileSync(pngPath));
+export function colorCoverage(pngPath, region = null) {
+  const { data, width, height } = PNG.sync.read(readFileSync(pngPath));
+  let mask = regionMask(region, width, height);
+  if (maskShare(mask) < MIN_VIEW_SHARE) mask = null;
   let green = 0;
   let blue = 0;
   let n = 0;
   for (let i = 0; i < data.length; i += 16) {
+    if (mask && !mask[i >> 2]) continue;
     const r = data[i];
     const g = data[i + 1];
     const b = data[i + 2];
@@ -154,6 +157,8 @@ export async function captureSet(set, { onlyIds } = {}) {
         const path = SHOT_DIR + shot.id + ".png";
         await page.screenshot({ path });
         res.checks.dom = await page.evaluate(domCheckFn);
+        // BACKLOG 32: blank and coverage checks judge the 3D view, not the HUD over it
+        const region = await page.evaluate(viewRegionFn);
         const domIssues = res.checks.dom.issues;
         if (res.checks.dom.count < (shot.minHud ?? 1)) fail(`dom: only ${res.checks.dom.count} HUD elements`);
         if (shot.expectDomIssue) {
@@ -161,10 +166,10 @@ export async function captureSet(set, { onlyIds } = {}) {
         } else for (const i of domIssues) fail(`dom: ${i}`);
         res.checks.console = opened.consoleErrors.slice(0, 5);
         if (opened.consoleErrors.length) fail(`console: ${opened.consoleErrors[0].slice(0, 120)}`);
-        const stats = pixelStats(path);
+        const stats = pixelStats(path, region);
         res.checks.blank = { ...stats, ...blankCheck(stats) };
         if (!res.checks.blank.ok) fail(res.checks.blank.reason);
-        const cov = colorCoverage(path);
+        const cov = colorCoverage(path, region);
         res.checks.coverage = cov;
         for (const [k, [lo, hi]] of Object.entries(shot.coverage ?? {})) if (cov[k] < lo || cov[k] > hi) fail(`coverage ${k} ${cov[k]} outside ${lo}..${hi}`);
         const base = BASE_DIR(set) + shot.id + ".png";
