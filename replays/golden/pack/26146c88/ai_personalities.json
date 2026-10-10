@@ -1,0 +1,112 @@
+{
+  "$comment": "Utility weights 0..1 unless noted. spellPrefs are filtered at runtime to spells the tribe has unlocked. Difficulty scales reactionSeconds and decisionNoise, not hidden resources (resourceMultiplier stays 1.0 unless a difficulty explicitly sets it).",
+  "personalities": [
+    {
+      "id": "aggressive",
+      "tribeColorDefault": "crimson",
+      "economyTargetPop": 40,
+      "armyMix": {
+        "warden": 0.6,
+        "firecaller": 0.3,
+        "chanter": 0.1
+      },
+      "aggression": 0.85,
+      "firstAttackMinute": 5,
+      "spellPrefs": [
+        "wraith",
+        "firerain",
+        "whirlwind",
+        "ward",
+        "bolt",
+        "lightning",
+        "quake"
+      ],
+      "scouting": 0.6,
+      "towerAffinity": 0.2,
+      "forge": { "plan": "flatten", "ring": 9, "strokes": 16, "perDecision": 2 }
+    },
+    {
+      "id": "sneaky",
+      "tribeColorDefault": "amber",
+      "economyTargetPop": 42,
+      "armyMix": {
+        "warden": 0.35,
+        "firecaller": 0.3,
+        "chanter": 0.35
+      },
+      "aggression": 0.45,
+      "firstAttackMinute": 10,
+      "spellPrefs": [
+        "beguile",
+        "veil",
+        "whirlwind",
+        "wraith",
+        "raise_land",
+        "bolt"
+      ],
+      "scouting": 0.9,
+      "towerAffinity": 0.3,
+      "forge": { "plan": "wall", "ring": 10, "strokes": 36, "perDecision": 3 },
+      "shades": {
+        "$comment": "BACKLOG 2: a Shade Den from minute 8, two Shades kept, each sent disguised at an enemy building away from Watchtowers.",
+        "count": 2,
+        "fromMinute": 8
+      }
+    },
+    {
+      "id": "turtle",
+      "tribeColorDefault": "jade",
+      "economyTargetPop": 45,
+      "armyMix": {
+        "warden": 0.45,
+        "firecaller": 0.45,
+        "chanter": 0.1
+      },
+      "aggression": 0.5,
+      "firstAttackMinute": 9,
+      "spellPrefs": [
+        "firerain",
+        "erode",
+        "mire",
+        "ward",
+        "lightning",
+        "bolt",
+        "hornets",
+        "flatten",
+        "quake",
+        "volcano"
+      ],
+      "scouting": 0.4,
+      "towerAffinity": 0.5,
+      "forge": { "plan": "moat", "ring": 10, "strokes": 72, "perDecision": 3 },
+      "towerFromPopShare": 0.5
+    }
+  ],
+  "difficulties": [
+    {
+      "id": "easy",
+      "reactionSeconds": 8,
+      "decisionNoise": 0.35,
+      "resourceMultiplier": 0.7
+    },
+    {
+      "id": "normal",
+      "reactionSeconds": 3,
+      "decisionNoise": 0.15,
+      "resourceMultiplier": 1
+    },
+    {
+      "id": "hard",
+      "reactionSeconds": 1.5,
+      "decisionNoise": 0.05,
+      "resourceMultiplier": 1
+    },
+    {
+      "id": "brutal",
+      "reactionSeconds": 1,
+      "decisionNoise": 0,
+      "resourceMultiplier": 1.25,
+      "mapHack": true
+    }
+  ]
+}

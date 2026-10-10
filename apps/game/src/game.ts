@@ -1847,6 +1847,9 @@ export class Game {
       case "garrison":
         if (sel) this.troop({ kind: "garrison" });
         break;
+      case "cancelPlan":
+        if (this.selectedBuilding >= 0) this.troop({ kind: "cancelPlan" });
+        break;
       case "attackMove":
         if (sel) this.attackMode = true;
         break;

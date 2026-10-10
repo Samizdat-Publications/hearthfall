@@ -172,6 +172,33 @@ export class EconomySystem {
     return v >= 0 && pf.comp[v] > 0 && this.stoneComps.comps.has(pf.comp[v]);
   }
 
+  /** Walkable components with a tree (BACKLOG 49; a stump counts, it regrows), cached like stoneComps. */
+  private woodComps = { key: "", comps: new Set<number>() };
+
+  /**
+   * Whether a tree stands on the walkable landmass at (x, y) (BACKLOG 49): the economy bot plans no
+   * wooden building without one and cancels a plan whose landmass lost its last tree. Players may still
+   * plan there (the sim does not refuse it; the HUD shows the wood a site still lacks).
+   */
+  woodInReach(x: number, y: number): boolean {
+    const w = this.w;
+    const E = w.ents;
+    const key = `${w.tick}|${w.treeVersion}|${w.terrain.version}`;
+    if (this.woodComps.key !== key) {
+      this.woodComps.key = key;
+      this.woodComps.comps.clear();
+      for (let k = 0; k < E.hi; k++) if (E.alive[k] && E.cat[k] === CAT.tree) this.woodComps.comps.add(this.compOf(k));
+    }
+    const c = this.compAt(x, y, w.cfg.pack.balance.movement.snapRadius);
+    return c > 0 && this.woodComps.comps.has(c);
+  }
+
+  /** Wood a building type needs to be built (construction cost). */
+  woodCostOf(type: number): number {
+    const def = this.w.cfg.pack.buildings.buildings[type];
+    return def.wood ?? def.levels?.[0]?.wood ?? 0;
+  }
+
   /** Wood a site needs in total (construction cost). */
   woodCost(i: number): number {
     const def = this.w.cfg.pack.buildings.buildings[this.w.ents.type[i]];

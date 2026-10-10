@@ -100,3 +100,7 @@ Reason: D+F review: riders earn idle mana, not housed mana
 ## 2026-10-10 06:55 UTC
 Reason: BACKLOG 11: new golden forge_moat (Forge phase)
 - forge_moat: final none -> 76e55154 (pack 7bfbc37b)
+
+## 2026-10-10 10:48 UTC
+Reason: BACKLOG 49: the economy bot plans no wooden building where no wood can come from (no tree on the Hearth's landmass and no settler carrying wood); on the treeless forge_moat map the turtle no longer plans a dwelling it could never build
+- forge_moat: final 76e55154 -> 917b63c4 (pack 26146c88)

@@ -183,6 +183,7 @@ export function mountGameHud(el: HTMLElement, game: Game): { refresh: () => void
     },
     clearRally: () => game.troop({ kind: "rally", at: null }),
     ungarrison: () => game.troop({ kind: "ungarrison" }),
+    cancelPlan: () => game.troop({ kind: "cancelPlan" }),
     garrison: () => game.troop({ kind: "garrison" }),
     retreat: () => game.troop({ kind: "retreat" }),
     setStance: (stance) => game.troop({ kind: "stance", stance }),

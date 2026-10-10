@@ -136,6 +136,34 @@ async function flow(browser, url, vp) {
     if (tribes !== 3) problem(`skirmish has ${tribes} tribes, expected 3`);
     await page.evaluate(() => window.__game.step(200));
     await check("play");
+    // BACKLOG 49: a plan placed near the Hearth, selected with a left click, is cancelled from the troop panel
+    const planSpot = await page.evaluate(([w, h]) => {
+      const tried = [];
+      const ring = [];
+      for (const r of [160, 240, 320]) for (let k = 0; k < 8; k++) ring.push([Math.round(r * Math.cos(k * 0.785)), Math.round(r * 0.6 * Math.sin(k * 0.785))]);
+      for (const [dx, dy] of ring) {
+        const px = w / 2 + dx, py = h / 2 + dy;
+        const why = window.__game.placeAtScreen("dwelling", px, py);
+        if (why === null) return [px, py];
+        if (!tried.includes(why)) tried.push(why);
+      }
+      return tried;
+    }, [vp.width, vp.height]);
+    if (typeof planSpot[0] !== "number") problem(`cancel plan: no free spot for a dwelling near the screen center: ${planSpot.join(", ")}`);
+    else {
+      await page.evaluate(() => window.__game.step(2));
+      await page.mouse.click(planSpot[0], planSpot[1]);
+      await settle();
+      const cancel = await page.$('[data-act="cancel-plan"]');
+      const label = await page.textContent(".troops-label").catch(() => null);
+      if (!cancel || !/wood \d+\/\d+/.test(label ?? "")) problem(`cancel plan: troop panel shows ${JSON.stringify(label)} and ${cancel ? "a" : "no"} Cancel button`);
+      else {
+        await cancel.click();
+        await page.evaluate(() => window.__game.step(2));
+        await settle();
+        if (await page.$('[data-act="cancel-plan"]')) problem("cancel plan: the panel still offers Cancel after the plan was cancelled");
+      }
+    }
     // BACKLOG 8: ordering the Shaper speaks a bark, which shows its subtitle
     await page.keyboard.press("s");
     await page.mouse.click(vp.width / 2 + 30, vp.height / 2 + 30, { button: "right" });

@@ -96,6 +96,24 @@ describe("selected units panel (M8)", () => {
     expect(troopView(w, 0, [], -1).units).toEqual([]);
   });
 
+  it("BACKLOG 49: an unfinished building shows what it needs and can be cancelled; a finished one cannot", () => {
+    const w = arena();
+    w.spawnTree(30, 40);
+    w.step([{ tick: w.tick, tribe: 0, type: "placePlan", args: { building: "dwelling", at: [20, 20] } }]);
+    const plan = buildingAt(w, 0, 20, 20);
+    expect(plan).toBeGreaterThanOrEqual(0);
+    const v = troopView(w, 0, [], plan);
+    expect(v).toMatchObject({ kind: "site", building: true });
+    expect(v.label).toMatch(/wood 0\/\d+/);
+    expect(troopCommand(w, 1, [], plan, { kind: "cancelPlan" })).toBeNull();
+    run(w, troopCommand(w, 0, [], plan, { kind: "cancelPlan" }));
+    expect(w.ents.alive[plan]).toBe(0);
+    expect(w.eventCounts.get("planCancelled")).toBe(1);
+    const hearth = buildingAt(w, 0, 4, 4);
+    expect(troopView(w, 0, [], hearth).kind).toBe("none");
+    expect(troopCommand(w, 0, [], hearth, { kind: "cancelPlan" })).toBeNull();
+  });
+
   it("M9: right-clicking a worship site that still has a use targets it", () => {
     const w = arena();
     w.worship.addSite("shrine", 30, 30, { tag: "s", rewards: [] });

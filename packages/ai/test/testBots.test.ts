@@ -48,6 +48,7 @@ describe("economy bot sites (BACKLOG 0a terraces, economy soak seed 1003)", () =
     const make = () => {
       const w = new World({ pack: p.files, packHash: p.hash, seed: 1, map: { generator: "flat", size: 64, tribes: 1 } });
       w.spawnBuilding("hearth", 0, 32, 32);
+      w.spawnTree(10, 10); // BACKLOG 49: wooden buildings need wood in reach
       return w;
     };
     const bot = new EconomyBot({ tribe: 0 });
@@ -74,6 +75,7 @@ describe("stone buildings (BACKLOG 0c)", () => {
     const p = basePack();
     const w = new World({ pack: p.files, packHash: p.hash, seed: 1, map: { generator: "flat", size: 64, tribes: 1 } });
     w.spawnBuilding("hearth", 0, 32, 32);
+    w.spawnTree(10, 10); // BACKLOG 49: wooden buildings need wood in reach
     const bot = new EconomyBot({ tribe: 0 });
     expect(bot.findSpot(w, "watchtower", 32, 32)).toBeNull();
     expect(bot.findSpot(w, "dwelling", 32, 32)).not.toBeNull();

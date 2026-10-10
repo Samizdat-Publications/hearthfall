@@ -108,3 +108,4 @@
 - 2026-10-10T09:55 set menus (6 shots): BACKLOG 19 replay bar shot
 - 2026-10-10T10:04 set menus (7 shots): BACKLOG 21 Records button on the main menu and the records screen
 - 2026-10-10T10:12 set menus (9 shots): BACKLOG 22 pseudo locale shots; main menu replay row wraps
+- 2026-10-10T10:53 set menus (9 shots): BACKLOG 49: Settings key list gains Cancel the selected plan (Delete)

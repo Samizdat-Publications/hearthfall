@@ -1,7 +1,7 @@
 // Economy bot (M4): keeps an unharassed tribe growing by placing dwelling plans near its Hearth
 // whenever housing runs short. Settlers do the rest autonomously. Deterministic: fixed spiral
 // search, no randomness. M7 opponents build on this.
-import { BSTATE, CAT, dmath, type Command, type Controller, type World } from "@hearthfall/sim";
+import { BSTATE, CAT, TASK, dmath, type Command, type Controller, type World } from "@hearthfall/sim";
 
 export interface EconomyBotOptions {
   tribe: number;
@@ -45,6 +45,8 @@ export class EconomyBot implements Controller {
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.building || E.tribe[i] !== this.tribe || E.state[i] === BSTATE.done) continue;
       if (home > 0 && w.economy.compOf(i, snap) !== home) return [{ tick: w.tick, tribe: this.tribe, type: "cancelPlan", args: { id: E.idOf(i) } }];
+      // BACKLOG 49: nor can a plan whose landmass has no tree left (and still lacks wood)
+      if (E.wood[i] < w.economy.woodCost(i) && !this.woodFor(w, E.x[i], E.y[i])) return [{ tick: w.tick, tribe: this.tribe, type: "cancelPlan", args: { id: E.idOf(i) } }];
       open++;
     }
     const limit = Math.min(w.cfg.pack.balance.economy.maxOpenPlansPerTribe, 1 + Math.floor(w.economy.followers(this.tribe) / 12));
@@ -56,6 +58,17 @@ export class EconomyBot implements Controller {
     return spot ? [{ tick: w.tick, tribe: this.tribe, type: "placePlan", args: { building: "dwelling", at: spot } }] : [];
   }
 
+  /** BACKLOG 49: wood can still reach a site at (x, y): a tree on its landmass, or one of our settlers there carrying wood. */
+  private woodFor(w: World, x: number, y: number): boolean {
+    if (w.economy.woodInReach(x, y)) return true;
+    const E = w.ents;
+    const snap = w.cfg.pack.balance.movement.snapRadius;
+    const c = w.economy.compAt(x, y, snap);
+    for (let i = 0; i < E.hi; i++)
+      if (E.alive[i] && E.cat[i] === CAT.unit && E.tribe[i] === this.tribe && E.carry[i] > 0 && E.task[i] !== TASK.haulStone && w.economy.compOf(i) === c) return true;
+    return false;
+  }
+
   /**
    * Buildable, tree-free spot for a building on rings around the Hearth (deterministic order): the least
    * flattening work over the first ring with a spot and the next one (one ring farther costs RING_COST).
@@ -64,6 +77,8 @@ export class EconomyBot implements Controller {
   findSpot(w: World, building: string, hx: number, hy: number): [number, number] | null {
     // BACKLOG 0c: every candidate would be refused for want of stone, so skip the ring scan
     if ((w.cfg.pack.buildings.buildings[w.cfg.buildingIndex.get(building)!].stone ?? 0) > 0 && !w.economy.stoneInReach(hx, hy)) return null;
+    // BACKLOG 49: spots are on the Hearth's landmass, so with no tree there a wooden building could never be built
+    if (w.economy.woodCostOf(w.cfg.buildingIndex.get(building)!) > 0 && !this.woodFor(w, hx, hy)) return null;
     // prefer tree-free ground; fall back to wooded spots (trees in a footprint are chopped out first)
     return this.scan(w, building, hx, hy, true) ?? this.scan(w, building, hx, hy, false);
   }

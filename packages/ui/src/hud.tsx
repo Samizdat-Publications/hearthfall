@@ -26,7 +26,7 @@ export interface SpellView {
 
 /** M6 troop panel: what the selection can be told to do. */
 export interface TroopView {
-  kind: "none" | "units" | "lodge" | "tower";
+  kind: "none" | "units" | "lodge" | "tower" | "site";
   label: string;
   /** stance shared by the whole unit selection, else null (mixed) */
   stance: "aggressive" | "defensive" | "passive" | null;
@@ -38,7 +38,7 @@ export interface TroopView {
   max: number;
   /** lodge has a rally point */
   rally: boolean;
-  /** lodge or tower is still being built */
+  /** the selected building is still a plan or being built (BACKLOG 49: it can be cancelled) */
   building: boolean;
   /** unit selection by kind (M8 selected units panel) */
   /** id is the unit type; icon (BACKLOG 0a) is its HUD icon URL when one exists */
@@ -165,6 +165,8 @@ export interface HudActions {
   startRally(): void;
   clearRally(): void;
   ungarrison(): void;
+  /** BACKLOG 49: cancel the selected unfinished building */
+  cancelPlan(): void;
   garrison(): void;
   retreat(): void;
   setStance(s: (typeof STANCES)[number]): void;
@@ -243,6 +245,13 @@ function Troops({ t, act, pointing }: { t: TroopView; act: HudActions; pointing:
         <div class="troops-row">
           <button class="prio" title="Everyone inside steps out" onClick={() => act.ungarrison()} disabled={t.count <= 0}>
             Ungarrison
+          </button>
+        </div>
+      ) : null}
+      {t.building ? (
+        <div class="troops-row">
+          <button class="prio" data-act="cancel-plan" title="Cancel this unfinished building (Delete). Wood already delivered is lost." onClick={() => act.cancelPlan()}>
+            Cancel plan
           </button>
         </div>
       ) : null}

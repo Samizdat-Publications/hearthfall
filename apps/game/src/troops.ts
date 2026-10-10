@@ -64,7 +64,12 @@ export function troopView(w: World, tribe: number, sel: readonly number[], b: nu
     }
     const slots = w.combat.garrisonOf(E.type[b]);
     if (slots > 0) return { ...none, kind: "tower", label: `${name}: ${E.occupants[b]}/${slots} inside`, count: E.occupants[b], max: slots, building };
-    return none;
+    // BACKLOG 49: any other unfinished building shows what it still needs and can be cancelled
+    if (!building) return none;
+    const wood = w.economy.woodCost(b);
+    const stone = w.economy.stoneCost(b);
+    const needs = [wood > 0 ? `wood ${Math.min(E.wood[b], wood)}/${wood}` : "", stone > 0 ? `stone ${Math.min(E.stone[b], stone)}/${stone}` : ""].filter(Boolean).join(", ");
+    return { ...none, kind: "site", label: needs ? `${name}: ${needs}` : name, building };
   }
   const units = sel.filter((i) => E.alive[i] && E.cat[i] === CAT.unit && E.tribe[i] === tribe);
   if (!units.length) return none;
@@ -91,6 +96,7 @@ export type TroopIntent =
   | { kind: "train"; n: number }
   | { kind: "rally"; at: [number, number] | null }
   | { kind: "ungarrison" }
+  | { kind: "cancelPlan" }
   | { kind: "garrison"; tower?: number }
   | { kind: "retreat" }
   | { kind: "stance"; stance: (typeof STANCE_NAMES)[number] };
@@ -108,6 +114,8 @@ export function troopCommand(w: World, tribe: number, sel: readonly number[], b:
       return bid >= 0 ? c("setRally", { building: bid, at: it.at }) : null;
     case "ungarrison":
       return bid >= 0 ? c("ungarrison", { building: bid }) : null;
+    case "cancelPlan":
+      return bid >= 0 && E.cat[b] === CAT.building && E.tribe[b] === tribe && E.state[b] !== BSTATE.done ? c("cancelPlan", { id: bid }) : null;
     case "garrison": {
       const t = it.tower ?? towerFor(w, sel);
       return ids.length && t >= 0 ? c("garrison", { units: ids, building: E.idOf(t) }) : null;

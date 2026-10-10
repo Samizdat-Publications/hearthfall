@@ -42,4 +42,19 @@ describe("economy bot (BACKLOG 48)", () => {
       w.step(out);
     }
   });
+
+  it("plans no wooden building where no wood can come from, and cancels a plan whose last tree is gone (BACKLOG 49)", () => {
+    const p = basePack();
+    const w = new World({ pack: p.files, packHash: p.hash, seed: 49, map: { generator: "flat", size: 64, tribes: 1 } });
+    w.spawnBuilding("hearth", 0, 32, 32);
+    const bot = new EconomyBot({ tribe: 0, every: 1 });
+    expect(bot.findSpot(w, "dwelling", 32, 32)).toBeNull();
+    const tree = w.ents.index(w.spawnTree(20, 20));
+    expect(bot.findSpot(w, "dwelling", 32, 32)).not.toBeNull();
+    w.step([{ tick: w.tick, tribe: 0, type: "placePlan", args: { building: "dwelling", at: bot.findSpot(w, "dwelling", 32, 32)! } }]);
+    expect(w.eventCounts.get("planPlaced") ?? 0).toBe(1);
+    expect(bot.decide(w).map((c) => c.type)).not.toContain("cancelPlan");
+    w.kill(tree, "felled");
+    expect(bot.decide(w).map((c) => c.type)).toEqual(["cancelPlan"]);
+  });
 });
