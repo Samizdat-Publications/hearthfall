@@ -18,6 +18,7 @@ const LAYERS = [
   { id: "shot-spells", cmd: ["shot", "--set", "spells"], timeoutMs: 420000 },
   { id: "shot-combat", cmd: ["shot", "--set", "combat"], timeoutMs: 420000 },
   { id: "shot-spells2", cmd: ["shot", "--set", "spells2"], timeoutMs: 420000 },
+  { id: "shot-look", cmd: ["shot", "--set", "look"], timeoutMs: 420000 },
   { id: "e2e", cmd: ["e2e"], timeoutMs: 420000 },
   { id: "prod", cmd: ["prod"], timeoutMs: 240000 },
   { id: "replays-browser", cmd: ["replays", "--browser"], timeoutMs: 180000 },

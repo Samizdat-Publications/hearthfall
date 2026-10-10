@@ -69,3 +69,9 @@
 - 2026-10-09T22:16 set smoke (12 shots): BACKLOG 8: units_select_move now shows the Shaper bark subtitle (moved to 30 percent down, clear of the troop panel)
 - 2026-10-09T23:28 set spells (8 shots): BACKLOG 8: the Shaper casting bark subtitle now shows in every spell shot (diff is the subtitle only, 1.1 percent)
 - 2026-10-09T23:30 set spells2 (9 shots): BACKLOG 8: the Shaper casting bark subtitle now shows in spell shots (diff is the subtitle only, 1.1 percent)
+- 2026-10-10T01:44 set smoke (12 shots): Look v3 (BACKLOG 14a, 14): tilt-shift post on by default, painted water, clumped trees, v3 thatched dwellings, snow and strata bands, golden lighting preset; contact sheet viewed
+- 2026-10-10T01:46 set spells (8 shots): Look v3 (BACKLOG 14a, 14): tilt-shift post on by default, painted water, clumped trees, v3 dwellings, terrain bands, golden lighting preset; same layout, look diffs only
+- 2026-10-10T01:47 set combat (7 shots): Look v3 (BACKLOG 14a, 14): tilt-shift post on by default, painted water, clumped trees, v3 dwellings, terrain bands, golden lighting preset; same layout, look diffs only
+- 2026-10-10T01:48 set spells2 (9 shots): Look v3 (BACKLOG 14a, 14): tilt-shift post on by default, painted water, clumped trees, v3 dwellings, terrain bands, golden lighting preset; same layout, look diffs only
+- 2026-10-10T01:50 set levels (2 shots): Look v3 (BACKLOG 14a, 14): tilt-shift post on by default, painted water, clumped trees, v3 dwellings, terrain bands, golden lighting preset; same layout, look diffs only
+- 2026-10-10T01:52 set look (12 shots): First baselines for the look set (BACKLOG 14a, 14): tilt-shift off, pre and post, coast, peak, huts, lighting presets and rain; set joins npm run qa
