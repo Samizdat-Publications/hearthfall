@@ -92,6 +92,9 @@ export function stepCost(t: Terrain, x: number, y: number): number {
 /** What a pathfinder walks on (BACKLOG 10, ADR-016): land units, boats on water, balloons over everything. */
 export type NavMode = "land" | "water" | "air";
 
+/** BACKLOG 47: window radii tried in turn when repairing components (each must be 2 or more) */
+const REPAIR_WINDOWS = [3, 8, 20];
+
 export class Pathfinder {
   readonly n: number;
   readonly mode: NavMode;
@@ -108,6 +111,15 @@ export class Pathfinder {
   comp: Int32Array;
   private readonly stack: Int32Array;
   private walkVersion = -1;
+  /** highest component label handed out (BACKLOG 47: incremental repairs add fresh labels above it) */
+  private maxLabel = 0;
+  /** BACKLOG 47 scratch for local repairs: window and visit stamps, local component ids */
+  private winStamp: Int32Array | null = null;
+  private locStamp: Int32Array | null = null;
+  private locId: Int32Array | null = null;
+  private repairGen = 0;
+  /** refresh counters for tests and the bench: full rebuilds, local repairs, repairs that needed a merge scan */
+  readonly refreshStats = { full: 0, local: 0, merges: 0 };
 
   readonly t: Terrain;
 
@@ -126,9 +138,211 @@ export class Pathfinder {
     this.stack = new Int32Array(nn);
   }
 
-  /** Refresh the walkability, cost and component caches if the terrain changed (tight loops). */
+  /**
+   * Refresh the walkability, cost and component caches if the terrain changed (tight loops). BACKLOG 47:
+   * edits since the last refresh are applied per dirty rect, and components are repaired locally (see
+   * repairComponents); the whole map is rebuilt only when the rects were trimmed, cover a large area, or a
+   * component may have split. Labels are compared for equality only, so repaired and rebuilt labels agree.
+   */
   refresh(): void {
     if (this.walkVersion === this.t.version) return;
+    const rects = this.walkVersion < 0 ? null : this.t.dirtySince(this.walkVersion);
+    if (rects === null || !this.refreshRects(rects)) this.rebuildAll();
+    this.walkVersion = this.t.version;
+  }
+
+  /** Recompute walkability and step cost of one vertex (same expressions as rebuildAll). */
+  private computeAt(i: number): void {
+    const n = this.n;
+    const H = this.t.heights;
+    const sea = this.t.sea;
+    if (this.mode !== "land") {
+      const ok = this.mode === "air" || H[i] < sea;
+      this.walk[i] = ok ? 1 : 0;
+      this.cost[i] = ok ? 1 : 0;
+      return;
+    }
+    const maxSlope = this.t.maxWalkSlope;
+    const x = i % n;
+    const y = (i - x) / n;
+    const row = y * n;
+    const h = H[i];
+    const l = H[row + (x === 0 ? n - 1 : x - 1)];
+    const r = H[row + (x === n - 1 ? 0 : x + 1)];
+    const u = H[(y === 0 ? n - 1 : y - 1) * n + x];
+    const d = H[(y === n - 1 ? 0 : y + 1) * n + x];
+    let sl = h > l ? h - l : l - h;
+    let q = h > r ? h - r : r - h;
+    if (q > sl) sl = q;
+    q = h > u ? h - u : u - h;
+    if (q > sl) sl = q;
+    q = h > d ? h - d : d - h;
+    if (q > sl) sl = q;
+    const ok = h >= sea && sl <= maxSlope;
+    this.walk[i] = ok ? 1 : 0;
+    this.cost[i] = ok ? 1 + sl / (maxSlope * 2) : 0;
+  }
+
+  /** Apply dirty rects: recompute their vertices (plus a one-vertex margin), then repair components. False asks for a full rebuild. */
+  private refreshRects(rects: readonly { x: number; y: number; w: number; h: number }[]): boolean {
+    if (this.mode === "air") return true;
+    const n = this.n;
+    let area = 0;
+    for (const r of rects) area += (r.w + 2) * (r.h + 2);
+    if (area * 4 > n * n) return false;
+    const flipped: number[] = [];
+    for (const r of rects) {
+      for (let y = r.y - 1; y <= r.y + r.h; y++) {
+        const row = (((y % n) + n) % n) * n;
+        for (let x = r.x - 1; x <= r.x + r.w; x++) {
+          const i = row + (((x % n) + n) % n);
+          const was = this.walk[i];
+          this.computeAt(i);
+          if (this.walk[i] !== was) flipped.push(i);
+        }
+      }
+    }
+    if (!flipped.length) return true;
+    // a narrow window can cut a ring of land that is joined further out; widen before giving up
+    for (const m of REPAIR_WINDOWS) if (this.repairComponents(flipped, m)) return true;
+    return false;
+  }
+
+  /**
+   * Repair component labels after the walkable vertices in `flipped` changed. A window of radius m (2 or more) around
+   * them is flooded locally (same 8-connected corner rule); its border never flipped, and every edge that
+   * leaves the window is unchanged. So a local component that touches no border vertex is a whole island
+   * (fresh label), and of the ones that do: one old label keeps it, several merge (one scan relabels the
+   * map). An old label in two border-touching local components may have split: return false (widen or rebuild).
+   */
+  private repairComponents(flipped: number[], M: number): boolean {
+    const n = this.n;
+    const nn = n * n;
+    if (!this.winStamp) {
+      this.winStamp = new Int32Array(nn);
+      this.locStamp = new Int32Array(nn);
+      this.locId = new Int32Array(nn);
+    }
+    const win = this.winStamp;
+    const vis = this.locStamp!;
+    const lid = this.locId!;
+    const g = ++this.repairGen;
+    const walk = this.walk;
+    const comp = this.comp;
+    const cells: number[] = [];
+    for (const f of flipped) {
+      const fx = f % n;
+      const fy = (f - fx) / n;
+      for (let dy = -M; dy <= M; dy++) {
+        const row = ((((fy + dy) % n) + n) % n) * n;
+        for (let dx = -M; dx <= M; dx++) {
+          const i = row + ((((fx + dx) % n) + n) % n);
+          if (win[i] === g) continue;
+          win[i] = g;
+          cells.push(i);
+        }
+      }
+      // a window over a quarter of the map costs as much as a rebuild
+      if (cells.length * 4 > nn) return false;
+    }
+    // local flood: lid = local component (1..), its old labels and whether it reaches the window border
+    const seenIn = new Map<number, number>();
+    const labels: number[][] = [[]];
+    const border: boolean[] = [false];
+    const stack = this.stack;
+    const nb = [0, 0, 0, 0, 0, 0, 0, 0];
+    let local = 0;
+    for (const s0 of cells) {
+      if (!walk[s0] || vis[s0] === g) continue;
+      local++;
+      labels.push([]);
+      border.push(false);
+      vis[s0] = g;
+      lid[s0] = local;
+      let top = 0;
+      stack[top++] = s0;
+      while (top > 0) {
+        const cur = stack[--top];
+        const old = comp[cur];
+        if (old > 0 && seenIn.get(old) !== local) {
+          seenIn.set(old, local);
+          labels[local].push(old);
+        }
+        const cx = cur % n;
+        const cy = (cur - cx) / n;
+        const xl = cx === 0 ? n - 1 : cx - 1;
+        const xr = cx === n - 1 ? 0 : cx + 1;
+        const yu = (cy === 0 ? n - 1 : cy - 1) * n;
+        const yd = (cy === n - 1 ? 0 : cy + 1) * n;
+        const row = cy * n;
+        const L = row + xl;
+        const R = row + xr;
+        const U = yu + cx;
+        const D = yd + cx;
+        const wl = walk[L];
+        const wr = walk[R];
+        const wu = walk[U];
+        const wd = walk[D];
+        nb[0] = L;
+        nb[1] = R;
+        nb[2] = U;
+        nb[3] = D;
+        // diagonals only when both orthogonal neighbors are walkable (no corner cutting)
+        nb[4] = wl && wu ? yu + xl : -1;
+        nb[5] = wr && wu ? yu + xr : -1;
+        nb[6] = wl && wd ? yd + xl : -1;
+        nb[7] = wr && wd ? yd + xr : -1;
+        if (!border[local] && (win[L] !== g || win[R] !== g || win[U] !== g || win[D] !== g || win[yu + xl] !== g || win[yu + xr] !== g || win[yd + xl] !== g || win[yd + xr] !== g)) border[local] = true;
+        for (let k = 0; k < 8; k++) {
+          const j = nb[k];
+          if (j < 0 || !walk[j] || win[j] !== g || vis[j] === g) continue;
+          vis[j] = g;
+          lid[j] = local;
+          stack[top++] = j;
+        }
+      }
+    }
+    // an old label may continue past the border from one local component only
+    const owner = new Map<number, number>();
+    for (let k = 1; k <= local; k++) {
+      if (!border[k]) continue;
+      for (const l of labels[k]) {
+        if (owner.has(l)) return false;
+        owner.set(l, k);
+      }
+    }
+    // resolve each local component's label; merged labels remap to the smallest
+    const target = new Int32Array(local + 1);
+    const remap = new Map<number, number>();
+    for (let k = 1; k <= local; k++) {
+      const ls = labels[k];
+      if (!border[k] || !ls.length) {
+        target[k] = ++this.maxLabel;
+        continue;
+      }
+      let m = ls[0];
+      for (const l of ls) if (l < m) m = l;
+      target[k] = m;
+      for (const l of ls) if (l !== m) remap.set(l, m);
+    }
+    for (const i of cells) comp[i] = walk[i] ? target[lid[i]] : 0;
+    if (remap.size) {
+      this.refreshStats.merges++;
+      for (let i = 0; i < nn; i++) {
+        const c = comp[i];
+        if (c > 0) {
+          const t = remap.get(c);
+          if (t !== undefined) comp[i] = t;
+        }
+      }
+    }
+    this.refreshStats.local++;
+    return true;
+  }
+
+  /** Rebuild walkability, cost and components for the whole map. */
+  private rebuildAll(): void {
+    this.refreshStats.full++;
     const n = this.n;
     const H = this.t.heights;
     const sea = this.t.sea;
@@ -233,7 +447,7 @@ export class Pathfinder {
         }
       }
     }
-    this.walkVersion = this.t.version;
+    this.maxLabel = label;
   }
 
   walkable(i: number): boolean {
