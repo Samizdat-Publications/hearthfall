@@ -391,8 +391,27 @@ export const StyleSchema = z
             bandHigh: z.number().min(0).max(1),
             modelShare: z.number().min(0).max(1),
             hueJitter: z.number().min(0).max(0.5),
+            /** BACKLOG 41: tree scale = (sizeBase + sizeJitter * hash) * (sizeAtNoWood + (1 - sizeAtNoWood) * wood / woodFull) */
+            sizeBase: pos.optional(),
+            sizeJitter: z.number().min(0).optional(),
+            sizeAtNoWood: z.number().min(0).max(1).optional(),
+            woodFull: pos.optional(),
           })
           .optional(),
+        /** BACKLOG 41: the camera rig against zoom z (0 close, 1 globe): distance = base + quad z^2 + linear z,
+         * pitch = base + linear z (radians), bend = base + quad z^2, fog from distance * nearMul to
+         * distance * farMul + farAdd + farQuad z^2. Absent keys keep the look v2 rig. */
+        camera: z
+          .strictObject({
+            ...comment,
+            distance: z.strictObject({ base: pos, linear: z.number().min(0), quad: z.number().min(0) }).optional(),
+            pitch: z.strictObject({ base: z.number().min(0.1).max(1.57), linear: z.number() }).optional(),
+            bend: z.strictObject({ base: z.number().min(0), quad: z.number().min(0) }).optional(),
+            fog: z.strictObject({ nearMul: pos, farMul: pos, farAdd: z.number().min(0), farQuad: z.number().min(0) }).optional(),
+          })
+          .optional(),
+        /** BACKLOG 41: world units drawn per world unit of height (times balance terrain heightUnitsPerWorldUnit); default 2 */
+        verticalScale: z.number().min(0.25).max(8).optional(),
         /** look v3 painted water (BACKLOG 14a): per-fragment depth shallows, crisp foam line, offshore ring */
         water: z
           .strictObject({

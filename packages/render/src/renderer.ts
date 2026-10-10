@@ -4,7 +4,7 @@
 import * as THREE from "three";
 import type { Style } from "@hearthfall/data";
 import type { World } from "@hearthfall/sim";
-import { applyCamera, CAMERA_PRESETS, type CameraState } from "./camera.ts";
+import { applyCamera, CAMERA_PRESETS, cameraRig, type CameraRig, type CameraState } from "./camera.ts";
 import { bendMaterial, makeBendUniforms, type BendUniforms } from "./curve.ts";
 import {
   RainLayer,
@@ -124,6 +124,8 @@ export class ThreeRenderer implements Renderer {
   /** Rally flag of the selected lodge (pole plus pennant), hidden when none. */
   readonly rally = new THREE.Group();
   readonly vfx: VfxLayer;
+  /** BACKLOG 41: camera rig curves (style.json render.camera) */
+  private readonly rig: CameraRig;
   readonly retro: RetroPass;
   private hearthLights: THREE.PointLight[] = [];
   private readonly detail = { amount: { value: 0 }, cells: { value: 3 } };
@@ -165,7 +167,7 @@ export class ThreeRenderer implements Renderer {
       cliffDark: C("cliffDark", "#5a371d"),
       bands: { shore: 0, lowland: 0, grass: 0, highland: 0, rock: 0, peak: 0 },
       look: o.style.render?.terrainBands,
-      heightScale: (o.verticalScale ?? 2.0) / o.heightUnitsPerWorldUnit,
+      heightScale: (o.verticalScale ?? o.style.render?.verticalScale ?? 2.0) / o.heightUnitsPerWorldUnit,
       maxWalkSlope: 20,
     };
     const L = o.style.lighting;
@@ -277,6 +279,7 @@ export class ThreeRenderer implements Renderer {
     this.mapFrame.renderOrder = 50;
     this.scene.add(this.mapFrame);
     this.vfx = new VfxLayer(this.bend, undefined, o.style.render?.vfxColors);
+    this.rig = cameraRig(o.style.render?.camera);
     this.scene.add(this.vfx.group);
     const ringMat = (color: string) =>
       bendMaterial(
@@ -923,7 +926,7 @@ export class ThreeRenderer implements Renderer {
     const focusY =
       Math.max(t.heightAt(this.cam.x, this.cam.z), t.sea) *
       this.palette.heightScale;
-    const r = applyCamera(this.camera, this.cam, focusY, t.size);
+    const r = applyCamera(this.camera, this.cam, focusY, t.size, this.rig);
     this.bend.uBendK.value = r.bendK;
     this.bend.uBendFocus.value.set(this.cam.x, this.cam.z);
     this.camera.updateMatrixWorld();

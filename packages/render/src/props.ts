@@ -23,6 +23,11 @@ export interface TreeMix {
   modelShare: number;
   /** per-instance warm or cool shift of the clump color (0 = none) */
   hueJitter: number;
+  /** BACKLOG 41: scale = (sizeBase + sizeJitter * hash) * (sizeAtNoWood + (1 - sizeAtNoWood) * wood / woodFull) */
+  sizeBase?: number;
+  sizeJitter?: number;
+  sizeAtNoWood?: number;
+  woodFull?: number;
 }
 
 /** the look v2 mix: no clumps, 70 percent conifers and 30 percent GLB trees */
@@ -209,7 +214,9 @@ export class TreeLayer {
       x -= Math.round(x / n) * n;
       z -= Math.round(z / n) * n;
       const y = hRaw * heightScale;
-      const sc = (what === "model" ? this.unit : 1) * (0.8 + 0.5 * hashf(i, 0x77)) * (0.6 + (0.4 * E.wood[i]) / 4);
+      const mx = this.mix;
+      const low = mx.sizeAtNoWood ?? 0.6;
+      const sc = (what === "model" ? this.unit : 1) * ((mx.sizeBase ?? 0.8) + (mx.sizeJitter ?? 0.5) * hashf(i, 0x77)) * (low + ((1 - low) * E.wood[i]) / (mx.woodFull ?? 4));
       this.q.setFromAxisAngle(this.up, hashf(i, 0x33) * 6.283);
       this.s.set(sc, sc * (what === "pine" ? 1.05 + 0.35 * hashf(i, 0x99) : 0.9 + 0.3 * hashf(i, 0x99)), sc);
       this.p.set(focusX + x, y - 0.05, focusZ + z);

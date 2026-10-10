@@ -357,6 +357,23 @@
               "type": "number",
               "minimum": 0,
               "maximum": 0.5
+            },
+            "sizeBase": {
+              "type": "number",
+              "minimum": 0
+            },
+            "sizeJitter": {
+              "type": "number",
+              "minimum": 0
+            },
+            "sizeAtNoWood": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "woodFull": {
+              "type": "number",
+              "minimum": 0
             }
           },
           "required": [
@@ -368,6 +385,107 @@
             "hueJitter"
           ],
           "additionalProperties": false
+        },
+        "camera": {
+          "type": "object",
+          "properties": {
+            "$comment": {
+              "type": "string"
+            },
+            "distance": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "linear": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "quad": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "base",
+                "linear",
+                "quad"
+              ],
+              "additionalProperties": false
+            },
+            "pitch": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "number",
+                  "minimum": 0.1,
+                  "maximum": 1.57
+                },
+                "linear": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "base",
+                "linear"
+              ],
+              "additionalProperties": false
+            },
+            "bend": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "quad": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "base",
+                "quad"
+              ],
+              "additionalProperties": false
+            },
+            "fog": {
+              "type": "object",
+              "properties": {
+                "nearMul": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "farMul": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "farAdd": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "farQuad": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "nearMul",
+                "farMul",
+                "farAdd",
+                "farQuad"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "verticalScale": {
+          "type": "number",
+          "minimum": 0.25,
+          "maximum": 8
         },
         "water": {
           "type": "object",

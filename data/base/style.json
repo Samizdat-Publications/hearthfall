@@ -82,7 +82,15 @@
       "building.dwelling_large": "building.dwelling_large_v3"
     },
     "terrainBands": { "snowStart": 445, "snowFull": 495, "strataSand": 0.55, "snowBright": 1.55 },
-    "trees": { "clumpLow": 0.75, "clumpHigh": 0.08, "bandLow": 0.12, "bandHigh": 0.4, "modelShare": 0.15, "hueJitter": 0.12 },
+    "trees": { "clumpLow": 0.75, "clumpHigh": 0.08, "bandLow": 0.12, "bandHigh": 0.4, "modelShare": 0.15, "hueJitter": 0.12, "sizeBase": 0.8, "sizeJitter": 0.5, "sizeAtNoWood": 0.6, "woodFull": 4 },
+    "camera": {
+      "$comment": "BACKLOG 41: rig curves against zoom z (0 close, 1 globe): distance = base + quad z^2 + linear z; pitch = base + linear z (radians); bend = base + quad z^2; fog near = distance * nearMul, far = distance * farMul + farAdd + farQuad z^2.",
+      "distance": { "base": 11, "linear": 20, "quad": 120 },
+      "pitch": { "base": 0.78, "linear": 0.62 },
+      "bend": { "base": 0.004, "quad": 0.026 },
+      "fog": { "nearMul": 1.1, "farMul": 2.6, "farAdd": 40, "farQuad": 400 }
+    },
+    "verticalScale": 2,
     "water": { "shallowDepth": 26, "foamWidth": 6, "foamRing": 14 },
     "unitScale": { "shaper": 1.2 },
     "mapFrame": { "mask": "#1b2633", "grid": "#f2e6c8", "gridOpacity": 0.14, "gridCells": 16 },
