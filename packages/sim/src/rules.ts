@@ -119,6 +119,11 @@ export class RulesRuntime {
     this.w.emit("matchWon", { tribe, why, rules: this.def.id });
   }
 
+  /**
+   * `spots` and `why` stay out of the hash on purpose (BACKLOG 98): spots is a copy of the worship site
+   * positions (hashed by WorshipSystem) taken on the first update, and why is the variant type recorded
+   * with the winner (hashed here); both are saved, so a restore keeps them.
+   */
   hashInto(f: Fnv): void {
     f.u32(0x7a1e5).u32(this.winner + 1).f64(this.endedAt);
     for (const h of this.held) f.f64(h);

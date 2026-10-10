@@ -282,7 +282,15 @@ export class UnitSystem {
         this.stop(i);
         continue;
       }
-      const r = pf.astar(start, goal, m.maxExpandPerSearch);
+      let r = pf.astar(start, goal, m.maxExpandPerSearch);
+      // BACKLOG 98: a sea route around a continent can need more than maxExpandPerSearch. astar checks the
+      // water layer's components first, so a search that ran out of work has a route: a boat searches once
+      // more with the whole map as its limit (rare, and charged to this tick's budget like any search)
+      if (!r.ok && r.expanded > m.maxExpandPerSearch && pf.mode === "water") {
+        budget -= r.expanded;
+        expanded += r.expanded;
+        r = pf.astar(start, goal, w.terrain.size * w.terrain.size);
+      }
       budget -= r.expanded + 1;
       expanded += r.expanded;
       if (!r.ok) {

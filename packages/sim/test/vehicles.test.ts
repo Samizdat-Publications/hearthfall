@@ -164,3 +164,39 @@ describe("vehicles (BACKLOG 10)", () => {
     expect(w.invariants()).toEqual([]);
   });
 });
+
+describe("BACKLOG 98: long sea routes", () => {
+  it("a boat whose only route runs around a long land wall gets there (more than maxExpandPerSearch)", () => {
+    const p = basePack();
+    // a 256 sea with two north-south land walls (x 0 and x 128); the x 128 wall has a gap at y 180 to 192
+    const w = new World({
+      pack: p.files,
+      packHash: p.hash,
+      seed: 9,
+      map: {
+        generator: "flat",
+        size: 256,
+        tribes: 1,
+        paint: [
+          { shape: "rect", at: [128, 128], size: [256, 256], aboveSea: -30, falloff: 0 },
+          { shape: "rect", at: [0, 128], size: [6, 256], aboveSea: 6, falloff: 0 },
+          { shape: "rect", at: [128, 90], size: [6, 180], aboveSea: 6, falloff: 0 },
+          { shape: "rect", at: [128, 224], size: [6, 64], aboveSea: 6, falloff: 0 },
+        ],
+      },
+    });
+    w.spawnBuilding("hearth", 0, 0, 40);
+    w.spawnUnit("shaper", 0, 0, 46);
+    const water = w.units.pfs[1];
+    water.refresh();
+    const limit = w.cfg.pack.balance.movement.maxExpandPerSearch;
+    const direct = water.astar(at(w, 120, 60), at(w, 136, 60), limit);
+    expect(direct.ok).toBe(false);
+    expect(direct.expanded).toBeGreaterThan(limit);
+    const b = w.ents.index(w.spawnUnit("boat", 0, 120, 60));
+    step(w, 0, "move", { units: [w.ents.idOf(b)], to: [136, 60] });
+    for (let k = 0; k < 400 && Math.hypot(w.ents.x[b] - 136, w.ents.y[b] - 60) > 3; k++) w.run(30);
+    expect(w.eventCounts.get("orderFailed") ?? 0).toBe(0);
+    expect(Math.hypot(w.ents.x[b] - 136, w.ents.y[b] - 60)).toBeLessThan(3);
+  });
+});
