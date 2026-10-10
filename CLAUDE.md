@@ -79,5 +79,10 @@ At M0, write `Run started: <ISO timestamp>` in PROGRESS "Now". End every turn wi
 
 The run sentinel is a private token. Do not write it anywhere, quote it, or mention it until the run is truly done. The run is done when `git tag --list "m*-done"` shows m0-done through m11-done and every P1 item in `docs/BACKLOG.md` is done or logged under "Cuts" (items blocked by a missing optional tool count once logged). Then put the token as the first line under "## Now" in PROGRESS, write the "State of the game" section, and end your message with the token on its own line. The token is the word HEARTHFALL, a hyphen, the word RUN, a hyphen, the word DONE, a hyphen, then 7Q.
 
+## Stretch 2 (Stewart, 2026-10-10)
+The run continues past the sentinel. Stretch 2 started at the `Stretch 2 started:` line in PROGRESS "Now" and lasts 24 h (`node tools/harness/status.mjs` prints `s2h`). Work the queue in PROGRESS "Next 3 actions" (look v3, polish, balance, rules and victory variants, campaign, vehicles, Forge, map editor, then BACKLOG). End every turn with:
+`STATUS S2 <block> | h:<s2h> | qa:<green|red|n/a> | stop-file:<yes|no> | next:<few words>`
+At s2h >= 23 or STOP: full qa until PASS, soaks, rewrite "State of the game" plus a "First human playtest" section (how to play, what to try, ready or not and why), PROGRESS_LOG entry, tag `s2-done`, republish the making-of page, and end the message with the STATUS line and `STRETCH 2 DONE`. Stewart may be playing a `npm run serve` build mid-run: never kill processes you did not start.
+
 # Compact instructions
 When compacting, keep: current milestone and gate status, last green commit hash, run start timestamp, open failures with file:line, decisions made since the last PROGRESS update, and the next 3 actions. Drop: command output, file contents, images, research text. After compaction, re-read `docs/PROGRESS.md` before doing anything else.

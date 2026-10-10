@@ -7,4 +7,6 @@ import { ROOT } from "../guards/lib.mjs";
 const progress = readFileSync(ROOT + "docs/PROGRESS.md", "utf8");
 const m = progress.match(/Run started:\s*(\d{4}-\d\d-\d\dT[\d:]+Z)/);
 const h = m ? ((Date.now() - Date.parse(m[1])) / 3600000).toFixed(1) : "n/a";
-console.log(`h:${h} | stop-file:${existsSync(ROOT + "STOP") ? "yes" : "no"}`);
+const m2 = progress.match(/Stretch 2 started:\s*(\d{4}-\d\d-\d\dT[\d:]+Z)/);
+const s2h = m2 ? ((Date.now() - Date.parse(m2[1])) / 3600000).toFixed(1) : "n/a";
+console.log(`h:${h} | s2h:${s2h} | stop-file:${existsSync(ROOT + "STOP") ? "yes" : "no"}`);

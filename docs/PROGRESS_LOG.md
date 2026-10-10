@@ -136,4 +136,7 @@ One line per entry: `MM/DD/YYYY HH:MM  M<n>  what happened`. Never read this fil
 - qa layers: shot and e2e timeouts 300 to 420 s; another project's GPU benchmarks (ecosystem-sim, its own headless browsers) loaded the PC and the smoke set took 4.5 min. Those processes were left alone.
 - BACKLOG 5a cut: conditional on close-zoom quality, which the anim_gallery shot shows is fine at pixelScale 3.
 - Full npm run qa PASS at 5b2587a. Tags m0-done to m11-done present; every P1 done or cut. State of the game rewritten.
+- Run 1 sentinel (moved from PROGRESS "Now" at the stretch 2 kickoff): HEARTHFALL-RUN-DONE-7Q
 
+## 2026-10-10 Stretch 2 kickoff
+- Stretch 2 started 2026-10-10T00:25:00Z, 24 h, plan in CLAUDE.md "Stretch 2" and PROGRESS "Next 3 actions" (look v3, polish, balance, rules and victory variants, campaign, vehicles, Forge, map editor).

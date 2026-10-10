@@ -3,8 +3,8 @@
 Read this first after any restart or context compaction. Keep "Now" under 25 lines. History goes to `docs/PROGRESS_LOG.md` (append only, never read it whole).
 
 ## Now
-HEARTHFALL-RUN-DONE-7Q
-- Run done 2026-10-09T23:58Z (about 26.5 h): m0-done to m11-done tagged, every P1 item done or cut (5a, see Cuts); full npm run qa PASS at 5b2587a. Work continues with BACKLOG P2.
+Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when STOP exists). Plan: BACKLOG 14a look v3, polish, balance, rules and victory variants, campaign, boats and Skyloft, Forge, map editor (CLAUDE.md "Stretch 2").
+- Run 1 done 2026-10-09T23:58Z (about 26.5 h): m0-done to m11-done tagged, every P1 done or cut (5a, see Cuts); full npm run qa PASS at 5b2587a; its sentinel line is in PROGRESS_LOG.
 - Run started: 2026-10-08T21:25:00Z
 - Soaks PASS after BACKLOG 6: economy median 61, ai-idle 12/12, ai (sneaky 4, aggressive 1, turtle 1, 2 unfinished, median 14.3 min, 10 spell types), bots, difficulty.
 - BACKLOG 8 DONE: accessibility: colorblind tribe palette (simulated protan, deutan, tritan; min Lab pair 47 v 22), UI scale 80 to 150 (HUD steps down to fit the window, hudFit.ts), Shaper bark subtitles, settings and URL params; combat shots colorblind and uiscale_fit; e2e a11y checks.
@@ -13,24 +13,20 @@ HEARTHFALL-RUN-DONE-7Q
 - BACKLOG 3 DONE: fog of war (sim VisionSystem, per tribe explored and visible grids, ADR-011), AI sees only what its tribe sees (brutal has mapHack), shader fog on every bent material, units and buildings hidden, minimap fog, reveal=1 and __game.setReveal. Soaks with fog: economy 61, ai-idle all 12, ai (sneaky 5, aggressive 2, turtle 1, median 15.2 min), bots PASS; smoke, spells2 and levels re-approved, spell and combat shots use reveal=1.
 - Earlier BACKLOG DONE: 5 (procedural unit animation, ADR-012), 1 (all 16 spells, ADR-010), 0a (conifers, terraces, icons), 0c (stone), 7 (fair lodges, Chanter rework, AI hunts Hearthless Shaper), 2 (Shade and Shade Den; spend $9.15 of $30). Full npm run qa PASS at 6988e09 (16:50Z) and after BACKLOG 3 (about 18:24Z). Details in PROGRESS_LOG.
 - Milestone: M11 done (tag m11-done; roadmap complete, now BACKLOG top down). M11 shipped: tribe rings under units and a larger Shaper, lighter trees, combat VFX readability (BACKLOG 57), boot screen, fatal panel with cause, frame loop failure and context loss handling, production build served statically (npm run serve, prod qa layer), State of the game section below. Opus review: 3 blockers fixed (frame error handling, static server containment, controls text), follow-ups in BACKLOG 96. M10 done (tag m10-done).
-- M1 shipped: sfc32 rng streams, FNV hash parts, SoA entities, torus terrain with all ops + dirty cursor (dirtySince), tileable fbm generator (continents, islands, flat test maps) with connected Hearth sites, trees, wild people; Command registry (god-mode terrainOp is tribe -1 or godMode only); World step order, drowning, snapshot/restore; scenario runner + safe DSL (4 scenarios); golden replay with frozen pack (terrain_ops_continents). 66 unit tests. qa:fast now includes replays.
-- M2 shipped: renderer (faceted chunks, water, curved world, wrap, sky, trees), camera rig, debug API, shot pipeline (pixel-exact baselines in fixedStep), VisionQA calibrated, browser replay determinism.
-- M3 shipped: SoA movement columns, pathing (A* + component labels + budget, flow fields, spatial hash separation, route-progress stuck detection; ADR-004), move/stop/impulse commands, Controller hook + WanderBot, starting Shaper + 5 settlers per Hearth, unit and building placeholder layers with tribe tint and interpolation, selection (click, box, groups) + right-click move via bent-terrain picking, 7 pathing scenarios, soak (8 seeds x 10 min x 1000 units clean), bench (2000 units avg 3.3 ms, algorithmic p99 2.2 ms).
 - Screenshot mode: headless-shell + GPU args (RTX 5070 Ti Laptop). VisionQA provider ON (about $0.00003 per low shot).
 - Art direction: ref_04 crisp flat-shaded polygon + ref_05 golden-hour light (data/base/style.json `direction`).
 - Asset track: A0 to A3 done (buildings, props, units as GLB; 21 SFX, Shaper barks, 3 music stems, 7 VFX textures, 27 icons; indexes in assets/*/index.json). Spend $8.21 of $30. A4 (integration) is M10.
-- M4 shipped: economy (jobs, construction, dwellings, breeding, trees, mana and charging), EconomyBot, HUD v1, placement; gate soak passes (median 59 at minute 10).
-- M5 shipped: cast command with walk-into-range, cast window and undo, effect primitive registry, 8 v1 spells as data with 10 scenarios, Shaper death/respawn/charge steal/elimination, VFX layer, targeting rings, spells shot set, spells_duel golden (Node and Chromium identical).
 - Art direction v2 (ADR-005 + addendum): target = Stewart's pick, making-of/a1 retro-candidate-1 (dense village on a planet in space, terraced cliffs, foamy sea, stone-framed HUD); technique = candidate 3. Retro render pass v1 is ON (style.json render: pixelScale 3, 20-level palette, Bayer dither, terrain pixel noise, Hearth firelight, dusk light, stone and wood HUD). Baselines re-approved.
 - Machine: often at 100 percent CPU (OneDrive sync; another project's simulations and GPU benchmarks with their own headless browsers, leave them alone). Wall-clock timing is noisy; bench uses deterministic replay minima; full qa needs several reruns.
 - Keys: Meshy, ElevenLabs, Gemini, OpenAI present; Tripo, PixelLab missing.
 - Making-of archive: making-of/ via `npm run making-of -- add`; storyboard in making-of/README.md. Making-of page (Stewart's request): https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5, rebuild with `npm run making-of -- page` and republish to that URL after every backlog item (README steps).
 - Subagents: project agents are registered again (milestone-reviewer, qa-runner, ...); call them by type.
+- M1 to M5 shipped details: PROGRESS_LOG (and ARCHITECTURE).
 
 ## Next 3 actions
-1. BACKLOG P2: 14a (tilt-shift miniature look) first, then 9 onward.
-2. Full npm run qa at least every 4 hours (last PASS at 5b2587a, about 23:50Z; next by about 03:50Z).
-3. Re-run the full soak and shot sets every 3 backlog items (last after 6; next after 9).
+1. S2 block A: BACKLOG 14a-1 tilt-shift pass (pre and post the pixel pass, shots decide, ADR-013), then 14a-2 water, 14a-3 trees, 14a-4 huts and bands, 14 lighting presets.
+2. Full npm run qa at least every 4 hours (last PASS at 5b2587a, about 23:50Z; next by about 04:00Z).
+3. Re-run the full soak and shot sets every 3 backlog items (last after 6 and 8).
 
 ## Blocked
 (none)
