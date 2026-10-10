@@ -279,6 +279,8 @@ export const BalanceSchema = z.strictObject({
     }),
     maxStalematePct: z.number(),
     aiEliminatesIdleMinutes: z.number(),
+    /** BACKLOG 59: a soak seed fails when one unit gives up a chase more often than this (optional for frozen packs; default 5) */
+    maxChaseGiveUpsPerUnit: z.number().int().positive().optional(),
   }),
 });
 export type Balance = z.infer<typeof BalanceSchema>;

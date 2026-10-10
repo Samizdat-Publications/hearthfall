@@ -186,7 +186,8 @@
     },
     "maxStalematePct": 10,
     "$comment": "Soft gates: guide tuning, never block a milestone (see docs/ROADMAP.md).",
-    "aiEliminatesIdleMinutes": 25
+    "aiEliminatesIdleMinutes": 25,
+    "maxChaseGiveUpsPerUnit": 5
   },
   "vision": {
     "$comment": "BACKLOG 3: fog of war. Each tribe sees discs of sight radius (cells) around its own units and buildings, recomputed every everySeconds on a grid of cellSize cells; explored ground stays mapped. A tribe without a Hearth is revealed to all. Maps can turn it off with fog: false.",

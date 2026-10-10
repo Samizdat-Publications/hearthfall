@@ -220,11 +220,11 @@ export default async function soakCmd(out, _cmd, args) {
     }
   }
   const sum = (k) => results.reduce((a, r) => a + (r.metrics?.[k] ?? 0), 0);
-  const metrics = { seeds, minutes, units: base.units, wallSec: +((Date.now() - t0) / 1000).toFixed(1), drowned: sum("drowned"), orderFailed: sum("orderFailed"), orderGaveUp: sum("orderGaveUp"), moves: sum("moves"), maxStuckSec: Math.max(...results.map((r) => r.metrics?.maxStuckSec ?? 0)), avgTickMs: +(results.reduce((a, r) => a + (r.metrics?.avgTickMs ?? 0), 0) / results.length).toFixed(2) };
+  const metrics = { seeds, minutes, units: base.units, wallSec: +((Date.now() - t0) / 1000).toFixed(1), drowned: sum("drowned"), orderFailed: sum("orderFailed"), orderGaveUp: sum("orderGaveUp"), moves: sum("moves"), maxStuckSec: Math.max(...results.map((r) => r.metrics?.maxStuckSec ?? 0)), chaseGiveUps: sum("chaseGiveUps"), maxChaseGiveUps: Math.max(0, ...results.map((r) => r.metrics?.maxChaseGiveUps ?? 0)), avgTickMs: +(results.reduce((a, r) => a + (r.metrics?.avgTickMs ?? 0), 0) / results.length).toFixed(2) };
   writeReport("soak.json", { metrics, results });
   for (const r of bad) out.line(`seed ${r.seed}: ${(r.violations ?? []).slice(0, 2).join("; ")}`.slice(0, 200));
   out.line(`soak (${base.mode}): ${results.length - bad.length}/${results.length} seeds clean | ${base.mode === "economy" || base.mode === "war" || base.mode === "bots" ? "test bots" : base.mode.startsWith("ai") || base.mode === "difficulty" ? base.mode + " bots" : metrics.units + " units"} x ${minutes} min | wall ${metrics.wallSec}s | avg tick ${metrics.avgTickMs} ms | max stuck ${metrics.maxStuckSec}s`);
-  out.line(`orders ${metrics.moves}, failed ${metrics.orderFailed}, gave up ${metrics.orderGaveUp}, drowned ${metrics.drowned}`);
+  out.line(`orders ${metrics.moves}, failed ${metrics.orderFailed}, gave up ${metrics.orderGaveUp} (chases ${metrics.chaseGiveUps}, most by one unit ${metrics.maxChaseGiveUps}), drowned ${metrics.drowned}`);
   if (base.mode === "war") {
     for (const k of ["trained", "killed", "converted", "fireballs", "eliminated"]) metrics[k] = sum(k);
     out.line(`war: trained ${metrics.trained}, killed ${metrics.killed}, converted ${metrics.converted}, fireballs ${metrics.fireballs}, tribes eliminated ${metrics.eliminated}`);
