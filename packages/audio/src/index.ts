@@ -8,6 +8,8 @@ export { WebAudioPlayer, type PlayerStats } from "./player.ts";
 export interface CueRule {
   cue: string;
   maxPerTick?: number;
+  /** heard from every tribe even without a position (BACKLOG 93) */
+  global?: boolean;
   where?: Record<string, string | number>;
 }
 
@@ -46,6 +48,8 @@ export class AudioHooks {
   private readonly available: ReadonlySet<string>;
   private readonly sink: (p: CuePlay) => void;
   private readonly alias: Readonly<Record<string, string>>;
+  /** the listening tribe: a rival's cue with no position (charged, trained, born) is not heard; -1 hears all */
+  localTribe = -1;
 
   constructor(rules: Readonly<Record<string, CueRule>>, available: ReadonlySet<string>, sink: (p: CuePlay) => void = () => {}, alias: Readonly<Record<string, string>> = {}) {
     this.rules = rules;
@@ -61,6 +65,8 @@ export class AudioHooks {
       const r = this.rules[e.type];
       if (!r) continue;
       if (r.where && Object.entries(r.where).some(([k, v]) => e[k] !== v)) continue;
+      const placed = typeof e.x === "number" && typeof e.y === "number";
+      if (!placed && !r.global && this.localTribe >= 0 && typeof e.tribe === "number" && e.tribe >= 0 && e.tribe !== this.localTribe) continue;
       if (e.tick !== this.tick) {
         this.tick = e.tick;
         this.perTick.clear();

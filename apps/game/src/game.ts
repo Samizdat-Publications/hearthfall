@@ -1187,6 +1187,7 @@ export class Game {
         this.events,
         this.params.fixedStep ? (e) => (e.tick + 1) / hz : () => wall,
       );
+      this.audio.localTribe = this.localTribe;
       this.audio.consume(this.events);
     }
     // every frame, events or not: the battle, tension and hold windows only lapse when the director runs

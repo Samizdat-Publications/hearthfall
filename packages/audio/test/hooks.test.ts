@@ -51,4 +51,18 @@ describe("audio hooks (M6)", () => {
     expect(s.byCue["sfx.melee_hit"]).toBeGreaterThan(0);
     expect(s.byCue["sfx.died"]).toBeGreaterThan(0);
   });
+  it("a rival's unpositioned cue is not heard; positioned and global ones are (BACKLOG 93)", () => {
+    const played: string[] = [];
+    const avail = new Set(["sfx.charged", "sfx.trained", "sfx.eliminated", "sfx.chant"]);
+    const h = new AudioHooks(rules, avail, (p) => played.push(p.cue));
+    h.localTribe = 0;
+    h.consume([
+      { type: "charged", tick: 1, tribe: 1, spell: 0 },
+      { type: "trained", tick: 1, tribe: 2 },
+      { type: "charged", tick: 2, tribe: 0, spell: 0 },
+      { type: "chantBegun", tick: 2, tribe: 1, x: 3, y: 4 },
+      { type: "tribeEliminated", tick: 3, tribe: 2 },
+    ]);
+    expect(played).toEqual(["sfx.charged", "sfx.chant", "sfx.eliminated"]);
+  });
 });

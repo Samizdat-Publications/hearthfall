@@ -3,7 +3,7 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import * as THREE from "three";
-import { aliasModels, buildingModelIds, loadModels, splitModel, trimBase, unitModelId, withBanner, worshipModelId, TREE_MODELS } from "../src/models.ts";
+import { aliasModels, buildingModelIds, loadModels, modelTriangles, sceneGeometry, splitModel, trimBase, unitModelId, withBanner, worshipModelId, TREE_MODELS } from "../src/models.ts";
 
 const ROOT = new URL("../../../", import.meta.url);
 const style = JSON.parse(readFileSync(new URL("data/base/style.json", ROOT), "utf8"));
@@ -35,6 +35,19 @@ describe("models", () => {
     expect(banner.tint!.getAttribute("position").count).toBeGreaterThan(0);
   });
 
+  it("a scene with several meshes merges them all, transforms baked in (BACKLOG 93)", () => {
+    const scene = new THREE.Group();
+    const a = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1));
+    const b = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1));
+    b.position.set(5, 0, 0);
+    scene.add(a, b);
+    const g = sceneGeometry(scene)!;
+    expect(g.getAttribute("position").count).toBe(2 * 36);
+    g.computeBoundingBox();
+    expect(g.boundingBox!.max.x).toBeCloseTo(5.5, 5);
+    expect(g.getAttribute("color").count).toBe(2 * 36);
+  });
+
   it("every v1 building, unit, worship and tree model loads; units carry the tribe color; nothing is lost", async () => {
     const { models, report } = await loadModels(urls, AZURE, read);
     expect(report.failed).toEqual([]);
@@ -48,9 +61,9 @@ describe("models", () => {
     const missing = want.filter((id) => !models.has(id));
     expect(missing.sort()).toEqual([]);
     for (const [id, m] of models) {
-      // nothing lost in the split
+      // nothing lost in the split: every triangle of every mesh in the file (BACKLOG 93)
       const n = (m.body?.getAttribute("position").count ?? 0) + (m.tint?.getAttribute("position").count ?? 0);
-      expect(n % 3, id).toBe(0);
+      expect(n, id).toBe((await modelTriangles(await read(urls[id]))) * 3);
       expect(m.size.y, id).toBeGreaterThan(0.4);
     }
     for (const u of ["shaper", "settler", "warden", "firecaller", "chanter"]) expect(models.get(unitModelId(u))!.tintShare, u).toBeGreaterThan(0.03);

@@ -82,7 +82,11 @@ export class WebAudioPlayer {
       const ctx = this.ctx!;
       p = url
         ? fetch(url)
-            .then((r) => r.arrayBuffer())
+            .then((r) => {
+              // a 404 page is not audio (BACKLOG 93)
+              if (!r.ok) throw new Error(`${r.status} ${url}`);
+              return r.arrayBuffer();
+            })
             .then((b) => ctx.decodeAudioData(b))
             .catch(() => {
               this.failed.add(cue);

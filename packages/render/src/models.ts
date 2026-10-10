@@ -156,15 +156,43 @@ export function withBanner(parts: ModelParts, wood: THREE.Color, minShare = 0.01
   return { ...parts, body, tint };
 }
 
-/** The first mesh geometry of a parsed glTF scene, with its world transform baked in. */
-function sceneGeometry(scene: THREE.Object3D): THREE.BufferGeometry | null {
+/**
+ * Every mesh geometry of a parsed glTF scene with its world transform baked in, merged into one
+ * (BACKLOG 93: it used to keep only the first mesh). A single mesh is returned as is; several are
+ * merged as non-indexed position plus color (white where a mesh has no vertex colors).
+ */
+export function sceneGeometry(scene: THREE.Object3D): THREE.BufferGeometry | null {
   scene.updateMatrixWorld(true);
-  let out: THREE.BufferGeometry | null = null;
+  const parts: THREE.BufferGeometry[] = [];
   scene.traverse((o) => {
-    if (out || !(o instanceof THREE.Mesh)) return;
-    out = (o.geometry as THREE.BufferGeometry).clone().applyMatrix4(o.matrixWorld);
+    if (o instanceof THREE.Mesh) parts.push((o.geometry as THREE.BufferGeometry).clone().applyMatrix4(o.matrixWorld));
   });
-  return out;
+  if (parts.length <= 1) return parts[0] ?? null;
+  const pos: number[] = [];
+  const col: number[] = [];
+  for (const g0 of parts) {
+    const g = g0.index ? g0.toNonIndexed() : g0;
+    const p = g.getAttribute("position");
+    const c = g.getAttribute("color");
+    for (let i = 0; i < p.count; i++) {
+      pos.push(p.getX(i), p.getY(i), p.getZ(i));
+      if (c) col.push(c.getX(i), c.getY(i), c.getZ(i));
+      else col.push(1, 1, 1);
+    }
+  }
+  return geometryFrom(pos, col);
+}
+
+/** Triangles in every mesh of a GLB (tests: a load must keep them all). */
+export async function modelTriangles(data: ArrayBuffer): Promise<number> {
+  const gltf = await new GLTFLoader().parseAsync(data, "");
+  let n = 0;
+  gltf.scene.traverse((o) => {
+    if (!(o instanceof THREE.Mesh)) return;
+    const g = o.geometry as THREE.BufferGeometry;
+    n += (g.index ? g.index.count : g.getAttribute("position").count) / 3;
+  });
+  return n;
 }
 
 /** Parse one GLB (ArrayBuffer) into split parts. */
@@ -195,6 +223,8 @@ export async function loadModels(
       try {
         const m = await parseModel(await fetchBytes(url), markerHex);
         if (!m) throw new Error("no mesh");
+        // loaded once and shared by every world's layers: disposeGroup leaves these on the GPU (BACKLOG 93)
+        for (const g of [m.body, m.tint]) if (g) g.userData.shared = true;
         models.set(id, m);
         report.loaded.push(id);
       } catch {

@@ -404,6 +404,8 @@ export const StyleSchema = z
             cue: z.string().min(1),
             /** at most this many plays of the rule per sim tick (battles stay readable) */
             maxPerTick: z.number().int().positive().optional(),
+            /** BACKLOG 93: heard from every tribe even without a position (else a rival's unpositioned cue is skipped) */
+            global: z.boolean().optional(),
             /** play only when every listed event field equals the value */
             where: z
               .record(z.string(), z.union([z.string(), z.number()]))

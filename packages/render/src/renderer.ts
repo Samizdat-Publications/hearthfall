@@ -1043,6 +1043,7 @@ function disposeGroup(scene: THREE.Scene, group: THREE.Object3D): void {
   scene.remove(group);
   group.traverse((o) => {
     if (o instanceof THREE.InstancedMesh) o.dispose();
-    if (o instanceof THREE.Mesh) o.geometry.dispose();
+    // shared model geometry stays uploaded across setWorld (BACKLOG 93)
+    if (o instanceof THREE.Mesh && !o.geometry.userData.shared) o.geometry.dispose();
   });
 }
