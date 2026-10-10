@@ -70,7 +70,14 @@ export function troopView(w: World, tribe: number, sel: readonly number[], b: nu
   if (!units.length) return none;
   const s0 = E.stance[units[0]];
   const same = units.every((i) => E.stance[i] === s0);
-  return { ...none, kind: "units", label: `${units.length} selected`, stance: same ? STANCE_NAMES[s0] : null, canGarrison: towerFor(w, units) >= 0, units: unitMix(w, units) };
+  return { ...none, kind: "units", label: "", stance: same ? STANCE_NAMES[s0] : null, canGarrison: towerFor(w, units) >= 0, units: unitMix(w, units) };
+}
+
+/** Where to draw the rally flag: the selected own building's rally point, or null. */
+export function rallyMarker(w: World, tribe: number, b: number): { x: number; z: number } | null {
+  const E = w.ents;
+  if (b < 0 || !E.alive[b] || E.tribe[b] !== tribe || E.mode[b] !== 1) return null;
+  return { x: E.ax[b], z: E.ay[b] };
 }
 
 /** A Command without its tick (Game.command stamps it). */

@@ -75,3 +75,9 @@
 - 2026-10-10T01:48 set spells2 (9 shots): Look v3 (BACKLOG 14a, 14): tilt-shift post on by default, painted water, clumped trees, v3 dwellings, terrain bands, golden lighting preset; same layout, look diffs only
 - 2026-10-10T01:50 set levels (2 shots): Look v3 (BACKLOG 14a, 14): tilt-shift post on by default, painted water, clumped trees, v3 dwellings, terrain bands, golden lighting preset; same layout, look diffs only
 - 2026-10-10T01:52 set look (12 shots): First baselines for the look set (BACKLOG 14a, 14): tilt-shift off, pre and post, coast, peak, huts, lighting presets and rain; set joins npm run qa
+- 2026-10-10T02:45 set smoke (12 shots): BACKLOG 56: stance icons, build costs, no duplicate selected label
+- 2026-10-10T02:47 set look (12 shots): BACKLOG 56: HUD build costs and stance icons
+- 2026-10-10T02:48 set combat (7 shots): BACKLOG 56: HUD build costs and stance icons
+- 2026-10-10T02:48 set spells (8 shots): BACKLOG 56: HUD build costs and stance icons
+- 2026-10-10T02:55 set spells2 (9 shots): BACKLOG 56: HUD build costs and stance icons
+- 2026-10-10T02:57 set levels (2 shots): BACKLOG 56: HUD build costs and stance icons

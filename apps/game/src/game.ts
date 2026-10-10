@@ -63,6 +63,7 @@ import {
   areaCounts,
   buildingAt,
   groupCenter,
+  rallyMarker,
   sameTypeNear,
   siteAt,
   troopCommand,
@@ -996,6 +997,7 @@ export class Game {
     const visualTime = this.params.fixedStep
       ? this.world.tick / this.world.cfg.tickHz
       : now / 1000;
+    this.renderer.setRally(rallyMarker(this.world, this.localTribe, this.selectedBuilding));
     this.renderer.render(visualTime);
   }
 

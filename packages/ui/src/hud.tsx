@@ -134,11 +134,26 @@ export interface HudActions {
   setStance(s: (typeof STANCES)[number]): void;
 }
 
+/** Small stance glyphs: crossed blades, a shield, an open palm. */
+export function StanceIcon({ s }: { s: (typeof STANCES)[number] }) {
+  const d =
+    s === "aggressive"
+      ? "M3 3l10 10M13 3L3 13M2 12l2 2M14 12l-2 2"
+      : s === "defensive"
+        ? "M8 2l5 2v4c0 3-2 5-5 6-3-1-5-3-5-6V4z"
+        : "M5 14V7M7.5 14V4M10 14V5M12.5 14V8M5 14h7.5";
+  return (
+    <svg class="stance-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+      <path d={d} fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  );
+}
+
 function Troops({ t, act, pointing }: { t: TroopView; act: HudActions; pointing: string | null }) {
   if (t.kind === "none") return null;
   return (
     <div data-hud="troops" class="hud-panel hud-troops">
-      <span class="troops-label">{t.label}</span>
+      {t.label ? <span class="troops-label">{t.label}</span> : null}
       {t.units.length ? (
         <div class="troops-units">
           {t.units.map((u) => (
@@ -153,8 +168,8 @@ function Troops({ t, act, pointing }: { t: TroopView; act: HudActions; pointing:
       {t.kind === "units" ? (
         <div class="troops-row">
           {STANCES.map((s) => (
-            <button key={s} class={"prio" + (t.stance === s ? " on" : "")} title={`Stance: ${s}`} onClick={() => act.setStance(s)}>
-              {s[0].toUpperCase() + s.slice(1, 3)}
+            <button key={s} class={"prio stance" + (t.stance === s ? " on" : "")} title={`Stance: ${s}`} aria-label={`Stance: ${s}`} data-stance={s} onClick={() => act.setStance(s)}>
+              <StanceIcon s={s} />
             </button>
           ))}
           <button class="prio" title="Run to the nearest own Watchtower, else the Hearth (R)" onClick={() => act.retreat()}>
@@ -320,6 +335,17 @@ function Hud({ act }: { act: HudActions }) {
           <button key={bd.id} class={"build-btn" + (m.placing === bd.id ? " active" : "") + (bd.locked ? " locked" : "")} disabled={bd.locked !== null} onClick={() => (m.placing === bd.id ? act.cancel() : act.startPlacing(bd.id))} title={`${bd.name}: ${costText(bd)}${bd.key ? ` (${bd.key})` : ""}${bd.locked ? `, locked: ${bd.locked}` : ""}`}>
             {bd.icon ? <img class="build-icon" src={bd.icon} alt="" /> : null}
             {bd.name} {bd.key ? <span class="hotkey">{bd.key}</span> : null}
+            <span class="build-cost" data-cost>
+              {bd.wood}
+              <i class="res-wood" />
+              {bd.stone > 0 ? (
+                <>
+                  {" "}
+                  {bd.stone}
+                  <i class="res-stone" />
+                </>
+              ) : null}
+            </span>
           </button>
         ))}
       </div>

@@ -2,7 +2,7 @@
 import { describe, expect, it } from "vitest";
 import { STANCE, TASK } from "@hearthfall/sim";
 import { world } from "../../../packages/sim/test/helpers.ts";
-import { buildingAt, siteAt, troopCommand, troopView } from "../src/troops.ts";
+import { buildingAt, rallyMarker, siteAt, troopCommand, troopView } from "../src/troops.ts";
 
 function arena() {
   const w = world({ generator: "flat", size: 64, tribes: 2 });
@@ -31,15 +31,19 @@ describe("HUD troop controls (M6)", () => {
     expect(troopView(w, 0, [], lodge).count).toBe(3);
     run(w, troopCommand(w, 0, [], lodge, { kind: "rally", at: [30, 30] }));
     expect(troopView(w, 0, [], lodge).rally).toBe(true);
+    expect(rallyMarker(w, 0, lodge)).toEqual({ x: 30, z: 30 });
+    expect(rallyMarker(w, 1, lodge)).toBeNull();
+    expect(rallyMarker(w, 0, -1)).toBeNull();
     run(w, troopCommand(w, 0, [], lodge, { kind: "rally", at: null }));
     expect(troopView(w, 0, [], lodge).rally).toBe(false);
+    expect(rallyMarker(w, 0, lodge)).toBeNull();
   });
 
   it("a unit selection sets stance, garrisons in the nearest tower and ungarrisons; retreat is accepted", () => {
     const w = arena();
     const tower = w.ents.index(w.spawnBuilding("watchtower", 0, 30, 30));
     const sel = [0, 1, 2].map((k) => w.ents.index(w.spawnUnit("warden", 0, 26 + k, 30)));
-    expect(troopView(w, 0, sel, -1)).toMatchObject({ kind: "units", label: "3 selected", canGarrison: true });
+    expect(troopView(w, 0, sel, -1)).toMatchObject({ kind: "units", label: "", canGarrison: true });
     run(w, troopCommand(w, 0, sel, -1, { kind: "stance", stance: "passive" }));
     expect(sel.every((i) => w.ents.stance[i] === STANCE.passive)).toBe(true);
     expect(troopView(w, 0, sel, -1).stance).toBe("passive");

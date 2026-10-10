@@ -116,6 +116,8 @@ export class ThreeRenderer implements Renderer {
   alpha = 1;
   selected: ReadonlySet<number> = new Set();
   private ghost: THREE.Mesh;
+  /** Rally flag of the selected lodge (pole plus pennant), hidden when none. */
+  readonly rally = new THREE.Group();
   readonly vfx: VfxLayer;
   readonly retro: RetroPass;
   private hearthLights: THREE.PointLight[] = [];
@@ -248,6 +250,24 @@ export class ThreeRenderer implements Renderer {
     this.ghost.visible = false;
     this.ghost.frustumCulled = false;
     this.scene.add(this.ghost);
+    const pole = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.04, 0.05, 1.6, 5).translate(0, 0.8, 0),
+      bendMaterial(new THREE.MeshBasicMaterial({ color: "#5a3d26" }), this.bend),
+    );
+    const pennant = new THREE.Mesh(
+      new THREE.BufferGeometry().setAttribute(
+        "position",
+        new THREE.Float32BufferAttribute([0, 1.55, 0, 0.75, 1.35, 0, 0, 1.12, 0], 3),
+      ),
+      bendMaterial(
+        new THREE.MeshBasicMaterial({ color: "#e0a12a", side: THREE.DoubleSide }),
+        this.bend,
+      ),
+    );
+    this.rally.add(pole, pennant);
+    this.rally.visible = false;
+    for (const m of [pole, pennant]) m.frustumCulled = false;
+    this.scene.add(this.rally);
     this.vfx = new VfxLayer(this.bend);
     this.scene.add(this.vfx.group);
     const ringMat = (color: string) =>
@@ -793,6 +813,22 @@ export class ThreeRenderer implements Renderer {
     (this.areaRing.material as THREE.MeshBasicMaterial).color.set(
       t.inRange ? "#ffd23a" : "#e0a12a",
     );
+  }
+
+  /** Show the rally flag at grid point (x, z), or hide it with null. */
+  setRally(p: { x: number; z: number } | null): void {
+    if (!p || !this.world) {
+      this.rally.visible = false;
+      return;
+    }
+    const t = this.world.terrain;
+    let ox = p.x - this.cam.x;
+    let oz = p.z - this.cam.z;
+    ox -= Math.round(ox / t.size) * t.size;
+    oz -= Math.round(oz / t.size) * t.size;
+    const h = Math.max(t.sea, t.get(Math.round(p.x), Math.round(p.z)));
+    this.rally.position.set(this.cam.x + ox, h * this.palette.heightScale, this.cam.z + oz);
+    this.rally.visible = true;
   }
 
   /** Show or hide the building placement ghost (footprint quad, green when buildable, red when not). */

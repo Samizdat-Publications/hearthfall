@@ -298,7 +298,7 @@
      "step": 2
     },
     {
-     "assert": "document.querySelector('[data-hud=troops]') !== null && document.querySelector('[data-hud=troops] .prio.on').textContent.trim() === 'Def'"
+     "assert": "document.querySelector('[data-hud=troops]') !== null && document.querySelector('[data-hud=troops] .prio.on').dataset.stance === 'defensive'"
     },
     {
      "assert": "__game.troop({ kind: 'train', n: 1 }) === false && __game.troop({ kind: 'retreat' }) === true"

@@ -85,3 +85,9 @@ body.debug-overlap-hud .hud-overlap { display: block; }
 .hud-subtitle b { color: #e0b04a; }
 /* BACKLOG 8: --hud-scale is the UI scale setting stepped down until the panels fit the window (apps/game/src/hudFit.ts) */
 .hud-panel { zoom: var(--hud-scale, var(--ui-scale, 1)); }
+.prio.stance { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; min-width: 28px; }
+.stance-icon { display: block; }
+.build-cost { display: block; font-size: 10px; font-weight: 500; opacity: 0.85; margin-top: 1px; }
+.build-cost i { display: inline-block; width: 7px; height: 7px; margin: 0 2px 0 2px; border-radius: 2px; vertical-align: 0; }
+.res-wood { background: #b07a3e; }
+.res-stone { background: #a7a39b; }
