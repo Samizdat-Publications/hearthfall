@@ -59,7 +59,39 @@ export function domCheckFn() {
       else if (ix > -4 && iy > -4) issues.push(`${rects[a].id} crowds ${rects[b].id}`);
     }
   }
-  return { count: els.length, issues };
+  // BACKLOG 74: a scrolling panel (the menus) is one data-hud rect, so the checks above never look inside it.
+  // Its parts (controls with data-ui, labels, data-hud-part) must not overlap each other, clip their text or
+  // stick out sideways, and content taller than the panel must be reachable by scrolling.
+  const scrolls = [];
+  let parts = 0;
+  for (const { id, r, e } of rects) {
+    const cs = getComputedStyle(e);
+    const scrollable = cs.overflowY === "auto" || cs.overflowY === "scroll";
+    if (e.scrollHeight > e.clientHeight + 1) {
+      if (scrollable) scrolls.push(id);
+      else issues.push(`${id} vertical overflow (content ${e.scrollHeight} px in ${e.clientHeight} px, not scrollable)`);
+    }
+    if (!scrollable) continue;
+    const ps = [...e.querySelectorAll("[data-ui], [data-hud-part], label")]
+      .filter((p) => p.getClientRects().length > 0 && getComputedStyle(p).visibility !== "hidden")
+      .map((p) => ({ p, b: p.getBoundingClientRect(), name: p.getAttribute("data-ui") ?? p.getAttribute("data-hud-part") ?? `label "${(p.textContent ?? "").trim().slice(0, 20)}"` }));
+    parts += ps.length;
+    for (const { p, b, name } of ps) {
+      if (b.left < r.left - 1 || b.right > r.right + 1) issues.push(`${id}: ${name} sticks out of the panel`);
+      if (p.tagName === "BUTTON" && p.scrollWidth > p.clientWidth + 1) issues.push(`${id}: ${name} text overflow`);
+    }
+    for (let a = 0; a < ps.length; a++) {
+      for (let b = a + 1; b < ps.length; b++) {
+        const P = ps[a];
+        const Q = ps[b];
+        if (P.p.contains(Q.p) || Q.p.contains(P.p)) continue;
+        const ix = Math.min(P.b.right, Q.b.right) - Math.max(P.b.left, Q.b.left);
+        const iy = Math.min(P.b.bottom, Q.b.bottom) - Math.max(P.b.top, Q.b.top);
+        if (ix > 2 && iy > 2) issues.push(`${id}: ${P.name} overlaps ${Q.name}`);
+      }
+    }
+  }
+  return { count: els.length, parts, scrolls, issues };
 }
 
 async function runSteps(page, steps) {
