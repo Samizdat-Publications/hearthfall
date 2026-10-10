@@ -275,7 +275,9 @@ export class UnitSystem {
         this.stop(i);
         continue;
       }
-      this.paths[i] = r.waypoints;
+      // BACKLOG 73: start is the snapped goal (an empty path): the route is that vertex, so a unit on the shore
+      // ordered into the sea arrives there instead of steering at the raw goal in the water and giving up
+      this.paths[i] = r.waypoints.length ? r.waypoints : Int32Array.of(goal);
       E.pathPos[i] = 0;
       // a repath onto a longer detour (BACKLOG 7, soak seed 1008): progress restarts against the new
       // route, or the unit would give up while walking it; a same-length route keeps the stuck count. Not

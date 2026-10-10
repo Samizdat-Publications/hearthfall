@@ -215,7 +215,9 @@ export class CombatSystem {
   private canReach(i: number, j: number, d: number): boolean {
     const E = this.w.ents;
     if (E.inside[i] >= 0 || d <= this.reachOf(i, j)) return true;
-    return this.compAt(E.x[i], E.y[i]) === this.compAt(E.x[j], E.y[j]);
+    // BACKLOG 70: a stranded attacker (no walkable cell near) reaches nothing out of reach
+    const c = this.compAt(E.x[i], E.y[i]);
+    return c >= 0 && c === this.compAt(E.x[j], E.y[j]);
   }
 
   /** Best target for unit i within radius r (and at least minRange away): units first (preferred types count as closer), then buildings. */
@@ -270,7 +272,7 @@ export class CombatSystem {
           if (!this.validTarget(i, j)) continue;
           if (E.inside[i] < 0 && d > this.reachOf(i, j)) {
             if (compI === -2) compI = this.compAt(x, y);
-            if (compI !== this.compAt(E.x[j], E.y[j])) continue;
+            if (compI < 0 || compI !== this.compAt(E.x[j], E.y[j])) continue;
           }
           bestScore = s;
           best = j;

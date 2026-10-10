@@ -496,4 +496,24 @@ describe("target acquisition (bench regression, BACKLOG 0a)", () => {
     expect(checked).toBeGreaterThan(1000);
     expect(found).toBeGreaterThan(300);
   });
+
+  // BACKLOG 70: two units stranded on ground with no walkable cell within snapRadius (a field of sheer
+  // spikes) used to share component -1 and count as reachable, so a Warden chased a target it could never reach
+  it("a stranded unit does not acquire a stranded target out of reach", () => {
+    const w = arena();
+    const t = w.terrain;
+    for (let y = 18; y <= 46; y++) for (let x = 18; x <= 46; x++) t.heights[t.idx(x, y)] = (x + y) % 2 ? 300 : 900;
+    t.version++;
+    const E = w.ents;
+    const a = E.index(w.spawnUnit("warden", 0, 32, 32));
+    w.spawnUnit("warden", 1, 36, 32);
+    E.stance[a] = STANCE.aggressive;
+    const acquired: number[] = [];
+    for (let k = 0; k < 40; k++) {
+      w.step([]);
+      if (E.alive[a] && E.atk[a] !== NO_ENTITY) acquired.push(k);
+    }
+    expect(E.alive[a]).toBe(1);
+    expect(acquired).toEqual([]);
+  });
 });
