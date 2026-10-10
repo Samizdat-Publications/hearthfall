@@ -386,6 +386,74 @@
           ],
           "additionalProperties": false
         },
+        "groundDetail": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "radius": {
+              "type": "number",
+              "minimum": 4,
+              "maximum": 64
+            },
+            "maxZoom": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "tufts": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 6
+            },
+            "flowers": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "pebbles": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 4
+            },
+            "shoreBand": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "highBand": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "maxSlope": {
+              "type": "number",
+              "minimum": 0
+            },
+            "flowerColors": {
+              "maxItems": 8,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}$"
+              }
+            }
+          },
+          "required": [
+            "enabled",
+            "radius",
+            "maxZoom",
+            "tufts",
+            "flowers",
+            "pebbles",
+            "shoreBand",
+            "highBand",
+            "maxSlope",
+            "flowerColors"
+          ],
+          "additionalProperties": false
+        },
         "camera": {
           "type": "object",
           "properties": {

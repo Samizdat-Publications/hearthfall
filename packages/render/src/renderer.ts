@@ -21,6 +21,7 @@ import {
   type TerrainPalette,
 } from "./terrainMesh.ts";
 import { TreeLayer } from "./props.ts";
+import { GroundDetailLayer } from "./groundDetail.ts";
 import { UnitLayer } from "./unitsLayer.ts";
 import { BuildingLayer } from "./buildingsLayer.ts";
 import { WorshipLayer } from "./worshipLayer.ts";
@@ -103,6 +104,8 @@ export class ThreeRenderer implements Renderer {
   private lighting: LightingLook | null = null;
   readonly rain = new RainLayer();
   private trees: TreeLayer;
+  /** BACKLOG 39: grass tufts, flowers and pebbles near the focus (null when style.json turns it off) */
+  private groundDetail: GroundDetailLayer | null = null;
   private models: Map<string, ModelParts> | null = null;
   private modelReport: ModelLoadReport | null = null;
   private modelsPending = false;
@@ -243,6 +246,10 @@ export class ThreeRenderer implements Renderer {
     );
     this.trees = new TreeLayer(this.propMat, pal, null, 8192, rs?.trees);
     for (const m of this.trees.meshes) this.scene.add(m);
+    if (rs?.groundDetail?.enabled ?? true) {
+      this.groundDetail = new GroundDetailLayer(this.propMat, pal, rs?.groundDetail);
+      for (const m of this.groundDetail.meshes) this.scene.add(m);
+    }
     this.ghost = new THREE.Mesh(
       new THREE.PlaneGeometry(1, 1, 4, 4).rotateX(-Math.PI / 2),
       bendMaterial(
@@ -691,6 +698,7 @@ export class ThreeRenderer implements Renderer {
       for (const c of this.chunks) c.place(fx, fz, size);
       this.syncFog(w);
       this.trees.update(w, fx, fz, this.palette.heightScale);
+      this.groundDetail?.update(w, fx, fz, this.palette.heightScale, this.cam.zoom, this.cam.map);
       this.buildings?.update(
         w,
         fx,

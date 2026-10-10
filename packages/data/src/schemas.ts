@@ -398,6 +398,22 @@ export const StyleSchema = z
             woodFull: pos.optional(),
           })
           .optional(),
+        /** BACKLOG 39: close-up grass tufts, flowers and pebbles (render groundDetail.ts); omitted = code defaults */
+        groundDetail: z
+          .strictObject({
+            enabled: z.boolean(),
+            radius: z.number().min(4).max(64),
+            maxZoom: z.number().min(0).max(1),
+            tufts: z.number().min(0).max(6),
+            flowers: z.number().min(0).max(1),
+            pebbles: z.number().min(0).max(4),
+            shoreBand: z.number().min(0).max(1),
+            highBand: z.number().min(0).max(1),
+            maxSlope: pos,
+            flowerColors: z.array(z.string().regex(/^#[0-9a-fA-F]{6}$/)).max(8),
+          })
+          .refine((g) => g.highBand > g.shoreBand, "highBand must be above shoreBand")
+          .optional(),
         /** BACKLOG 41: the camera rig against zoom z (0 close, 1 globe): distance = base + quad z^2 + linear z,
          * pitch = base + linear z (radians), bend = base + quad z^2, fog from distance * nearMul to
          * distance * farMul + farAdd + farQuad z^2. Absent keys keep the look v2 rig. */

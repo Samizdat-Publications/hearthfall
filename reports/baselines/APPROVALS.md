@@ -112,3 +112,12 @@
 - 2026-10-10T11:00 set menus (9 shots): BACKLOG 14b: skirmish setup Weather row
 - 2026-10-10T13:08 set forge (1 shots): 0.3 percent drift since block G (later look and sim changes); moat, Hearth and units correct
 - 2026-10-10T13:28 set smoke (13 shots): BACKLOG 52: new hud_narrow shot at 1024x640 (DOM layout check at a narrow width); other shots unchanged
+- 2026-10-10T13:45 set look (12 shots): BACKLOG 39 ground detail (grass tufts, flowers, pebbles) at zoom 0.3 and closer
+- 2026-10-10T13:47 set smoke (13 shots): BACKLOG 39 ground detail at close zoom
+- 2026-10-10T13:48 set combat (7 shots): BACKLOG 39 ground detail at close zoom (flat field tufts and flowers, units still read)
+- 2026-10-10T13:48 set spells (9 shots): BACKLOG 39 ground detail at close zoom; spell VFX still read
+- 2026-10-10T13:48 set spells2 (9 shots): BACKLOG 39 ground detail at close zoom
+- 2026-10-10T13:49 set vehicles (3 shots): BACKLOG 39 ground detail at close zoom
+- 2026-10-10T13:49 set levels (5 shots): BACKLOG 39 ground detail at close zoom
+- 2026-10-10T13:50 set forge (1 shots): BACKLOG 39 ground detail at close zoom
+- 2026-10-10T13:52 set look (13 shots): BACKLOG 39: new islands_lowland watch shot

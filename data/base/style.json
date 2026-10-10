@@ -83,6 +83,7 @@
     },
     "terrainBands": { "snowStart": 445, "snowFull": 495, "strataSand": 0.55, "snowBright": 1.55 },
     "trees": { "clumpLow": 0.75, "clumpHigh": 0.08, "bandLow": 0.12, "bandHigh": 0.4, "modelShare": 0.15, "hueJitter": 0.12, "sizeBase": 0.8, "sizeJitter": 0.5, "sizeAtNoWood": 0.6, "woodFull": 4 },
+    "groundDetail": { "enabled": true, "radius": 22, "maxZoom": 0.3, "tufts": 1.1, "flowers": 0.25, "pebbles": 0.5, "shoreBand": 0.04, "highBand": 0.55, "maxSlope": 3, "flowerColors": ["#f2e6c8", "#e8c33a", "#d86a8a", "#b07cff"] },
     "camera": {
       "$comment": "BACKLOG 41: rig curves against zoom z (0 close, 1 globe): distance = base + quad z^2 + linear z; pitch = base + linear z (radians); bend = base + quad z^2; fog near = distance * nearMul, far = distance * farMul + farAdd + farQuad z^2.",
       "distance": { "base": 11, "linear": 20, "quad": 120 },
