@@ -16,6 +16,7 @@ import { updateEffects } from "./effects.ts";
 import { CombatSystem } from "./combat.ts";
 import { WorshipSystem, type WorshipState } from "./worship.ts";
 import { LevelRuntime, type LevelInit, type LevelSaved } from "./level.ts";
+import { RulesRuntime, type RulesSaved } from "./rules.ts";
 import { VisionSystem, type VisionState } from "./vision.ts";
 
 /** Deterministic in-sim decision maker (AI opponent or test bot); emits Commands at its cadence. */
@@ -60,6 +61,8 @@ export interface WorldInit {
   populate?: boolean;
   /** M9 campaign level (createLevelWorld): objectives, lose conditions and triggers run in step 9 */
   level?: LevelInit;
+  /** BACKLOG 13 (ADR-014): skirmish victory variant id from balance.victory (absent: no sim rules, older replays) */
+  rules?: string;
 }
 
 export interface HashParts {
@@ -89,6 +92,7 @@ export interface WorldSnapshot {
   /** BACKLOG 3: present only with fog of war on */
   vision?: VisionState;
   level?: LevelSaved;
+  rules?: RulesSaved;
 }
 
 export class World {
@@ -114,6 +118,8 @@ export class World {
   vision: VisionSystem;
   /** null outside campaign levels */
   level: LevelRuntime | null;
+  /** BACKLOG 13: skirmish victory rules (null without WorldInit.rules) */
+  rules: RulesRuntime | null;
   controllers: Controller[] = [];
   readonly mapInfo: { generator: string; seedUsed: number; rerolls: number; landFraction: number };
 
@@ -134,6 +140,7 @@ export class World {
     const tribeCount = init.map.tribes ?? gen.hearths.length;
     this.vision.init(tribeCount);
     for (let t = 0; t < tribeCount; t++) this.tribes.push({ index: t, color: TRIBE_COLORS[t % 4], hearth: NO_ENTITY, alive: true, eco: newTribeEco(this), shaper: NO_ENTITY, respawnAt: -1, casting: null, pending: null });
+    this.rules = init.rules ? new RulesRuntime(this, init.rules) : null;
     if (init.populate !== false) {
       gen.hearths.forEach((h, t) => this.spawnBuilding("hearth", t, h.x, h.y));
       gen.hearths.forEach((h, t) => this.spawnStartUnits(t, h.x, h.y));
@@ -302,6 +309,7 @@ export class World {
     // 9. worship, then level triggers, objectives and outcome (rewards may queue terrain ops: applied in the same tick so snapshots stay legal)
     this.worship.update();
     this.level?.update();
+    this.rules?.update();
     this.flushTerrain();
     // 10. periodic upkeep
     if (this.tick % this.cfg.tickHz === this.cfg.tickHz - 1) this.terrain.healScars();
@@ -460,6 +468,7 @@ export class World {
     }
     this.worship.hashInto(mf);
     this.level?.hashInto(mf);
+    this.rules?.hashInto(mf);
     this.vision.hashInto(mf);
     const meta = mf.hex();
     const all = new Fnv().u32(parseInt(terrain, 16)).u32(parseInt(entities, 16)).u32(parseInt(rng, 16)).u32(parseInt(meta, 16)).hex();
@@ -489,6 +498,7 @@ export class World {
       unitsTerrainVersion: this.units.lastVersion,
       ...(this.worship.sites.length || this.worship.granted.some((g) => g.length) ? { worship: this.worship.save() } : {}),
       ...(this.level ? { level: this.level.save() } : {}),
+      ...(this.rules ? { rules: this.rules.save() } : {}),
       ...(this.vision.on ? { vision: this.vision.save() } : {}),
     };
   }
@@ -515,6 +525,7 @@ export class World {
     w.units.lastVersion = snap.unitsTerrainVersion;
     if (snap.worship) w.worship.load(snap.worship);
     if (snap.level && w.level) w.level.load(snap.level);
+    if (snap.rules && w.rules) w.rules.load(snap.rules);
     if (snap.vision && w.vision.on) w.vision.load(snap.vision);
     return w;
   }

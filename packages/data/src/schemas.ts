@@ -174,6 +174,30 @@ export const BalanceSchema = z.strictObject({
     })
     .optional(),
   /**
+   * BACKLOG 13 (ADR-014): skirmish victory variants, run by the sim's RulesRuntime. Conquest (the last tribe
+   * standing wins) applies under every variant. holdSites: a tribe that alone has people within controlRadius
+   * of every site for `seconds` in a row wins; kingOfHill: the tribe with the most people at the first site
+   * scores, `seconds` in all wins; lastStand: after `minutes` the tribe with the most followers wins.
+   * Optional so frozen packs keep their hash.
+   */
+  victory: z
+    .strictObject({
+      ...comment,
+      controlRadius: pos,
+      default: id,
+      variants: z
+        .array(
+          z.discriminatedUnion("type", [
+            z.strictObject({ ...comment, id, type: z.literal("conquest"), name: z.string(), text: z.string() }),
+            z.strictObject({ ...comment, id, type: z.literal("holdSites"), seconds: pos, name: z.string(), text: z.string() }),
+            z.strictObject({ ...comment, id, type: z.literal("kingOfHill"), seconds: pos, name: z.string(), text: z.string() }),
+            z.strictObject({ ...comment, id, type: z.literal("lastStand"), minutes: pos, name: z.string(), text: z.string() }),
+          ]),
+        )
+        .min(1),
+    })
+    .optional(),
+  /**
    * BACKLOG 1: worship sites on generated (skirmish) maps, at points equidistant from each pair of Hearths
    * and at that point's opposite on the wrapped planet; sites take the list entries in turn. Optional so
    * frozen packs keep their hash.

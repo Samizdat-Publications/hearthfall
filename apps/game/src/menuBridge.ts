@@ -23,6 +23,15 @@ const LOST_WHY: Record<string, string> = {
   hearthLost: "Your Hearth has fallen.",
 };
 
+/** BACKLOG 13: end screen lines for a skirmish decided by the sim rules (won, lost) */
+const RULES_WHY: Record<string, [string, string]> = {
+  conquest: ["Every rival tribe has fallen.", "A rival tribe conquered the planet."],
+  holdSites: ["You held every Reliquary.", "A rival tribe held every Reliquary."],
+  kingOfHill: ["You held the hill.", "A rival tribe held the hill."],
+  lastStand: ["Your tribe was the largest when time ran out.", "A rival tribe was larger when time ran out."],
+  eliminated: ["", "Your tribe is no more."],
+};
+
 /** generator limit: TRIBE_COLORS has four entries */
 const MAX_TRIBES = 4;
 
@@ -32,13 +41,15 @@ interface SetupState {
   seed: number;
   opponents: string[];
   difficulty: string;
+  victory: string;
   error: string | null;
 }
 
 export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => void } {
   const sk = game.pack.files.balance.skirmish ?? SKIRMISH_DEFAULTS;
   const ai = game.pack.files.ai;
-  const setup: SetupState = { map: sk.maps[0], size: sk.defaultSize, seed: 1, opponents: [...sk.defaultOpponents], difficulty: sk.defaultDifficulty, error: null };
+  const vic = game.pack.files.balance.victory;
+  const setup: SetupState = { map: sk.maps[0], size: sk.defaultSize, seed: 1, opponents: [...sk.defaultOpponents], difficulty: sk.defaultDifficulty, victory: vic?.default ?? "", error: null };
   const saves = { mode: "load" as "save" | "load", message: null as string | null };
   let settingsMsg: string | null = null;
   const maxOpponents = Math.min(sk.maxOpponents, MAX_TRIBES - 1);
@@ -66,6 +77,9 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
         seed: setup.seed,
         opponents: setup.opponents,
         difficulty: setup.difficulty,
+        victories: (vic?.variants ?? []).map((v) => ({ value: v.id, label: v.name })),
+        victory: setup.victory,
+        victoryText: vic?.variants.find((v) => v.id === setup.victory)?.text ?? "",
         error: setup.error,
       },
       settings: {
@@ -107,7 +121,9 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
                   title: game.ended.won ? "Level won" : "Level lost",
                   tag: game.ended.won ? `${w.level.def.name} is yours.${game.nextLevelId() ? "" : " The campaign is complete."}` : (LOST_WHY[game.ended.why ?? ""] ?? "Your tribe is no more."),
                 }
-              : {}),
+              : game.ended.why && RULES_WHY[game.ended.why]
+                ? { tag: RULES_WHY[game.ended.why][game.ended.won ? 0 : 1] }
+                : {}),
             lines: [
               { label: "Time", value: clock(w.tick, hz) },
               { label: "Followers", value: String(me ? w.economy.followers(me.index) : 0) },
@@ -144,7 +160,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
       return refresh();
     }
     setup.error = null;
-    const sp: SkirmishParams = { seed, level: setup.map, size: setup.size, tribes: 1 + setup.opponents.length, ai: [...setup.opponents], difficulty: setup.difficulty };
+    const sp: SkirmishParams = { seed, level: setup.map, size: setup.size, tribes: 1 + setup.opponents.length, ai: [...setup.opponents], difficulty: setup.difficulty, ...(setup.victory ? { rules: setup.victory } : {}) };
     try {
       game.startSkirmish(sp);
     } catch (e) {

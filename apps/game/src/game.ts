@@ -171,6 +171,8 @@ export interface GameParams {
   /** opponent controller per non-local tribe in order: a personality id, "economy" or "none" (cycled) */
   ai: string[];
   difficulty: string;
+  /** BACKLOG 13: victory variant (rules=hold_sites); null uses balance.victory.default */
+  rules: string | null;
   /** M9: boot straight into this campaign level (shots and debugging; ignores campaign progress) */
   campaign: string | null;
   /** M10: load the real GLB models (models=0 keeps the procedural placeholders) */
@@ -207,6 +209,7 @@ export function parseParams(search: string): GameParams {
     menu: [...q.keys()].length === 0 || q.get("menu") === "1",
     ai: q.get("ai") ? q.get("ai")!.split(",").filter(Boolean) : DEFAULT_AI,
     difficulty: q.get("difficulty") ?? "normal",
+    rules: q.get("rules"),
     campaign: q.get("campaign"),
     models: q.get("models") !== "0",
     reveal: q.get("reveal") === "1",
@@ -435,6 +438,7 @@ export class Game {
       tribes: this.params.tribes,
       ai: [...this.params.ai],
       difficulty: this.params.difficulty,
+      ...(this.params.rules ?? p.files.balance.victory?.default ? { rules: (this.params.rules ?? p.files.balance.victory?.default)! } : {}),
     };
     this.world = def
       ? createScenarioWorld(def, p.files, p.hash)
@@ -495,6 +499,7 @@ export class Game {
       tribes: sp.tribes,
       ai: [...sp.ai],
       difficulty: sp.difficulty,
+      rules: sp.rules ?? null,
       scenario: null,
       camera: null,
     };
@@ -556,6 +561,7 @@ export class Game {
       tribes: sp.tribes,
       ai: [...sp.ai],
       difficulty: sp.difficulty,
+      rules: sp.rules ?? null,
       scenario: null,
       camera: null,
     };
@@ -661,9 +667,17 @@ export class Game {
     if (this.world.tribes.length < 2) return;
     const ts = this.world.tribes;
     const me = ts[this.localTribe];
-    const rivalsOut = ts.every((t) => t.index === this.localTribe || !t.alive);
-    if (me?.alive && !rivalsOut) return;
-    this.ended = { won: Boolean(me?.alive) };
+    const rules = this.world.rules;
+    if (rules) {
+      // BACKLOG 13 (ADR-014): the sim decides the winner; losing the local tribe ends the match for the player
+      if (me?.alive && rules.winner < 0) return;
+      this.ended = { won: Boolean(me?.alive) && rules.winner === this.localTribe, why: me?.alive ? rules.why : "eliminated" };
+    } else {
+      // saves from before the sim rules: every rival out wins, the local tribe out loses
+      const rivalsOut = ts.every((t) => t.index === this.localTribe || !t.alive);
+      if (me?.alive && !rivalsOut) return;
+      this.ended = { won: Boolean(me?.alive) };
+    }
     if (this.ended.won) this.voice("voice.shaper.victory");
     this.cancelModes();
     this.screen = "end";

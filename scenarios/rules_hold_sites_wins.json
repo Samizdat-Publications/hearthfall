@@ -1,0 +1,123 @@
+{
+  "id": "rules_hold_sites_wins",
+  "description": "BACKLOG 13: Hold the Reliquaries: Wardens posted at both Reliquaries with no rival near either hold them for the variant's two minutes and win; the run is not won before.",
+  "tags": [
+    "fast",
+    "rules"
+  ],
+  "seed": 5,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2
+  },
+  "rules": "hold_sites",
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        8,
+        32
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        10,
+        30
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        56,
+        32
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        54,
+        30
+      ]
+    },
+    {
+      "spawn": "reliquary",
+      "at": [
+        24,
+        32
+      ],
+      "site": {
+        "tag": "west",
+        "rewards": [
+          {
+            "type": "charges",
+            "spell": "bolt",
+            "n": 1
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "reliquary",
+      "at": [
+        40,
+        32
+      ],
+      "site": {
+        "tag": "east",
+        "rewards": [
+          {
+            "type": "charges",
+            "spell": "bolt",
+            "n": 1
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        24,
+        30
+      ],
+      "count": 2
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        40,
+        30
+      ],
+      "count": 2
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": 0,
+      "type": "setStance",
+      "args": {
+        "units": "tribe0.wardens",
+        "stance": "passive"
+      }
+    }
+  ],
+  "runTicks": 2600,
+  "assert": [
+    {
+      "at": 2000,
+      "expr": "rules.winner == -1 && rules.held(0) > 60"
+    },
+    {
+      "at": 2600,
+      "expr": "rules.winner == 0 && rules.why == 'holdSites' && invariants() == 0"
+    }
+  ]
+}

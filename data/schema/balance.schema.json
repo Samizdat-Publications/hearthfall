@@ -758,6 +758,167 @@
       ],
       "additionalProperties": false
     },
+    "victory": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "controlRadius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "default": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "variants": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "$comment": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]*$"
+                  },
+                  "type": {
+                    "type": "string",
+                    "const": "conquest"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "type",
+                  "name",
+                  "text"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "$comment": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]*$"
+                  },
+                  "type": {
+                    "type": "string",
+                    "const": "holdSites"
+                  },
+                  "seconds": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "type",
+                  "seconds",
+                  "name",
+                  "text"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "$comment": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]*$"
+                  },
+                  "type": {
+                    "type": "string",
+                    "const": "kingOfHill"
+                  },
+                  "seconds": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "type",
+                  "seconds",
+                  "name",
+                  "text"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "$comment": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]*$"
+                  },
+                  "type": {
+                    "type": "string",
+                    "const": "lastStand"
+                  },
+                  "minutes": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "type",
+                  "minutes",
+                  "name",
+                  "text"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "controlRadius",
+        "default",
+        "variants"
+      ],
+      "additionalProperties": false
+    },
     "skirmishWorship": {
       "type": "object",
       "properties": {

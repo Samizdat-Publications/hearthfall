@@ -123,9 +123,15 @@ async function flow(browser, url, vp) {
     await click("setup-remove-3");
     await page.fill('[data-ui="setup-seed"]', "1");
     await page.dispatchEvent('[data-ui="setup-seed"]', "change");
+    // BACKLOG 13: a victory variant from the setup reaches the sim, the HUD and the end screen
+    await page.selectOption('[data-ui="setup-victory"]', "king_of_hill");
+    const vicText = await page.textContent('[data-ui="setup-victory-text"]');
+    if (!/4 minutes/.test(vicText ?? "")) problem(`victory hint for King of the Hill: ${vicText}`);
     await check("setup");
     await click("start");
     await screenIs("none");
+    const rules = await page.evaluate(() => window.__game.rules());
+    if (rules?.id !== "king_of_hill" || rules.winner !== -1) problem(`skirmish rules ${JSON.stringify(rules)}`);
     const tribes = await page.evaluate(() => window.__game.getSummary().tribes.length);
     if (tribes !== 3) problem(`skirmish has ${tribes} tribes, expected 3`);
     await page.evaluate(() => window.__game.step(200));
@@ -187,6 +193,9 @@ async function flow(browser, url, vp) {
     await check("end");
     const title = await page.textContent('[data-ui="end-title"]');
     if (title?.trim() !== "Victory") problem(`end title ${title}`);
+    const tag = await page.textContent('[data-ui="end-tag"]');
+    const vic = await page.evaluate(() => window.__game.rules());
+    if (vic?.winner !== 0 || vic.why !== "conquest" || tag?.trim() !== "Every rival tribe has fallen.") problem(`variant end: ${JSON.stringify(vic)} tag ${tag}`);
     await click("main-menu");
     await screenIs("main");
     await settle();

@@ -20,6 +20,8 @@ export interface SkirmishParams {
   /** opponent per non-local tribe (personality id, "economy" or "none"), cycled */
   ai: string[];
   difficulty: string;
+  /** BACKLOG 13 (ADR-014): victory variant id (balance.victory) run by the sim; absent in older saves (app-side conquest) */
+  rules?: string;
   /** M9: set when this session is a campaign level (the other fields then mirror the level) */
   campaign?: { def: LevelDef; carry: CampaignCarry };
 }
@@ -41,7 +43,7 @@ export function campaignParams(def: LevelDef, carry: CampaignCarry): SkirmishPar
 
 export function skirmishInit(pack: ValidatedPack, p: SkirmishParams): WorldInit {
   if (p.campaign) return { pack: pack.files, packHash: pack.hash, seed: p.campaign.def.seed, map: levelMap(p.campaign.def), populate: false, level: { def: p.campaign.def, carry: p.campaign.carry } };
-  return { pack: pack.files, packHash: pack.hash, seed: p.seed, map: { generator: p.level, size: p.size, tribes: p.tribes } };
+  return { pack: pack.files, packHash: pack.hash, seed: p.seed, map: { generator: p.level, size: p.size, tribes: p.tribes }, ...(p.rules ? { rules: p.rules } : {}) };
 }
 
 /** A new skirmish (or campaign level) world with its opponents attached. */

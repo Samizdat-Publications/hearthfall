@@ -164,6 +164,7 @@ function aiReport(mode, results, minutes, idleGate) {
     lines.push(`bots: ${rows.join("; ")}`.slice(0, 600));
   } else {
     const wins = {};
+    const whys = {};
     const lengths = [];
     let stalemates = 0;
     for (const r of results) {
@@ -171,6 +172,7 @@ function aiReport(mode, results, minutes, idleGate) {
       if (r.ai.alive.length === 1) {
         const p = r.ai.ais.find((a) => a.tribe === r.ai.alive[0])?.personality ?? "?";
         wins[p] = (wins[p] ?? 0) + 1;
+        if (r.ai.why) whys[r.ai.why] = (whys[r.ai.why] ?? 0) + 1;
         lengths.push(r.ai.endMinute);
       } else stalemates++;
     }
@@ -178,7 +180,8 @@ function aiReport(mode, results, minutes, idleGate) {
     metrics.wins = wins;
     metrics.stalemates = stalemates;
     metrics.medianMinutes = lengths.length ? lengths[Math.floor(lengths.length / 2)] : null;
-    lines.push(`ai: wins ${JSON.stringify(wins)}, unfinished at ${minutes} min ${stalemates}/${results.length}, median match ${metrics.medianMinutes ?? "n/a"} min`);
+    if (Object.keys(whys).length) metrics.winsBy = whys;
+    lines.push(`ai: wins ${JSON.stringify(wins)}${Object.keys(whys).length ? ` by ${JSON.stringify(whys)}` : ""}, unfinished at ${minutes} min ${stalemates}/${results.length}, median match ${metrics.medianMinutes ?? "n/a"} min`);
   }
   return { metrics, lines, fail: fails.join("; ") };
 }
@@ -188,7 +191,7 @@ export default async function soakCmd(out, _cmd, args) {
   const seeds = Number(args.seeds ?? 8);
   const minutes = Number(args.minutes ?? 10);
   const jobs = args.jobs && args.jobs !== "auto" ? Number(args.jobs) : Math.max(1, availableParallelism() - 2);
-  const base = { mode: typeof args.mode === "string" ? args.mode : "wander", minutes, units: Number(args.units ?? 1000), map: args.map ?? "continents", size: Number(args.size ?? 128), tribes: Number(args.tribes ?? 2), deadlineMs: 8 * 60 * 1000 - 20000 };
+  const base = { mode: typeof args.mode === "string" ? args.mode : "wander", minutes, units: Number(args.units ?? 1000), map: args.map ?? "continents", size: Number(args.size ?? 128), tribes: Number(args.tribes ?? 2), deadlineMs: 8 * 60 * 1000 - 20000, ...(typeof args.rules === "string" ? { rules: args.rules } : {}) };
   const t0 = Date.now();
   const specs = aiSpecs(base, args, seeds, t0) ?? Array.from({ length: seeds }, (_, k) => ({ ...base, seed: 1000 + k, startMs: t0 }));
   const results = [];

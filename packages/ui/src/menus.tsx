@@ -17,6 +17,11 @@ export interface SetupView {
   sizes: Choice[];
   personalities: Choice[];
   difficulties: Choice[];
+  /** BACKLOG 13: victory variants (balance.victory); empty for packs without them */
+  victories: Choice[];
+  victory: string;
+  /** the chosen variant's rule text */
+  victoryText: string;
   maxOpponents: number;
   map: string;
   size: number;
@@ -80,7 +85,7 @@ export interface MenuModel {
   canSave: boolean;
 }
 
-export type SetupPatch = Partial<Pick<SetupView, "map" | "size" | "seed" | "opponents" | "difficulty">>;
+export type SetupPatch = Partial<Pick<SetupView, "map" | "size" | "seed" | "opponents" | "difficulty" | "victory">>;
 export type SettingsPatch = Partial<Pick<SettingsView, "quality" | "master" | "music" | "sfx" | "palette" | "miniature" | "lighting" | "weather">> & { uiScale?: number; subtitles?: boolean };
 
 export interface MenuActions {
@@ -170,6 +175,17 @@ function Setup({ s, act }: { s: SetupView; act: MenuActions }) {
         </span>
         <label class="menu-label">Difficulty</label>
         <Select ui="setup-difficulty" value={s.difficulty} options={s.difficulties} onChange={(v) => act.setSetup({ difficulty: v })} />
+        {s.victories.length ? (
+          <Fragment>
+            <label class="menu-label">Victory</label>
+            <span class="menu-row menu-victory">
+              <Select ui="setup-victory" value={s.victory} options={s.victories} onChange={(v) => act.setSetup({ victory: v })} />
+              <span class="menu-hint" data-ui="setup-victory-text">
+                {s.victoryText}
+              </span>
+            </span>
+          </Fragment>
+        ) : null}
         {s.opponents.map((o, k) => (
           <Fragment key={k}>
             <label class="menu-label">Opponent {k + 1}</label>
@@ -359,7 +375,7 @@ function End({ m, act }: { m: MenuModel; act: MenuActions }) {
       <h1 class="menu-title" data-ui="end-title">
         {e.title ?? (e.won ? "Victory" : "Defeat")}
       </h1>
-      <p class="menu-tag">{e.tag ?? (e.won ? "Every rival tribe has fallen." : "Your tribe is no more.")}</p>
+      <p class="menu-tag" data-ui="end-tag">{e.tag ?? (e.won ? "Every rival tribe has fallen." : "Your tribe is no more.")}</p>
       <div class="menu-grid end-lines">
         {e.lines.map((l) => (
           <Fragment key={l.label}>

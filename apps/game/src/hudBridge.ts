@@ -97,6 +97,23 @@ function levelObjectives(game: Game): ObjectiveView[] {
   return out;
 }
 
+/** BACKLOG 13: the victory variant's progress line (null for conquest, which the rivals line covers). */
+export function rulesLine(w: Game["world"], me: number): string | null {
+  const r = w.rules;
+  if (!r || r.def.type === "conquest") return null;
+  const hz = w.cfg.tickHz;
+  const goal = r.goalTicks() / hz;
+  const rivals = w.tribes.filter((t) => t.index !== me && t.alive);
+  if (r.def.type === "lastStand") {
+    const best = Math.max(0, ...rivals.map((t) => w.economy.followers(t.index)));
+    return `Last Stand ${clock(Math.max(0, goal - w.tick / hz))} left: you ${w.economy.followers(me)}, best rival ${best} followers`;
+  }
+  const best = Math.max(0, ...rivals.map((t) => r.held[t.index] ?? 0)) / hz;
+  const mine = (r.held[me] ?? 0) / hz;
+  const what = r.def.type === "holdSites" ? `Hold all ${r.counted().length} Reliquaries` : "Hold the hill";
+  return `${what} ${clock(mine)} of ${clock(goal)} (rival ${clock(best)})`;
+}
+
 /** Objectives (M8): rivals left in a skirmish, keep the Hearth standing, and the next unlock tier. */
 function objectivesFor(game: Game, next: { name: string; followers: number; opens: string[] } | null): ObjectiveView[] {
   const w = game.world;
@@ -107,7 +124,10 @@ function objectivesFor(game: Game, next: { name: string; followers: number; open
   if (game.skirmish && w.tribes.length > 1) {
     const rivals = w.tribes.filter((t) => t.index !== me.index);
     const left = rivals.filter((t) => t.alive).length;
-    out.push({ text: left ? `Defeat the rival tribes: ${left} of ${rivals.length} left` : "Every rival tribe has fallen", done: left === 0 });
+    const rl = rulesLine(w, me.index);
+    // a victory variant shares the rivals line (conquest still wins under every variant) so the panel keeps its height
+    if (rl) out.push({ text: left ? `${rl}, or defeat ${left} ${left === 1 ? "rival" : "rivals"}` : "Every rival tribe has fallen", done: w.rules!.winner === me.index || left === 0, part: "rules" });
+    else out.push({ text: left ? `Defeat the rival tribes: ${left} of ${rivals.length} left` : "Every rival tribe has fallen", done: left === 0 });
     out.push({ text: w.ents.index(me.hearth) >= 0 ? "Keep your Hearth standing" : "Your Hearth has fallen: protect your Shaper", done: false });
   }
   if (next) out.push({ text: `Reach ${next.followers} followers for ${next.name} (${next.opens.join(", ")})`, done: false, part: "next-unlock" });

@@ -259,6 +259,11 @@ if (__DEBUG_API__ || game.params.debug) {
       game.step(1);
       return game.ended;
     },
+    /** BACKLOG 13: the skirmish victory rules in the sim (null for a level or an old save) */
+    rules: () => {
+      const r = game.world.rules;
+      return r ? { id: r.def.id, winner: r.winner, why: r.why, held: [...r.held] } : null;
+    },
     /** M9 campaign: the running level (id, outcome 0 none 1 won 2 lost, objectives done), levels won, and a forced level win */
     level: () => (game.world.level ? { id: game.world.level.def.id, outcome: game.world.level.outcome, done: [...game.world.level.done] } : null),
     campaignWon: () => [...game.campaignWon],

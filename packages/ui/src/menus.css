@@ -19,6 +19,9 @@
 .menu-row { display: flex; gap: 6px; align-items: center; min-width: 0; }
 .menu-select, .menu-input { flex: 1; min-width: 0; background: #2b1d13; color: #f4e6c8; border: 1px solid #8a8378; padding: 5px 6px; font: 600 14px system-ui; }
 .menu-input { width: 100px; }
+.menu-victory { flex-wrap: wrap; }
+.menu-victory .menu-select { flex: 0 1 190px; }
+.menu-hint { flex: 1 1 160px; font-size: 12px; opacity: 0.75; white-space: normal; line-height: 1.3; }
 .menu-small { border: 1px solid #8a8378; background: #2b1d13; color: #e8d9b0; padding: 5px 8px; font: 600 13px system-ui; cursor: pointer; white-space: nowrap; }
 .menu-actions { display: flex; gap: 10px; justify-content: flex-end; }
 .menu-actions .menu-btn { min-width: 110px; }

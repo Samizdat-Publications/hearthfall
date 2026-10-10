@@ -1,0 +1,139 @@
+{
+  "id": "rules_king_of_hill_tie_then_win",
+  "description": "BACKLOG 13: King of the Hill: two Wardens each at the first Reliquary is a tie and nobody scores; when a third Warden of tribe 1 arrives tribe 1 scores and wins after the variant's four minutes on top.",
+  "tags": [
+    "fast",
+    "rules"
+  ],
+  "seed": 5,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2
+  },
+  "rules": "king_of_hill",
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        8,
+        32
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        10,
+        30
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        56,
+        32
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        54,
+        30
+      ]
+    },
+    {
+      "spawn": "reliquary",
+      "at": [
+        32,
+        32
+      ],
+      "site": {
+        "tag": "hill",
+        "rewards": [
+          {
+            "type": "charges",
+            "spell": "bolt",
+            "n": 1
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        31,
+        30
+      ],
+      "count": 2
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        33,
+        34
+      ],
+      "count": 2
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "at": [
+        44,
+        34
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": 0,
+      "type": "setStance",
+      "args": {
+        "units": "tribe0.wardens",
+        "stance": "passive"
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setStance",
+      "args": {
+        "units": "tribe1.wardens",
+        "stance": "passive"
+      }
+    },
+    {
+      "tick": 300,
+      "tribe": 1,
+      "type": "move",
+      "args": {
+        "units": "tribe1.wardens",
+        "to": [
+          33,
+          34
+        ]
+      }
+    }
+  ],
+  "runTicks": 5600,
+  "assert": [
+    {
+      "at": 290,
+      "expr": "rules.held(0) == 0 && rules.held(1) == 0"
+    },
+    {
+      "at": 4500,
+      "expr": "rules.winner == -1 && rules.held(1) > 180 && rules.held(0) == 0"
+    },
+    {
+      "at": 5600,
+      "expr": "rules.winner == 1 && rules.why == 'kingOfHill' && invariants() == 0"
+    }
+  ]
+}

@@ -99,6 +99,12 @@ export function makeCtx(w) {
       lost: w.level?.outcome === OUTCOME.lost,
       objectivesDone: w.level ? w.level.done.filter((d) => d).length : 0,
     },
+    /** BACKLOG 13: skirmish victory rules (winner -1 while running, why, held seconds per tribe) */
+    rules: {
+      winner: w.rules ? w.rules.winner : -2,
+      why: w.rules ? w.rules.why : "",
+      held: (tribe) => (w.rules ? (w.rules.held[tribe] ?? 0) / w.cfg.tickHz : -1),
+    },
     site: (tag) => {
       const s = w.worship.find(tag);
       return { by: s ? s.lastBy : -2, usesLeft: s ? s.usesLeft : -1, progress: s ? Math.max(...s.progress) / s.prayTicks : 0 };

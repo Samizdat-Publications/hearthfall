@@ -1,0 +1,69 @@
+{
+  "id": "rules_last_stand_most_followers",
+  "description": "BACKLOG 13: Last Stand: with neither tribe beaten, the match ends at the variant's timer and the tribe with the most followers wins; before the timer nothing is decided.",
+  "tags": [
+    "fast",
+    "rules"
+  ],
+  "seed": 5,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2
+  },
+  "rules": "last_stand",
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        12,
+        32
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        14,
+        30
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        52,
+        32
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        50,
+        30
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        50,
+        40
+      ],
+      "count": 4
+    }
+  ],
+  "runTicks": 24030,
+  "assert": [
+    {
+      "at": 23990,
+      "expr": "rules.winner == -1"
+    },
+    {
+      "at": 24030,
+      "expr": "rules.winner == 1 && rules.why == 'lastStand' && invariants() == 0"
+    }
+  ]
+}

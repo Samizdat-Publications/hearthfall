@@ -126,7 +126,72 @@ export class OpponentAI implements Controller {
       { id: "buildDen", score: (c) => this.denScore(c), act: (c, out) => this.buildDen(c, out) },
       { id: "trainShade", score: (c) => this.trainShadeScore(c), act: (c, out) => this.trainShade(c, out) },
       { id: "sabotage", score: (c) => this.sabotageScore(c), act: (c, out) => this.sabotage(c, out) },
+      // BACKLOG 13: only scored under a hold or hill victory variant, so other worlds draw the same noise
+      { id: "contest", score: (c) => this.contestScore(c), act: (c, out) => this.contest(c, out) },
     ];
+  }
+
+  // ------------------------------------------------------------------ victory variants (BACKLOG 13)
+
+  /** the sites a hold or hill victory variant counts (empty otherwise) */
+  private contested(w: World): { x: number; y: number }[] {
+    const r = w.rules;
+    return r && (r.def.type === "holdSites" || r.def.type === "kingOfHill") ? r.counted() : [];
+  }
+
+  /** a troop standing at a contested site holds it and stays out of waves */
+  private posted(w: World, i: number): boolean {
+    const sites = this.contested(w);
+    if (!sites.length) return false;
+    const E = w.ents;
+    const n = w.terrain.size;
+    const r = w.cfg.pack.balance.victory!.controlRadius;
+    return sites.some((s) => {
+      const dx = wrapDelta(E.x[i] - s.x, n);
+      const dy = wrapDelta(E.y[i] - s.y, n);
+      return dx * dx + dy * dy <= r * r;
+    });
+  }
+
+  /** the nearest contested site on our landmass that we do not control, with whether a rival leads the race */
+  private contestTarget(c: Census): { x: number; y: number; behind: boolean } | null {
+    const w = c.w;
+    const E = w.ents;
+    const n = w.terrain.size;
+    const r = w.rules!;
+    const home = this.comp(w, E.x[c.h], E.y[c.h]);
+    let best: { x: number; y: number; behind: boolean } | null = null;
+    let bd = Infinity;
+    const lead = Math.max(0, ...r.held.filter((_, t) => t !== this.tribe));
+    for (const s of this.contested(w)) {
+      if (this.comp(w, s.x, s.y) !== home) continue;
+      const p = r.presence(s.x, s.y);
+      const ours = p[this.tribe] > 0 && p.every((k, t) => t === this.tribe || k === 0);
+      if (ours) continue;
+      const dx = wrapDelta(s.x - E.x[c.h], n);
+      const dy = wrapDelta(s.y - E.y[c.h], n);
+      const d = dx * dx + dy * dy;
+      if (d < bd) {
+        bd = d;
+        best = { x: s.x, y: s.y, behind: lead > (r.held[this.tribe] ?? 0) };
+      }
+    }
+    return best;
+  }
+
+  private contestScore(c: Census): number {
+    if (c.threats.length || c.idle.length < 3) return 0;
+    const t = this.contestTarget(c);
+    return t ? 0.6 + (t.behind ? 0.3 : 0) : 0;
+  }
+
+  /** idle troops march on the site, attacking whatever holds it */
+  private contest(c: Census, out: Command[]): void {
+    const t = this.contestTarget(c);
+    if (!t) return;
+    const E = c.w.ents;
+    out.push(this.cmd(c.w, "move", { units: c.idle.map((i) => E.idOf(i)), to: [t.x, t.y], attack: true }));
+    c.idle.length = 0;
   }
 
   /** Save game memory: scouted tribes, the scout and the stats (decisions also gate the one-time setup). */
@@ -181,7 +246,7 @@ export class OpponentAI implements Controller {
     this.stats.decisions++;
     // every decision: spells unlocked mid-match (worship sites) start charging too
     this.setup(w, out);
-    const acts = this.actions.filter((a) => (a.id !== "worship" || w.worship.sites.length > 0) && (this.p.shades || !SHADE_ACTIONS.has(a.id)));
+    const acts = this.actions.filter((a) => (a.id !== "worship" || w.worship.sites.length > 0) && (a.id !== "contest" || this.contested(w).length > 0) && (this.p.shades || !SHADE_ACTIONS.has(a.id)));
     const scored = acts.map((a, k) => ({ a, k, s: a.score(c) + (w.rng.float("ai") - 0.5) * 2 * this.noise }));
     scored.sort((x, y) => y.s - x.s || x.k - y.k);
     let ran = 0;
@@ -241,7 +306,7 @@ export class OpponentAI implements Controller {
           else if (w.combat.isSaboteur(E.type[i])) c.shades.push(i);
           else if (def.trainedAt) {
             c.troops.set(def.id, (c.troops.get(def.id) ?? 0) + 1);
-            if (E.inside[i] < 0 && E.mode[i] === 0 && E.order[i] === 0 && E.atk[i] === NO_ENTITY && i !== E.index(this.scout)) c.idle.push(i);
+            if (E.inside[i] < 0 && E.mode[i] === 0 && E.order[i] === 0 && E.atk[i] === NO_ENTITY && i !== E.index(this.scout) && !this.posted(w, i)) c.idle.push(i);
           }
         }
       } else if (E.tribe[i] >= 0 && E.cat[i] === CAT.unit && E.veil[i] === 0 && !w.combat.disguised(i) && w.tribes[E.tribe[i]]?.alive && this.sees(w, i)) {
