@@ -164,9 +164,11 @@ export function dataDocs() {
     if (name === "spells.json") {
       const effects = js.properties.spells.items.properties.effects.items.oneOf ?? js.properties.spells.items.properties.effects.items.anyOf ?? [];
       lines.push("", "Effect primitives (`spells[].effects[]`, discriminated by `type`):", "");
-      for (const e of effects) {
-        const fields = Object.keys(e.properties).filter((k) => k !== "type" && k !== "$comment");
-        lines.push(`- \`${e.properties.type.const}\`: ${fields.map((k) => (e.required?.includes(k) ? k : k + "?")).join(", ")}`);
+      // BACKLOG 31: a nested union (terrainOp by op) lists one line per variant
+      for (const e of effects.flatMap((x) => x.oneOf ?? x.anyOf ?? [x])) {
+        const fields = Object.keys(e.properties).filter((k) => k !== "type" && k !== "$comment" && !(k === "op" && e.properties.op.const));
+        const name = e.properties.op?.const ? `${e.properties.type.const} ${e.properties.op.const}` : e.properties.type.const;
+        lines.push(`- \`${name}\`: ${fields.map((k) => (e.required?.includes(k) ? k : k + "?")).join(", ")}`);
       }
     }
     lines.push("");

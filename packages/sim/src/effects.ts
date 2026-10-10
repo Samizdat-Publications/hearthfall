@@ -247,10 +247,11 @@ registerEffect("terrainOp", (c, e) => {
   if (e.leadInSeconds !== undefined && !c.now) {
     // rumble first: an effect entity applies the op when its timer runs out (updateEffects)
     const ticks = secondsToTicks(e.leadInSeconds, w.cfg.tickHz);
-    const i = fxEntity(c, FX.leadIn, e.radius ?? 1, ticks + 1);
+    const r = "radius" in e ? e.radius : 1;
+    const i = fxEntity(c, FX.leadIn, r, ticks + 1);
     w.ents.ax[i] = c.casterX;
     w.ents.ay[i] = c.casterY;
-    w.emit("terrainLeadIn", { id: w.ents.idOf(i), tribe: c.tribe, spell: c.spell, x: c.x, y: c.y, r: e.radius ?? 1, seconds: e.leadInSeconds });
+    w.emit("terrainLeadIn", { id: w.ents.idOf(i), tribe: c.tribe, spell: c.spell, x: c.x, y: c.y, r, seconds: e.leadInSeconds });
     return;
   }
   const sea = w.terrain.sea;
@@ -297,7 +298,7 @@ registerEffect("terrainOp", (c, e) => {
       w.terrainQueue.push({ op: "lower", x: c.x, y: c.y, r: need(e.radius, "lower radius"), amount: need(e.depth, "lower depth") });
       break;
     default:
-      throw new Error(`terrainOp ${e.op} is not available to spells`);
+      throw new Error(`terrainOp ${(e as { op: string }).op} is not available to spells`);
   }
 });
 

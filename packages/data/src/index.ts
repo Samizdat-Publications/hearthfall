@@ -79,17 +79,6 @@ function dupes(file: string, ids: string[], issues: PackIssue[]): Set<string> {
   return seen;
 }
 
-/** Terrain ops a spell may queue and the effect fields each one needs. */
-export const SPELL_TERRAIN_OPS: Record<string, readonly string[] | undefined> = {
-  ridgeLine: ["width", "heightAboveSea"],
-  flattenToAverage: ["radius"],
-  noiseScar: ["radius", "depth"],
-  crater: ["radius", "height"],
-  lowerTowardSea: ["radius", "depth"],
-  raise: ["radius", "height"],
-  lower: ["radius", "depth"],
-};
-
 /** statusApply statuses the sim implements ("entranced" is the Chanter's channel, not a spell status). */
 export const IMPLEMENTED_STATUSES = ["panic", "burning", "veil", "ward", "beguiled"] as const;
 
@@ -127,16 +116,10 @@ function crossCheck(p: PackFiles): PackIssue[] {
   for (const s of p.spells.spells) {
     s.effects.forEach((e, k) => {
       const at = `${s.id}.effects.${k}`;
-      if (e.type === "terrainOp") {
-        const fields = SPELL_TERRAIN_OPS[e.op];
-        if (!fields) issues.push({ file: "spells.json", path: at, message: `terrainOp ${e.op} is not available to spells` });
-        else for (const f of fields) if ((e as Record<string, unknown>)[f] === undefined) issues.push({ file: "spells.json", path: at, message: `terrainOp ${e.op} needs ${f}` });
-      }
       if (e.type === "spawnEntity" && e.radius === undefined) issues.push({ file: "spells.json", path: at, message: "spawnEntity needs radius" });
       if (e.type === "statusApply" && (IMPLEMENTED_STATUSES as readonly string[]).includes(e.status) && e.radius === undefined) issues.push({ file: "spells.json", path: at, message: `statusApply ${e.status} needs radius` });
       if (e.type === "statusApply" && !(IMPLEMENTED_STATUSES as readonly string[]).includes(e.status)) issues.push({ file: "spells.json", path: at, message: `statusApply ${e.status} is not a spell status` });
       if (e.type === "statusApply" && (e.status === "veil" || e.status === "ward") && e.targets !== "own") issues.push({ file: "spells.json", path: at, message: `statusApply ${e.status} must target own units` });
-      if (e.type === "terrainOp" && e.seconds !== undefined && e.op !== "lowerTowardSea") issues.push({ file: "spells.json", path: at, message: `terrainOp ${e.op} cannot take seconds` });
       if (e.type === "summon" || e.type === "moverPath") if (e.entity !== s.id) issues.push({ file: "spells.json", path: at, message: `${e.type} entity must be the spell id (${s.id})` });
       if (e.type === "statusApply") for (const x of e.poppedBy ?? []) need("spells.json", `${at}.poppedBy`, spells, x, "spell");
     });

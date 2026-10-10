@@ -688,6 +688,18 @@ export type BuildingDef = z.infer<typeof BuildingSchema>;
 export type BuildingsFile = z.infer<typeof BuildingsFileSchema>;
 
 // ---------------------------------------------------------------- spells.json (effect primitives)
+/** BACKLOG 31: a terrainOp spell effect for one op: the shared fields plus that op's own */
+function terrainOpVariant<O extends string, S extends z.ZodRawShape>(op: O, shape: S) {
+  return z.strictObject({
+    type: z.literal("terrainOp"),
+    op: z.literal(op),
+    from: z.enum(["caster", "target"]).optional(),
+    /** BACKLOG 36: the land moves this many seconds after the cast (rumble and cracks first) so players see cause and effect */
+    leadInSeconds: pos.optional(),
+    ...shape,
+  });
+}
+
 const Effect = z.discriminatedUnion("type", [
   z.strictObject({
     type: z.literal("damageRadius"),
@@ -734,34 +746,26 @@ const Effect = z.discriminatedUnion("type", [
     poppedBy: z.array(id).optional(),
     breaksOnCasterDeath: z.boolean().optional(),
   }),
-  z.strictObject({
-    type: z.literal("terrainOp"),
-    op: z.enum([
-      "raise",
-      "lower",
-      "set",
-      "flattenToAverage",
-      "smooth",
-      "crater",
-      "ridgeLine",
-      "noiseScar",
-      "lowerTowardSea",
-      "scar",
-    ]),
-    from: z.enum(["caster", "target"]).optional(),
-    width: pos.optional(),
-    heightAboveSea: z.number().optional(),
-    length: pos.optional(),
-    radius: pos.optional(),
-    minHeightAboveSea: z.number().optional(),
-    depth: z.number().optional(),
-    /** lowerTowardSea only: spread over this many seconds, `depth` applied once per second */
-    seconds: pos.optional(),
-    /** BACKLOG 36: the land moves this many seconds after the cast (rumble and cracks first) so players see cause and effect */
-    leadInSeconds: pos.optional(),
-    shape: z.string().optional(),
-    height: z.number().optional(),
-  }),
+  /** BACKLOG 31: one variant per op, each with its required parameters (the ops spells can use) */
+  z.discriminatedUnion("op", [
+    terrainOpVariant("ridgeLine", {
+      /** a wall from the caster toward the target, at most `length` cells */
+      width: pos,
+      heightAboveSea: z.number(),
+      length: pos.optional(),
+    }),
+    terrainOpVariant("flattenToAverage", { radius: pos, minHeightAboveSea: z.number().optional() }),
+    terrainOpVariant("noiseScar", { radius: pos, depth: z.number() }),
+    terrainOpVariant("crater", { radius: pos, height: z.number(), shape: z.enum(["bowl", "cone"]).optional() }),
+    terrainOpVariant("lowerTowardSea", {
+      radius: pos,
+      depth: z.number(),
+      /** spread over this many seconds, `depth` applied once per second */
+      seconds: pos.optional(),
+    }),
+    terrainOpVariant("raise", { radius: pos, height: z.number() }),
+    terrainOpVariant("lower", { radius: pos, depth: z.number() }),
+  ]),
   /** a vortex that wanders from the target (cells per second), flings units it touches and wears down buildings */
   z.strictObject({
     type: z.literal("moverPath"),

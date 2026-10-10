@@ -425,10 +425,10 @@ Base pack `base` version 0.1.0, content hash `38a3e2c7`.
 | `spells[].range` | number | yes |
 | `spells[].v1` | boolean |  |
 | `spells[].aiTarget` | "units" or "buildings" or "wild" or "bridge" or "ownFighting" or "ownMarching" or "none" |  |
-| `spells[].effects` | object or object or object or object or object or object or object or object or object or object or object or object or object[] | yes |
+| `spells[].effects` | object or object or object or object or object or object or object or object or object or object or object or object or object or object or object or object or object or object or object[] | yes |
 | `entities` | object[] |  |
 | `entities[].id` | string | yes |
-| `entities[].effects` | object or object or object or object or object or object or object or object or object or object or object or object or object[] | yes |
+| `entities[].effects` | object or object or object or object or object or object or object or object or object or object or object or object or object or object or object or object or object or object or object[] | yes |
 
 Effect primitives (`spells[].effects[]`, discriminated by `type`):
 
@@ -437,7 +437,13 @@ Effect primitives (`spells[].effects[]`, discriminated by `type`):
 - `convertRadius`: radius, max, excludes?, targets?
 - `areaOverTime`: radius, seconds, damagePerSecond
 - `statusApply`: status, seconds, radius?, max?, targets?, poppedBy?, breaksOnCasterDeath?
-- `terrainOp`: op, from?, width?, heightAboveSea?, length?, radius?, minHeightAboveSea?, depth?, seconds?, leadInSeconds?, shape?, height?
+- `terrainOp ridgeLine`: from?, leadInSeconds?, width, heightAboveSea, length?
+- `terrainOp flattenToAverage`: from?, leadInSeconds?, radius, minHeightAboveSea?
+- `terrainOp noiseScar`: from?, leadInSeconds?, radius, depth
+- `terrainOp crater`: from?, leadInSeconds?, radius, height, shape?
+- `terrainOp lowerTowardSea`: from?, leadInSeconds?, radius, depth, seconds?
+- `terrainOp raise`: from?, leadInSeconds?, radius, height
+- `terrainOp lower`: from?, leadInSeconds?, radius, depth
 - `moverPath`: entity, seconds, radius, speed, wander?, flingForce, buildingDamagePctPerSecond?
 - `spawnEntity`: entity, radius?, count?
 - `trap`: radius, kills, seconds

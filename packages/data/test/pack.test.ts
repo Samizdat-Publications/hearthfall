@@ -24,6 +24,23 @@ describe("data pack", () => {
     }
   });
 
+  it("BACKLOG 31: a terrainOp spell effect needs its op's own fields and takes no others", () => {
+    type Fx = Record<string, unknown>;
+    const issuesWith = (edit: (fx: Fx[]) => void) => {
+      const raw = loadBase();
+      const spells = (raw["spells.json"] as { spells: { effects: Fx[] }[] }).spells;
+      edit(spells.flatMap((s) => s.effects).filter((e) => e.type === "terrainOp"));
+      return JSON.stringify(validatePack(raw).issues);
+    };
+    expect(issuesWith(() => {})).toBe("[]");
+    const ridge = (fx: Fx[]) => fx.find((e) => e.op === "ridgeLine")!;
+    const crater = (fx: Fx[]) => fx.find((e) => e.op === "crater")!;
+    expect(issuesWith((fx) => delete ridge(fx).width)).toContain("width");
+    expect(issuesWith((fx) => (crater(fx).seconds = 3))).toContain("seconds");
+    expect(issuesWith((fx) => (crater(fx).shape = "dome"))).toContain("shape");
+    expect(issuesWith((fx) => (crater(fx).op = "smooth"))).not.toBe("[]");
+  });
+
   it("rejects a lightingDefault that names no preset (BACKLOG 14)", () => {
     const raw = loadBase();
     (raw["style.json"] as { lightingDefault?: string }).lightingDefault = "dusk";

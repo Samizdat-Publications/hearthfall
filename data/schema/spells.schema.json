@@ -279,75 +279,288 @@
                   "additionalProperties": false
                 },
                 {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "const": "terrainOp"
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "terrainOp"
+                        },
+                        "op": {
+                          "type": "string",
+                          "const": "ridgeLine"
+                        },
+                        "from": {
+                          "type": "string",
+                          "enum": [
+                            "caster",
+                            "target"
+                          ]
+                        },
+                        "leadInSeconds": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "width": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "heightAboveSea": {
+                          "type": "number"
+                        },
+                        "length": {
+                          "type": "number",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "op",
+                        "width",
+                        "heightAboveSea"
+                      ],
+                      "additionalProperties": false
                     },
-                    "op": {
-                      "type": "string",
-                      "enum": [
-                        "raise",
-                        "lower",
-                        "set",
-                        "flattenToAverage",
-                        "smooth",
-                        "crater",
-                        "ridgeLine",
-                        "noiseScar",
-                        "lowerTowardSea",
-                        "scar"
-                      ]
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "terrainOp"
+                        },
+                        "op": {
+                          "type": "string",
+                          "const": "flattenToAverage"
+                        },
+                        "from": {
+                          "type": "string",
+                          "enum": [
+                            "caster",
+                            "target"
+                          ]
+                        },
+                        "leadInSeconds": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "radius": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "minHeightAboveSea": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "op",
+                        "radius"
+                      ],
+                      "additionalProperties": false
                     },
-                    "from": {
-                      "type": "string",
-                      "enum": [
-                        "caster",
-                        "target"
-                      ]
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "terrainOp"
+                        },
+                        "op": {
+                          "type": "string",
+                          "const": "noiseScar"
+                        },
+                        "from": {
+                          "type": "string",
+                          "enum": [
+                            "caster",
+                            "target"
+                          ]
+                        },
+                        "leadInSeconds": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "radius": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "depth": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "op",
+                        "radius",
+                        "depth"
+                      ],
+                      "additionalProperties": false
                     },
-                    "width": {
-                      "type": "number",
-                      "minimum": 0
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "terrainOp"
+                        },
+                        "op": {
+                          "type": "string",
+                          "const": "crater"
+                        },
+                        "from": {
+                          "type": "string",
+                          "enum": [
+                            "caster",
+                            "target"
+                          ]
+                        },
+                        "leadInSeconds": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "radius": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "height": {
+                          "type": "number"
+                        },
+                        "shape": {
+                          "type": "string",
+                          "enum": [
+                            "bowl",
+                            "cone"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "op",
+                        "radius",
+                        "height"
+                      ],
+                      "additionalProperties": false
                     },
-                    "heightAboveSea": {
-                      "type": "number"
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "terrainOp"
+                        },
+                        "op": {
+                          "type": "string",
+                          "const": "lowerTowardSea"
+                        },
+                        "from": {
+                          "type": "string",
+                          "enum": [
+                            "caster",
+                            "target"
+                          ]
+                        },
+                        "leadInSeconds": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "radius": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "depth": {
+                          "type": "number"
+                        },
+                        "seconds": {
+                          "type": "number",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "op",
+                        "radius",
+                        "depth"
+                      ],
+                      "additionalProperties": false
                     },
-                    "length": {
-                      "type": "number",
-                      "minimum": 0
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "terrainOp"
+                        },
+                        "op": {
+                          "type": "string",
+                          "const": "raise"
+                        },
+                        "from": {
+                          "type": "string",
+                          "enum": [
+                            "caster",
+                            "target"
+                          ]
+                        },
+                        "leadInSeconds": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "radius": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "height": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "op",
+                        "radius",
+                        "height"
+                      ],
+                      "additionalProperties": false
                     },
-                    "radius": {
-                      "type": "number",
-                      "minimum": 0
-                    },
-                    "minHeightAboveSea": {
-                      "type": "number"
-                    },
-                    "depth": {
-                      "type": "number"
-                    },
-                    "seconds": {
-                      "type": "number",
-                      "minimum": 0
-                    },
-                    "leadInSeconds": {
-                      "type": "number",
-                      "minimum": 0
-                    },
-                    "shape": {
-                      "type": "string"
-                    },
-                    "height": {
-                      "type": "number"
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "terrainOp"
+                        },
+                        "op": {
+                          "type": "string",
+                          "const": "lower"
+                        },
+                        "from": {
+                          "type": "string",
+                          "enum": [
+                            "caster",
+                            "target"
+                          ]
+                        },
+                        "leadInSeconds": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "radius": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "depth": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "op",
+                        "radius",
+                        "depth"
+                      ],
+                      "additionalProperties": false
                     }
-                  },
-                  "required": [
-                    "type",
-                    "op"
-                  ],
-                  "additionalProperties": false
+                  ]
                 },
                 {
                   "type": "object",
@@ -803,75 +1016,288 @@
                   "additionalProperties": false
                 },
                 {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "const": "terrainOp"
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "terrainOp"
+                        },
+                        "op": {
+                          "type": "string",
+                          "const": "ridgeLine"
+                        },
+                        "from": {
+                          "type": "string",
+                          "enum": [
+                            "caster",
+                            "target"
+                          ]
+                        },
+                        "leadInSeconds": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "width": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "heightAboveSea": {
+                          "type": "number"
+                        },
+                        "length": {
+                          "type": "number",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "op",
+                        "width",
+                        "heightAboveSea"
+                      ],
+                      "additionalProperties": false
                     },
-                    "op": {
-                      "type": "string",
-                      "enum": [
-                        "raise",
-                        "lower",
-                        "set",
-                        "flattenToAverage",
-                        "smooth",
-                        "crater",
-                        "ridgeLine",
-                        "noiseScar",
-                        "lowerTowardSea",
-                        "scar"
-                      ]
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "terrainOp"
+                        },
+                        "op": {
+                          "type": "string",
+                          "const": "flattenToAverage"
+                        },
+                        "from": {
+                          "type": "string",
+                          "enum": [
+                            "caster",
+                            "target"
+                          ]
+                        },
+                        "leadInSeconds": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "radius": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "minHeightAboveSea": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "op",
+                        "radius"
+                      ],
+                      "additionalProperties": false
                     },
-                    "from": {
-                      "type": "string",
-                      "enum": [
-                        "caster",
-                        "target"
-                      ]
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "terrainOp"
+                        },
+                        "op": {
+                          "type": "string",
+                          "const": "noiseScar"
+                        },
+                        "from": {
+                          "type": "string",
+                          "enum": [
+                            "caster",
+                            "target"
+                          ]
+                        },
+                        "leadInSeconds": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "radius": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "depth": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "op",
+                        "radius",
+                        "depth"
+                      ],
+                      "additionalProperties": false
                     },
-                    "width": {
-                      "type": "number",
-                      "minimum": 0
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "terrainOp"
+                        },
+                        "op": {
+                          "type": "string",
+                          "const": "crater"
+                        },
+                        "from": {
+                          "type": "string",
+                          "enum": [
+                            "caster",
+                            "target"
+                          ]
+                        },
+                        "leadInSeconds": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "radius": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "height": {
+                          "type": "number"
+                        },
+                        "shape": {
+                          "type": "string",
+                          "enum": [
+                            "bowl",
+                            "cone"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "op",
+                        "radius",
+                        "height"
+                      ],
+                      "additionalProperties": false
                     },
-                    "heightAboveSea": {
-                      "type": "number"
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "terrainOp"
+                        },
+                        "op": {
+                          "type": "string",
+                          "const": "lowerTowardSea"
+                        },
+                        "from": {
+                          "type": "string",
+                          "enum": [
+                            "caster",
+                            "target"
+                          ]
+                        },
+                        "leadInSeconds": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "radius": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "depth": {
+                          "type": "number"
+                        },
+                        "seconds": {
+                          "type": "number",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "op",
+                        "radius",
+                        "depth"
+                      ],
+                      "additionalProperties": false
                     },
-                    "length": {
-                      "type": "number",
-                      "minimum": 0
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "terrainOp"
+                        },
+                        "op": {
+                          "type": "string",
+                          "const": "raise"
+                        },
+                        "from": {
+                          "type": "string",
+                          "enum": [
+                            "caster",
+                            "target"
+                          ]
+                        },
+                        "leadInSeconds": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "radius": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "height": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "op",
+                        "radius",
+                        "height"
+                      ],
+                      "additionalProperties": false
                     },
-                    "radius": {
-                      "type": "number",
-                      "minimum": 0
-                    },
-                    "minHeightAboveSea": {
-                      "type": "number"
-                    },
-                    "depth": {
-                      "type": "number"
-                    },
-                    "seconds": {
-                      "type": "number",
-                      "minimum": 0
-                    },
-                    "leadInSeconds": {
-                      "type": "number",
-                      "minimum": 0
-                    },
-                    "shape": {
-                      "type": "string"
-                    },
-                    "height": {
-                      "type": "number"
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "terrainOp"
+                        },
+                        "op": {
+                          "type": "string",
+                          "const": "lower"
+                        },
+                        "from": {
+                          "type": "string",
+                          "enum": [
+                            "caster",
+                            "target"
+                          ]
+                        },
+                        "leadInSeconds": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "radius": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "depth": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "op",
+                        "radius",
+                        "depth"
+                      ],
+                      "additionalProperties": false
                     }
-                  },
-                  "required": [
-                    "type",
-                    "op"
-                  ],
-                  "additionalProperties": false
+                  ]
                 },
                 {
                   "type": "object",
