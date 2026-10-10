@@ -1080,6 +1080,16 @@
       "when": "2026-10-10T10:40:19.511Z",
       "source": "external:soak48_islands.png",
       "bytes": 95153
+    },
+    {
+      "file": "b39/20261010-1355_ground-detail.png",
+      "milestone": "B39",
+      "kind": "screenshot",
+      "caption": "BACKLOG 39: close-up ground detail, grass tufts, flowers and pebbles near the camera",
+      "highlight": false,
+      "when": "2026-10-10T13:55:58.868Z",
+      "source": "external:ground_detail_huts.png",
+      "bytes": 603929
     }
   ]
 }
