@@ -104,3 +104,7 @@ Reason: BACKLOG 11: new golden forge_moat (Forge phase)
 ## 2026-10-10 10:48 UTC
 Reason: BACKLOG 49: the economy bot plans no wooden building where no wood can come from (no tree on the Hearth's landmass and no settler carrying wood); on the treeless forge_moat map the turtle no longer plans a dwelling it could never build
 - forge_moat: final 76e55154 -> 917b63c4 (pack 26146c88)
+
+## 2026-10-10 11:58 UTC
+Reason: BACKLOG 66: new golden opponent_skirmish (OpponentAI v OpponentAI, 15 minutes: economy, worship, spells, waves, conversions, Shaper deaths)
+- opponent_skirmish: final none -> 9f05f54e (pack ca5dadba)

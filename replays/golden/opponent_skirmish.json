@@ -1,0 +1,275 @@
+{
+ "id": "opponent_skirmish",
+ "description": "BACKLOG 66: two OpponentAI tribes (sneaky v aggressive) on a populated continents planet for 15 minutes, so drift anywhere in packages/ai (economy, waves, spells, worship) turns a golden red.",
+ "every": 600,
+ "def": {
+  "id": "opponent_skirmish",
+  "seed": 1004,
+  "populate": true,
+  "map": {
+   "generator": "continents",
+   "size": 128,
+   "tribes": 2
+  },
+  "setup": [],
+  "bots": [
+   {
+    "type": "opponent",
+    "tribe": 0,
+    "personality": "sneaky",
+    "offset": 0
+   },
+   {
+    "type": "opponent",
+    "tribe": 1,
+    "personality": "aggressive",
+    "offset": 1
+   }
+  ],
+  "commands": [],
+  "runTicks": 18000
+ },
+ "packHash": "ca5dadba",
+ "checkpoints": [
+  {
+   "tick": 600,
+   "all": "5b3d75e9",
+   "terrain": "d8ffa341",
+   "entities": "bb2144f0",
+   "rng": "c76eea98",
+   "meta": "9dac069f"
+  },
+  {
+   "tick": 1200,
+   "all": "866a24ce",
+   "terrain": "d8ffa341",
+   "entities": "3954c8c0",
+   "rng": "47b612c9",
+   "meta": "f30a9781"
+  },
+  {
+   "tick": 1800,
+   "all": "e1900a15",
+   "terrain": "d8ffa341",
+   "entities": "886a94b8",
+   "rng": "0d71d4c7",
+   "meta": "2babc78b"
+  },
+  {
+   "tick": 2400,
+   "all": "a36c6f91",
+   "terrain": "d8ffa341",
+   "entities": "bb2aea32",
+   "rng": "e1f82cf3",
+   "meta": "92ad28eb"
+  },
+  {
+   "tick": 3000,
+   "all": "fe9edafe",
+   "terrain": "d8ffa341",
+   "entities": "35a6b708",
+   "rng": "265c0e60",
+   "meta": "c432ca24"
+  },
+  {
+   "tick": 3600,
+   "all": "49af8b11",
+   "terrain": "d8ffa341",
+   "entities": "21052a1b",
+   "rng": "03a7f0ca",
+   "meta": "2633cfa4"
+  },
+  {
+   "tick": 4200,
+   "all": "3c1c5825",
+   "terrain": "d8ffa341",
+   "entities": "8a0c884e",
+   "rng": "3ceaf3f3",
+   "meta": "b1fc8e86"
+  },
+  {
+   "tick": 4800,
+   "all": "8ffe5731",
+   "terrain": "d8ffa341",
+   "entities": "a39a9c72",
+   "rng": "ac00e888",
+   "meta": "230e691e"
+  },
+  {
+   "tick": 5400,
+   "all": "467d309e",
+   "terrain": "ea0c4bb3",
+   "entities": "7809c474",
+   "rng": "a5880bdf",
+   "meta": "5f57aee7"
+  },
+  {
+   "tick": 6000,
+   "all": "b4dcd459",
+   "terrain": "808a4e54",
+   "entities": "26f487a1",
+   "rng": "2e8a82b5",
+   "meta": "ed257d00"
+  },
+  {
+   "tick": 6600,
+   "all": "599dfda2",
+   "terrain": "46cf3d35",
+   "entities": "121e43f2",
+   "rng": "d7850584",
+   "meta": "468b2c59"
+  },
+  {
+   "tick": 7200,
+   "all": "813f6f3e",
+   "terrain": "d80da382",
+   "entities": "ed68b210",
+   "rng": "7d260aea",
+   "meta": "51b51c63"
+  },
+  {
+   "tick": 7800,
+   "all": "8b847ca2",
+   "terrain": "f536dc0a",
+   "entities": "10d5eaa0",
+   "rng": "7a11a8d3",
+   "meta": "fc037725"
+  },
+  {
+   "tick": 8400,
+   "all": "affda981",
+   "terrain": "b7ce4636",
+   "entities": "e2103143",
+   "rng": "7504ed76",
+   "meta": "07dde41f"
+  },
+  {
+   "tick": 9000,
+   "all": "24e46c14",
+   "terrain": "8e08a12d",
+   "entities": "de67c6cf",
+   "rng": "699bb8f0",
+   "meta": "3f734b02"
+  },
+  {
+   "tick": 9600,
+   "all": "a5514c4d",
+   "terrain": "8c753506",
+   "entities": "a20b75c0",
+   "rng": "ad7ad656",
+   "meta": "dee9d369"
+  },
+  {
+   "tick": 10200,
+   "all": "b8d67660",
+   "terrain": "fb12a8e7",
+   "entities": "d5a9685e",
+   "rng": "0f4fb111",
+   "meta": "ffa951fa"
+  },
+  {
+   "tick": 10800,
+   "all": "39ab3518",
+   "terrain": "fb12a8e7",
+   "entities": "ecbcdfcd",
+   "rng": "26731d4d",
+   "meta": "3ff58dd5"
+  },
+  {
+   "tick": 11400,
+   "all": "b5ab336d",
+   "terrain": "fb12a8e7",
+   "entities": "35f1fbfa",
+   "rng": "675a442f",
+   "meta": "d8e143a1"
+  },
+  {
+   "tick": 12000,
+   "all": "2696c6ec",
+   "terrain": "fb12a8e7",
+   "entities": "26da473f",
+   "rng": "aa57f795",
+   "meta": "015a2a69"
+  },
+  {
+   "tick": 12600,
+   "all": "4a12e847",
+   "terrain": "b94c1bda",
+   "entities": "e94fbce3",
+   "rng": "93855a04",
+   "meta": "c2538171"
+  },
+  {
+   "tick": 13200,
+   "all": "33e06fd0",
+   "terrain": "eddb23b0",
+   "entities": "1f2a0e04",
+   "rng": "21f8364b",
+   "meta": "bb4141f0"
+  },
+  {
+   "tick": 13800,
+   "all": "30654850",
+   "terrain": "8fc25caf",
+   "entities": "1753b82b",
+   "rng": "83bee370",
+   "meta": "84dd7bbe"
+  },
+  {
+   "tick": 14400,
+   "all": "7af767c5",
+   "terrain": "b724074a",
+   "entities": "bc57c26e",
+   "rng": "9f838dce",
+   "meta": "1a03c7e2"
+  },
+  {
+   "tick": 15000,
+   "all": "15b54bdd",
+   "terrain": "adb511cc",
+   "entities": "36c77561",
+   "rng": "e99254c5",
+   "meta": "1e9685e1"
+  },
+  {
+   "tick": 15600,
+   "all": "94d9fb35",
+   "terrain": "adb511cc",
+   "entities": "f1e5fe35",
+   "rng": "c5cba77b",
+   "meta": "83a19086"
+  },
+  {
+   "tick": 16200,
+   "all": "772a978d",
+   "terrain": "adb511cc",
+   "entities": "a21ff250",
+   "rng": "9a8c1bad",
+   "meta": "58a9a7c0"
+  },
+  {
+   "tick": 16800,
+   "all": "46941774",
+   "terrain": "df7fece8",
+   "entities": "4e527482",
+   "rng": "415d2a2b",
+   "meta": "77790d75"
+  },
+  {
+   "tick": 17400,
+   "all": "a92bfaa6",
+   "terrain": "df7fece8",
+   "entities": "a4ab6661",
+   "rng": "30bbc1d3",
+   "meta": "fe07667d"
+  },
+  {
+   "tick": 18000,
+   "all": "9f05f54e",
+   "terrain": "df7fece8",
+   "entities": "93f83413",
+   "rng": "66607fa6",
+   "meta": "35de7b32"
+  }
+ ]
+}

@@ -1,0 +1,215 @@
+{
+  "sim": {
+    "tickHz": 20,
+    "hashEverySeconds": 5
+  },
+  "terrain": {
+    "defaultSize": 128,
+    "heightMax": 1023,
+    "heightUnitsPerWorldUnit": 32,
+    "seaLevel": 120,
+    "generatorRange": [
+      60,
+      520
+    ],
+    "bands": {
+      "shore": 124,
+      "lowland": 160,
+      "grass": 230,
+      "highland": 320,
+      "rock": 420,
+      "peak": 520
+    },
+    "maxWalkSlope": 20,
+    "maxBuildSlope": 6,
+    "drownDepthHeightUnits": 8,
+    "skirmishRequiresConnectedLand": true,
+    "maxBuildRange": 48
+  },
+  "movement": {
+    "$comment": "Unit movement and pathing (M3). Distances in cells, times in seconds. Budgets are per sim tick.",
+    "separationRadius": 0.6,
+    "separationStrength": 0.3,
+    "waypointRadius": 0.4,
+    "arriveRadius": 0.5,
+    "crowdArriveRadius": 3,
+    "repathSeconds": 2,
+    "giveUpSeconds": 6,
+    "pathBudgetPerTick": 6000,
+    "maxExpandPerSearch": 20000,
+    "groupFlowMinUnits": 6,
+    "flowLookaheadCost": 2,
+    "sightRadius": 3,
+    "progressEpsilon": 0.05,
+    "overlapNudge": 0.01,
+    "separationScale": 0.1,
+    "snapRadius": 6,
+    "maxFlowBuildsPerTick": 1,
+    "flowCacheSize": 16,
+    "formation": { "spacing": 1.2, "maxUnits": 30 }
+  },
+  "economy": {
+    "$comment": "Settler autonomy, construction and mana (M4). Seconds and cells; mana rates per unit live in units.json manaPerMin.",
+    "decideEverySeconds": 1,
+    "flattenStepPerWorkerSecond": 6,
+    "flattenMaxRange": 48,
+    "carryWood": 1,
+    "workRange": 1.6,
+    "keepOneOccupantForBreeding": true,
+    "maxOpenPlansPerTribe": 3,
+    "buildingGapCells": 1,
+    "defaultAutoCharge": [
+      "bolt",
+      "call"
+    ],
+    "skirmishSpells": "v1",
+    "wildWanderRadius": 6,
+    "wildWanderChancePerSecond": 0.15,
+    "doorOffset": 1.6,
+    "priorities": {
+      "build": 1,
+      "upgrade": 0.7,
+      "breed": 0.5
+    },
+    "startWoodPerSettler": 1
+  },
+  "breeding": {
+    "$comment": "Breed time per dwelling = base / (0.5 + 0.5 * occupants) * nearCapFactor; nearCapFactor rises linearly from 1 at nearCapSlowdownStartPct of the pop cap to nearCapFactorAtCap at the cap (economy.ts).",
+    "nearCapSlowdownStartPct": 70,
+    "nearCapFactorAtCap": 3
+  },
+  "combat": {
+    "heightRangedBonusPctPerBand": 10,
+    "stuckSeconds": 10,
+    "knockbackTicks": 6,
+    "knockbackDecay": 0.75,
+    "shaperMinHpFromNonLethal": 1,
+    "$comment": "M6 combat. Radii in cells, times in seconds. heightBandUnits is one ranged bonus band of elevation (32 = one cell of height).",
+    "acquireRadius": 7,
+    "leashRadius": 12,
+    "retargetSeconds": 0.5,
+    "idleAcquireSeconds": 0.2,
+    "chaseRepathSeconds": 0.6,
+    "unitRadius": 0.3,
+    "heightBandUnits": 32,
+    "maxHeightBands": 3,
+    "shaperRegenPerSecond": 20,
+    "shaperRegenDelaySeconds": 6,
+    "eliminatedUnitsBecome": "wild",
+    "buildingDamageFactor": 1,
+    "meleeSwingSeconds": 0.8,
+    "rangedSplashFalloff": 0.6,
+    "knockbackImmuneSeconds": 1.5,
+    "preferTargetBonus": 3,
+    "defensiveAcquireRadius": 3,
+    "defensiveLeashRadius": 4
+  },
+  "progression": {
+    "$comment": "In-match unlock tiers (DESIGN 3a). A tier opens when the tribe first reaches its follower count and stays open. Buildings not listed in any tier are always available. Spells unlock by worship (M9).",
+    "tiers": [
+      { "id": "camp", "followers": 0, "buildings": ["dwelling"] },
+      { "id": "village", "followers": 10, "buildings": ["watchtower", "warden_lodge", "boathouse"] },
+      { "id": "town", "followers": 18, "buildings": ["fire_lodge", "chant_house", "shade_den", "skyloft"] }
+    ]
+  },
+  "victory": {
+    "$comment": "BACKLOG 13 (ADR-014): skirmish victory variants run in the sim (RulesRuntime). The last tribe standing wins under every variant. The hold and hill variants use the skirmish Reliquaries as their sites; a tribe controls a site while it alone has people within controlRadius cells.",
+    "controlRadius": 6,
+    "default": "conquest",
+    "variants": [
+      { "id": "conquest", "type": "conquest", "name": "Conquest", "text": "Eliminate every rival tribe." },
+      { "id": "hold_sites", "type": "holdSites", "seconds": 120, "name": "Hold the Reliquaries", "text": "Control every Reliquary at once for 2 minutes: your people near each one and no rival there." },
+      { "id": "king_of_hill", "type": "kingOfHill", "seconds": 240, "name": "King of the Hill", "text": "Keep more people than any rival at the Reliquary between the first two Hearths for 4 minutes in all." },
+      { "id": "last_stand", "type": "lastStand", "minutes": 20, "name": "Last Stand", "text": "After 20 minutes the tribe with the most followers wins." }
+    ]
+  },
+  "vehicles": {
+    "$comment": "BACKLOG 98 (ADR-016): a walker boarding a moving vehicle re-aims every boardRetryTicks ticks and gives up after boardTries; riders unload on land within the vehicle's boardRadius plus unloadReach cells; a Boathouse needs water within shoreReach cells of its footprint.",
+    "boardRetryTicks": 20,
+    "boardTries": 4,
+    "unloadReach": 2,
+    "shoreReach": 3
+  },
+  "weather": {
+    "$comment": "BACKLOG 14b: match weather, a skirmish and level option. Rain slows every unit to speedMult of its speed.",
+    "rain": { "speedMult": 0.85 }
+  },
+  "forge": {
+    "$comment": "BACKLOG 11 (ADR-017): Forge mode, a skirmish option. Before the match every tribe reshapes the land around its Hearth for free while units stand still; it ends after seconds or when every tribe is ready. A brush stroke changes the ground by amount height units (32 per world unit, drowning at 8 below sea).",
+    "seconds": 120,
+    "radius": 14,
+    "hearthClear": 4,
+    "brushRadius": 3,
+    "amount": 12,
+    "smoothStrength": 0.6,
+    "maxOps": 120
+  },
+  "skirmishWorship": {
+    "$comment": "BACKLOG 1: generated (skirmish) maps get Reliquaries halfway between each pair of Hearths and at that point's opposite on the wrapped planet, so the eight spells beyond the starting set are earned by contested prayer (DESIGN section 10). Sites take these entries in turn.",
+    "maxSites": 4,
+    "minSpacing": 14,
+    "minHearthDistance": 12,
+    "searchRadius": 10,
+    "sites": [
+      {
+        "$comment": "cunning: the tier 2 spells",
+        "kind": "reliquary",
+        "rewards": [
+          { "type": "unlockSpell", "spell": "veil" },
+          { "type": "unlockSpell", "spell": "ward" },
+          { "type": "unlockSpell", "spell": "beguile" },
+          { "type": "unlockSpell", "spell": "whirlwind" }
+        ]
+      },
+      {
+        "$comment": "ruin: the tier 3 and 4 spells",
+        "kind": "reliquary",
+        "rewards": [
+          { "type": "unlockSpell", "spell": "mire" },
+          { "type": "unlockSpell", "spell": "erode" },
+          { "type": "unlockSpell", "spell": "firerain" },
+          { "type": "unlockSpell", "spell": "wraith" }
+        ]
+      }
+    ]
+  },
+  "gates": {
+    "counterTriangleMinWinPct": 65,
+    "maxPersonalityWinPct": 70,
+    "medianMatchMinutes": [
+      12,
+      35
+    ],
+    "unharassedPopulationAtMinute10": {
+      "target": 60,
+      "tolerancePct": 20
+    },
+    "maxStalematePct": 10,
+    "$comment": "Soft gates: guide tuning, never block a milestone (see docs/ROADMAP.md).",
+    "aiEliminatesIdleMinutes": 25
+  },
+  "vision": {
+    "$comment": "BACKLOG 3: fog of war. Each tribe sees discs of sight radius (cells) around its own units and buildings, recomputed every everySeconds on a grid of cellSize cells; explored ground stays mapped. A tribe without a Hearth is revealed to all. Maps can turn it off with fog: false.",
+    "enabled": true,
+    "cellSize": 2,
+    "everySeconds": 0.5,
+    "unitSight": 7,
+    "buildingSight": 6,
+    "sight": { "shaper": 10, "watchtower": 12, "hearth": 9, "shade": 8 }
+  },
+  "statuses": {
+    "$comment": "Status effects applied by spells (M5). Seconds and cells.",
+    "panic": {
+      "fleeDistance": 5,
+      "repickSeconds": 1.5
+    },
+    "burning": {
+      "damagePerSecond": 40
+    },
+    "buildingFire": {
+      "$comment": "BACKLOG 2: a building a Shade sets alight loses hpPctPerSecond of its full hp each second for seconds (over 100 percent in total, so it burns down).",
+      "seconds": 20,
+      "hpPctPerSecond": 6
+    }
+  }
+}
