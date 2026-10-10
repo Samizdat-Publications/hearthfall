@@ -870,6 +870,16 @@
       "when": "2026-10-10T01:39:35.723Z",
       "source": "external:lighting_sheet.png",
       "bytes": 944208
+    },
+    {
+      "file": "b14/20261010-0223_look-v3-before-after.png",
+      "milestone": "B14",
+      "kind": "comparison",
+      "caption": "Before and after look v3: the same close and overview cameras from run 1 and after stretch 2 block A (tilt-shift miniature focus, painted water, clumped trees, golden light).",
+      "highlight": true,
+      "when": "2026-10-10T02:23:40.668Z",
+      "source": "external:look_v3_before_after.png",
+      "bytes": 2181670
     }
   ]
 }
