@@ -25,6 +25,7 @@ export const KEY_ACTIONS = [
   { id: "pauseMenu", label: "Pause menu", key: "P" },
   { id: "cancelCast", label: "Undo a cast", key: "Backspace" },
   { id: "cancelPlan", label: "Cancel the selected plan", key: "Delete" },
+  { id: "photoMode", label: "Photo mode", key: "F" },
 ] as const;
 
 export type KeyAction = (typeof KEY_ACTIONS)[number]["id"];

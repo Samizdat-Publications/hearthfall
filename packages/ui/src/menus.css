@@ -43,7 +43,9 @@
 .settings-cols .menu-grid { align-content: start; }
 .level-desc { white-space: normal; }
 /* BACKLOG 8: the UI scale setting */
-.menu-panel { zoom: var(--ui-scale, 1); }
+/* zoom scales vh too: divide the height cap by the scale so a zoomed panel still fits the window (and scrolls) */
+.menu-panel { zoom: var(--ui-scale, 1); max-height: calc((100vh - 48px) / var(--ui-scale, 1)); }
+.editor-panel { max-height: calc((100vh - 24px) / var(--ui-scale, 1)); }
 /* BACKLOG 81: title illustration and column heads */
 .menu-art { display: block; box-sizing: border-box; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: 50% 40%; border: 2px solid #2b1d13; box-shadow: 0 2px 0 #1d130c; image-rendering: auto; }
 .menu-sub { grid-column: 1 / -1; margin: 0 0 2px; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: #ffd27a; opacity: 0.85; }

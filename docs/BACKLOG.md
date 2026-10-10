@@ -119,4 +119,4 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 - Wild people tribe that can be Called (converted) for growth.
 - Tribe traits (small passive bonuses) as data.
 - Spell combos (Raise Land then Erode for a moat) highlighted by a hint system.
-- Photo mode.
+- Photo mode. DONE (10/10/2026, stretch 2): F toggles it (DESIGN camera section); e2e covers HUD hidden, pause, the PNG download and the restored pause state.

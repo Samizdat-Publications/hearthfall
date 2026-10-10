@@ -115,6 +115,8 @@ const modelFiles = import.meta.glob(
   { eager: true, query: "?url", import: "default" },
 ) as Record<string, string>;
 // M10: audio clips by id (assets/audio/<id>.ogg, indexed in assets/audio/index.json)
+/** photo mode draws no selection rings */
+const NO_SELECTION: ReadonlySet<number> = new Set();
 const audioFiles = import.meta.glob("../../../assets/audio/*.ogg", {
   eager: true,
   query: "?url",
@@ -351,6 +353,11 @@ export class Game {
   placeBlocked: string | null = null;
   private placeAt: [number, number] | null = null;
   showHelp = true;
+  /** Parking lot: photo mode hides the HUD, selection and markers and pauses the match; the camera stays free */
+  photo = false;
+  private photoWasPaused = false;
+  /** last saved photo file name (e2e and the hint line) */
+  photoSaved = "";
   /** spell id being targeted (preview follows the cursor) */
   targeting: string | null = null;
   /** BACKLOG 4: units under the spell preview (enemies the tribe can see, and its own) */
@@ -1401,7 +1408,7 @@ export class Game {
       if (sk) this.player.play("sfx.unit_selected");
       this.selKey = sk;
     }
-    this.renderer.selected = this.selection;
+    this.renderer.selected = this.photo ? NO_SELECTION : this.selection;
     // positional audio hears around the camera focus; the radius grows as the camera pulls out
     const cam = this.renderer.cam;
     this.player.listener = {
@@ -1438,7 +1445,7 @@ export class Game {
     const visualTime = this.params.fixedStep
       ? this.world.tick / this.world.cfg.tickHz
       : now / 1000;
-    this.renderer.setRally(rallyMarker(this.world, this.localTribe, this.selectedBuilding));
+    this.renderer.setRally(this.photo ? null : rallyMarker(this.world, this.localTribe, this.selectedBuilding));
     this.renderer.render(visualTime);
   }
 
@@ -1761,6 +1768,7 @@ export class Game {
     );
     this.canvas.addEventListener("contextmenu", (e) => e.preventDefault());
     this.canvas.addEventListener("mousedown", (e) => {
+      if (this.photo) return;
       // BACKLOG 12: in the map editor a left click applies the tool and a right click erases
       if (this.editor) {
         if (e.button === 0 || e.button === 2) this.editorAt(e.clientX, e.clientY, e.button === 2);
@@ -1858,7 +1866,8 @@ export class Game {
     );
     let drag: { x: number; y: number; pan: boolean } | null = null;
     this.canvas.addEventListener("mousedown", (e) => {
-      if (e.button === 1) {
+      // photo mode: a left drag orbits (Ctrl pans) like the middle button
+      if (e.button === 1 || (e.button === 0 && this.photo)) {
         e.preventDefault();
         drag = { x: e.clientX, y: e.clientY, pan: e.ctrlKey };
       }
@@ -1875,6 +1884,58 @@ export class Game {
     });
   }
 
+  /** Photo mode on or off: the match pauses while it is on and resumes as it was. */
+  setPhoto(on: boolean): void {
+    if (on === this.photo || (on && (this.screen !== "none" || this.editor || this.ended))) return;
+    if (on) {
+      this.cancelPlacing();
+      this.cancelTargeting();
+      this.pointing = null;
+      this.attackMode = false;
+      this.photoWasPaused = this.paused;
+      this.paused = true;
+    } else this.paused = this.photoWasPaused;
+    this.photo = on;
+    this.onChange();
+  }
+
+  /** Photo mode keys: the camera keys keep working (held keys), Enter saves a PNG, Escape or the photo key leaves. */
+  private photoKey(e: KeyboardEvent): void {
+    if (e.key === "Escape" || actionFor(this.settings.keymap, e) === "photoMode") {
+      e.preventDefault();
+      return this.setPhoto(false);
+    }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      this.savePhoto();
+      return;
+    }
+    if (actionFor(this.settings.keymap, e) === "toggleMap") this.renderer.setCamera({ map: !this.renderer.cam.map });
+    const f = ["F1", "F2", "F3", "F4"].indexOf(e.key);
+    if (f >= 0 && this.bookmarks[f]) {
+      e.preventDefault();
+      this.renderer.setCamera(this.bookmarks[f]!);
+    }
+  }
+
+  /** Download the current frame as a PNG (the canvas keeps its drawing buffer, and the HUD is DOM, so it is not in it). */
+  savePhoto(): string {
+    this.renderer.render(this.params.fixedStep ? this.world.tick / this.world.cfg.tickHz : performance.now() / 1000);
+    const name = `hearthfall-${new Date().toISOString().slice(0, 19).replace(/[-:T]/g, "")}-t${this.world.tick}.png`;
+    this.canvas.toBlob((b) => {
+      if (!b) return;
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(b);
+      a.download = name;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    }, "image/png");
+    this.photoSaved = name;
+    this.player.play("sfx.ui_click");
+    this.onChange();
+    return name;
+  }
+
   /** Keyboard: rebinding first, then menus (Escape goes back), then play. Rebindable actions use the keymap. */
   private onKey(e: KeyboardEvent): void {
     if (this.rebinding) {
@@ -1889,6 +1950,7 @@ export class Game {
     if (this.editor) return this.editorKey(e);
     const k = e.key.toLowerCase();
     this.keys.add(k);
+    if (this.photo) return this.photoKey(e);
     const sel = this.selection.size > 0;
     switch (actionFor(this.settings.keymap, e)) {
       case "buildDwelling":
@@ -1924,6 +1986,8 @@ export class Game {
         break;
       case "pauseMenu":
         return this.openPause();
+      case "photoMode":
+        return this.setPhoto(true);
       default:
         break;
     }
@@ -2008,6 +2072,7 @@ export class Game {
     return {
       tick: w.tick,
       paused: this.paused,
+      photo: this.photo,
       screen: this.screen,
       ended: this.ended,
       seed: w.seed,

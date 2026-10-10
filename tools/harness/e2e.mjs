@@ -153,6 +153,18 @@ async function flow(browser, url, vp) {
     if (tribes !== 3) problem(`skirmish has ${tribes} tribes, expected 3`);
     await page.evaluate(() => window.__game.step(200));
     await check("play");
+    // parking lot: photo mode hides the HUD, pauses, saves the canvas as a PNG download and restores the pause state
+    const pausedBefore = await page.evaluate(() => window.__game.getSummary().paused);
+    await page.keyboard.press("f");
+    await settle();
+    const ph = await page.evaluate(() => ({ s: window.__game.getSummary(), hud: getComputedStyle(document.getElementById("hud")).display, hint: getComputedStyle(document.getElementById("photo-hint")).display }));
+    if (!ph.s.photo || !ph.s.paused || ph.hud !== "none" || ph.hint === "none") problem(`photo mode on: ${JSON.stringify({ photo: ph.s.photo, paused: ph.s.paused, hud: ph.hud, hint: ph.hint })}`);
+    const [shot] = await Promise.all([page.waitForEvent("download", { timeout: 10000 }).catch(() => null), page.keyboard.press("Enter")]);
+    if (!shot || !/^hearthfall-.*\.png$/.test(shot.suggestedFilename())) problem(`photo mode: Enter gave no PNG download (${shot?.suggestedFilename() ?? "none"})`);
+    await page.keyboard.press("Escape");
+    await settle();
+    const photoOff = await page.evaluate(() => ({ s: window.__game.getSummary(), hud: getComputedStyle(document.getElementById("hud")).display }));
+    if (photoOff.s.photo || photoOff.s.paused !== pausedBefore || photoOff.hud === "none") problem(`photo mode off: ${JSON.stringify({ photo: photoOff.s.photo, paused: photoOff.s.paused, hud: photoOff.hud })}`);
     // BACKLOG 49: a plan placed near the Hearth, selected with a left click, is cancelled from the troop panel
     const planSpot = await page.evaluate(([w, h]) => {
       const tried = [];

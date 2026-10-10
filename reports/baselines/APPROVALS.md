@@ -121,3 +121,4 @@
 - 2026-10-10T13:49 set levels (5 shots): BACKLOG 39 ground detail at close zoom
 - 2026-10-10T13:50 set forge (1 shots): BACKLOG 39 ground detail at close zoom
 - 2026-10-10T13:52 set look (13 shots): BACKLOG 39: new islands_lowland watch shot
+- 2026-10-10T17:46 set menus (9 shots): photo mode key row in settings; zoomed menu panels cap their height by the UI scale

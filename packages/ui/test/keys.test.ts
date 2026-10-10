@@ -32,6 +32,7 @@ describe("rebindable keys (M8 settings)", () => {
     for (const k of keys) expect(SPELL_KEYS as readonly string[]).not.toContain(k);
     expect(actionFor(km, ev("d"))).toBe("buildDwelling");
     expect(actionFor(km, ev("m"))).toBe("toggleMap");
+    expect(actionFor(km, ev("f"))).toBe("photoMode");
     expect(actionFor(km, ev("M", true))).toBe(null);
     expect(actionFor(km, ev("d", false, true))).toBe(null);
     expect(actionFor(km, ev("Backspace"))).toBe("cancelCast");

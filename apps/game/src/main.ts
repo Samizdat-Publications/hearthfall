@@ -65,6 +65,11 @@ canvas.addEventListener("webglcontextrestored", () => {
   notice("Graphics restored.", 3000);
 });
 const hudEl = document.getElementById("hud")!;
+/** Parking lot photo mode: a one-line hint over the view (DOM, so it never lands in the saved PNG) */
+const photoHint = document.createElement("div");
+photoHint.id = "photo-hint";
+photoHint.style.cssText = "position:fixed;left:50%;bottom:14px;transform:translateX(-50%);max-width:calc(100vw - 32px);padding:6px 12px;border-radius:6px;background:rgba(20,18,14,0.62);color:#f2ead8;font:13px/1.35 system-ui,sans-serif;pointer-events:none;text-align:center;display:none;z-index:5";
+document.body.appendChild(photoHint);
 /** BACKLOG 8: window size and wanted scale the HUD was last fitted to (refitHud) */
 let fitKey = "";
 function resize() {
@@ -83,7 +88,9 @@ try {
   const replayUi = mountGameReplay(document.getElementById("replay")!, game);
   game.onChange = () => {
     // the HUD hides under a menu screen (and so stays out of the menus' DOM layout checks) and in the map editor
-    hudEl.style.display = game.screen === "none" && !game.editor ? "" : "none";
+    hudEl.style.display = game.screen === "none" && !game.editor && !game.photo ? "" : "none";
+    photoHint.style.display = game.photo ? "" : "none";
+    if (game.photo) photoHint.textContent = `Photo mode: drag or Q and E to turn, arrows to pan, wheel to zoom, M map view. Enter saves a PNG${game.photoSaved ? ` (saved ${game.photoSaved})` : ""}. F or Escape returns.`;
     hud.refresh();
     menus.refresh();
     editorUi.refresh();
