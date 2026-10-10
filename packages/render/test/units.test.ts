@@ -112,5 +112,12 @@ describe("unit layer", () => {
     layer.disc.getMatrixAt(2, m);
     const y = new THREE.Vector3().setFromMatrixPosition(m).y;
     expect(y - t.heightAt(15.9, 30.4)).toBeGreaterThan(0.1);
+    // the fit is cached per terrain version: flattening the ramp and bumping the version lays the ring flat again
+    for (let yy = 0; yy < 64; yy++) for (let x = 16; x <= 32; x++) t.heights[yy * 64 + x] = base;
+    layer.update(w, 1, 20, 20, 1, 0, 1000, new THREE.PerspectiveCamera(), 0, 100, 100, new Set());
+    expect(up(0).x).toBeCloseTo(-2 / Math.sqrt(5), 2);
+    t.version++;
+    layer.update(w, 1, 20, 20, 1, 0, 1000, new THREE.PerspectiveCamera(), 0, 100, 100, new Set());
+    expect(up(0).y).toBeCloseTo(1, 6);
   });
 });

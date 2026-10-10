@@ -151,6 +151,10 @@ export class UnitLayer {
   /** BACKLOG 94: rings under walkers lie along the ground slope, not flat into it */
   private readonly tilt = new THREE.Quaternion();
   private readonly normal = new THREE.Vector3();
+  /** groundFit results on a half-cell grid per ring size (quaternion xyzw and lift), valid for `fitStamp` terrain version */
+  private fitCache: Float32Array | null = null;
+  private fitStamp: Int32Array | null = null;
+  private fitKey = "";
   private readonly v = new THREE.Vector3();
 
   constructor(material: THREE.Material, ringMaterial: THREE.Material, unitIds: string[], pal: Record<string, string>, tribeColorNames: string[], models: ReadonlyMap<string, ModelParts> | null = null, cap = 8192, unitScale: Readonly<Record<string, number>> = { shaper: SHAPER_SCALE }) {
@@ -251,6 +255,35 @@ export class UnitLayer {
     return Math.min(lift, 0.8);
   }
 
+  /**
+   * groundFit at the nearest half-cell grid point, cached per terrain version (the render bench crowd spent
+   * about 4 ms a frame in the exact fit). The rim radius grows by the half-cell diagonal so the lift still
+   * clears the terrain under a ring drawn up to that far from the grid point. `cls` is the ring size class.
+   */
+  groundFitCached(w: World, x: number, z: number, n: number, heightScale: number, radius: number, cls: number): number {
+    const g = n * 2;
+    const key = `${n}:${heightScale}:${this.s.x}`;
+    if (!this.fitCache || !this.fitStamp || this.fitKey !== key) {
+      this.fitCache = new Float32Array(g * g * 2 * 5);
+      this.fitStamp = new Int32Array(g * g * 2).fill(-1);
+      this.fitKey = key;
+    }
+    const gx = ((Math.round(x * 2) % g) + g) % g;
+    const gz = ((Math.round(z * 2) % g) + g) % g;
+    const e = cls * g * g + gz * g + gx;
+    const o = e * 5;
+    const c = this.fitCache;
+    if (this.fitStamp[e] !== w.terrain.version) {
+      c[o + 4] = this.groundFit(w, gx / 2, gz / 2, n, heightScale, radius + 0.36);
+      c[o] = this.tilt.x;
+      c[o + 1] = this.tilt.y;
+      c[o + 2] = this.tilt.z;
+      c[o + 3] = this.tilt.w;
+      this.fitStamp[e] = w.terrain.version;
+    } else this.tilt.set(c[o], c[o + 1], c[o + 2], c[o + 3]);
+    return c[o + 4];
+  }
+
   update(w: World, alpha: number, focusX: number, focusZ: number, heightScale: number, visualTime: number, fadeEnd: number, camera: THREE.Camera, bendK: number, viewW: number, viewH: number, selected: ReadonlySet<number>): void {
     const E = w.ents;
     const n = w.terrain.size;
@@ -304,7 +337,7 @@ export class UnitLayer {
       kind.anim.array.set(unitPose(this.forceClip ? this.forceClip(i) : unitClip(w, i), visualTime, i, this.pose), c * 4);
       kind.body.setColorAt(c, shown >= 0 ? this.tribeColors[shown % this.tribeColors.length] : this.wildColor);
       const flat = nav !== NAV.land;
-      const lift = flat ? 0 : this.groundFit(w, ix, iz, n, heightScale, Math.max(DISC_RADIUS * (ks > 1 ? SHAPER_DISC : 1), 0.42) * this.s.x);
+      const lift = flat ? 0 : this.groundFitCached(w, ix, iz, n, heightScale, Math.max(DISC_RADIUS * (ks > 1 ? SHAPER_DISC : 1), 0.42) * this.s.x, ks > 1 ? 1 : 0);
       if (E.tribe[i] >= 0 && discs < this.cap) {
         this.p.y = ground + 0.02 + lift;
         this.sk.setScalar(this.s.x * (ks > 1 ? SHAPER_DISC : 1));

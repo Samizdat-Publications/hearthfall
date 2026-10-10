@@ -275,9 +275,12 @@ export class UnitSystem {
         this.stop(i);
         continue;
       }
-      // BACKLOG 73: start is the snapped goal (an empty path): the route is that vertex, so a unit on the shore
-      // ordered into the sea arrives there instead of steering at the raw goal in the water and giving up
-      this.paths[i] = r.waypoints.length ? r.waypoints : Int32Array.of(goal);
+      // BACKLOG 73: start is the snapped goal (an empty path) and the goal lies in the sea: the route is that
+      // vertex, so a unit on the shore ordered into the sea arrives there instead of steering at the raw goal in
+      // the water and giving up. A goal on land (a tree, a building door, a target across a moat) keeps steering
+      // at the goal itself, so workers reach their work and attackers the water's edge (level_the_forge regression)
+      const wet = !r.waypoints.length && w.terrain.heightAt(E.gx[i], E.gy[i]) < w.terrain.sea;
+      this.paths[i] = wet ? Int32Array.of(goal) : r.waypoints;
       E.pathPos[i] = 0;
       // a repath onto a longer detour (BACKLOG 7, soak seed 1008): progress restarts against the new
       // route, or the unit would give up while walking it; a same-length route keeps the stuck count. Not
