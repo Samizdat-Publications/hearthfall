@@ -5,6 +5,7 @@
 // three) through ordinary Commands. Dwelling upkeep is delegated to the EconomyBot. Deterministic:
 // entity index order, arrays only, the ai rng stream for noise and picks.
 import { BSTATE, CAT, NAV, NO_ENTITY, TASK, dmath, wrapDelta, type Command, type Controller, type World } from "@hearthfall/sim";
+import { AI_SHARED_DEFAULTS, type AiShared } from "@hearthfall/data";
 import { EconomyBot } from "./economyBot.ts";
 
 export interface Personality {
@@ -104,6 +105,8 @@ export class OpponentAI implements Controller {
   private readonly periodOverride: number | undefined;
   private periodTicks = 0;
   private p!: Personality;
+  /** BACKLOG 69: the shared AI numbers (ai_personalities.json shared, defaults for older packs) */
+  private sh: AiShared = AI_SHARED_DEFAULTS;
   private noise = 0;
   /** BACKLOG 3: difficulty data lets this AI see through fog of war */
   private mapHack = false;
@@ -252,6 +255,7 @@ export class OpponentAI implements Controller {
       if (!found) throw new Error(`unknown personality ${this.spec}`);
       this.p = found;
     } else this.p = this.spec;
+    this.sh = { ...AI_SHARED_DEFAULTS, ...(ai.shared ?? {}) };
     const d = ai.difficulties.find((x) => x.id === this.difficulty);
     if (!d) throw new Error(`unknown difficulty ${this.difficulty}`);
     this.noise = d.decisionNoise;
@@ -404,7 +408,7 @@ export class OpponentAI implements Controller {
         if (!def.trainedAt && !def.isCaster) continue;
         const dx = wrapDelta(E.x[i] - E.x[h], n);
         const dy = wrapDelta(E.y[i] - E.y[h], n);
-        if (dx * dx + dy * dy < 14 * 14) c.threats.push(i);
+        if (dx * dx + dy * dy < this.sh.threatRadius * this.sh.threatRadius) c.threats.push(i);
       }
     }
     const ds: [number, number, number][] = [];
@@ -423,7 +427,7 @@ export class OpponentAI implements Controller {
       const dy = wrapDelta(E.y[eh] - E.y[h], n);
       ds.push([dx * dx + dy * dy, t.index, eh]);
       // scouting: an own unit near an enemy Hearth reveals it for good
-      if (!this.known.has(t.index) && this.near(w, E.x[eh], E.y[eh], 14)) {
+      if (!this.known.has(t.index) && this.near(w, E.x[eh], E.y[eh], this.sh.scoutRadius)) {
         this.known.add(t.index);
         if (this.stats.scoutedAtTick < 0) this.stats.scoutedAtTick = w.tick;
       }
@@ -466,12 +470,12 @@ export class OpponentAI implements Controller {
   // ------------------------------------------------------------------ considerations and actions
 
   private keep(): number {
-    return Math.max(8, Math.round(this.p.economyTargetPop * 0.35));
+    return Math.max(this.sh.keepMin, Math.round(this.p.economyTargetPop * this.sh.keepShare));
   }
 
   /** settlers kept out of training: the economy floor, or a bare 6 while enemies are at the Hearth */
   private floor(c: Census): number {
-    return c.threats.length ? Math.min(6, this.keep()) : this.keep();
+    return c.threats.length ? Math.min(this.sh.keepUnderThreat, this.keep()) : this.keep();
   }
 
   private protectScore(c: Census): number {
@@ -521,7 +525,7 @@ export class OpponentAI implements Controller {
       if (!c.w.cfg.pack.units.units[E.type[i]].trainedAt || E.atk[i] !== NO_ENTITY) continue;
       const dx = wrapDelta(E.x[i] - E.x[c.h], n);
       const dy = wrapDelta(E.y[i] - E.y[c.h], n);
-      if (dx * dx + dy * dy < 30 * 30) ids.push(E.idOf(i));
+      if (dx * dx + dy * dy < this.sh.defendRadius * this.sh.defendRadius) ids.push(E.idOf(i));
     }
     if (ids.length) out.push(this.cmd(c.w, "move", { units: ids, to: [E.x[t], E.y[t]], attack: true }));
   }
@@ -820,7 +824,7 @@ export class OpponentAI implements Controller {
   }
 
   private waveSize(): number {
-    return Math.round(4 + (1 - this.p.aggression) * 10);
+    return Math.round(this.sh.waveBase + (1 - this.p.aggression) * this.sh.waveAggressionSpan);
   }
 
   private attackScore(c: Census): number {
@@ -831,8 +835,8 @@ export class OpponentAI implements Controller {
     // waiting only for a finished one let fast single-type waves end the match first), for up to 3 minutes
     const kinds = new Set(c.idle.map((i) => c.w.ents.type[i])).size;
     const lodgeKinds = [...c.lodges.values()].filter((l) => l.length > 0).length;
-    if (kinds < 2 && lodgeKinds >= 2 && c.minute < this.p.firstAttackMinute + 3) return 0;
-    return clamp01(0.35 + 0.5 * this.p.aggression + 0.15 * (ratio - 1));
+    if (kinds < 2 && lodgeKinds >= 2 && c.minute < this.p.firstAttackMinute + this.sh.mixedHoldMinutes) return 0;
+    return clamp01(this.sh.attackScoreBase + this.sh.attackScoreAggression * this.p.aggression + this.sh.attackScoreSurplus * (ratio - 1));
   }
 
   private attack(c: Census, out: Command[]): void {
@@ -1106,7 +1110,7 @@ export class OpponentAI implements Controller {
       const s = w.cfg.spellIndex.get(id);
       if (s === undefined || !eco.unlocked[s] || eco.charges[s] <= 0) continue;
       const def = w.cfg.pack.spells.spells[s];
-      const reach = def.range + 10;
+      const reach = def.range + this.sh.castReachSlack;
       const kind = def.aiTarget ?? "none";
       if (kind === "none" || kind === "bridge") continue;
       const killsCaster = def.effects.some((e) => e.type === "damageRadius" && (e.canKill?.length ?? 0) > 0);

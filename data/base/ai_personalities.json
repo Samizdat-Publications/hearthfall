@@ -1,5 +1,21 @@
 {
   "$comment": "Utility weights 0..1 unless noted. spellPrefs are filtered at runtime to spells the tribe has unlocked. Difficulty scales reactionSeconds and decisionNoise, not hidden resources (resourceMultiplier stays 1.0 unless a difficulty explicitly sets it).",
+  "shared": {
+    "$comment": "BACKLOG 69: numbers every personality shares (they were literals in opponent.ts). Radii in cells.",
+    "threatRadius": 14,
+    "scoutRadius": 14,
+    "defendRadius": 30,
+    "waveBase": 4,
+    "waveAggressionSpan": 10,
+    "keepShare": 0.35,
+    "keepMin": 8,
+    "keepUnderThreat": 6,
+    "mixedHoldMinutes": 3,
+    "attackScoreBase": 0.35,
+    "attackScoreAggression": 0.5,
+    "attackScoreSurplus": 0.15,
+    "castReachSlack": 10
+  },
   "personalities": [
     {
       "id": "aggressive",

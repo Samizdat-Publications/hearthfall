@@ -3,6 +3,7 @@ import { World } from "../../sim/src/world.ts";
 import { CAT } from "../../sim/src/entities.ts";
 import { basePack, world } from "../../sim/test/helpers.ts";
 import { OpponentAI, makeBot, type Personality } from "../src/index.ts";
+import { AI_SHARED_DEFAULTS } from "@hearthfall/data";
 
 function vsIdle(personality: string, seed: number, minutes: number): { w: World; ai: OpponentAI } {
   const p = basePack();
@@ -54,6 +55,24 @@ describe("OpponentAI (M7)", () => {
     expect(t.actions.buildTower ?? 0).toBeGreaterThan(a.actions.buildTower ?? 0);
     expect(t.decisions).toBeGreaterThan(a.decisions);
   }, 60000);
+
+  it("BACKLOG 69: the shared AI numbers come from ai_personalities.json shared (older packs: the old literals)", () => {
+    const p = basePack();
+    const { $comment: _c, ...shipped } = p.files.ai.shared!;
+    expect(shipped).toEqual(AI_SHARED_DEFAULTS);
+    const sizeWith = (shared: Record<string, number> | undefined) => {
+      const files = structuredClone(p.files);
+      if (shared) files.ai.shared = { ...AI_SHARED_DEFAULTS, ...shared };
+      else delete files.ai.shared;
+      const w = new World({ pack: files, packHash: p.hash, seed: 1, map: { generator: "flat", size: 32, tribes: 2 } });
+      const ai = new OpponentAI({ tribe: 0, personality: "turtle", difficulty: "normal" });
+      ai.decide(w);
+      return (ai as unknown as { waveSize(): number; keep(): number }).waveSize() * 1000 + (ai as unknown as { keep(): number }).keep();
+    };
+    expect(sizeWith(undefined)).toBe(sizeWith({}));
+    expect(sizeWith({ waveBase: 6 })).toBe(sizeWith({}) + 2000);
+    expect(sizeWith({ keepMin: 90 }) % 1000).toBe(90);
+  });
 
   it("difficulty sets the decision cadence from reactionSeconds in data", () => {
     const w = world({ generator: "flat", size: 32, tribes: 2 });

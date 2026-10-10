@@ -185,6 +185,82 @@
         ],
         "additionalProperties": false
       }
+    },
+    "shared": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "threatRadius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "scoutRadius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "defendRadius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "waveBase": {
+          "type": "number",
+          "minimum": 0
+        },
+        "waveAggressionSpan": {
+          "type": "number",
+          "minimum": 0
+        },
+        "keepShare": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "keepMin": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "keepUnderThreat": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "mixedHoldMinutes": {
+          "type": "number",
+          "minimum": 0
+        },
+        "attackScoreBase": {
+          "type": "number"
+        },
+        "attackScoreAggression": {
+          "type": "number"
+        },
+        "attackScoreSurplus": {
+          "type": "number"
+        },
+        "castReachSlack": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "threatRadius",
+        "scoutRadius",
+        "defendRadius",
+        "waveBase",
+        "waveAggressionSpan",
+        "keepShare",
+        "keepMin",
+        "keepUnderThreat",
+        "mixedHoldMinutes",
+        "attackScoreBase",
+        "attackScoreAggression",
+        "attackScoreSurplus",
+        "castReachSlack"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [

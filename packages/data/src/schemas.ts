@@ -899,10 +899,52 @@ export const DifficultySchema = z.strictObject({
   mapHack: z.boolean().optional(),
   resourceMultiplier: z.number().positive(),
 });
+/** BACKLOG 69: numbers every personality shares (they were literals in opponent.ts); absent in older packs = these defaults */
+export const AiSharedSchema = z.strictObject({
+  ...comment,
+  /** enemy troops and casters this close to the Hearth are threats (cells) */
+  threatRadius: pos,
+  /** an own unit this close to an enemy Hearth scouts it for good (cells) */
+  scoutRadius: pos,
+  /** troops this close to the Hearth answer a threat (cells) */
+  defendRadius: pos,
+  /** attack wave size = round(waveBase + (1 - aggression) * waveAggressionSpan) */
+  waveBase: pos,
+  waveAggressionSpan: z.number().nonnegative(),
+  /** settlers kept out of training: max(keepMin, round(economyTargetPop * keepShare)); keepUnderThreat while enemies are at the Hearth */
+  keepShare: z.number().min(0).max(1),
+  keepMin: z.number().int().nonnegative(),
+  keepUnderThreat: z.number().int().nonnegative(),
+  /** a single-type wave waits for a second unit type up to this many minutes after firstAttackMinute */
+  mixedHoldMinutes: z.number().nonnegative(),
+  /** attack score = clamp01(attackScoreBase + attackScoreAggression * aggression + attackScoreSurplus * (idle / wave - 1)) */
+  attackScoreBase: z.number(),
+  attackScoreAggression: z.number(),
+  attackScoreSurplus: z.number(),
+  /** targets for a spell are searched this far beyond its range (cells) */
+  castReachSlack: z.number().nonnegative(),
+});
+export type AiShared = z.infer<typeof AiSharedSchema>;
+export const AI_SHARED_DEFAULTS: AiShared = {
+  threatRadius: 14,
+  scoutRadius: 14,
+  defendRadius: 30,
+  waveBase: 4,
+  waveAggressionSpan: 10,
+  keepShare: 0.35,
+  keepMin: 8,
+  keepUnderThreat: 6,
+  mixedHoldMinutes: 3,
+  attackScoreBase: 0.35,
+  attackScoreAggression: 0.5,
+  attackScoreSurplus: 0.15,
+  castReachSlack: 10,
+};
 export const AiFileSchema = z.strictObject({
   ...comment,
   personalities: z.array(PersonalitySchema),
   difficulties: z.array(DifficultySchema),
+  shared: AiSharedSchema.optional(),
 });
 export type AiFile = z.infer<typeof AiFileSchema>;
 
