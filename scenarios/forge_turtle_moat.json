@@ -1,0 +1,33 @@
+{
+  "id": "forge_turtle_moat",
+  "description": "BACKLOG 11 (ADR-017): a Forge match. The player raises and flattens land near its Hearth and declares ready; a turtle opponent digs its moat ring (gaps toward and away from the player) and declares ready, so the Forge ends early. Units stand still and orders wait until it ends; afterwards the match runs and its clock starts at zero.",
+  "tags": ["forge", "ai"],
+  "seed": 111,
+  "forge": true,
+  "map": { "generator": "flat", "size": 64, "tribes": 2 },
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [48, 32] },
+    { "spawn": "shaper", "tribe": 0, "at": [50, 30] },
+    { "spawn": "settler", "tribe": 0, "near": [46, 35], "count": 3 },
+    { "spawn": "hearth", "tribe": 1, "at": [16, 32] },
+    { "spawn": "shaper", "tribe": 1, "at": [18, 30] },
+    { "spawn": "settler", "tribe": 1, "near": [14, 35], "count": 4 }
+  ],
+  "bots": [{ "type": "opponent", "tribe": 1, "personality": "turtle", "difficulty": "normal" }],
+  "commands": [
+    { "tick": 5, "tribe": 0, "type": "forgeOp", "args": { "brush": "raise", "x": 40, "y": 32 } },
+    { "tick": 6, "tribe": 0, "type": "forgeOp", "args": { "brush": "raise", "x": 40, "y": 34 } },
+    { "tick": 7, "tribe": 0, "type": "forgeOp", "args": { "brush": "flatten", "x": 48, "y": 40 } },
+    { "tick": 8, "tribe": 0, "type": "forgeOp", "args": { "brush": "lower", "x": 48, "y": 33 } },
+    { "tick": 9, "tribe": 0, "type": "move", "args": { "units": "tribe0.settlers", "to": [44, 44] } },
+    { "tick": 10, "tribe": 0, "type": "forgeReady", "args": {} }
+  ],
+  "runTicks": 2600,
+  "assert": [
+    { "at": 11, "expr": "forge.running && forge.ops(0) == 3 && forge.ready(0) && events.count('commandRejected') == 2" },
+    { "at": 11, "expr": "count(tribe0.settlers, near([44, 44], 4)) == 0" },
+    { "at": 2600, "expr": "!forge.running && forge.endedAt > 100 && forge.endedAt < 2400 && forge.ops(1) == 72 && forge.ready(1)" },
+    { "at": 2600, "expr": "events.count('forgeEnded') == 1 && playTick == 2600 - forge.endedAt" },
+    { "at": 2600, "expr": "events.count('drowned') == 0 && count(tribe1.units) >= 5 && invariants() == 0" }
+  ]
+}

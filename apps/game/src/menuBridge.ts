@@ -42,6 +42,8 @@ interface SetupState {
   opponents: string[];
   difficulty: string;
   victory: string;
+  /** BACKLOG 11: "on" starts the match with a Forge phase */
+  forge: string;
   error: string | null;
 }
 
@@ -49,7 +51,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
   const sk = game.pack.files.balance.skirmish ?? SKIRMISH_DEFAULTS;
   const ai = game.pack.files.ai;
   const vic = game.pack.files.balance.victory;
-  const setup: SetupState = { map: sk.maps[0], size: sk.defaultSize, seed: 1, opponents: [...sk.defaultOpponents], difficulty: sk.defaultDifficulty, victory: vic?.default ?? "", error: null };
+  const setup: SetupState = { map: sk.maps[0], size: sk.defaultSize, seed: 1, opponents: [...sk.defaultOpponents], difficulty: sk.defaultDifficulty, victory: vic?.default ?? "", forge: "off", error: null };
   const saves = { mode: "load" as "save" | "load", message: null as string | null };
   let settingsMsg: string | null = null;
   const maxOpponents = Math.min(sk.maxOpponents, MAX_TRIBES - 1);
@@ -80,6 +82,8 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
         victories: (vic?.variants ?? []).map((v) => ({ value: v.id, label: v.name })),
         victory: setup.victory,
         victoryText: vic?.variants.find((v) => v.id === setup.victory)?.text ?? "",
+        forges: game.pack.files.balance.forge ? [{ value: "off", label: "Off" }, { value: "on", label: `On (${Math.round(game.pack.files.balance.forge.seconds / 60)} min)` }] : [],
+        forge: setup.forge,
         error: setup.error,
       },
       settings: {
@@ -160,7 +164,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
       return refresh();
     }
     setup.error = null;
-    const sp: SkirmishParams = { seed, level: setup.map, size: setup.size, tribes: 1 + setup.opponents.length, ai: [...setup.opponents], difficulty: setup.difficulty, ...(setup.victory ? { rules: setup.victory } : {}) };
+    const sp: SkirmishParams = { seed, level: setup.map, size: setup.size, tribes: 1 + setup.opponents.length, ai: [...setup.opponents], difficulty: setup.difficulty, ...(setup.victory ? { rules: setup.victory } : {}), ...(setup.forge === "on" ? { forge: true } : {}) };
     try {
       game.startSkirmish(sp);
     } catch (e) {

@@ -103,6 +103,42 @@ export interface HudModel {
   targetCounts?: { enemies: number; own: number } | null;
   /** BACKLOG 4: seconds left to undo the cast in progress with Backspace (absent or negative: none) */
   undoSec?: number;
+  /** BACKLOG 11: the Forge phase (absent or null outside it) */
+  forge?: ForgeView | null;
+}
+
+/** BACKLOG 11: the Forge panel: time and strokes left, the brush in hand, whether this tribe is ready */
+export interface ForgeView {
+  secondsLeft: number;
+  strokesLeft: number;
+  brush: string;
+  brushes: string[];
+  ready: boolean;
+  /** why the brush cannot land under the cursor ("" when it can) */
+  blocked: string;
+}
+
+const mmss = (sec: number) => `${Math.floor(sec / 60)}:${String(Math.max(0, Math.floor(sec % 60))).padStart(2, "0")}`;
+
+/** BACKLOG 11: the Forge panel above the play area. */
+export function ForgePanel({ f, act }: { f: ForgeView; act: HudActions }) {
+  return (
+    <div data-hud="forge" class="hud-panel hud-forge">
+      <span class="forge-title">
+        The Forge: left click to reshape the land around your Hearth ({mmss(f.secondsLeft)} left, {f.strokesLeft} strokes){f.blocked ? ` | ${f.blocked}` : ""}
+      </span>
+      <span class="troops-row">
+        {f.brushes.map((b) => (
+          <button key={b} data-ui={`forge-${b}`} class={"prio" + (f.brush === b ? " on" : "")} onClick={() => act.forgeBrush(b)}>
+            {b[0].toUpperCase() + b.slice(1)}
+          </button>
+        ))}
+        <button data-ui="forge-ready" class="prio forge-ready" disabled={f.ready} onClick={() => act.forgeReady()}>
+          {f.ready ? "Waiting for rivals" : "Ready"}
+        </button>
+      </span>
+    </div>
+  );
 }
 
 const plural = (k: number, one: string, many: string) => `${k} ${k === 1 ? one : many}`;
@@ -132,6 +168,9 @@ export interface HudActions {
   garrison(): void;
   retreat(): void;
   setStance(s: (typeof STANCES)[number]): void;
+  /** BACKLOG 11: pick the Forge brush, end this tribe's Forge */
+  forgeBrush(b: string): void;
+  forgeReady(): void;
 }
 
 /** Small stance glyphs: crossed blades, a shield, an open palm. */
@@ -383,6 +422,7 @@ function Hud({ act }: { act: HudActions }) {
           <b>{m.subtitle.speaker}:</b> {m.subtitle.text}
         </div>
       ) : null}
+      {m.forge ? <ForgePanel f={m.forge} act={act} /> : null}
       {m.undoSec !== undefined && m.undoSec > 0 ? (
         <div data-hud="undo" class="hud-panel hud-undo">
           Backspace undoes this cast ({m.undoSec.toFixed(1)} s)

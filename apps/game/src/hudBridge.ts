@@ -1,7 +1,7 @@
 // Builds the HUD view model from the Game each refresh and maps HUD intents to Commands.
 import { SPELL_KEYS, hudModel, mountHud, type HudModel, type ObjectiveView, type SpellView, type TroopView } from "@hearthfall/ui";
 import "../../../packages/ui/src/hud.css";
-import { shaperIndex } from "@hearthfall/sim";
+import { FORGE_BRUSHES, shaperIndex } from "@hearthfall/sim";
 import type { Game } from "./game.ts";
 import { drawMinimap } from "./minimap.ts";
 import { troopView, undoLeft } from "./troops.ts";
@@ -66,6 +66,7 @@ export function hudFor(game: Game): HudModel {
     pointing: game.pointing,
     targetCounts: game.targetCounts,
     undoSec: tr ? undoLeft(w, tr.index) : -1,
+    forge: w.forge?.running() && tr ? { secondsLeft: w.forge.remaining() / w.cfg.tickHz, strokesLeft: w.forge.def.maxOps - w.forge.ops[tr.index], brush: game.forgeBrush, brushes: [...FORGE_BRUSHES], ready: w.forge.ready[tr.index], blocked: game.forgeBlocked } : null,
   };
 }
 
@@ -88,7 +89,7 @@ function levelObjectives(game: Game): ObjectiveView[] {
   const w = game.world;
   const lv = w.level!;
   const hz = w.cfg.tickHz;
-  const left = (sec: number) => clock(Math.max(0, sec - w.tick / hz));
+  const left = (sec: number) => clock(Math.max(0, sec - w.playTick / hz));
   const out: ObjectiveView[] = lv.def.objectives.map((o, k) => {
     const done = lv.done[k] === 1;
     const auto =
@@ -120,7 +121,7 @@ export function rulesLine(w: Game["world"], me: number): string | null {
   const rivals = w.tribes.filter((t) => t.index !== me && t.alive);
   if (r.def.type === "lastStand") {
     const best = Math.max(0, ...rivals.map((t) => w.economy.followers(t.index)));
-    return `Last Stand ${clock(Math.max(0, goal - w.tick / hz))} left: you ${w.economy.followers(me)}, best rival ${best} followers`;
+    return `Last Stand ${clock(Math.max(0, goal - w.playTick / hz))} left: you ${w.economy.followers(me)}, best rival ${best} followers`;
   }
   const best = Math.max(0, ...rivals.map((t) => r.held[t.index] ?? 0)) / hz;
   const mine = (r.held[me] ?? 0) / hz;
@@ -175,6 +176,11 @@ export function mountGameHud(el: HTMLElement, game: Game): { refresh: () => void
     garrison: () => game.troop({ kind: "garrison" }),
     retreat: () => game.troop({ kind: "retreat" }),
     setStance: (stance) => game.troop({ kind: "stance", stance }),
+    forgeBrush: (b) => {
+      game.forgeBrush = b;
+      game.onChange();
+    },
+    forgeReady: () => game.forgeReady(),
     togglePriority: (key) => {
       const p = { ...(game.world.tribes[game.localTribe]?.eco.priorities ?? { build: 1, upgrade: 1, breed: 1 }) };
       p[key] = p[key] > 0 ? 0 : 1;

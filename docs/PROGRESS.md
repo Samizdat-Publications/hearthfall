@@ -4,6 +4,7 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 
 ## Now
 Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when STOP exists). Plan: BACKLOG 14a look v3, polish, balance, rules and victory variants, campaign, boats and Skyloft, Forge, map editor (CLAUDE.md "Stretch 2").
+- S2 block G DONE (Forge mode, ADR-017): BACKLOG 11 optional 2 min pre-match Forge (balance.forge): units frozen, free raise, lower, flatten and smooth strokes inside a ring around your own Hearth (not next to it), Ready button ends it early once every tribe is ready; match clocks (victory, level timers, AI minute) read World.playTick from its end. AI forges by personality (turtle moat with two gaps, sneaky wall, aggressive flatten). Skirmish setup Forge row, HUD Forge panel with countdown, brushes and stroke count. 2 scenarios, forge_moat golden, unit tests, save mid-Forge test, e2e flow, forge shot set. Browser scenario and replay worlds now get the AI bot factory (scenarios with bots used to fail to boot in the browser).
 - S2 block F DONE (vehicles, ADR-016) at cbac714: BACKLOG 10 boats (carry 5) and balloons (carry 2, Firecallers fire from them) on water and air nav layers, board and unload commands with right-click input, riders drown with a sunk boat, Boathouse (shore placement) and Skyloft, opponent AI builds a Boathouse and ferries waves across water and brings stranded waves home; 6 vehicle scenarios, ferry golden replay, vehicles shot set. Assets $1.33 (stretch $2.33 of $8, total about $11.48 of $30). Opus review: 5 blockers fixed (no beguile or panic on vehicles, Shaper cannot board, elimination wrecks vehicles first, rider idle mana, timed restock), follow-ups BACKLOG 98. ai soak 12 x 30 PASS (aggressive 4, sneaky 3, turtle 4, 1 unfinished, median 14.9 min). Full npm run qa PASS (all shot sets re-approved for the two new build rows). SFX cues (92) and skirmish islands option still open.
 - S2 block E DONE (campaign part 1, ADR-015) at 376ee1d: BACKLOG 9 part (spells taught at a Reliquary carry as campaign `learned`), route map level select, levels 4 to 7 (Old Reliquary, Stone Totem, Many Mouths, Two Fires; bot win and idle loss scenarios each, levels tag 14), 84 golden replay with an embedded level, 85 e2e real level loss and campaign complete, 86 same-tick win beats loss, 89 prayer ring and HUD percent, no false mana warning. Making-of v9.
 - S2 block D DONE (rules, ADR-014) at 460fe89: BACKLOG 13 victory variants in the sim (RulesRuntime): conquest, Hold the Reliquaries (120 s), King of the Hill (240 s), Last Stand (20 min) in balance.victory; skirmish setup picker, HUD progress on the rivals line, AI contest action, soak --rules (12 seeds: 7 by hold, 11 by hill, 2 by last stand), 4 rules scenarios, e2e variant check. Old replays and saves keep their hashes (rules hashed only when set). Sim tickHz is 20.
@@ -21,12 +22,11 @@ Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when
 - Machine: often at 100 percent CPU (OneDrive sync; another project's simulations and GPU benchmarks with their own headless browsers, leave them alone). Wall-clock timing is noisy; bench uses deterministic replay minima; full qa needs several reruns.
 - Keys: Meshy, ElevenLabs, Gemini, OpenAI present; Tripo, PixelLab missing.
 - Making-of archive: making-of/ via `npm run making-of -- add`; storyboard in making-of/README.md. Making-of page (Stewart's request): https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5, rebuild with `npm run making-of -- page` and republish to that URL after every backlog item (README steps).
-- Subagents: project agents are registered again (milestone-reviewer, qa-runner, ...); call them by type.
 - M1 to M5 shipped details: PROGRESS_LOG (and ARCHITECTURE).
 
 ## Next 3 actions
-1. S2 block G Forge mode (BACKLOG 11): sim phase forge (2 min, data), free terrainOp near your Hearth, frozen units, HUD countdown and skip, AI forges by personality, scenario, golden, skirmish option.
-2. Then H campaign levels 8 to 13 (boats, Skyloft, victory variants, Forge; Sonnet review), I map editor (12).
+1. S2 block H campaign part 2: levels 8 to 13 using boats, the Skyloft, victory variants and a Forge level (level def `forge`), win and idle loss scenarios each, Sonnet review.
+2. Then I map editor (BACKLOG 12).
 3. Then J robustness (97, 55, 70, 73, 62, 63), tests, map view; BACKLOG 92 SFX cues and 98 vehicle follow-ups if time.
 
 ## Blocked

@@ -8,6 +8,7 @@ import { mountGameMenus } from "./menuBridge.ts";
 import { drawnViewKey, viewKey, viewOutline } from "./minimap.ts";
 import type { CameraState } from "@hearthfall/render";
 import { validateLevel, validatePack, type LevelDef } from "@hearthfall/data";
+import { makeBot } from "@hearthfall/ai";
 import { commandsByTick, createLevelWorld, createScenarioWorld, type CampaignCarry, type ScenarioDef } from "@hearthfall/sim";
 
 const canvas = document.getElementById("view") as HTMLCanvasElement;
@@ -264,6 +265,21 @@ if (__DEBUG_API__ || game.params.debug) {
       const r = game.world.rules;
       return r ? { id: r.def.id, winner: r.winner, why: r.why, held: [...r.held] } : null;
     },
+    /** BACKLOG 11: the Forge phase (null without one) and a screen pixel where the local brush may land */
+    forge: () => {
+      const f = game.world.forge;
+      return f ? { running: f.running(), ops: [...f.ops], ready: [...f.ready], endedAt: f.endedAt, secondsLeft: f.remaining() / game.world.cfg.tickHz } : null;
+    },
+    forgeSpot: () => {
+      const f = game.world.forge;
+      const c = game.canvas.getBoundingClientRect();
+      for (let py = c.top + 40; f && py < c.bottom - 40; py += 16)
+        for (let px = c.left + 40; px < c.right - 40; px += 16) {
+          const p = game.renderer.pickTerrain(px, py);
+          if (p && f.blocker(game.localTribe, p.x, p.z) === null) return [px, py];
+        }
+      return null;
+    },
     /** M9 campaign: the running level (id, outcome 0 none 1 won 2 lost, objectives done), levels won, and a forced level win */
     level: () => (game.world.level ? { id: game.world.level.def.id, outcome: game.world.level.outcome, done: [...game.world.level.done] } : null),
     campaignWon: () => [...game.campaignWon],
@@ -289,13 +305,13 @@ if (__DEBUG_API__ || game.params.debug) {
     runDef: (def: ScenarioDef & { levelDef?: unknown; carry?: CampaignCarry }, rawPack: Record<string, unknown>, every = 100) => {
       const res = validatePack(rawPack);
       if (!res.pack) return { error: "pack invalid" };
-      // BACKLOG 84: a golden may embed a whole level (player only: no AI factory here)
+      // BACKLOG 84: a golden may embed a whole level; scenario and level bots come from makeBot
       let lv: LevelDef | null = null;
       if (def.levelDef) {
         lv = validateLevel(def.levelDef, res.pack.files).level ?? null;
         if (!lv) return { error: "level invalid" };
       }
-      const w = lv ? createLevelWorld({ def: lv, carry: def.carry }, res.pack.files, res.pack.hash) : createScenarioWorld(def, res.pack.files, res.pack.hash);
+      const w = lv ? createLevelWorld({ def: lv, carry: def.carry }, res.pack.files, res.pack.hash, makeBot) : createScenarioWorld(def, res.pack.files, res.pack.hash, makeBot);
       const cmds = commandsByTick(def.commands);
       const out: { tick: number; all: string }[] = [];
       while (w.tick < def.runTicks) {

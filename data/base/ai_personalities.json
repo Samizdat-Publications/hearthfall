@@ -22,7 +22,8 @@
         "quake"
       ],
       "scouting": 0.6,
-      "towerAffinity": 0.2
+      "towerAffinity": 0.2,
+      "forge": { "plan": "flatten", "ring": 9, "strokes": 16, "perDecision": 2 }
     },
     {
       "id": "sneaky",
@@ -45,6 +46,7 @@
       ],
       "scouting": 0.9,
       "towerAffinity": 0.3,
+      "forge": { "plan": "wall", "ring": 10, "strokes": 36, "perDecision": 3 },
       "shades": {
         "$comment": "BACKLOG 2: a Shade Den from minute 8, two Shades kept, each sent disguised at an enemy building away from Watchtowers.",
         "count": 2,
@@ -76,6 +78,7 @@
       ],
       "scouting": 0.4,
       "towerAffinity": 0.5,
+      "forge": { "plan": "moat", "ring": 10, "strokes": 72, "perDecision": 3 },
       "towerFromPopShare": 0.5
     }
   ],

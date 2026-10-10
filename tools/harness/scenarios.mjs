@@ -106,6 +106,14 @@ export function makeCtx(w) {
       why: w.rules ? w.rules.why : "",
       held: (tribe) => (w.rules ? (w.rules.held[tribe] ?? 0) / w.cfg.tickHz : -1),
     },
+    /** BACKLOG 11: the Forge (running, strokes per tribe, readiness; ops -1 without one) and the match clock */
+    forge: {
+      running: w.forge ? w.forge.running() : false,
+      endedAt: w.forge ? w.forge.endedAt : -2,
+      ops: (tribe) => (w.forge ? (w.forge.ops[tribe] ?? 0) : -1),
+      ready: (tribe) => (w.forge ? w.forge.ready[tribe] === true : false),
+    },
+    playTick: w.playTick,
     site: (tag) => {
       const s = w.worship.find(tag);
       return { by: s ? s.lastBy : -2, usesLeft: s ? s.usesLeft : -1, progress: s ? Math.max(...s.progress) / s.prayTicks : 0 };

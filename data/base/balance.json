@@ -123,6 +123,16 @@
       { "id": "last_stand", "type": "lastStand", "minutes": 20, "name": "Last Stand", "text": "After 20 minutes the tribe with the most followers wins." }
     ]
   },
+  "forge": {
+    "$comment": "BACKLOG 11 (ADR-017): Forge mode, a skirmish option. Before the match every tribe reshapes the land around its Hearth for free while units stand still; it ends after seconds or when every tribe is ready. A brush stroke changes the ground by amount height units (32 per world unit, drowning at 8 below sea).",
+    "seconds": 120,
+    "radius": 14,
+    "hearthClear": 4,
+    "brushRadius": 3,
+    "amount": 12,
+    "smoothStrength": 0.6,
+    "maxOps": 120
+  },
   "skirmishWorship": {
     "$comment": "BACKLOG 1: generated (skirmish) maps get Reliquaries halfway between each pair of Hearths and at that point's opposite on the wrapped planet, so the eight spells beyond the starting set are earned by contested prayer (DESIGN section 10). Sites take these entries in turn.",
     "maxSites": 4,

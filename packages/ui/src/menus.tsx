@@ -23,6 +23,9 @@ export interface SetupView {
   victory: string;
   /** the chosen variant's rule text */
   victoryText: string;
+  /** BACKLOG 11: Forge phase choices (off, on; empty for packs without balance.forge) and the choice */
+  forges: Choice[];
+  forge: string;
   maxOpponents: number;
   map: string;
   size: number;
@@ -86,7 +89,7 @@ export interface MenuModel {
   canSave: boolean;
 }
 
-export type SetupPatch = Partial<Pick<SetupView, "map" | "size" | "seed" | "opponents" | "difficulty" | "victory">>;
+export type SetupPatch = Partial<Pick<SetupView, "map" | "size" | "seed" | "opponents" | "difficulty" | "victory" | "forge">>;
 export type SettingsPatch = Partial<Pick<SettingsView, "quality" | "master" | "music" | "sfx" | "palette" | "miniature" | "lighting" | "weather">> & { uiScale?: number; subtitles?: boolean };
 
 export interface MenuActions {
@@ -184,6 +187,15 @@ function Setup({ s, act }: { s: SetupView; act: MenuActions }) {
               <span class="menu-hint" data-ui="setup-victory-text">
                 {s.victoryText}
               </span>
+            </span>
+          </Fragment>
+        ) : null}
+        {s.forges.length ? (
+          <Fragment>
+            <label class="menu-label">Forge</label>
+            <span class="menu-row menu-victory">
+              <Select ui="setup-forge" value={s.forge} options={s.forges} onChange={(v) => act.setSetup({ forge: v })} />
+              <span class="menu-hint">Reshape the land near your Hearth first.</span>
             </span>
           </Fragment>
         ) : null}

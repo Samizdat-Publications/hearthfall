@@ -92,3 +92,5 @@
 - 2026-10-10T06:29 set smoke (12 shots): BACKLOG 10: build panel gained Boathouse and Skyloft rows (HUD fit scale shifts panels); hud_troops expects 7 locked buttons; world unchanged
 - 2026-10-10T06:37 set spells2 (9 shots): BACKLOG 10: build panel gained Boathouse and Skyloft rows; HUD fit scale shifts every panel a few px; world unchanged
 - 2026-10-10T06:38 set look (12 shots): BACKLOG 10: build panel gained Boathouse and Skyloft rows; HUD fit scale shifts every panel a few px; world unchanged
+- 2026-10-10T07:04 set forge (1 shots): BACKLOG 11: new forge shot set, turtle AI moat with two gaps after the Forge
+- 2026-10-10T07:06 set menus (4 shots): BACKLOG 11: skirmish setup gained the Forge row

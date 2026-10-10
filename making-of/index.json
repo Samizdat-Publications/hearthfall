@@ -960,6 +960,26 @@
       "when": "2026-10-10T06:00:04.105Z",
       "source": "external:boathouse.png",
       "bytes": 578865
+    },
+    {
+      "file": "b11/20261010-0700_forge-panel.png",
+      "milestone": "B11",
+      "kind": "screenshot",
+      "caption": "Forge mode (BACKLOG 11): before the match your people stand still while you reshape the land around your Hearth. The white ring is where the brush may land, the yellow circle the brush itself; the panel counts down 2 minutes and 120 strokes, with Raise, Lower, Flatten, Smooth and Ready.",
+      "highlight": false,
+      "when": "2026-10-10T07:00:30.354Z",
+      "source": "external:1280x720-forge.png",
+      "bytes": 652856
+    },
+    {
+      "file": "b11/20261010-0704_forge-turtle-moat.png",
+      "milestone": "B11",
+      "kind": "screenshot",
+      "caption": "Forge mode: the turtle AI spends its two free minutes digging a moat around its Hearth, leaving gaps toward and away from its rival",
+      "highlight": false,
+      "when": "2026-10-10T07:04:41.499Z",
+      "source": "external:turtle_moat.png",
+      "bytes": 638839
     }
   ]
 }

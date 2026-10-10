@@ -96,3 +96,7 @@ Reason: BACKLOG 10: new golden for boats (water nav, board, unload)
 ## 2026-10-10 06:15 UTC
 Reason: D+F review: riders earn idle mana, not housed mana
 - vehicles_ferry: final f3c53aaf -> 015c4b5d (pack e21ee990)
+
+## 2026-10-10 06:55 UTC
+Reason: BACKLOG 11: new golden forge_moat (Forge phase)
+- forge_moat: final none -> 76e55154 (pack 7bfbc37b)

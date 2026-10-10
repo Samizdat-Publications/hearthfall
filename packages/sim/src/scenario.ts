@@ -37,6 +37,8 @@ export interface ScenarioDef {
   carry?: { spells?: string[]; buildings?: string[] };
   /** BACKLOG 13: victory variant from balance.victory (skirmish rules in the sim) */
   rules?: string;
+  /** BACKLOG 11: start with a Forge phase (balance.forge) */
+  forge?: boolean;
   /** controllers to attach, built by the caller's factory (packages/ai makeBot) */
   bots?: { type: string; tribe: number; [k: string]: unknown }[];
 }
@@ -74,7 +76,7 @@ export function applySetup(w: World, setup: readonly SetupEntry[]): void {
 }
 
 export function createScenarioWorld(def: ScenarioDef, pack: PackFiles, packHash: string, makeBot?: BotFactory): World {
-  const w = new World({ pack, packHash, seed: def.seed, map: def.map, populate: def.populate ?? false, ...(def.rules ? { rules: def.rules } : {}) });
+  const w = new World({ pack, packHash, seed: def.seed, map: def.map, populate: def.populate ?? false, ...(def.rules ? { rules: def.rules } : {}), ...(def.forge ? { forge: true } : {}) });
   applySetup(w, def.setup ?? []);
   if (def.bots?.length) {
     if (!makeBot) throw new Error("scenario has bots but no bot factory was given");

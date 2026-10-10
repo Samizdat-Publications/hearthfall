@@ -1,0 +1,16 @@
+{
+ "$comment": "BACKLOG 11 Forge mode: the turtle's moat ring with its two gaps once the Forge has ended, and a continents skirmish in the Forge with the panel. Not part of npm run qa (making-of and review only).",
+ "shots": [
+  {
+   "id": "turtle_moat",
+   "params": { "scenario": "forge_turtle_moat", "camera": "default", "reveal": "1" },
+   "steps": [
+    { "step": 1400 },
+    { "setCamera": { "x": 16, "z": 32, "zoom": 0.3, "yaw": 0.7 } },
+    { "step": 2 }
+   ],
+   "kind": "world",
+   "coverage": { "green": [0.02, 0.99] }
+  }
+ ]
+}

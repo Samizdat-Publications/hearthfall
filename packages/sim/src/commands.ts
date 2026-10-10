@@ -6,6 +6,7 @@ import { BSTATE, TASK } from "./economy.ts";
 import type { World } from "./world.ts";
 import { STREAMS } from "./rng.ts";
 import { FORMATIONS, formationSlots, type FormationShape } from "./formation.ts";
+import { FORGE_BRUSHES, type ForgeBrush } from "./forge.ts";
 
 export interface Command {
   tick: number;
@@ -59,6 +60,53 @@ registerCommand("terrainOp", {
     if (spec.op === "noiseScar" && !finite((spec as { seed?: unknown }).seed)) (spec as { seed: number }).seed = w.rng.nextU32(STREAMS.terrain) | 0;
     if (spec.op === "crater" && (spec as { shape?: unknown }).shape !== "bowl") (spec as { shape: string }).shape = "cone";
     w.terrainQueue.push(spec);
+  },
+});
+
+/**
+ * BACKLOG 11 (ADR-017): one free Forge brush stroke {brush: raise|lower|flatten|smooth, x, y} inside the
+ * tribe's forge ring (ForgeRuntime.blocker). Only while the Forge runs.
+ */
+registerCommand("forgeOp", {
+  validate(w, c) {
+    const f = w.forge;
+    if (!f || !f.running()) return "there is no Forge running";
+    if (!FORGE_BRUSHES.includes(c.args.brush as ForgeBrush)) return `brush must be one of ${FORGE_BRUSHES.join(", ")}`;
+    if (!finite(c.args.x) || !finite(c.args.y)) return "forgeOp needs numeric x and y";
+    return f.blocker(c.tribe, c.args.x as number, c.args.y as number);
+  },
+  apply(w, c) {
+    const f = w.forge!;
+    const d = f.def;
+    const x = c.args.x as number;
+    const y = c.args.y as number;
+    const r = d.brushRadius;
+    const brush = c.args.brush as ForgeBrush;
+    const spec: TerrainOpSpec =
+      brush === "raise"
+        ? { op: "raise", x, y, r, amount: d.amount }
+        : brush === "lower"
+          ? { op: "lower", x, y, r, amount: d.amount }
+          : brush === "flatten"
+            ? { op: "flattenToAverage", x, y, r }
+            : { op: "smooth", x, y, r: r + 1, strength: d.smoothStrength };
+    w.terrainQueue.push(spec);
+    f.ops[c.tribe]++;
+    w.emit("forged", { tribe: c.tribe, brush });
+  },
+});
+
+/** BACKLOG 11: a tribe is done forging; the Forge ends early once every living tribe is ready. */
+registerCommand("forgeReady", {
+  validate(w, c) {
+    if (!w.forge || !w.forge.running()) return "there is no Forge running";
+    if (c.tribe < 0) return "forgeReady needs a tribe";
+    return null;
+  },
+  apply(w, c) {
+    if (w.forge!.ready[c.tribe]) return;
+    w.forge!.ready[c.tribe] = true;
+    w.emit("forgeReady", { tribe: c.tribe });
   },
 });
 

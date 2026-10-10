@@ -256,6 +256,33 @@ async function flow(browser, url, vp) {
     if (!/campaign is complete/.test(fin ?? "") || (await page.$('[data-ui="next-level"]'))) problem(`last level end screen: ${fin}`);
     await click("main-menu");
     await screenIs("main");
+    // BACKLOG 11: a Forge skirmish: the setup option starts a Forge, a real left click lands a brush stroke,
+    // orders wait, and Ready (with the AI's own) ends it so the match runs
+    await click("skirmish");
+    await screenIs("setup");
+    await page.selectOption('[data-ui="setup-forge"]', "on");
+    await click("start");
+    await screenIs("none");
+    const f0 = await page.evaluate(() => window.__game.forge());
+    if (!f0?.running || !(await page.$('[data-hud="forge"]'))) problem(`Forge did not start: ${JSON.stringify(f0)}`);
+    await click("forge-lower");
+    const spot = await page.evaluate(() => window.__game.forgeSpot());
+    if (!spot) problem("no screen spot inside the Forge ring");
+    else {
+      await page.mouse.click(spot[0], spot[1]);
+      await page.evaluate(() => window.__game.step(1));
+      const f1 = await page.evaluate(() => window.__game.forge());
+      if (f1?.ops[0] !== 1) problem(`a left click in the Forge ring made ${f1?.ops[0]} strokes`);
+    }
+    await check("forge");
+    await click("forge-ready");
+    await page.evaluate(() => window.__game.step(20 * 125));
+    const f2 = await page.evaluate(() => window.__game.forge());
+    if (f2?.running || !f2?.ready[0] || (await page.$('[data-hud="forge"]'))) problem(`Forge did not end: ${JSON.stringify(f2)}`);
+    await page.keyboard.press("p");
+    await screenIs("pause");
+    await click("quit");
+    await screenIs("main");
     await click("campaign");
     await screenIs("campaign");
     await click("back");

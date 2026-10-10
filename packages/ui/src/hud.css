@@ -59,6 +59,10 @@ body.debug-overlap-hud .hud-overlap { display: block; }
 .hud-help { left: 12px; top: 176px; max-width: 320px; white-space: normal; line-height: 1.5; font-size: 11px; }
 .hud-selection { left: 50%; bottom: 12px; transform: translateX(-50%); font-weight: 600; }
 .hud-undo { left: 50%; bottom: 44px; transform: translateX(-50%); font-weight: 600; }
+/* BACKLOG 11: the Forge panel under the spell bar */
+.hud-forge { left: 50%; top: 92px; transform: translateX(-50%); display: flex; flex-direction: column; gap: 4px; padding: 6px 8px; pointer-events: auto; align-items: center; }
+.forge-title { font-weight: 600; font-size: 12px; }
+.forge-ready { font-weight: 700; }
 .hud-troops { left: 50%; bottom: 64px; transform: translateX(-50%); display: flex; flex-direction: column; gap: 4px; padding: 6px 8px; pointer-events: auto; min-width: 260px; }
 .troops-label { font-weight: 600; font-size: 12px; }
 .troops-row { display: flex; gap: 4px; }

@@ -4,7 +4,7 @@
 // difficulty noise from the world's "ai" rng stream, and runs the best ones (score >= 0.5, at most
 // three) through ordinary Commands. Dwelling upkeep is delegated to the EconomyBot. Deterministic:
 // entity index order, arrays only, the ai rng stream for noise and picks.
-import { BSTATE, CAT, NAV, NO_ENTITY, TASK, wrapDelta, type Command, type Controller, type World } from "@hearthfall/sim";
+import { BSTATE, CAT, NAV, NO_ENTITY, TASK, dmath, wrapDelta, type Command, type Controller, type World } from "@hearthfall/sim";
 import { EconomyBot } from "./economyBot.ts";
 
 export interface Personality {
@@ -19,6 +19,8 @@ export interface Personality {
   towerFromPopShare?: number;
   /** BACKLOG 2: keep this many Shades from this match minute on */
   shades?: { count: number; fromMinute: number };
+  /** BACKLOG 11: the Forge plan (moat, wall or flatten strokes on a ring around the Hearth) */
+  forge?: { plan: "moat" | "wall" | "flatten"; ring: number; strokes: number; perDecision: number };
 }
 
 export interface OpponentState {
@@ -251,6 +253,7 @@ export class OpponentAI implements Controller {
     if (w.tick % this.periodTicks !== this.phase) return [];
     const tr = w.tribes[this.tribe];
     if (!tr?.alive) return [];
+    if (w.forge?.running()) return this.forge(w).map((x) => ({ ...x, tick: w.tick, tribe: this.tribe }));
     const c = this.census(w);
     if (!c) return [];
     const out = this.eco.decide(w);
@@ -275,6 +278,61 @@ export class OpponentAI implements Controller {
       }
     }
     return out.map((x) => ({ ...x, tick: w.tick, tribe: this.tribe }));
+  }
+
+  /**
+   * BACKLOG 11 (ADR-017): Forge phase. The personality's plan (moat, wall or flatten) is a fixed list of brush
+   * strokes around the Hearth; the next ones are those after the strokes already accepted (ForgeRuntime.ops),
+   * so no extra state is saved. Ready once the list is done (at once without a plan).
+   */
+  private forge(w: World): Command[] {
+    const f = w.forge!;
+    const tr = w.tribes[this.tribe];
+    const out: Command[] = [];
+    if (f.ready[this.tribe]) return out;
+    if (tr.eco.incomeMult !== this.resourceMult) out.push(this.cmd(w, "handicap", { mult: this.resourceMult }));
+    const plan = this.p.forge;
+    const h = w.ents.index(tr.hearth);
+    const strokes = plan && h >= 0 ? this.forgeStrokes(w, h) : [];
+    const done = f.ops[this.tribe];
+    for (let k = done; k < strokes.length && k < done + (plan?.perDecision ?? 0); k++) out.push(this.cmd(w, "forgeOp", strokes[k]));
+    if (done + (plan?.perDecision ?? 0) >= strokes.length) out.push(this.cmd(w, "forgeReady", {}));
+    return out;
+  }
+
+  /** the plan's strokes in order: 24 points a pass on the ring (flatten: 12), gaps toward and away from the nearest rival */
+  private forgeStrokes(w: World, h: number): { brush: string; x: number; y: number }[] {
+    const plan = this.p.forge!;
+    const E = w.ents;
+    const n = w.terrain.size;
+    const hx = E.x[h];
+    const hy = E.y[h];
+    let base = 0;
+    let best = Infinity;
+    for (const t of w.tribes) {
+      const o = t.index === this.tribe || !t.alive ? -1 : E.index(t.hearth);
+      if (o < 0) continue;
+      const dx = wrapDelta(E.x[o] - hx, n);
+      const dy = wrapDelta(E.y[o] - hy, n);
+      if (dx * dx + dy * dy < best) {
+        best = dx * dx + dy * dy;
+        base = dmath.atan2(dy, dx);
+      }
+    }
+    const brush = plan.plan === "moat" ? "lower" : plan.plan === "wall" ? "raise" : "flatten";
+    const out: { brush: string; x: number; y: number }[] = [];
+    // a moat or wall needs strokes about one brush radius apart to join up; three are skipped for each gap
+    const per = plan.plan === "flatten" ? 12 : 24;
+    for (let s = 0; out.length < plan.strokes && s < plan.strokes * 3; s++) {
+      const q = s % per;
+      if (plan.plan !== "flatten" && (q <= 1 || q === per - 1 || (q >= per / 2 - 1 && q <= per / 2 + 1))) continue;
+      const ring = plan.plan === "flatten" && ((s / per) | 0) % 2 === 1 ? plan.ring - 2 : plan.ring;
+      const a = base + (q * dmath.TWO_PI) / per;
+      const x = (((hx + dmath.cos(a) * ring) % n) + n) % n;
+      const y = (((hy + dmath.sin(a) * ring) % n) + n) % n;
+      if (w.forge!.blocker(this.tribe, x, y) === null) out.push({ brush, x, y });
+    }
+    return out;
   }
 
   /** auto-charge the preferred spells the tribe has unlocked (once each: only when not yet on) */
@@ -306,7 +364,7 @@ export class OpponentAI implements Controller {
     const units = w.cfg.pack.units.units;
     const bdefs = w.cfg.pack.buildings.buildings;
     const n = w.terrain.size;
-    const c: Census = { w, h, si: E.index(tr.shaper), minute: w.tick / (60 * w.cfg.tickHz), pop: w.economy.followers(this.tribe), settlers: [], troops: new Map(), idle: [], shades: [], lodges: new Map(), towers: [], open: 0, threats: [], enemies: [], boats: [], boathouse: false };
+    const c: Census = { w, h, si: E.index(tr.shaper), minute: w.playTick / (60 * w.cfg.tickHz), pop: w.economy.followers(this.tribe), settlers: [], troops: new Map(), idle: [], shades: [], lodges: new Map(), towers: [], open: 0, threats: [], enemies: [], boats: [], boathouse: false };
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i]) continue;
       if (E.tribe[i] === this.tribe) {

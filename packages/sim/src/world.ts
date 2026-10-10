@@ -17,6 +17,7 @@ import { CombatSystem } from "./combat.ts";
 import { WorshipSystem, type WorshipState } from "./worship.ts";
 import { LevelRuntime, type LevelInit, type LevelSaved } from "./level.ts";
 import { RulesRuntime, type RulesSaved } from "./rules.ts";
+import { FORGE_COMMANDS, ForgeRuntime, type ForgeSaved } from "./forge.ts";
 import { VisionSystem, type VisionState } from "./vision.ts";
 import { VehicleSystem } from "./vehicles.ts";
 
@@ -64,6 +65,8 @@ export interface WorldInit {
   level?: LevelInit;
   /** BACKLOG 13 (ADR-014): skirmish victory variant id from balance.victory (absent: no sim rules, older replays) */
   rules?: string;
+  /** BACKLOG 11 (ADR-017): start with a Forge phase (balance.forge; absent: none, older replays) */
+  forge?: boolean;
 }
 
 export interface HashParts {
@@ -94,6 +97,7 @@ export interface WorldSnapshot {
   vision?: VisionState;
   level?: LevelSaved;
   rules?: RulesSaved;
+  forge?: ForgeSaved;
 }
 
 export class World {
@@ -123,6 +127,8 @@ export class World {
   level: LevelRuntime | null;
   /** BACKLOG 13: skirmish victory rules (null without WorldInit.rules) */
   rules: RulesRuntime | null;
+  /** BACKLOG 11: the pre-match Forge phase (null without WorldInit.forge) */
+  forge: ForgeRuntime | null;
   controllers: Controller[] = [];
   readonly mapInfo: { generator: string; seedUsed: number; rerolls: number; landFraction: number };
 
@@ -145,6 +151,7 @@ export class World {
     this.vision.init(tribeCount);
     for (let t = 0; t < tribeCount; t++) this.tribes.push({ index: t, color: TRIBE_COLORS[t % 4], hearth: NO_ENTITY, alive: true, eco: newTribeEco(this), shaper: NO_ENTITY, respawnAt: -1, casting: null, pending: null });
     this.rules = init.rules ? new RulesRuntime(this, init.rules) : null;
+    this.forge = init.forge ? new ForgeRuntime(this) : null;
     if (init.populate !== false) {
       gen.hearths.forEach((h, t) => this.spawnBuilding("hearth", t, h.x, h.y));
       gen.hearths.forEach((h, t) => this.spawnStartUnits(t, h.x, h.y));
@@ -290,6 +297,12 @@ export class World {
     if (this.recent.length > RECENT_EVENTS) this.recent.shift();
   }
 
+  /** BACKLOG 11: ticks since the match proper began (the Forge phase does not count; equals tick without one) */
+  get playTick(): number {
+    const f = this.forge;
+    return !f ? this.tick : f.endedAt < 0 ? 0 : this.tick - f.endedAt;
+  }
+
   // ---------------------------------------------------------------- the step
   /** Advance one tick. `commands` are the external commands for this tick, in submission order. */
   step(commands: readonly Command[] = []): void {
@@ -299,6 +312,14 @@ export class World {
     for (const { c } of ordered) this.exec(c);
     // 2. AI controllers at their cadence (deterministic; not recorded in replays)
     for (const ctl of this.controllers) if (this.tick % ctl.every === ctl.offset) for (const c of ctl.decide(this)) this.exec({ ...c, tick: this.tick, tribe: ctl.tribe });
+    // BACKLOG 11: during the Forge only the land changes (units, economy, spells and combat are frozen)
+    if (this.forge?.running()) {
+      this.flushTerrain();
+      this.forge.update();
+      this.vision.update();
+      this.tick++;
+      return;
+    }
     // 3. tasks and decisions (settler autonomy)
     this.economy.updateTasks();
     // 4-5. pathing requests (budgeted) and movement
@@ -327,7 +348,13 @@ export class World {
 
   private exec(c: Command): void {
     const h = COMMANDS.get(c.type);
-    const err = !h ? `unknown command ${c.type}` : c.tribe < -1 || c.tribe >= this.tribes.length ? "bad tribe" : h.validate(this, c);
+    const err = !h
+      ? `unknown command ${c.type}`
+      : c.tribe < -1 || c.tribe >= this.tribes.length
+        ? "bad tribe"
+        : this.forge?.running() && !FORGE_COMMANDS.has(c.type)
+          ? "the land is still being forged"
+          : h.validate(this, c);
     if (err) this.emit("commandRejected", { cmd: c.type, tribe: c.tribe, reason: err });
     else h!.apply(this, c);
   }
@@ -485,6 +512,7 @@ export class World {
     this.worship.hashInto(mf);
     this.level?.hashInto(mf);
     this.rules?.hashInto(mf);
+    this.forge?.hashInto(mf);
     this.vision.hashInto(mf);
     const meta = mf.hex();
     const all = new Fnv().u32(parseInt(terrain, 16)).u32(parseInt(entities, 16)).u32(parseInt(rng, 16)).u32(parseInt(meta, 16)).hex();
@@ -515,6 +543,7 @@ export class World {
       ...(this.worship.sites.length || this.worship.granted.some((g) => g.length) ? { worship: this.worship.save() } : {}),
       ...(this.level ? { level: this.level.save() } : {}),
       ...(this.rules ? { rules: this.rules.save() } : {}),
+      ...(this.forge ? { forge: this.forge.save() } : {}),
       ...(this.vision.on ? { vision: this.vision.save() } : {}),
     };
   }
@@ -542,6 +571,7 @@ export class World {
     if (snap.worship) w.worship.load(snap.worship);
     if (snap.level && w.level) w.level.load(snap.level);
     if (snap.rules && w.rules) w.rules.load(snap.rules);
+    if (snap.forge && w.forge) w.forge.load(snap.forge);
     if (snap.vision && w.vision.on) w.vision.load(snap.vision);
     return w;
   }

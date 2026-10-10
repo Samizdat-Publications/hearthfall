@@ -88,7 +88,7 @@ export class RulesRuntime {
     const d = this.def;
     const hz = w.cfg.tickHz;
     if (d.type === "lastStand") {
-      if (w.tick + 1 < this.goalTicks()) return;
+      if (w.playTick + 1 < this.goalTicks()) return;
       let best = alive[0].index;
       for (const t of alive) if (w.economy.followers(t.index) > w.economy.followers(best)) best = t.index;
       return this.finish(best, "lastStand");

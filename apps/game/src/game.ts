@@ -29,6 +29,7 @@ import {
   ThreeRenderer,
   type CameraState,
 } from "@hearthfall/render";
+import { makeBot } from "@hearthfall/ai";
 import { DEFAULT_AI } from "./opponents.ts";
 import {
   actionFor,
@@ -277,6 +278,10 @@ export class Game {
   readonly localTribe = 0;
   /** building id being placed (ghost follows the cursor), and why the current spot is blocked */
   placing: string | null = null;
+  /** BACKLOG 11: the Forge brush in hand and why it cannot land under the cursor ("" when it can) */
+  forgeBrush = "raise";
+  forgeBlocked = "";
+  private forgeShown = false;
   placeBlocked: string | null = null;
   private placeAt: [number, number] | null = null;
   showHelp = true;
@@ -447,7 +452,7 @@ export class Game {
       ...(this.params.rules ?? p.files.balance.victory?.default ? { rules: (this.params.rules ?? p.files.balance.victory?.default)! } : {}),
     };
     this.world = def
-      ? createScenarioWorld(def, p.files, p.hash)
+      ? createScenarioWorld(def, p.files, p.hash, makeBot)
       : createSkirmish(p, sp);
     this.scenarioCmds = def ? commandsByTick(def.commands) : null;
     this.afterWorld();
@@ -1268,6 +1273,45 @@ export class Game {
     }
   }
 
+  /** BACKLOG 11: the Forge ring around the local Hearth and the brush under the cursor (cleared once it ends). */
+  updateForge(px: number, py: number): void {
+    const w = this.world;
+    const f = w.forge;
+    const h = w.ents.index(w.tribes[this.localTribe]?.hearth ?? -1);
+    const p = this.renderer.pickTerrain(px, py);
+    if (!f || !f.running() || h < 0 || !p) {
+      if (this.forgeShown && !this.targeting) this.renderer.setTargeting(null);
+      this.forgeShown = Boolean(f?.running());
+      return;
+    }
+    const why = f.blocker(this.localTribe, p.x, p.z) ?? "";
+    this.renderer.setTargeting({ cx: w.ents.x[h], cz: w.ents.y[h], range: f.def.radius - f.def.brushRadius, x: p.x, z: p.z, r: f.def.brushRadius, inRange: !why });
+    this.forgeShown = true;
+    if (why !== this.forgeBlocked) {
+      this.forgeBlocked = why;
+      this.onChange();
+    }
+  }
+
+  /** BACKLOG 11: one Forge brush stroke at the cursor (refused strokes say why in the Forge panel). */
+  forgeAt(px: number, py: number): boolean {
+    const f = this.world.forge;
+    const p = this.renderer.pickTerrain(px, py);
+    if (!f || !f.running() || !p) return false;
+    const why = f.blocker(this.localTribe, p.x, p.z);
+    if (why) {
+      this.forgeBlocked = why;
+      this.onChange();
+      return false;
+    }
+    this.command({ tribe: this.localTribe, type: "forgeOp", args: { brush: this.forgeBrush, x: p.x, y: p.z } });
+    return true;
+  }
+
+  forgeReady(): void {
+    if (this.world.forge?.running()) this.command({ tribe: this.localTribe, type: "forgeReady", args: {} });
+  }
+
   castAt(px: number, py: number): boolean {
     if (!this.targeting) return false;
     const p = this.renderer.pickTerrain(px, py);
@@ -1309,6 +1353,11 @@ export class Game {
     );
     this.canvas.addEventListener("contextmenu", (e) => e.preventDefault());
     this.canvas.addEventListener("mousedown", (e) => {
+      // BACKLOG 11: in the Forge a left click is a brush stroke (orders wait for the match)
+      if (e.button === 0 && this.world.forge?.running()) {
+        this.forgeAt(e.clientX, e.clientY);
+        return;
+      }
       if (this.placing) {
         if (e.button === 0) this.confirmPlacement();
         else this.cancelPlacing();
@@ -1332,6 +1381,7 @@ export class Game {
       }
     });
     window.addEventListener("mousemove", (e) => {
+      if (this.forgeShown || this.world.forge?.running()) this.updateForge(e.clientX, e.clientY);
       if (this.placing) this.updatePlacement(e.clientX, e.clientY);
       if (this.targeting) this.updateTargeting(e.clientX, e.clientY);
       if (

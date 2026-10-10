@@ -95,6 +95,43 @@
               "fromMinute"
             ],
             "additionalProperties": false
+          },
+          "forge": {
+            "type": "object",
+            "properties": {
+              "$comment": {
+                "type": "string"
+              },
+              "plan": {
+                "type": "string",
+                "enum": [
+                  "moat",
+                  "wall",
+                  "flatten"
+                ]
+              },
+              "ring": {
+                "type": "number",
+                "minimum": 0
+              },
+              "strokes": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              "perDecision": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "plan",
+              "ring",
+              "strokes",
+              "perDecision"
+            ],
+            "additionalProperties": false
           }
         },
         "required": [

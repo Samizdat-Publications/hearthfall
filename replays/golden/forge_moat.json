@@ -1,0 +1,347 @@
+{
+ "id": "forge_moat",
+ "description": "BACKLOG 11: a Forge match: player strokes, a turtle moat, the early end when both are ready, then 1200 ticks of play (forgeOp, forgeReady, frozen systems, playTick).",
+ "every": 100,
+ "def": {
+  "id": "forge_moat",
+  "seed": 111,
+  "forge": true,
+  "map": {
+   "generator": "flat",
+   "size": 64,
+   "tribes": 2
+  },
+  "setup": [
+   {
+    "spawn": "hearth",
+    "tribe": 0,
+    "at": [
+     48,
+     32
+    ]
+   },
+   {
+    "spawn": "shaper",
+    "tribe": 0,
+    "at": [
+     50,
+     30
+    ]
+   },
+   {
+    "spawn": "settler",
+    "tribe": 0,
+    "near": [
+     46,
+     35
+    ],
+    "count": 3
+   },
+   {
+    "spawn": "hearth",
+    "tribe": 1,
+    "at": [
+     16,
+     32
+    ]
+   },
+   {
+    "spawn": "shaper",
+    "tribe": 1,
+    "at": [
+     18,
+     30
+    ]
+   },
+   {
+    "spawn": "settler",
+    "tribe": 1,
+    "near": [
+     14,
+     35
+    ],
+    "count": 4
+   }
+  ],
+  "bots": [
+   {
+    "type": "opponent",
+    "tribe": 1,
+    "personality": "turtle",
+    "difficulty": "normal"
+   }
+  ],
+  "commands": [
+   {
+    "tick": 5,
+    "tribe": 0,
+    "type": "forgeOp",
+    "args": {
+     "brush": "raise",
+     "x": 40,
+     "y": 32
+    }
+   },
+   {
+    "tick": 6,
+    "tribe": 0,
+    "type": "forgeOp",
+    "args": {
+     "brush": "raise",
+     "x": 40,
+     "y": 34
+    }
+   },
+   {
+    "tick": 7,
+    "tribe": 0,
+    "type": "forgeOp",
+    "args": {
+     "brush": "flatten",
+     "x": 48,
+     "y": 40
+    }
+   },
+   {
+    "tick": 8,
+    "tribe": 0,
+    "type": "forgeOp",
+    "args": {
+     "brush": "lower",
+     "x": 48,
+     "y": 33
+    }
+   },
+   {
+    "tick": 9,
+    "tribe": 0,
+    "type": "move",
+    "args": {
+     "units": "tribe0.settlers",
+     "to": [
+      44,
+      44
+     ]
+    }
+   },
+   {
+    "tick": 10,
+    "tribe": 0,
+    "type": "forgeReady",
+    "args": {}
+   }
+  ],
+  "runTicks": 2600
+ },
+ "packHash": "7bfbc37b",
+ "checkpoints": [
+  {
+   "tick": 100,
+   "all": "981deb84",
+   "terrain": "87f6f4dd",
+   "entities": "2f5cbc1c",
+   "rng": "954b0748",
+   "meta": "e45d38e6"
+  },
+  {
+   "tick": 200,
+   "all": "08851417",
+   "terrain": "50c338eb",
+   "entities": "2f5cbc1c",
+   "rng": "954b0748",
+   "meta": "c78a1bb4"
+  },
+  {
+   "tick": 300,
+   "all": "f85e4e1b",
+   "terrain": "be19ca41",
+   "entities": "2f5cbc1c",
+   "rng": "954b0748",
+   "meta": "ff28312c"
+  },
+  {
+   "tick": 400,
+   "all": "7727228b",
+   "terrain": "a7afe955",
+   "entities": "2f5cbc1c",
+   "rng": "954b0748",
+   "meta": "c033c1a6"
+  },
+  {
+   "tick": 500,
+   "all": "a62902a2",
+   "terrain": "ddf15b67",
+   "entities": "2f5cbc1c",
+   "rng": "954b0748",
+   "meta": "a874c9a8"
+  },
+  {
+   "tick": 600,
+   "all": "cbecdb89",
+   "terrain": "12c68641",
+   "entities": "2f5cbc1c",
+   "rng": "954b0748",
+   "meta": "e5aabe10"
+  },
+  {
+   "tick": 700,
+   "all": "64a92646",
+   "terrain": "2cebd0f3",
+   "entities": "2f5cbc1c",
+   "rng": "954b0748",
+   "meta": "0f5ff55a"
+  },
+  {
+   "tick": 800,
+   "all": "12cb4549",
+   "terrain": "fcc17da5",
+   "entities": "2f5cbc1c",
+   "rng": "954b0748",
+   "meta": "97756463"
+  },
+  {
+   "tick": 900,
+   "all": "46fd6eab",
+   "terrain": "4ab09b4b",
+   "entities": "2f5cbc1c",
+   "rng": "954b0748",
+   "meta": "183d9104"
+  },
+  {
+   "tick": 1000,
+   "all": "ac43a764",
+   "terrain": "9f8100dd",
+   "entities": "2f5cbc1c",
+   "rng": "954b0748",
+   "meta": "b69c740a"
+  },
+  {
+   "tick": 1100,
+   "all": "47a1245d",
+   "terrain": "d1c21f65",
+   "entities": "2f5cbc1c",
+   "rng": "954b0748",
+   "meta": "fb4e8169"
+  },
+  {
+   "tick": 1200,
+   "all": "46f64d73",
+   "terrain": "3ab0d453",
+   "entities": "2f5cbc1c",
+   "rng": "954b0748",
+   "meta": "6c08f968"
+  },
+  {
+   "tick": 1300,
+   "all": "c7ee4afe",
+   "terrain": "9008e335",
+   "entities": "2f5cbc1c",
+   "rng": "954b0748",
+   "meta": "3c995945"
+  },
+  {
+   "tick": 1400,
+   "all": "17970c95",
+   "terrain": "bd032473",
+   "entities": "2f5cbc1c",
+   "rng": "954b0748",
+   "meta": "1d36e327"
+  },
+  {
+   "tick": 1500,
+   "all": "b6505b41",
+   "terrain": "bd032473",
+   "entities": "86cf769f",
+   "rng": "96d21d35",
+   "meta": "fa2631f6"
+  },
+  {
+   "tick": 1600,
+   "all": "97359d73",
+   "terrain": "bd032473",
+   "entities": "c3022df5",
+   "rng": "ad1a4cef",
+   "meta": "ca76e644"
+  },
+  {
+   "tick": 1700,
+   "all": "639a8b00",
+   "terrain": "bd032473",
+   "entities": "12ba1734",
+   "rng": "b2d67a94",
+   "meta": "49f1781f"
+  },
+  {
+   "tick": 1800,
+   "all": "2658b5fa",
+   "terrain": "bd032473",
+   "entities": "52b88f11",
+   "rng": "47f49f07",
+   "meta": "742d1137"
+  },
+  {
+   "tick": 1900,
+   "all": "75dedcdf",
+   "terrain": "bd032473",
+   "entities": "c4c06328",
+   "rng": "870e2cd8",
+   "meta": "b0a2f3b0"
+  },
+  {
+   "tick": 2000,
+   "all": "88932af5",
+   "terrain": "bd032473",
+   "entities": "edb97d45",
+   "rng": "c2399de5",
+   "meta": "f6fcf98f"
+  },
+  {
+   "tick": 2100,
+   "all": "0d9f523b",
+   "terrain": "bd032473",
+   "entities": "edb97d45",
+   "rng": "25c2ba77",
+   "meta": "65932b14"
+  },
+  {
+   "tick": 2200,
+   "all": "123c4ddd",
+   "terrain": "bd032473",
+   "entities": "edb97d45",
+   "rng": "1b561ca5",
+   "meta": "a5b6538d"
+  },
+  {
+   "tick": 2300,
+   "all": "d6909c8f",
+   "terrain": "bd032473",
+   "entities": "edb97d45",
+   "rng": "53bfd550",
+   "meta": "54e4bca0"
+  },
+  {
+   "tick": 2400,
+   "all": "0a75b7d9",
+   "terrain": "bd032473",
+   "entities": "edb97d45",
+   "rng": "d5d8ae45",
+   "meta": "39f1a207"
+  },
+  {
+   "tick": 2500,
+   "all": "5ede50cb",
+   "terrain": "bd032473",
+   "entities": "edb97d45",
+   "rng": "0bd4e3fb",
+   "meta": "fdac093e"
+  },
+  {
+   "tick": 2600,
+   "all": "76e55154",
+   "terrain": "bd032473",
+   "entities": "edb97d45",
+   "rng": "6c9609e0",
+   "meta": "17b56265"
+  }
+ ]
+}

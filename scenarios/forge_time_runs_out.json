@@ -1,0 +1,24 @@
+{
+  "id": "forge_time_runs_out",
+  "description": "BACKLOG 11: when a tribe never declares ready the Forge ends on its timer (balance.forge.seconds); strokes past the end are refused and settlers start working the moment it ends.",
+  "tags": ["forge", "fast"],
+  "seed": 112,
+  "forge": true,
+  "map": { "generator": "flat", "size": 64, "tribes": 1 },
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [32, 32] },
+    { "spawn": "shaper", "tribe": 0, "at": [34, 30] },
+    { "spawn": "settler", "tribe": 0, "near": [30, 35], "count": 3 }
+  ],
+  "commands": [
+    { "tick": 1, "tribe": 0, "type": "forgeOp", "args": { "brush": "smooth", "x": 40, "y": 32 } },
+    { "tick": 2400, "tribe": 0, "type": "forgeOp", "args": { "brush": "raise", "x": 40, "y": 32 } }
+  ],
+  "runTicks": 2500,
+  "assert": [
+    { "at": 2399, "expr": "forge.running && forge.ops(0) == 1 && playTick == 0" },
+    { "at": 2400, "expr": "!forge.running && forge.endedAt == 2400 && events.count('forgeEnded') == 1" },
+    { "at": 2500, "expr": "forge.ops(0) == 1 && events.count('commandRejected') == 1 && playTick == 100" },
+    { "at": 2500, "expr": "invariants() == 0" }
+  ]
+}

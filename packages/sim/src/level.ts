@@ -73,7 +73,7 @@ export class LevelRuntime {
       case "worship":
         return this.siteBy(o.site) === PLAYER;
       case "survive":
-        return me.alive && w.tick + 1 >= Math.round(o.seconds * w.cfg.tickHz);
+        return me.alive && w.playTick + 1 >= Math.round(o.seconds * w.cfg.tickHz);
       case "followers":
         return w.economy.followers(PLAYER) >= o.n;
     }
@@ -83,7 +83,7 @@ export class LevelRuntime {
     const w = this.w;
     if (!w.tribes[PLAYER].alive) return "eliminated";
     for (const l of this.def.lose ?? []) {
-      if (l.type === "timeLimit" && w.tick + 1 >= Math.round(l.seconds * w.cfg.tickHz)) return "timeLimit";
+      if (l.type === "timeLimit" && w.playTick + 1 >= Math.round(l.seconds * w.cfg.tickHz)) return "timeLimit";
       if (l.type === "hearthLost" && w.ents.index(w.tribes[PLAYER].hearth) < 0) return "hearthLost";
       if (l.type === "siteLost") {
         const by = this.siteBy(l.site);
@@ -110,7 +110,7 @@ export class LevelRuntime {
       let y = 0;
       const when = t.when;
       if (when.type === "time") {
-        if (w.tick + 1 < Math.round(when.seconds * w.cfg.tickHz)) return;
+        if (w.playTick + 1 < Math.round(when.seconds * w.cfg.tickHz)) return;
       } else if (when.type === "objective") {
         if (!this.done[when.index]) return;
       } else {

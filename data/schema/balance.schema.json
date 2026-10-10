@@ -919,6 +919,55 @@
       ],
       "additionalProperties": false
     },
+    "forge": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "seconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "radius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "hearthClear": {
+          "type": "number",
+          "minimum": 0
+        },
+        "brushRadius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "amount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200
+        },
+        "smoothStrength": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "maxOps": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        }
+      },
+      "required": [
+        "seconds",
+        "radius",
+        "hearthClear",
+        "brushRadius",
+        "amount",
+        "smoothStrength",
+        "maxOps"
+      ],
+      "additionalProperties": false
+    },
     "skirmishWorship": {
       "type": "object",
       "properties": {

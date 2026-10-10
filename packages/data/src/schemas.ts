@@ -198,6 +198,25 @@ export const BalanceSchema = z.strictObject({
     })
     .optional(),
   /**
+   * BACKLOG 11 (ADR-017): Forge mode, an optional pre-match phase of `seconds` in which units are frozen and
+   * each tribe reshapes the land for free within `radius` cells of its own Hearth (never within `hearthClear`
+   * cells of it), one brush stroke (raise, lower, flatten, smooth: radius `brushRadius`, `amount` height units,
+   * smooth `smoothStrength`) per forgeOp, at most `maxOps` per tribe. It ends early when every living tribe
+   * is ready. Optional so frozen packs keep their hash.
+   */
+  forge: z
+    .strictObject({
+      ...comment,
+      seconds: pos,
+      radius: pos,
+      hearthClear: pos,
+      brushRadius: pos,
+      amount: z.number().int().min(1).max(200),
+      smoothStrength: z.number().min(0).max(1),
+      maxOps: z.number().int().min(1).max(1000),
+    })
+    .optional(),
+  /**
    * BACKLOG 1: worship sites on generated (skirmish) maps, at points equidistant from each pair of Hearths
    * and at that point's opposite on the wrapped planet; sites take the list entries in turn. Optional so
    * frozen packs keep their hash.
@@ -800,6 +819,20 @@ export const PersonalitySchema = z.strictObject({
       ...comment,
       count: z.number().int().positive(),
       fromMinute: pos,
+    })
+    .optional(),
+  /**
+   * BACKLOG 11 (ADR-017): what the AI does in a Forge phase: moat (lower) or wall (raise) brush strokes, 24 a
+   * pass on a circle of `ring` cells around its Hearth, with two gaps (toward and away from the nearest rival), or
+   * flatten building room on rings `ring` and `ring` - 2; `strokes` in all, `perDecision` at a time, then ready.
+   */
+  forge: z
+    .strictObject({
+      ...comment,
+      plan: z.enum(["moat", "wall", "flatten"]),
+      ring: pos,
+      strokes: z.number().int().positive(),
+      perDecision: z.number().int().positive(),
     })
     .optional(),
 });
