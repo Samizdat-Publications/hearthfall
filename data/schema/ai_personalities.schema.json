@@ -69,6 +69,11 @@
             "minimum": 0,
             "maximum": 1
           },
+          "towerFromPopShare": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
           "shades": {
             "type": "object",
             "properties": {

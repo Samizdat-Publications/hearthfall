@@ -16,6 +16,7 @@ export interface Personality {
   spellPrefs: string[];
   scouting: number;
   towerAffinity: number;
+  towerFromPopShare?: number;
   /** BACKLOG 2: keep this many Shades from this match minute on */
   shades?: { count: number; fromMinute: number };
 }
@@ -473,6 +474,9 @@ export class OpponentAI implements Controller {
   private towerScore(c: Census): number {
     if (c.open >= c.w.cfg.pack.balance.economy.maxOpenPlansPerTribe || c.settlers.length < this.keep() * 0.5) return 0;
     if (c.w.economy.buildingLock(this.tribe, c.w.cfg.buildingIndex.get("watchtower")!) || !this.supplied(c, "watchtower")) return 0;
+    // BACKLOG 64: towers wait for a share of the economy target (unless the Hearth is under threat), so the
+    // turtle does not spend its early wood and settlers on them and fall behind
+    if (!c.threats.length && c.pop < this.p.economyTargetPop * (this.p.towerFromPopShare ?? 0)) return 0;
     const want = Math.round(this.p.towerAffinity * 3);
     return c.towers.length < want ? 0.3 + 0.6 * this.p.towerAffinity : 0;
   }
@@ -802,7 +806,12 @@ export class OpponentAI implements Controller {
     const E = w.ents;
     const eco = w.tribes[this.tribe].eco;
     const n = w.terrain.size;
-    for (const id of this.p.spellPrefs) {
+    // BACKLOG 64: every castable preferred spell is valued at its best target and the best value wins, with a
+    // small tilt toward earlier preferences (it used to be the first castable spell, whatever it would hit)
+    let pick: { spell: string; x: number; y: number } | null = null;
+    let pickValue = 0;
+    for (let rank = 0; rank < this.p.spellPrefs.length; rank++) {
+      const id = this.p.spellPrefs[rank];
       const s = w.cfg.spellIndex.get(id);
       if (s === undefined || !eco.unlocked[s] || eco.charges[s] <= 0) continue;
       const def = w.cfg.pack.spells.spells[s];
@@ -843,9 +852,22 @@ export class OpponentAI implements Controller {
         }
       }
       const min = kind === "buildings" ? 1 : 2;
-      if (best >= 0 && bestScore >= min) return { spell: id, x: E.x[best], y: E.y[best] };
+      if (best < 0 || bestScore < min) continue;
+      // a damage spell is worth its kill power on the cluster; a utility spell (Ward, Veil, Call) its group size
+      const value = bestScore * (1 + this.power(def)) * (1 - 0.06 * rank);
+      if (value > pickValue) {
+        pickValue = value;
+        pick = { spell: id, x: E.x[best], y: E.y[best] };
+      }
     }
-    return null;
+    return pick;
+  }
+
+  /** rough kill power of a spell: its radius damage per target over a Warden's hp, capped at 1 */
+  private power(def: { effects: readonly { type: string; damage?: number }[] }): number {
+    let dmg = 0;
+    for (const e of def.effects) if (e.type === "damageRadius" && e.damage) dmg += e.damage;
+    return Math.min(1, dmg / 2600);
   }
 
   private clusterAt(w: World, i: number, wild: boolean): number {

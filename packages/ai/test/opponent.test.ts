@@ -190,6 +190,39 @@ describe("OpponentAI (M7)", () => {
     expect(castAt(true)).toBe(false);
   });
 
+  it("the spell is chosen by value at its best target, not as the first castable preference (BACKLOG 64)", () => {
+    const w = world({ generator: "flat", size: 64, tribes: 2 });
+    w.spawnBuilding("hearth", 0, 12, 32);
+    w.spawnBuilding("hearth", 1, 56, 32);
+    w.spawnUnit("shaper", 0, 24, 32);
+    w.spawnUnit("shaper", 1, 58, 32);
+    for (let k = 0; k < 3; k++) w.spawnUnit("warden", 1, 30 + k * 0.5, 32);
+    w.step([]);
+    for (const id of ["bolt", "lightning"]) w.tribes[0].eco.charges[w.cfg.spellIndex.get(id)!] = 1;
+    const ai = new OpponentAI({ tribe: 0, personality: { ...bold, spellPrefs: ["bolt", "lightning"], firstAttackMinute: 99 }, every: 1 });
+    const cast = ai.decide(w).find((c) => c.type === "cast");
+    expect((cast?.args as { spell?: string } | undefined)?.spell).toBe("lightning");
+  });
+
+  it("a tower minded personality plans no tower before half its economy target (BACKLOG 64)", () => {
+    const towerScore = (target: number) => {
+      const w = world({ generator: "flat", size: 64, tribes: 2 });
+      w.spawnBuilding("hearth", 0, 20, 32);
+      w.spawnBuilding("hearth", 1, 56, 32);
+      w.spawnUnit("shaper", 0, 22, 32);
+      w.spawnUnit("shaper", 1, 58, 32);
+      for (let k = 0; k < 12; k++) w.spawnUnit("settler", 0, 16 + (k % 4), 28 + Math.floor(k / 4));
+      w.spawnRock(26, 38);
+      w.step([]);
+      const ai = new OpponentAI({ tribe: 0, personality: { ...bold, towerAffinity: 1, towerFromPopShare: 0.5, economyTargetPop: target, firstAttackMinute: 99 }, every: 1 });
+      const inner = ai as unknown as { init(w: World): void; census(w: World): unknown; towerScore(c: unknown): number };
+      inner.init(w);
+      return inner.towerScore(inner.census(w));
+    };
+    expect(towerScore(90)).toBe(0);
+    expect(towerScore(20)).toBeGreaterThan(0);
+  });
+
   it("a hurt Shaper is pulled back to the Hearth and covered by idle troops", () => {
     const w = world({ generator: "flat", size: 64, tribes: 2 });
     w.spawnBuilding("hearth", 0, 12, 32);

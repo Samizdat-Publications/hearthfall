@@ -752,6 +752,8 @@ export const PersonalitySchema = z.strictObject({
   spellPrefs: z.array(id),
   scouting: z.number().min(0).max(1),
   towerAffinity: z.number().min(0).max(1),
+  /** BACKLOG 64: no tower is planned before this share of economyTargetPop is reached (unless threatened) */
+  towerFromPopShare: z.number().min(0).max(1).optional(),
   /** BACKLOG 2: keep this many Shades from this match minute on and send them at enemy buildings */
   shades: z
     .strictObject({

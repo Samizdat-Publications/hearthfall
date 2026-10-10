@@ -61,7 +61,7 @@
         "chanter": 0.1
       },
       "aggression": 0.5,
-      "firstAttackMinute": 12,
+      "firstAttackMinute": 9,
       "spellPrefs": [
         "firerain",
         "erode",
@@ -75,7 +75,8 @@
         "volcano"
       ],
       "scouting": 0.4,
-      "towerAffinity": 0.5
+      "towerAffinity": 0.5,
+      "towerFromPopShare": 0.5
     }
   ],
   "difficulties": [
