@@ -233,6 +233,21 @@ def _a3_sfx():
         ("sfx.quake", "a long heavy rumble with cracking rock and crumbling earth", 2.0),
         ("sfx.hornets", "an angry buzzing swarm of hornets", 2.0),
         ("sfx.volcano", "a volcanic eruption roar with an explosive blast and deep rumble", 2.0),
+        # BACKLOG 92: cues that had no clip, then own cast clips for spells that borrowed another clip
+        ("sfx.chant", "a low sustained tribal humming chant by several deep voices, slow and steady, starting softly", 1.5),
+        ("sfx.chant_break", "a sharp broken chord snap, a dissonant pluck of strings and wood cut short", 0.8),
+        ("sfx.converted", "a soft rising chime, a gentle bell glissando, warm and welcoming", 1.3),
+        ("sfx.trained", "a short flourish of wooden hand drums and a single warm horn call", 1.4),
+        ("sfx.eliminated", "a deep distant gong with a long fading wind across an empty plain", 2.5),
+        ("sfx.firerain_cast", "a rising crackle of fire and a whoosh as burning rocks are summoned from the sky", 1.8),
+        ("sfx.whirlwind_cast", "a swirling rushing wind that spins up fast with a howling whistle", 1.6),
+        ("sfx.erode_cast", "a gritty hiss of sand and gravel washing away, soil crumbling and trickling", 1.5),
+        ("sfx.mire_cast", "a thick wet bubbling squelch of mud and bog gas", 1.5),
+        ("sfx.veil_cast", "a soft airy shimmer, a whispery veil of shining mist drawing closed", 1.5),
+        ("sfx.ward_cast", "a bright protective ring tone, a resonant bowl chime with a soft magical hum", 1.5),
+        ("sfx.beguile_cast", "a sly whispering charm, soft breathy voices and a swaying bell tone", 1.6),
+        ("sfx.wraith_cast", "an eerie hollow wail of a ghostly spirit rising with cold wind", 1.8),
+        ("sfx.lightning_cast", "a crackling build-up of static electricity and a fast rising zap", 1.2),
     ]
     out = []
     for aid, subject, dur in rows:

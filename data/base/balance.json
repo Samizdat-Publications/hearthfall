@@ -123,6 +123,13 @@
       { "id": "last_stand", "type": "lastStand", "minutes": 20, "name": "Last Stand", "text": "After 20 minutes the tribe with the most followers wins." }
     ]
   },
+  "vehicles": {
+    "$comment": "BACKLOG 98 (ADR-016): a walker boarding a moving vehicle re-aims every boardRetryTicks ticks and gives up after boardTries; riders unload on land within the vehicle's boardRadius plus unloadReach cells; a Boathouse needs water within shoreReach cells of its footprint.",
+    "boardRetryTicks": 20,
+    "boardTries": 4,
+    "unloadReach": 2,
+    "shoreReach": 3
+  },
   "forge": {
     "$comment": "BACKLOG 11 (ADR-017): Forge mode, a skirmish option. Before the match every tribe reshapes the land around its Hearth for free while units stand still; it ends after seconds or when every tribe is ready. A brush stroke changes the ground by amount height units (32 per world unit, drowning at 8 below sea).",
     "seconds": 120,

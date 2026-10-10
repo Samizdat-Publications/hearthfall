@@ -1,13 +1,13 @@
 {
   "schema": 1,
-  "generated": "2026-10-09T17:40:07Z",
+  "generated": "2026-10-10T09:07:07Z",
   "format": "ogg vorbis, 44.1 kHz",
   "loudness_targets_lufs": {
     "sfx": -18.0,
     "music": -16.0,
     "voice": -18.0
   },
-  "count": 30,
+  "count": 44,
   "entries": {
     "music.battle": {
       "file": "assets/audio/music.battle.ogg",
@@ -50,6 +50,17 @@
       "loop_crossfade_s": 2.0,
       "stem": "tension",
       "event": "tension"
+    },
+    "sfx.beguile_cast": {
+      "file": "assets/audio/sfx.beguile_cast.ogg",
+      "kind": "sfx",
+      "duration_s": 1.6,
+      "lufs": -18.4,
+      "true_peak_db": -8.1,
+      "bytes": 32796,
+      "sha256": "8b4b6cfdc69bc8333e3a9d20b9ae5dbee78ad4675adf8c886399b0afd0091cb9",
+      "prompt": "a sly whispering charm, soft breathy voices and a swaying bell tone",
+      "event": "beguile_cast"
     },
     "sfx.bolt_cast": {
       "file": "assets/audio/sfx.bolt_cast.ogg",
@@ -106,6 +117,28 @@
       "prompt": "a gentle chant swell of soft humming voices rising",
       "event": "call_cast"
     },
+    "sfx.chant": {
+      "file": "assets/audio/sfx.chant.ogg",
+      "kind": "sfx",
+      "duration_s": 1.48,
+      "lufs": -18.0,
+      "true_peak_db": -9.5,
+      "bytes": 31941,
+      "sha256": "3b299fbc3e68df487883d6ff785699f4d86b468556c2807df2ed489705dd8281",
+      "prompt": "a low sustained tribal humming chant by several deep voices, slow and steady, starting softly",
+      "event": "chant"
+    },
+    "sfx.chant_break": {
+      "file": "assets/audio/sfx.chant_break.ogg",
+      "kind": "sfx",
+      "duration_s": 0.8,
+      "lufs": -21.0,
+      "true_peak_db": -1.6,
+      "bytes": 17055,
+      "sha256": "d82b8be5dae751521b8502a91bc7971806a9fe43fb966cc9c0ade22de3d5f930",
+      "prompt": "a sharp broken chord snap, a dissonant pluck of strings and wood cut short",
+      "event": "chant_break"
+    },
     "sfx.charged": {
       "file": "assets/audio/sfx.charged.ogg",
       "kind": "sfx",
@@ -127,6 +160,17 @@
       "sha256": "baa056fa04b207777062a2210af3c489a256c0278b1c2b063fe9592e63a3a6b5",
       "prompt": "a single axe chop into a log, with a wood crack",
       "event": "chop"
+    },
+    "sfx.converted": {
+      "file": "assets/audio/sfx.converted.ogg",
+      "kind": "sfx",
+      "duration_s": 1.28,
+      "lufs": -18.1,
+      "true_peak_db": -1.6,
+      "bytes": 30000,
+      "sha256": "8aa973639d1f6bfda106551818567c256ade0a60c2645fad489ced0bad6246db",
+      "prompt": "a soft rising chime, a gentle bell glissando, warm and welcoming",
+      "event": "converted"
     },
     "sfx.died": {
       "file": "assets/audio/sfx.died.ogg",
@@ -150,6 +194,39 @@
       "prompt": "a splash followed by a short gurgle of water closing over",
       "event": "drowned"
     },
+    "sfx.eliminated": {
+      "file": "assets/audio/sfx.eliminated.ogg",
+      "kind": "sfx",
+      "duration_s": 2.48,
+      "lufs": -17.9,
+      "true_peak_db": -5.9,
+      "bytes": 43815,
+      "sha256": "fc926b416fd5b9b30641877b66ed28415720bf44a90a582b7b2f1b7fc9e57163",
+      "prompt": "a deep distant gong with a long fading wind across an empty plain",
+      "event": "eliminated"
+    },
+    "sfx.erode_cast": {
+      "file": "assets/audio/sfx.erode_cast.ogg",
+      "kind": "sfx",
+      "duration_s": 1.48,
+      "lufs": -18.3,
+      "true_peak_db": -4.3,
+      "bytes": 32898,
+      "sha256": "276f15d8b719a81d8b03e25b82a5f1a84d586c8bf1f4f32749192edbecf8da05",
+      "prompt": "a gritty hiss of sand and gravel washing away, soil crumbling and trickling",
+      "event": "erode_cast"
+    },
+    "sfx.firerain_cast": {
+      "file": "assets/audio/sfx.firerain_cast.ogg",
+      "kind": "sfx",
+      "duration_s": 1.76,
+      "lufs": -18.0,
+      "true_peak_db": -5.8,
+      "bytes": 36204,
+      "sha256": "11049f3144fea7666107f08ca8eff08fffd97295a91a095d95378d6d1ec47646",
+      "prompt": "a rising crackle of fire and a whoosh as burning rocks are summoned from the sky",
+      "event": "firerain_cast"
+    },
     "sfx.flatten": {
       "file": "assets/audio/sfx.flatten.ogg",
       "kind": "sfx",
@@ -172,6 +249,17 @@
       "prompt": "an angry buzzing swarm of hornets",
       "event": "hornets"
     },
+    "sfx.lightning_cast": {
+      "file": "assets/audio/sfx.lightning_cast.ogg",
+      "kind": "sfx",
+      "duration_s": 1.2,
+      "lufs": -18.4,
+      "true_peak_db": -10.4,
+      "bytes": 29143,
+      "sha256": "c92a4a1cdc983b5067e7cbcf447d575b1230e8f0afd7963b3356e3011470c2be",
+      "prompt": "a crackling build-up of static electricity and a fast rising zap",
+      "event": "lightning_cast"
+    },
     "sfx.lightning_impact": {
       "file": "assets/audio/sfx.lightning_impact.ogg",
       "kind": "sfx",
@@ -182,6 +270,17 @@
       "sha256": "e93e06892b0f0a344f83f9d4dc418d32e41360612c7d3e2c2d213db4e540d832",
       "prompt": "a thunder crack, a sharp lightning strike then a short rolling rumble",
       "event": "lightning_impact"
+    },
+    "sfx.mire_cast": {
+      "file": "assets/audio/sfx.mire_cast.ogg",
+      "kind": "sfx",
+      "duration_s": 1.48,
+      "lufs": -18.1,
+      "true_peak_db": -2.8,
+      "bytes": 29691,
+      "sha256": "92f408a14d0bf1ce73584cff0f5a257341aea68f0b4ac0be6e3e7c500565f561",
+      "prompt": "a thick wet bubbling squelch of mud and bog gas",
+      "event": "mire_cast"
     },
     "sfx.order_move": {
       "file": "assets/audio/sfx.order_move.ogg",
@@ -227,6 +326,17 @@
       "prompt": "a deep rumble of rising earth, rocks grinding upward",
       "event": "raise_land"
     },
+    "sfx.trained": {
+      "file": "assets/audio/sfx.trained.ogg",
+      "kind": "sfx",
+      "duration_s": 1.36,
+      "lufs": -18.1,
+      "true_peak_db": -1.8,
+      "bytes": 26342,
+      "sha256": "87da4b4eda0832dbecc21cd1bd29e4c0117a495fb9e852085fa2ce5ba28120b7",
+      "prompt": "a short flourish of wooden hand drums and a single warm horn call",
+      "event": "trained"
+    },
     "sfx.ui_click": {
       "file": "assets/audio/sfx.ui_click.ogg",
       "kind": "sfx",
@@ -271,6 +381,17 @@
       "prompt": "a soft wooden click, a light tap of wood on wood",
       "event": "unit_selected"
     },
+    "sfx.veil_cast": {
+      "file": "assets/audio/sfx.veil_cast.ogg",
+      "kind": "sfx",
+      "duration_s": 1.48,
+      "lufs": -18.3,
+      "true_peak_db": -9.4,
+      "bytes": 35926,
+      "sha256": "bbee72454cbebcbef0998053349cedd6f906c49f9087b53d6c9641ffb9a755ad",
+      "prompt": "a soft airy shimmer, a whispery veil of shining mist drawing closed",
+      "event": "veil_cast"
+    },
     "sfx.volcano": {
       "file": "assets/audio/sfx.volcano.ogg",
       "kind": "sfx",
@@ -282,6 +403,28 @@
       "prompt": "a volcanic eruption roar with an explosive blast and deep rumble",
       "event": "volcano"
     },
+    "sfx.ward_cast": {
+      "file": "assets/audio/sfx.ward_cast.ogg",
+      "kind": "sfx",
+      "duration_s": 1.48,
+      "lufs": -17.9,
+      "true_peak_db": -5.0,
+      "bytes": 30483,
+      "sha256": "c08b33a0bb47ed0304f5475c007b3df0a6dcc655e122e9d4303f72319aa60a35",
+      "prompt": "a bright protective ring tone, a resonant bowl chime with a soft magical hum",
+      "event": "ward_cast"
+    },
+    "sfx.whirlwind_cast": {
+      "file": "assets/audio/sfx.whirlwind_cast.ogg",
+      "kind": "sfx",
+      "duration_s": 1.6,
+      "lufs": -18.0,
+      "true_peak_db": -14.2,
+      "bytes": 33062,
+      "sha256": "f327a2eeb7d17f042e16c90e1227f5c47a24c4b3e55abe99bb18f6e3012abcda",
+      "prompt": "a swirling rushing wind that spins up fast with a howling whistle",
+      "event": "whirlwind_cast"
+    },
     "sfx.wood_delivered": {
       "file": "assets/audio/sfx.wood_delivered.ogg",
       "kind": "sfx",
@@ -292,6 +435,17 @@
       "sha256": "86730cea8abd2e0f114121db8c045bd82f932e0c8fd5bed14db14601c634fb9a",
       "prompt": "a dull wooden thunk of a log dropped onto a pile of logs",
       "event": "wood_delivered"
+    },
+    "sfx.wraith_cast": {
+      "file": "assets/audio/sfx.wraith_cast.ogg",
+      "kind": "sfx",
+      "duration_s": 1.76,
+      "lufs": -17.9,
+      "true_peak_db": -10.0,
+      "bytes": 31165,
+      "sha256": "a20aa44b7c1969f93cf3c77c7b1bd713392f6846ecbde56982aea1a5e88e89c6",
+      "prompt": "an eerie hollow wail of a ghostly spirit rising with cold wind",
+      "event": "wraith_cast"
     },
     "voice.shaper.acknowledged": {
       "file": "assets/audio/voice.shaper.acknowledged.ogg",

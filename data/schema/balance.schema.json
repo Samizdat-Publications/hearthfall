@@ -968,6 +968,41 @@
       ],
       "additionalProperties": false
     },
+    "vehicles": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "boardRetryTicks": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200
+        },
+        "boardTries": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20
+        },
+        "unloadReach": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8
+        },
+        "shoreReach": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        }
+      },
+      "required": [
+        "boardRetryTicks",
+        "boardTries",
+        "unloadReach",
+        "shoreReach"
+      ],
+      "additionalProperties": false
+    },
     "skirmishWorship": {
       "type": "object",
       "properties": {

@@ -29,6 +29,8 @@ export interface OpponentState {
   stats: OpponentStats;
   /** BACKLOG 10: [boat id, tick of its last boarding order] (absent in older saves) */
   ferried?: [number, number][];
+  /** BACKLOG 98: [boat id, x, y] of a contested site a loaded boat carries its wave to (absent in older saves) */
+  goals?: [number, number, number][];
 }
 
 export interface OpponentOptions {
@@ -112,6 +114,8 @@ export class OpponentAI implements Controller {
   private known = new Set<number>();
   /** BACKLOG 10: boat id to the tick of its last boarding order (a boat is boarded at most once per FERRY_BACKOFF_SECONDS) */
   private ferried = new Map<number, number>();
+  /** BACKLOG 98: boat id to the contested site its wave was boarded for (sail() lands it there, not at a Hearth) */
+  private goals = new Map<number, [number, number]>();
   /** set once a wave found no walkable route: bridge spells join the prefs even if the personality lacks them */
   private needBridge = false;
   private scout = NO_ENTITY;
@@ -167,27 +171,32 @@ export class OpponentAI implements Controller {
     });
   }
 
-  /** the nearest contested site on our landmass that we do not control, with whether a rival leads the race */
-  private contestTarget(c: Census): { x: number; y: number; behind: boolean } | null {
+  /**
+   * the nearest contested site that we do not control, with whether a rival leads the race and its landmass:
+   * sites on our landmass first; otherwise one on another landmass, which the wave reaches by boat (BACKLOG 98)
+   */
+  private contestTarget(c: Census): { x: number; y: number; behind: boolean; land: number; home: number } | null {
     const w = c.w;
     const E = w.ents;
     const n = w.terrain.size;
     const r = w.rules!;
     const home = this.comp(w, E.x[c.h], E.y[c.h]);
-    let best: { x: number; y: number; behind: boolean } | null = null;
+    let best: { x: number; y: number; behind: boolean; land: number; home: number } | null = null;
     let bd = Infinity;
     const lead = Math.max(0, ...r.held.filter((_, t) => t !== this.tribe));
     for (const s of this.contested(w)) {
-      if (this.comp(w, s.x, s.y) !== home) continue;
+      const land = this.comp(w, s.x, s.y);
+      if (land < 0) continue;
       const p = r.presence(s.x, s.y);
       const ours = p[this.tribe] > 0 && p.every((k, t) => t === this.tribe || k === 0);
       if (ours) continue;
       const dx = wrapDelta(s.x - E.x[c.h], n);
       const dy = wrapDelta(s.y - E.y[c.h], n);
-      const d = dx * dx + dy * dy;
+      // any site on our landmass beats every site over the water
+      const d = dx * dx + dy * dy + (land === home ? 0 : 1e9);
       if (d < bd) {
         bd = d;
-        best = { x: s.x, y: s.y, behind: lead > (r.held[this.tribe] ?? 0) };
+        best = { x: s.x, y: s.y, behind: lead > (r.held[this.tribe] ?? 0), land, home };
       }
     }
     return best;
@@ -204,6 +213,10 @@ export class OpponentAI implements Controller {
     const t = this.contestTarget(c);
     if (!t) return;
     const E = c.w.ents;
+    if (t.land !== t.home) {
+      this.ferry(c, out, t.x, t.y, t.home, true);
+      return;
+    }
     out.push(this.cmd(c.w, "move", { units: c.idle.map((i) => E.idOf(i)), to: [t.x, t.y], attack: true }));
     c.idle.length = 0;
   }
@@ -211,7 +224,7 @@ export class OpponentAI implements Controller {
   /** Save game memory: scouted tribes, the scout and the stats (decisions also gate the one-time setup). */
   saveState(): OpponentState {
     const st = this.stats;
-    return { known: [...this.known], scout: this.scout, stats: { ...st, actions: { ...st.actions }, casts: { ...st.casts } }, ferried: [...this.ferried] };
+    return { known: [...this.known], scout: this.scout, stats: { ...st, actions: { ...st.actions }, casts: { ...st.casts } }, ferried: [...this.ferried], goals: [...this.goals].map(([b, g]) => [b, g[0], g[1]]) };
   }
 
   loadState(state: unknown): void {
@@ -219,6 +232,7 @@ export class OpponentAI implements Controller {
     this.known = new Set(o.known);
     this.scout = o.scout;
     this.ferried = new Map(o.ferried ?? []);
+    this.goals = new Map((o.goals ?? []).map(([b, x, y]) => [b, [x, y]]));
     Object.assign(this.stats, { ...o.stats, actions: { ...o.stats.actions }, casts: { ...o.stats.casts } });
   }
 
@@ -830,7 +844,7 @@ export class OpponentAI implements Controller {
     const target = ranked.find(([, eh]) => this.comp(w, E.x[eh], E.y[eh]) === home);
     if (!target) {
       if (E.cat[ranked[0][1]] === CAT.unit) this.approach(c, out, ranked[0][1], home);
-      this.ferry(c, out, ranked[0][1], home);
+      this.ferry(c, out, E.x[ranked[0][1]], E.y[ranked[0][1]], home, false);
       this.bridge(c, out, ranked[0][1]);
       return;
     }
@@ -853,7 +867,7 @@ export class OpponentAI implements Controller {
   /** BACKLOG 10: no land route to the enemy, so boats carry the wave. Without a boat the tribe raises a
    * Boathouse once it may; an empty idle boat takes the idle troops on the home landmass; a loaded boat
    * whose walkers have all boarded sails to the enemy shore and unloads (landed() sends them on). */
-  private ferry(c: Census, out: Command[], eh: number, home: number): void {
+  private ferry(c: Census, out: Command[], tx: number, ty: number, home: number, toSite: boolean): void {
     const w = c.w;
     const E = w.ents;
     if (!c.boats.length) {
@@ -883,10 +897,13 @@ export class OpponentAI implements Controller {
       }
       // load only for a shore the boat can reach (D+F review: a wave locked aboard), and not again within
       // the backoff (a trip that failed unloads at home; without it the wave would board every decision)
-      if (!this.shore(c, E.x[eh], E.y[eh], this.comp(w, E.x[eh], E.y[eh]), b)) continue;
+      if (!this.shore(c, tx, ty, this.comp(w, tx, ty), b)) continue;
       const last = this.ferried.get(id);
       if (last !== undefined && w.tick - last < FERRY_BACKOFF_SECONDS * w.cfg.tickHz) continue;
       this.ferried.set(id, w.tick);
+      // BACKLOG 98: a wave boarded for a contested site sails there; one boarded to attack forgets an old site
+      if (toSite) this.goals.set(id, [tx, ty]);
+      else this.goals.delete(id);
       out.push(this.cmd(w, "board", { units: walkers.splice(0, seats).map((i) => E.idOf(i)), vehicle: id }));
     }
   }
@@ -906,7 +923,13 @@ export class OpponentAI implements Controller {
       let boarding = 0;
       for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.task[i] === TASK.toBoard && E.target[i] === id) boarding++;
       if (boarding > 0) continue;
-      const land = far ? this.shore(c, E.x[far[1]], E.y[far[1]], this.comp(w, E.x[far[1]], E.y[far[1]]), b) : null;
+      const goal = this.goals.get(id);
+      const land = goal
+        ? this.shore(c, goal[0], goal[1], this.comp(w, goal[0], goal[1]), b)
+        : far
+          ? this.shore(c, E.x[far[1]], E.y[far[1]], this.comp(w, E.x[far[1]], E.y[far[1]]), b)
+          : null;
+      this.goals.delete(id);
       if (land) {
         out.push(this.cmd(w, "unload", { units: [id], to: land }));
         this.stats.ferries++;
@@ -946,7 +969,8 @@ export class OpponentAI implements Controller {
     return [((lx % n) + n) % n, ((ly % n) + n) % n];
   }
 
-  /** BACKLOG 10: idle troops standing on an enemy's landmass (put ashore by a boat) attack that enemy's Hearth */
+  /** BACKLOG 10: idle troops standing on an enemy's landmass (put ashore by a boat) attack that enemy's Hearth;
+   * BACKLOG 98: under a hold or hill variant they march on a site there that we do not hold first */
   private landed(c: Census, out: Command[]): void {
     const w = c.w;
     const E = w.ents;
@@ -960,9 +984,18 @@ export class OpponentAI implements Controller {
       else groups.set(k, [i]);
     }
     for (const [k, units] of groups) {
-      const target = c.enemies.find(([, eh]) => this.comp(w, E.x[eh], E.y[eh]) === k);
-      if (!target) continue;
-      out.push(this.cmd(w, "move", { units: units.map((i) => E.idOf(i)), to: [E.x[target[1]], E.y[target[1]]], attack: true }));
+      // BACKLOG 98: under a hold or hill variant a site here that we do not hold comes first (the wave was
+      // most likely ferried for it, and holding wins), else the enemy Hearth here
+      const r = w.rules;
+      const site = this.contested(w).find((s) => {
+        if (this.comp(w, s.x, s.y) !== k) return false;
+        const p = r!.presence(s.x, s.y);
+        return !(p[this.tribe] > 0 && p.every((n, t) => t === this.tribe || n === 0));
+      });
+      const target = site ? null : c.enemies.find(([, eh]) => this.comp(w, E.x[eh], E.y[eh]) === k);
+      if (!target && !site) continue;
+      const to = site ? [site.x, site.y] : [E.x[target![1]], E.y[target![1]]];
+      out.push(this.cmd(w, "move", { units: units.map((i) => E.idOf(i)), to, attack: true }));
       c.idle = c.idle.filter((i) => !units.includes(i));
     }
   }

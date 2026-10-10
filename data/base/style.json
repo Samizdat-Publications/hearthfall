@@ -141,19 +141,10 @@
       "sfx.flatten_cast": "sfx.flatten",
       "sfx.quake_cast": "sfx.quake",
       "sfx.volcano_cast": "sfx.volcano",
-      "sfx.lightning_cast": "sfx.lightning_impact",
       "sfx.fireball": "sfx.bolt_impact",
       "sfx.melee_hit": "sfx.chop",
       "sfx.building_down": "sfx.quake",
-      "sfx.firerain_cast": "sfx.volcano",
-      "sfx.whirlwind_cast": "sfx.hornets",
-      "sfx.erode_cast": "sfx.flatten",
-      "sfx.terrain_moved": "sfx.flatten",
-      "sfx.mire_cast": "sfx.flatten",
-      "sfx.veil_cast": "sfx.call_cast",
-      "sfx.ward_cast": "sfx.call_cast",
-      "sfx.beguile_cast": "sfx.call_cast",
-      "sfx.wraith_cast": "sfx.bolt_cast"
+      "sfx.terrain_moved": "sfx.flatten"
     }
   },
   "promptStyleSuffix": "stylized low-poly game asset, crisp flat-shaded facets, chunky readable shapes, warm earthy palette, warm golden-hour lighting, clean silhouette, plain neutral background, no text, no logo",

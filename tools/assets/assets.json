@@ -14935,6 +14935,1532 @@
         "nonmanifold_edges": 0,
         "warnings": []
       }
+    },
+    {
+      "id": "sfx.chant",
+      "class": "sfx",
+      "prompt": "a low sustained tribal humming chant by several deep voices, slow and steady, starting softly",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.5,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:19Z",
+          "finished": "2026-10-10T09:06:21Z",
+          "cost": {
+            "usd": 0.003,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.chant/sfx.chant.mp3",
+          "sha256": "82057a2472f886ae31aa2f0a4df2ba225beab00e4309b1d90b0b665d881c9abb",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 24703,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "8"
+            }
+          },
+          "request_hash": "576e6417d13a465fa7e32ff5d492996ab02dfc0be3b7def9918164debee71188"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:21Z",
+          "finished": "2026-10-10T09:06:22Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.chant.ogg",
+          "sha256": "3b299fbc3e68df487883d6ff785699f4d86b468556c2807df2ed489705dd8281",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 31941,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "710d17de25e5e1c47011e24d540e5351b0a88ad74916ba7a50a37d9490017cb1"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.chant_break",
+      "class": "sfx",
+      "prompt": "a sharp broken chord snap, a dissonant pluck of strings and wood cut short",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 0.8,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:22Z",
+          "finished": "2026-10-10T09:06:23Z",
+          "cost": {
+            "usd": 0.0016,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.chant_break/sfx.chant_break.mp3",
+          "sha256": "18106e6e67193234fef6a343c34eec6f8813e1fa609122fa1c7abdfca0b28a8d",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 13836,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "4"
+            }
+          },
+          "request_hash": "5b5c704fdcf53841fe60a70024c16a3ba1cee828401e92eabeda2ef2141f725c"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:23Z",
+          "finished": "2026-10-10T09:06:24Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.chant_break.ogg",
+          "sha256": "d82b8be5dae751521b8502a91bc7971806a9fe43fb966cc9c0ade22de3d5f930",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 17055,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "78475ae92ca41bee3507bd95776e19357d500a24d3e8dab18807dc9e441f1a96"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.converted",
+      "class": "sfx",
+      "prompt": "a soft rising chime, a gentle bell glissando, warm and welcoming",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.3,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:24Z",
+          "finished": "2026-10-10T09:06:27Z",
+          "cost": {
+            "usd": 0.0026000000000000003,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.converted/sfx.converted.mp3",
+          "sha256": "d51e28c82f0be4ecdbd0aec04e1c5bb12bd3fd7ed0acbad9624fa099db54957d",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 21359,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "7"
+            }
+          },
+          "request_hash": "f37bb336fa957220ed1f746992e90e6293d1f9a84247addf8127ce6fd9c0ab83"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:27Z",
+          "finished": "2026-10-10T09:06:27Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.converted.ogg",
+          "sha256": "8aa973639d1f6bfda106551818567c256ade0a60c2645fad489ced0bad6246db",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 30000,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "82de94d635503419163d2bf615df32386ba35c748c1b6d357dbafc89be8af789"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.trained",
+      "class": "sfx",
+      "prompt": "a short flourish of wooden hand drums and a single warm horn call",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.4,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:27Z",
+          "finished": "2026-10-10T09:06:29Z",
+          "cost": {
+            "usd": 0.0028,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.trained/sfx.trained.mp3",
+          "sha256": "7ee22ad4027e9eb30ffe2be5f241892d8280cbbb1881a6a917bf135af140d255",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 23031,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "8"
+            }
+          },
+          "request_hash": "0428c1be5db7d3aa6487cb425155d2b664fa99884baf98dd22c779a0176519a2"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:29Z",
+          "finished": "2026-10-10T09:06:29Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.trained.ogg",
+          "sha256": "87da4b4eda0832dbecc21cd1bd29e4c0117a495fb9e852085fa2ce5ba28120b7",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 26342,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "fa6ae6a7e9318fc2f48141a67dd8b978d881c69c0832e4774cd60e70be63e28f"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.eliminated",
+      "class": "sfx",
+      "prompt": "a deep distant gong with a long fading wind across an empty plain",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 2.5,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:29Z",
+          "finished": "2026-10-10T09:06:32Z",
+          "cost": {
+            "usd": 0.005,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.eliminated/sfx.eliminated.mp3",
+          "sha256": "e2d8e0e0f0ba326b1642fc30da6a14ad9ffee9cc28389687807123fa66f3f202",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 40586,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "14"
+            }
+          },
+          "request_hash": "cc1a77ac62596a442a9089f358ffa814f04ef3451914e6db1fd2e01b1cdbd2f8"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:32Z",
+          "finished": "2026-10-10T09:06:32Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.eliminated.ogg",
+          "sha256": "fc926b416fd5b9b30641877b66ed28415720bf44a90a582b7b2f1b7fc9e57163",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 43815,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "3fedf9963b589fdaaef25aa800a7a198ce589d729760f148d329bc417ebd6465"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.firerain_cast",
+      "class": "sfx",
+      "prompt": "a rising crackle of fire and a whoosh as burning rocks are summoned from the sky",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.8,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:32Z",
+          "finished": "2026-10-10T09:06:34Z",
+          "cost": {
+            "usd": 0.0036000000000000003,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.firerain_cast/sfx.firerain_cast.mp3",
+          "sha256": "4fe4c22d509fa7b5b965ad50718cad3c3272660b59beccd13de12d19327d772a",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 29301,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "10"
+            }
+          },
+          "request_hash": "5aec15486161a5c85e3040472b33ef78b5a7b585abb5b48a8a39b7304b31ab9b"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:34Z",
+          "finished": "2026-10-10T09:06:35Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.firerain_cast.ogg",
+          "sha256": "11049f3144fea7666107f08ca8eff08fffd97295a91a095d95378d6d1ec47646",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 36204,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "10db43f003deac7af8d839845042f3a710339ebd2bbab1d2bb4b4d7269a2b0e8"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.whirlwind_cast",
+      "class": "sfx",
+      "prompt": "a swirling rushing wind that spins up fast with a howling whistle",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.6,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:35Z",
+          "finished": "2026-10-10T09:06:37Z",
+          "cost": {
+            "usd": 0.0032,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.whirlwind_cast/sfx.whirlwind_cast.mp3",
+          "sha256": "717b4ff8f6ceffbc031973c58c36b2c68f837c45d454ab14bc218238b39d745c",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 26793,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "9"
+            }
+          },
+          "request_hash": "abf8e8ef4c021a1b9451843ddc60f50c15170ceead1dcdcc1b73c27bdb298d25"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:37Z",
+          "finished": "2026-10-10T09:06:37Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.whirlwind_cast.ogg",
+          "sha256": "f327a2eeb7d17f042e16c90e1227f5c47a24c4b3e55abe99bb18f6e3012abcda",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 33062,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "ee87f0ef1baa39efca7440c91d54dd61413f4b11fe2e2dadfe5189ea51f6e29c"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.erode_cast",
+      "class": "sfx",
+      "prompt": "a gritty hiss of sand and gravel washing away, soil crumbling and trickling",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.5,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:37Z",
+          "finished": "2026-10-10T09:06:39Z",
+          "cost": {
+            "usd": 0.003,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.erode_cast/sfx.erode_cast.mp3",
+          "sha256": "0efc871937d98ab88c4843882fcbb69af9cbcab2cab5beb8a27b81ed9f557f54",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 24703,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "8"
+            }
+          },
+          "request_hash": "801c1fc2486120c921cbc3ab6c95b068e2833deb61638142737495e1c7262c28"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:39Z",
+          "finished": "2026-10-10T09:06:40Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.erode_cast.ogg",
+          "sha256": "276f15d8b719a81d8b03e25b82a5f1a84d586c8bf1f4f32749192edbecf8da05",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 32898,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "f183d822f2f9fcf9c8f4eecfcc6f8cbbabde4e795cf1e12da9ef32dff3cffa11"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.mire_cast",
+      "class": "sfx",
+      "prompt": "a thick wet bubbling squelch of mud and bog gas",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.5,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:40Z",
+          "finished": "2026-10-10T09:06:42Z",
+          "cost": {
+            "usd": 0.003,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.mire_cast/sfx.mire_cast.mp3",
+          "sha256": "1c23b64f9ce5c45ef3f328d349e3a5301c7ec66ba12ce3dd305e0587646bdce1",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 24703,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "8"
+            }
+          },
+          "request_hash": "26b1dd04edbbe475efafb2643eaa1660bdb5c117b7566c1e80a57f2eb91bf85d"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:42Z",
+          "finished": "2026-10-10T09:06:42Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.mire_cast.ogg",
+          "sha256": "92f408a14d0bf1ce73584cff0f5a257341aea68f0b4ac0be6e3e7c500565f561",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 29691,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "d63d35d772b1339328150c2ba9f09d65d4ec20043b90046c3f128c42a20c79e1"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.veil_cast",
+      "class": "sfx",
+      "prompt": "a soft airy shimmer, a whispery veil of shining mist drawing closed",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.5,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:42Z",
+          "finished": "2026-10-10T09:06:45Z",
+          "cost": {
+            "usd": 0.003,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.veil_cast/sfx.veil_cast.mp3",
+          "sha256": "d070715dd1bdcb055bc8c29861715cc70bc0c8a6cefb141bb8d7ad843c4c7d2c",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 24703,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "8"
+            }
+          },
+          "request_hash": "6d18c6ae08024d0c2cd97b51f87047dcfa7bac532517dab45019f938b9eba8e0"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:45Z",
+          "finished": "2026-10-10T09:06:45Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.veil_cast.ogg",
+          "sha256": "bbee72454cbebcbef0998053349cedd6f906c49f9087b53d6c9641ffb9a755ad",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 35926,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "57a4c1b60fde4fb4b7690d49ea8b767fe3b70d64b8e37eccc8368d584f7e35d8"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.ward_cast",
+      "class": "sfx",
+      "prompt": "a bright protective ring tone, a resonant bowl chime with a soft magical hum",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.5,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:45Z",
+          "finished": "2026-10-10T09:06:47Z",
+          "cost": {
+            "usd": 0.003,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.ward_cast/sfx.ward_cast.mp3",
+          "sha256": "efdfe319bbfa2956a492bdb2758661e8143122c84d227e756a73ce363d72eecb",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 24703,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "8"
+            }
+          },
+          "request_hash": "6379d011036b04cc5e0d12485cd31718a093951c44e351de0e907ffc924b08e3"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:47Z",
+          "finished": "2026-10-10T09:06:47Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.ward_cast.ogg",
+          "sha256": "c08b33a0bb47ed0304f5475c007b3df0a6dcc655e122e9d4303f72319aa60a35",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 30483,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "30a58e91f9964a9537c0e05a848112d920c8d0693d60d21e5f50fe970e16c48e"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.beguile_cast",
+      "class": "sfx",
+      "prompt": "a sly whispering charm, soft breathy voices and a swaying bell tone",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.6,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:47Z",
+          "finished": "2026-10-10T09:06:50Z",
+          "cost": {
+            "usd": 0.0032,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.beguile_cast/sfx.beguile_cast.mp3",
+          "sha256": "c7e829ad11c65df88e9e716523f9deb4744d5194e482ce3502ce2dd351a231d1",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 26793,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "9"
+            }
+          },
+          "request_hash": "c1e5654e50d1595d83fe0496df0b673f776ed63976483c74120875d47af1efb7"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:50Z",
+          "finished": "2026-10-10T09:06:50Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.beguile_cast.ogg",
+          "sha256": "8b4b6cfdc69bc8333e3a9d20b9ae5dbee78ad4675adf8c886399b0afd0091cb9",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 32796,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "d169db6d1c37637d4cf6924f04569f0afec9bf811356a8922f190f1762cbf30b"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.wraith_cast",
+      "class": "sfx",
+      "prompt": "an eerie hollow wail of a ghostly spirit rising with cold wind",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.8,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:50Z",
+          "finished": "2026-10-10T09:06:52Z",
+          "cost": {
+            "usd": 0.0036000000000000003,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.wraith_cast/sfx.wraith_cast.mp3",
+          "sha256": "2a455c70cb5ce21105c6d16e7428c97c44dcbc906527fa4c98f0a3351ace3675",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 29301,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "10"
+            }
+          },
+          "request_hash": "3237795a475c94852c24cca78f886c256d888496e692dda8da0bfadcf98c4f2a"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:52Z",
+          "finished": "2026-10-10T09:06:53Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.wraith_cast.ogg",
+          "sha256": "a20aa44b7c1969f93cf3c77c7b1bd713392f6846ecbde56982aea1a5e88e89c6",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 31165,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "85d3c8c08e5b42ed59e6679fbbd33dc40b4aa8b4d203cf9a080b0c1f227e8ebc"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.lightning_cast",
+      "class": "sfx",
+      "prompt": "a crackling build-up of static electricity and a fast rising zap",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.2,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:53Z",
+          "finished": "2026-10-10T09:06:55Z",
+          "cost": {
+            "usd": 0.0024,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.lightning_cast/sfx.lightning_cast.mp3",
+          "sha256": "45995f0c12936bac0bba1f03e500cf59acbe8d3267749234cd2c312e5c9301ec",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 20106,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "7"
+            }
+          },
+          "request_hash": "c7dd1229871d47640ed1b223304cd8380e29c8451936a2d8593403b032c49e3d"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-10T09:06:55Z",
+          "finished": "2026-10-10T09:06:55Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.lightning_cast.ogg",
+          "sha256": "c92a4a1cdc983b5067e7cbcf447d575b1230e8f0afd7963b3356e3011470c2be",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 29143,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "dae01f0ce0566f45de1b20699fb1ca17eaffdb1f9a7b02e37e555b243d1815df"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
     }
   ]
 }

@@ -72,9 +72,8 @@ describe("audio mix", () => {
       else cues.add(r.cue);
     }
     const silent = [...cues].map((c) => alias[c] ?? c).filter((c) => !clips.has(c)).sort();
-    // every live spell sounds (spells without their own clip borrow one by alias); no clip yet, logged
-    // in docs/ASSETS.md as placeholders: chant, chant break, conversion, training, elimination
-    expect(silent).toEqual(["sfx.chant", "sfx.chant_break", "sfx.converted", "sfx.eliminated", "sfx.trained"]);
+    // every cue sounds: a shipped clip or an alias to one (BACKLOG 92 shipped the last silent ones)
+    expect(silent).toEqual([]);
     for (const m of ["music.calm", "music.tension", "music.battle"]) expect(clips.has(m)).toBe(true);
   });
 });

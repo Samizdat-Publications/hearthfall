@@ -245,10 +245,11 @@ export class EconomySystem {
     return null;
   }
 
-  /** BACKLOG 10: water (below the sea) within SHORE_REACH cells of a footprint's edge (a Boathouse launches boats there). */
+  /** BACKLOG 10: water (below the sea) within shoreReach cells (balance.json vehicles, BACKLOG 98) of a footprint's edge (a Boathouse launches boats there). */
   nearWater(x0: number, y0: number, fw: number, fh: number): boolean {
     const t = this.w.terrain;
-    for (let y = y0 - SHORE_REACH; y <= y0 + fh + SHORE_REACH; y++) for (let x = x0 - SHORE_REACH; x <= x0 + fw + SHORE_REACH; x++) if (t.get(x, y) < t.sea) return true;
+    const r = this.w.cfg.pack.balance.vehicles?.shoreReach ?? SHORE_REACH;
+    for (let y = y0 - r; y <= y0 + fh + r; y++) for (let x = x0 - r; x <= x0 + fw + r; x++) if (t.get(x, y) < t.sea) return true;
     return false;
   }
 

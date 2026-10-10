@@ -217,6 +217,21 @@ export const BalanceSchema = z.strictObject({
     })
     .optional(),
   /**
+   * BACKLOG 98: vehicle tuning (ADR-016). A walker boarding a moving vehicle re-aims every `boardRetryTicks`
+   * and gives up after `boardTries`; riders unload on land within the vehicle's boardRadius plus `unloadReach`
+   * cells; a Boathouse needs water within `shoreReach` cells of its footprint and launches boats there.
+   * Optional so frozen packs keep their hash (code defaults 20, 4, 2, 3).
+   */
+  vehicles: z
+    .strictObject({
+      ...comment,
+      boardRetryTicks: z.number().int().min(1).max(200),
+      boardTries: z.number().int().min(1).max(20),
+      unloadReach: z.number().int().min(0).max(8),
+      shoreReach: z.number().int().min(1).max(8),
+    })
+    .optional(),
+  /**
    * BACKLOG 1: worship sites on generated (skirmish) maps, at points equidistant from each pair of Hearths
    * and at that point's opposite on the wrapped planet; sites take the list entries in turn. Optional so
    * frozen packs keep their hash.

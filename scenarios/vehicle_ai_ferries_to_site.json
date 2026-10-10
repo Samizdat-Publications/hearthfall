@@ -1,0 +1,32 @@
+{
+  "id": "vehicle_ai_ferries_to_site",
+  "description": "BACKLOG 98: under Hold the Reliquaries, an opponent whose only Reliquary stands on another island boards its idle wave onto its boat, lands it on that island, marches on the Reliquary and holds it to win.",
+  "tags": ["vehicles", "ai", "rules"],
+  "seed": 108,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2,
+    "paint": [
+      { "shape": "rect", "at": [32, 32], "size": [12, 64], "aboveSea": -30 },
+      { "shape": "rect", "at": [0, 32], "size": [12, 64], "aboveSea": -30 }
+    ]
+  },
+  "rules": "hold_sites",
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [52, 10] },
+    { "spawn": "shaper", "tribe": 0, "at": [54, 12] },
+    { "spawn": "hearth", "tribe": 1, "at": [12, 32] },
+    { "spawn": "shaper", "tribe": 1, "at": [14, 36] },
+    { "spawn": "boat", "tribe": 1, "at": [28, 32] },
+    { "spawn": "warden", "tribe": 1, "near": [18, 30], "count": 6 },
+    { "spawn": "reliquary", "at": [48, 50], "site": { "tag": "far", "rewards": [{ "type": "charges", "spell": "bolt", "n": 1 }] } }
+  ],
+  "bots": [{ "type": "opponent", "tribe": 1, "personality": "aggressive", "difficulty": "normal" }],
+  "commands": [{ "tick": 0, "tribe": 0, "type": "setPriorities", "args": { "build": 0, "upgrade": 0, "breed": 0 } }],
+  "runTicks": 3400,
+  "assert": [
+    { "at": 3400, "expr": "events.count('boarded') >= 5 && events.count('unloaded') >= 1 && events.count('drowned') == 0" },
+    { "at": 3400, "expr": "rules.winner == 1 && rules.why == 'holdSites' && invariants() == 0" }
+  ]
+}

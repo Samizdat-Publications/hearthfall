@@ -20,9 +20,11 @@ interface VehicleDef {
   rangeBonus?: number;
 }
 
-/** a walker re-aims at its moving vehicle this often (ticks) and gives up after this many tries */
+/** defaults for packs without balance.json `vehicles` (BACKLOG 98): a walker re-aims at its moving vehicle this
+ * often (ticks) and gives up after this many tries; riders unload within boardRadius plus UNLOAD_REACH cells */
 const BOARD_RETRY_TICKS = 20;
 const BOARD_TRIES = 4;
+const UNLOAD_REACH = 2;
 
 export class VehicleSystem {
   private readonly w: World;
@@ -143,7 +145,7 @@ export class VehicleSystem {
     const land = w.units.pfs[NAV.land];
     land.refresh();
     const n = w.terrain.size;
-    const lv = land.nearestWalkable(this.vertexOf(E.x[v], E.y[v]), Math.ceil((d?.boardRadius ?? 2) + 2));
+    const lv = land.nearestWalkable(this.vertexOf(E.x[v], E.y[v]), Math.ceil((d?.boardRadius ?? 2) + (w.cfg.pack.balance.vehicles?.unloadReach ?? UNLOAD_REACH)));
     if (lv < 0) {
       if (report) w.emit("orderFailed", { id: E.idOf(v), reason: "no shore to unload", tribe: E.tribe[v], x: E.x[v], y: E.y[v] });
       return 0;
@@ -156,9 +158,13 @@ export class VehicleSystem {
       E.inside[i] = -1;
       E.task[i] = TASK.idle;
       E.target[i] = NO_ENTITY;
-      // a small fan around the landing vertex; separation spreads them the rest of the way
-      E.x[i] = lx + (k % 3) * 0.2 - 0.2;
-      E.y[i] = ly + Math.floor(k / 3) * 0.2 - 0.1;
+      // a small fan around the landing vertex; separation spreads them the rest of the way. Riders past
+      // nine take the same 3 x 3 fan again, nudged a little, so a big vehicle never puts one past the
+      // cell edge (BACKLOG 98; the first nine land exactly as before)
+      const layer = Math.floor(k / 9);
+      const j = k % 9;
+      E.x[i] = lx + (j % 3) * 0.2 - 0.2 + layer * 0.07;
+      E.y[i] = ly + Math.floor(j / 3) * 0.2 - 0.1 + layer * 0.05;
       E.px[i] = E.x[i];
       E.py[i] = E.y[i];
       k++;
@@ -191,6 +197,8 @@ export class VehicleSystem {
   update(): void {
     const w = this.w;
     const E = w.ents;
+    const retry = w.cfg.pack.balance.vehicles?.boardRetryTicks ?? BOARD_RETRY_TICKS;
+    const tries = w.cfg.pack.balance.vehicles?.boardTries ?? BOARD_TRIES;
     // riders ride along; walkers heading for a vehicle step in when close
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.unit) continue;
@@ -229,12 +237,12 @@ export class VehicleSystem {
         continue;
       }
       // the vehicle moved, or the walk ended short of it: re-aim a few times, then give up
-      if ((w.tick + i) % BOARD_RETRY_TICKS !== 0) continue;
+      if ((w.tick + i) % retry !== 0) continue;
       const n = w.terrain.size;
       const gx = wrapD(E.gx[i] - E.x[v], n);
       const gy = wrapD(E.gy[i] - E.y[v], n);
       if (E.order[i] === ORDER.none || gx * gx + gy * gy > 4) {
-        if (++E.timer[i] > BOARD_TRIES) {
+        if (++E.timer[i] > tries) {
           E.task[i] = TASK.idle;
           E.target[i] = NO_ENTITY;
           w.units.stop(i);
@@ -294,7 +302,7 @@ export class VehicleSystem {
         const pf = w.units.pfs[NAV.water];
         pf.refresh();
         const fp = w.cfg.pack.buildings.buildings[E.type[b]].footprint;
-        const v = pf.nearestWalkable(this.vertexOf(E.x[b], E.y[b]), Math.ceil(Math.max(fp[0], fp[1]) / 2) + SHORE_REACH);
+        const v = pf.nearestWalkable(this.vertexOf(E.x[b], E.y[b]), Math.ceil(Math.max(fp[0], fp[1]) / 2) + (w.cfg.pack.balance.vehicles?.shoreReach ?? SHORE_REACH));
         if (v < 0) continue;
         x = v % n;
         y = (v - x) / n;

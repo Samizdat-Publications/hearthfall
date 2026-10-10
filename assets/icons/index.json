@@ -1,12 +1,19 @@
 {
   "schema": 1,
-  "generated": "2026-10-09T17:40:07Z",
+  "generated": "2026-10-10T09:07:07Z",
   "sizes": [
     128,
     256
   ],
-  "count": 37,
+  "count": 41,
   "entries": {
+    "icon.building.boathouse": {
+      "file_256": "assets/icons/icon.building.boathouse.png",
+      "file_128": "assets/icons/icon.building.boathouse_128.png",
+      "kind": "building",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "building.boathouse"
+    },
     "icon.building.chant_house": {
       "file_256": "assets/icons/icon.building.chant_house.png",
       "file_128": "assets/icons/icon.building.chant_house_128.png",
@@ -69,6 +76,13 @@
       "kind": "building",
       "source": "blender thumbnail, grey background keyed to transparent",
       "model": "building.shrine"
+    },
+    "icon.building.skyloft": {
+      "file_256": "assets/icons/icon.building.skyloft.png",
+      "file_128": "assets/icons/icon.building.skyloft_128.png",
+      "kind": "building",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "building.skyloft"
     },
     "icon.building.totem": {
       "file_256": "assets/icons/icon.building.totem.png",
@@ -216,6 +230,20 @@
       "kind": "spell",
       "source": "gemini + ref_04",
       "prompt": "a pale cyan flying ghost hunter, a streamlined spectral wisp with glowing eyes and a trailing tail, spell icon"
+    },
+    "icon.unit.balloon": {
+      "file_256": "assets/icons/icon.unit.balloon.png",
+      "file_128": "assets/icons/icon.unit.balloon_128.png",
+      "kind": "unit",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "unit.balloon"
+    },
+    "icon.unit.boat": {
+      "file_256": "assets/icons/icon.unit.boat.png",
+      "file_128": "assets/icons/icon.unit.boat_128.png",
+      "kind": "unit",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "unit.boat"
     },
     "icon.unit.chanter": {
       "file_256": "assets/icons/icon.unit.chanter.png",
