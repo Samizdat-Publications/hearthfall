@@ -192,6 +192,8 @@ registerEffect("statusApply", (c, e) => {
     // own-target statuses land on the caster's units, the rest on everyone else; only those count against max
     if (own ? E.tribe[i] !== c.tribe : E.tribe[i] === c.tribe) continue;
     if (e.status === "beguiled" && (E.tribe[i] < 0 || isCasterUnit(w, i) || E.beguile[i] > 0)) continue;
+    // a boat or balloon is never beguiled (its riders would sail for the enemy) and never panics (D+F review)
+    if ((e.status === "beguiled" || e.status === "panic") && w.vehicles.isVehicle(i)) continue;
     if (left-- <= 0) break;
     switch (e.status) {
       case "panic":
@@ -477,7 +479,7 @@ function wraithStep(w: World, i: number): void {
   const tr = E.tribe[i];
   if (E.cd[i] > 0) E.cd[i]--;
   let t = E.target[i] === NO_ENTITY ? -1 : E.index(E.target[i]);
-  const huntable = (u: number) => u >= 0 && E.alive[u] && E.cat[u] === CAT.unit && E.inside[u] < 0 && E.tribe[u] >= 0 && E.tribe[u] !== tr && E.veil[u] === 0 && !w.combat.disguised(u) && E.ward[u] === 0 && !isCasterUnit(w, u);
+  const huntable = (u: number) => u >= 0 && E.alive[u] && E.cat[u] === CAT.unit && E.inside[u] < 0 && E.tribe[u] >= 0 && E.tribe[u] !== tr && E.veil[u] === 0 && !w.combat.disguised(u) && E.ward[u] === 0 && !isCasterUnit(w, u) && !w.vehicles.isVehicle(u);
   if (!huntable(t) || w.tick % hz === 0) {
     let best = -1;
     let bd = e.huntRadius * e.huntRadius;

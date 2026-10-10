@@ -907,13 +907,11 @@ export class CombatSystem {
     const E = w.ents;
     const wild = this.typeWild;
     let released = 0;
+    // a fallen tribe's vehicles are wrecked first, spilling their riders where they are (over deep water
+    // they drown), whatever their index order (D+F review)
+    for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.cat[i] === CAT.unit && E.tribe[i] === tribe && w.vehicles.isVehicle(i)) w.kill(i, "wrecked");
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] !== tribe) continue;
-      // a fallen tribe's vehicles are wrecked, not set loose (their riders spill out first)
-      if (w.vehicles.isVehicle(i)) {
-        w.kill(i, "wrecked");
-        continue;
-      }
       if (E.inside[i] >= 0) this.leave(i);
       this.convertUnit(i, -1);
       if (wild >= 0) this.makeWild(i);

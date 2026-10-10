@@ -282,7 +282,11 @@ export class VehicleSystem {
       const mk = this.makes[E.type[b]];
       if (!mk || E.timer[b] < mk.ticks) continue;
       const k = key(E.tribe[b], mk.unit);
-      if ((have.get(k) ?? 0) >= (cap.get(k) ?? 0)) continue;
+      // at full stock the count starts over, so a lost vehicle is replaced one period later (D+F review)
+      if ((have.get(k) ?? 0) >= (cap.get(k) ?? 0)) {
+        E.timer[b] = 0;
+        continue;
+      }
       // a boat launches on the nearest water, a balloon at the door
       let x: number;
       let y: number;
@@ -321,6 +325,8 @@ registerCommand("board", {
     if (v < 0 || !w.vehicles.isVehicle(v)) return "no such vehicle";
     if (c.tribe !== -1 && (E.tribe[v] !== c.tribe || idx.some((i) => E.tribe[i] !== c.tribe))) return "units belong to another tribe";
     if (idx.some((i) => w.vehicles.isVehicle(i))) return "a vehicle cannot board another";
+    // the Shaper stays mortal and in reach: no riding, as no garrison (D+F review)
+    if (idx.some((i) => w.cfg.pack.units.units[E.type[i]].isCaster)) return "the Shaper cannot board";
     if (E.occupants[v] >= w.vehicles.capacityOf(v)) return "the vehicle is full";
     return null;
   },

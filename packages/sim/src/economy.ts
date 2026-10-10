@@ -902,7 +902,8 @@ export class EconomySystem {
     if (def.isCaster) return m.active ?? m.idle ?? 0;
     if (E.type[i] === this.typeSettler) {
       const t = E.task[i];
-      const working = E.inside[i] >= 0 || (t >= TASK.toTree && t <= TASK.work);
+      // a rider is not housed: it earns the idle rate (D+F review)
+      const working = (E.inside[i] >= 0 && t !== TASK.ride) || (t >= TASK.toTree && t <= TASK.work);
       return working ? (m.housedOrWorking ?? 0) : (m.idle ?? 0);
     }
     if (m.moving !== undefined && E.order[i] !== ORDER.none) return m.moving;

@@ -92,3 +92,7 @@ Reason: BACKLOG 84: new golden level_old_reliquary (a campaign level with a Reli
 ## 2026-10-10 05:57 UTC
 Reason: BACKLOG 10: new golden for boats (water nav, board, unload)
 - vehicles_ferry: final none -> f3c53aaf (pack e21ee990)
+
+## 2026-10-10 06:15 UTC
+Reason: D+F review: riders earn idle mana, not housed mana
+- vehicles_ferry: final f3c53aaf -> 015c4b5d (pack e21ee990)

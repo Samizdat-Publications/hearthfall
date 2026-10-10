@@ -148,59 +148,59 @@
  "checkpoints": [
   {
    "tick": 100,
-   "all": "bd0a807f",
+   "all": "2047c551",
    "terrain": "666e9385",
    "entities": "22c7cac0",
    "rng": "f77a935a",
-   "meta": "22f19b8f"
+   "meta": "a5c32823"
   },
   {
    "tick": 200,
-   "all": "140c1eb1",
+   "all": "ccea2dfe",
    "terrain": "666e9385",
    "entities": "5ab32c1f",
    "rng": "f77a935a",
-   "meta": "e40c03e3"
+   "meta": "5bbb9621"
   },
   {
    "tick": 300,
-   "all": "c3bda254",
+   "all": "52d44ad5",
    "terrain": "666e9385",
    "entities": "5ab32c1f",
    "rng": "f77a935a",
-   "meta": "fa2e798c"
+   "meta": "c3558b0b"
   },
   {
    "tick": 400,
-   "all": "eae84961",
+   "all": "afc74c34",
    "terrain": "666e9385",
    "entities": "e0d56c8f",
    "rng": "f77a935a",
-   "meta": "a666f961"
+   "meta": "13861e2a"
   },
   {
    "tick": 500,
-   "all": "82a0259a",
+   "all": "5d0f3f88",
    "terrain": "666e9385",
    "entities": "ed15aaec",
    "rng": "f77a935a",
-   "meta": "0ac7c139"
+   "meta": "f94d3be2"
   },
   {
    "tick": 600,
-   "all": "52c45702",
+   "all": "d3969279",
    "terrain": "666e9385",
    "entities": "e8ec8095",
    "rng": "f77a935a",
-   "meta": "a487aa83"
+   "meta": "cfdd5398"
   },
   {
    "tick": 700,
-   "all": "f3c53aaf",
+   "all": "015c4b5d",
    "terrain": "666e9385",
    "entities": "b5f87b09",
    "rng": "f77a935a",
-   "meta": "72c5be68"
+   "meta": "ffd14cd7"
   }
  ]
 }

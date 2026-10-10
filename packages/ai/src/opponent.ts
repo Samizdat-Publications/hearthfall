@@ -25,6 +25,8 @@ export interface OpponentState {
   known: number[];
   scout: number;
   stats: OpponentStats;
+  /** BACKLOG 10: [boat id, tick of its last boarding order] (absent in older saves) */
+  ferried?: [number, number][];
 }
 
 export interface OpponentOptions {
@@ -79,6 +81,9 @@ interface Census {
 
 type Action = { id: string; score: (c: Census) => number; act: (c: Census, out: Command[]) => void };
 
+/** BACKLOG 10: seconds before the AI boards the same boat again */
+const FERRY_BACKOFF_SECONDS = 90;
+
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 /** BACKLOG 2: actions scored only for personalities with shades, so the others draw the same noise as before */
 const SHADE_ACTIONS = new Set(["buildDen", "trainShade", "sabotage"]);
@@ -103,6 +108,8 @@ export class OpponentAI implements Controller {
   private eco: EconomyBot;
   private ready = false;
   private known = new Set<number>();
+  /** BACKLOG 10: boat id to the tick of its last boarding order (a boat is boarded at most once per FERRY_BACKOFF_SECONDS) */
+  private ferried = new Map<number, number>();
   /** set once a wave found no walkable route: bridge spells join the prefs even if the personality lacks them */
   private needBridge = false;
   private scout = NO_ENTITY;
@@ -202,13 +209,14 @@ export class OpponentAI implements Controller {
   /** Save game memory: scouted tribes, the scout and the stats (decisions also gate the one-time setup). */
   saveState(): OpponentState {
     const st = this.stats;
-    return { known: [...this.known], scout: this.scout, stats: { ...st, actions: { ...st.actions }, casts: { ...st.casts } } };
+    return { known: [...this.known], scout: this.scout, stats: { ...st, actions: { ...st.actions }, casts: { ...st.casts } }, ferried: [...this.ferried] };
   }
 
   loadState(state: unknown): void {
     const o = state as OpponentState;
     this.known = new Set(o.known);
     this.scout = o.scout;
+    this.ferried = new Map(o.ferried ?? []);
     Object.assign(this.stats, { ...o.stats, actions: { ...o.stats.actions }, casts: { ...o.stats.casts } });
   }
 
@@ -815,6 +823,12 @@ export class OpponentAI implements Controller {
         if (shore) out.push(this.cmd(w, "move", { units: [id], to: shore }));
         continue;
       }
+      // load only for a shore the boat can reach (D+F review: a wave locked aboard), and not again within
+      // the backoff (a trip that failed unloads at home; without it the wave would board every decision)
+      if (!this.shore(c, E.x[eh], E.y[eh], this.comp(w, E.x[eh], E.y[eh]), b)) continue;
+      const last = this.ferried.get(id);
+      if (last !== undefined && w.tick - last < FERRY_BACKOFF_SECONDS * w.cfg.tickHz) continue;
+      this.ferried.set(id, w.tick);
       out.push(this.cmd(w, "board", { units: walkers.splice(0, seats).map((i) => E.idOf(i)), vehicle: id }));
     }
   }
@@ -828,18 +842,21 @@ export class OpponentAI implements Controller {
     const home = this.comp(w, E.x[c.h], E.y[c.h]);
     const ranked = [...c.enemies.filter(([t]) => this.known.has(t)), ...c.enemies.filter(([t]) => !this.known.has(t))];
     const far = ranked.find(([, eh]) => this.comp(w, E.x[eh], E.y[eh]) !== home);
-    if (!far) return;
     for (const b of c.boats) {
       if (E.occupants[b] === 0 || E.order[b] !== 0 || E.task[b] === TASK.unload) continue;
       const id = E.idOf(b);
       let boarding = 0;
       for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.task[i] === TASK.toBoard && E.target[i] === id) boarding++;
       if (boarding > 0) continue;
-      const eh = far[1];
-      const land = this.shore(c, E.x[eh], E.y[eh], this.comp(w, E.x[eh], E.y[eh]), b);
-      if (!land) continue;
-      out.push(this.cmd(w, "unload", { units: [id], to: land }));
-      this.stats.ferries++;
+      const land = far ? this.shore(c, E.x[far[1]], E.y[far[1]], this.comp(w, E.x[far[1]], E.y[far[1]]), b) : null;
+      if (land) {
+        out.push(this.cmd(w, "unload", { units: [id], to: land }));
+        this.stats.ferries++;
+        continue;
+      }
+      // no enemy shore in reach (the enemy fell, or a bridge joined the land): bring the wave home
+      const back = this.shore(c, E.x[c.h], E.y[c.h], home, b);
+      out.push(this.cmd(w, "unload", back ? { units: [id], to: back } : { units: [id] }));
     }
   }
 

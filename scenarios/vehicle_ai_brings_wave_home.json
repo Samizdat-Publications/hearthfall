@@ -1,0 +1,34 @@
+{
+  "id": "vehicle_ai_brings_wave_home",
+  "description": "BACKLOG 10, D+F review: an opponent's boat is loaded but every rival stands on its own landmass (no shore to ferry to), so the AI unloads the wave on its home shore instead of leaving it locked aboard (it does so as soon as it sees the loaded boat).",
+  "tags": ["vehicles", "ai"],
+  "seed": 109,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2,
+    "paint": [
+      { "shape": "rect", "at": [32, 32], "size": [12, 64], "aboveSea": -30 },
+      { "shape": "rect", "at": [0, 32], "size": [12, 64], "aboveSea": -30 }
+    ]
+  },
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [12, 50] },
+    { "spawn": "shaper", "tribe": 0, "at": [14, 52] },
+    { "spawn": "hearth", "tribe": 1, "at": [12, 12] },
+    { "spawn": "shaper", "tribe": 1, "at": [14, 14] },
+    { "spawn": "boat", "tribe": 1, "at": [27, 32] },
+    { "spawn": "warden", "tribe": 1, "near": [20, 32], "count": 3 }
+  ],
+  "bots": [{ "type": "opponent", "tribe": 1, "personality": "turtle", "difficulty": "normal" }],
+  "commands": [
+    { "tick": 0, "tribe": 0, "type": "setPriorities", "args": { "build": 0, "upgrade": 0, "breed": 0 } },
+    { "tick": 1, "tribe": 1, "type": "board", "args": { "units": "tribe1.wardens", "vehicle": "tribe1.boats" } },
+    { "tick": 260, "tribe": 1, "type": "move", "args": { "units": "tribe1.boats", "to": [32, 40] } }
+  ],
+  "runTicks": 1600,
+  "assert": [
+    { "at": 1600, "expr": "count(tribe1.units, riding) == 0 && count(tribe1.wardens, onLand) == 3" },
+    { "at": 1600, "expr": "events.count('boarded') == 3 && events.count('unloaded') >= 1 && events.count('drowned') == 0 && invariants() == 0" }
+  ]
+}

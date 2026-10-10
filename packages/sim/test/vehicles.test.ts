@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { CAT } from "../src/entities.ts";
+import { applyEffects } from "../src/effects.ts";
 import { TASK } from "../src/economy.ts";
 import { NAV } from "../src/units.ts";
 import { World, type WorldInit } from "../src/world.ts";
@@ -125,5 +126,41 @@ describe("vehicles (BACKLOG 10)", () => {
     expect(b.hash()).toEqual(a.hash());
     expect(a.count((i) => a.ents.task[i] === TASK.ride)).toBe(0);
     expect(a.eventCounts.get("unloaded")).toBe(1);
+  });
+
+  it("D+F review: a loaded boat is never beguiled; the Shaper cannot board; riders earn idle mana", () => {
+    const w = strait(2);
+    const E = w.ents;
+    const boat = E.index(w.spawnUnit("boat", 0, 27, 32));
+    const rider = E.index(w.spawnUnit("settler", 0, 21, 32));
+    step(w, 0, "board", { units: "tribe0.shapers", vehicle: E.idOf(boat) });
+    expect(w.events.at(-1)?.reason).toBe("the Shaper cannot board");
+    step(w, 0, "board", { units: [E.idOf(rider)], vehicle: E.idOf(boat) });
+    w.run(200);
+    expect(E.inside[rider]).toBe(boat);
+    const idle = w.cfg.pack.units.units[E.type[rider]].manaPerMin.idle;
+    expect(w.economy.manaRate(rider)).toBe(idle);
+    applyEffects({ w, tribe: 1, spell: "beguile", x: E.x[boat], y: E.y[boat], casterX: E.x[boat] + 4, casterY: E.y[boat] }, [{ type: "statusApply", status: "beguiled", seconds: 12, radius: 3 }]);
+    expect(E.tribe[boat]).toBe(0);
+    expect(w.invariants()).toEqual([]);
+  });
+
+  it("D+F review: a tribe eliminated at sea drowns its riders whatever their index order", () => {
+    const w = strait(2);
+    const E = w.ents;
+    // the rider is spawned before the boat, so its index is lower
+    const rider = E.index(w.spawnUnit("settler", 0, 21, 32));
+    const boat = E.index(w.spawnUnit("boat", 0, 27, 32));
+    expect(rider).toBeLessThan(boat);
+    step(w, 0, "board", { units: [E.idOf(rider)], vehicle: E.idOf(boat) });
+    w.run(200);
+    step(w, 0, "move", { units: [E.idOf(boat)], to: [32, 50] });
+    w.run(300);
+    expect(w.terrain.drowns(E.x[boat], E.y[boat])).toBe(true);
+    w.combat.releaseTribe(0);
+    w.run(1);
+    expect(E.alive[boat]).toBe(0);
+    expect(E.alive[rider]).toBe(0);
+    expect(w.invariants()).toEqual([]);
   });
 });
