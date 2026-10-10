@@ -104,3 +104,5 @@
 - 2026-10-10T09:02 set spells2 (9 shots): BACKLOG 80 minimap footprint clipped to the fade radius on flat 64 maps (outline instead of the focus cross)
 - 2026-10-10T09:03 set spells (9 shots): BACKLOG 80 minimap footprint clipped to the fade radius on flat 64 maps (outline instead of the focus cross)
 - 2026-10-10T09:35 set smoke (12 shots): ring ground fit cached on a half-cell grid (render budget); rings shift slightly
+- 2026-10-10T09:52 set menus (5 shots): BACKLOG 19 replay row on the main menu
+- 2026-10-10T09:55 set menus (6 shots): BACKLOG 19 replay bar shot

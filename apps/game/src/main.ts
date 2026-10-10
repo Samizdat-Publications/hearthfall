@@ -6,6 +6,7 @@ import { mountGameHud } from "./hudBridge.ts";
 import { fitHud, hudFits } from "./hudFit.ts";
 import { mountGameMenus } from "./menuBridge.ts";
 import { mountGameEditor } from "./editorBridge.ts";
+import { mountGameReplay } from "./replayBridge.ts";
 import { drawnViewKey, viewKey, viewOutline } from "./minimap.ts";
 import type { CameraState } from "@hearthfall/render";
 import { validateLevel, validatePack, type LevelDef } from "@hearthfall/data";
@@ -75,12 +76,14 @@ try {
   hud = mountGameHud(hudEl, game);
   const menus = mountGameMenus(document.getElementById("menus")!, game);
   const editorUi = mountGameEditor(document.getElementById("editor")!, game);
+  const replayUi = mountGameReplay(document.getElementById("replay")!, game);
   game.onChange = () => {
     // the HUD hides under a menu screen (and so stays out of the menus' DOM layout checks) and in the map editor
     hudEl.style.display = game.screen === "none" && !game.editor ? "" : "none";
     hud.refresh();
     menus.refresh();
     editorUi.refresh();
+    replayUi.refresh();
     refitHud();
   };
   game.onChange();
@@ -284,6 +287,17 @@ if (__DEBUG_API__ || game.params.debug) {
       return game.editor ? game.editor.issues.length : -1;
     },
     editorTest: () => game.editorTest,
+    /** BACKLOG 19: the replay being watched (null outside one), and test hooks to watch, seek and toggle */
+    replay: () => {
+      const rp = game.replay;
+      return rp ? { tick: rp.run.tick, startTick: rp.run.startTick, endTick: rp.run.replay.endTick, speed: rp.speed, follow: rp.follow, verified: rp.verified, seeking: rp.seekTo >= 0, paused: game.paused, hash: game.world.hash().all } : null;
+    },
+    lastReplay: () => (game.lastReplay ? { endTick: game.lastReplay.endTick, endHash: game.lastReplay.endHash, commands: game.lastReplay.commands.length } : null),
+    watchLastReplay: () => {
+      if (game.lastReplay) game.watchReplay(game.lastReplay);
+      return game.replay !== null;
+    },
+    replaySeek: (t: number) => game.replaySeek(t, true),
     /** BACKLOG 11: the Forge phase (null without one) and a screen pixel where the local brush may land */
     forge: () => {
       const f = game.world.forge;

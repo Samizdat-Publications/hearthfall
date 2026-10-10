@@ -76,3 +76,14 @@
 .editor-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 .editor-actions > * { flex: 1; }
 .editor-actions .menu-btn { padding: 6px 12px; }
+/* BACKLOG 19: replay bar */
+.replay-bar { display: flex; gap: 5px; align-items: center; padding: 4px 8px; font-size: 13px; white-space: nowrap; }
+.replay-bar .menu-small { padding: 4px 7px; }
+.replay-tag { color: #f2c66d; letter-spacing: 1px; text-transform: uppercase; font-size: 12px; }
+.replay-time { width: 140px; accent-color: #8dbf5a; }
+.replay-clock { min-width: 78px; text-align: center; font-variant-numeric: tabular-nums; }
+.replay-speed { min-width: 34px; }
+.replay-follow { display: flex; gap: 4px; align-items: center; }
+.replay-verified.ok { color: #b8e08a; }
+.replay-verified.bad { color: #ff9a7c; }
+.replay-row { display: flex; gap: 6px; justify-content: center; margin-top: 6px; }

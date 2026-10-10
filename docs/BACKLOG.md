@@ -31,7 +31,7 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 16. [M] Electron desktop build (exe), auto-update later.
 17. [M] Static web deploy (Cloudflare Pages or Workers static assets) with a version banner.
 18. [M] Mod packs: load `mods/<name>` from a folder, mod manifest, conflict report.
-19. [M] Replay viewer: load a command log, scrub timeline, follow camera.
+19. [M] DONE (10/10/2026, ADR-018): every finished match leaves a replay (params, start save, local commands, end hash): Watch or Download on the end screen, Last replay and Open replay file on the main menu. The replay bar plays, pauses, scrubs (checkpoints every 1200 ticks), cycles 1x to 8x, follows the first tribe's Shaper and shows Verified or Out of sync at the end. Follow-ups: a viewpoint tribe selector, replays of scenarios and campaign levels, compression for very long matches.
 20. [M] WebGPU renderer behind the interface (headed QA only), compare perf.
 21. [S] Achievements and stats screen from event logs.
 22. [S] Localization scaffold (string tables).

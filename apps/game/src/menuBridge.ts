@@ -7,6 +7,7 @@ import titleArt from "../../../assets/ui/title.webp?url";
 import type { Game } from "./game.ts";
 import { makeSave, restoreSave, type SkirmishParams } from "./session.ts";
 import { levelOpen } from "./campaign.ts";
+import { decodeReplay, encodeReplay } from "./replay.ts";
 import { LIGHTING, MINIATURE, PALETTES, WEATHER, QUALITIES, SLOTS, UI_SCALES, deleteSlot, readSlot, slotMeta, storeSettings, writeSlot } from "./storage.ts";
 
 const title = (id: string) => id[0].toUpperCase() + id.slice(1);
@@ -55,6 +56,8 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
   const setup: SetupState = { map: sk.maps[0], size: sk.defaultSize, seed: 1, opponents: [...sk.defaultOpponents], difficulty: sk.defaultDifficulty, victory: vic?.default ?? "", forge: "off", error: null };
   const saves = { mode: "load" as "save" | "load", message: null as string | null };
   let settingsMsg: string | null = null;
+  /** BACKLOG 19: why the last replay file or stored replay could not be watched */
+  let replayMsg: string | null = null;
   const maxOpponents = Math.min(sk.maxOpponents, MAX_TRIBES - 1);
 
   const persistNote = () => (game.persistent ? null : "Browser storage is unavailable: settings and saves last until this tab closes.");
@@ -148,6 +151,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
       titleArt,
       canSave: game.inGame && game.skirmish !== null && !game.ended,
       editorTest: game.editorTest,
+      replay: { last: game.screen === "main" && game.hasStoredReplay(), ended: game.lastReplay !== null && game.ended !== null, message: replayMsg },
     };
   };
 
@@ -269,6 +273,35 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
     openEditor: () => game.openEditor(),
     playAgain: () => {
       if (game.skirmish) game.startSkirmish(game.skirmish);
+    },
+    watchReplay: (which) => {
+      const r = which === "ended" ? game.lastReplay : game.storedReplay();
+      replayMsg = r ? null : game.hasStoredReplay() ? "The last replay cannot be played with this version of the game." : "There is no replay to watch.";
+      try {
+        if (r) return game.watchReplay(r);
+      } catch (e) {
+        replayMsg = `Could not play the replay: ${(e as Error).message}.`;
+      }
+      refresh();
+    },
+    downloadReplay: () => {
+      const r = game.lastReplay;
+      if (!r) return;
+      const url = URL.createObjectURL(new Blob([encodeReplay(r)], { type: "application/json" }));
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `hearthfall-replay-${r.params.level}-${r.params.seed}.json`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    },
+    openReplayFile: (text) => {
+      try {
+        game.watchReplay(decodeReplay(text, game.pack));
+        replayMsg = null;
+      } catch (e) {
+        replayMsg = `Could not open the replay: ${(e as Error).message}.`;
+        refresh();
+      }
     },
     playLevel: (id) => game.playLevel(id),
     nextLevel: () => {

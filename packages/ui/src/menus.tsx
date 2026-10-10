@@ -89,6 +89,8 @@ export interface MenuModel {
   canSave: boolean;
   /** BACKLOG 12: the match is a map editor playtest (quitting returns to the editor) */
   editorTest?: boolean;
+  /** BACKLOG 19: a stored last replay (main menu), the ended match's replay (end screen), a replay file problem */
+  replay?: { last: boolean; ended: boolean; message: string | null };
 }
 
 export type SetupPatch = Partial<Pick<SetupView, "map" | "size" | "seed" | "opponents" | "difficulty" | "victory" | "forge">>;
@@ -113,6 +115,11 @@ export interface MenuActions {
   playLevel(id: string): void;
   nextLevel(): void;
   openEditor(): void;
+  /** BACKLOG 19: watch the ended match ("ended") or the stored last replay ("last") */
+  watchReplay(which: "ended" | "last"): void;
+  downloadReplay(): void;
+  /** the text of a replay file the player picked */
+  openReplayFile(text: string): void;
 }
 
 export const menuModel = signal<MenuModel | null>(null);
@@ -142,7 +149,37 @@ function Select({ ui, value, options, onChange }: { ui: string; value: string; o
   );
 }
 
-function Main({ act, art }: { act: MenuActions; art?: string }) {
+/** BACKLOG 19: main menu replay row: the last match's replay and a replay file */
+function Replays({ m, act }: { m: MenuModel; act: MenuActions }) {
+  const r = m.replay;
+  if (!r) return null;
+  return (
+    <Fragment>
+      <div class="menu-row replay-row">
+        <button class="menu-small" data-ui="replay-last" disabled={!r.last} onClick={() => act.watchReplay("last")}>
+          Last replay
+        </button>
+        <label class="menu-small replay-file">
+          Open replay file
+          <input
+            type="file"
+            accept=".json,application/json"
+            data-ui="replay-file"
+            style="display: none"
+            onChange={(e) => {
+              const f = (e.target as HTMLInputElement).files?.[0];
+              if (f) void f.text().then((t) => act.openReplayFile(t));
+              (e.target as HTMLInputElement).value = "";
+            }}
+          />
+        </label>
+      </div>
+      {r.message ? <p class="menu-note" data-ui="replay-message">{r.message}</p> : null}
+    </Fragment>
+  );
+}
+
+function Main({ act, art, m }: { act: MenuActions; art?: string; m: MenuModel }) {
   return (
     <div data-hud="menu-main" class="menu-panel menu-main">
       {art ? <img class="menu-art" src={art} alt="A tiny tribe village on a round island diorama" /> : null}
@@ -163,6 +200,7 @@ function Main({ act, art }: { act: MenuActions; art?: string }) {
       <Btn ui="settings" onClick={() => act.go("settings")}>
         Settings
       </Btn>
+      <Replays m={m} act={act} />
     </div>
   );
 }
@@ -446,6 +484,16 @@ function End({ m, act }: { m: MenuModel; act: MenuActions }) {
       <Btn ui="play-again" primary={!e.next} onClick={() => act.playAgain()}>
         {e.won ? "Play again" : "Try again"}
       </Btn>
+      {m.replay?.ended ? (
+        <div class="menu-row replay-row">
+          <button class="menu-small" data-ui="end-replay" onClick={() => act.watchReplay("ended")}>
+            Watch replay
+          </button>
+          <button class="menu-small" data-ui="end-replay-download" onClick={() => act.downloadReplay()}>
+            Download replay
+          </button>
+        </div>
+      ) : null}
       <Btn ui="main-menu" onClick={() => act.quitToMenu()}>
         {m.editorTest ? "Back to the editor" : "Main menu"}
       </Btn>
@@ -458,7 +506,7 @@ function Menus({ act }: { act: MenuActions }) {
   if (!m || m.screen === "none") return null;
   return (
     <div class={"menu-backdrop" + (m.screen === "main" ? " title" : "")}>
-      {m.screen === "main" ? <Main act={act} art={m.titleArt} /> : null}
+      {m.screen === "main" ? <Main act={act} art={m.titleArt} m={m} /> : null}
       {m.screen === "campaign" ? <Campaign m={m} act={act} /> : null}
       {m.screen === "setup" ? <Setup s={m.setup} act={act} /> : null}
       {m.screen === "pause" ? <Pause m={m} act={act} /> : null}

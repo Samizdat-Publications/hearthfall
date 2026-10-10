@@ -246,9 +246,38 @@ async function flow(browser, url, vp) {
     const tag = await page.textContent('[data-ui="end-tag"]');
     const vic = await page.evaluate(() => window.__game.rules());
     if (vic?.winner !== 0 || vic.why !== "conquest" || tag?.trim() !== "Every rival tribe has fallen.") problem(`variant end: ${JSON.stringify(vic)} tag ${tag}`);
-    await click("main-menu");
+    // BACKLOG 19: the ended match's replay (it starts at the loaded save) reaches the recorded end hash, seeks
+    // back, takes Play, and Exit returns to the main menu, which then offers the stored last replay
+    const lr = await page.evaluate(() => window.__game.lastReplay());
+    if (!lr || lr.commands < 1) problem(`no replay kept at the end: ${JSON.stringify(lr)}`);
+    await click("end-replay");
+    await screenIs("none");
+    await page.waitForSelector('[data-hud="replay"]', { timeout: 5000 });
+    const rp0 = await page.evaluate(() => window.__game.replay());
+    await page.evaluate((t) => window.__game.replaySeek(t), lr?.endTick ?? 0);
+    const rp1 = await page.evaluate(() => window.__game.replay());
+    if (!rp1 || rp1.tick !== lr?.endTick || rp1.verified !== true || rp1.hash !== lr?.endHash) problem(`replay end: ${JSON.stringify({ rp0, rp1, lr })}`);
+    // back to a tick before the end (the match may have ended a few ticks after the save it was loaded from)
+    const back = Math.max(rp0?.startTick ?? 0, Math.min((rp0?.startTick ?? 0) + 20, (lr?.endTick ?? 1) - 1));
+    // paused first, all in one evaluate, so no frame plays on between the seek and the read
+    const rp2 = await page.evaluate((t) => {
+      if (!window.__game.replay()?.paused) document.querySelector('[data-ui="replay-play"]').click();
+      window.__game.replaySeek(t);
+      return window.__game.replay();
+    }, back);
+    if (rp2?.tick !== back || rp2.verified !== null) problem(`replay seek back to ${back}: ${JSON.stringify(rp2)}`);
+    // Play and Pause flip in one go (outside fixedStep the replay runs on and pauses itself at the end)
+    const flip = await page.evaluate(() => {
+      const a = window.__game.replay()?.paused;
+      document.querySelector('[data-ui="replay-play"]').click();
+      return [a, window.__game.replay()?.paused];
+    });
+    if (flip[0] === flip[1]) problem(`replay Play did not toggle: ${JSON.stringify(flip)}`);
+    res.replay = { start: rp0?.startTick, end: lr?.endTick, commands: lr?.commands };
+    await click("replay-exit");
     await screenIs("main");
     await settle();
+    if (await page.$eval('[data-ui="replay-last"]', (e) => e.disabled)) problem("main menu Last replay is disabled after a match");
     // M9 campaign: only the first level is open; win it, go on to the next, and the menu remembers
     await click("campaign");
     await screenIs("campaign");

@@ -135,6 +135,15 @@ function fromB64(b64: string): ArrayBuffer {
 
 /** JSON with typed arrays as base64 and non-finite numbers kept (JSON alone turns them into null). */
 export function encodeSave(s: SaveGame): string {
+  return encodeData(s);
+}
+
+export function decodeSave(text: string): SaveGame {
+  return decodeData<SaveGame>(text);
+}
+
+/** encodeSave for any value holding saves or snapshots (BACKLOG 19 replays) */
+export function encodeData(s: unknown): string {
   return JSON.stringify(s, function (this: unknown, _k, v) {
     if (ArrayBuffer.isView(v)) {
       const name = v.constructor.name;
@@ -146,7 +155,7 @@ export function encodeSave(s: SaveGame): string {
   });
 }
 
-export function decodeSave(text: string): SaveGame {
+export function decodeData<T>(text: string): T {
   return JSON.parse(text, (_k, v) => {
     if (v && typeof v === "object" && "__ta" in v) {
       const Ctor = TYPED[(v as { __ta: string }).__ta];
@@ -155,5 +164,5 @@ export function decodeSave(text: string): SaveGame {
     }
     if (v && typeof v === "object" && "__num" in v) return Number((v as { __num: string }).__num);
     return v;
-  }) as SaveGame;
+  }) as T;
 }

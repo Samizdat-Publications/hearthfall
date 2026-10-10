@@ -55,6 +55,7 @@ import {
   recordWin,
   taughtSpells,
 } from "./campaign.ts";
+import { REPLAY_KEY, ReplayRun, decodeReplay, encodeReplay, makeReplay, type Replay } from "./replay.ts";
 import {
   QUALITY_SCALE,
   browserKV,
@@ -323,6 +324,14 @@ export class Game {
   log: Command[] = [];
   ended: { won: boolean; why?: string } | null = null;
   stats = { kills: 0, lost: 0 };
+  /** BACKLOG 19: every local command this session with the tick it ran in (the save log keeps only a tail) */
+  replayLog: Command[] = [];
+  /** BACKLOG 19: the save this session was loaded from; its replay starts there */
+  replayStart: SaveGame | null = null;
+  /** BACKLOG 19: the replay being watched (null in a normal session); seekTo is a pending seek tick or -1 */
+  replay: { run: ReplayRun; speed: number; follow: boolean; seekTo: number; verified: boolean | null } | null = null;
+  /** BACKLOG 19: the replay of the match that just ended (end screen Watch and Download) */
+  lastReplay: Replay | null = null;
   readonly kv: KV;
   readonly persistent: boolean;
   settings: Settings;
@@ -483,6 +492,9 @@ export class Game {
     this.queue = [];
     this.events = [];
     this.log = [];
+    this.replayLog = [];
+    this.replayStart = null;
+    this.replay = null;
     this.ended = null;
     this.stats = { kills: 0, lost: 0 };
     this.notes = [];
@@ -588,6 +600,7 @@ export class Game {
     this.afterWorld();
     this.skirmish = { ...sp, ai: [...sp.ai] };
     this.log = [...s.log];
+    this.replayStart = s;
     this.queue = s.pending.map((c) => ({ ...c }));
     this.inGame = true;
     this.lastLoad = { tick: w.tick, hash: w.hash().all };
@@ -845,6 +858,7 @@ export class Game {
           .find((e) => e.type === "levelLost")?.why as string | undefined,
       };
       if (won) this.voice("voice.shaper.victory");
+      this.keepReplay();
       this.cancelModes();
       this.screen = "end";
       this.backStack = [];
@@ -866,6 +880,7 @@ export class Game {
       this.ended = { won: Boolean(me?.alive) };
     }
     if (this.ended.won) this.voice("voice.shaper.victory");
+    this.keepReplay();
     this.cancelModes();
     this.screen = "end";
     this.backStack = [];
@@ -877,8 +892,9 @@ export class Game {
     return this.queue.map((c) => ({ ...c }));
   }
 
-  /** Queue a command from the local player (applied on the next tick). */
+  /** Queue a command from the local player (applied on the next tick). A replay takes no orders. */
   command(c: Partial<Command> & { type: string }): void {
+    if (this.replay) return;
     this.queue.push({
       tick: this.world.tick,
       tribe: c.tribe ?? 0,
@@ -888,6 +904,7 @@ export class Game {
   }
 
   private stepOnce(): void {
+    if (this.replay) return this.replayStep();
     const local = this.queue.map((c) => ({ ...c, tick: this.world.tick }));
     const cmds = [
       ...(this.scenarioCmds ? this.scenarioCmds(this.world.tick) : []),
@@ -898,6 +915,7 @@ export class Game {
     if (this.skirmish && local.length) {
       this.log.push(...local);
       if (this.log.length > 2 * LOG_TAIL) this.log = this.log.slice(-LOG_TAIL);
+      this.replayLog.push(...local);
     }
     for (const e of this.world.events) {
       this.events.push(e);
@@ -923,6 +941,117 @@ export class Game {
     )
       this.notify("shaperHit", "Your Shaper is under attack!", "bad", 15);
     this.checkEnd();
+  }
+
+  // ---------------------------------------------------------------- BACKLOG 19: replays
+  /** The ended match as a replay, kept for the end screen and stored as the last replay when it fits. */
+  private keepReplay(): void {
+    if (!this.skirmish) return;
+    this.lastReplay = makeReplay(this.world, this.skirmish, this.replayStart, this.replayLog, new Date().toISOString());
+    try {
+      this.kv.setItem(REPLAY_KEY, encodeReplay(this.lastReplay));
+    } catch {
+      // over the storage quota (a long match loaded from a save): the end screen can still watch or download it
+    }
+  }
+
+  /** Whether a last replay is stored (cheap: the main menu asks on every refresh). */
+  hasStoredReplay(): boolean {
+    try {
+      return this.kv.getItem(REPLAY_KEY) !== null;
+    } catch {
+      return false;
+    }
+  }
+
+  /** The stored last replay, or null (absent, damaged or made with other game data). */
+  storedReplay(): Replay | null {
+    try {
+      const text = this.kv.getItem(REPLAY_KEY);
+      return text ? decodeReplay(text, this.pack) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  /** Watch a replay: its world from the start, every tribe revealed, orders off, the replay bar shown. */
+  watchReplay(r: Replay): void {
+    const run = new ReplayRun(this.pack, r);
+    const sp = r.params;
+    this.params = { ...this.params, seed: sp.seed, level: sp.level, size: sp.size, tribes: sp.tribes, ai: [...sp.ai], difficulty: sp.difficulty, rules: sp.rules ?? null, scenario: null, camera: null };
+    this.editor = null;
+    this.editorTest = false;
+    this.world = run.world;
+    this.scenarioCmds = null;
+    this.afterWorld();
+    this.replay = { run, speed: 1, follow: false, seekTo: -1, verified: null };
+    this.renderer.revealFog = true;
+    this.skirmish = null;
+    this.inGame = true;
+    this.screen = "none";
+    this.backStack = [];
+    this.paused = this.params.fixedStep;
+    this.onChange();
+  }
+
+  /** Seek the replay to a tick: at once when `now` (tests), else spread over frames by frame(). */
+  replaySeek(tick: number, now = false): void {
+    const rp = this.replay;
+    if (!rp) return;
+    rp.seekTo = Math.max(rp.run.startTick, Math.min(rp.run.replay.endTick, Math.floor(tick)));
+    if (now) this.replaySeekSome(Infinity);
+    this.onChange();
+  }
+
+  replaySpeed(speed: number): void {
+    if (this.replay) this.replay.speed = speed;
+    this.onChange();
+  }
+
+  replayFollow(on: boolean): void {
+    if (this.replay) this.replay.follow = on;
+    this.onChange();
+  }
+
+  /** Play or pause; Play at the end starts over. */
+  replayToggle(): void {
+    const rp = this.replay;
+    if (!rp) return;
+    if (this.paused && rp.run.done) this.replaySeek(rp.run.startTick, true);
+    this.paused = !this.paused;
+    this.onChange();
+  }
+
+  private replayStep(): void {
+    const rp = this.replay!;
+    rp.run.step();
+    this.world = rp.run.world;
+    for (const e of this.world.events) this.events.push(e);
+    if (rp.run.done) {
+      rp.verified = rp.run.verified();
+      this.paused = true;
+    }
+  }
+
+  /** Advance a pending seek within a time budget (ms); a restore swaps the world and rebinds the renderer. */
+  private replaySeekSome(budgetMs: number): void {
+    const rp = this.replay;
+    if (!rp || rp.seekTo < 0) return;
+    const before = rp.run.world;
+    const t0 = performance.now();
+    let there = false;
+    do there = rp.run.seek(rp.seekTo, 60);
+    while (!there && performance.now() - t0 < budgetMs);
+    this.world = rp.run.world;
+    if (this.world !== before) {
+      this.selection.clear();
+      this.renderer.setWorld(this.world);
+    }
+    this.events = [];
+    if (there) {
+      rp.seekTo = -1;
+      rp.verified = rp.run.verified();
+    }
   }
 
   /** Add a HUD notification; `key` throttles repeats to one per `throttleSec` of game time. */
@@ -1140,11 +1269,15 @@ export class Game {
   frame(now: number): void {
     const dt = this.last ? Math.min(0.25, (now - this.last) / 1000) : 0;
     this.last = now;
-    if (!this.paused && this.screen === "none" && !this.editor) {
+    if (this.replay && this.replay.seekTo >= 0) {
+      this.replaySeekSome(20);
+      this.onChange();
+    } else if (!this.paused && this.screen === "none" && !this.editor) {
       this.acc += dt;
-      const tickDt = 1 / this.world.cfg.tickHz;
+      const speed = this.replay ? this.replay.speed : 1;
+      const tickDt = 1 / (this.world.cfg.tickHz * speed);
       let n = 0;
-      while (this.acc >= tickDt && n < 8 && !this.ended) {
+      while (this.acc >= tickDt && n < 8 * speed && !this.ended && !this.paused) {
         this.stepOnce();
         this.acc -= tickDt;
         n++;
@@ -1158,6 +1291,13 @@ export class Game {
       !this.debugFlags.freezeCamera
     )
       this.renderer.setCamera({ yaw: this.renderer.cam.yaw + 0.04 * dt });
+    // BACKLOG 19: Follow keeps the camera on the first tribe's Shaper (its Hearth while she is down)
+    if (this.replay?.follow) {
+      const t = this.world.tribes[0];
+      const E = this.world.ents;
+      const f = t ? (E.index(t.shaper) >= 0 ? E.index(t.shaper) : E.index(t.hearth)) : -1;
+      if (f >= 0) this.renderer.setCamera({ x: E.x[f], z: E.y[f] });
+    }
     this.pollKeys(dt);
     this.pruneSelection();
     const sk = this.selection.size
