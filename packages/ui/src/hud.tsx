@@ -444,7 +444,7 @@ function Hud({ act }: { act: HudActions }) {
       ) : null}
       {m.showHelp ? (
         <div data-hud="help" class="hud-panel hud-help">
-          Drag select | double-click: same type | Ctrl+0-9 set group, 0-9 select, twice to jump | click a building to select it | right click move (on a tower: garrison) | A attack-move | R retreat | G garrison | S Shaper | Z-N spells | D dwelling | T tower | Q/E rotate | wheel zoom | M map | H help
+          Drag select | double-click: same type | Ctrl+0-9 set group, 0-9 select, twice to jump | click a building to select it | right click move (on a tower: garrison) | A attack-move | R retreat | G garrison | S Shaper | Z-N spells | D dwelling | T tower | Q/E rotate | wheel zoom | M map | H help | P&nbsp;pause | F&nbsp;photo
         </div>
       ) : null}
       <div data-hud="debug-overlap" class="hud-panel hud-overlap">

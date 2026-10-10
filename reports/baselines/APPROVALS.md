@@ -123,3 +123,12 @@
 - 2026-10-10T13:52 set look (13 shots): BACKLOG 39: new islands_lowland watch shot
 - 2026-10-10T17:46 set menus (9 shots): photo mode key row in settings; zoomed menu panels cap their height by the UI scale
 - 2026-10-10T17:55 set menus (9 shots): tribe trait row in skirmish setup
+- 2026-10-10T18:01 set combat (7 shots): help panel lists P pause and F photo
+- 2026-10-10T18:02 set smoke (13 shots): help panel lists P pause and F photo
+- 2026-10-10T18:03 set combat (7 shots): help panel lists P pause and F photo (non-breaking)
+- 2026-10-10T18:05 set look (13 shots): help panel lists P pause and F photo
+- 2026-10-10T18:06 set spells (9 shots): help panel lists P pause and F photo; veil shows the Veil then Lightning combo tip
+- 2026-10-10T18:06 set spells2 (9 shots): help panel lists P pause and F photo; veil shows the Veil then Lightning combo tip
+- 2026-10-10T18:06 set vehicles (3 shots): help panel lists P pause and F photo; veil shows the Veil then Lightning combo tip
+- 2026-10-10T18:06 set forge (1 shots): help panel lists P pause and F photo; veil shows the Veil then Lightning combo tip
+- 2026-10-10T18:07 set levels (5 shots): help panel lists P pause and F photo; veil shows the Veil then Lightning combo tip
