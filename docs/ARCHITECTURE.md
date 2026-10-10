@@ -117,7 +117,7 @@ Cost field per cell from slope and water. Hierarchical: 16x16 cell sectors with 
 
 ## 4. Data packs (`data/`, `packages/data`)
 
-- Files: `units.json, buildings.json, spells.json, effects.json, ai_personalities.json, balance.json, terrain.json, style.json`. Campaign levels live in `data/levels/*.json` (M9): validated against the merged pack by `validateLevel`, not part of the pack hash or the mod merge; a campaign save embeds its level definition instead. `data/achievements.json` (BACKLOG 21, ADR-019) is validated the same way by `validateAchievements` and is not hashed either; the app reads it for achievements and the Records screen.
+- Files: `units.json, buildings.json, spells.json, effects.json, ai_personalities.json, balance.json, terrain.json, style.json`. Campaign levels live in `data/levels/*.json` (M9): validated against the merged pack by `validateLevel`, not part of the pack hash or the mod merge; a campaign save embeds its level definition instead. `data/achievements.json` (BACKLOG 21, ADR-019) is validated the same way by `validateAchievements` and is not hashed either; the app reads it for achievements and the Records screen. UI string tables live in `data/strings/<locale>.json` (BACKLOG 22, ADR-020), looked up by key with `t()` from `@hearthfall/ui` and checked by the strings guard.
 - Every file validated by a zod schema; JSON Schema exported to `data/schema/` and a human reference generated to `docs/DATA.md` by `npm run data:docs`.
 - Packs merge by `id`: `base` then any `mods/<name>` pack in load order; a mod can add, override fields, or remove (`"$remove": true`). Each pack has a manifest with version and a content hash (part of replays and saves).
 - Hot reload in dev: editing a data file reloads it in the running game (dev only, not deterministic).
@@ -197,6 +197,7 @@ URL params: `?seed=123&level=skirmish_small&scenario=<id>&camera=<preset>&paused
 | `view()` | BACKLOG 37/40: `{ortho, top, right}`: whether the scene draws through the orthographic map camera, and its half extents |
 | `forceLose()`, `hash()`, `controls()` | BACKLOG 75, 76, 82: a forced defeat (god mode `eliminate` of the local tribe, steps once, returns `ended`); the full state hash of the running world; `{groups, bookmarks, geometries}`: control group sizes, camera bookmarks set and live GPU geometries |
 | `replay()`, `lastReplay()`, `watchLastReplay()`, `replaySeek(t)` | BACKLOG 19 replays (ADR-018): the replay being watched `{tick, startTick, endTick, speed, follow, verified, seeking, paused, hash}` or null; `{endTick, endHash, commands}` of the replay the last match left; watch it; seek at once to a tick |
+| `strings()` | BACKLOG 22 (ADR-020): `{locale, missing}`: the UI locale (`?lang=`) and string keys asked for that no table has |
 | `records()` | BACKLOG 21 (ADR-019): `{match, career, unlocked, earned}`: this match's stats, career totals, earned achievement ids, and the ids the last ended match earned |
 | `screen()`, `forceWin()`, `lastSave()`, `lastLoad()` | M8 game flow: the current menu screen (`none` while playing); a forced win (queues the god mode `eliminate` command for every rival and steps once, returns `ended`); `{tick, hash}` of the last save written and the last save loaded |
 

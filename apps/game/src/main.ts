@@ -5,6 +5,8 @@ import { Game, parseParams, type DebugFlags } from "./game.ts";
 import { mountGameHud } from "./hudBridge.ts";
 import { fitHud, hudFits } from "./hudFit.ts";
 import { mountGameMenus } from "./menuBridge.ts";
+import { applyLocale } from "./locale.ts";
+import { locale, missingStrings } from "@hearthfall/ui";
 import { mountGameEditor } from "./editorBridge.ts";
 import { mountGameReplay } from "./replayBridge.ts";
 import { drawnViewKey, viewKey, viewOutline } from "./minimap.ts";
@@ -72,6 +74,7 @@ function resize() {
 let game: Game;
 let hud: ReturnType<typeof mountGameHud>;
 try {
+  applyLocale(new URLSearchParams(location.search).get("lang"));
   game = new Game(canvas, parseParams(location.search));
   hud = mountGameHud(hudEl, game);
   const menus = mountGameMenus(document.getElementById("menus")!, game);
@@ -298,6 +301,8 @@ if (__DEBUG_API__ || game.params.debug) {
       return game.replay !== null;
     },
     replaySeek: (t: number) => game.replaySeek(t, true),
+    /** BACKLOG 22: the UI locale and string keys asked for that no table has */
+    strings: () => ({ locale: locale(), missing: [...missingStrings] }),
     /** BACKLOG 21: this match's stats, career records, earned achievement ids and those the last match earned */
     records: () => ({ match: { ...game.stats }, career: { ...game.records.career }, unlocked: Object.keys(game.records.unlocked), earned: game.newAchievements.map((x) => x.id) }),
     /** BACKLOG 11: the Forge phase (null without one) and a screen pixel where the local brush may land */

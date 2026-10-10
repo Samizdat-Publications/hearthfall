@@ -14,7 +14,7 @@ export function typecheck(out) {
 }
 
 export async function guards(out) {
-  const names = ["determinism", "imports", "data", "docs", "ip-names", "dashes"];
+  const names = ["determinism", "imports", "data", "docs", "ip-names", "dashes", "strings"];
   const results = [];
   for (const n of names) {
     const mod = await import(`../guards/${n}.mjs`);

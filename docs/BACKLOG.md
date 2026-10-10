@@ -34,7 +34,7 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 19. [M] DONE (10/10/2026, ADR-018): every finished match leaves a replay (params, start save, local commands, end hash): Watch or Download on the end screen, Last replay and Open replay file on the main menu. The replay bar plays, pauses, scrubs (checkpoints every 1200 ticks), cycles 1x to 8x, follows the first tribe's Shaper and shows Verified or Out of sync at the end. Follow-ups: a viewpoint tribe selector, replays of scenarios and campaign levels, compression for very long matches.
 20. [M] WebGPU renderer behind the interface (headed QA only), compare perf.
 21. [S] DONE (10/10/2026, ADR-019): match stats counted from the event log, career records and 15 achievements in `data/achievements.json` (match or career thresholds, mode and difficulty filters); the end screen lists what the match earned, the main menu Records screen shows the career and every achievement. Follow-ups: per-level bests, an in-match toast, stats graphs.
-22. [S] Localization scaffold (string tables).
+22. [S] DONE (10/10/2026, ADR-020): `t(key, vars)` over flat tables in `data/strings/` (English base, `?lang=` picks one, `pseudo` pads and accents English); menus and the replay bar migrated (76 keys); strings guard; pseudo locale shots check that menu text fits. Follow-ups: migrate the HUD, editor, bridge texts, key names and data-driven names; a language setting once a second table exists.
 
 ## P4: tooling and QA
 23. [M] VisionQA move picker evaluation (VISIONQA section 7) over 16 seeds; keep or remove based on diversity metrics.

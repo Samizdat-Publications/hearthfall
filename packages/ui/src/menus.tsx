@@ -5,6 +5,7 @@
 // route map since BACKLOG 9 (pick a node, then Play on its card).
 import { Fragment, render } from "preact";
 import { signal } from "@preact/signals";
+import { t } from "./i18n.ts";
 
 export type Screen = "none" | "main" | "campaign" | "setup" | "pause" | "settings" | "saves" | "end" | "records";
 
@@ -134,9 +135,9 @@ function Btn({ ui, onClick, children, disabled, primary }: { ui: string; onClick
   );
 }
 
-const ONOFF: Choice[] = [
-  { value: "on", label: "On" },
-  { value: "off", label: "Off" },
+const ONOFF = (): Choice[] => [
+  { value: "on", label: t("settings.on") },
+  { value: "off", label: t("settings.off") },
 ];
 
 function Select({ ui, value, options, onChange }: { ui: string; value: string; options: Choice[]; onChange: (v: string) => void }) {
@@ -159,13 +160,13 @@ function Replays({ m, act }: { m: MenuModel; act: MenuActions }) {
     <Fragment>
       <div class="menu-row replay-row">
         <button class="menu-small" data-ui="records" onClick={() => act.go("records")}>
-          Records
+          {t("menu.records")}
         </button>
         <button class="menu-small" data-ui="replay-last" disabled={!r.last} onClick={() => act.watchReplay("last")}>
-          Last replay
+          {t("menu.lastReplay")}
         </button>
         <label class="menu-small replay-file">
-          Open replay file
+          {t("menu.openReplayFile")}
           <input
             type="file"
             accept=".json,application/json"
@@ -187,23 +188,23 @@ function Replays({ m, act }: { m: MenuModel; act: MenuActions }) {
 function Main({ act, art, m }: { act: MenuActions; art?: string; m: MenuModel }) {
   return (
     <div data-hud="menu-main" class="menu-panel menu-main">
-      {art ? <img class="menu-art" src={art} alt="A tiny tribe village on a round island diorama" /> : null}
+      {art ? <img class="menu-art" src={art} alt={t("menu.artAlt")} /> : null}
       <h1 class="menu-title">Hearthfall</h1>
-      <p class="menu-tag">Shape the land. Lead your tribe. Keep them out of the sea.</p>
+      <p class="menu-tag">{t("menu.tagline")}</p>
       <Btn ui="campaign" primary onClick={() => act.go("campaign")}>
-        Campaign
+        {t("menu.campaign")}
       </Btn>
       <Btn ui="skirmish" onClick={() => act.go("setup")}>
-        Skirmish
+        {t("menu.skirmish")}
       </Btn>
       <Btn ui="load" onClick={() => act.openSaves("load")}>
-        Load game
+        {t("menu.loadGame")}
       </Btn>
       <Btn ui="editor" onClick={() => act.openEditor()}>
-        Map editor
+        {t("menu.mapEditor")}
       </Btn>
       <Btn ui="settings" onClick={() => act.go("settings")}>
-        Settings
+        {t("menu.settings")}
       </Btn>
       <Replays m={m} act={act} />
     </div>
@@ -213,24 +214,24 @@ function Main({ act, art, m }: { act: MenuActions; art?: string; m: MenuModel })
 function Setup({ s, act }: { s: SetupView; act: MenuActions }) {
   return (
     <div data-hud="menu-setup" class="menu-panel menu-setup">
-      <h2 class="menu-head">Skirmish</h2>
+      <h2 class="menu-head">{t("menu.skirmish")}</h2>
       <div class="menu-grid">
-        <label class="menu-label">Map</label>
+        <label class="menu-label">{t("setup.map")}</label>
         <Select ui="setup-map" value={s.map} options={s.maps} onChange={(v) => act.setSetup({ map: v })} />
-        <label class="menu-label">Size</label>
+        <label class="menu-label">{t("setup.size")}</label>
         <Select ui="setup-size" value={String(s.size)} options={s.sizes} onChange={(v) => act.setSetup({ size: Number(v) })} />
-        <label class="menu-label">Seed</label>
+        <label class="menu-label">{t("setup.seed")}</label>
         <span class="menu-row">
           <input class="menu-input" data-ui="setup-seed" type="number" min="1" value={s.seed} onChange={(e) => act.setSetup({ seed: Number((e.target as HTMLInputElement).value) })} />
           <button class="menu-small" data-ui="setup-random" onClick={() => act.randomSeed()}>
-            Random
+            {t("setup.random")}
           </button>
         </span>
-        <label class="menu-label">Difficulty</label>
+        <label class="menu-label">{t("setup.difficulty")}</label>
         <Select ui="setup-difficulty" value={s.difficulty} options={s.difficulties} onChange={(v) => act.setSetup({ difficulty: v })} />
         {s.victories.length ? (
           <Fragment>
-            <label class="menu-label">Victory</label>
+            <label class="menu-label">{t("setup.victory")}</label>
             <span class="menu-row menu-victory">
               <Select ui="setup-victory" value={s.victory} options={s.victories} onChange={(v) => act.setSetup({ victory: v })} />
               <span class="menu-hint" data-ui="setup-victory-text">
@@ -241,21 +242,21 @@ function Setup({ s, act }: { s: SetupView; act: MenuActions }) {
         ) : null}
         {s.forges.length ? (
           <Fragment>
-            <label class="menu-label">Forge</label>
+            <label class="menu-label">{t("setup.forge")}</label>
             <span class="menu-row menu-victory">
               <Select ui="setup-forge" value={s.forge} options={s.forges} onChange={(v) => act.setSetup({ forge: v })} />
-              <span class="menu-hint">Reshape the land near your Hearth first.</span>
+              <span class="menu-hint">{t("setup.forgeHint")}</span>
             </span>
           </Fragment>
         ) : null}
         {s.opponents.map((o, k) => (
           <Fragment key={k}>
-            <label class="menu-label">Opponent {k + 1}</label>
+            <label class="menu-label">{t("setup.opponent", { n: k + 1 })}</label>
             <span class="menu-row">
               <Select ui={`setup-opponent-${k + 1}`} value={o} options={s.personalities} onChange={(v) => act.setSetup({ opponents: s.opponents.map((x, j) => (j === k ? v : x)) })} />
               {s.opponents.length > 1 ? (
-                <button class="menu-small" data-ui={`setup-remove-${k + 1}`} title="Remove this opponent" onClick={() => act.setSetup({ opponents: s.opponents.filter((_, j) => j !== k) })}>
-                  Remove
+                <button class="menu-small" data-ui={`setup-remove-${k + 1}`} title={t("setup.removeTitle")} onClick={() => act.setSetup({ opponents: s.opponents.filter((_, j) => j !== k) })}>
+                  {t("setup.remove")}
                 </button>
               ) : null}
             </span>
@@ -264,16 +265,16 @@ function Setup({ s, act }: { s: SetupView; act: MenuActions }) {
       </div>
       {s.opponents.length < s.maxOpponents ? (
         <button class="menu-small" data-ui="setup-add" onClick={() => act.setSetup({ opponents: [...s.opponents, s.opponents[s.opponents.length - 1]] })}>
-          Add opponent
+          {t("setup.addOpponent")}
         </button>
       ) : null}
       {s.error ? <p class="menu-error">{s.error}</p> : null}
       <div class="menu-actions">
         <Btn ui="back" onClick={() => act.back()}>
-          Back
+          {t("menu.back")}
         </Btn>
         <Btn ui="start" primary onClick={() => act.start()}>
-          Start
+          {t("setup.start")}
         </Btn>
       </div>
     </div>
@@ -299,7 +300,7 @@ function Campaign({ m, act }: { m: MenuModel; act: MenuActions }) {
   const pts = v.levels.map((_, i) => routePoint(i, n));
   return (
     <div data-hud="menu-campaign" class="menu-panel menu-campaign">
-      <h2 class="menu-head">Campaign</h2>
+      <h2 class="menu-head">{t("menu.campaign")}</h2>
       <div class="route" data-ui="campaign-map">
         <svg class="route-path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
           {pts.slice(1).map((p, i) => (
@@ -313,7 +314,7 @@ function Campaign({ m, act }: { m: MenuModel; act: MenuActions }) {
             style={{ left: `${pts[i][0]}%`, top: `${pts[i][1]}%` }}
             data-ui={`level-${l.id}`}
             disabled={!l.open}
-            title={l.open ? l.name : "Win the level before this one to open it."}
+            title={l.open ? l.name : t("campaign.locked")}
             onClick={() => (pickedLevel.value = l.id)}
           >
             {i + 1}
@@ -325,19 +326,19 @@ function Campaign({ m, act }: { m: MenuModel; act: MenuActions }) {
           <span class="slot-text">
             <b>
               {k + 1}. {sel.name}
-              {sel.won ? " (won)" : ""}
+              {sel.won ? " " + t("campaign.wonMark") : ""}
             </b>
-            <span class="slot-detail level-desc">{sel.open ? sel.description : "Win the level before this one to open it."}</span>
+            <span class="slot-detail level-desc">{sel.open ? sel.description : t("campaign.locked")}</span>
           </span>
           <button class="menu-small" data-ui="level-play" disabled={!sel.open} onClick={() => act.playLevel(sel.id)}>
-            {sel.won ? "Replay" : "Play"}
+            {sel.won ? t("campaign.replay") : t("campaign.play")}
           </button>
         </div>
       ) : null}
       {v.message ? <p class="menu-note">{v.message}</p> : null}
       <div class="menu-actions">
         <Btn ui="back" onClick={() => act.back()}>
-          Back
+          {t("menu.back")}
         </Btn>
       </div>
     </div>
@@ -347,21 +348,21 @@ function Campaign({ m, act }: { m: MenuModel; act: MenuActions }) {
 function Pause({ m, act }: { m: MenuModel; act: MenuActions }) {
   return (
     <div data-hud="menu-pause" class="menu-panel menu-main">
-      <h2 class="menu-head">Paused</h2>
+      <h2 class="menu-head">{t("pause.title")}</h2>
       <Btn ui="resume" primary onClick={() => act.resume()}>
-        Resume
+        {t("pause.resume")}
       </Btn>
       <Btn ui="save" disabled={!m.canSave} onClick={() => act.openSaves("save")}>
-        Save game
+        {t("pause.saveGame")}
       </Btn>
       <Btn ui="load" onClick={() => act.openSaves("load")}>
-        Load game
+        {t("menu.loadGame")}
       </Btn>
       <Btn ui="settings" onClick={() => act.go("settings")}>
-        Settings
+        {t("menu.settings")}
       </Btn>
       <Btn ui="quit" onClick={() => act.quitToMenu()}>
-        {m.editorTest ? "Back to the editor" : "Quit to menu"}
+        {m.editorTest ? t("menu.backToEditor") : t("pause.quit")}
       </Btn>
     </div>
   );
@@ -371,7 +372,7 @@ function Saves({ m, act }: { m: MenuModel; act: MenuActions }) {
   const v = m.saves;
   return (
     <div data-hud="menu-saves" class="menu-panel menu-saves">
-      <h2 class="menu-head">{v.mode === "save" ? "Save game" : "Load game"}</h2>
+      <h2 class="menu-head">{v.mode === "save" ? t("pause.saveGame") : t("menu.loadGame")}</h2>
       {v.slots.map((s) => (
         <div key={s.slot} class="slot">
           <span class="slot-text">
@@ -380,22 +381,22 @@ function Saves({ m, act }: { m: MenuModel; act: MenuActions }) {
           </span>
           {v.mode === "save" ? (
             <button class="menu-small" data-ui={`save-${s.slot}`} onClick={() => act.saveSlot(s.slot)}>
-              {s.empty ? "Save" : "Overwrite"}
+              {s.empty ? t("saves.save") : t("saves.overwrite")}
             </button>
           ) : (
             <button class="menu-small" data-ui={`load-${s.slot}`} disabled={s.empty} onClick={() => act.loadSlot(s.slot)}>
-              Load
+              {t("saves.load")}
             </button>
           )}
           <button class="menu-small" data-ui={`delete-${s.slot}`} disabled={s.empty} onClick={() => act.deleteSlot(s.slot)}>
-            Delete
+            {t("saves.delete")}
           </button>
         </div>
       ))}
       {v.message ? <p class="menu-note">{v.message}</p> : null}
       <div class="menu-actions">
         <Btn ui="back" onClick={() => act.back()}>
-          Back
+          {t("menu.back")}
         </Btn>
       </div>
     </div>
@@ -417,47 +418,47 @@ function Slider({ ui, label, value, onInput }: { ui: string; label: string; valu
 function Settings({ s, act }: { s: SettingsView; act: MenuActions }) {
   return (
     <div data-hud="menu-settings" class="menu-panel menu-settings">
-      <h2 class="menu-head">Settings</h2>
+      <h2 class="menu-head">{t("menu.settings")}</h2>
       <div class="settings-cols">
         <div class="menu-grid">
-          <h3 class="menu-sub">Display and sound</h3>
-          <label class="menu-label">Quality</label>
+          <h3 class="menu-sub">{t("settings.display")}</h3>
+          <label class="menu-label">{t("settings.quality")}</label>
           <Select ui="set-quality" value={s.quality} options={s.qualities} onChange={(v) => act.setSetting({ quality: v })} />
-          <Slider ui="set-master" label="Master volume" value={s.master} onInput={(v) => act.setSetting({ master: v })} />
-          <Slider ui="set-music" label="Music" value={s.music} onInput={(v) => act.setSetting({ music: v })} />
-          <Slider ui="set-sfx" label="Effects" value={s.sfx} onInput={(v) => act.setSetting({ sfx: v })} />
-          <label class="menu-label">Tribe colors</label>
+          <Slider ui="set-master" label={t("settings.master")} value={s.master} onInput={(v) => act.setSetting({ master: v })} />
+          <Slider ui="set-music" label={t("settings.music")} value={s.music} onInput={(v) => act.setSetting({ music: v })} />
+          <Slider ui="set-sfx" label={t("settings.sfx")} value={s.sfx} onInput={(v) => act.setSetting({ sfx: v })} />
+          <label class="menu-label">{t("settings.palette")}</label>
           <Select ui="set-palette" value={s.palette} options={s.palettes} onChange={(v) => act.setSetting({ palette: v })} />
-          <label class="menu-label">Interface size</label>
+          <label class="menu-label">{t("settings.uiScale")}</label>
           <Select ui="set-uiscale" value={s.uiScale} options={s.uiScales} onChange={(v) => act.setSetting({ uiScale: Number(v) })} />
-          <label class="menu-label">Subtitles</label>
-          <Select ui="set-subtitles" value={s.subtitles} options={ONOFF} onChange={(v) => act.setSetting({ subtitles: v === "on" })} />
-          <label class="menu-label">Miniature focus</label>
+          <label class="menu-label">{t("settings.subtitles")}</label>
+          <Select ui="set-subtitles" value={s.subtitles} options={ONOFF()} onChange={(v) => act.setSetting({ subtitles: v === "on" })} />
+          <label class="menu-label">{t("settings.miniature")}</label>
           <Select ui="set-miniature" value={s.miniature} options={s.miniatures} onChange={(v) => act.setSetting({ miniature: v })} />
-          <label class="menu-label">Lighting</label>
+          <label class="menu-label">{t("settings.lighting")}</label>
           <Select ui="set-lighting" value={s.lighting} options={s.lightings} onChange={(v) => act.setSetting({ lighting: v })} />
-          <label class="menu-label">Weather</label>
+          <label class="menu-label">{t("settings.weather")}</label>
           <Select ui="set-weather" value={s.weather} options={s.weathers} onChange={(v) => act.setSetting({ weather: v })} />
         </div>
         <div class="keys">
-          <h3 class="menu-sub">Keys</h3>
+          <h3 class="menu-sub">{t("settings.keys")}</h3>
           {s.keys.map((k) => (
             <div key={k.id} class="key-row">
               <span class="key-label">{k.label}</span>
               <button class={"key-btn" + (s.rebinding === k.id ? " waiting" : "")} data-ui={`key-${k.id}`} onClick={() => act.startRebind(k.id)}>
-                {s.rebinding === k.id ? "press a key" : k.key}
+                {s.rebinding === k.id ? t("settings.pressKey") : k.key}
               </button>
             </div>
           ))}
           <button class="menu-small" data-ui="keys-reset" onClick={() => act.resetKeys()}>
-            Reset keys
+            {t("settings.resetKeys")}
           </button>
         </div>
       </div>
       {s.message ? <p class="menu-note">{s.message}</p> : null}
       <div class="menu-actions">
         <Btn ui="back" onClick={() => act.back()}>
-          Back
+          {t("menu.back")}
         </Btn>
       </div>
     </div>
@@ -470,9 +471,9 @@ function End({ m, act }: { m: MenuModel; act: MenuActions }) {
   return (
     <div data-hud="menu-end" class={"menu-panel menu-main " + (e.won ? "won" : "lost")}>
       <h1 class="menu-title" data-ui="end-title">
-        {e.title ?? (e.won ? "Victory" : "Defeat")}
+        {e.title ?? (e.won ? t("end.victory") : t("end.defeat"))}
       </h1>
-      <p class="menu-tag" data-ui="end-tag">{e.tag ?? (e.won ? "Every rival tribe has fallen." : "Your tribe is no more.")}</p>
+      <p class="menu-tag" data-ui="end-tag">{e.tag ?? (e.won ? t("end.wonTag") : t("end.lostTag"))}</p>
       <div class="menu-grid end-lines">
         {e.lines.map((l) => (
           <Fragment key={l.label}>
@@ -492,24 +493,24 @@ function End({ m, act }: { m: MenuModel; act: MenuActions }) {
       ) : null}
       {e.next ? (
         <Btn ui="next-level" primary onClick={() => act.nextLevel()}>
-          Next level
+          {t("end.nextLevel")}
         </Btn>
       ) : null}
       <Btn ui="play-again" primary={!e.next} onClick={() => act.playAgain()}>
-        {e.won ? "Play again" : "Try again"}
+        {e.won ? t("end.playAgain") : t("end.tryAgain")}
       </Btn>
       {m.replay?.ended ? (
         <div class="menu-row replay-row">
           <button class="menu-small" data-ui="end-replay" onClick={() => act.watchReplay("ended")}>
-            Watch replay
+            {t("end.watchReplay")}
           </button>
           <button class="menu-small" data-ui="end-replay-download" onClick={() => act.downloadReplay()}>
-            Download replay
+            {t("end.downloadReplay")}
           </button>
         </div>
       ) : null}
       <Btn ui="main-menu" onClick={() => act.quitToMenu()}>
-        {m.editorTest ? "Back to the editor" : "Main menu"}
+        {m.editorTest ? t("menu.backToEditor") : t("end.mainMenu")}
       </Btn>
     </div>
   );
@@ -520,7 +521,7 @@ function Records({ m, act }: { m: MenuModel; act: MenuActions }) {
   if (!r) return null;
   return (
     <div data-hud="menu-records" class="menu-panel menu-records">
-      <h2 class="menu-head">Records</h2>
+      <h2 class="menu-head">{t("menu.records")}</h2>
       <div class="records-body">
         <div class="menu-grid records-grid" data-ui="records-stats">
           {r.rows.map((l) => (
@@ -533,7 +534,7 @@ function Records({ m, act }: { m: MenuModel; act: MenuActions }) {
         <div class="records-achievements" data-ui="records-achievements">
           <p class="menu-note">{r.summary}</p>
           {r.achievements.map((a) => (
-            <p key={a.id} class={"achievement " + (a.earned ? "earned" : "locked")} data-ui={"achievement-" + a.id} title={a.earned ? `Earned ${a.earned}` : "Not yet earned"}>
+            <p key={a.id} class={"achievement " + (a.earned ? "earned" : "locked")} data-ui={"achievement-" + a.id} title={a.earned ? t("records.earned", { date: a.earned }) : t("records.notEarned")}>
               <b>{a.name}</b> <span>{a.description}</span>
             </p>
           ))}
@@ -542,7 +543,7 @@ function Records({ m, act }: { m: MenuModel; act: MenuActions }) {
       {r.message ? <p class="menu-note">{r.message}</p> : null}
       <div class="menu-actions">
         <Btn ui="back" onClick={() => act.back()}>
-          Back
+          {t("menu.back")}
         </Btn>
       </div>
     </div>

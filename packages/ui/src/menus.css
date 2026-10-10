@@ -86,7 +86,7 @@
 .replay-follow { display: flex; gap: 4px; align-items: center; }
 .replay-verified.ok { color: #b8e08a; }
 .replay-verified.bad { color: #ff9a7c; }
-.replay-row { display: flex; gap: 6px; justify-content: center; margin-top: 6px; }
+.replay-row { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 6px; }
 
 /* BACKLOG 21: records screen and earned achievements */
 .menu-records { width: min(860px, calc(100vw - 32px)); }
