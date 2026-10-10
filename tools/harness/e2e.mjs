@@ -92,6 +92,14 @@ async function flow(browser, url, vp) {
   try {
     await screenIs("main");
     await check("main");
+    // stretch 2 playtest pass: the How to play page lists six parts and Back returns to the main menu
+    await click("howto");
+    await screenIs("howto");
+    const parts = await page.$$eval(".howto-part", (els) => els.length);
+    if (parts !== 6) problem(`how to play shows ${parts} parts, expected 6`);
+    await check("howto");
+    await click("back");
+    await screenIs("main");
     // settings: rebind the help key to J, then reset
     await click("settings");
     await screenIs("settings");

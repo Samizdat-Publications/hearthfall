@@ -7,7 +7,7 @@ import { Fragment, render } from "preact";
 import { signal } from "@preact/signals";
 import { t } from "./i18n.ts";
 
-export type Screen = "none" | "main" | "campaign" | "setup" | "pause" | "settings" | "saves" | "end" | "records";
+export type Screen = "none" | "main" | "campaign" | "setup" | "pause" | "settings" | "saves" | "end" | "records" | "howto";
 
 export interface Choice {
   value: string;
@@ -207,6 +207,9 @@ function Main({ act, art, m }: { act: MenuActions; art?: string; m: MenuModel })
       <Btn ui="skirmish" onClick={() => act.go("setup")}>
         {t("menu.skirmish")}
       </Btn>
+      <Btn ui="howto" onClick={() => act.go("howto")}>
+        {t("menu.howto")}
+      </Btn>
       <Btn ui="load" onClick={() => act.openSaves("load")}>
         {t("menu.loadGame")}
       </Btn>
@@ -393,6 +396,9 @@ function Pause({ m, act }: { m: MenuModel; act: MenuActions }) {
       </Btn>
       <Btn ui="settings" onClick={() => act.go("settings")}>
         {t("menu.settings")}
+      </Btn>
+      <Btn ui="howto" onClick={() => act.go("howto")}>
+        {t("menu.howto")}
       </Btn>
       <Btn ui="quit" onClick={() => act.quitToMenu()}>
         {m.editorTest ? t("menu.backToEditor") : t("pause.quit")}
@@ -585,6 +591,36 @@ function Records({ m, act }: { m: MenuModel; act: MenuActions }) {
   );
 }
 
+/** Stretch 2 playtest pass: a one page guide (main menu and pause menu). */
+const howto = () => [
+  [t("howto.goal.head"), t("howto.goal.text")],
+  [t("howto.grow.head"), t("howto.grow.text")],
+  [t("howto.spells.head"), t("howto.spells.text")],
+  [t("howto.army.head"), t("howto.army.text")],
+  [t("howto.camera.head"), t("howto.camera.text")],
+  [t("howto.start.head"), t("howto.start.text")],
+];
+function HowTo({ act }: { act: MenuActions }) {
+  return (
+    <div data-hud="menu-howto" class="menu-panel menu-howto">
+      <h2 class="menu-head">{t("menu.howto")}</h2>
+      <div class="howto-body" data-ui="howto-body">
+        {howto().map(([head, text]) => (
+          <section key={head} class="howto-part">
+            <h3>{head}</h3>
+            <p>{text}</p>
+          </section>
+        ))}
+      </div>
+      <div class="menu-actions">
+        <Btn ui="back" onClick={() => act.back()}>
+          {t("menu.back")}
+        </Btn>
+      </div>
+    </div>
+  );
+}
+
 function Menus({ act }: { act: MenuActions }) {
   const m = menuModel.value;
   if (!m || m.screen === "none") return null;
@@ -598,6 +634,7 @@ function Menus({ act }: { act: MenuActions }) {
       {m.screen === "settings" ? <Settings s={m.settings} act={act} /> : null}
       {m.screen === "end" ? <End m={m} act={act} /> : null}
       {m.screen === "records" ? <Records m={m} act={act} /> : null}
+      {m.screen === "howto" ? <HowTo act={act} /> : null}
     </div>
   );
 }
