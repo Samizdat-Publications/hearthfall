@@ -2073,6 +2073,7 @@ export class Game {
       tick: w.tick,
       paused: this.paused,
       photo: this.photo,
+      traits: w.origin.traits ?? null,
       screen: this.screen,
       ended: this.ended,
       seed: w.seed,

@@ -134,6 +134,12 @@
     "$comment": "BACKLOG 14b: match weather, a skirmish and level option. Rain slows every unit to speedMult of its speed.",
     "rain": { "speedMult": 0.85 }
   },
+  "traits": [
+    { "$comment": "Stretch 2: tribe traits, a skirmish option. Small passive bonuses; the opponent AIs carry their personality's trait.", "id": "devout", "name": "Devout", "desc": "10 percent more mana", "income": 1.1 },
+    { "id": "swift", "name": "Swift", "desc": "units move 8 percent faster", "speed": 1.08 },
+    { "id": "fertile", "name": "Fertile", "desc": "dwellings raise children 12 percent faster", "breed": 1.12 },
+    { "id": "stalwart", "name": "Stalwart", "desc": "units take 8 percent less damage", "armor": 0.08 }
+  ],
   "forge": {
     "$comment": "BACKLOG 11 (ADR-017): Forge mode, a skirmish option. Before the match every tribe reshapes the land around its Hearth for free while units stand still; it ends after seconds or when every tribe is ready. A brush stroke changes the ground by amount height units (32 per world unit, drowning at 8 below sea).",
     "seconds": 120,

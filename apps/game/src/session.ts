@@ -26,6 +26,8 @@ export interface SkirmishParams {
   forge?: boolean;
   /** BACKLOG 14b: play in rain (absent in older saves: clear) */
   weather?: "rain";
+  /** stretch 2: the player's balance.traits id; the AI tribes then carry their personality's trait (absent: no traits) */
+  trait?: string;
   /** M9: set when this session is a campaign level (the other fields then mirror the level) */
   campaign?: { def: LevelDef; carry: CampaignCarry };
 }
@@ -47,7 +49,20 @@ export function campaignParams(def: LevelDef, carry: CampaignCarry): SkirmishPar
 
 export function skirmishInit(pack: ValidatedPack, p: SkirmishParams): WorldInit {
   if (p.campaign) return levelWorldInit({ def: p.campaign.def, carry: p.campaign.carry }, pack.files, pack.hash);
-  return { pack: pack.files, packHash: pack.hash, seed: p.seed, map: { generator: p.level, size: p.size, tribes: p.tribes }, ...(p.rules ? { rules: p.rules } : {}), ...(p.forge ? { forge: true } : {}), ...(p.weather === "rain" ? { weather: "rain" as const } : {}) };
+  return { pack: pack.files, packHash: pack.hash, seed: p.seed, map: { generator: p.level, size: p.size, tribes: p.tribes }, ...(p.rules ? { rules: p.rules } : {}), ...(p.forge ? { forge: true } : {}), ...(p.weather === "rain" ? { weather: "rain" as const } : {}), ...(p.trait ? { traits: skirmishTraits(pack, p) } : {}) };
+}
+
+/** stretch 2: trait per tribe index: the player's pick, then each AI tribe's personality trait (none for economy bots). */
+export function skirmishTraits(pack: ValidatedPack, p: SkirmishParams): (string | null)[] {
+  const out: (string | null)[] = [];
+  for (let t = 0; t < p.tribes; t++) {
+    if (t === LOCAL_TRIBE) out.push(p.trait ?? null);
+    else {
+      const id = p.ai[(t - 1) % Math.max(1, p.ai.length)];
+      out.push(pack.files.ai.personalities.find((x) => x.id === id)?.trait ?? null);
+    }
+  }
+  return out;
 }
 
 /** A new skirmish (or campaign level) world with its opponents attached (BACKLOG 50: the recorded ones when given). */

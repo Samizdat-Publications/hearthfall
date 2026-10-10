@@ -142,6 +142,8 @@ async function flow(browser, url, vp) {
     await page.dispatchEvent('[data-ui="setup-seed"]', "change");
     // BACKLOG 13: a victory variant from the setup reaches the sim, the HUD and the end screen
     await page.selectOption('[data-ui="setup-victory"]', "king_of_hill");
+    // stretch 2: a tribe trait from the setup reaches the sim (the rivals carry their personality traits)
+    await page.selectOption('[data-ui="setup-trait"]', "devout");
     const vicText = await page.textContent('[data-ui="setup-victory-text"]');
     if (!/4 minutes/.test(vicText ?? "")) problem(`victory hint for King of the Hill: ${vicText}`);
     await check("setup");
@@ -149,6 +151,8 @@ async function flow(browser, url, vp) {
     await screenIs("none");
     const rules = await page.evaluate(() => window.__game.rules());
     if (rules?.id !== "king_of_hill" || rules.winner !== -1) problem(`skirmish rules ${JSON.stringify(rules)}`);
+    const traits = await page.evaluate(() => window.__game.getSummary().traits);
+    if (traits?.[0] !== "devout" || traits.length !== 3) problem(`skirmish traits ${JSON.stringify(traits)}`);
     const tribes = await page.evaluate(() => window.__game.getSummary().tribes.length);
     if (tribes !== 3) problem(`skirmish has ${tribes} tribes, expected 3`);
     await page.evaluate(() => window.__game.step(200));

@@ -885,7 +885,7 @@ export class EconomySystem {
       const frac = pops[tr] / caps[tr];
       const start = breed.nearCapSlowdownStartPct / 100;
       const near = frac <= start ? 1 : 1 + ((frac - start) / (1 - start)) * (breed.nearCapFactorAtCap - 1);
-      const ticks = ((lv.breedSeconds * hz) / (0.5 + 0.5 * occ)) * near;
+      const ticks = ((lv.breedSeconds * hz) / (0.5 + 0.5 * occ)) * near / (w.traitMods[tr]?.breed ?? 1);
       E.progress[d] += 1 / ticks;
       if (E.progress[d] >= 1) {
         const [bx, by] = this.doorOf(d);
@@ -979,7 +979,7 @@ export class EconomySystem {
       if (tr >= 0 && tr < rates.length) rates[tr] += this.manaRate(i);
     }
     for (const tr of w.tribes) {
-      const rate = rates[tr.index] * tr.eco.incomeMult;
+      const rate = rates[tr.index] * tr.eco.incomeMult * (w.traitMods[tr.index]?.income ?? 1);
       tr.eco.incomePerMin = tr.alive ? rate : 0;
       this.distribute(tr.index, tr.alive ? rate / per : 0);
     }

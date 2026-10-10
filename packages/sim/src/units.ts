@@ -405,7 +405,7 @@ export class UnitSystem {
       const pf = this.pfs[nav];
       if (nav !== NAV.land) pf.refresh();
       if (E.order[i] !== ORDER.none && !E.waitPath[i]) {
-        const speed = (units[E.type[i]].speed * this.w.speedMult) / hz;
+        const speed = (units[E.type[i]].speed * this.w.speedMult * (this.w.traitMods[E.tribe[i]]?.speed ?? 1)) / hz;
         const fg = E.flowGoal[i];
         // effective goal: a goal off the walkable land (sea, cliff) was snapped to the nearest walkable
         // vertex (the flow goal or the path's last waypoint); steer to and arrive at that vertex

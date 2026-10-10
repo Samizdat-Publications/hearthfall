@@ -69,6 +69,10 @@
             "minimum": 0,
             "maximum": 1
           },
+          "trait": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
           "towerFromPopShare": {
             "type": "number",
             "minimum": 0,

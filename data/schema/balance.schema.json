@@ -950,6 +950,55 @@
       ],
       "additionalProperties": false
     },
+    "traits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "$comment": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "desc": {
+            "type": "string",
+            "minLength": 1
+          },
+          "income": {
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 2
+          },
+          "speed": {
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 2
+          },
+          "breed": {
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 2
+          },
+          "armor": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 0.5
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "desc"
+        ],
+        "additionalProperties": false
+      }
+    },
     "forge": {
       "type": "object",
       "properties": {

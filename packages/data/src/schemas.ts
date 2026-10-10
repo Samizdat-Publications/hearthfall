@@ -210,6 +210,25 @@ export const BalanceSchema = z.strictObject({
     })
     .optional(),
   /**
+   * Parking lot (stretch 2): tribe traits, small passive bonuses a skirmish tribe may carry. Each trait scales
+   * one or more of: mana income, unit move speed, dwelling birth rate, and damage its units take (armor is
+   * the share removed). Optional so frozen packs keep their hash.
+   */
+  traits: z
+    .array(
+      z.strictObject({
+        ...comment,
+        id,
+        name: z.string().min(1),
+        desc: z.string().min(1),
+        income: z.number().min(0.5).max(2).optional(),
+        speed: z.number().min(0.5).max(2).optional(),
+        breed: z.number().min(0.5).max(2).optional(),
+        armor: z.number().min(0).max(0.5).optional(),
+      }),
+    )
+    .optional(),
+  /**
    * BACKLOG 11 (ADR-017): Forge mode, an optional pre-match phase of `seconds` in which units are frozen and
    * each tribe reshapes the land for free within `radius` cells of its own Hearth (never within `hearthClear`
    * cells of it), one brush stroke (raise, lower, flatten, smooth: radius `brushRadius`, `amount` height units,
@@ -910,6 +929,8 @@ export const PersonalitySchema = z.strictObject({
   spellPrefs: z.array(id),
   scouting: z.number().min(0).max(1),
   towerAffinity: z.number().min(0).max(1),
+  /** stretch 2: the balance.traits id this personality carries when a skirmish is played with traits */
+  trait: id.optional(),
   /** BACKLOG 64: no tower is planned before this share of economyTargetPop is reached (unless threatened) */
   towerFromPopShare: z.number().min(0).max(1).optional(),
   /** BACKLOG 2: keep this many Shades from this match minute on and send them at enemy buildings */

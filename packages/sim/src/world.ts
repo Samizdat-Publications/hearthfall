@@ -78,7 +78,18 @@ export interface WorldInit {
   forge?: boolean;
   /** BACKLOG 14b: "rain" slows every unit (balance.weather.rain); absent or "clear": no effect, older replays */
   weather?: "clear" | "rain";
+  /** stretch 2: balance.traits id per tribe index (null or absent: none); absent in older replays */
+  traits?: (string | null)[];
 }
+
+/** Multipliers a tribe trait applies (balance.traits); NO_TRAIT for a tribe without one. */
+export interface TraitMods {
+  income: number;
+  speed: number;
+  breed: number;
+  armor: number;
+}
+export const NO_TRAIT: TraitMods = { income: 1, speed: 1, breed: 1, armor: 0 };
 
 /** BACKLOG 35: the WorldInit a snapshot came from, without the pack files (plain JSON) */
 export type WorldOrigin = Omit<WorldInit, "pack" | "populate">;
@@ -104,6 +115,7 @@ export function originMismatch(origin: WorldOrigin, init: WorldInit): string | n
   if ((origin.rules ?? null) !== (init.rules ?? null)) return `rules ${origin.rules ?? "none"} vs ${init.rules ?? "none"}`;
   if (!!origin.forge !== !!init.forge) return "forge phase differs";
   if ((origin.weather ?? "clear") !== (init.weather ?? "clear")) return "weather differs";
+  if (canon(origin.traits ?? []) !== canon(init.traits ?? [])) return "tribe traits differ";
   if ((origin.level?.def.id ?? null) !== (init.level?.def.id ?? null)) return `level ${origin.level?.def.id ?? "none"} vs ${init.level?.def.id ?? "none"}`;
   return null;
 }
@@ -184,6 +196,8 @@ export class World {
   readonly origin: WorldOrigin;
   /** BACKLOG 14b: unit speed factor from the weather (1 when clear) */
   readonly speedMult: number;
+  /** stretch 2: per tribe index, the trait multipliers (NO_TRAIT when none) */
+  readonly traitMods: TraitMods[];
   controllers: Controller[] = [];
   readonly mapInfo: { generator: string; seedUsed: number; rerolls: number; landFraction: number };
 
@@ -194,6 +208,12 @@ export class World {
     this.seed = init.seed | 0;
     this.weather = init.weather === "rain" ? "rain" : "clear";
     this.speedMult = this.weather === "rain" ? (this.cfg.pack.balance.weather?.rain.speedMult ?? 1) : 1;
+    this.traitMods = (init.traits ?? []).map((tid) => {
+      if (tid === null || tid === undefined) return NO_TRAIT;
+      const t = this.cfg.pack.balance.traits?.find((x) => x.id === tid);
+      if (!t) throw new Error(`unknown tribe trait ${tid}`);
+      return { income: t.income ?? 1, speed: t.speed ?? 1, breed: t.breed ?? 1, armor: t.armor ?? 0 };
+    });
     const gen = generateMap(this.cfg, init.map, this.seed);
     this.terrain = gen.terrain;
     // distinct from the generator's private Rng so in-sim draws never replay generation numbers
@@ -285,6 +305,9 @@ export class World {
     if (E.cat[i] === CAT.unit && E.inside[i] >= 0) return;
     // Ward (BACKLOG 1): a shielded unit takes no damage until the shield ends or is popped
     if (E.cat[i] === CAT.unit && E.ward[i] > 0) return;
+    // stretch 2: a trait's armor removes a share of every hit on the tribe's units
+    const armor = E.cat[i] === CAT.unit && E.tribe[i] >= 0 ? (this.traitMods[E.tribe[i]]?.armor ?? 0) : 0;
+    if (armor > 0) amount *= 1 - armor;
     if (fromTribe >= 0) E.lastHit[i] = fromTribe;
     E.hitTick[i] = this.tick;
     if (E.chant[i] > 0) {
@@ -575,6 +598,8 @@ export class World {
     this.forge?.hashInto(mf);
     // BACKLOG 14b: hashed only in rain, so clear worlds keep their hashes
     if (this.weather === "rain") mf.u32(1414).f64(this.speedMult);
+    // stretch 2: hashed only when some tribe has a trait, so worlds without traits keep their hashes
+    if (this.traitMods.some((m) => m !== NO_TRAIT)) for (const m of this.traitMods) mf.u32(7007).f64(m.income).f64(m.speed).f64(m.breed).f64(m.armor);
     this.vision.hashInto(mf);
     const meta = mf.hex();
     const all = new Fnv().u32(parseInt(terrain, 16)).u32(parseInt(entities, 16)).u32(parseInt(rng, 16)).u32(parseInt(meta, 16)).hex();

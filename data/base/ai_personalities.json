@@ -20,6 +20,7 @@
   "personalities": [
     {
       "id": "aggressive",
+      "trait": "swift",
       "tribeColorDefault": "crimson",
       "economyTargetPop": 40,
       "armyMix": {
@@ -44,6 +45,7 @@
     },
     {
       "id": "sneaky",
+      "trait": "devout",
       "tribeColorDefault": "amber",
       "economyTargetPop": 42,
       "armyMix": {
@@ -72,6 +74,7 @@
     },
     {
       "id": "turtle",
+      "trait": "stalwart",
       "tribeColorDefault": "jade",
       "economyTargetPop": 45,
       "armyMix": {

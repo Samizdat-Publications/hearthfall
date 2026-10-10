@@ -1,13 +1,26 @@
 import { describe, expect, it } from "vitest";
 import { loadBasePack } from "../../../tools/harness/datapack.mjs";
 import { emptyStats, statsFrom } from "../src/achievements.ts";
-import { createSkirmish, decodeSave, encodeSave, makeSave, restoreSave, type SkirmishParams } from "../src/session.ts";
+import { createSkirmish, decodeSave, encodeSave, makeSave, restoreSave, skirmishTraits, type SkirmishParams } from "../src/session.ts";
 
 const pack = loadBasePack().pack!;
 
 const P: SkirmishParams = { seed: 11, level: "continents", size: 96, tribes: 3, ai: ["aggressive", "sneaky"], difficulty: "hard" };
 
 describe("skirmish save games (M8)", () => {
+  it("stretch 2: a player trait gives the AI tribes their personality traits and survives a save", () => {
+    expect(skirmishTraits(pack, { ...P, trait: "fertile" })).toEqual(["fertile", "swift", "devout"]);
+    const sp = { ...P, trait: "fertile" };
+    const a = createSkirmish(pack, sp);
+    expect(a.origin.traits).toEqual(["fertile", "swift", "devout"]);
+    expect(createSkirmish(pack, P).origin.traits).toBeUndefined();
+    a.run(40 * 20);
+    const b = restoreSave(pack, decodeSave(encodeSave(makeSave(a, sp, [], [], "2026-10-10T00:00:00Z"))));
+    a.run(40 * 20);
+    b.run(40 * 20);
+    expect(b.hash().all).toBe(a.hash().all);
+  });
+
   it("save then load reproduces the hash and the same future, opponents included", () => {
     const a = createSkirmish(pack, P);
     a.run(150 * 20);

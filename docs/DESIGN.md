@@ -189,7 +189,8 @@ Each tribe sees around its own units (7 cells; the Shaper 10, Shades 8) and buil
 2. **Campaign** (data-driven levels): each level is a data file with map, tribes, objectives, triggers, unlocks. v1 shipped 3 levels; Stretch 2 has 13, each teaching one system: Raise Land, shrine races, defense, Reliquaries, totems and unlocks, growth, fog scouting, boats (8), balloons (9), Hold the Reliquaries (10), King of the Hill (11), the Forge (12) and a three-island finale (13). A level can name victory rules (its objective is then to win them) and open with a Forge.
 3. **Sandbox/God mode** (dev and fun): free spells, spawn units, edit terrain. Also used by tests.
 4. **Forge** (skirmish option, BACKLOG 11): a 2 minute pre-match phase. Units stand still; each tribe reshapes the land within 14 cells of its own Hearth for free (raise, lower, flatten, smooth; up to 120 strokes), then the match starts when every tribe is ready or time runs out. The AI digs a moat (turtle), raises walls (sneaky) or flattens building room (aggressive), always leaving gaps.
-5. Later: online multiplayer (lockstep, sim is already deterministic), co-op vs AI.
+5. **Tribe traits** (skirmish option, stretch 2): the player picks one small passive bonus from `balance.traits` (Devout 10 percent more mana, Swift units 8 percent faster, Fertile dwellings 12 percent faster births, Stalwart units take 8 percent less damage); with a trait picked, each AI tribe carries its personality's trait (aggressive Swift, sneaky Devout, turtle Stalwart; economy bots none). Off by default, so plain skirmishes are unchanged.
+6. Later: online multiplayer (lockstep, sim is already deterministic), co-op vs AI.
 
 ## 15. Art direction
 

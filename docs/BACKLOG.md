@@ -117,6 +117,6 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 
 ## Parking lot (ideas, unranked)
 - Wild people tribe that can be Called (converted) for growth.
-- Tribe traits (small passive bonuses) as data.
+- Tribe traits (small passive bonuses) as data. DONE (10/10/2026, stretch 2): balance.traits (Devout, Swift, Fertile, Stalwart), personality `trait`, a skirmish setup option (DESIGN section 14); traits.test.ts, session test, e2e.
 - Spell combos (Raise Land then Erode for a moat) highlighted by a hint system.
 - Photo mode. DONE (10/10/2026, stretch 2): F toggles it (DESIGN camera section); e2e covers HUD hidden, pause, the PNG download and the restored pause state.
