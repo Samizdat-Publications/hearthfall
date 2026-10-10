@@ -7,7 +7,7 @@ import { CAT } from "../../packages/sim/src/entities.ts";
 import { BSTATE } from "../../packages/sim/src/economy.ts";
 import { Rng } from "../../packages/sim/src/rng.ts";
 import { walkableComponents } from "../../packages/sim/src/generator.ts";
-import { makeBot } from "../../packages/ai/src/index.ts";
+import { makeBot, PICKER_MOVES } from "../../packages/ai/src/index.ts";
 import { loadBasePack } from "./datapack.mjs";
 
 const spec = workerData;
@@ -85,8 +85,26 @@ const chaseGiveUps = new Map();
 const chaseLimit = w.cfg.pack.balance.gates.maxChaseGiveUpsPerUnit ?? 5;
 let maxStuck = 0;
 let partial = false;
+// BACKLOG 23: --picker asks the Decisions API for a macro move per opponent AI every 30 game seconds
+const pickTicks = 30 * w.cfg.tickHz;
+const picker = spec.picker && aiMode ? await import("../visionqa/picker.mjs") : null;
+const picks = new Map();
+let pickUsd = 0;
+let pickErrors = 0;
 const t0 = performance.now();
 for (let k = 0; k < ticks; k++) {
+  if (picker && w.tick % pickTicks === 0) {
+    for (const a of ais) {
+      if (!a.bot.setFocus || !w.tribes[a.tribe].alive) continue;
+      const r = await picker.pickMove(w, a.tribe, PICKER_MOVES);
+      pickUsd += r.usd;
+      if (r.error) pickErrors++;
+      const m = (picks.get(a.tribe) ?? picks.set(a.tribe, {}).get(a.tribe));
+      const key = r.move ?? "none";
+      m[key] = (m[key] ?? 0) + 1;
+      a.bot.setFocus(r.move ? PICKER_MOVES[r.move] : null, w.tick + pickTicks);
+    }
+  }
   w.step([]);
   if (k % 50 === 0 && performance.now() - t0 + (Date.now() - spec.startMs - (performance.now() - t0)) > spec.deadlineMs) {
     partial = true;
@@ -141,5 +159,5 @@ parentPort.postMessage({
   tick: w.tick,
   violations,
   metrics: { ticks: w.tick, avgTickMs: +(ms / Math.max(1, w.tick)).toFixed(3), drowned: ec("drowned"), orderFailed: ec("orderFailed"), orderGaveUp: ec("orderGaveUp"), moves: w.units.ordersIssued, maxStuckSec: +(maxStuck / w.cfg.tickHz).toFixed(1), maxChaseGiveUps: Math.max(0, ...chaseGiveUps.values()), chaseGiveUps: [...chaseGiveUps.values()].reduce((s, n) => s + n, 0), units: w.count((i) => w.ents.cat[i] === 3), popByMinute, born: ec("born"), buildings: ec("buildingDone"), trained: ec("trained"), killed: ec("killed"), converted: ec("converted"), fireballs: ec("fireball"), eliminated: ec("tribeEliminated"), killsByMinute: Array.from({ length: Math.ceil(w.tick / minuteTicks) }, (_, i) => killsByMinute[i] ?? 0), alive: w.tribes.filter((t) => t.alive).length },
-  ai: aiMode ? { ais: ais.map((a) => ({ tribe: a.tribe, type: a.spec.type, personality: a.spec.personality ?? null, difficulty: a.spec.difficulty ?? null, units: w.count((i) => w.ents.cat[i] === 3 && w.ents.tribe[i] === a.tribe), alive: w.tribes[a.tribe].alive, stats: a.bot.stats ?? null, castsDone: castsDone[a.tribe] ?? {} })), alive: w.rules && w.rules.winner >= 0 ? [w.rules.winner] : w.tribes.filter((t) => t.alive).map((t) => t.index), why: w.rules?.why || null, endMinute: +(w.tick / minuteTicks).toFixed(2), spellCast: ec("spellCast") } : null,
+  ai: aiMode ? { ais: ais.map((a) => ({ tribe: a.tribe, type: a.spec.type, personality: a.spec.personality ?? null, difficulty: a.spec.difficulty ?? null, units: w.count((i) => w.ents.cat[i] === 3 && w.ents.tribe[i] === a.tribe), alive: w.tribes[a.tribe].alive, stats: a.bot.stats ?? null, castsDone: castsDone[a.tribe] ?? {}, ...(picker ? { picks: picks.get(a.tribe) ?? {} } : {}) })), ...(picker ? { pickUsd, pickErrors } : {}), alive: w.rules && w.rules.winner >= 0 ? [w.rules.winner] : w.tribes.filter((t) => t.alive).map((t) => t.index), why: w.rules?.why || null, endMinute: +(w.tick / minuteTicks).toFixed(2), spellCast: ec("spellCast") } : null,
 });

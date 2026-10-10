@@ -34,7 +34,27 @@ export interface OpponentState {
   goals?: [number, number, number][];
   /** BACKLOG 67: waves still watched for arrival (absent in older saves) */
   waves?: { ids: number[]; x: number; y: number; until: number }[];
+  /** BACKLOG 23: [focused action id, until tick] set by a move picker (absent when none) */
+  focus?: [string, number];
 }
+
+/**
+ * BACKLOG 23 (docs/VISIONQA.md section 7): the macro moves a move picker chooses from, each the OpponentAI
+ * action it focuses (hold focuses nothing). The picker never issues unit commands; the AI still decides.
+ */
+export const PICKER_MOVES: Record<string, string | null> = {
+  build_army_lodge: "buildLodge",
+  build_defense: "buildTower",
+  train_troops: "train",
+  raid_enemy: "attack",
+  defend_hearth: "defend",
+  claim_shrine: "worship",
+  contest_site: "contest",
+  cast_spells: "cast",
+  scout: "scout",
+  sabotage: "sabotage",
+  hold: null,
+};
 
 export interface OpponentOptions {
   tribe: number;
@@ -135,6 +155,9 @@ export class OpponentAI implements Controller {
   private needBridge = false;
   private scout = NO_ENTITY;
   private readonly actions: Action[];
+  /** BACKLOG 23: action a move picker focuses until focusUntil (a tick) */
+  private focus: string | null = null;
+  private focusUntil = -1;
 
   constructor(o: OpponentOptions) {
     this.tribe = o.tribe;
@@ -260,10 +283,20 @@ export class OpponentAI implements Controller {
     });
   }
 
+  /**
+   * BACKLOG 23: a move picker (outside the sim) focuses one action until a tick: its utility score gets
+   * `shared.focusBoost`, so the AI leans that way while every other consideration still counts.
+   */
+  setFocus(action: string | null, untilTick: number): void {
+    if (action !== null && !this.actions.some((a) => a.id === action)) throw new Error(`unknown AI action ${action}`);
+    this.focus = action;
+    this.focusUntil = untilTick;
+  }
+
   /** Save game memory: scouted tribes, the scout and the stats (decisions also gate the one-time setup). */
   saveState(): OpponentState {
     const st = this.stats;
-    return { known: [...this.known], scout: this.scout, stats: { ...st, actions: { ...st.actions }, casts: { ...st.casts } }, ferried: [...this.ferried], goals: [...this.goals].map(([b, g]) => [b, g[0], g[1]]), waves: this.watched.map((v) => ({ ...v, ids: [...v.ids] })) };
+    return { known: [...this.known], scout: this.scout, stats: { ...st, actions: { ...st.actions }, casts: { ...st.casts } }, ferried: [...this.ferried], goals: [...this.goals].map(([b, g]) => [b, g[0], g[1]]), waves: this.watched.map((v) => ({ ...v, ids: [...v.ids] })), ...(this.focus ? { focus: [this.focus, this.focusUntil] as [string, number] } : {}) };
   }
 
   loadState(state: unknown): void {
@@ -273,6 +306,8 @@ export class OpponentAI implements Controller {
     this.ferried = new Map(o.ferried ?? []);
     this.goals = new Map((o.goals ?? []).map(([b, x, y]) => [b, [x, y]]));
     this.watched = (o.waves ?? []).map((v) => ({ ...v, ids: [...v.ids] }));
+    this.focus = o.focus?.[0] ?? null;
+    this.focusUntil = o.focus?.[1] ?? -1;
     Object.assign(this.stats, { ...o.stats, actions: { ...o.stats.actions }, casts: { ...o.stats.casts } });
   }
 
@@ -321,7 +356,8 @@ export class OpponentAI implements Controller {
     // every decision: spells unlocked mid-match (worship sites) start charging too
     this.setup(w, out);
     const acts = this.actions.filter((a) => (a.id !== "worship" || w.worship.sites.length > 0) && (a.id !== "contest" || this.contested(w).length > 0) && (this.p.shades || !SHADE_ACTIONS.has(a.id)));
-    const scored = acts.map((a, k) => ({ a, k, s: a.score(c) + (w.rng.float("ai") - 0.5) * 2 * this.noise }));
+    const boost = this.focus !== null && w.tick < this.focusUntil ? (this.sh.focusBoost ?? 0.6) : 0;
+    const scored = acts.map((a, k) => ({ a, k, s: a.score(c) + (w.rng.float("ai") - 0.5) * 2 * this.noise + (a.id === this.focus ? boost : 0) }));
     scored.sort((x, y) => y.s - x.s || x.k - y.k);
     let ran = 0;
     for (const { a, s } of scored) {

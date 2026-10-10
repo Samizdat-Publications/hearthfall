@@ -57,6 +57,29 @@ describe("OpponentAI (M7)", () => {
     expect(t.decisions).toBeGreaterThan(a.decisions);
   }, 60000);
 
+  it("BACKLOG 23: setFocus leans the AI toward one action for a while, saves with the state and rejects unknown actions", () => {
+    const run = (focus: string | null) => {
+      const p = basePack();
+      const w = new World({ pack: p.files, packHash: p.hash, seed: 1002, map: { generator: "continents", size: 128, tribes: 2 } });
+      const ai = makeBot({ type: "opponent", tribe: 0, personality: "aggressive" }) as OpponentAI;
+      w.controllers.push(ai);
+      for (let t = 0; t < 8 * 60 * w.cfg.tickHz; t++) {
+        if (focus && t % (30 * w.cfg.tickHz) === 0) ai.setFocus(focus, w.tick + 30 * w.cfg.tickHz);
+        w.step([]);
+      }
+      return ai;
+    };
+    const plain = run(null);
+    const towers = run("buildTower");
+    expect(towers.stats.actions.buildTower ?? 0).toBeGreaterThan(plain.stats.actions.buildTower ?? 0);
+    const st = towers.saveState();
+    expect(st.focus?.[0]).toBe("buildTower");
+    const copy = makeBot({ type: "opponent", tribe: 0, personality: "aggressive" }) as OpponentAI;
+    copy.loadState(JSON.parse(JSON.stringify(st)));
+    expect(copy.saveState()).toEqual(st);
+    expect(() => towers.setFocus("fly_to_moon", 10)).toThrow();
+  }, 60000);
+
   it("BACKLOG 69: the shared AI numbers come from ai_personalities.json shared (older packs: the old literals)", () => {
     const p = basePack();
     const { $comment: _c, ...shipped } = p.files.ai.shared!;

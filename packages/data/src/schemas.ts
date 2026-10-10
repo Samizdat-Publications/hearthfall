@@ -970,6 +970,8 @@ export const AiSharedSchema = z.strictObject({
   castReachSlack: z.number().nonnegative(),
   /** BACKLOG 88: settlers kept home besides the ones sent to worship (optional: shared blocks frozen before it; default 4) */
   worshipKeepSettlers: z.number().int().nonnegative().optional(),
+  /** BACKLOG 23: score added to the action a move picker focuses on (OpponentAI.setFocus) */
+  focusBoost: z.number().nonnegative().optional(),
 });
 export type AiShared = z.infer<typeof AiSharedSchema>;
 export const AI_SHARED_DEFAULTS: AiShared = {

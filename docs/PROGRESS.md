@@ -24,7 +24,7 @@ Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when
 - Making-of archive: making-of/ via `npm run making-of -- add`; storyboard in making-of/README.md. Making-of page (Stewart's request): https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5, rebuild with `npm run making-of -- page` and republish to that URL after every backlog item (README steps).
 
 ## Next 3 actions
-1. BACKLOG M items left in scope: 39 close-up ground detail, 98 long sea routes, 23 VisionQA move picker evaluation, then parking lot (photo mode, tribe traits). 60 is covered by 65.
+1. BACKLOG 23 in progress (paused at s2h 13.8 for Stewart's drive): the picker code is committed (OpponentAI.setFocus, tools/visionqa/picker.mjs, soak --picker, diversity line). The baseline 16-seed ai soak (20 min) gave action mix 0.368, unfinished 0.25, end minute sd 2.73. Next: run the same soak with --picker via `node --env-file-if-exists=.env tools/harness/cli.mjs soak --mode ai --seeds 16 --minutes 20 --picker`, compare, decide keep (off by default) or remove, update VISIONQA.md section 7 and BACKLOG 23. Then parking lot (photo mode, tribe traits).
 2. Full npm run qa every 4 h (last PASS at a1cd54d around s2h 13, next due by s2h 17); soaks after sim or AI changes (`npm run soak:nightly`); full scenarios layer after any sim change.
 3. At s2h >= 23 or STOP: end ritual (full qa, soaks, State of the game plus First human playtest, PROGRESS_LOG, tag s2-done, making-of, STRETCH 2 DONE).
 

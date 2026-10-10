@@ -529,6 +529,7 @@ Effect primitives (`spells[].effects[]`, discriminated by `type`):
 | `shared.attackScoreSurplus` | number | yes |
 | `shared.castReachSlack` | number | yes |
 | `shared.worshipKeepSettlers` | int |  |
+| `shared.focusBoost` | number |  |
 
 ## terrain.json
 

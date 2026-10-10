@@ -9,7 +9,7 @@ import { RandomLegalBot, SpellSpammerBot, rusher, turtleBot } from "./testBots.t
 export { WanderBot, type WanderOptions } from "./wander.ts";
 export { EconomyBot, type EconomyBotOptions } from "./economyBot.ts";
 export { WarBot, type WarBotOptions } from "./warBot.ts";
-export { OpponentAI, type OpponentOptions, type OpponentState, type OpponentStats, type Personality } from "./opponent.ts";
+export { OpponentAI, PICKER_MOVES, type OpponentOptions, type OpponentState, type OpponentStats, type Personality } from "./opponent.ts";
 export { RUSHER, TURTLE_BOT, RandomLegalBot, SpellSpammerBot, rusher, turtleBot } from "./testBots.ts";
 
 /**

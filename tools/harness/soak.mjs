@@ -197,7 +197,7 @@ export default async function soakCmd(out, _cmd, args) {
   const seeds = Number(args.seeds ?? 8);
   const minutes = Number(args.minutes ?? 10);
   const jobs = args.jobs && args.jobs !== "auto" ? Number(args.jobs) : Math.max(1, availableParallelism() - 2);
-  const base = { mode: typeof args.mode === "string" ? args.mode : "wander", minutes, units: Number(args.units ?? 1000), map: args.map ?? "continents", size: Number(args.size ?? 128), tribes: Number(args.tribes ?? 2), deadlineMs: 8 * 60 * 1000 - 20000, ...(typeof args.rules === "string" ? { rules: args.rules } : {}), reinforce: Number(args.reinforce ?? 0), ...(typeof args.mods === "string" ? { mods: args.mods.split(",").filter(Boolean) } : {}) };
+  const base = { mode: typeof args.mode === "string" ? args.mode : "wander", minutes, units: Number(args.units ?? 1000), map: args.map ?? "continents", size: Number(args.size ?? 128), tribes: Number(args.tribes ?? 2), deadlineMs: 8 * 60 * 1000 - 20000, ...(typeof args.rules === "string" ? { rules: args.rules } : {}), reinforce: Number(args.reinforce ?? 0), ...(args.picker ? { picker: true } : {}), ...(typeof args.mods === "string" ? { mods: args.mods.split(",").filter(Boolean) } : {}) };
   const t0 = Date.now();
   const specs = aiSpecs(base, args, seeds, t0) ?? Array.from({ length: seeds }, (_, k) => ({ ...base, seed: 1000 + k, startMs: t0 }));
   const results = [];
@@ -274,6 +274,11 @@ export default async function soakCmd(out, _cmd, args) {
     const r = aiReport(base.mode, results, minutes, loadBasePack().pack.files.balance.gates.aiEliminatesIdleMinutes);
     Object.assign(metrics, r.metrics);
     for (const l of r.lines) out.line(l);
+    // BACKLOG 23: strategy diversity (reported, never gated), the yardstick for the --picker evaluation
+    const { diversity } = await import("../visionqa/picker.mjs");
+    metrics.diversity = diversity(results);
+    if (base.picker) metrics.picker = { usd: +results.reduce((a, x) => a + (x.ai?.pickUsd ?? 0), 0).toFixed(5), errors: results.reduce((a, x) => a + (x.ai?.pickErrors ?? 0), 0) };
+    out.line(`diversity: action mix ${metrics.diversity.actionDiversity} (${Object.entries(metrics.diversity.perPersonality).map(([p, v]) => `${p} ${v}`).join(", ")}), unfinished ${metrics.diversity.unfinishedShare}, end minute sd ${metrics.diversity.endMinuteSd}${metrics.picker ? ` | picker $${metrics.picker.usd}, ${metrics.picker.errors} errors` : ""}`);
     writeReport("soak.json", { metrics, results });
     if (!bad.length && r.fail) return finish("FAIL", r.fail);
   }
