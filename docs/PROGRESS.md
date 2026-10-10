@@ -4,6 +4,7 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 
 ## Now
 Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when STOP exists). Plan: BACKLOG 14a look v3, polish, balance, rules and victory variants, campaign, boats and Skyloft, Forge, map editor (CLAUDE.md "Stretch 2").
+- S2 block C DONE (balance): 65 chant breakDamage 600 plus rooted against ranged knock, Warden and Chanter retune (triangle soak 6 v 10 probes 70, 60, 80 percent); 64/71 AI spells by value, turtle towers after half its economy (towerFromPopShare), turtle first wave minute 9 (24-seed ai soak aggressive 9, turtle 8, sneaky 6); 83 level maxTroops, Hold the Line rival cap 8 and second wave 6 (idle loses, turtle defender wins). Soaks ai-idle 12/12, difficulty PASS (easy 0, hard 0.44, brutal 0.75), bots PASS. Playtest-analyst not needed (targets met by probes). Soak minutes: ai-idle 25, difficulty 20 (defaults fail).
 - S2 block B DONE (polish): 45 order failed toast and red marker, 56 troop panel stance icons, build cost chips, rally flag, 81 menu title art, larger menu text, menus shot set (shot-menus qa layer), 36 quake lead-in (terrainOp leadInSeconds, FX.leadIn, edge, dust, warning toast). Full npm run qa PASS at 4c16b37 (about 03:35Z). Soak ai clean after 81 and 36.
 - S2 block A DONE (look v3, ADR-013): 14a-1 tilt-shift post on by default, 14a-2 painted water, 14a-3 clumped trees by altitude, 14a-4 v3 thatched dwellings (alias) and snow and strata bands, 14 lighting presets (day, golden, evening) and visual rain. All shot sets re-approved, look set (12) in npm run qa, bench:render baseline re-saved at 3.7 ms (busy PC noise). Sonnet review: no blocker; minor fixes done, rest in BACKLOG 14a (14c).
 - Run 1 done 2026-10-09T23:58Z (about 26.5 h): m0-done to m11-done tagged, every P1 done or cut (5a, see Cuts); full npm run qa PASS at 5b2587a; its sentinel line is in PROGRESS_LOG.
@@ -26,9 +27,9 @@ Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when
 - M1 to M5 shipped details: PROGRESS_LOG (and ARCHITECTURE).
 
 ## Next 3 actions
-1. S2 block C balance: BACKLOG 65 (chant breaks on accumulated damage, ranged interrupt chance, matchup probes), then 64/71 (turtle towers later, castScore by matchup), then 83 (Hold the Line rival cap). Playtest-analyst at most 2 passes.
-2. Full npm run qa at least every 4 hours (last PASS at 4c16b37, about 03:35Z; next by about 07:30Z).
-3. Soaks (economy, ai, ai-idle, bots, difficulty) after every balance change and every 3 items.
+1. S2 block D: RulesRuntime in the sim and victory variants (ADR-014): conquest parity, holdSites, survive, kingOfHill as data; HUD readout, setup option, AI goes for objective sites; scenarios, goldens reblessed, e2e end screen.
+2. Full npm run qa at least every 4 hours and at block exits (block C exit run started about 04:35Z).
+3. Then block E campaign part 1 (ADR-015), F vehicles (ADR-016, Opus review), G Forge, H campaign 8 to 13, I map editor.
 
 ## Blocked
 (none)
