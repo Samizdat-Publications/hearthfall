@@ -820,6 +820,16 @@
       "when": "2026-10-10T00:59:03.027Z",
       "source": "external:coast_post.png",
       "bytes": 591224
+    },
+    {
+      "file": "b14/20261010-0105_clump-trees.png",
+      "milestone": "B14",
+      "kind": "screenshot",
+      "caption": "Look v3, trees: round clumped broadleaves in yellow-greens fill the lowlands while conifers keep the heights, each grove jittered warm or cool.",
+      "highlight": false,
+      "when": "2026-10-10T01:05:33.078Z",
+      "source": "external:trees.png",
+      "bytes": 595870
     }
   ]
 }

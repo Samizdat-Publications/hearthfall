@@ -154,7 +154,7 @@ export class ThreeRenderer implements Renderer {
     this.propMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend);
     this.unitMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend, undefined, true);
     this.ringMat = bendMaterial(new THREE.MeshBasicMaterial({ color: pal.foam ?? "#e6f4f8", transparent: true, opacity: 0.9, depthWrite: false }), this.bend);
-    this.trees = new TreeLayer(this.propMat, pal);
+    this.trees = new TreeLayer(this.propMat, pal, null, 8192, rs?.trees);
     for (const m of this.trees.meshes) this.scene.add(m);
     this.ghost = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 4, 4).rotateX(-Math.PI / 2), bendMaterial(new THREE.MeshBasicMaterial({ color: "#8dbf5a", transparent: true, opacity: 0.55, depthWrite: false }), this.bend));
     this.ghost.visible = false;
@@ -275,7 +275,7 @@ export class ThreeRenderer implements Renderer {
         this.scene.remove(m);
         m.dispose();
       }
-      this.trees = new TreeLayer(this.propMat, this.pal, this.models);
+      this.trees = new TreeLayer(this.propMat, this.pal, this.models, 8192, this.styleRender?.trees);
       for (const m of this.trees.meshes) this.scene.add(m);
       if (this.world) this.buildLayers(this.world);
     } finally {

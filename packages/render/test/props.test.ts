@@ -1,44 +1,76 @@
-// BACKLOG 0a: the tree layer mixes a tall conifer into the GLB tree models so forests read as pine belts.
+// BACKLOG 0a and 14a-3: the tree layer mixes round clumps, a tall conifer and the GLB tree models by altitude.
 import { describe, expect, it } from "vitest";
 import * as THREE from "three";
 import { CAT, World } from "@hearthfall/sim";
 import { basePack } from "../../sim/test/helpers.ts";
 import { ROCK_MODELS, TREE_MODELS, type ModelParts } from "../src/models.ts";
-import { PINE_SHARE, ROCK_HEIGHT, ROCK_WIDTH, TreeLayer } from "../src/props.ts";
+import { clumpShare, ROCK_HEIGHT, ROCK_WIDTH, TREE_MIX_V2, TreeLayer } from "../src/props.ts";
 
 describe("tree layer", () => {
-  it("draws about PINE_SHARE of the trees as the tall conifer when the GLB models are loaded", () => {
+  const world = () => {
     const pack = basePack();
-    const w = new World({ pack: pack.files, packHash: pack.hash, seed: 3, map: { generator: "continents", size: 96, tribes: 2 } });
-    const trees = w.count((i) => w.ents.cat[i] === CAT.tree);
-    expect(trees).toBeGreaterThan(100);
+    return new World({ pack: pack.files, packHash: pack.hash, seed: 3, map: { generator: "continents", size: 96, tribes: 2 } });
+  };
+  const fakeModels = () => {
     const body = () => {
       const g = new THREE.BoxGeometry(1, 2.5, 1).translate(0, 1.25, 0).toNonIndexed();
       g.setAttribute("color", new THREE.BufferAttribute(new Float32Array(g.getAttribute("position").count * 3).fill(0.5), 3));
       return g;
     };
-    const models = new Map<string, ModelParts>(TREE_MODELS.map((id) => [id, { body: body(), tint: null, tintShare: 0, size: new THREE.Vector3(1, 2.5, 1) }]));
-    const layer = new TreeLayer(new THREE.MeshBasicMaterial(), {}, models, 8192);
-    // the tree models, the tall conifer, then one placeholder rock mesh (no rock models in this map)
-    expect(layer.meshes.length).toBe(TREE_MODELS.length + 2);
+    return new Map<string, ModelParts>(TREE_MODELS.map((id) => [id, { body: body(), tint: null, tintShare: 0, size: new THREE.Vector3(1, 2.5, 1) }]));
+  };
+
+  it("look v2 mix (no style): about 70 percent conifers and the rest GLB trees, no clumps", () => {
+    const w = world();
+    const trees = w.count((i) => w.ents.cat[i] === CAT.tree);
+    expect(trees).toBeGreaterThan(100);
+    const layer = new TreeLayer(new THREE.MeshBasicMaterial(), {}, fakeModels(), 8192);
+    // two clump variants, the conifer, the tree models, then one placeholder rock mesh
+    expect(layer.kinds).toEqual(["clump", "clump", "pine", ...TREE_MODELS.map(() => "model")]);
+    expect(layer.meshes.length).toBe(TREE_MODELS.length + 4);
     layer.update(w, 48, 48, 0.02);
     const counts = layer.meshes.map((m) => m.count);
-    expect(counts.slice(0, TREE_MODELS.length + 1).reduce((a, b) => a + b, 0)).toBe(trees);
-    const pines = counts[TREE_MODELS.length];
-    expect(pines / trees).toBeGreaterThan(PINE_SHARE - 0.08);
-    expect(pines / trees).toBeLessThan(PINE_SHARE + 0.08);
+    expect(counts[0] + counts[1]).toBe(0);
+    expect(counts.slice(0, layer.kinds.length).reduce((a, b) => a + b, 0)).toBe(trees);
+    expect(counts[2] / trees).toBeGreaterThan(1 - TREE_MIX_V2.modelShare - 0.08);
+    expect(counts[2] / trees).toBeLessThan(1 - TREE_MIX_V2.modelShare + 0.08);
     // the conifer is taller than it is wide
-    const box = new THREE.Box3().setFromBufferAttribute(layer.meshes[TREE_MODELS.length].geometry.getAttribute("position") as THREE.BufferAttribute);
+    const box = new THREE.Box3().setFromBufferAttribute(layer.meshes[2].geometry.getAttribute("position") as THREE.BufferAttribute);
     expect(box.max.y - box.min.y).toBeGreaterThan(2 * (box.max.x - box.min.x));
   });
 
-  it("keeps the two placeholder kinds without models", () => {
-    const pack = basePack();
-    const w = new World({ pack: pack.files, packHash: pack.hash, seed: 3, map: { generator: "continents", size: 96, tribes: 2 } });
-    const layer = new TreeLayer(new THREE.MeshBasicMaterial(), {}, null, 8192);
-    expect(layer.meshes.length).toBe(3);
+  it("BACKLOG 14a-3: style mix puts round clumps in the lowlands and conifers on the heights", () => {
+    const mix = basePack().files.style.render!.trees!;
+    expect(clumpShare(mix, 0)).toBeCloseTo(mix.clumpLow);
+    expect(clumpShare(mix, 1)).toBeCloseTo(mix.clumpHigh);
+    const layer = new TreeLayer(new THREE.MeshBasicMaterial(), {}, fakeModels(), 8192, mix);
+    let lowClump = 0;
+    let highClump = 0;
+    for (let i = 0; i < 2000; i++) {
+      if (layer.kinds[layer.kindOf(i, 0)] === "clump") lowClump++;
+      if (layer.kinds[layer.kindOf(i, 0.9)] === "clump") highClump++;
+    }
+    expect(lowClump / 2000).toBeGreaterThan(mix.clumpLow - 0.05);
+    expect(highClump / 2000).toBeLessThan(mix.clumpHigh + 0.05);
+    // on a real map both kinds show up and every tree is drawn
+    const w = world();
     layer.update(w, 48, 48, 0.02);
-    expect(layer.meshes[0].count + layer.meshes[1].count).toBe(w.count((i) => w.ents.cat[i] === CAT.tree));
+    const counts = layer.meshes.map((m) => m.count);
+    expect(counts[0] + counts[1]).toBeGreaterThan(20);
+    expect(counts[2]).toBeGreaterThan(5);
+    expect(counts.slice(0, layer.kinds.length).reduce((a, b) => a + b, 0)).toBe(w.count((i) => w.ents.cat[i] === CAT.tree));
+    // a clump is round: about as wide as it is tall
+    const box = new THREE.Box3().setFromBufferAttribute(layer.meshes[0].geometry.getAttribute("position") as THREE.BufferAttribute);
+    expect((box.max.y - box.min.y) / (box.max.x - box.min.x)).toBeLessThan(1.6);
+  });
+
+  it("keeps a placeholder broadleaf in place of the models without them", () => {
+    const w = world();
+    const layer = new TreeLayer(new THREE.MeshBasicMaterial(), {}, null, 8192, basePack().files.style.render!.trees!);
+    expect(layer.kinds).toEqual(["clump", "clump", "pine", "model"]);
+    expect(layer.meshes.length).toBe(5);
+    layer.update(w, 48, 48, 0.02);
+    expect(layer.meshes.slice(0, 4).reduce((a, m) => a + m.count, 0)).toBe(w.count((i) => w.ents.cat[i] === CAT.tree));
   });
 
   it("BACKLOG 0c: draws every rock from the rock models, shrinking as its stone is quarried", () => {
@@ -55,7 +87,7 @@ describe("tree layer", () => {
     const models = new Map<string, ModelParts>([...TREE_MODELS.map((id) => [id, parts(1)] as const), ...ROCK_MODELS.map((id, k) => [id, parts(1 + k)] as const)]);
     const layer = new TreeLayer(new THREE.MeshBasicMaterial(), {}, models, 8192);
     expect(layer.modelIds).toEqual(expect.arrayContaining(ROCK_MODELS));
-    const r0 = TREE_MODELS.length + 1;
+    const r0 = TREE_MODELS.length + 3;
     expect(layer.meshes.length).toBe(r0 + ROCK_MODELS.length);
     layer.update(w, 48, 48, 0.02);
     expect(layer.meshes.slice(r0).reduce((a, m) => a + m.count, 0)).toBe(rocks);

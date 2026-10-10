@@ -1,8 +1,10 @@
 // Trees and rocks as InstancedMesh, placed at the wrapped copy nearest the focus by instance origin. Real
 // GLB models (M10, models.ts) when loaded, else faceted procedural placeholders from the palette.
 // BACKLOG 0c: stone outcrops (CAT.rock) draw from the rock models, shrinking as they are quarried.
-// BACKLOG 0a: a tall three-tier conifer joins the GLB set and takes PINE_SHARE of the trees, so forests
-// read as dark pine belts (the look v2 target) instead of round blobs.
+// BACKLOG 0a: a tall three-tier conifer joins the GLB set, so forests read as dark pine belts (look v2).
+// BACKLOG 14a-3 (look v3): round clumped broadleaves in yellow-greens fill the lowlands and conifers take
+// the heights; the mix by altitude band, the GLB model share and the per-instance hue jitter come from
+// style.json `render.trees` (TreeMix), replacing the fixed look v2 pine share.
 import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { CAT, type World } from "@hearthfall/sim";
@@ -10,8 +12,28 @@ import { ROCK_MODELS, TREE_MODELS, trimBase, type ModelParts } from "./models.ts
 
 /** tree models are 2 to 3 units tall; this brings them to the placeholder scale the sim spacing expects */
 const TREE_MODEL_SCALE = 0.72;
-/** share of trees drawn as the tall conifer when the GLB models are loaded (BACKLOG 0a) */
-export const PINE_SHARE = 0.7;
+/** BACKLOG 14a-3: how the tree kinds mix (style.json render.trees). Altitude a is (height - sea) over
+ * (heightMax - sea); the clump share runs from clumpLow below bandLow to clumpHigh above bandHigh. */
+export interface TreeMix {
+  clumpLow: number;
+  clumpHigh: number;
+  bandLow: number;
+  bandHigh: number;
+  /** share of the non-clump trees drawn from the GLB tree models when loaded (the rest are conifers) */
+  modelShare: number;
+  /** per-instance warm or cool shift of the clump color (0 = none) */
+  hueJitter: number;
+}
+
+/** the look v2 mix: no clumps, 70 percent conifers and 30 percent GLB trees */
+export const TREE_MIX_V2: TreeMix = { clumpLow: 0, clumpHigh: 0, bandLow: 0, bandHigh: 1, modelShare: 0.3, hueJitter: 0 };
+
+/** Share of trees drawn as clumps at altitude a (0 sea level, 1 the height cap). */
+export function clumpShare(mix: TreeMix, a: number): number {
+  const t = Math.min(1, Math.max(0, (a - mix.bandLow) / Math.max(1e-6, mix.bandHigh - mix.bandLow)));
+  const s = t * t * (3 - 2 * t);
+  return mix.clumpLow + (mix.clumpHigh - mix.clumpLow) * s;
+}
 /** footprint width and height cap of a full rock outcrop in world units (BACKLOG 0c): a tall model is
  * scaled down to the cap so no rock reads as a standing stone or monolith */
 export const ROCK_WIDTH = 1.7;
@@ -30,13 +52,6 @@ function colored(g: THREE.BufferGeometry, c: THREE.Color): THREE.BufferGeometry 
   ng.deleteAttribute("uv");
   ng.deleteAttribute("normal");
   return ng;
-}
-
-export function pineGeometry(pal: Record<string, string>): THREE.BufferGeometry {
-  const trunk = colored(new THREE.CylinderGeometry(0.07, 0.1, 0.5, 5).translate(0, 0.25, 0), new THREE.Color(pal.woodDark ?? "#5e3a1a"));
-  const low = colored(new THREE.ConeGeometry(0.5, 0.9, 6).translate(0, 0.8, 0), new THREE.Color(pal.forest ?? "#3f6b2e"));
-  const high = colored(new THREE.ConeGeometry(0.36, 0.75, 6).translate(0, 1.3, 0), new THREE.Color(pal.forest ?? "#3f6b2e").lerp(new THREE.Color(pal.moss ?? "#5e8c3a"), 0.35));
-  return mergeGeometries([trunk, low, high])!;
 }
 
 /** BACKLOG 0a: a tall, narrow conifer in three tiers (about 2.1 units), dark at the base and lighter on top. */
@@ -64,6 +79,37 @@ export function broadleafGeometry(pal: Record<string, string>): THREE.BufferGeom
   return mergeGeometries([trunk, crown])!;
 }
 
+/**
+ * BACKLOG 14a-3: a round clumped broadleaf, a short trunk under 3 to 5 merged faceted blobs in yellow-greens
+ * (about 1.4 units tall and 1.2 wide). Variant 0 is a wide five-blob crown, variant 1 a taller three-blob one.
+ */
+export function clumpGeometry(pal: Record<string, string>, variant = 0): THREE.BufferGeometry {
+  const meadow = new THREE.Color(pal.meadow ?? "#7cb64e");
+  const moss = new THREE.Color(pal.moss ?? "#548f36");
+  const sun = meadow.clone().lerp(new THREE.Color("#d9d36a"), 0.35);
+  const trunk = colored(new THREE.CylinderGeometry(0.07, 0.11, 0.55, 5).translate(0, 0.27, 0), new THREE.Color(pal.woodDark ?? "#5e3a1a"));
+  // [x, y, z, radius, color mix 0 shade (moss) to 1 sunlit]
+  const blobs: [number, number, number, number, number][] =
+    variant === 0
+      ? [
+          [0, 0.78, 0, 0.42, 0.2],
+          [0.3, 0.72, 0.14, 0.32, 0.45],
+          [-0.26, 0.74, -0.18, 0.33, 0.3],
+          [0.04, 1.08, -0.02, 0.34, 0.85],
+          [-0.12, 0.7, 0.3, 0.26, 0.55],
+        ]
+      : [
+          [0, 0.82, 0, 0.38, 0.25],
+          [0.16, 1.12, 0.08, 0.32, 0.7],
+          [-0.2, 0.98, -0.1, 0.28, 0.95],
+        ];
+  const parts = blobs.map(([x, y, z, r, k]) => {
+    const c = k < 0.5 ? moss.clone().lerp(meadow, k * 2) : meadow.clone().lerp(sun, (k - 0.5) * 2);
+    return colored(new THREE.DodecahedronGeometry(r, 0).scale(1, 0.88, 1).translate(x, y, z), c);
+  });
+  return mergeGeometries([trunk, ...parts])!;
+}
+
 const hashf = (i: number, salt: number) => {
   let h = Math.imul(i ^ salt, 0x9e3779b1);
   h = Math.imul(h ^ (h >>> 15), 0x85ebca6b);
@@ -75,8 +121,9 @@ export class TreeLayer {
   /** model ids drawn by this layer (empty: placeholders) */
   readonly modelIds: string[] = [];
   private readonly unit: number;
-  /** mesh index of the tall conifer (-1 with placeholders) */
-  private readonly pine: number;
+  /** what each tree mesh draws: meshes 0 and 1 are the clump variants, 2 the conifer, then the GLB models */
+  readonly kinds: ("clump" | "pine" | "model")[];
+  private readonly mix: TreeMix;
   /** first rock mesh index and per-rock-mesh scale to ROCK_WIDTH (BACKLOG 0c) */
   private readonly rock0: number;
   private readonly rockScale: number[];
@@ -89,14 +136,15 @@ export class TreeLayer {
   private readonly up = new THREE.Vector3(0, 1, 0);
   private readonly c = new THREE.Color();
 
-  constructor(material: THREE.Material, pal: Record<string, string>, models: ReadonlyMap<string, ModelParts> | null = null, cap = 8192) {
+  constructor(material: THREE.Material, pal: Record<string, string>, models: ReadonlyMap<string, ModelParts> | null = null, cap = 8192, mix: TreeMix = TREE_MIX_V2) {
     this.cap = cap;
+    this.mix = mix;
     const real = models && TREE_MODELS.every((id) => models.has(id)) ? TREE_MODELS.map((id) => trimBase(models.get(id)!.body!, models.get(id)!.size.y, 0.2, 0.45)) : null;
     if (real) this.modelIds.push(...TREE_MODELS);
     this.unit = real ? TREE_MODEL_SCALE : 1;
-    // with real models the conifer is the last mesh, drawn at its own (placeholder) scale
-    this.pine = real ? real.length : -1;
-    const trees = real ? [...real, tallPineGeometry(pal)] : [pineGeometry(pal), broadleafGeometry(pal)];
+    // without models the round placeholder broadleaf stands in for the GLB trees
+    const trees = [clumpGeometry(pal, 0), clumpGeometry(pal, 1), tallPineGeometry(pal), ...(real ?? [broadleafGeometry(pal)])];
+    this.kinds = trees.map((_, k) => (k < 2 ? "clump" : k === 2 ? "pine" : "model"));
     const rocks = models && ROCK_MODELS.every((id) => models.get(id)?.body) ? ROCK_MODELS.map((id) => models.get(id)!) : null;
     if (rocks) this.modelIds.push(...ROCK_MODELS);
     this.rock0 = trees.length;
@@ -109,6 +157,14 @@ export class TreeLayer {
       im.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(cap * 3), 3);
       return im;
     });
+  }
+
+  /** Mesh index for tree i at altitude a (0 sea level, 1 the height cap), from the TreeMix. */
+  kindOf(i: number, a: number): number {
+    if (hashf(i, 0x51) < clumpShare(this.mix, a)) return hashf(i, 0x52) < 0.55 ? 0 : 1;
+    const models = this.kinds.length - 3;
+    if (hashf(i, 0x53) >= this.mix.modelShare) return 2;
+    return 3 + Math.min(models - 1, Math.floor(hashf(i, 0x54) * models));
   }
 
   /** Re-place instances when the focus moved, the terrain changed or trees appeared or vanished. */
@@ -143,29 +199,31 @@ export class TreeLayer {
         continue;
       }
       if (E.cat[i] !== CAT.tree) continue;
-      const h = hashf(i, 0x51);
-      const kind =
-        this.pine < 0
-          ? h < 0.6 ? 0 : 1
-          : h < PINE_SHARE ? this.pine : Math.min(this.pine - 1, Math.floor(((h - PINE_SHARE) / (1 - PINE_SHARE)) * this.pine));
-      const isPine = kind === this.pine;
+      const hRaw = w.terrain.heightAt(E.x[i], E.y[i]);
+      const kind = this.kindOf(i, (hRaw - w.terrain.sea) / Math.max(1, w.terrain.heightMax - w.terrain.sea));
+      const what = this.kinds[kind];
       const k = counts[kind];
       if (k >= this.cap) continue;
       let x = E.x[i] - focusX;
       let z = E.y[i] - focusZ;
       x -= Math.round(x / n) * n;
       z -= Math.round(z / n) * n;
-      const y = w.terrain.heightAt(E.x[i], E.y[i]) * heightScale;
-      const sc = (isPine ? 1 : this.unit) * (0.8 + 0.5 * hashf(i, 0x77)) * (0.6 + (0.4 * E.wood[i]) / 4);
+      const y = hRaw * heightScale;
+      const sc = (what === "model" ? this.unit : 1) * (0.8 + 0.5 * hashf(i, 0x77)) * (0.6 + (0.4 * E.wood[i]) / 4);
       this.q.setFromAxisAngle(this.up, hashf(i, 0x33) * 6.283);
-      this.s.set(sc, sc * (isPine ? 1.05 + 0.35 * hashf(i, 0x99) : 0.9 + 0.3 * hashf(i, 0x99)), sc);
+      this.s.set(sc, sc * (what === "pine" ? 1.05 + 0.35 * hashf(i, 0x99) : 0.9 + 0.3 * hashf(i, 0x99)), sc);
       this.p.set(focusX + x, y - 0.05, focusZ + z);
       this.m.compose(this.p, this.q, this.s);
       this.meshes[kind].setMatrixAt(k, this.m);
-      // real tree models read as dark blobs from afar (M10 sheet), so they are lifted and nudged toward the meadow
-      const tint = (this.unit < 1 && !isPine ? 1.35 : 0.85) + 0.3 * hashf(i, 0x13);
-      if (this.unit < 1 && !isPine) this.c.setRGB(tint * 0.95, tint * 1.1, tint * 0.8);
-      else this.c.setRGB(tint, tint, tint * 0.95);
+      const tint = (what === "clump" ? 0.92 : what === "model" && this.unit < 1 ? 1.35 : 0.85) + 0.3 * hashf(i, 0x13);
+      if (what === "clump") {
+        // warm (yellower) or cool (bluer) per tree, so a grove is not one flat green
+        const j = (hashf(i, 0x6b) * 2 - 1) * this.mix.hueJitter;
+        this.c.setRGB(tint * (1 + j), tint * (1 + 0.25 * j), tint * (1 - 1.2 * j));
+      } else if (what === "model" && this.unit < 1) {
+        // real tree models read as dark blobs from afar (M10 sheet), so they are lifted and nudged toward the meadow
+        this.c.setRGB(tint * 0.95, tint * 1.1, tint * 0.8);
+      } else this.c.setRGB(tint, tint, tint * 0.95);
       this.meshes[kind].setColorAt(k, this.c);
       counts[kind]++;
     }

@@ -171,6 +171,50 @@
           "minimum": 0,
           "maximum": 1
         },
+        "trees": {
+          "type": "object",
+          "properties": {
+            "clumpLow": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "clumpHigh": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "bandLow": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "bandHigh": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "modelShare": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "hueJitter": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 0.5
+            }
+          },
+          "required": [
+            "clumpLow",
+            "clumpHigh",
+            "bandLow",
+            "bandHigh",
+            "modelShare",
+            "hueJitter"
+          ],
+          "additionalProperties": false
+        },
         "water": {
           "type": "object",
           "properties": {

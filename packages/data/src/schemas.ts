@@ -221,6 +221,17 @@ export const StyleSchema = z.strictObject({
       space: z.strictObject({ ...comment, top: hex, horizon: hex, stars: z.number().min(0).max(1), rim: hex }).optional(),
       /** look v2: density of white foam strokes on open water (0 turns them off) */
       foamStrokes: z.number().min(0).max(1).optional(),
+      /** look v3 tree mix by altitude band (BACKLOG 14a-3, props.ts TreeMix) */
+      trees: z
+        .strictObject({
+          clumpLow: z.number().min(0).max(1),
+          clumpHigh: z.number().min(0).max(1),
+          bandLow: z.number().min(0).max(1),
+          bandHigh: z.number().min(0).max(1),
+          modelShare: z.number().min(0).max(1),
+          hueJitter: z.number().min(0).max(0.5),
+        })
+        .optional(),
       /** look v3 painted water (BACKLOG 14a): per-fragment depth shallows, crisp foam line, offshore ring */
       water: z
         .strictObject({ shallowDepth: z.number().positive(), foamWidth: z.number().positive(), foamRing: z.number().min(0) })
