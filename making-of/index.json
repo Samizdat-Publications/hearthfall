@@ -1040,6 +1040,16 @@
       "when": "2026-10-10T08:47:42.139Z",
       "source": "external:map_view_after.png",
       "bytes": 194348
+    },
+    {
+      "file": "b19/20261010-0956_replay-bar.png",
+      "milestone": "B19",
+      "kind": "screenshot",
+      "caption": "Replay viewer: every finished match can be watched again, scrubbed, sped up to 8x and checked against its recorded hash",
+      "highlight": false,
+      "when": "2026-10-10T09:56:30.357Z",
+      "source": "external:replay_bar.png",
+      "bytes": 806537
     }
   ]
 }
