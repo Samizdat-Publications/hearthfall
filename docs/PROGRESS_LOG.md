@@ -157,7 +157,7 @@ One line per entry: `MM/DD/YYYY HH:MM  M<n>  what happened`. Never read this fil
 - M1 to M5 shipped details: PROGRESS_LOG (and ARCHITECTURE).
 
 ## 2026-10-10 Stretch 2 done
-- Stretch 2 ran from 2026-10-10T00:25Z to about s2h 19.6. The end ritual started when the queue was empty, which the plan allows before s2h 23, so the first playtest is not held back by late AI changes.
+- Stretch 2 ran from 2026-10-10T00:25Z to about s2h 18.7. The end ritual started when the queue was empty, which the plan allows before s2h 23, so the first playtest is not held back by late AI changes.
 - Shipped: blocks A to J (look v3, polish, balance, victory variants in the sim, campaign of 13 levels, vehicles, Forge, map editor, robustness and tests) and the reserve (replays, records, localization, economy robustness). Every S item, BACKLOG 23 (evaluated, not adopted), the parking lot (photo mode, tribe traits, combo hints) and a playtest pass (first match tips, How to play page, an e2e that completes the first tips through real input). 20 WebGPU cut. ADRs 013 to 022.
 - Final checks:
   - Full npm run qa PASS at 5e11f16.

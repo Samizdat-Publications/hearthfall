@@ -5,7 +5,7 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 ## Now
 Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when STOP exists). Plan: BACKLOG 14a look v3, polish, balance, rules and victory variants, campaign, boats and Skyloft, Forge, map editor (CLAUDE.md "Stretch 2").
 - S2 backlog S items DONE (qa:fast green each; scenarios after sim edits; e2e after 79, 35, 50, 78; goldens unchanged): 79 end screen stats survive a load, 44 treeVersion on chop test, 72 flow progress kept away from edits, 35 self-contained saves (`World.fromSnapshot`, origin check), 50 controller specs in saves and replays, 61 chanter reach inset data, 69 AI shared tuning data, 30 formula strings retired, 31 terrainOp nested union, 78 data/ui.json outside the pack hash (ADR-022, base pack hash changed once). Then 34 terrain and generator literals (terrain.json gen and ops), 66 opponent_skirmish golden, 67 soak AI effect metrics, 68 AI bridge scenario, 59 chase give-up soak gate, 88 level worship delay, 95 vfx colors in style.json (38 superseded), 41 camera rig and tree size in style.json render.
-- Stretch 2 end ritual (queue empty, plan allows it before s2h 23): full npm run qa PASS at 5e11f16 (s2h 19.6); soak:nightly and bots PASS; State of the game and First human playtest rewritten; tag s2-done.
+- Stretch 2 end ritual (queue empty, plan allows it before s2h 23): full npm run qa PASS at 5e11f16 (s2h 18.7); soak:nightly and bots PASS; State of the game and First human playtest rewritten; tag s2-done.
 - S2 playtest pass after s2h 17.7: soak:nightly PASS (ai, ai-idle, difficulty, economy, war, war-long); first match tips (six steps under the spell bar, a setting that turns itself off), How to play page (main and pause menus). Full npm run qa PASS at 67ca873 (s2h 18.5).
 - S2 after s2h 13.8: 23 move picker evaluated and not adopted (diversity 0.32 vs 0.368, VISIONQA section 7), photo mode, tribe traits, spell combo hints; 20 WebGPU cut. Full npm run qa PASS at f4f0c49.
 - S2 backlog S items DONE after s2h 13: 32 shot coverage sampled on the game view only, 33 and 43 VisionQA calibration (30 shots, held-out half), 51 economy bench case, 52 hud_narrow shot, 58 long front war soak (`war-long` in the nightly), 26 asset re-generation tool (`tools/assets/regen.py`). Every S item is now done or out of scope (29).
@@ -66,7 +66,7 @@ Rewritten at the end of stretch 2 (2026-10-11, about 47 h after the first run st
   - Every match replays bit for bit, and 8 golden replays guard it.
   - `npm run qa` covers typecheck, 7 code guards, 435 unit tests, 90 scenarios, golden replays in Node and Chromium, sim and render benches, 9 screenshot sets with VisionQA, end-to-end browser checks at 1280x720 and 2560x1440, and the production build.
   - `npm run soak:nightly` runs about 130 headless AI matches.
-  - Last full PASS at 5e11f16 (s2h 19.6).
+  - Last full PASS at 5e11f16 (s2h 18.7).
 - Making-of page with every stage of the build: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5
 
 **Known issues**
