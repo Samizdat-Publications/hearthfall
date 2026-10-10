@@ -130,6 +130,10 @@
     "unloadReach": 2,
     "shoreReach": 3
   },
+  "weather": {
+    "$comment": "BACKLOG 14b: match weather, a skirmish and level option. Rain slows every unit to speedMult of its speed.",
+    "rain": { "speedMult": 0.85 }
+  },
   "forge": {
     "$comment": "BACKLOG 11 (ADR-017): Forge mode, a skirmish option. Before the match every tribe reshapes the land around its Hearth for free while units stand still; it ends after seconds or when every tribe is ready. A brush stroke changes the ground by amount height units (32 per world unit, drowning at 8 below sea).",
     "seconds": 120,

@@ -67,6 +67,8 @@ export interface WorldInit {
   rules?: string;
   /** BACKLOG 11 (ADR-017): start with a Forge phase (balance.forge; absent: none, older replays) */
   forge?: boolean;
+  /** BACKLOG 14b: "rain" slows every unit (balance.weather.rain); absent or "clear": no effect, older replays */
+  weather?: "clear" | "rain";
 }
 
 export interface HashParts {
@@ -129,12 +131,18 @@ export class World {
   rules: RulesRuntime | null;
   /** BACKLOG 11: the pre-match Forge phase (null without WorldInit.forge) */
   forge: ForgeRuntime | null;
+  /** BACKLOG 14b: match weather, fixed for the match */
+  readonly weather: "clear" | "rain";
+  /** BACKLOG 14b: unit speed factor from the weather (1 when clear) */
+  readonly speedMult: number;
   controllers: Controller[] = [];
   readonly mapInfo: { generator: string; seedUsed: number; rerolls: number; landFraction: number };
 
   constructor(init: WorldInit) {
     this.cfg = makeConfig(init.pack, init.packHash);
     this.seed = init.seed | 0;
+    this.weather = init.weather === "rain" ? "rain" : "clear";
+    this.speedMult = this.weather === "rain" ? (this.cfg.pack.balance.weather?.rain.speedMult ?? 1) : 1;
     const gen = generateMap(this.cfg, init.map, this.seed);
     this.terrain = gen.terrain;
     // distinct from the generator's private Rng so in-sim draws never replay generation numbers
@@ -513,6 +521,8 @@ export class World {
     this.level?.hashInto(mf);
     this.rules?.hashInto(mf);
     this.forge?.hashInto(mf);
+    // BACKLOG 14b: hashed only in rain, so clear worlds keep their hashes
+    if (this.weather === "rain") mf.u32(1414).f64(this.speedMult);
     this.vision.hashInto(mf);
     const meta = mf.hex();
     const all = new Fnv().u32(parseInt(terrain, 16)).u32(parseInt(entities, 16)).u32(parseInt(rng, 16)).u32(parseInt(meta, 16)).hex();

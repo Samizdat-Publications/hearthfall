@@ -919,6 +919,35 @@
       ],
       "additionalProperties": false
     },
+    "weather": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "rain": {
+          "type": "object",
+          "properties": {
+            "$comment": {
+              "type": "string"
+            },
+            "speedMult": {
+              "type": "number",
+              "minimum": 0.3,
+              "maximum": 1
+            }
+          },
+          "required": [
+            "speedMult"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "rain"
+      ],
+      "additionalProperties": false
+    },
     "forge": {
       "type": "object",
       "properties": {

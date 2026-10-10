@@ -189,7 +189,7 @@ registerCommand("completeObjectives", {
 /** The WorldInit of a level (fresh or restored from a save): its painted map, rules and Forge. */
 export function levelWorldInit(init: LevelInit, pack: PackFiles, packHash: string): WorldInit {
   const def = init.def;
-  return { pack, packHash, seed: def.seed, map: levelMap(def), populate: false, level: init, ...(def.rules ? { rules: def.rules } : {}), ...(def.forge ? { forge: true } : {}) };
+  return { pack, packHash, seed: def.seed, map: levelMap(def), populate: false, level: init, ...(def.rules ? { rules: def.rules } : {}), ...(def.forge ? { forge: true } : {}), ...(def.weather === "rain" ? { weather: "rain" as const } : {}) };
 }
 
 /**

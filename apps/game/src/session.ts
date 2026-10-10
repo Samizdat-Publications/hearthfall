@@ -24,6 +24,8 @@ export interface SkirmishParams {
   rules?: string;
   /** BACKLOG 11 (ADR-017): start with a Forge phase (absent in older saves) */
   forge?: boolean;
+  /** BACKLOG 14b: play in rain (absent in older saves: clear) */
+  weather?: "rain";
   /** M9: set when this session is a campaign level (the other fields then mirror the level) */
   campaign?: { def: LevelDef; carry: CampaignCarry };
 }
@@ -45,7 +47,7 @@ export function campaignParams(def: LevelDef, carry: CampaignCarry): SkirmishPar
 
 export function skirmishInit(pack: ValidatedPack, p: SkirmishParams): WorldInit {
   if (p.campaign) return levelWorldInit({ def: p.campaign.def, carry: p.campaign.carry }, pack.files, pack.hash);
-  return { pack: pack.files, packHash: pack.hash, seed: p.seed, map: { generator: p.level, size: p.size, tribes: p.tribes }, ...(p.rules ? { rules: p.rules } : {}), ...(p.forge ? { forge: true } : {}) };
+  return { pack: pack.files, packHash: pack.hash, seed: p.seed, map: { generator: p.level, size: p.size, tribes: p.tribes }, ...(p.rules ? { rules: p.rules } : {}), ...(p.forge ? { forge: true } : {}), ...(p.weather === "rain" ? { weather: "rain" as const } : {}) };
 }
 
 /** A new skirmish (or campaign level) world with its opponents attached. */

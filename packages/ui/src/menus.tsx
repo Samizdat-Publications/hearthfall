@@ -27,6 +27,9 @@ export interface SetupView {
   /** BACKLOG 11: Forge phase choices (off, on; empty for packs without balance.forge) and the choice */
   forges: Choice[];
   forge: string;
+  /** BACKLOG 14b: weather choices (clear, rain; empty for packs without balance.weather) and the choice */
+  weathers: Choice[];
+  weather: string;
   maxOpponents: number;
   map: string;
   size: number;
@@ -96,7 +99,7 @@ export interface MenuModel {
   replay?: { last: boolean; ended: boolean; message: string | null };
 }
 
-export type SetupPatch = Partial<Pick<SetupView, "map" | "size" | "seed" | "opponents" | "difficulty" | "victory" | "forge">>;
+export type SetupPatch = Partial<Pick<SetupView, "map" | "size" | "seed" | "opponents" | "difficulty" | "victory" | "forge" | "weather">>;
 export type SettingsPatch = Partial<Pick<SettingsView, "quality" | "master" | "music" | "sfx" | "palette" | "miniature" | "lighting" | "weather">> & { uiScale?: number; subtitles?: boolean };
 
 export interface MenuActions {
@@ -246,6 +249,15 @@ function Setup({ s, act }: { s: SetupView; act: MenuActions }) {
             <span class="menu-row menu-victory">
               <Select ui="setup-forge" value={s.forge} options={s.forges} onChange={(v) => act.setSetup({ forge: v })} />
               <span class="menu-hint">{t("setup.forgeHint")}</span>
+            </span>
+          </Fragment>
+        ) : null}
+        {s.weathers.length ? (
+          <Fragment>
+            <label class="menu-label">{t("setup.weather")}</label>
+            <span class="menu-row menu-victory">
+              <Select ui="setup-weather" value={s.weather} options={s.weathers} onChange={(v) => act.setSetup({ weather: v })} />
+              <span class="menu-hint">{t("setup.weatherHint")}</span>
             </span>
           </Fragment>
         ) : null}

@@ -198,6 +198,16 @@ export const BalanceSchema = z.strictObject({
     })
     .optional(),
   /**
+   * BACKLOG 14b: match weather. In rain every unit moves at `speedMult` of its speed (a skirmish or level
+   * option; the app also shows the rain). Optional so frozen packs keep their hash.
+   */
+  weather: z
+    .strictObject({
+      ...comment,
+      rain: z.strictObject({ ...comment, speedMult: z.number().min(0.3).max(1) }),
+    })
+    .optional(),
+  /**
    * BACKLOG 11 (ADR-017): Forge mode, an optional pre-match phase of `seconds` in which units are frozen and
    * each tribe reshapes the land for free within `radius` cells of its own Hearth (never within `hearthClear`
    * cells of it), one brush stroke (raise, lower, flatten, smooth: radius `brushRadius`, `amount` height units,
@@ -1158,6 +1168,8 @@ export const LevelSchema = z.strictObject({
   rules: id.optional(),
   /** BACKLOG 11: the level opens with a Forge phase (balance.forge); level timers start at its end */
   forge: z.boolean().optional(),
+  /** BACKLOG 14b: the level is played in rain (balance.weather.rain) */
+  weather: z.enum(["clear", "rain"]).optional(),
   setup: z.array(LevelSetup).min(1),
   objectives: z.array(ObjectiveSchema).min(1),
   lose: z.array(LoseSchema).optional(),

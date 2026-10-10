@@ -1,7 +1,7 @@
 // Builds the menu view model from the Game and maps menu intents to game flow calls (M8). The
 // setup screen state lives here: it only becomes SkirmishParams when Start is pressed.
 import { SKIRMISH_DEFAULTS } from "@hearthfall/data";
-import { KEY_ACTIONS, defaultKeymap, keyLabel, menuModel, mountMenus, rebind, type Choice, type MenuModel, type SetupPatch } from "@hearthfall/ui";
+import { KEY_ACTIONS, defaultKeymap, keyLabel, menuModel, mountMenus, rebind, t, type Choice, type MenuModel, type SetupPatch } from "@hearthfall/ui";
 import "../../../packages/ui/src/menus.css";
 import titleArt from "../../../assets/ui/title.webp?url";
 import type { Game } from "./game.ts";
@@ -47,6 +47,7 @@ interface SetupState {
   victory: string;
   /** BACKLOG 11: "on" starts the match with a Forge phase */
   forge: string;
+  weather: string;
   error: string | null;
 }
 
@@ -54,7 +55,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
   const sk = game.pack.files.balance.skirmish ?? SKIRMISH_DEFAULTS;
   const ai = game.pack.files.ai;
   const vic = game.pack.files.balance.victory;
-  const setup: SetupState = { map: sk.maps[0], size: sk.defaultSize, seed: 1, opponents: [...sk.defaultOpponents], difficulty: sk.defaultDifficulty, victory: vic?.default ?? "", forge: "off", error: null };
+  const setup: SetupState = { map: sk.maps[0], size: sk.defaultSize, seed: 1, opponents: [...sk.defaultOpponents], difficulty: sk.defaultDifficulty, victory: vic?.default ?? "", forge: "off", weather: "clear", error: null };
   const saves = { mode: "load" as "save" | "load", message: null as string | null };
   let settingsMsg: string | null = null;
   /** BACKLOG 19: why the last replay file or stored replay could not be watched */
@@ -89,6 +90,9 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
         victoryText: vic?.variants.find((v) => v.id === setup.victory)?.text ?? "",
         forges: game.pack.files.balance.forge ? [{ value: "off", label: "Off" }, { value: "on", label: `On (${Math.round(game.pack.files.balance.forge.seconds / 60)} min)` }] : [],
         forge: setup.forge,
+        // BACKLOG 14b: rain slows every unit (balance.weather.rain)
+        weathers: game.pack.files.balance.weather ? [{ value: "clear", label: t("setup.weatherClear") }, { value: "rain", label: t("setup.weatherRain", { pct: Math.round((1 - game.pack.files.balance.weather.rain.speedMult) * 100) }) }] : [],
+        weather: setup.weather,
         error: setup.error,
       },
       settings: {
@@ -181,7 +185,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
       return refresh();
     }
     setup.error = null;
-    const sp: SkirmishParams = { seed, level: setup.map, size: setup.size, tribes: 1 + setup.opponents.length, ai: [...setup.opponents], difficulty: setup.difficulty, ...(setup.victory ? { rules: setup.victory } : {}), ...(setup.forge === "on" ? { forge: true } : {}) };
+    const sp: SkirmishParams = { seed, level: setup.map, size: setup.size, tribes: 1 + setup.opponents.length, ai: [...setup.opponents], difficulty: setup.difficulty, ...(setup.victory ? { rules: setup.victory } : {}), ...(setup.forge === "on" ? { forge: true } : {}), ...(setup.weather === "rain" ? { weather: "rain" as const } : {}) };
     try {
       game.startSkirmish(sp);
     } catch (e) {

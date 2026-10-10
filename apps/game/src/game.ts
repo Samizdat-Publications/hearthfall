@@ -434,7 +434,8 @@ export class Game {
     );
     this.renderer.setLighting(
       this.params.lighting ?? this.settings.lighting,
-      this.params.weather ?? this.settings.weather,
+      // BACKLOG 14b: a rainy match always shows its rain
+      this.world?.weather === "rain" ? "rain" : (this.params.weather ?? this.settings.weather),
     );
   }
 
@@ -526,6 +527,7 @@ export class Game {
     this.renderer.setPlacement(null);
     this.renderer.setTargeting(null);
     this.renderer.setWorld(this.world);
+    this.applyQuality(); // BACKLOG 14b: the match weather
     this.renderer.viewTribe = this.localTribe;
     this.renderer.revealFog = this.params.reveal;
     const home = this.world.tribes[0]
@@ -1084,6 +1086,7 @@ export class Game {
     if (this.world !== before) {
       this.selection.clear();
       this.renderer.setWorld(this.world);
+      this.applyQuality();
     }
     this.events = [];
     if (there) {
