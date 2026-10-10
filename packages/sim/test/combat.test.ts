@@ -174,6 +174,22 @@ describe("combat (M6)", () => {
     expect(ws.filter((i) => w.ents.tribe[i] === 0).length).toBe(w.cfg.pack.units.units[w.ents.type[c]].convert!.maxPerChannel);
   });
 
+  it("BACKLOG 61: the chanter's reach is its convert radius less convert.reachInset from data", () => {
+    const reach = (inset?: number) => {
+      const p = basePack();
+      const files = structuredClone(p.files);
+      const cv = files.units.units.find((u) => u.id === "chanter")!.convert!;
+      if (inset === undefined) delete cv.reachInset;
+      else cv.reachInset = inset;
+      const w = new World({ pack: files, packHash: p.hash, seed: 1, map: { generator: "flat", size: 64, tribes: 2 } });
+      const c = w.ents.index(w.spawnUnit("chanter", 0, 20, 30));
+      const t = w.ents.index(w.spawnUnit("warden", 1, 26, 30));
+      return w.combat.reachOf(c, t) - cv.radius;
+    };
+    expect(reach(1.5)).toBeCloseTo(reach(0.5) - 1, 9);
+    expect(reach()).toBeCloseTo(reach(0.5), 9); // an older pack without the field keeps 0.5
+  });
+
   it("entrancedFreeze holds every enemy in the radius while the channel runs", () => {
     const p = basePack();
     const files = structuredClone(p.files);

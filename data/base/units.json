@@ -113,7 +113,8 @@
           "meleeDamage"
         ],
         "cooldownSeconds": 3,
-        "breakDamage": 600
+        "breakDamage": 600,
+        "reachInset": 0.5
       },
       "prefersTarget": [
         "warden"

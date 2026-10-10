@@ -521,6 +521,8 @@ const Convert = z.strictObject({
   cooldownSeconds: pos,
   /** BACKLOG 65: damage taken during one channel that breaks it (hits below this total do not); absent = any hit breaks */
   breakDamage: pos.optional(),
+  /** BACKLOG 61: the chanter closes to this far inside its convert radius before it channels (absent = 0.5) */
+  reachInset: z.number().nonnegative().optional(),
 });
 export const UnitSchema = z.strictObject({
   ...comment,

@@ -167,7 +167,7 @@ export class CombatSystem {
     const k = this.kind[ty];
     if (k === KIND.ranged) r += this.bands(i, E.x[j], E.y[j]) * (this.w.cfg.pack.units.units[ty].ranged?.heightRangeBonusPerBand ?? 0);
     if (k !== KIND.chanter) r += this.posted(i) ?? 0;
-    if (k === KIND.chanter) r -= 0.5;
+    if (k === KIND.chanter) r -= this.w.cfg.pack.units.units[ty].convert?.reachInset ?? 0.5; // BACKLOG 61 (older packs: 0.5)
     return r + this.halfSize(j);
   }
 

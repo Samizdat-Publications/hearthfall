@@ -139,6 +139,10 @@
               "breakDamage": {
                 "type": "number",
                 "minimum": 0
+              },
+              "reachInset": {
+                "type": "number",
+                "minimum": 0
               }
             },
             "required": [
