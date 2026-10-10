@@ -44,14 +44,14 @@
     },
     {
       "id": "warden",
-      "hp": 2000,
+      "hp": 2600,
       "speed": 1.6,
       "manaPerMin": {
         "moving": 11,
         "idle": 9
       },
       "melee": {
-        "dps": 120,
+        "dps": 140,
         "range": 0.9
       },
       "prefersTarget": [
@@ -98,9 +98,9 @@
         "idle": 9
       },
       "convert": {
-        "radius": 5,
-        "channelSeconds": 6,
-        "maxPerChannel": 3,
+        "radius": 4,
+        "channelSeconds": 4.5,
+        "maxPerChannel": 2,
         "entrancedFreeze": false,
         "cannotConvert": [
           "shaper",
@@ -112,7 +112,8 @@
           "terrainChangeNear",
           "meleeDamage"
         ],
-        "cooldownSeconds": 3
+        "cooldownSeconds": 3,
+        "breakDamage": 600
       },
       "prefersTarget": [
         "warden"

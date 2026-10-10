@@ -424,6 +424,8 @@ const Convert = z.strictObject({
     z.enum(["rangedDamage", "spell", "terrainChangeNear", "meleeDamage"]),
   ),
   cooldownSeconds: pos,
+  /** BACKLOG 65: damage taken during one channel that breaks it (hits below this total do not); absent = any hit breaks */
+  breakDamage: pos.optional(),
 });
 export const UnitSchema = z.strictObject({
   ...comment,

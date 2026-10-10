@@ -86,12 +86,16 @@ registerEffect("damageRadius", (c, e) => {
 
 /**
  * Push a unit `travel` cells along (dx, dy) over knockbackTicks with decay (ignores walkability:
- * cliffs and water are the point). Stops its order and breaks a chant (spell interruption).
+ * cliffs and water are the point). Stops its order and breaks a chant (spell interruption); a ranged
+ * hit's knock (`hit`) does not move a channelling breakDamage Chanter (BACKLOG 65).
  */
-export function knockUnit(w: World, i: number, dx: number, dy: number, travel: number): void {
+export function knockUnit(w: World, i: number, dx: number, dy: number, travel: number, hit = false): void {
   const E = w.ents;
   // Ward: a shielded unit does not move
   if (E.ward[i] > 0) return;
+  // BACKLOG 65: a channelling breakDamage Chanter is rooted against ranged hits (the damage counts instead)
+  const rooted = hit && E.chant[i] > 0 && !!w.cfg.pack.units.units[E.type[i]].convert?.breakDamage;
+  if (rooted) return;
   const ticks = w.cfg.pack.balance.combat.knockbackTicks;
   const decay = w.cfg.pack.balance.combat.knockbackDecay;
   // total travel = v0 * (1 - decay^ticks) / (1 - decay); solve v0 for the wanted travel

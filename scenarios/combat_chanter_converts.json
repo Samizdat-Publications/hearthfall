@@ -98,7 +98,7 @@
   "assert": [
     {
       "at": 200,
-      "expr": "events.count('chantBegun') >= 1 && events.count('converted') == 3 && count(tribe0.wardens) == 3 && count(tribe1.wardens) == 1 && invariants() == 0"
+      "expr": "events.count('chantBegun') >= 1 && events.count('converted') == 2 && count(tribe0.wardens) == 2 && count(tribe1.wardens) == 2 && invariants() == 0"
     }
   ]
 }

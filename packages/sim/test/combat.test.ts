@@ -4,6 +4,7 @@ import { ORDER } from "../src/units.ts";
 import { BSTATE, TASK } from "../src/economy.ts";
 import { CMODE, STANCE } from "../src/combat.ts";
 import { runMatchup } from "../src/matchup.ts";
+import { knockUnit } from "../src/effects.ts";
 import { World } from "../src/world.ts";
 import { basePack, world } from "./helpers.ts";
 
@@ -170,7 +171,7 @@ describe("combat (M6)", () => {
     expect(ws.every((i) => w.ents.trance[i] === 0)).toBe(true);
     w.run(7 * 20);
     expect(w.eventCounts.get("converted")).toBe(w.cfg.pack.units.units[w.ents.type[c]].convert!.maxPerChannel);
-    expect(ws.filter((i) => w.ents.tribe[i] === 0).length).toBe(3);
+    expect(ws.filter((i) => w.ents.tribe[i] === 0).length).toBe(w.cfg.pack.units.units[w.ents.type[c]].convert!.maxPerChannel);
   });
 
   it("entrancedFreeze holds every enemy in the radius while the channel runs", () => {
@@ -212,14 +213,21 @@ describe("combat (M6)", () => {
     expect(off.eventCounts.get("chantInterrupted") ?? 0).toBe(0);
   });
 
-  it("ranged damage interrupts a chant; Shapers and Chanters are never converted", () => {
+  it("ranged damage adding up to breakDamage interrupts a chant (BACKLOG 65); Shapers and Chanters are never converted", () => {
     const w = arena();
     const c = w.ents.index(w.spawnUnit("chanter", 0, 20, 30));
     const s = w.ents.index(w.spawnUnit("settler", 1, 23, 30));
     w.ents.stance[s] = STANCE.passive;
     w.run(4);
     expect(w.ents.chant[c]).toBeGreaterThan(0);
-    w.damage(c, 10, 1, true);
+    const brk = w.cfg.pack.units.units[w.ents.type[c]].convert!.breakDamage!;
+    // a small ranged hit and its knock neither break nor move the channel; the total does
+    const x0 = w.ents.x[c];
+    w.damage(c, brk / 3, 1, true);
+    knockUnit(w, c, 1, 0, 0.8, true);
+    expect(w.ents.chant[c]).toBeGreaterThan(0);
+    expect(w.ents.x[c]).toBe(x0);
+    w.damage(c, brk, 1, true);
     expect(w.ents.chant[c]).toBe(0);
     expect(w.eventCounts.get("chantInterrupted")).toBe(1);
     const w2 = arena();

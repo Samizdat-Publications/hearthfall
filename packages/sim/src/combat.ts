@@ -522,6 +522,7 @@ export class CombatSystem {
     if (k === KIND.chanter) {
       E.chant[i] = this.chantTicks;
       E.cd[i] = 0;
+      if (w.cfg.pack.units.units[ty].convert?.breakDamage) E.progress2[i] = 0;
       w.emit("chantBegun", { id: E.idOf(i), tribe: tr, x: E.x[i], y: E.y[i] });
       this.channel(i);
       return;
@@ -551,7 +552,7 @@ export class CombatSystem {
         // the target itself is pushed away from the shooter
         const px = d < 1e-6 ? wrapDelta(x - E.x[i], n) : dx;
         const py = d < 1e-6 ? wrapDelta(y - E.y[i], n) : dy;
-        knockUnit(w, j, px, py, rd.knockback * (1 - Math.min(1, d / rd.radius) * 0.6));
+        knockUnit(w, j, px, py, rd.knockback * (1 - Math.min(1, d / rd.radius) * 0.6), true);
       }
     }
   }

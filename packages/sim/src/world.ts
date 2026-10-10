@@ -212,7 +212,11 @@ export class World {
     E.hitTick[i] = this.tick;
     if (E.chant[i] > 0) {
       const cv = this.cfg.pack.units.units[E.type[i]].convert;
-      if (!melee) this.combat.interruptChant(i, "hit");
+      // BACKLOG 65: a Chanter with breakDamage shrugs off ranged and spell hits until the channel's damage adds up
+      // (progress2 is free on units and holds the running total)
+      if (!melee && cv?.breakDamage && (E.progress2[i] += amount) < cv.breakDamage) {
+        // the channel holds
+      } else if (!melee) this.combat.interruptChant(i, "hit");
       else if (!cv || cv.interruptedBy.includes("meleeDamage")) this.combat.interruptChant(i, "melee");
     }
     let hp = E.hp[i] - amount;

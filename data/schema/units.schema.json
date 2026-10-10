@@ -135,6 +135,10 @@
               "cooldownSeconds": {
                 "type": "number",
                 "minimum": 0
+              },
+              "breakDamage": {
+                "type": "number",
+                "minimum": 0
               }
             },
             "required": [
