@@ -155,3 +155,14 @@ One line per entry: `MM/DD/YYYY HH:MM  M<n>  what happened`. Never read this fil
 - Asset track: A0 to A3 done (buildings, props, units as GLB; 21 SFX, Shaper barks, 3 music stems, 7 VFX textures, 27 icons; indexes in assets/*/index.json). Spend $8.21 of $30. A4 (integration) is M10.
 - Art direction v2 (ADR-005 + addendum): target = Stewart's pick, making-of/a1 retro-candidate-1 (dense village on a planet in space, terraced cliffs, foamy sea, stone-framed HUD); technique = candidate 3. Retro render pass v1 is ON (style.json render: pixelScale 3, 20-level palette, Bayer dither, terrain pixel noise, Hearth firelight, dusk light, stone and wood HUD). Baselines re-approved.
 - M1 to M5 shipped details: PROGRESS_LOG (and ARCHITECTURE).
+
+## 2026-10-10 Stretch 2 done
+- Stretch 2 ran from 2026-10-10T00:25Z to about s2h 19.6. The end ritual started when the queue was empty, which the plan allows before s2h 23, so the first playtest is not held back by late AI changes.
+- Shipped: blocks A to J (look v3, polish, balance, victory variants in the sim, campaign of 13 levels, vehicles, Forge, map editor, robustness and tests) and the reserve (replays, records, localization, economy robustness). Every S item, BACKLOG 23 (evaluated, not adopted), the parking lot (photo mode, tribe traits, combo hints) and a playtest pass (first match tips, How to play page, an e2e that completes the first tips through real input). 20 WebGPU cut. ADRs 013 to 022.
+- Final checks:
+  - Full npm run qa PASS at 5e11f16.
+  - soak:nightly PASS: ai 64 x 20 (wins aggressive 16, sneaky 15, turtle 13), ai-idle, difficulty, economy, war, war-long. bots PASS.
+  - Totals: 435 unit tests, 90 scenarios, 8 golden replays, 9 shot sets.
+  - Asset spend about $2.37 of the $8 stretch cap.
+- PROGRESS "State of the game" rewritten, plus a "First human playtest" section (ready: yes). Tag s2-done.
+- Open: BACKLOG 15, 16, 17 and 29 need Stewart. Candidates: AI use of Volcano, Call, Mire and Erode, and counters at equal numbers.

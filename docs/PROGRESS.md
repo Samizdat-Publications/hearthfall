@@ -5,6 +5,7 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 ## Now
 Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when STOP exists). Plan: BACKLOG 14a look v3, polish, balance, rules and victory variants, campaign, boats and Skyloft, Forge, map editor (CLAUDE.md "Stretch 2").
 - S2 backlog S items DONE (qa:fast green each; scenarios after sim edits; e2e after 79, 35, 50, 78; goldens unchanged): 79 end screen stats survive a load, 44 treeVersion on chop test, 72 flow progress kept away from edits, 35 self-contained saves (`World.fromSnapshot`, origin check), 50 controller specs in saves and replays, 61 chanter reach inset data, 69 AI shared tuning data, 30 formula strings retired, 31 terrainOp nested union, 78 data/ui.json outside the pack hash (ADR-022, base pack hash changed once). Then 34 terrain and generator literals (terrain.json gen and ops), 66 opponent_skirmish golden, 67 soak AI effect metrics, 68 AI bridge scenario, 59 chase give-up soak gate, 88 level worship delay, 95 vfx colors in style.json (38 superseded), 41 camera rig and tree size in style.json render.
+- Stretch 2 end ritual (queue empty, plan allows it before s2h 23): full npm run qa PASS at 5e11f16 (s2h 19.6); soak:nightly and bots PASS; State of the game and First human playtest rewritten; tag s2-done.
 - S2 playtest pass after s2h 17.7: soak:nightly PASS (ai, ai-idle, difficulty, economy, war, war-long); first match tips (six steps under the spell bar, a setting that turns itself off), How to play page (main and pause menus). Full npm run qa PASS at 67ca873 (s2h 18.5).
 - S2 after s2h 13.8: 23 move picker evaluated and not adopted (diversity 0.32 vs 0.368, VISIONQA section 7), photo mode, tribe traits, spell combo hints; 20 WebGPU cut. Full npm run qa PASS at f4f0c49.
 - S2 backlog S items DONE after s2h 13: 32 shot coverage sampled on the game view only, 33 and 43 VisionQA calibration (30 shots, held-out half), 51 economy bench case, 52 hud_narrow shot, 58 long front war soak (`war-long` in the nightly), 26 asset re-generation tool (`tools/assets/regen.py`). Every S item is now done or out of scope (29).
@@ -26,9 +27,9 @@ Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when
 - Making-of archive: making-of/ via `npm run making-of -- add`; storyboard in making-of/README.md. Making-of page (Stewart's request): https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5, rebuild with `npm run making-of -- page` and republish to that URL after every backlog item (README steps).
 
 ## Next 3 actions
-1. Playtest readiness: first match tips and How to play done. Optional small polish only (no sim or AI changes) until s2h 23; BACKLOG is empty except out-of-scope 15, 16, 17, 29.
-2. Full npm run qa PASS at 67ca873 (s2h 18.5); next due by s2h 22.5 or at the end ritual, whichever is first.
-3. At s2h >= 23 or STOP: end ritual (full qa, soaks, State of the game plus First human playtest, PROGRESS_LOG, tag s2-done, making-of, STRETCH 2 DONE).
+1. Stretch 2 is done (tag s2-done). Wait for Stewart's first playtest notes ("First human playtest" below) and turn them into BACKLOG items.
+2. Candidates without his input: AI use of Volcano, Call, Mire and Erode; counters at equal numbers about 75 percent; static web deploy (needs his OK).
+3. Keep the loop: qa:fast per commit, full qa every 4 h of work, soak:nightly after sim or AI changes.
 
 ## Blocked
 (none)
@@ -42,47 +43,88 @@ Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when
 - M7 ai soak (12 seeds x 40 min, normal): wins sneaky 8, aggressive 2, turtle 2, unfinished 0, median 13.4 min (ok). Sneaky takes 8 of 12 wins (its pair win rates are over the 70 percent cap); 2 analyst passes plus garrison and training code did not fix it (BACKLOG 64, 71).
 - M6/M7 counter triangle: 100 percent every pair (target band 65 to 80); probes: Firecaller 6 v Chanter 10 and Chanter 6 v Warden 10 still win 100 percent, mixed mirror 40 to 50 percent (BACKLOG 65).
 - BACKLOG 7 (2026-10-09): triangle still 100 percent every pair; probes Warden 6 v Firecaller 10 0, Firecaller 6 v Chanter 10 100 (ranged hits break every chant, 3 s cooldown: needs a design change, 60 and 65), Chanter 6 v Warden 10 40 (was 100), mixed mirror 60. ai soak 12 x 30 min: sneaky 6, turtle 5, aggressive 1 (aggressive now the weakest), unfinished 0, median 17.6 min, 74 of 74 waves mixed. ai-idle: all 12 eliminated (aggressive 9 to 13 min, sneaky 11 to 12, turtle 13 to 13.5). Hold the Line (83) not tuned.
+- Stretch 2 end (2026-10-10): BACKLOG 65 met for outnumbered probes (Warden 6 v Firecaller 10 70, Firecaller 6 v Chanter 10 60, Chanter 6 v Warden 10 80, mixed mirror 40); equal-number pairs still 100 percent. ai soak 64 x 20 min: aggressive 16, sneaky 15, turtle 13, unfinished 20 (the M7 sneaky skew is gone).
 
 ## State of the game (for Stewart)
-Written at the M11 exit and rewritten when every P1 backlog item was done or cut (2026-10-09, about 25 h into the run). The game keeps growing from docs/BACKLOG.md P2 onward.
+Rewritten at the end of stretch 2 (2026-10-11, about 47 h after the first run started). Run 1 built the whole game (m0 to m11); stretch 2 added the look, the modes and the polish listed below. BACKLOG is done except the four items that need you (15 online play, 16 desktop build, 17 public deploy, 29 path cleanup before any push).
 
 **What works**
-- A complete skirmish loop on a small curved, wrapping planet: your Shaper and settlers start at a Hearth, settlers chop wood and quarry stone, build Dwellings and breed; followers produce mana; you train Wardens (melee), Firecallers (ranged), Chanters (convert) and Shades (disguise and sabotage) from lodges; you win by eliminating the rival tribes and lose when your tribe is gone.
-- All 16 spells: Bolt, Call, Hornets, Raise Land, Lightning, Flatten, Quake, Volcano, plus Veil, Ward, Beguile, Whirlwind, Mire, Erode, Firerain and Wraith (the last eight taught at Reliquaries). Terrain is fully deformable and water kills.
-- Fog of war with scouting and a fogged minimap; the AI sees only what its tribe sees (brutal cheats on purpose).
-- Opponent AI with three personalities (aggressive, sneaky, turtle) and four difficulty levels, verified by soaks against a normal opponent: easy wins about 13 percent, hard and brutal about 88 percent. The brutal income bonus and the easy penalty go through the simulation, so they show in replays.
-- Command polish: box formations for group moves, double-click to select a type, control groups with jump, spell previews with counts, and Backspace undo of a cast.
-- Units animate (walk, work, attack, shoot, cast, pray, panic, topple and drown) through procedural vertex animation of the 3D models.
-- Campaign of three levels with objectives, triggers, hints and worship sites. Progress is kept in the browser.
-- Menus: main menu, skirmish setup (map, size, seed, difficulty), settings, pause, save and load, end screen with stats.
-- Accessibility: a colorblind-safe tribe palette (checked by simulating the three common color blindness types), UI scale 80 to 150 percent (the HUD shrinks itself if the window is too small), subtitles for the Shaper's voice lines, rebindable keys.
-- Look: retro pixel render pass (palette, dither, golden-hour light, firelight), conifer groves and terraced cliffs, 3D models with tribe tint and rings, spell and combat VFX, stone and wood HUD with icons.
-- Audio: sound effects, Shaper voice lines and adaptive music (calm, tension, battle) with volume sliders.
-- Determinism: every match replays bit-identically from its command log (Node and Chromium agree); golden replays guard it.
-- QA: `npm run qa` (resumable, rerun until PASS) runs typecheck, guards, 272 unit tests, 52 scenarios, golden replays, sim and render benchmarks, four screenshot sets, VisionQA, browser end-to-end checks at 1280x720 and 2560x1440, and the production build check. Last full PASS at 5b2587a.
-- Making-of page with captioned screenshots for every milestone and backlog item: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5
+- The core god game: a small curved, wrapping planet where your Shaper leads a tribe from a Hearth. Settlers gather wood and stone, build Dwellings and breed; followers pray for mana or train Wardens (melee), Firecallers (ranged), Chanters (convert) and Shades (disguise and sabotage). Terrain is fully deformable and water kills.
+- All 16 spells, eight of them taught at Reliquaries. Fog of war, a fogged minimap and an orthographic map view (M).
+- Opponent AI with three personalities and four difficulties. Nightly soak, 64 matches of 20 minutes: wins aggressive 16, sneaky 15, turtle 13 (balanced; run 1 had sneaky at 8 of 12). Against normal: easy never wins, hard wins 4 of the 6 decided matches, brutal wins all 6 decided.
+- New in stretch 2:
+  - Look v3, the "miniature diorama": tilt-shift focus, painted shallow water with foam lines, round clump trees, thatched huts, snow caps, lighting presets (day, golden, evening) and rain. All in Settings.
+  - Victory variants decided inside the simulation, so they replay exactly: Conquest, Hold the Reliquaries, King of the Hill and Last Stand.
+  - Forge mode: an optional 2 minute pre-match phase to reshape the land around your Hearth. The AI forges by personality: the turtle digs a moat.
+  - Boats and the Boathouse, balloons and the Skyloft. Right click your boat to board it, and right click a shore to unload. The AI ferries its waves across water.
+  - Campaign of 13 levels on a route map. Each level teaches one idea, and spells learned at Reliquaries carry forward.
+  - Map editor (main menu): paint land, sea and hills, place Hearths, trees, shrines and Reliquaries, set the goal, then playtest or download the level.
+  - Tribe traits (skirmish option), weather, photo mode (F), spell combo tips, and first match tips with a How to play page.
+  - Replays with a timeline bar, records and achievements, mod packs and a localization scaffold.
+- Counter triangle redesigned (BACKLOG 65): chants break on accumulated damage, not on any hit. Outnumbered 6 against 10, each counter now wins 60 to 80 percent: Warden over Firecaller 70, Firecaller over Chanter 60, Chanter over Warden 80. At equal numbers a counter still wins every time, which is intended.
+- Determinism and QA:
+  - Every match replays bit for bit, and 8 golden replays guard it.
+  - `npm run qa` covers typecheck, 7 code guards, 435 unit tests, 90 scenarios, golden replays in Node and Chromium, sim and render benches, 9 screenshot sets with VisionQA, end-to-end browser checks at 1280x720 and 2560x1440, and the production build.
+  - `npm run soak:nightly` runs about 130 headless AI matches.
+  - Last full PASS at 5e11f16 (s2h 19.6).
+- Making-of page with every stage of the build: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5
 
-**How to play**
+**Known issues**
+- Counters at equal numbers win 100 percent. Mixed armies decide real games, so it plays fine, but the numbers are sharper than DESIGN asks.
+- About a third of AI versus AI matches are still undecided at 20 minutes. Human games should end sooner, because people attack.
+- In 64 soak matches the AI never cast Volcano or Call and rarely Mire, Erode or Firerain.
+- Online multiplayer, a desktop exe and a public URL are not built (BACKLOG 15, 16, 17).
+- The PC is often fully loaded by other work, so a full qa run needs several reruns to finish. That is a test timing artifact, not a game bug.
+
+**Top 5 next items**
+1. Your playtest notes. They beat any soak.
+2. Static web deploy so the game opens from a link (BACKLOG 17; needs your OK and a Cloudflare account choice).
+3. Teach the AI the unused spells (Volcano, Mire, Erode combos) and rival boat raids.
+4. Counter tuning at equal numbers (aim for about 75 percent) and more campaign levels toward the 25 in DESIGN.
+5. Online co-op against the AI (BACKLOG 15).
+
+## First human playtest
+**Ready: yes.**
+- The whole loop works from the main menu to the end screen in Chrome and Edge, and saves, loads and replays work.
+- A new player gets a How to play page, six first match tips and a campaign that teaches one idea per level.
+- Full qa passes and about 130 headless AI matches run clean: no stuck units, no crashes, no drift.
+- What it cannot tell you is whether it is fun, how fast a real match feels, and whether the spells feel strong enough. That is what this playtest is for.
+
+**Start it**
 ```
 cd C:\Users\stewa\Documents\Claude\Hearthfall
 npm run build
 npm run serve
 ```
-Then open http://127.0.0.1:5182/ in Chrome or Edge. Pick Skirmish (try continents, normal) or Campaign.
-- Mouse: drag to box-select (double-click selects every unit of that type), click a unit or building to select it, right click to move (groups form up; on your tower: garrison), wheel to zoom, Q and E to rotate.
-- Keys: A attack-move, R retreat, G garrison, S select the Shaper, D place a Dwelling, T a Watchtower, M map view, H help, P or Esc pause menu (Esc first cancels targeting or a selection), Ctrl+0-9 set a group, 0-9 select it (twice to jump). Spells: Z, X, C, V, B, N for the first six, Shift+M and Shift+N for the next two, and Shift+Z X C V B J K L for the eight Reliquary spells (then click a target); Backspace undoes a cast during its short undo window. Keys, tribe colors, UI scale and subtitles are in Settings.
-- The top-left slider splits followers between praying for mana (Spells) and training troops (Training). Reach 10 followers to unlock the Watchtower and Warden Lodge, more for the other lodges.
-- Tip: keep the Shaper safe. If she dies she respawns at the Hearth after a delay, and her killer can steal spell charges.
+Then open http://127.0.0.1:5182/ in Chrome or Edge, and press Ctrl+C in that window when you are done. A full screen window at 1920x1080 or larger looks best. Interface size is in Settings.
 
-**Known issues**
-- Balance: the counter triangle is still lopsided (each counter wins every time instead of about 70 percent; ranged hits break every chant) and sneaky or turtle win most AI versus AI matches. See "Balance gaps" above and BACKLOG 64, 65, 83.
-- Boats and the Skyloft exist only as data (BACKLOG 10); the campaign has three of the 25 planned levels (BACKLOG 9).
-- Rigged animation clips were cut (BACKLOG 5a): the procedural poses read well at every camera zoom the game has.
-- The PC is often fully loaded by other work, so benchmark and screenshot timing is noisy; the full qa run needs several reruns to finish.
+**How to play (the short version)**
+- **Goal:** destroy every rival Hearth (or meet the variant goal shown at the top right) and keep your own Hearth and Shaper alive. Land that sinks drowns whoever stands on it.
+- **Grow:** settlers gather on their own. Press D and click near the Hearth for Dwellings, which breed followers. At 10 followers you unlock the Watchtower (T) and the Warden Lodge.
+- **Mana:** the slider at the top left splits followers between praying (mana) and training (troops).
+- **Spells:** press Z, X, C, V, B or N (Shift plus a letter for the later ones), then click a target. Right click a spell to auto-charge it, and Backspace takes back a cast that has not landed.
+- **Army:** drag to select (double-click selects every unit of that type). Right click moves. A then click attack-moves, R retreats, G garrisons. Ctrl plus a digit saves a group.
+- **Camera:** wheel to zoom, Q and E to rotate, M for the map, click the minimap to jump. P or Esc pauses, H lists every key, and F is photo mode (Enter saves a PNG).
 
-**Top 5 next items**
-1. Tilt-shift miniature look from your second reference, tried before and after the pixel pass (BACKLOG 14a).
-2. Campaign: ten more levels, Reliquary progression and a level select map (BACKLOG 9).
-3. Counter triangle redesign so each counter wins about 70 percent, starting with chants and ranged hits (BACKLOG 65).
-4. Boats, Boathouse and the Skyloft with pathing over water (BACKLOG 10).
-5. Forge mode and victory variants (BACKLOG 11, 13).
+**What to try, in this order (about 2 hours)**
+1. **Main menu > How to play,** then **Campaign** levels 1 to 3 (about 30 min). Do the hints make sense? Is Raise Land fun?
+2. **Skirmish,** continents, one opponent on easy, default options, with the first match tips on (about 20 min).
+   - Note anything confusing: the HUD, what you can build, why a spell will not cast.
+   - Once you find the rival village, try to drown it with Erode or Quake.
+3. **Skirmish on normal** against the aggressive AI. Does its first attack come too early, too late, or about right?
+4. **One mode at a time:**
+   - Forge on, with King of the Hill.
+   - The islands map with boats.
+   - The rain weather.
+   - Each tribe trait.
+5. **Map editor:** make a small map, press Playtest, then quit back to the editor.
+6. **Settings:** compare miniature focus on and off and the three lighting presets. Is the tilt-shift look what you wanted from your reference?
+7. **After a match:** Records, then Main menu > Last replay. Scrub the timeline.
+
+**What to tell me afterwards** (a few lines each is plenty)
+- The best moment and the most frustrating moment.
+- Anything you could not figure out without asking.
+- Speed: matches too slow or too fast? Mana too scarce?
+- Which spells felt weak or useless.
+- Any visual bug: grab it with photo mode (F, then Enter), or note the seed and the minute.
+- Frame rate on your laptop: smooth, or does it stutter when zoomed out?
