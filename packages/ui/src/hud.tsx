@@ -89,6 +89,8 @@ export interface HudModel {
   notes: NoteView[];
   /** BACKLOG 8: the current voice line's subtitle */
   subtitle?: { speaker: string; text: string } | null;
+  /** stretch 2 playtest pass: the current first skirmish tip ("Tip 2/6") */
+  tip?: { label: string; text: string } | null;
   box: { x0: number; y0: number; x1: number; y1: number } | null;
   showHelp: boolean;
   priorities: { build: number; upgrade: number; breed: number };
@@ -432,6 +434,11 @@ function Hud({ act }: { act: HudActions }) {
         </div>
       ) : null}
       {m.forge ? <ForgePanel f={m.forge} act={act} /> : null}
+      {m.tip && !m.forge ? (
+        <div data-hud="tip" class="hud-panel hud-tip">
+          <b>{m.tip.label}</b> {m.tip.text}
+        </div>
+      ) : null}
       {m.undoSec !== undefined && m.undoSec > 0 ? (
         <div data-hud="undo" class="hud-panel hud-undo">
           Backspace undoes this cast ({m.undoSec.toFixed(1)} s)

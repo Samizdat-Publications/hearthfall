@@ -15,6 +15,14 @@
     { "after": "quake", "then": "erode", "text": "Combo: Erode the cracked land near the shore and the sea takes it." },
     { "after": "veil", "then": "lightning", "text": "Combo: unseen, your Shaper can walk close and Lightning the rival Shaper." }
   ],
+  "tips": [
+    { "$comment": "First skirmish tips (settings: First match tips), shown one at a time in the objectives panel; a step is skipped once its check in apps/game/src/tips.ts passes. The last one leaves after 45 game seconds and turns the setting off.", "id": "dwelling", "text": "Press D, then click open ground near your Hearth to place a Dwelling. Settlers build it with wood." },
+    { "id": "cast", "text": "Praying followers make mana. Press Z and click a spot to cast Bolt with your Shaper." },
+    { "id": "lodge", "text": "More Dwellings mean more followers. At 10, press T for a Watchtower or pick a Warden Lodge in the build bar." },
+    { "id": "train", "text": "Click a lodge and train Wardens. The slider at the top left moves followers from praying to training." },
+    { "id": "attack", "text": "Drag a box around your troops, press A and click toward the rival to attack-move." },
+    { "id": "win", "text": "Scout through the fog and destroy every rival Hearth to win. Press H for every key." }
+  ],
   "notes": {
     "seconds": 8,
     "max": 4,

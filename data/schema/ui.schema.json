@@ -89,6 +89,38 @@
         "additionalProperties": false
       }
     },
+    "tips": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "$comment": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string",
+            "enum": [
+              "dwelling",
+              "cast",
+              "lodge",
+              "train",
+              "attack",
+              "win"
+            ]
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 140
+          }
+        },
+        "required": [
+          "id",
+          "text"
+        ],
+        "additionalProperties": false
+      }
+    },
     "notes": {
       "type": "object",
       "properties": {

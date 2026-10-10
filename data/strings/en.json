@@ -60,6 +60,8 @@
   "settings.resetKeys": "Reset keys",
   "settings.sfx": "Effects",
   "settings.subtitles": "Subtitles",
+  "settings.tips": "First match tips",
+  "settings.tipsHint": "Step by step tips in your next skirmish; they turn off once you finish them",
   "settings.uiScale": "Interface size",
   "settings.weather": "Weather",
   "setup.addOpponent": "Add opponent",

@@ -156,6 +156,9 @@ async function flow(browser, url, vp) {
     const tribes = await page.evaluate(() => window.__game.getSummary().tribes.length);
     if (tribes !== 3) problem(`skirmish has ${tribes} tribes, expected 3`);
     await page.evaluate(() => window.__game.step(200));
+    // stretch 2 playtest pass: a fresh profile gets the first skirmish tips, starting with the Dwelling
+    const tip = await page.evaluate(() => ({ id: window.__game.getSummary().tip, row: document.querySelector('[data-hud="tip"]')?.textContent ?? "" }));
+    if (tip.id !== "dwelling" || !/^Tip 1\/6:/.test(tip.row)) problem(`first match tip: ${JSON.stringify(tip)}`);
     await check("play");
     // parking lot: photo mode hides the HUD, pauses, saves the canvas as a PNG download and restores the pause state
     const pausedBefore = await page.evaluate(() => window.__game.getSummary().paused);
@@ -375,6 +378,7 @@ async function flow(browser, url, vp) {
     const lv = await page.evaluate(() => window.__game.level());
     if (!lv || `level-${lv.id}` !== order[0].ui) problem(`campaign: running level ${JSON.stringify(lv)}`);
     const objectives = await page.$$eval('[data-hud-part^="objective-"]', (els) => els.length);
+    if (await page.evaluate(() => window.__game.getSummary().tip)) problem("campaign level shows first match tips");
     if (!objectives) problem("campaign: no level objectives in the HUD");
     await check("level");
     const won = await page.evaluate(() => window.__game.winLevel());

@@ -640,6 +640,9 @@ Effect primitives (`spells[].effects[]`, discriminated by `type`):
 | `combos[].after` | string | yes |
 | `combos[].then` | string | yes |
 | `combos[].text` | string | yes |
+| `tips` | object[] |  |
+| `tips[].id` | "dwelling" or "cast" or "lodge" or "train" or "attack" or "win" | yes |
+| `tips[].text` | string | yes |
 | `notes` | object | yes |
 | `notes.seconds` | number | yes |
 | `notes.max` | int | yes |

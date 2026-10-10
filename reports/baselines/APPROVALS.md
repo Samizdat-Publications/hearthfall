@@ -132,3 +132,4 @@
 - 2026-10-10T18:06 set vehicles (3 shots): help panel lists P pause and F photo; veil shows the Veil then Lightning combo tip
 - 2026-10-10T18:06 set forge (1 shots): help panel lists P pause and F photo; veil shows the Veil then Lightning combo tip
 - 2026-10-10T18:07 set levels (5 shots): help panel lists P pause and F photo; veil shows the Veil then Lightning combo tip
+- 2026-10-10T18:35 set menus (9 shots): settings: First match tips row; replay_bar: help line lists P pause and F photo

@@ -111,6 +111,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
         uiScales: opts(UI_SCALES.map(String), (v) => `${v}%`),
         uiScale: String(game.settings.uiScale),
         subtitles: game.settings.subtitles ? "on" : "off",
+        tips: game.settings.tips ? "on" : "off",
         miniatures: opts(MINIATURE, (v) => (v === "default" ? "Default" : v === "on" ? "On" : "Off")),
         miniature: game.settings.miniature,
         lightings: opts(LIGHTING, (v) => (v === "default" ? "Default" : v[0].toUpperCase() + v.slice(1))),

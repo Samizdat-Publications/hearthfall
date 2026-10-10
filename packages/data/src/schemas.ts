@@ -1201,6 +1201,8 @@ export const UiFileSchema = z.strictObject({
   skirmish: SkirmishMenuSchema,
   /** parking lot (stretch 2): after the player casts `after`, a one-time HUD tip suggests `then` (if castable) */
   combos: z.array(z.strictObject({ ...comment, after: id, then: id, text: z.string().min(1).max(110) })).optional(),
+  /** stretch 2 playtest pass: first skirmish tips, one at a time in the objectives panel; each step id has a done check in apps/game/src/tips.ts */
+  tips: z.array(z.strictObject({ ...comment, id: z.enum(["dwelling", "cast", "lodge", "train", "attack", "win"]), text: z.string().min(1).max(140) })).optional(),
   notes: z.strictObject({
     ...comment,
     /** how long a HUD notification stays up */

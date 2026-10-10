@@ -55,6 +55,8 @@ export interface SettingsView {
   uiScales: Choice[];
   uiScale: string;
   subtitles: string;
+  /** stretch 2: first skirmish tips ("on" or "off") */
+  tips: string;
   /** BACKLOG 14a: tilt-shift miniature focus (default, on, off) */
   miniatures: Choice[];
   miniature: string;
@@ -105,7 +107,7 @@ export interface MenuModel {
 }
 
 export type SetupPatch = Partial<Pick<SetupView, "map" | "size" | "seed" | "opponents" | "difficulty" | "victory" | "forge" | "weather" | "trait">>;
-export type SettingsPatch = Partial<Pick<SettingsView, "quality" | "master" | "music" | "sfx" | "palette" | "miniature" | "lighting" | "weather">> & { uiScale?: number; subtitles?: boolean };
+export type SettingsPatch = Partial<Pick<SettingsView, "quality" | "master" | "music" | "sfx" | "palette" | "miniature" | "lighting" | "weather">> & { uiScale?: number; subtitles?: boolean; tips?: boolean };
 
 export interface MenuActions {
   go(screen: Screen): void;
@@ -464,6 +466,8 @@ function Settings({ s, act }: { s: SettingsView; act: MenuActions }) {
           <Select ui="set-uiscale" value={s.uiScale} options={s.uiScales} onChange={(v) => act.setSetting({ uiScale: Number(v) })} />
           <label class="menu-label">{t("settings.subtitles")}</label>
           <Select ui="set-subtitles" value={s.subtitles} options={ONOFF()} onChange={(v) => act.setSetting({ subtitles: v === "on" })} />
+          <label class="menu-label" title={t("settings.tipsHint")}>{t("settings.tips")}</label>
+          <Select ui="set-tips" value={s.tips} options={ONOFF()} onChange={(v) => act.setSetting({ tips: v === "on" })} />
           <label class="menu-label">{t("settings.miniature")}</label>
           <Select ui="set-miniature" value={s.miniature} options={s.miniatures} onChange={(v) => act.setSetting({ miniature: v })} />
           <label class="menu-label">{t("settings.lighting")}</label>

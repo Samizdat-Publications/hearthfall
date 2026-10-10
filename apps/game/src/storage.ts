@@ -61,12 +61,14 @@ export interface Settings {
   miniature: (typeof MINIATURE)[number];
   lighting: (typeof LIGHTING)[number];
   weather: (typeof WEATHER)[number];
+  /** stretch 2: first skirmish tips (turned off when the last tip is done) */
+  tips: boolean;
 }
 
 const SETTINGS_KEY = "hearthfall.settings.v1";
 
 export function defaultSettings(): Settings {
-  return { quality: "high", master: 80, music: 60, sfx: 80, keymap: defaultKeymap(), palette: "default", uiScale: 100, subtitles: true, miniature: "default", lighting: "default", weather: "clear" };
+  return { quality: "high", master: 80, music: 60, sfx: 80, keymap: defaultKeymap(), palette: "default", uiScale: 100, subtitles: true, miniature: "default", lighting: "default", weather: "clear", tips: true };
 }
 
 const vol = (v: unknown, d: number) => (typeof v === "number" && Number.isFinite(v) ? Math.min(100, Math.max(0, Math.round(v))) : d);
@@ -89,6 +91,7 @@ export function loadSettings(kv: KV): Settings {
       miniature: (MINIATURE as readonly string[]).includes(o.miniature as string) ? (o.miniature as Settings["miniature"]) : d.miniature,
       lighting: (LIGHTING as readonly string[]).includes(o.lighting as string) ? (o.lighting as Settings["lighting"]) : d.lighting,
       weather: (WEATHER as readonly string[]).includes(o.weather as string) ? (o.weather as Settings["weather"]) : d.weather,
+      tips: typeof o.tips === "boolean" ? o.tips : d.tips,
     };
   } catch {
     return d;

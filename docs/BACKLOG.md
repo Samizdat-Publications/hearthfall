@@ -119,4 +119,5 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 - Wild people tribe that can be Called (converted) for growth. Covered: wild people spawn near every Hearth (generator) and the Call spell converts them (DESIGN section 9).
 - Tribe traits (small passive bonuses) as data. DONE (10/10/2026, stretch 2): balance.traits (Devout, Swift, Fertile, Stalwart), personality `trait`, a skirmish setup option (DESIGN section 14); traits.test.ts, session test, e2e.
 - Spell combos (Raise Land then Erode for a moat) highlighted by a hint system. DONE (10/10/2026, stretch 2): `data/ui.json combos`, a one-time HUD tip per combo per match (orderNotes.ts comboHint, game.ts noteFor).
+- First match tips for a new player's first skirmish. DONE (10/10/2026, stretch 2 playtest pass): six state-driven steps under the spell bar (`data/ui.json tips`, `apps/game/src/tips.ts`), a "First match tips" setting that turns itself off when the last tip is done.
 - Photo mode. DONE (10/10/2026, stretch 2): F toggles it (DESIGN camera section); e2e covers HUD hidden, pause, the PNG download and the restored pause state.

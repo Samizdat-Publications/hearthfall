@@ -5,6 +5,7 @@
 // sim only runs while no menu screen is up. menuBridge.ts turns this state into the menu view model.
 // M9: campaign levels (data/levels) run as sessions too; the level runtime decides the end.
 import { comboHint, leadInWarning, orderNote } from "./orderNotes.ts";
+import { FirstMatchTips, type TipView } from "./tips.ts";
 import type { SessionRole } from "./netGate.ts";
 import {
   validateUi,
@@ -67,6 +68,7 @@ import { REPLAY_KEY, ReplayRun, decodeReplay, encodeReplay, makeReplay, type Rep
 import {
   browserKV,
   loadSettings,
+  storeSettings,
   type KV,
   type Settings,
 } from "./storage.ts";
@@ -358,6 +360,9 @@ export class Game {
   private photoWasPaused = false;
   /** last saved photo file name (e2e and the hint line) */
   photoSaved = "";
+  /** stretch 2 playtest pass: first skirmish tips (null when off, finished, or not a plain skirmish) */
+  tips: FirstMatchTips | null = null;
+  tip: TipView | null = null;
   /** spell id being targeted (preview follows the cursor) */
   targeting: string | null = null;
   /** BACKLOG 4: units under the spell preview (enemies the tribe can see, and its own) */
@@ -572,6 +577,8 @@ export class Game {
     this.targeting = null;
     this.pointing = null;
     this.attackMode = false;
+    this.tips = null;
+    this.tip = null;
     this.queue = [];
     this.events = [];
     this.log = [];
@@ -623,6 +630,8 @@ export class Game {
       this.params = prev;
       throw e;
     }
+    this.tips = this.settings.tips && !sp.campaign && this.ui.tips?.length ? new FirstMatchTips(this.ui.tips) : null;
+    this.tip = null;
     this.paused = this.params.fixedStep;
   }
 
@@ -1012,6 +1021,7 @@ export class Game {
       this.cueFor(e);
     }
     if (this.world.tick % 30 === 0) this.samplePeak();
+    if (this.tips && this.world.tick % 10 === 0) this.updateTips();
     const si = shaperIndex(this.world, this.localTribe);
     const E = this.world.ents;
     if (
@@ -1194,11 +1204,25 @@ export class Game {
       );
   }
 
+  /** First skirmish tips: advance; once the last is done, turn the setting off so later matches start clean. */
+  private updateTips(): void {
+    const tips = this.tips!;
+    const was = this.tip?.id;
+    this.tip = tips.update(this.world, this.localTribe);
+    if (tips.finished) {
+      this.tips = null;
+      this.settings = { ...this.settings, tips: false };
+      storeSettings(this.kv, this.settings);
+    }
+    if (this.tip?.id !== was) this.onChange();
+  }
+
   private noteFor(e: SimEvent): void {
     const me = this.localTribe;
     const rival = (t: unknown) => typeof t === "number" && t >= 0 && t !== me;
     switch (e.type) {
       case "spellCast": {
+        this.tips?.observe(e, me);
         const h = comboHint(e, me, this.ui.combos ?? [], this.castable());
         if (h) this.notify(h.key, h.text, "info", h.throttleSec);
         break;
@@ -1572,6 +1596,7 @@ export class Game {
         ...formation,
       },
     });
+    if (attack) this.tips?.attackOrdered();
     for (const i of this.selection)
       this.ordered.set(E.idOf(i), this.world.tick);
     this.orderSound();
@@ -2078,6 +2103,7 @@ export class Game {
       tick: w.tick,
       paused: this.paused,
       photo: this.photo,
+      tip: this.tip?.id ?? null,
       traits: w.origin.traits ?? null,
       screen: this.screen,
       ended: this.ended,
