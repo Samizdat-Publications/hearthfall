@@ -1,6 +1,6 @@
 // Data pack loading: validation, cross references, canonical hashing and mod merge rules.
 // Browser safe (no node imports); disk access lives in tools/harness.
-import { AchievementsFileSchema, LevelSchema, PACK_FILES, type AchievementsFile, type LevelDef, type PackFileName, type PackFiles, type Reward } from "./schemas.ts";
+import { AchievementsFileSchema, LevelSchema, PACK_FILES, UiFileSchema, type AchievementsFile, type UiFile, type LevelDef, type PackFileName, type PackFiles, type Reward } from "./schemas.ts";
 
 export * from "./schemas.ts";
 export * from "./colorVision.ts";
@@ -241,6 +241,22 @@ export function validateLevel(raw: unknown, pack: PackFiles, file = "level"): { 
 }
 
 /** BACKLOG 21: validate data/achievements.json against its schema and a pack (difficulties exist, ids unique). */
+/** BACKLOG 78: data/ui.json against the pack (skirmish maps, opponents and difficulty must exist). */
+export function validateUi(raw: unknown, pack: PackFiles, file = "data/ui.json"): { issues: PackIssue[]; file?: UiFile } {
+  const res = UiFileSchema.safeParse(raw);
+  if (!res.success) return { issues: res.error.issues.map((i) => ({ file, path: i.path.join("."), message: i.message })) };
+  const issues: PackIssue[] = [];
+  const sk = res.data.skirmish;
+  const maps = new Set(pack.terrain.presets.map((p) => p.id));
+  sk.maps.forEach((m, k) => maps.has(m) || issues.push({ file, path: `skirmish.maps.${k}`, message: `unknown map generator ${m}` }));
+  if (!sk.mapSizes.includes(sk.defaultSize)) issues.push({ file, path: "skirmish.defaultSize", message: `defaultSize ${sk.defaultSize} is not one of mapSizes` });
+  const opp = new Set(["economy", "none", ...pack.ai.personalities.map((p) => p.id)]);
+  sk.defaultOpponents.forEach((o, k) => opp.has(o) || issues.push({ file, path: `skirmish.defaultOpponents.${k}`, message: `unknown opponent ${o}` }));
+  if (sk.defaultOpponents.length > sk.maxOpponents) issues.push({ file, path: "skirmish.defaultOpponents", message: `more than maxOpponents (${sk.maxOpponents})` });
+  if (!pack.ai.difficulties.some((d) => d.id === sk.defaultDifficulty)) issues.push({ file, path: "skirmish.defaultDifficulty", message: `unknown difficulty ${sk.defaultDifficulty}` });
+  return issues.length ? { issues } : { issues, file: res.data };
+}
+
 export function validateAchievements(raw: unknown, pack: PackFiles, file = "data/achievements.json"): { issues: PackIssue[]; file?: AchievementsFile } {
   const res = AchievementsFileSchema.safeParse(raw);
   if (!res.success) return { issues: res.error.issues.map((i) => ({ file, path: i.path.join("."), message: i.message })) };

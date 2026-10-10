@@ -2,7 +2,7 @@
 // data/schema/*.json. Imports the TypeScript data package directly (Node type stripping).
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { z } from "zod";
-import { AchievementsFileSchema, PACK_FILES, applyMods, validateAchievements, validateLevel, validatePack } from "../../packages/data/src/index.ts";
+import { AchievementsFileSchema, PACK_FILES, UiFileSchema, applyMods, validateAchievements, validateLevel, validatePack, validateUi } from "../../packages/data/src/index.ts";
 import { ROOT } from "../guards/lib.mjs";
 
 export function readPackDir(dir = "data/base") {
@@ -109,10 +109,23 @@ export function loadAchievements(packFiles) {
   return validateAchievements(raw, packFiles, file);
 }
 
+/** BACKLOG 78: data/ui.json validated against the pack. */
+export function loadUi(packFiles) {
+  const file = "data/ui.json";
+  let raw;
+  try {
+    raw = JSON.parse(readFileSync(ROOT + file, "utf8"));
+  } catch (e) {
+    return { issues: [{ file, path: "", message: String(e.message).split("\n")[0] }] };
+  }
+  return validateUi(raw, packFiles, file);
+}
+
 export function jsonSchemas() {
   const out = {};
   for (const [name, schema] of Object.entries(PACK_FILES)) out[name.replace(".json", ".schema.json")] = JSON.stringify(z.toJSONSchema(schema, { io: "input", unrepresentable: "any" }), null, 2) + "\n";
   out["achievements.schema.json"] = JSON.stringify(z.toJSONSchema(AchievementsFileSchema, { io: "input", unrepresentable: "any" }), null, 2) + "\n";
+  out["ui.schema.json"] = JSON.stringify(z.toJSONSchema(UiFileSchema, { io: "input", unrepresentable: "any" }), null, 2) + "\n";
   return out;
 }
 
@@ -177,6 +190,11 @@ export function dataDocs() {
   const ach = z.toJSONSchema(AchievementsFileSchema, { io: "input", unrepresentable: "any" });
   lines.push("## achievements.json (data/, not in the pack hash)", "", "| Field | Type | Required |", "|---|---|---|");
   rows(ach, "", lines);
+  lines.push("");
+  // BACKLOG 78: menu defaults and HUD tunables, outside the pack hash
+  const ui = z.toJSONSchema(UiFileSchema, { io: "input", unrepresentable: "any" });
+  lines.push("## ui.json (data/, not in the pack hash)", "", "| Field | Type | Required |", "|---|---|---|");
+  rows(ui, "", lines);
   lines.push("");
   return lines.join("\n");
 }

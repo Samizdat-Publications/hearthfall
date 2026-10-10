@@ -173,15 +173,6 @@
       }
     ]
   },
-  "skirmish": {
-    "$comment": "M8 skirmish setup screen: offered map sizes and generators, opponent count limit and defaults (personality ids from ai_personalities.json, or economy).",
-    "mapSizes": [96, 128, 192],
-    "defaultSize": 128,
-    "maps": ["continents", "islands"],
-    "maxOpponents": 3,
-    "defaultOpponents": ["aggressive"],
-    "defaultDifficulty": "normal"
-  },
   "gates": {
     "counterTriangleMinWinPct": 65,
     "maxPersonalityWinPct": 70,

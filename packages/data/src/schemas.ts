@@ -4,6 +4,17 @@
 import { z } from "zod";
 
 const comment = { $comment: z.string().optional() };
+
+/** M8 skirmish setup choices (map sizes are multiples of the 32 cell render chunk; tribes = opponents + 1, at most 4). App only. */
+export const SkirmishMenuSchema = z.strictObject({
+  ...comment,
+  mapSizes: z.array(z.number().int().min(64).multipleOf(32)).min(1),
+  defaultSize: z.number().int(),
+  maps: z.array(z.string()).min(1),
+  maxOpponents: z.number().int().min(1).max(3),
+  defaultOpponents: z.array(z.string()).min(1),
+  defaultDifficulty: z.string(),
+});
 const id = z.string().regex(/^[a-z][a-z0-9_]*$/, "ids are snake_case");
 const pos = z.number().nonnegative();
 const range2 = z.tuple([z.number(), z.number()]);
@@ -160,21 +171,10 @@ export const BalanceSchema = z.strictObject({
       .min(1),
   }),
   /**
-   * M8 skirmish setup choices (map sizes are multiples of the 32 cell render chunk; tribes = opponents + 1, at most 4).
-   * App only, never read by the sim. Optional so packs frozen before M8 (golden replays) validate with an
-   * unchanged hash (a zod default would add the key and change it); the app falls back to SKIRMISH_DEFAULTS.
+   * Retired (BACKLOG 78, ADR-022): the skirmish menu defaults live in data/ui.json, outside the pack hash, so a menu
+   * edit no longer invalidates saves. Kept optional so frozen golden packs (which carry it) still validate; never read.
    */
-  skirmish: z
-    .strictObject({
-      ...comment,
-      mapSizes: z.array(z.number().int().min(64).multipleOf(32)).min(1),
-      defaultSize: z.number().int(),
-      maps: z.array(z.string()).min(1),
-      maxOpponents: z.number().int().min(1).max(3),
-      defaultOpponents: z.array(z.string()).min(1),
-      defaultDifficulty: z.string(),
-    })
-    .optional(),
+  skirmish: SkirmishMenuSchema.optional(),
   /**
    * BACKLOG 13 (ADR-014): skirmish victory variants, run by the sim's RulesRuntime. Conquest (the last tribe
    * standing wins) applies under every variant. holdSites: a tribe that alone has people within controlRadius
@@ -1058,7 +1058,37 @@ export interface PackFiles {
   terrain: TerrainFile;
 }
 
-/** Skirmish setup used when a pack has no `balance.skirmish` (packs frozen before M8). */
+/**
+ * BACKLOG 78 (ADR-022): data/ui.json, app only and outside the pack hash (like achievements.json): the skirmish
+ * menu defaults and the HUD and input tunables. Editing it never invalidates saves or replays.
+ */
+export const UiFileSchema = z.strictObject({
+  ...comment,
+  skirmish: SkirmishMenuSchema,
+  notes: z.strictObject({
+    ...comment,
+    /** how long a HUD notification stays up */
+    seconds: pos,
+    /** notifications shown at once (older ones drop) */
+    max: z.number().int().positive(),
+    /** BACKLOG 8: how long a voice subtitle stays up */
+    subtitleSeconds: pos,
+    /** BACKLOG 45: a failed or abandoned order counts as the player's for this long after the click */
+    orderFeedbackSeconds: pos,
+  }),
+  input: z.strictObject({
+    ...comment,
+    /** BACKLOG 4: double-click selects own units of the clicked type within this many cells */
+    sameTypeRadius: pos,
+    /** BACKLOG 4: a control group key pressed twice within this many milliseconds centers the camera */
+    groupJumpMs: pos,
+  }),
+  /** render scale per graphics quality setting (high, medium, low) */
+  qualityScale: z.strictObject({ high: z.number().min(0.25).max(2), medium: z.number().min(0.25).max(2), low: z.number().min(0.25).max(2) }),
+});
+export type UiFile = z.infer<typeof UiFileSchema>;
+
+/** Skirmish setup used when there is no data/ui.json skirmish block (kept for tools and tests). */
 export const SKIRMISH_DEFAULTS = {
   mapSizes: [96, 128, 192],
   defaultSize: 128,

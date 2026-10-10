@@ -6,7 +6,8 @@
 // M9: campaign levels (data/levels) run as sessions too; the level runtime decides the end.
 import { leadInWarning, orderNote } from "./orderNotes.ts";
 import {
-  SKIRMISH_DEFAULTS,
+  validateUi,
+  type UiFile,
   applyMods,
   parseModList,
   validateAchievements,
@@ -63,7 +64,6 @@ import {
 import { emptyStats, loadRecords, statsFrom, noteEvent, recordMatch, storeRecords, type Records, type Stats } from "./achievements.ts";
 import { REPLAY_KEY, ReplayRun, decodeReplay, encodeReplay, makeReplay, type Replay } from "./replay.ts";
 import {
-  QUALITY_SCALE,
   browserKV,
   loadSettings,
   type KV,
@@ -82,8 +82,6 @@ import {
   vehicleCommand,
 } from "./troops.ts";
 
-/** BACKLOG 45: a failed or abandoned order counts as the player's for this long after the click */
-const ORDER_FEEDBACK_SEC = 60;
 const packFiles = import.meta.glob("../../../data/base/*.json", {
   eager: true,
   import: "default",
@@ -102,6 +100,11 @@ const levelFiles = import.meta.glob("../../../data/levels/*.json", {
   import: "default",
 });
 const achievementFiles = import.meta.glob("../../../data/achievements.json", {
+  eager: true,
+  import: "default",
+});
+// BACKLOG 78 (ADR-022): menu defaults and HUD tunables, outside the pack hash
+const uiFiles = import.meta.glob("../../../data/ui.json", {
   eager: true,
   import: "default",
 });
@@ -209,6 +212,13 @@ export function loadAchievementDefs(pack: ValidatedPack): AchievementsFile {
   return res.file;
 }
 
+/** BACKLOG 78: data/ui.json (menu defaults, HUD and input tunables); an invalid file is a build bug (the data guard checks it too). */
+export function loadUiDefs(pack: ValidatedPack): UiFile {
+  const res = validateUi(Object.values(uiFiles)[0], pack.files);
+  if (!res.file) throw new Error("ui.json invalid: " + res.issues.slice(0, 3).map((i) => `${i.path} ${i.message}`).join("; "));
+  return res.file;
+}
+
 export function findScenario(id: string): ScenarioDef | undefined {
   for (const json of Object.values(scenarioFiles))
     if ((json as ScenarioDef).id === id) return json as ScenarioDef;
@@ -291,14 +301,6 @@ export interface Note {
   until: number;
 }
 
-const NOTE_SECONDS = 8;
-/** BACKLOG 8: how long a voice subtitle stays up */
-const SUBTITLE_SECONDS = 4;
-const MAX_NOTES = 4;
-/** BACKLOG 4: double-click selects own units of the clicked type within this many cells */
-const SAME_TYPE_RADIUS = 14;
-/** BACKLOG 4: a control group key pressed twice within this many milliseconds centers the camera */
-const GROUP_JUMP_MS = 400;
 
 export interface DebugFlags {
   hideTerrain?: boolean;
@@ -387,6 +389,8 @@ export class Game {
   /** BACKLOG 21: career records and earned achievements (browser storage) and their definitions */
   records: Records;
   readonly achievements: AchievementsFile;
+  /** BACKLOG 78: data/ui.json */
+  readonly ui: UiFile;
   /** BACKLOG 21: achievements the match that just ended earned (end screen) */
   newAchievements: AchievementDef[] = [];
   /** BACKLOG 19: every local command this session with the tick it ran in (the save log keeps only a tail) */
@@ -457,6 +461,7 @@ export class Game {
     this.campaignWon = loadProgress(this.kv);
     this.campaignLearned = loadLearned(this.kv);
     this.achievements = loadAchievementDefs(this.pack);
+    this.ui = loadUiDefs(this.pack);
     this.records = loadRecords(this.kv);
     this.applyQuality();
     this.applyA11y();
@@ -470,7 +475,7 @@ export class Game {
   /** Render scale from the URL override or the stored setting. */
   applyQuality(): void {
     const q = this.params.quality ?? this.settings.quality;
-    this.renderer.setRenderScale(QUALITY_SCALE[q] ?? 1);
+    this.renderer.setRenderScale(this.ui.qualityScale[q as keyof UiFile["qualityScale"]] ?? 1);
     if (this.params.pixel !== null)
       this.renderer.setPixelScale(this.params.pixel);
     this.renderer.setTiltShift(
@@ -512,7 +517,7 @@ export class Game {
       this.subtitle = {
         speaker: sub.speaker,
         text: sub.text,
-        until: this.world.tick + SUBTITLE_SECONDS * this.world.cfg.tickHz,
+        until: this.world.tick + this.ui.notes.subtitleSeconds * this.world.cfg.tickHz,
       };
   }
 
@@ -631,7 +636,7 @@ export class Game {
   showMainMenu(): void {
     this.editor = null;
     this.editorTest = false;
-    const sk = this.pack.files.balance.skirmish ?? SKIRMISH_DEFAULTS;
+    const sk = this.ui.skirmish;
     this.params = { ...this.params, scenario: null };
     this.world = createSkirmish(this.pack, {
       seed: this.params.seed,
@@ -1149,8 +1154,8 @@ export class Game {
     this.noteLast.set(key, t);
     this.notes = [
       ...this.notes.filter((n) => n.until > t),
-      { id: ++this.noteSeq, text, kind, until: t + NOTE_SECONDS * hz },
-    ].slice(-MAX_NOTES);
+      { id: ++this.noteSeq, text, kind, until: t + this.ui.notes.seconds * hz },
+    ].slice(-this.ui.notes.max);
   }
 
   /** Player-facing voice and UI cues the sim cue table does not cover (own tribe only). */
@@ -1246,7 +1251,7 @@ export class Game {
           me,
           (id) =>
             this.world.tick - (this.ordered.get(id) ?? -Infinity) <=
-            ORDER_FEEDBACK_SEC * this.world.cfg.tickHz,
+            this.ui.notes.orderFeedbackSeconds * this.world.cfg.tickHz,
         );
         if (!n) break;
         this.ordered.delete(Number(e.id));
@@ -1820,7 +1825,7 @@ export class Game {
             this.world,
             this.localTribe,
             i,
-            SAME_TYPE_RADIUS,
+            this.ui.input.sameTypeRadius,
           ))
             this.selection.add(k);
         } else if (i >= 0) {
@@ -1945,7 +1950,7 @@ export class Game {
         const now = performance.now();
         if (
           this.lastGroupKey.g === g &&
-          now - this.lastGroupKey.at < GROUP_JUMP_MS
+          now - this.lastGroupKey.at < this.ui.input.groupJumpMs
         ) {
           const c = groupCenter(this.world, [...this.selection]);
           if (c) this.renderer.setCamera({ x: c[0], z: c[1] });

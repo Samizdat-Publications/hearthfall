@@ -229,4 +229,15 @@ Two example mods ship: `swift_wardens`, a list patch, and `rainy_season`, an obj
 - Levels, achievements and strings are not moddable yet.
 - Mods are picked by URL. There is no in-game mod picker yet, and replay files do not name their mods (the pack hash only refuses a mismatch).
 
+## ADR-022: App-only UI tunables live in data/ui.json, outside the pack hash (10/10/2026)
+
+**Context.** BACKLOG 78 (M8 review): the skirmish menu defaults sat in `balance.skirmish`, inside the sim pack hash, so changing a default map size invalidated every save and replay. HUD timings (notification seconds, max notes, subtitle seconds, order feedback window), input throttles (double-click radius, group jump window) and the quality render scales were literals in `game.ts` and `storage.ts`.
+
+**Decision.** A new file `data/ui.json` (schema `UiFileSchema`, `data/schema/ui.schema.json`) holds `skirmish`, `notes`, `input` and `qualityScale`. Like `achievements.json` it sits beside `data/base/`, not in it, so it never enters the pack hash. `validateUi(raw, pack)` cross checks it against the pack (maps are terrain presets, defaultSize is one of mapSizes, opponents are personalities or economy, the difficulty exists); the data guard runs it and the app fails fast on an invalid file (`loadUiDefs`). `balance.skirmish` is removed from the base pack but stays an optional, unread schema field so the frozen golden packs keep validating with their hashes.
+
+**Consequences.**
+- Editing a menu default or a HUD timing never invalidates saves or replays.
+- The base pack hash changed once (saves from before this commit refuse to load, as for any pack change).
+- `ui.json` is not moddable yet (mods patch `data/base/` only). Fallback: move the block back into balance and bump the hash.
+
 Fallback: if deep merging of list entries proves surprising, switch list entries back to the shallow `mergeById` behavior and record it here.

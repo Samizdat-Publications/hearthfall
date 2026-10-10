@@ -1,6 +1,6 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { canonicalJson, mergeById, validatePack } from "../src/index.ts";
+import { canonicalJson, mergeById, validatePack, validateUi } from "../src/index.ts";
 
 const dir = new URL("../../../data/base/", import.meta.url);
 const loadBase = () => Object.fromEntries(readdirSync(dir).filter((f) => f.endsWith(".json")).map((f) => [f, JSON.parse(readFileSync(new URL(f, dir), "utf8"))]));
@@ -78,6 +78,24 @@ describe("data pack", () => {
 
   it("canonical json ignores key order", () => {
     expect(canonicalJson({ b: 1, a: [2, { d: 3, c: 4 }] })).toBe(canonicalJson({ a: [2, { c: 4, d: 3 }], b: 1 }));
+  });
+
+  it("BACKLOG 78: data/ui.json validates against the pack, and the skirmish menu is out of the pack hash", () => {
+    const pack = validatePack(loadBase()).pack!;
+    const ui = JSON.parse(readFileSync(new URL("../../../data/ui.json", import.meta.url), "utf8"));
+    expect(validateUi(ui, pack.files).issues).toEqual([]);
+    const bad = (edit: (u: typeof ui) => void) => {
+      const u = JSON.parse(JSON.stringify(ui));
+      edit(u);
+      return validateUi(u, pack.files).issues.map((i) => i.path);
+    };
+    expect(bad((u) => (u.skirmish.maps = ["atlantis"]))).toEqual(["skirmish.maps.0"]);
+    expect(bad((u) => (u.skirmish.defaultSize = 160))).toEqual(["skirmish.defaultSize"]);
+    expect(bad((u) => (u.skirmish.defaultDifficulty = "nightmare"))).toEqual(["skirmish.defaultDifficulty"]);
+    expect(bad((u) => (u.skirmish.defaultOpponents = ["grumpy"]))).toEqual(["skirmish.defaultOpponents.0"]);
+    expect(bad((u) => (u.notes.max = 0))).toEqual(["notes.max"]);
+    // the shipped pack no longer carries the menu, so a menu edit cannot change the hash
+    expect(pack.files.balance.skirmish).toBeUndefined();
   });
 
   it("mergeById overrides, removes and appends", () => {

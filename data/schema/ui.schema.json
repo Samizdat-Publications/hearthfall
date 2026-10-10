@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$comment": {
+      "type": "string"
+    },
+    "skirmish": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "mapSizes": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 64,
+            "maximum": 9007199254740991,
+            "multipleOf": 32
+          }
+        },
+        "defaultSize": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "maps": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "maxOpponents": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3
+        },
+        "defaultOpponents": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "defaultDifficulty": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "mapSizes",
+        "defaultSize",
+        "maps",
+        "maxOpponents",
+        "defaultOpponents",
+        "defaultDifficulty"
+      ],
+      "additionalProperties": false
+    },
+    "notes": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "seconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "max": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "subtitleSeconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "orderFeedbackSeconds": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "seconds",
+        "max",
+        "subtitleSeconds",
+        "orderFeedbackSeconds"
+      ],
+      "additionalProperties": false
+    },
+    "input": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "sameTypeRadius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "groupJumpMs": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "sameTypeRadius",
+        "groupJumpMs"
+      ],
+      "additionalProperties": false
+    },
+    "qualityScale": {
+      "type": "object",
+      "properties": {
+        "high": {
+          "type": "number",
+          "minimum": 0.25,
+          "maximum": 2
+        },
+        "medium": {
+          "type": "number",
+          "minimum": 0.25,
+          "maximum": 2
+        },
+        "low": {
+          "type": "number",
+          "minimum": 0.25,
+          "maximum": 2
+        }
+      },
+      "required": [
+        "high",
+        "medium",
+        "low"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "skirmish",
+    "notes",
+    "input",
+    "qualityScale"
+  ],
+  "additionalProperties": false
+}

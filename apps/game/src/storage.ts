@@ -38,8 +38,6 @@ export function browserKV(): { kv: KV; persistent: boolean } {
 }
 
 export const QUALITIES = ["high", "medium", "low"] as const;
-/** render resolution scale per quality (the retro pass keeps its look at any scale) */
-export const QUALITY_SCALE: Record<string, number> = { high: 1, medium: 0.75, low: 0.5 };
 
 /** BACKLOG 8: tribe color sets (style.json tribePalettes; "default" is the plain palette) and HUD scales in percent */
 export const PALETTES = ["default", "colorblind"] as const;
