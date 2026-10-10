@@ -25,6 +25,7 @@
   "menu.settings": "Settings",
   "menu.skirmish": "Skirmish",
   "menu.tagline": "Shape the land. Lead your tribe. Keep them out of the sea.",
+  "menu.mods": "Mods: {list}",
   "pause.quit": "Quit to menu",
   "pause.resume": "Resume",
   "pause.saveGame": "Save game",

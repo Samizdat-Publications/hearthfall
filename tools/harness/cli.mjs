@@ -35,6 +35,29 @@ async function main() {
       if (!res.issues.length) out.line(`base pack valid, hash ${res.hash}`);
       return out.finish(res.issues.length ? "FAIL" : "PASS", res.issues.length ? `${res.issues.length}` : "");
     }
+    case "mods": {
+      // BACKLOG 18: list the mods under mods/, validate each one over the base pack, then the chosen set
+      // (--mods a,b; default every mod) together, and print the conflict report (later load order wins)
+      const { listMods, loadBasePack } = await import("./datapack.mjs");
+      const all = listMods();
+      let bad = 0;
+      for (const id of all) {
+        const r = loadBasePack([id]);
+        if (r.issues.length) bad++;
+        out.line(r.pack ? `${id} ${r.mods[0].version}: ok, pack hash ${r.pack.hash}` : `${id}: ${r.issues.length} issues, first: ${r.issues[0].file} ${r.issues[0].path} ${r.issues[0].message}`);
+      }
+      const set = typeof args.mods === "string" ? args.mods.split(",").filter(Boolean) : all;
+      if (set.length > 1) {
+        const r = loadBasePack(set);
+        if (r.issues.length) bad++;
+        out.line(`together (${set.join(", ")}): ${r.pack ? `ok, pack hash ${r.pack.hash}, load order ${r.mods.map((m) => m.id).join(" > ")}` : `${r.issues.length} issues, first: ${r.issues[0].file} ${r.issues[0].message}`}`);
+        for (const c of (r.conflicts ?? []).slice(0, 10)) out.line(`conflict ${c.path}: ${c.mods.join(" then ")} (${c.mods[c.mods.length - 1]} wins)`);
+        if ((r.conflicts ?? []).length > 10) out.line(`... ${r.conflicts.length - 10} more conflicts`);
+        if (!(r.conflicts ?? []).length) out.line("no conflicts");
+      }
+      if (!all.length) out.line("no mods under mods/");
+      return out.finish(bad ? "FAIL" : "PASS", bad ? `${bad} mod checks failed` : "");
+    }
     case "data-docs": {
       const { dataDocs, jsonSchemas } = await import("./datapack.mjs");
       const { mkdirSync, writeFileSync } = await import("node:fs");

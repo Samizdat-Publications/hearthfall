@@ -1,0 +1,7 @@
+{
+  "id": "rainy_season",
+  "name": "Rainy Season",
+  "version": "1.0.0",
+  "loadOrder": 20,
+  "description": "Example mod: heavier rain slows every unit to 70 percent in rainy matches."
+}

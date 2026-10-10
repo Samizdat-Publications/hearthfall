@@ -1,0 +1,4 @@
+{
+  "$comment": "A mod patch: only the fields it changes. Units merge by id.",
+  "units": [{ "id": "warden", "speed": 2.0, "trainMana": 120 }]
+}

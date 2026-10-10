@@ -7,7 +7,7 @@ const RE = new RegExp(`[${EM}${EN}]|&mdash;|&ndash;|\\\\u2014|\\\\u2013`, "g");
 
 export function run() {
   const issues = [];
-  const files = walk(["docs", "data", "packages/ui", "apps", "CLAUDE.md", "README.md", "tools/assets/README.md", "making-of"], [".md", ".json", ".ts", ".tsx", ".html", ".css", ".mjs"]);
+  const files = walk(["docs", "data", "mods", "packages/ui", "apps", "CLAUDE.md", "README.md", "tools/assets/README.md", "making-of"], [".md", ".json", ".ts", ".tsx", ".html", ".css", ".mjs"]);
   for (const abs of files) {
     issues.push(...scan(rel(abs), read(abs)));
   }

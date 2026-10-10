@@ -1,0 +1,7 @@
+{
+  "id": "swift_wardens",
+  "name": "Swift Wardens",
+  "version": "1.0.0",
+  "loadOrder": 10,
+  "description": "Example mod: Wardens run faster and train for less mana."
+}

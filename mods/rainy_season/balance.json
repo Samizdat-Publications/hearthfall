@@ -1,0 +1,4 @@
+{
+  "$comment": "A mod patch: objects merge key by key, so this changes one number.",
+  "weather": { "rain": { "speedMult": 0.7 } }
+}

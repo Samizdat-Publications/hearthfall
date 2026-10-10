@@ -97,6 +97,8 @@ export interface MenuModel {
   editorTest?: boolean;
   /** BACKLOG 19: a stored last replay (main menu), the ended match's replay (end screen), a replay file problem */
   replay?: { last: boolean; ended: boolean; message: string | null };
+  /** BACKLOG 18: the active mods ("Name version", load order), empty without mods */
+  mods?: string[];
 }
 
 export type SetupPatch = Partial<Pick<SetupView, "map" | "size" | "seed" | "opponents" | "difficulty" | "victory" | "forge" | "weather">>;
@@ -210,6 +212,11 @@ function Main({ act, art, m }: { act: MenuActions; art?: string; m: MenuModel })
         {t("menu.settings")}
       </Btn>
       <Replays m={m} act={act} />
+      {m.mods?.length ? (
+        <p class="menu-note" data-ui="mods-active">
+          {t("menu.mods", { list: m.mods.join(", ") })}
+        </p>
+      ) : null}
     </div>
   );
 }

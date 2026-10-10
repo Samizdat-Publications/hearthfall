@@ -74,6 +74,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
     const opts = (ids: readonly string[], label = title): Choice[] => ids.map((v) => ({ value: v, label: label(v) }));
     return {
       screen: game.screen,
+      mods: game.mods.map((m) => `${m.name} ${m.version}`),
       setup: {
         maps: opts(sk.maps),
         sizes: sk.mapSizes.map((n) => ({ value: String(n), label: `${n} (${n <= 96 ? "small" : n <= 128 ? "medium" : "large"})` })),

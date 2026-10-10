@@ -197,3 +197,36 @@ Pushed the 3D build toward candidate 1 without new assets: a dark starry space b
 **Decision.** `packages/ui/src/i18n.ts` holds the active table: `t(key, vars)` looks a key up in the locale table, then in English, then returns the key itself (remembered in `missingStrings`); `{name}` placeholders take values. Tables are flat JSON in `data/strings/<locale>.json`, English (`en.json`) the base; the app picks one with `?lang=<id>` (`apps/game/src/locale.ts`, before the Game is built). The `pseudo` locale is derived from English: every letter accented, placeholders kept, text padded by about 40 percent and bracketed. The strings guard (`tools/guards/strings.mjs`, part of `npm run check`) fails on a `t("key")` without an English entry, an English entry nobody uses, and other tables with unknown keys or different placeholders. The menus and the replay bar are migrated (76 keys); the game title stays untranslated. Shots `menu_main_pseudo` and `menu_settings_pseudo` run in the pseudo locale and fail when any menu button or label clips its text.
 
 **Consequences.** Translating the migrated screens is a new JSON file. Not yet migrated (follow-ups, visible as plain English in the pseudo shots): the HUD, the map editor, menu bridge texts (end screen lines and reasons, choice labels, notes), key action names, and data-driven names (spells, units, levels, achievements), which would get keys derived from their ids. Fallback: if string keys become unwieldy, generate them from the English text at build time.
+
+## ADR-021: Mod packs patch the raw base files before validation (10/10/2026)
+
+**Context.** BACKLOG 18 asks for mod packs loaded from `mods/<name>` with a manifest and a conflict report. ARCHITECTURE section 4 already promised that packs merge by `id` in load order with `"$remove": true`. Saves and replays must not load against different rules.
+
+**Decision.** `packages/data/src/mods.ts` `applyMods(baseRaw, mods)` is pure, with no file access. It merges each mod's JSON files onto the raw base files before `validatePack`:
+- Mods apply in manifest `loadOrder`, then by id. The base is 0 and mods must be 1 or more.
+- Objects merge key by key.
+- Lists of objects with ids merge by id: fields are deep merged, `$remove` deletes, unknown ids append.
+- Anything else replaces. `$comment` is ignored.
+
+Every value a mod sets is recorded by path (`units.json.units[warden].speed`). When two mods touch overlapping paths, the result has a conflict (path, mods in load order, last wins). A removal conflicts with any change under it.
+
+Issues go back by mod and file: a bad manifest, an id that does not match the folder, `loadOrder` below 1, a file that is not a pack file. Those mods are skipped.
+
+The merged pack then validates, cross checks and hashes like the base. A modded game has its own pack hash, so the existing save and replay hash checks refuse a mismatched mod set.
+
+Where mods load:
+- Node: `loadBasePack(mods)` in `tools/harness/datapack.mjs`.
+  - `npm run mods` checks each mod alone and all (or `--mods a,b`) together, and prints the load order and conflicts.
+  - The data guard fails on any mod under `mods/` that is invalid on its own.
+  - `npm run soak -- --mods a,b` plays with mods.
+- App: Vite bundles `mods/*/*.json`. `?mods=a,b` applies them in `loadPack`, where an unknown mod is a fatal startup error and conflicts go to the console. The main menu names the active mods, and `getSummary().mods` lists them.
+
+Two example mods ship: `swift_wardens`, a list patch, and `rainy_season`, an object patch. `mods/README.md` is the modder's guide.
+
+**Consequences.**
+- Patches stay small and readable.
+- New pack files need no mod code.
+- Levels, achievements and strings are not moddable yet.
+- Mods are picked by URL. There is no in-game mod picker yet, and replay files do not name their mods (the pack hash only refuses a mismatch).
+
+Fallback: if deep merging of list entries proves surprising, switch list entries back to the shallow `mergeById` behavior and record it here.

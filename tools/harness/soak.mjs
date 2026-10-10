@@ -191,7 +191,7 @@ export default async function soakCmd(out, _cmd, args) {
   const seeds = Number(args.seeds ?? 8);
   const minutes = Number(args.minutes ?? 10);
   const jobs = args.jobs && args.jobs !== "auto" ? Number(args.jobs) : Math.max(1, availableParallelism() - 2);
-  const base = { mode: typeof args.mode === "string" ? args.mode : "wander", minutes, units: Number(args.units ?? 1000), map: args.map ?? "continents", size: Number(args.size ?? 128), tribes: Number(args.tribes ?? 2), deadlineMs: 8 * 60 * 1000 - 20000, ...(typeof args.rules === "string" ? { rules: args.rules } : {}) };
+  const base = { mode: typeof args.mode === "string" ? args.mode : "wander", minutes, units: Number(args.units ?? 1000), map: args.map ?? "continents", size: Number(args.size ?? 128), tribes: Number(args.tribes ?? 2), deadlineMs: 8 * 60 * 1000 - 20000, ...(typeof args.rules === "string" ? { rules: args.rules } : {}), ...(typeof args.mods === "string" ? { mods: args.mods.split(",").filter(Boolean) } : {}) };
   const t0 = Date.now();
   const specs = aiSpecs(base, args, seeds, t0) ?? Array.from({ length: seeds }, (_, k) => ({ ...base, seed: 1000 + k, startMs: t0 }));
   const results = [];

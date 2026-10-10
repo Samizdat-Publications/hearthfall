@@ -10,7 +10,7 @@ import { makeBot } from "../../packages/ai/src/index.ts";
 import { loadBasePack } from "./datapack.mjs";
 
 const spec = workerData;
-const res = loadBasePack();
+const res = loadBasePack(spec.mods ?? []);
 const pack = res.pack;
 const w = new World({ pack: pack.files, packHash: pack.hash, seed: spec.seed, map: { generator: spec.map, size: spec.size, tribes: spec.tribes }, ...(spec.rules ? { rules: spec.rules } : {}) });
 const t = w.terrain;

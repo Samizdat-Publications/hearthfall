@@ -2,7 +2,7 @@
 // data/schema/*.json. Imports the TypeScript data package directly (Node type stripping).
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { z } from "zod";
-import { AchievementsFileSchema, PACK_FILES, validateAchievements, validateLevel, validatePack } from "../../packages/data/src/index.ts";
+import { AchievementsFileSchema, PACK_FILES, applyMods, validateAchievements, validateLevel, validatePack } from "../../packages/data/src/index.ts";
 import { ROOT } from "../guards/lib.mjs";
 
 export function readPackDir(dir = "data/base") {
@@ -19,10 +19,51 @@ export function readPackDir(dir = "data/base") {
   return { raw, parseErrors };
 }
 
-export function loadBasePack() {
+/**
+ * The base pack, validated; with `mods` (ids of folders under mods/, BACKLOG 18) the mods are merged on
+ * first and the result also carries `mods` (applied, in load order) and `conflicts`.
+ */
+export function loadBasePack(mods = []) {
   const { raw, parseErrors } = readPackDir();
   if (parseErrors.length) return { issues: parseErrors };
-  return validatePack(raw);
+  if (!mods.length) return validatePack(raw);
+  const packs = [];
+  const issues = [];
+  for (const id of mods) {
+    const m = readModDir(id);
+    issues.push(...m.issues);
+    if (m.mod) packs.push(m.mod);
+  }
+  const merged = applyMods(raw, packs);
+  issues.push(...merged.issues.map((i) => ({ file: `mods/${i.mod}/${i.file}`, path: "", message: i.message })));
+  if (issues.length) return { issues, conflicts: merged.conflicts };
+  return { ...validatePack(merged.raw), mods: merged.applied, conflicts: merged.conflicts };
+}
+
+/** Mod folder ids under mods/ (BACKLOG 18), sorted. */
+export function listMods() {
+  const dir = ROOT + "mods/";
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir, { withFileTypes: true })
+    .filter((d) => d.isDirectory())
+    .map((d) => d.name)
+    .sort();
+}
+
+/** One mod folder as a ModPack (its JSON files by name). */
+export function readModDir(id) {
+  const dir = ROOT + `mods/${id}/`;
+  if (!/^[a-z][a-z0-9_]*$/.test(id) || !existsSync(dir)) return { issues: [{ file: `mods/${id}`, path: "", message: "no such mod folder (ids are snake_case)" }] };
+  const files = {};
+  const issues = [];
+  for (const f of readdirSync(dir).filter((x) => x.endsWith(".json")).sort()) {
+    try {
+      files[f] = JSON.parse(readFileSync(dir + f, "utf8"));
+    } catch (e) {
+      issues.push({ file: `mods/${id}/${f}`, path: "", message: String(e.message).split("\n")[0] });
+    }
+  }
+  return { issues, mod: { id, files } };
 }
 
 /** M9 campaign levels: data/levels/*.json validated against the pack, sorted by campaign order. */

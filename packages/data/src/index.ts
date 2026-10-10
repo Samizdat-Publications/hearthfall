@@ -4,6 +4,7 @@ import { AchievementsFileSchema, LevelSchema, PACK_FILES, type AchievementsFile,
 
 export * from "./schemas.ts";
 export * from "./colorVision.ts";
+export * from "./mods.ts";
 
 /** Canonical JSON: sorted object keys, no whitespace. Line endings in source files never matter. */
 export function canonicalJson(value: unknown): string {

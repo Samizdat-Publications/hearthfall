@@ -7,6 +7,8 @@
 import { leadInWarning, orderNote } from "./orderNotes.ts";
 import {
   SKIRMISH_DEFAULTS,
+  applyMods,
+  parseModList,
   validateAchievements,
   validateLevel,
   validatePack,
@@ -86,6 +88,11 @@ const packFiles = import.meta.glob("../../../data/base/*.json", {
   eager: true,
   import: "default",
 });
+// BACKLOG 18 (ADR-021): mod packs under mods/<id>/, applied with ?mods=a,b
+const modFiles = import.meta.glob("../../../mods/*/*.json", {
+  eager: true,
+  import: "default",
+});
 const scenarioFiles = import.meta.glob("../../../scenarios/*.json", {
   eager: true,
   import: "default",
@@ -128,10 +135,43 @@ export const MODEL_URLS: Record<string, string> = Object.fromEntries(
   ]),
 );
 
+/** BACKLOG 18: the mods applied to the loaded pack (id, name, version), in load order */
+export const activeMods: { id: string; name: string; version: string }[] = [];
+
 export function loadPack(): ValidatedPack {
-  const raw: Record<string, unknown> = {};
+  let raw: Record<string, unknown> = {};
   for (const [path, json] of Object.entries(packFiles))
     raw[path.split("/").pop()!] = json;
+  const want = parseModList(
+    typeof location === "undefined"
+      ? null
+      : new URLSearchParams(location.search).get("mods"),
+  );
+  if (want.length) {
+    const mods = want.map((id) => {
+      const files: Record<string, unknown> = {};
+      for (const [path, json] of Object.entries(modFiles)) {
+        const parts = path.split("/");
+        if (parts[parts.length - 2] === id) files[parts[parts.length - 1]] = json;
+      }
+      if (!Object.keys(files).length)
+        throw new Error(`mod "${id}" not found under mods/`);
+      return { id, files };
+    });
+    const merged = applyMods(raw, mods);
+    if (merged.issues.length)
+      throw new Error(
+        "mods invalid: " +
+          merged.issues
+            .slice(0, 3)
+            .map((i) => `${i.mod}/${i.file} ${i.message}`)
+            .join("; "),
+      );
+    for (const c of merged.conflicts)
+      console.warn(`mod conflict ${c.path}: ${c.mods.join(" then ")}`);
+    activeMods.splice(0, activeMods.length, ...merged.applied);
+    raw = merged.raw;
+  }
   const res = validatePack(raw);
   if (!res.pack)
     throw new Error(
@@ -270,6 +310,10 @@ export interface DebugFlags {
 
 export class Game {
   readonly pack = loadPack();
+  /** BACKLOG 18: the mods merged into `pack` (?mods=), in load order */
+  get mods(): readonly { id: string; name: string; version: string }[] {
+    return activeMods;
+  }
   readonly levels = loadLevels(this.pack);
   /** campaign levels won (browser storage; this session only when storage is unavailable) */
   campaignWon: string[] = [];
@@ -1960,6 +2004,7 @@ export class Game {
       seed: w.seed,
       map: { ...w.mapInfo, size: w.terrain.size },
       packHash: w.cfg.packHash,
+      mods: activeMods.map((m) => m.id),
       hash: w.hash().all,
       tribes: w.tribes.map((t) => {
         const h = E.index(t.hearth);

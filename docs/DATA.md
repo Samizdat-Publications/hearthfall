@@ -17,6 +17,7 @@ Base pack `base` version 0.1.0, content hash `b82fe6ee`.
 | `name` | string | yes |
 | `version` | string | yes |
 | `loadOrder` | int | yes |
+| `description` | string |  |
 
 ## balance.json
 

@@ -979,6 +979,8 @@ export const ManifestSchema = z.strictObject({
   name: z.string(),
   version: z.string(),
   loadOrder: z.number().int(),
+  /** BACKLOG 18: a mod's one-line description (mods/<id>/manifest.json) */
+  description: z.string().optional(),
 });
 
 /** Every pack file name and its schema. Order is the load and docs order. */

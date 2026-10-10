@@ -20,7 +20,7 @@ const SELF = "tools/guards/ip-names.mjs";
 
 export function run() {
   const issues = [];
-  const files = walk(["packages", "apps", "data", "tools", "scenarios", "replays", "assets", "index.html"], [".ts", ".tsx", ".mjs", ".js", ".json", ".html", ".css", ".py", ".md", ".txt"]);
+  const files = walk(["packages", "apps", "data", "mods", "tools", "scenarios", "replays", "assets", "index.html"], [".ts", ".tsx", ".mjs", ".js", ".json", ".html", ".css", ".py", ".md", ".txt"]);
   for (const abs of files) {
     const file = rel(abs);
     if (file === SELF) continue;

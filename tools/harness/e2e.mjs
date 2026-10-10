@@ -43,6 +43,23 @@ async function bootFailure(browser, url) {
   } finally {
     await p2.close().catch(() => {});
   }
+  // BACKLOG 18: ?mods= merges a mod pack (the main menu names it), and an unknown mod is a fatal startup error
+  const p3 = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+  try {
+    await p3.goto(url + "?menu=1&mods=swift_wardens", { waitUntil: "load", timeout: 30000 });
+    await p3.waitForFunction(() => window.__game && window.__game.frames() > 0, null, { timeout: 30000 });
+    const s = await p3.evaluate(() => ({ mods: window.__game.getSummary().mods, note: document.querySelector('[data-ui="mods-active"]')?.textContent ?? null }));
+    if (JSON.stringify(s.mods) !== '["swift_wardens"]' || !/Swift Wardens/.test(s.note ?? "")) res.problems.push(`mods not applied: ${JSON.stringify(s)}`);
+    res.screens.push("mods");
+    await p3.goto(url + "?mods=__no_such_mod__", { waitUntil: "load", timeout: 30000 });
+    await p3.waitForFunction(() => getComputedStyle(document.getElementById("fatal")).display !== "none", null, { timeout: 15000 });
+    const msg = await p3.evaluate(() => document.getElementById("fatal-msg").textContent);
+    if (!/not found under mods/.test(msg)) res.problems.push(`unknown mod fatal reason: ${msg}`);
+  } catch (e) {
+    res.problems.push(`mods check failed: ${String(e.message).split("\n")[0]}`);
+  } finally {
+    await p3.close().catch(() => {});
+  }
   res.ok = res.problems.length === 0;
   return res;
 }

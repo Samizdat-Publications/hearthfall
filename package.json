@@ -31,6 +31,7 @@
     "visionqa:probe": "node --env-file-if-exists=.env tools/harness/cli.mjs visionqa-probe",
     "data:check": "node tools/harness/cli.mjs data-check",
     "data:docs": "node tools/harness/cli.mjs data-docs",
+    "mods": "node tools/harness/cli.mjs mods",
     "build": "node tools/harness/cli.mjs build",
     "serve": "node tools/harness/cli.mjs serve",
     "build:test": "node tools/harness/cli.mjs build-test",
