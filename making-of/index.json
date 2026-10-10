@@ -1090,6 +1090,16 @@
       "when": "2026-10-10T13:55:58.868Z",
       "source": "external:ground_detail_huts.png",
       "bytes": 603929
+    },
+    {
+      "file": "run/20261010-1836_first-match-tips.png",
+      "milestone": "run",
+      "kind": "screenshot",
+      "caption": "First match tips (stretch 2 playtest pass): a new player's first skirmish walks through Dwelling, Bolt, lodge, troops and attack-move, one tip at a time under the spell bar.",
+      "highlight": false,
+      "when": "2026-10-10T18:36:08.198Z",
+      "source": "external:1280x720-play.png",
+      "bytes": 623780
     }
   ]
 }
