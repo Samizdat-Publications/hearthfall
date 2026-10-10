@@ -6,7 +6,7 @@
 import { Fragment, render } from "preact";
 import { signal } from "@preact/signals";
 
-export type Screen = "none" | "main" | "campaign" | "setup" | "pause" | "settings" | "saves" | "end";
+export type Screen = "none" | "main" | "campaign" | "setup" | "pause" | "settings" | "saves" | "end" | "records";
 
 export interface Choice {
   value: string;
@@ -81,7 +81,9 @@ export interface MenuModel {
   setup: SetupView;
   settings: SettingsView;
   saves: { mode: "save" | "load"; slots: SlotView[]; message: string | null };
-  end: { won: boolean; title?: string; tag?: string; lines: { label: string; value: string }[]; next: boolean } | null;
+  end: { won: boolean; title?: string; tag?: string; lines: { label: string; value: string }[]; next: boolean; achievements?: { name: string; description: string }[] } | null;
+  /** BACKLOG 21: the records screen: career stats and every achievement (earned shows its date) */
+  records?: { rows: { label: string; value: string }[]; achievements: { id: string; name: string; description: string; earned: string | null }[]; summary: string; message: string | null };
   campaign: { levels: LevelView[]; message: string | null };
   /** title illustration URL for the main menu (BACKLOG 81), omitted in tests */
   titleArt?: string;
@@ -156,6 +158,9 @@ function Replays({ m, act }: { m: MenuModel; act: MenuActions }) {
   return (
     <Fragment>
       <div class="menu-row replay-row">
+        <button class="menu-small" data-ui="records" onClick={() => act.go("records")}>
+          Records
+        </button>
         <button class="menu-small" data-ui="replay-last" disabled={!r.last} onClick={() => act.watchReplay("last")}>
           Last replay
         </button>
@@ -476,6 +481,15 @@ function End({ m, act }: { m: MenuModel; act: MenuActions }) {
           </Fragment>
         ))}
       </div>
+      {e.achievements?.length ? (
+        <div class="end-achievements" data-ui="end-achievements">
+          {e.achievements.map((a) => (
+            <p key={a.name} class="achievement earned">
+              <b>{a.name}</b> <span>{a.description}</span>
+            </p>
+          ))}
+        </div>
+      ) : null}
       {e.next ? (
         <Btn ui="next-level" primary onClick={() => act.nextLevel()}>
           Next level
@@ -501,6 +515,40 @@ function End({ m, act }: { m: MenuModel; act: MenuActions }) {
   );
 }
 
+function Records({ m, act }: { m: MenuModel; act: MenuActions }) {
+  const r = m.records;
+  if (!r) return null;
+  return (
+    <div data-hud="menu-records" class="menu-panel menu-records">
+      <h2 class="menu-head">Records</h2>
+      <div class="records-body">
+        <div class="menu-grid records-grid" data-ui="records-stats">
+          {r.rows.map((l) => (
+            <Fragment key={l.label}>
+              <span class="menu-label">{l.label}</span>
+              <b>{l.value}</b>
+            </Fragment>
+          ))}
+        </div>
+        <div class="records-achievements" data-ui="records-achievements">
+          <p class="menu-note">{r.summary}</p>
+          {r.achievements.map((a) => (
+            <p key={a.id} class={"achievement " + (a.earned ? "earned" : "locked")} data-ui={"achievement-" + a.id} title={a.earned ? `Earned ${a.earned}` : "Not yet earned"}>
+              <b>{a.name}</b> <span>{a.description}</span>
+            </p>
+          ))}
+        </div>
+      </div>
+      {r.message ? <p class="menu-note">{r.message}</p> : null}
+      <div class="menu-actions">
+        <Btn ui="back" onClick={() => act.back()}>
+          Back
+        </Btn>
+      </div>
+    </div>
+  );
+}
+
 function Menus({ act }: { act: MenuActions }) {
   const m = menuModel.value;
   if (!m || m.screen === "none") return null;
@@ -513,6 +561,7 @@ function Menus({ act }: { act: MenuActions }) {
       {m.screen === "saves" ? <Saves m={m} act={act} /> : null}
       {m.screen === "settings" ? <Settings s={m.settings} act={act} /> : null}
       {m.screen === "end" ? <End m={m} act={act} /> : null}
+      {m.screen === "records" ? <Records m={m} act={act} /> : null}
     </div>
   );
 }

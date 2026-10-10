@@ -298,6 +298,8 @@ if (__DEBUG_API__ || game.params.debug) {
       return game.replay !== null;
     },
     replaySeek: (t: number) => game.replaySeek(t, true),
+    /** BACKLOG 21: this match's stats, career records, earned achievement ids and those the last match earned */
+    records: () => ({ match: { ...game.stats }, career: { ...game.records.career }, unlocked: Object.keys(game.records.unlocked), earned: game.newAchievements.map((x) => x.id) }),
     /** BACKLOG 11: the Forge phase (null without one) and a screen pixel where the local brush may land */
     forge: () => {
       const f = game.world.forge;

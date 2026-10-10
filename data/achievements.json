@@ -1,0 +1,36 @@
+{
+  "records": [
+    { "stat": "matches", "label": "Matches played" },
+    { "stat": "won", "label": "Matches won" },
+    { "stat": "levelsWon", "label": "Campaign levels won" },
+    { "stat": "minutes", "label": "Minutes played" },
+    { "stat": "kills", "label": "Foes defeated" },
+    { "stat": "drownedFoes", "label": "Foes drowned" },
+    { "stat": "lost", "label": "Followers lost" },
+    { "stat": "spellsCast", "label": "Spells cast" },
+    { "stat": "buildingsBuilt", "label": "Buildings raised" },
+    { "stat": "buildingsRazed", "label": "Rival buildings razed" },
+    { "stat": "converted", "label": "Followers won over" },
+    { "stat": "trained", "label": "Troops trained" },
+    { "stat": "born", "label": "Followers born" },
+    { "stat": "worship", "label": "Worship completed" },
+    { "stat": "peakFollowers", "label": "Largest tribe" }
+  ],
+  "achievements": [
+    { "id": "first_light", "name": "First Light", "description": "Win a match.", "scope": "match", "when": [{ "stat": "won", "min": 1 }] },
+    { "id": "unbroken", "name": "Unbroken", "description": "Win a match without your Shaper ever falling.", "scope": "match", "when": [{ "stat": "won", "min": 1 }, { "stat": "shaperDeaths", "max": 0 }] },
+    { "id": "swift_hand", "name": "Swift Hand", "description": "Win a skirmish in under 12 minutes.", "scope": "match", "mode": "skirmish", "when": [{ "stat": "won", "min": 1 }, { "stat": "minutes", "max": 12 }] },
+    { "id": "against_the_storm", "name": "Against the Storm", "description": "Win a skirmish against hard or brutal rivals.", "scope": "match", "mode": "skirmish", "difficulty": ["hard", "brutal"], "when": [{ "stat": "won", "min": 1 }] },
+    { "id": "warband", "name": "Warband", "description": "Defeat 50 foes in one match.", "scope": "match", "when": [{ "stat": "kills", "min": 50 }] },
+    { "id": "tidecaller", "name": "Tidecaller", "description": "Drown 20 foes in one match.", "scope": "match", "when": [{ "stat": "drownedFoes", "min": 20 }] },
+    { "id": "village_elder", "name": "Village Elder", "description": "Raise 15 buildings in one match.", "scope": "match", "when": [{ "stat": "buildingsBuilt", "min": 15 }] },
+    { "id": "multitude", "name": "Multitude", "description": "Lead 120 followers at once.", "scope": "match", "when": [{ "stat": "peakFollowers", "min": 120 }] },
+    { "id": "silver_tongue", "name": "Silver Tongue", "description": "Win over 10 rival followers in one match.", "scope": "match", "when": [{ "stat": "converted", "min": 10 }] },
+    { "id": "razer", "name": "Ash and Ember", "description": "Raze 10 rival buildings in one match.", "scope": "match", "when": [{ "stat": "buildingsRazed", "min": 10 }] },
+    { "id": "pilgrim", "name": "Pilgrim", "description": "Complete worship at a Shrine or Reliquary.", "scope": "career", "when": [{ "stat": "worship", "min": 1 }] },
+    { "id": "veteran", "name": "Veteran", "description": "Play 10 matches.", "scope": "career", "when": [{ "stat": "matches", "min": 10 }] },
+    { "id": "conqueror", "name": "Conqueror", "description": "Win 10 matches.", "scope": "career", "when": [{ "stat": "won", "min": 10 }] },
+    { "id": "stormweaver", "name": "Stormweaver", "description": "Cast 200 spells.", "scope": "career", "when": [{ "stat": "spellsCast", "min": 200 }] },
+    { "id": "route_keeper", "name": "Route Keeper", "description": "Win 5 campaign levels.", "scope": "career", "when": [{ "stat": "levelsWon", "min": 5 }] }
+  ]
+}

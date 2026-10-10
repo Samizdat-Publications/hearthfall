@@ -515,3 +515,22 @@ Effect primitives (`spells[].effects[]`, discriminated by `type`):
 | `rocks.scatterPerThousandLand` | number | yes |
 | `rocks.clearTreesRadius` | number | yes |
 | `maxRerolls` | int | yes |
+
+## achievements.json (data/, not in the pack hash)
+
+| Field | Type | Required |
+|---|---|---|
+| `records` | object[] | yes |
+| `records[].stat` | "matches" or "won" or "levelsWon" or "minutes" or "kills" or "drownedFoes" or "lost" or "shaperDeaths" or "spellsCast" or "buildingsBuilt" or "buildingsRazed" or "converted" or "trained" or "born" or "worship" or "peakFollowers" | yes |
+| `records[].label` | string | yes |
+| `achievements` | object[] | yes |
+| `achievements[].id` | string | yes |
+| `achievements[].name` | string | yes |
+| `achievements[].description` | string | yes |
+| `achievements[].scope` | "match" or "career" | yes |
+| `achievements[].when` | object[] | yes |
+| `achievements[].when[].stat` | "matches" or "won" or "levelsWon" or "minutes" or "kills" or "drownedFoes" or "lost" or "shaperDeaths" or "spellsCast" or "buildingsBuilt" or "buildingsRazed" or "converted" or "trained" or "born" or "worship" or "peakFollowers" | yes |
+| `achievements[].when[].min` | number |  |
+| `achievements[].when[].max` | number |  |
+| `achievements[].difficulty` | string[] |  |
+| `achievements[].mode` | "skirmish" or "level" |  |

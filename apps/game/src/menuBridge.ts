@@ -8,6 +8,7 @@ import type { Game } from "./game.ts";
 import { makeSave, restoreSave, type SkirmishParams } from "./session.ts";
 import { levelOpen } from "./campaign.ts";
 import { decodeReplay, encodeReplay } from "./replay.ts";
+import { statText } from "./achievements.ts";
 import { LIGHTING, MINIATURE, PALETTES, WEATHER, QUALITIES, SLOTS, UI_SCALES, deleteSlot, readSlot, slotMeta, storeSettings, writeSlot } from "./storage.ts";
 
 const title = (id: string) => id[0].toUpperCase() + id.slice(1);
@@ -142,6 +143,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
               { label: "Units lost", value: String(game.stats.lost) },
             ],
             next: game.ended.won && game.nextLevelId() !== null,
+            achievements: game.newAchievements.map((a) => ({ name: a.name, description: a.description })),
           }
         : null,
       campaign: {
@@ -151,6 +153,15 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
       titleArt,
       canSave: game.inGame && game.skirmish !== null && !game.ended,
       editorTest: game.editorTest,
+      records:
+        game.screen === "records"
+          ? {
+              rows: game.achievements.records.map((r) => ({ label: r.label, value: statText(r.stat, game.records.career[r.stat]) })),
+              achievements: game.achievements.achievements.map((a) => ({ id: a.id, name: a.name, description: a.description, earned: game.records.unlocked[a.id] ? new Date(game.records.unlocked[a.id]).toLocaleDateString() : null })),
+              summary: `${game.achievements.achievements.filter((a) => game.records.unlocked[a.id]).length} of ${game.achievements.achievements.length} achievements earned`,
+              message: game.persistent ? null : "Browser storage is unavailable: records last until this tab closes.",
+            }
+          : undefined,
       replay: { last: game.screen === "main" && game.hasStoredReplay(), ended: game.lastReplay !== null && game.ended !== null, message: replayMsg },
     };
   };

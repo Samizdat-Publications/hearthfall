@@ -1171,3 +1171,62 @@ export const LevelSchema = z.strictObject({
     .optional(),
 });
 export type LevelDef = z.infer<typeof LevelSchema>;
+
+// ---------------------------------------------------------------- BACKLOG 21: achievements and records
+/**
+ * Stats the app counts from the event log of each finished match (MatchStats) and sums or maxes over
+ * all matches (career). `won` is 1 for a won match; `minutes` is the match length; `matches` and
+ * `levelsWon` are career only. Achievements are thresholds over these; they never touch the sim, so
+ * this file is not part of the pack hash (like data/levels).
+ */
+export const STAT_KEYS = [
+  "matches",
+  "won",
+  "levelsWon",
+  "minutes",
+  "kills",
+  "drownedFoes",
+  "lost",
+  "shaperDeaths",
+  "spellsCast",
+  "buildingsBuilt",
+  "buildingsRazed",
+  "converted",
+  "trained",
+  "born",
+  "worship",
+  "peakFollowers",
+] as const;
+export const StatKeySchema = z.enum(STAT_KEYS);
+export type StatKey = z.infer<typeof StatKeySchema>;
+
+const StatTest = z
+  .strictObject({
+    stat: StatKeySchema,
+    /** inclusive bounds; at least one */
+    min: z.number().optional(),
+    max: z.number().optional(),
+  })
+  .refine((t) => t.min !== undefined || t.max !== undefined, "a test needs min or max");
+
+export const AchievementSchema = z.strictObject({
+  id,
+  name: z.string().min(1).max(32),
+  /** one line shown under the name */
+  description: z.string().min(1).max(90),
+  /** match: tested on the stats of one finished match; career: on the totals after it */
+  scope: z.enum(["match", "career"]),
+  /** every test must hold */
+  when: z.array(StatTest).min(1),
+  /** match scope only: limit to a difficulty (the highest opponent difficulty), skirmish or campaign levels */
+  difficulty: z.array(id).optional(),
+  mode: z.enum(["skirmish", "level"]).optional(),
+});
+export type AchievementDef = z.infer<typeof AchievementSchema>;
+
+export const AchievementsFileSchema = z.strictObject({
+  /** the records screen: which career stats to list, in order, and their labels */
+  records: z.array(z.strictObject({ stat: StatKeySchema, label: z.string().min(1).max(28) })).min(1),
+  achievements: z.array(AchievementSchema).min(1),
+});
+export type AchievementsFile = z.infer<typeof AchievementsFileSchema>;

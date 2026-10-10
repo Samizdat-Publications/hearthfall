@@ -246,6 +246,10 @@ async function flow(browser, url, vp) {
     const tag = await page.textContent('[data-ui="end-tag"]');
     const vic = await page.evaluate(() => window.__game.rules());
     if (vic?.winner !== 0 || vic.why !== "conquest" || tag?.trim() !== "Every rival tribe has fallen.") problem(`variant end: ${JSON.stringify(vic)} tag ${tag}`);
+    // BACKLOG 21: the win counts in the career records and earns First Light, listed on the end screen
+    const rec = await page.evaluate(() => window.__game.records());
+    const endAch = (await page.textContent('[data-ui="end-achievements"]').catch(() => "")) ?? "";
+    if (rec.career.matches !== 1 || rec.career.won !== 1 || !rec.earned.includes("first_light") || !endAch.includes("First Light")) problem(`records after the win: ${JSON.stringify({ career: rec.career, earned: rec.earned, endAch })}`);
     // BACKLOG 19: the ended match's replay (it starts at the loaded save) reaches the recorded end hash, seeks
     // back, takes Play, and Exit returns to the main menu, which then offers the stored last replay
     const lr = await page.evaluate(() => window.__game.lastReplay());
@@ -278,6 +282,15 @@ async function flow(browser, url, vp) {
     await screenIs("main");
     await settle();
     if (await page.$eval('[data-ui="replay-last"]', (e) => e.disabled)) problem("main menu Last replay is disabled after a match");
+    // BACKLOG 21: the records screen lists the career and shows First Light earned
+    await click("records");
+    await screenIs("records");
+    await check("records");
+    const fl = await page.$eval('[data-ui="achievement-first_light"]', (e) => e.className);
+    const recStats = await page.textContent('[data-ui="records-stats"]');
+    if (!fl.includes("earned") || !recStats?.includes("Matches won")) problem(`records screen: ${fl} ${recStats}`);
+    await click("back");
+    await screenIs("main");
     // M9 campaign: only the first level is open; win it, go on to the next, and the menu remembers
     await click("campaign");
     await screenIs("campaign");

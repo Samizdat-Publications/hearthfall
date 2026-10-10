@@ -7,8 +7,11 @@
 import { leadInWarning, orderNote } from "./orderNotes.ts";
 import {
   SKIRMISH_DEFAULTS,
+  validateAchievements,
   validateLevel,
   validatePack,
+  type AchievementDef,
+  type AchievementsFile,
   type LevelDef,
   type ValidatedPack,
 } from "@hearthfall/data";
@@ -55,6 +58,7 @@ import {
   recordWin,
   taughtSpells,
 } from "./campaign.ts";
+import { emptyStats, loadRecords, noteEvent, recordMatch, storeRecords, type Records, type Stats } from "./achievements.ts";
 import { REPLAY_KEY, ReplayRun, decodeReplay, encodeReplay, makeReplay, type Replay } from "./replay.ts";
 import {
   QUALITY_SCALE,
@@ -87,6 +91,10 @@ const scenarioFiles = import.meta.glob("../../../scenarios/*.json", {
   import: "default",
 });
 const levelFiles = import.meta.glob("../../../data/levels/*.json", {
+  eager: true,
+  import: "default",
+});
+const achievementFiles = import.meta.glob("../../../data/achievements.json", {
   eager: true,
   import: "default",
 });
@@ -152,6 +160,13 @@ export function loadLevels(pack: ValidatedPack): LevelDef[] {
     out.push(res.level);
   }
   return ordered(out);
+}
+
+/** BACKLOG 21: achievements and the records screen layout; an invalid file is a build bug (the data guard checks it too). */
+export function loadAchievementDefs(pack: ValidatedPack): AchievementsFile {
+  const res = validateAchievements(Object.values(achievementFiles)[0], pack.files);
+  if (!res.file) throw new Error("achievements invalid: " + res.issues.slice(0, 3).map((i) => `${i.path} ${i.message}`).join("; "));
+  return res.file;
 }
 
 export function findScenario(id: string): ScenarioDef | undefined {
@@ -323,7 +338,13 @@ export class Game {
   /** local commands applied so far this session (tail kept), stored in saves */
   log: Command[] = [];
   ended: { won: boolean; why?: string } | null = null;
-  stats = { kills: 0, lost: 0 };
+  /** BACKLOG 21: this match's stats for the local tribe, counted from the event log */
+  stats: Stats = emptyStats();
+  /** BACKLOG 21: career records and earned achievements (browser storage) and their definitions */
+  records: Records;
+  readonly achievements: AchievementsFile;
+  /** BACKLOG 21: achievements the match that just ended earned (end screen) */
+  newAchievements: AchievementDef[] = [];
   /** BACKLOG 19: every local command this session with the tick it ran in (the save log keeps only a tail) */
   replayLog: Command[] = [];
   /** BACKLOG 19: the save this session was loaded from; its replay starts there */
@@ -391,6 +412,8 @@ export class Game {
     );
     this.campaignWon = loadProgress(this.kv);
     this.campaignLearned = loadLearned(this.kv);
+    this.achievements = loadAchievementDefs(this.pack);
+    this.records = loadRecords(this.kv);
     this.applyQuality();
     this.applyA11y();
     if (params.campaign && !params.scenario)
@@ -496,7 +519,8 @@ export class Game {
     this.replayStart = null;
     this.replay = null;
     this.ended = null;
-    this.stats = { kills: 0, lost: 0 };
+    this.stats = emptyStats();
+    this.newAchievements = [];
     this.notes = [];
     this.noteLast.clear();
     this.renderer.setPlacement(null);
@@ -858,6 +882,7 @@ export class Game {
           .find((e) => e.type === "levelLost")?.why as string | undefined,
       };
       if (won) this.voice("voice.shaper.victory");
+      this.keepRecords(won);
       this.keepReplay();
       this.cancelModes();
       this.screen = "end";
@@ -880,6 +905,7 @@ export class Game {
       this.ended = { won: Boolean(me?.alive) };
     }
     if (this.ended.won) this.voice("voice.shaper.victory");
+    this.keepRecords(this.ended.won);
     this.keepReplay();
     this.cancelModes();
     this.screen = "end";
@@ -919,18 +945,11 @@ export class Game {
     }
     for (const e of this.world.events) {
       this.events.push(e);
-      if ((e.type === "killed" || e.type === "drowned") && e.cat === CAT.unit) {
-        if (e.tribe === this.localTribe) this.stats.lost++;
-        else if (
-          e.by === this.localTribe &&
-          typeof e.tribe === "number" &&
-          e.tribe >= 0
-        )
-          this.stats.kills++;
-      }
+      noteEvent(this.stats, e, this.localTribe);
       this.noteFor(e);
       this.cueFor(e);
     }
+    if (this.world.tick % 30 === 0) this.samplePeak();
     const si = shaperIndex(this.world, this.localTribe);
     const E = this.world.ents;
     if (
@@ -941,6 +960,25 @@ export class Game {
     )
       this.notify("shaperHit", "Your Shaper is under attack!", "bad", 15);
     this.checkEnd();
+  }
+
+  // ---------------------------------------------------------------- BACKLOG 21: records and achievements
+  private samplePeak(): void {
+    if (this.world.tribes[this.localTribe]) this.stats.peakFollowers = Math.max(this.stats.peakFollowers, this.world.economy.followers(this.localTribe));
+  }
+
+  /** Add the ended match to the career records and note the achievements it earned (not for editor playtests). */
+  private keepRecords(won: boolean): void {
+    this.newAchievements = [];
+    if (!this.skirmish || this.editorTest) return;
+    const s = this.stats;
+    this.samplePeak();
+    s.won = won ? 1 : 0;
+    s.minutes = Math.round(this.world.playTick / this.world.cfg.tickHz / 6) / 10;
+    s.levelsWon = this.campaignWon.length;
+    const ctx = { mode: this.world.level ? ("level" as const) : ("skirmish" as const), difficulty: this.skirmish.difficulty };
+    this.newAchievements = recordMatch(this.achievements, this.records, s, ctx, new Date().toISOString());
+    if (!storeRecords(this.kv, this.records)) this.notify("records", "Records could not be stored in this browser.", "info");
   }
 
   // ---------------------------------------------------------------- BACKLOG 19: replays

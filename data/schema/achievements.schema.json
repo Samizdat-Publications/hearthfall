@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "records": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "stat": {
+            "type": "string",
+            "enum": [
+              "matches",
+              "won",
+              "levelsWon",
+              "minutes",
+              "kills",
+              "drownedFoes",
+              "lost",
+              "shaperDeaths",
+              "spellsCast",
+              "buildingsBuilt",
+              "buildingsRazed",
+              "converted",
+              "trained",
+              "born",
+              "worship",
+              "peakFollowers"
+            ]
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 28
+          }
+        },
+        "required": [
+          "stat",
+          "label"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "achievements": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 90
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "match",
+              "career"
+            ]
+          },
+          "when": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "stat": {
+                  "type": "string",
+                  "enum": [
+                    "matches",
+                    "won",
+                    "levelsWon",
+                    "minutes",
+                    "kills",
+                    "drownedFoes",
+                    "lost",
+                    "shaperDeaths",
+                    "spellsCast",
+                    "buildingsBuilt",
+                    "buildingsRazed",
+                    "converted",
+                    "trained",
+                    "born",
+                    "worship",
+                    "peakFollowers"
+                  ]
+                },
+                "min": {
+                  "type": "number"
+                },
+                "max": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "stat"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "difficulty": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*$"
+            }
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "skirmish",
+              "level"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "scope",
+          "when"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "records",
+    "achievements"
+  ],
+  "additionalProperties": false
+}

@@ -2,7 +2,7 @@
 // data/schema/*.json. Imports the TypeScript data package directly (Node type stripping).
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { z } from "zod";
-import { PACK_FILES, validateLevel, validatePack } from "../../packages/data/src/index.ts";
+import { AchievementsFileSchema, PACK_FILES, validateAchievements, validateLevel, validatePack } from "../../packages/data/src/index.ts";
 import { ROOT } from "../guards/lib.mjs";
 
 export function readPackDir(dir = "data/base") {
@@ -56,9 +56,22 @@ export function loadLevels(packFiles) {
   return { levels, issues };
 }
 
+/** BACKLOG 21: data/achievements.json validated against the pack. */
+export function loadAchievements(packFiles) {
+  const file = "data/achievements.json";
+  let raw;
+  try {
+    raw = JSON.parse(readFileSync(ROOT + file, "utf8"));
+  } catch (e) {
+    return { issues: [{ file, path: "", message: String(e.message).split("\n")[0] }] };
+  }
+  return validateAchievements(raw, packFiles, file);
+}
+
 export function jsonSchemas() {
   const out = {};
   for (const [name, schema] of Object.entries(PACK_FILES)) out[name.replace(".json", ".schema.json")] = JSON.stringify(z.toJSONSchema(schema, { io: "input", unrepresentable: "any" }), null, 2) + "\n";
+  out["achievements.schema.json"] = JSON.stringify(z.toJSONSchema(AchievementsFileSchema, { io: "input", unrepresentable: "any" }), null, 2) + "\n";
   return out;
 }
 
@@ -117,5 +130,10 @@ export function dataDocs() {
     }
     lines.push("");
   }
+  // BACKLOG 21: outside the pack (not hashed), validated against it
+  const ach = z.toJSONSchema(AchievementsFileSchema, { io: "input", unrepresentable: "any" });
+  lines.push("## achievements.json (data/, not in the pack hash)", "", "| Field | Type | Required |", "|---|---|---|");
+  rows(ach, "", lines);
+  lines.push("");
   return lines.join("\n");
 }

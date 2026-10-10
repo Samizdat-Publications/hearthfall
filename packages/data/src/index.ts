@@ -1,6 +1,6 @@
 // Data pack loading: validation, cross references, canonical hashing and mod merge rules.
 // Browser safe (no node imports); disk access lives in tools/harness.
-import { LevelSchema, PACK_FILES, type LevelDef, type PackFileName, type PackFiles, type Reward } from "./schemas.ts";
+import { AchievementsFileSchema, LevelSchema, PACK_FILES, type AchievementsFile, type LevelDef, type PackFileName, type PackFiles, type Reward } from "./schemas.ts";
 
 export * from "./schemas.ts";
 export * from "./colorVision.ts";
@@ -256,3 +256,18 @@ export function validateLevel(raw: unknown, pack: PackFiles, file = "level"): { 
   return issues.length ? { issues } : { issues, level: lv };
 }
 
+/** BACKLOG 21: validate data/achievements.json against its schema and a pack (difficulties exist, ids unique). */
+export function validateAchievements(raw: unknown, pack: PackFiles, file = "data/achievements.json"): { issues: PackIssue[]; file?: AchievementsFile } {
+  const res = AchievementsFileSchema.safeParse(raw);
+  if (!res.success) return { issues: res.error.issues.map((i) => ({ file, path: i.path.join("."), message: i.message })) };
+  const issues: PackIssue[] = [];
+  const diffs = new Set(pack.ai.difficulties.map((d) => d.id));
+  const seen = new Set<string>();
+  res.data.achievements.forEach((a, k) => {
+    if (seen.has(a.id)) issues.push({ file, path: `achievements.${k}.id`, message: `duplicate achievement ${a.id}` });
+    seen.add(a.id);
+    a.difficulty?.forEach((d, j) => diffs.has(d) || issues.push({ file, path: `achievements.${k}.difficulty.${j}`, message: `unknown difficulty ${d}` }));
+    if (a.scope === "career" && (a.difficulty || a.mode)) issues.push({ file, path: `achievements.${k}`, message: "difficulty and mode apply to match achievements only" });
+  });
+  return issues.length ? { issues } : { issues, file: res.data };
+}
