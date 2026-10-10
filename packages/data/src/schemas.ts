@@ -11,7 +11,10 @@ const range2 = z.tuple([z.number(), z.number()]);
 // ---------------------------------------------------------------- balance.json
 export const BalanceSchema = z.strictObject({
   ...comment,
-  sim: z.strictObject({ tickHz: z.number().int().positive(), hashEverySeconds: pos }),
+  sim: z.strictObject({
+    tickHz: z.number().int().positive(),
+    hashEverySeconds: pos,
+  }),
   terrain: z.strictObject({
     defaultSize: z.number().int().min(64).max(512),
     heightMax: z.number().int().positive(),
@@ -53,7 +56,9 @@ export const BalanceSchema = z.strictObject({
     maxFlowBuildsPerTick: z.number().int().positive(),
     flowCacheSize: z.number().int().positive(),
     /** BACKLOG 4: move orders with a formation give each unit a slot (cells apart); bigger groups keep the shared flow field */
-    formation: z.strictObject({ spacing: pos, maxUnits: z.number().int().min(2) }).optional(),
+    formation: z
+      .strictObject({ spacing: pos, maxUnits: z.number().int().min(2) })
+      .optional(),
   }),
   economy: z.strictObject({
     ...comment,
@@ -71,7 +76,11 @@ export const BalanceSchema = z.strictObject({
     wildWanderRadius: pos,
     wildWanderChancePerSecond: z.number().min(0).max(1),
     doorOffset: pos,
-    priorities: z.strictObject({ build: z.number().min(0), upgrade: z.number().min(0), breed: z.number().min(0) }),
+    priorities: z.strictObject({
+      build: z.number().min(0),
+      upgrade: z.number().min(0),
+      breed: z.number().min(0),
+    }),
   }),
   breeding: z.strictObject({
     formula: z.string(),
@@ -118,7 +127,9 @@ export const BalanceSchema = z.strictObject({
     ...comment,
     panic: z.strictObject({ fleeDistance: pos, repickSeconds: pos }),
     burning: z.strictObject({ damagePerSecond: pos }),
-    buildingFire: z.strictObject({ ...comment, seconds: pos, hpPctPerSecond: pos }).optional(),
+    buildingFire: z
+      .strictObject({ ...comment, seconds: pos, hpPctPerSecond: pos })
+      .optional(),
   }),
   /** BACKLOG 3: fog of war (sight radii in cells; `sight` overrides per unit or building id) */
   vision: z
@@ -136,7 +147,14 @@ export const BalanceSchema = z.strictObject({
     ...comment,
     /** in-match unlock tiers (DESIGN 3a): a tier opens once the tribe's followers reach `followers` (peak, never lost) */
     tiers: z
-      .array(z.strictObject({ ...comment, id: z.string(), followers: z.number().int().min(0), buildings: z.array(z.string()) }))
+      .array(
+        z.strictObject({
+          ...comment,
+          id: z.string(),
+          followers: z.number().int().min(0),
+          buildings: z.array(z.string()),
+        }),
+      )
       .min(1),
   }),
   /**
@@ -185,7 +203,10 @@ export const BalanceSchema = z.strictObject({
     counterTriangleMinWinPct: z.number(),
     maxPersonalityWinPct: z.number(),
     medianMatchMinutes: range2,
-    unharassedPopulationAtMinute10: z.strictObject({ target: z.number(), tolerancePct: z.number() }),
+    unharassedPopulationAtMinute10: z.strictObject({
+      target: z.number(),
+      tolerancePct: z.number(),
+    }),
     maxStalematePct: z.number(),
     aiEliminatesIdleMinutes: z.number(),
   }),
@@ -194,125 +215,190 @@ export type Balance = z.infer<typeof BalanceSchema>;
 
 // ---------------------------------------------------------------- style.json
 const hex = z.string().regex(/^#[0-9A-Fa-f]{6}$/);
-export const StyleSchema = z.strictObject({
-  ...comment,
-  styleVersion: z.number().int().positive(),
-  palette: z.record(z.string(), hex),
-  lighting: z.strictObject({
-    keyColor: hex,
-    keyIntensity: pos,
-    skyTop: hex,
-    skyHorizon: hex,
-    fogColor: hex,
-  }),
-  /** BACKLOG 14: named lighting presets (render/src/weather.ts LightingPreset) and the default one */
-  lightingPresets: z
-    .record(
-      z.string().regex(/^[a-z]+$/),
-      z.strictObject({
-        keyColor: hex,
-        keyIntensity: pos,
-        hemiSky: hex,
-        ambient: pos,
-        sunDir: z.tuple([z.number(), z.number().positive(), z.number()]),
-        hearthGlow: z.number().min(0),
-        rim: hex,
-      }),
-    )
-    .optional(),
-  lightingDefault: z.string().optional(),
-  /** BACKLOG 14: visual weather (rain does not touch the sim yet) */
-  weather: z
-    .strictObject({
-      rain: z.strictObject({ drops: z.number().int().min(0).max(4000), color: hex, speed: pos, dim: z.number().min(0.1).max(1), rim: hex }),
-    })
-    .optional(),
-  direction: z.strictObject({ primaryRef: z.string(), lightingRef: z.string(), chosen: z.string(), notes: z.string() }).optional(),
-  /** retro render pass and look knobs (ADR-005); all optional with defaults in the renderer */
-  render: z
-    .strictObject({
-      ...comment,
-      pixelScale: z.number().int().min(1).max(8),
-      paletteLevels: z.number().int().min(0).max(64),
-      ditherStrength: z.number().min(0).max(1),
-      detailNoise: z.number().min(0).max(0.5),
-      detailCellsPerUnit: z.number().positive(),
-      hearthLight: z.strictObject({ color: hex, intensity: pos, distance: pos }),
-      ambientIntensity: pos,
-      /** look v2: dark starry space around the planet */
-      space: z.strictObject({ ...comment, top: hex, horizon: hex, stars: z.number().min(0).max(1), rim: hex }).optional(),
-      /** look v2: density of white foam strokes on open water (0 turns them off) */
-      foamStrokes: z.number().min(0).max(1).optional(),
-      /** model id to the id of the file that replaces it (BACKLOG 14a-4, models.ts aliasModels) */
-      modelAlias: z.record(z.string().regex(/^[a-z]+\.[a-z0-9_]+$/), z.string().regex(/^[a-z]+\.[a-z0-9_]+$/)).optional(),
-      /** look v3 snow caps and sandstone strata (BACKLOG 14a-4, terrainMesh.ts TerrainBandsLook), height units */
-      terrainBands: z
-        .strictObject({ snowStart: z.number().int().min(0), snowFull: z.number().int().min(0), strataSand: z.number().min(0).max(1), snowBright: z.number().min(0.5).max(2) })
-        .refine((b) => b.snowFull > b.snowStart, "snowFull must be above snowStart")
-        .optional(),
-      /** look v3 tree mix by altitude band (BACKLOG 14a-3, props.ts TreeMix) */
-      trees: z
-        .strictObject({
-          clumpLow: z.number().min(0).max(1),
-          clumpHigh: z.number().min(0).max(1),
-          bandLow: z.number().min(0).max(1),
-          bandHigh: z.number().min(0).max(1),
-          modelShare: z.number().min(0).max(1),
-          hueJitter: z.number().min(0).max(0.5),
-        })
-        .optional(),
-      /** look v3 painted water (BACKLOG 14a): per-fragment depth shallows, crisp foam line, offshore ring */
-      water: z
-        .strictObject({ shallowDepth: z.number().positive(), foamWidth: z.number().positive(), foamRing: z.number().min(0) })
-        .optional(),
-      /** look v2 (BACKLOG 0a): draw scale of the building models, so villages read as villages next to the
-       * 1.3x readability-scaled units; keep (scale - 1) x the largest footprint within the building gap */
-      buildingScale: z.number().min(0.5).max(2).optional(),
-      /** look v3 (BACKLOG 14a, ADR-013): tilt-shift miniature focus band; `defaultOn` is the settings default */
-      tiltShift: z
-        .strictObject({
-          ...comment,
-          defaultOn: z.boolean(),
-          order: z.enum(["pre", "post"]),
-          bandCenter: z.number().min(0).max(1),
-          bandHalf: z.number().min(0).max(0.5),
-          falloff: z.number().positive().max(1),
-          maxBlur: z.number().min(0).max(8),
-          depthWeight: z.number().min(0).max(1),
-          depthRange: z.number().positive(),
-          saturation: z.number().min(0).max(2),
-          contrast: z.number().min(0.5).max(2),
-        })
-        .optional(),
-    })
-    .optional(),
-  /** sim event type to audio cue (packages/audio AudioHooks); cues without an asset play as silent stubs */
-  audio: z
-    .strictObject({
-      ...comment,
-      cues: z.record(
-        z.string(),
+export const StyleSchema = z
+  .strictObject({
+    ...comment,
+    styleVersion: z.number().int().positive(),
+    palette: z.record(z.string(), hex),
+    lighting: z.strictObject({
+      keyColor: hex,
+      keyIntensity: pos,
+      skyTop: hex,
+      skyHorizon: hex,
+      fogColor: hex,
+    }),
+    /** BACKLOG 14: named lighting presets (render/src/weather.ts LightingPreset) and the default one */
+    lightingPresets: z
+      .record(
+        z.string().regex(/^[a-z]+$/),
         z.strictObject({
-          /** asset id; `{field}` is replaced by that event field (spellCast: sfx.{spell}_cast) */
-          cue: z.string().min(1),
-          /** at most this many plays of the rule per sim tick (battles stay readable) */
-          maxPerTick: z.number().int().positive().optional(),
-          /** play only when every listed event field equals the value */
-          where: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
+          keyColor: hex,
+          keyIntensity: pos,
+          hemiSky: hex,
+          ambient: pos,
+          sunDir: z.tuple([z.number(), z.number().positive(), z.number()]),
+          hearthGlow: z.number().min(0),
+          rim: hex,
         }),
-      ),
-      /** M10: cue id to the asset id that serves it (one clip for several cues) */
-      alias: z.record(z.string(), z.string().min(1)).optional(),
-    })
-    .optional(),
-  /** BACKLOG 8: alternative tribe colors by palette id (settings: colorblind), keyed by TRIBE_COLORS name */
-  tribePalettes: z.record(z.string(), z.record(z.enum(["azure", "crimson", "amber", "jade"]), hex)).optional(),
-  /** BACKLOG 8: subtitle shown for a voice cue (the barks are in the Shaper's tongue): speaker and meaning */
-  subtitles: z.record(z.string(), z.strictObject({ speaker: z.string().min(1), text: z.string().min(1) })).optional(),
-  promptStyleSuffix: z.string(),
-  promptNegative: z.string(),
-  triBudgets: z.record(z.string(), range2),
-});
+      )
+      .optional(),
+    lightingDefault: z.string().optional(),
+    /** BACKLOG 14: visual weather (rain does not touch the sim yet) */
+    weather: z
+      .strictObject({
+        rain: z.strictObject({
+          drops: z.number().int().min(0).max(4000),
+          color: hex,
+          speed: pos,
+          dim: z.number().min(0.1).max(1),
+          rim: hex,
+        }),
+      })
+      .optional(),
+    direction: z
+      .strictObject({
+        primaryRef: z.string(),
+        lightingRef: z.string(),
+        chosen: z.string(),
+        notes: z.string(),
+      })
+      .optional(),
+    /** retro render pass and look knobs (ADR-005); all optional with defaults in the renderer */
+    render: z
+      .strictObject({
+        ...comment,
+        pixelScale: z.number().int().min(1).max(8),
+        paletteLevels: z.number().int().min(0).max(64),
+        ditherStrength: z.number().min(0).max(1),
+        detailNoise: z.number().min(0).max(0.5),
+        detailCellsPerUnit: z.number().positive(),
+        hearthLight: z.strictObject({
+          color: hex,
+          intensity: pos,
+          distance: pos,
+        }),
+        ambientIntensity: pos,
+        /** look v2: dark starry space around the planet */
+        space: z
+          .strictObject({
+            ...comment,
+            top: hex,
+            horizon: hex,
+            stars: z.number().min(0).max(1),
+            rim: hex,
+          })
+          .optional(),
+        /** look v2: density of white foam strokes on open water (0 turns them off) */
+        foamStrokes: z.number().min(0).max(1).optional(),
+        /** model id to the id of the file that replaces it (BACKLOG 14a-4, models.ts aliasModels) */
+        modelAlias: z
+          .record(
+            z.string().regex(/^[a-z]+\.[a-z0-9_]+$/),
+            z.string().regex(/^[a-z]+\.[a-z0-9_]+$/),
+          )
+          .optional(),
+        /** look v3 snow caps and sandstone strata (BACKLOG 14a-4, terrainMesh.ts TerrainBandsLook), height units */
+        terrainBands: z
+          .strictObject({
+            snowStart: z.number().int().min(0),
+            snowFull: z.number().int().min(0),
+            strataSand: z.number().min(0).max(1),
+            snowBright: z.number().min(0.5).max(2),
+          })
+          .refine(
+            (b) => b.snowFull > b.snowStart,
+            "snowFull must be above snowStart",
+          )
+          .optional(),
+        /** look v3 tree mix by altitude band (BACKLOG 14a-3, props.ts TreeMix) */
+        trees: z
+          .strictObject({
+            clumpLow: z.number().min(0).max(1),
+            clumpHigh: z.number().min(0).max(1),
+            bandLow: z.number().min(0).max(1),
+            bandHigh: z.number().min(0).max(1),
+            modelShare: z.number().min(0).max(1),
+            hueJitter: z.number().min(0).max(0.5),
+          })
+          .optional(),
+        /** look v3 painted water (BACKLOG 14a): per-fragment depth shallows, crisp foam line, offshore ring */
+        water: z
+          .strictObject({
+            shallowDepth: z.number().positive(),
+            foamWidth: z.number().positive(),
+            foamRing: z.number().min(0),
+          })
+          .optional(),
+        /** look v2 (BACKLOG 0a): draw scale of the building models, so villages read as villages next to the
+         * 1.3x readability-scaled units; keep (scale - 1) x the largest footprint within the building gap */
+        buildingScale: z.number().min(0.5).max(2).optional(),
+        /** look v3 (BACKLOG 14a, ADR-013): tilt-shift miniature focus band; `defaultOn` is the settings default */
+        tiltShift: z
+          .strictObject({
+            ...comment,
+            defaultOn: z.boolean(),
+            order: z.enum(["pre", "post"]),
+            bandCenter: z.number().min(0).max(1),
+            bandHalf: z.number().min(0).max(0.5),
+            falloff: z.number().positive().max(1),
+            maxBlur: z.number().min(0).max(8),
+            depthWeight: z.number().min(0).max(1),
+            depthRange: z.number().positive(),
+            saturation: z.number().min(0).max(2),
+            contrast: z.number().min(0.5).max(2),
+          })
+          .optional(),
+      })
+      .optional(),
+    /** sim event type to audio cue (packages/audio AudioHooks); cues without an asset play as silent stubs */
+    audio: z
+      .strictObject({
+        ...comment,
+        cues: z.record(
+          z.string(),
+          z.strictObject({
+            /** asset id; `{field}` is replaced by that event field (spellCast: sfx.{spell}_cast) */
+            cue: z.string().min(1),
+            /** at most this many plays of the rule per sim tick (battles stay readable) */
+            maxPerTick: z.number().int().positive().optional(),
+            /** play only when every listed event field equals the value */
+            where: z
+              .record(z.string(), z.union([z.string(), z.number()]))
+              .optional(),
+          }),
+        ),
+        /** M10: cue id to the asset id that serves it (one clip for several cues) */
+        alias: z.record(z.string(), z.string().min(1)).optional(),
+      })
+      .optional(),
+    /** BACKLOG 8: alternative tribe colors by palette id (settings: colorblind), keyed by TRIBE_COLORS name */
+    tribePalettes: z
+      .record(
+        z.string(),
+        z.record(z.enum(["azure", "crimson", "amber", "jade"]), hex),
+      )
+      .optional(),
+    /** BACKLOG 8: subtitle shown for a voice cue (the barks are in the Shaper's tongue): speaker and meaning */
+    subtitles: z
+      .record(
+        z.string(),
+        z.strictObject({ speaker: z.string().min(1), text: z.string().min(1) }),
+      )
+      .optional(),
+    promptStyleSuffix: z.string(),
+    promptNegative: z.string(),
+    triBudgets: z.record(z.string(), range2),
+  })
+  .refine(
+    (s) =>
+      !s.lightingDefault ||
+      !s.lightingPresets ||
+      s.lightingDefault in s.lightingPresets,
+    {
+      message: "lightingDefault must name a lightingPresets entry",
+      path: ["lightingDefault"],
+    },
+  );
 export type Style = z.infer<typeof StyleSchema>;
 
 // ---------------------------------------------------------------- units.json
@@ -334,7 +420,9 @@ const Convert = z.strictObject({
   entrancedFreeze: z.boolean(),
   cannotConvert: z.array(id),
   /** BACKLOG 7: meleeDamage lets a melee swing break the channel too (ranged hits and spells always do) */
-  interruptedBy: z.array(z.enum(["rangedDamage", "spell", "terrainChangeNear", "meleeDamage"])),
+  interruptedBy: z.array(
+    z.enum(["rangedDamage", "spell", "terrainChangeNear", "meleeDamage"]),
+  ),
   cooldownSeconds: pos,
 });
 export const UnitSchema = z.strictObject({
@@ -400,7 +488,10 @@ const DwellingLevel = z.strictObject({
 export const BuildingSchema = z.strictObject({
   ...comment,
   id,
-  footprint: z.tuple([z.number().int().positive(), z.number().int().positive()]),
+  footprint: z.tuple([
+    z.number().int().positive(),
+    z.number().int().positive(),
+  ]),
   wood: z.number().int().nonnegative().optional(),
   /** BACKLOG 0c: stone quarried from rocks, delivered like wood before the site can finish */
   stone: z.number().int().nonnegative().optional(),
@@ -430,10 +521,19 @@ export const BuildingsFileSchema = z.strictObject({
     regrowSecondsPerWood: pos,
     regrowFromStumpSeconds: pos,
     chopSecondsPerWood: pos,
-    spread: z.strictObject({ enabled: z.boolean(), chancePerMinute: z.number().min(0).max(1) }),
+    spread: z.strictObject({
+      enabled: z.boolean(),
+      chancePerMinute: z.number().min(0).max(1),
+    }),
   }),
   /** BACKLOG 0c: stone outcrops (optional so frozen packs keep their hash; without it no rock holds stone) */
-  rocks: z.strictObject({ ...comment, maxStone: z.number().int().positive().max(255), mineSecondsPerStone: pos }).optional(),
+  rocks: z
+    .strictObject({
+      ...comment,
+      maxStone: z.number().int().positive().max(255),
+      mineSecondsPerStone: pos,
+    })
+    .optional(),
   /**
    * Worship objects (DESIGN 10, M9). The M9 fields are optional so packs frozen before M9 keep their hash;
    * a pack without `kinds` has no worship objects.
@@ -471,14 +571,43 @@ export type BuildingsFile = z.infer<typeof BuildingsFileSchema>;
 
 // ---------------------------------------------------------------- spells.json (effect primitives)
 const Effect = z.discriminatedUnion("type", [
-  z.strictObject({ type: z.literal("damageRadius"), radius: pos, damage: pos, downhillBonusPct: z.number().optional(), canKill: z.array(id).optional() }),
+  z.strictObject({
+    type: z.literal("damageRadius"),
+    radius: pos,
+    damage: pos,
+    downhillBonusPct: z.number().optional(),
+    canKill: z.array(id).optional(),
+  }),
   /** edgeFalloff: share of the force lost at the rim (0 = same push everywhere) */
-  z.strictObject({ type: z.literal("knockback"), radius: pos, force: pos, edgeFalloff: z.number().min(0).max(1) }),
-  z.strictObject({ type: z.literal("convertRadius"), radius: pos, max: z.number().int().positive(), excludes: z.array(id).optional(), targets: z.array(id).optional() }),
-  z.strictObject({ type: z.literal("areaOverTime"), radius: pos, seconds: pos, damagePerSecond: pos }),
+  z.strictObject({
+    type: z.literal("knockback"),
+    radius: pos,
+    force: pos,
+    edgeFalloff: z.number().min(0).max(1),
+  }),
+  z.strictObject({
+    type: z.literal("convertRadius"),
+    radius: pos,
+    max: z.number().int().positive(),
+    excludes: z.array(id).optional(),
+    targets: z.array(id).optional(),
+  }),
+  z.strictObject({
+    type: z.literal("areaOverTime"),
+    radius: pos,
+    seconds: pos,
+    damagePerSecond: pos,
+  }),
   z.strictObject({
     type: z.literal("statusApply"),
-    status: z.enum(["ward", "veil", "beguiled", "burning", "panic", "entranced"]),
+    status: z.enum([
+      "ward",
+      "veil",
+      "beguiled",
+      "burning",
+      "panic",
+      "entranced",
+    ]),
     seconds: pos,
     radius: pos.optional(),
     max: z.number().int().positive().optional(),
@@ -489,7 +618,18 @@ const Effect = z.discriminatedUnion("type", [
   }),
   z.strictObject({
     type: z.literal("terrainOp"),
-    op: z.enum(["raise", "lower", "set", "flattenToAverage", "smooth", "crater", "ridgeLine", "noiseScar", "lowerTowardSea", "scar"]),
+    op: z.enum([
+      "raise",
+      "lower",
+      "set",
+      "flattenToAverage",
+      "smooth",
+      "crater",
+      "ridgeLine",
+      "noiseScar",
+      "lowerTowardSea",
+      "scar",
+    ]),
     from: z.enum(["caster", "target"]).optional(),
     width: pos.optional(),
     heightAboveSea: z.number().optional(),
@@ -503,15 +643,54 @@ const Effect = z.discriminatedUnion("type", [
     height: z.number().optional(),
   }),
   /** a vortex that wanders from the target (cells per second), flings units it touches and wears down buildings */
-  z.strictObject({ type: z.literal("moverPath"), entity: id, seconds: pos, radius: pos, speed: pos, wander: z.boolean().optional(), flingForce: pos, buildingDamagePctPerSecond: z.number().min(0).max(100).optional() }),
-  z.strictObject({ type: z.literal("spawnEntity"), entity: id, radius: pos.optional(), count: z.number().int().positive().optional() }),
+  z.strictObject({
+    type: z.literal("moverPath"),
+    entity: id,
+    seconds: pos,
+    radius: pos,
+    speed: pos,
+    wander: z.boolean().optional(),
+    flingForce: pos,
+    buildingDamagePctPerSecond: z.number().min(0).max(100).optional(),
+  }),
+  z.strictObject({
+    type: z.literal("spawnEntity"),
+    entity: id,
+    radius: pos.optional(),
+    count: z.number().int().positive().optional(),
+  }),
   /** a visible bog: kills the first `kills` non-caster units of other tribes that stand in it */
-  z.strictObject({ type: z.literal("trap"), radius: pos, kills: z.number().int().positive(), seconds: pos }),
-  z.strictObject({ type: z.literal("damageBuildingsRadius"), radius: pos, damagePct: z.number().min(0).max(100) }),
+  z.strictObject({
+    type: z.literal("trap"),
+    radius: pos,
+    kills: z.number().int().positive(),
+    seconds: pos,
+  }),
+  z.strictObject({
+    type: z.literal("damageBuildingsRadius"),
+    radius: pos,
+    damagePct: z.number().min(0).max(100),
+  }),
   /** `count` impacts spread evenly over `seconds`, each at a random point within `radius`, hitting units and buildings within `impactRadius` */
-  z.strictObject({ type: z.literal("projectileStorm"), count: z.number().int().positive(), radius: pos, impactRadius: pos, seconds: pos, damage: pos, knockback: pos.optional() }),
+  z.strictObject({
+    type: z.literal("projectileStorm"),
+    count: z.number().int().positive(),
+    radius: pos,
+    impactRadius: pos,
+    seconds: pos,
+    damage: pos,
+    knockback: pos.optional(),
+  }),
   /** a flying hunter: flies (cells per second) to the nearest enemy unit within huntRadius and kills it, one kill per killSeconds */
-  z.strictObject({ type: z.literal("summon"), entity: id, seconds: pos, speed: pos, huntRadius: pos, killSeconds: pos, maxKills: z.number().int().positive().max(255) }),
+  z.strictObject({
+    type: z.literal("summon"),
+    entity: id,
+    seconds: pos,
+    speed: pos,
+    huntRadius: pos,
+    killSeconds: pos,
+    maxKills: z.number().int().positive().max(255),
+  }),
   z.strictObject({ type: z.literal("scar"), radius: pos, healSeconds: pos }),
 ]);
 export type EffectDef = z.infer<typeof Effect>;
@@ -525,7 +704,17 @@ export const SpellSchema = z.strictObject({
   v1: z.boolean().optional(),
   /** opponent AI targeting hint (M7): enemy unit clusters, enemy buildings, wild people, or a land bridge toward an enemy */
   /** how the opponent AI aims it; ownFighting (Ward) and ownMarching (Veil) aim at the AI's own troops (BACKLOG 1) */
-  aiTarget: z.enum(["units", "buildings", "wild", "bridge", "ownFighting", "ownMarching", "none"]).optional(),
+  aiTarget: z
+    .enum([
+      "units",
+      "buildings",
+      "wild",
+      "bridge",
+      "ownFighting",
+      "ownMarching",
+      "none",
+    ])
+    .optional(),
   effects: z.array(Effect).min(1),
 });
 export const SpellsFileSchema = z.strictObject({
@@ -540,7 +729,9 @@ export const SpellsFileSchema = z.strictObject({
   }),
   spells: z.array(SpellSchema),
   /** sub-entities spells can spawn (spawnEntity), each a list of effects applied where it lands */
-  entities: z.array(z.strictObject({ ...comment, id, effects: z.array(Effect).min(1) })).default([]),
+  entities: z
+    .array(z.strictObject({ ...comment, id, effects: z.array(Effect).min(1) }))
+    .default([]),
 });
 export type SpellDef = z.infer<typeof SpellSchema>;
 export type SpellsFile = z.infer<typeof SpellsFileSchema>;
@@ -558,7 +749,13 @@ export const PersonalitySchema = z.strictObject({
   scouting: z.number().min(0).max(1),
   towerAffinity: z.number().min(0).max(1),
   /** BACKLOG 2: keep this many Shades from this match minute on and send them at enemy buildings */
-  shades: z.strictObject({ ...comment, count: z.number().int().positive(), fromMinute: pos }).optional(),
+  shades: z
+    .strictObject({
+      ...comment,
+      count: z.number().int().positive(),
+      fromMinute: pos,
+    })
+    .optional(),
 });
 export const DifficultySchema = z.strictObject({
   ...comment,
@@ -577,7 +774,14 @@ export const AiFileSchema = z.strictObject({
 export type AiFile = z.infer<typeof AiFileSchema>;
 
 // ---------------------------------------------------------------- terrain.json (planet generator)
-const BandMap = z.strictObject({ shore: z.number(), lowland: z.number(), grass: z.number(), highland: z.number(), rock: z.number(), peak: z.number() });
+const BandMap = z.strictObject({
+  shore: z.number(),
+  lowland: z.number(),
+  grass: z.number(),
+  highland: z.number(),
+  rock: z.number(),
+  peak: z.number(),
+});
 export const TerrainPresetSchema = z.strictObject({
   ...comment,
   id,
@@ -590,7 +794,13 @@ export const TerrainPresetSchema = z.strictObject({
    * is level and the rest a linear ramp. The level share shrinks where the land is already steep so a ramp
    * stays near `rampSlope` (per cell): above the brown cliff threshold, at or under the walk limit, so the
    * bands read as cliffs without cutting the land apart. Slopes already steeper stay untouched. */
-  terrace: z.strictObject({ step: z.number().positive(), flat: z.number().min(0).max(0.9), rampSlope: z.number().positive() }).optional(),
+  terrace: z
+    .strictObject({
+      step: z.number().positive(),
+      flat: z.number().min(0).max(0.9),
+      rampSlope: z.number().positive(),
+    })
+    .optional(),
 });
 export const TerrainFileSchema = z.strictObject({
   ...comment,
@@ -602,13 +812,30 @@ export const TerrainFileSchema = z.strictObject({
     clearRadiusAroundHearth: pos,
     maxSlope: pos,
     /** BACKLOG 0a: a grove ring around each Hearth (cells from its center), planted at least at this density */
-    hearthGrove: z.strictObject({ inner: pos, outer: pos, density: z.number().min(0).max(1) }).optional(),
+    hearthGrove: z
+      .strictObject({
+        inner: pos,
+        outer: pos,
+        density: z.number().min(0).max(1),
+      })
+      .optional(),
   }),
-  hearth: z.strictObject({ flatRadius: pos, minHeightAboveSea: pos, maxSiteRange: pos, minSpacingFracOfSize: z.number().min(0).max(0.5) }),
+  hearth: z.strictObject({
+    flatRadius: pos,
+    minHeightAboveSea: pos,
+    maxSiteRange: pos,
+    minSpacingFracOfSize: z.number().min(0).max(0.5),
+  }),
   wild: z.strictObject({ distance: range2 }),
   /** BACKLOG 0c: stone outcrops per Hearth (cells from its center) and scattered over the land (per 1000 land vertices) */
   rocks: z
-    .strictObject({ ...comment, perHearth: z.number().int().min(0), distance: range2, scatterPerThousandLand: z.number().min(0), clearTreesRadius: z.number().min(0) })
+    .strictObject({
+      ...comment,
+      perHearth: z.number().int().min(0),
+      distance: range2,
+      scatterPerThousandLand: z.number().min(0),
+      clearTreesRadius: z.number().min(0),
+    })
     .optional(),
   maxRerolls: z.number().int().min(0).max(100),
 });
@@ -648,7 +875,14 @@ export interface PackFiles {
 }
 
 /** Skirmish setup used when a pack has no `balance.skirmish` (packs frozen before M8). */
-export const SKIRMISH_DEFAULTS = { mapSizes: [96, 128, 192], defaultSize: 128, maps: ["continents", "islands"], maxOpponents: 3, defaultOpponents: ["aggressive"], defaultDifficulty: "normal" };
+export const SKIRMISH_DEFAULTS = {
+  mapSizes: [96, 128, 192],
+  defaultSize: 128,
+  maps: ["continents", "islands"],
+  maxOpponents: 3,
+  defaultOpponents: ["aggressive"],
+  defaultDifficulty: "normal",
+};
 
 // ---------------------------------------------------------------- worship sites, levels (M9, data/levels/*.json)
 const point = z.tuple([z.number(), z.number()]);
@@ -656,7 +890,11 @@ const point = z.tuple([z.number(), z.number()]);
 /** What a worship site (or a level trigger) gives. Rewards go to the tribe that completed the prayer. */
 export const RewardSchema = z.discriminatedUnion("type", [
   /** one-shot charges: usable even when the spell is not unlocked, never recharged unless it is */
-  z.strictObject({ type: z.literal("charges"), spell: id, n: z.number().int().min(1) }),
+  z.strictObject({
+    type: z.literal("charges"),
+    spell: id,
+    n: z.number().int().min(1),
+  }),
   /** permanent spell unlock (reliquary) */
   z.strictObject({ type: z.literal("unlockSpell"), spell: id }),
   /** permanent building unlock, ignoring follower tiers and level limits */
@@ -664,11 +902,24 @@ export const RewardSchema = z.discriminatedUnion("type", [
   /** a spell's effects at a point (the site when `at` is absent), cast by nobody: totem land bridges */
   z.strictObject({ type: z.literal("spell"), spell: id, at: point.optional() }),
   /** units for the rewarded tribe (or `tribe`, -1 for wild people) near a point (the site by default) */
-  z.strictObject({ type: z.literal("spawn"), unit: id, n: z.number().int().min(1).max(50), tribe: z.number().int().min(-1).optional(), at: point.optional() }),
+  z.strictObject({
+    type: z.literal("spawn"),
+    unit: id,
+    n: z.number().int().min(1).max(50),
+    tribe: z.number().int().min(-1).optional(),
+    at: point.optional(),
+  }),
   /** level scripting: every trained troop of `tribe` attack-moves to `to` (a war band crossing) */
-  z.strictObject({ type: z.literal("raid"), tribe: z.number().int().min(0), to: point }),
+  z.strictObject({
+    type: z.literal("raid"),
+    tribe: z.number().int().min(0),
+    to: point,
+  }),
   /** a message for the player (HUD notification) */
-  z.strictObject({ type: z.literal("message"), text: z.string().min(1).max(160) }),
+  z.strictObject({
+    type: z.literal("message"),
+    text: z.string().min(1).max(160),
+  }),
 ]);
 export type Reward = z.infer<typeof RewardSchema>;
 
@@ -694,10 +945,25 @@ const LevelSetup = z.strictObject({
 });
 
 export const ObjectiveSchema = z.discriminatedUnion("type", [
-  z.strictObject({ type: z.literal("eliminateAll"), text: z.string().optional() }),
-  z.strictObject({ type: z.literal("worship"), site: id, text: z.string().optional() }),
-  z.strictObject({ type: z.literal("survive"), seconds: pos, text: z.string().optional() }),
-  z.strictObject({ type: z.literal("followers"), n: z.number().int().min(1), text: z.string().optional() }),
+  z.strictObject({
+    type: z.literal("eliminateAll"),
+    text: z.string().optional(),
+  }),
+  z.strictObject({
+    type: z.literal("worship"),
+    site: id,
+    text: z.string().optional(),
+  }),
+  z.strictObject({
+    type: z.literal("survive"),
+    seconds: pos,
+    text: z.string().optional(),
+  }),
+  z.strictObject({
+    type: z.literal("followers"),
+    n: z.number().int().min(1),
+    text: z.string().optional(),
+  }),
 ]);
 export type Objective = z.infer<typeof ObjectiveSchema>;
 
@@ -716,7 +982,10 @@ export const TriggerSchema = z.strictObject({
   when: z.discriminatedUnion("type", [
     z.strictObject({ type: z.literal("time"), seconds: pos }),
     z.strictObject({ type: z.literal("worship"), site: id }),
-    z.strictObject({ type: z.literal("objective"), index: z.number().int().min(0) }),
+    z.strictObject({
+      type: z.literal("objective"),
+      index: z.number().int().min(0),
+    }),
   ]),
   /** actions use the reward vocabulary; the receiving tribe is the player (0) unless the trigger is a worship by another tribe */
   do: z.array(RewardSchema).min(1),
@@ -750,7 +1019,10 @@ export const LevelSchema = z.strictObject({
       .optional(),
   }),
   /** tribe 0 is the player; the others are AI opponents by personality */
-  tribes: z.array(z.strictObject({ ai: id.optional(), difficulty: id.optional() })).min(1).max(4),
+  tribes: z
+    .array(z.strictObject({ ai: id.optional(), difficulty: id.optional() }))
+    .min(1)
+    .max(4),
   /** spells unlocked at the start for every tribe (campaign unlocks are added for the player) */
   spells: z.array(id),
   /** buildings every tribe may build (others need an unlockBuilding reward); absent means all */
@@ -760,6 +1032,11 @@ export const LevelSchema = z.strictObject({
   lose: z.array(LoseSchema).optional(),
   triggers: z.array(TriggerSchema).optional(),
   /** carried forward in the campaign when the level is won */
-  unlocks: z.strictObject({ spells: z.array(id).optional(), buildings: z.array(id).optional() }).optional(),
+  unlocks: z
+    .strictObject({
+      spells: z.array(id).optional(),
+      buildings: z.array(id).optional(),
+    })
+    .optional(),
 });
 export type LevelDef = z.infer<typeof LevelSchema>;

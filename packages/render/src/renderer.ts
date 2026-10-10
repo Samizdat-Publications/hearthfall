@@ -6,8 +6,19 @@ import type { Style } from "@hearthfall/data";
 import type { World } from "@hearthfall/sim";
 import { applyCamera, CAMERA_PRESETS, type CameraState } from "./camera.ts";
 import { bendMaterial, makeBendUniforms, type BendUniforms } from "./curve.ts";
-import { RainLayer, resolveLighting, waterTint, type LightingLook } from "./weather.ts";
-import { CHUNK, fillDepth, makeWaterMaterial, TerrainChunk, type TerrainPalette } from "./terrainMesh.ts";
+import {
+  RainLayer,
+  resolveLighting,
+  waterTint,
+  type LightingLook,
+} from "./weather.ts";
+import {
+  CHUNK,
+  fillDepth,
+  makeWaterMaterial,
+  TerrainChunk,
+  type TerrainPalette,
+} from "./terrainMesh.ts";
 import { TreeLayer } from "./props.ts";
 import { UnitLayer } from "./unitsLayer.ts";
 import { BuildingLayer } from "./buildingsLayer.ts";
@@ -60,7 +71,17 @@ export class ThreeRenderer implements Renderer {
   readonly time = { value: 0 };
   cam: CameraState = { x: 0, z: 0, yaw: 0.6, zoom: 0.42, map: false };
   frames = 0;
-  stats: RenderStats = { frames: 0, chunks: 0, remeshTotal: 0, lastRemesh: 0, fullRebuilds: 0, drawCalls: 0, triangles: 0, cpuMs: 0, unitsDrawn: 0 };
+  stats: RenderStats = {
+    frames: 0,
+    chunks: 0,
+    remeshTotal: 0,
+    lastRemesh: 0,
+    fullRebuilds: 0,
+    drawCalls: 0,
+    triangles: 0,
+    cpuMs: 0,
+    unitsDrawn: 0,
+  };
   private world: World | null = null;
   private chunks: TerrainChunk[] = [];
   private cursor = -1;
@@ -106,7 +127,12 @@ export class ThreeRenderer implements Renderer {
   private renderScale = 1;
 
   constructor(o: RendererOptions) {
-    this.gl = new THREE.WebGLRenderer({ canvas: o.canvas, antialias: true, preserveDrawingBuffer: true, powerPreference: "high-performance" });
+    this.gl = new THREE.WebGLRenderer({
+      canvas: o.canvas,
+      antialias: true,
+      preserveDrawingBuffer: true,
+      powerPreference: "high-performance",
+    });
     this.gl.setPixelRatio(1);
     // stats count the whole frame (scene pass plus the retro upscale), so reset by hand in render()
     this.gl.info.autoReset = false;
@@ -142,14 +168,27 @@ export class ThreeRenderer implements Renderer {
     this.bend.uHorizon.value.set(space?.rim ?? L.skyHorizon);
     this.scene.fog = new THREE.Fog(space?.rim ?? L.fogColor, 60, 200);
     this.baseAmbient = 1.25 * (rs?.ambientIntensity ?? 1);
-    this.hemi = new THREE.HemisphereLight(L.skyTop, pal.moss ?? "#5e8c3a", this.baseAmbient);
+    this.hemi = new THREE.HemisphereLight(
+      L.skyTop,
+      pal.moss ?? "#5e8c3a",
+      this.baseAmbient,
+    );
     this.scene.add(this.hemi);
     this.scene.add(this.rain.mesh);
-    this.retro = new RetroPass({ pixelScale: rs?.pixelScale ?? 1, paletteLevels: rs?.paletteLevels ?? 0, ditherStrength: rs?.ditherStrength ?? 0 });
+    this.retro = new RetroPass({
+      pixelScale: rs?.pixelScale ?? 1,
+      paletteLevels: rs?.paletteLevels ?? 0,
+      ditherStrength: rs?.ditherStrength ?? 0,
+    });
     this.detail.amount.value = rs?.detailNoise ?? 0;
     this.detail.cells.value = rs?.detailCellsPerUnit ?? 3;
     for (let k = 0; k < 4; k++) {
-      const pl = new THREE.PointLight(rs?.hearthLight.color ?? "#ffa04a", 0, rs?.hearthLight.distance ?? 9, 1.6);
+      const pl = new THREE.PointLight(
+        rs?.hearthLight.color ?? "#ffa04a",
+        0,
+        rs?.hearthLight.distance ?? 9,
+        1.6,
+      );
       this.hearthLights.push(pl);
       this.scene.add(pl);
     }
@@ -157,33 +196,88 @@ export class ThreeRenderer implements Renderer {
     this.sun.position.set(0.55, 0.8, 0.3);
     this.scene.add(this.sun);
     this.scene.add(this.sun.target);
-    this.terrainMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend, this.detail);
-    this.waterMat = makeWaterMaterial(this.palette, this.bend, this.time, rs?.foamStrokes ?? 0, rs?.water);
+    this.terrainMat = bendMaterial(
+      new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }),
+      this.bend,
+      this.detail,
+    );
+    this.waterMat = makeWaterMaterial(
+      this.palette,
+      this.bend,
+      this.time,
+      rs?.foamStrokes ?? 0,
+      rs?.water,
+    );
     this.pal = pal;
     this.basePal = pal;
     this.styleRender = o.style.render;
     this.style = o.style;
-    this.propMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend);
-    this.unitMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend, undefined, true);
-    this.ringMat = bendMaterial(new THREE.MeshBasicMaterial({ color: pal.foam ?? "#e6f4f8", transparent: true, opacity: 0.9, depthWrite: false }), this.bend);
+    this.propMat = bendMaterial(
+      new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }),
+      this.bend,
+    );
+    this.unitMat = bendMaterial(
+      new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }),
+      this.bend,
+      undefined,
+      true,
+    );
+    this.ringMat = bendMaterial(
+      new THREE.MeshBasicMaterial({
+        color: pal.foam ?? "#e6f4f8",
+        transparent: true,
+        opacity: 0.9,
+        depthWrite: false,
+      }),
+      this.bend,
+    );
     this.trees = new TreeLayer(this.propMat, pal, null, 8192, rs?.trees);
     for (const m of this.trees.meshes) this.scene.add(m);
-    this.ghost = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 4, 4).rotateX(-Math.PI / 2), bendMaterial(new THREE.MeshBasicMaterial({ color: "#8dbf5a", transparent: true, opacity: 0.55, depthWrite: false }), this.bend));
+    this.ghost = new THREE.Mesh(
+      new THREE.PlaneGeometry(1, 1, 4, 4).rotateX(-Math.PI / 2),
+      bendMaterial(
+        new THREE.MeshBasicMaterial({
+          color: "#8dbf5a",
+          transparent: true,
+          opacity: 0.55,
+          depthWrite: false,
+        }),
+        this.bend,
+      ),
+    );
     this.ghost.visible = false;
     this.ghost.frustumCulled = false;
     this.scene.add(this.ghost);
     this.vfx = new VfxLayer(this.bend);
     this.scene.add(this.vfx.group);
-    const ringMat = (color: string) => bendMaterial(new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.85, depthTest: false, depthWrite: false }), this.bend);
-    this.rangeRing = new THREE.Mesh(new THREE.RingGeometry(0.97, 1, 96).rotateX(-Math.PI / 2), ringMat("#f4f1ea"));
-    this.areaRing = new THREE.Mesh(new THREE.RingGeometry(0.9, 1, 64).rotateX(-Math.PI / 2), ringMat("#ffd23a"));
+    const ringMat = (color: string) =>
+      bendMaterial(
+        new THREE.MeshBasicMaterial({
+          color,
+          transparent: true,
+          opacity: 0.85,
+          depthTest: false,
+          depthWrite: false,
+        }),
+        this.bend,
+      );
+    this.rangeRing = new THREE.Mesh(
+      new THREE.RingGeometry(0.97, 1, 96).rotateX(-Math.PI / 2),
+      ringMat("#f4f1ea"),
+    );
+    this.areaRing = new THREE.Mesh(
+      new THREE.RingGeometry(0.9, 1, 64).rotateX(-Math.PI / 2),
+      ringMat("#ffd23a"),
+    );
     for (const r of [this.rangeRing, this.areaRing]) {
       r.visible = false;
       r.frustumCulled = false;
       r.renderOrder = 10;
       this.scene.add(r);
     }
-    this.sky = space ? makeSpaceSky(space.top, space.horizon, space.stars) : makeSky(L.skyTop, L.skyHorizon);
+    this.sky = space
+      ? makeSpaceSky(space.top, space.horizon, space.stars)
+      : makeSky(L.skyTop, L.skyHorizon);
     this.gl.setClearColor(pal.water ?? "#2f7fb8", 1);
     this.scene.add(this.sky);
     this.setLighting("default", "clear");
@@ -197,23 +291,35 @@ export class ThreeRenderer implements Renderer {
     const st = this.style;
     if (!st.lightingPresets) return;
     const def = st.lightingDefault ?? "golden";
-    const look = resolveLighting(st.lightingPresets, def, preset === "default" ? def : preset, weather, st.weather?.rain);
+    const look = resolveLighting(
+      st.lightingPresets,
+      def,
+      preset === "default" ? def : preset,
+      weather,
+      st.weather?.rain,
+    );
     this.lighting = look;
     this.sun.color.set(look.keyColor);
     this.sun.intensity = look.keyIntensity;
     this.hemi.color.set(look.hemiSky);
     this.hemi.intensity = this.baseAmbient * look.ambient;
-    if (st.render?.space) {
-      (this.scene.fog as THREE.Fog).color.set(look.rim);
-      this.bend.uHorizon.value.set(look.rim);
-    }
+    (this.scene.fog as THREE.Fog).color.set(look.rim);
+    if (st.render?.space) this.bend.uHorizon.value.set(look.rim);
     this.rain.set(look.rain);
-    waterTint(look, st.lightingPresets[def] ?? look, this.waterMat.uniforms.uLight.value);
+    waterTint(
+      look,
+      st.lightingPresets[def] ?? look,
+      this.waterMat.uniforms.uLight.value,
+    );
   }
 
   /** Lighting and weather in force (debug API and tests). */
   lightingState(): { key: string; intensity: number; rain: number } {
-    return { key: "#" + this.sun.color.getHexString(), intensity: this.sun.intensity, rain: this.rain.count };
+    return {
+      key: "#" + this.sun.color.getHexString(),
+      intensity: this.sun.intensity,
+      rain: this.rain.count,
+    };
   }
 
   setWorld(world: World): void {
@@ -256,7 +362,11 @@ export class ThreeRenderer implements Renderer {
       l.viewTribe = this.viewTribe;
       l.revealAll = this.revealFog;
     }
-    const on = v.on && !this.revealFog && this.viewTribe >= 0 && this.viewTribe < v.visible.length;
+    const on =
+      v.on &&
+      !this.revealFog &&
+      this.viewTribe >= 0 &&
+      this.viewTribe < v.visible.length;
     this.bend.uFogOn.value = on ? 1 : 0;
     if (!on) return;
     const key = `${v.version}|${this.viewTribe}|${v.gw}`;
@@ -265,7 +375,13 @@ export class ThreeRenderer implements Renderer {
     const g = v.gw;
     if (!this.fogTex || this.fogTex.image.width !== g) {
       this.fogTex?.dispose();
-      this.fogTex = new THREE.DataTexture(new Uint8Array(g * g), g, g, THREE.RedFormat, THREE.UnsignedByteType);
+      this.fogTex = new THREE.DataTexture(
+        new Uint8Array(g * g),
+        g,
+        g,
+        THREE.RedFormat,
+        THREE.UnsignedByteType,
+      );
       this.fogTex.wrapS = this.fogTex.wrapT = THREE.RepeatWrapping;
       this.fogTex.magFilter = this.fogTex.minFilter = THREE.LinearFilter;
       this.bend.uFogTex.value = this.fogTex;
@@ -274,7 +390,8 @@ export class ThreeRenderer implements Renderer {
     const data = this.fogTex.image.data as Uint8Array;
     const vis = v.visible[this.viewTribe];
     const exp = v.explored[this.viewTribe];
-    for (let k = 0; k < data.length; k++) data[k] = vis[k] ? 255 : exp[k] ? 128 : 0;
+    for (let k = 0; k < data.length; k++)
+      data[k] = vis[k] ? 255 : exp[k] ? 128 : 0;
     this.fogTex.needsUpdate = true;
   }
 
@@ -291,13 +408,34 @@ export class ThreeRenderer implements Renderer {
   private buildLayers(world: World): void {
     const colors = world.tribes.map((t) => t.color);
     if (this.units) disposeGroup(this.scene, this.units.group);
-    this.units = new UnitLayer(this.unitMat, this.ringMat, world.cfg.pack.units.units.map((u) => u.id), this.pal, colors, this.models);
+    this.units = new UnitLayer(
+      this.unitMat,
+      this.ringMat,
+      world.cfg.pack.units.units.map((u) => u.id),
+      this.pal,
+      colors,
+      this.models,
+    );
     this.scene.add(this.units.group);
     if (this.buildings) disposeGroup(this.scene, this.buildings.group);
-    this.buildings = new BuildingLayer(this.propMat, world.cfg.pack.buildings.buildings, this.pal, colors, this.models, 2048, this.styleRender?.buildingScale ?? 1);
+    this.buildings = new BuildingLayer(
+      this.propMat,
+      world.cfg.pack.buildings.buildings,
+      this.pal,
+      colors,
+      this.models,
+      2048,
+      this.styleRender?.buildingScale ?? 1,
+    );
     this.scene.add(this.buildings.group);
     if (this.worship) disposeGroup(this.scene, this.worship.group);
-    this.worship = new WorshipLayer(this.propMat, world.cfg.pack.buildings.worship.kinds ?? [], this.pal, colors, this.models);
+    this.worship = new WorshipLayer(
+      this.propMat,
+      world.cfg.pack.buildings.worship.kinds ?? [],
+      this.pal,
+      colors,
+      this.models,
+    );
     this.scene.add(this.worship.group);
   }
 
@@ -305,17 +443,30 @@ export class ThreeRenderer implements Renderer {
    * Load the real GLB models (id to URL) and swap them in for the placeholders. The game never waits:
    * placeholders draw until this resolves, and an id that fails to load keeps its placeholder.
    */
-  async loadModels(urls: Readonly<Record<string, string>>, fetchBytes?: (url: string) => Promise<ArrayBuffer>): Promise<ModelStatus> {
+  async loadModels(
+    urls: Readonly<Record<string, string>>,
+    fetchBytes?: (url: string) => Promise<ArrayBuffer>,
+  ): Promise<ModelStatus> {
     this.modelsPending = true;
     try {
-      const { models, report } = await loadModels(urls, this.basePal.azure ?? "#2e6fd8", fetchBytes);
+      const { models, report } = await loadModels(
+        urls,
+        this.basePal.azure ?? "#2e6fd8",
+        fetchBytes,
+      );
       this.models = models;
       this.modelReport = report;
       for (const m of this.trees.meshes) {
         this.scene.remove(m);
         m.dispose();
       }
-      this.trees = new TreeLayer(this.propMat, this.pal, this.models, 8192, this.styleRender?.trees);
+      this.trees = new TreeLayer(
+        this.propMat,
+        this.pal,
+        this.models,
+        8192,
+        this.styleRender?.trees,
+      );
       for (const m of this.trees.meshes) this.scene.add(m);
       if (this.world) this.buildLayers(this.world);
     } finally {
@@ -325,8 +476,18 @@ export class ThreeRenderer implements Renderer {
   }
 
   modelStatus(): ModelStatus {
-    const drawn = [...this.trees.modelIds, ...(this.units?.modelIds ?? []), ...(this.buildings?.modelIds ?? []), ...(this.worship?.modelIds ?? [])];
-    return { pending: this.modelsPending, loaded: this.modelReport?.loaded ?? [], failed: this.modelReport?.failed ?? [], drawn: [...new Set(drawn)].sort() };
+    const drawn = [
+      ...this.trees.modelIds,
+      ...(this.units?.modelIds ?? []),
+      ...(this.buildings?.modelIds ?? []),
+      ...(this.worship?.modelIds ?? []),
+    ];
+    return {
+      pending: this.modelsPending,
+      loaded: this.modelReport?.loaded ?? [],
+      failed: this.modelReport?.failed ?? [],
+      drawn: [...new Set(drawn)].sort(),
+    };
   }
 
   /** look v3: re-upload the per-cell water depth texture after any terrain change */
@@ -335,9 +496,19 @@ export class ThreeRenderer implements Renderer {
     const n = t.size;
     if (!this.depthTex || this.depthTex.image.width !== n) {
       this.depthTex?.dispose();
-      this.depthTex = new THREE.DataTexture(new Float32Array(n * n), n, n, THREE.RedFormat, THREE.FloatType);
+      this.depthTex = new THREE.DataTexture(
+        new Float32Array(n * n),
+        n,
+        n,
+        THREE.RedFormat,
+        THREE.FloatType,
+      );
       this.depthTex.wrapS = this.depthTex.wrapT = THREE.RepeatWrapping;
-      this.depthTex.magFilter = this.depthTex.minFilter = THREE.LinearFilter;
+      // float textures filter linearly only with OES_texture_float_linear; nearest is a safe fallback
+      this.depthTex.magFilter = this.depthTex.minFilter =
+        this.gl.extensions.has("OES_texture_float_linear")
+          ? THREE.LinearFilter
+          : THREE.NearestFilter;
       this.waterMat.uniforms.uDepthTex.value = this.depthTex;
       this.waterMat.uniforms.uDepthSize.value = n;
     }
@@ -356,8 +527,12 @@ export class ThreeRenderer implements Renderer {
   }
 
   /** Feed sim events (collected per tick by the app) to the VFX layer. */
-  consumeEvents(events: readonly import("@hearthfall/sim").SimEvent[], timeOf: (e: import("@hearthfall/sim").SimEvent) => number): void {
-    if (this.world) this.vfx.consume(events, this.world, timeOf, this.palette.heightScale);
+  consumeEvents(
+    events: readonly import("@hearthfall/sim").SimEvent[],
+    timeOf: (e: import("@hearthfall/sim").SimEvent) => number,
+  ): void {
+    if (this.world)
+      this.vfx.consume(events, this.world, timeOf, this.palette.heightScale);
     this.units?.consume(events, timeOf);
   }
 
@@ -385,7 +560,10 @@ export class ThreeRenderer implements Renderer {
     for (const r of rects) {
       for (let y = r.y; y < r.y + r.h + 1; y += 1) {
         const cz = Math.floor((((y % t.size) + t.size) % t.size) / CHUNK);
-        for (let x = r.x; x < r.x + r.w + 1; x += 1) touched.add(cz * n + Math.floor((((x % t.size) + t.size) % t.size) / CHUNK));
+        for (let x = r.x; x < r.x + r.w + 1; x += 1)
+          touched.add(
+            cz * n + Math.floor((((x % t.size) + t.size) % t.size) / CHUNK),
+          );
       }
     }
     for (const i of touched) this.chunks[i].build(t, this.palette);
@@ -397,7 +575,7 @@ export class ThreeRenderer implements Renderer {
   }
 
   setCamera(s: Partial<CameraState> | string): void {
-    const patch = typeof s === "string" ? CAMERA_PRESETS[s] ?? {} : s;
+    const patch = typeof s === "string" ? (CAMERA_PRESETS[s] ?? {}) : s;
     this.cam = { ...this.cam, ...patch };
     const size = this.world?.terrain.size ?? 128;
     this.cam.x = ((this.cam.x % size) + size) % size;
@@ -409,13 +587,20 @@ export class ThreeRenderer implements Renderer {
    * order), "off", "pre" or "post" (an explicit order, for shots and the URL param).
    */
   setTiltShift(mode: string): void {
-    this.retro.setOptions({ tilt: resolveTilt(this.styleRender?.tiltShift, mode) });
+    this.retro.setOptions({
+      tilt: resolveTilt(this.styleRender?.tiltShift, mode),
+    });
     this.resize(this.viewW, this.viewH);
   }
 
   /** Retro pixel size override (URL `pixel`, look comparisons); null restores style.json. */
   setPixelScale(n: number | null): void {
-    this.retro.setOptions({ pixelScale: Math.max(1, Math.round(n ?? this.styleRender?.pixelScale ?? 1)) });
+    this.retro.setOptions({
+      pixelScale: Math.max(
+        1,
+        Math.round(n ?? this.styleRender?.pixelScale ?? 1),
+      ),
+    });
     this.resize(this.viewW, this.viewH);
   }
 
@@ -432,7 +617,12 @@ export class ThreeRenderer implements Renderer {
     // the retro pass renders the scene into a low-res target: scale that; without it scale the canvas buffer
     this.retro.setSize(w * s, h * s);
     if (this.retro.enabled) this.gl.setSize(w, h, false);
-    else this.gl.setSize(Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s)), false);
+    else
+      this.gl.setSize(
+        Math.max(1, Math.round(w * s)),
+        Math.max(1, Math.round(h * s)),
+        false,
+      );
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
   }
@@ -455,23 +645,63 @@ export class ThreeRenderer implements Renderer {
       for (const c of this.chunks) c.place(this.cam.x, this.cam.z, size);
       this.syncFog(w);
       this.trees.update(w, this.cam.x, this.cam.z, this.palette.heightScale);
-      this.buildings?.update(w, this.cam.x, this.cam.z, this.palette.heightScale);
+      this.buildings?.update(
+        w,
+        this.cam.x,
+        this.cam.z,
+        this.palette.heightScale,
+      );
       this.worship?.update(w, this.cam.x, this.cam.z, this.palette.heightScale);
-      this.units?.update(w, this.alpha, this.cam.x, this.cam.z, this.palette.heightScale, visualTime, this.bend.uFadeEnd.value, this.camera, this.bend.uBendK.value, this.viewW, this.viewH, this.selected);
+      this.units?.update(
+        w,
+        this.alpha,
+        this.cam.x,
+        this.cam.z,
+        this.palette.heightScale,
+        visualTime,
+        this.bend.uFadeEnd.value,
+        this.camera,
+        this.bend.uBendK.value,
+        this.viewW,
+        this.viewH,
+        this.selected,
+      );
       this.stats.unitsDrawn = this.units?.drawn ?? 0;
-      this.vfx.update(w, visualTime, this.cam.x, this.cam.z, this.palette.heightScale);
+      this.vfx.update(
+        w,
+        visualTime,
+        this.cam.x,
+        this.cam.z,
+        this.palette.heightScale,
+      );
       this.sun.target.position.set(this.cam.x, 0, this.cam.z);
       const d = this.lighting?.sunDir ?? [0.4, 0.8, 0.25];
       const k = 95 / Math.hypot(d[0], d[1], d[2]);
-      this.sun.position.set(this.cam.x + d[0] * k, d[1] * k, this.cam.z + d[2] * k);
-      this.rain.update(this.cam.x, w.terrain.heightAt(this.cam.x, this.cam.z) * this.palette.heightScale, this.cam.z, visualTime);
+      this.sun.position.set(
+        this.cam.x + d[0] * k,
+        d[1] * k,
+        this.cam.z + d[2] * k,
+      );
+      this.rain.update(
+        this.cam.x,
+        w.terrain.heightAt(this.cam.x, this.cam.z) * this.palette.heightScale,
+        this.cam.z,
+        visualTime,
+      );
     }
     this.placeHearthLights();
     this.sky.visible = !this.cam.map && this.scene.visible;
     this.sky.position.copy(this.camera.position);
     this.sky.scale.setScalar((this.camera.far * 0.9) / 900);
-    if (r) this.retro.setFocus(r.distance, this.camera.near, this.camera.far, !this.cam.map);
-    if (this.retro.enabled && this.scene.visible) this.retro.render(this.gl, this.scene, this.camera);
+    if (r)
+      this.retro.setFocus(
+        r.distance,
+        this.camera.near,
+        this.camera.far,
+        !this.cam.map,
+      );
+    if (this.retro.enabled && this.scene.visible)
+      this.retro.render(this.gl, this.scene, this.camera);
     else this.gl.render(this.scene, this.camera);
     this.frames++;
     this.stats.frames = this.frames;
@@ -496,19 +726,37 @@ export class ThreeRenderer implements Renderer {
       let oz = E.y[h] - this.cam.z;
       ox -= Math.round(ox / n) * n;
       oz -= Math.round(oz / n) * n;
-      const y = Math.max(w.terrain.heightAt(E.x[h], E.y[h]), w.terrain.sea) * this.palette.heightScale;
-      found.push({ d: ox * ox + oz * oz, x: this.cam.x + ox, z: this.cam.z + oz, y });
+      const y =
+        Math.max(w.terrain.heightAt(E.x[h], E.y[h]), w.terrain.sea) *
+        this.palette.heightScale;
+      found.push({
+        d: ox * ox + oz * oz,
+        x: this.cam.x + ox,
+        z: this.cam.z + oz,
+        y,
+      });
     }
     found.sort((a, b) => a.d - b.d);
     found.slice(0, this.hearthLights.length).forEach((f, k) => {
       const l = this.hearthLights[k];
       l.position.set(f.x, f.y + 1.2 - this.bend.uBendK.value * f.d, f.z);
-      l.intensity = (rs?.hearthLight.intensity ?? 14) * (this.lighting?.hearthGlow ?? 1);
+      l.intensity =
+        (rs?.hearthLight.intensity ?? 14) * (this.lighting?.hearthGlow ?? 1);
     });
   }
 
   /** Spell targeting preview: range ring around the Shaper and the effect area at the cursor. */
-  setTargeting(t: { cx: number; cz: number; range: number; x: number; z: number; r: number; inRange: boolean } | null): void {
+  setTargeting(
+    t: {
+      cx: number;
+      cz: number;
+      range: number;
+      x: number;
+      z: number;
+      r: number;
+      inRange: boolean;
+    } | null,
+  ): void {
     if (!t || !this.world) {
       this.rangeRing.visible = false;
       this.areaRing.visible = false;
@@ -522,24 +770,42 @@ export class ThreeRenderer implements Renderer {
       let oz = z - this.cam.z;
       ox -= Math.round(ox / n) * n;
       oz -= Math.round(oz / n) * n;
-      m.position.set(this.cam.x + ox, Math.max(w.terrain.heightAt(((x % n) + n) % n, ((z % n) + n) % n), w.terrain.sea) * s + 0.15, this.cam.z + oz);
+      m.position.set(
+        this.cam.x + ox,
+        Math.max(
+          w.terrain.heightAt(((x % n) + n) % n, ((z % n) + n) % n),
+          w.terrain.sea,
+        ) *
+          s +
+          0.15,
+        this.cam.z + oz,
+      );
       m.scale.set(r, 1, r);
       m.visible = true;
     };
     place(this.rangeRing, t.cx, t.cz, t.range);
     place(this.areaRing, t.x, t.z, t.r);
-    (this.areaRing.material as THREE.MeshBasicMaterial).color.set(t.inRange ? "#ffd23a" : "#e0a12a");
+    (this.areaRing.material as THREE.MeshBasicMaterial).color.set(
+      t.inRange ? "#ffd23a" : "#e0a12a",
+    );
   }
 
   /** Show or hide the building placement ghost (footprint quad, green when buildable, red when not). */
-  setPlacement(p: { x: number; z: number; w: number; h: number; ok: boolean } | null): void {
+  setPlacement(
+    p: { x: number; z: number; w: number; h: number; ok: boolean } | null,
+  ): void {
     if (!p || !this.world) {
       this.ghost.visible = false;
       return;
     }
     const t = this.world.terrain;
     let top = t.sea;
-    for (let y = 0; y <= p.h; y++) for (let x = 0; x <= p.w; x++) top = Math.max(top, t.get(Math.round(p.x - p.w / 2) + x, Math.round(p.z - p.h / 2) + y));
+    for (let y = 0; y <= p.h; y++)
+      for (let x = 0; x <= p.w; x++)
+        top = Math.max(
+          top,
+          t.get(Math.round(p.x - p.w / 2) + x, Math.round(p.z - p.h / 2) + y),
+        );
     this.ghost.visible = true;
     this.ghost.scale.set(p.w + 0.4, 1, p.h + 0.4);
     let ox = p.x - this.cam.x;
@@ -547,8 +813,14 @@ export class ThreeRenderer implements Renderer {
     const n = t.size;
     ox -= Math.round(ox / n) * n;
     oz -= Math.round(oz / n) * n;
-    this.ghost.position.set(this.cam.x + ox, top * this.palette.heightScale + 0.08, this.cam.z + oz);
-    (this.ghost.material as THREE.MeshBasicMaterial).color.set(p.ok ? "#8dbf5a" : "#c8312e");
+    this.ghost.position.set(
+      this.cam.x + ox,
+      top * this.palette.heightScale + 0.08,
+      this.cam.z + oz,
+    );
+    (this.ghost.material as THREE.MeshBasicMaterial).color.set(
+      p.ok ? "#8dbf5a" : "#c8312e",
+    );
   }
 
   /**
@@ -579,7 +851,9 @@ export class ThreeRenderer implements Renderer {
     const w = this.world;
     if (!w) return null;
     const t = w.terrain;
-    const focusY = Math.max(t.heightAt(this.cam.x, this.cam.z), t.sea) * this.palette.heightScale;
+    const focusY =
+      Math.max(t.heightAt(this.cam.x, this.cam.z), t.sea) *
+      this.palette.heightScale;
     const r = applyCamera(this.camera, this.cam, focusY, t.size);
     this.bend.uBendK.value = r.bendK;
     this.bend.uBendFocus.value.set(this.cam.x, this.cam.z);
@@ -587,14 +861,21 @@ export class ThreeRenderer implements Renderer {
     return r;
   }
 
-  private march(px: number, py: number, flat: boolean): { x: number; z: number } | null {
+  private march(
+    px: number,
+    py: number,
+    flat: boolean,
+  ): { x: number; z: number } | null {
     const w = this.world;
     if (!w) return null;
     this.syncCamera();
     const t = w.terrain;
     const n = t.size;
     const s = this.palette.heightScale;
-    const ndc = new THREE.Vector2((px / this.viewW) * 2 - 1, 1 - (py / this.viewH) * 2);
+    const ndc = new THREE.Vector2(
+      (px / this.viewW) * 2 - 1,
+      1 - (py / this.viewH) * 2,
+    );
     const ray = new THREE.Raycaster();
     ray.setFromCamera(ndc, this.camera);
     const o = ray.ray.origin;
@@ -605,7 +886,9 @@ export class ThreeRenderer implements Renderer {
     const above = (dist: number) => {
       const x = o.x + d.x * dist;
       const z = o.z + d.z * dist;
-      const ground = flat ? t.sea * s : Math.max(t.heightAt(((x % n) + n) % n, ((z % n) + n) % n), t.sea) * s;
+      const ground = flat
+        ? t.sea * s
+        : Math.max(t.heightAt(((x % n) + n) % n, ((z % n) + n) % n), t.sea) * s;
       const ddx = x - fx;
       const ddz = z - fz;
       return o.y + d.y * dist - (ground - k * (ddx * ddx + ddz * ddz));
@@ -630,7 +913,11 @@ export class ThreeRenderer implements Renderer {
   }
 
   /** Deliberate breakage for visual QA calibration (TESTING section 7, VISIONQA section 5). */
-  setDebug(f: { hideTerrain?: boolean; blackCanvas?: boolean; magentaMaterials?: boolean }): void {
+  setDebug(f: {
+    hideTerrain?: boolean;
+    blackCanvas?: boolean;
+    magentaMaterials?: boolean;
+  }): void {
     for (const c of this.chunks) {
       c.mesh.visible = !f.hideTerrain;
       c.water.visible = !f.hideTerrain;
@@ -658,7 +945,11 @@ function makeSpaceSky(top: string, horizon: string, stars: number): THREE.Mesh {
     side: THREE.BackSide,
     depthWrite: false,
     fog: false,
-    uniforms: { uTop: { value: new THREE.Color(top) }, uHorizon: { value: new THREE.Color(horizon) }, uStars: { value: stars } },
+    uniforms: {
+      uTop: { value: new THREE.Color(top) },
+      uHorizon: { value: new THREE.Color(horizon) },
+      uStars: { value: stars },
+    },
     vertexShader: /* glsl */ `varying vec3 vDir; void main() { vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
     fragmentShader: /* glsl */ `uniform vec3 uTop; uniform vec3 uHorizon; uniform float uStars; varying vec3 vDir;
       float h3(vec3 p) { return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453); }
@@ -687,7 +978,10 @@ function makeSky(top: string, horizon: string): THREE.Mesh {
     side: THREE.BackSide,
     depthWrite: false,
     fog: false,
-    uniforms: { uTop: { value: new THREE.Color(top) }, uHorizon: { value: new THREE.Color(horizon) } },
+    uniforms: {
+      uTop: { value: new THREE.Color(top) },
+      uHorizon: { value: new THREE.Color(horizon) },
+    },
     vertexShader: /* glsl */ `varying vec3 vDir; void main() { vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
     fragmentShader: /* glsl */ `uniform vec3 uTop; uniform vec3 uHorizon; varying vec3 vDir;
       void main() { float t = smoothstep(-0.02, 0.32, vDir.y); gl_FragColor = vec4(mix(uHorizon, uTop, t), 1.0);

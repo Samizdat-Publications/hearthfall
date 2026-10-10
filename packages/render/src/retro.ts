@@ -28,7 +28,17 @@ export interface TiltShiftOptions {
   contrast: number;
 }
 
-export const TILT_OFF: TiltShiftOptions = { order: "off", bandCenter: 0.5, bandHalf: 0.1, falloff: 0.3, maxBlur: 0, depthWeight: 0, depthRange: 1, saturation: 1, contrast: 1 };
+export const TILT_OFF: TiltShiftOptions = {
+  order: "off",
+  bandCenter: 0.5,
+  bandHalf: 0.1,
+  falloff: 0.3,
+  maxBlur: 0,
+  depthWeight: 0,
+  depthRange: 1,
+  saturation: 1,
+  contrast: 1,
+};
 
 export interface RetroOptions {
   /** screen pixels per rendered pixel (1 disables the downscale) */
@@ -42,27 +52,51 @@ export interface RetroOptions {
 }
 
 /** style.json `render.tiltShift` knobs (look v3) */
-export type TiltStyle = Omit<TiltShiftOptions, "order"> & { order: "pre" | "post"; defaultOn: boolean };
+export type TiltStyle = Omit<TiltShiftOptions, "order"> & {
+  order: "pre" | "post";
+  defaultOn: boolean;
+};
 
 /**
  * Tilt options for a settings or URL mode: "default" follows style defaultOn, "on" uses the style
  * order, "pre" and "post" force an order, anything else (or no style block) is off.
  */
-export function resolveTilt(style: TiltStyle | undefined, mode: string): TiltShiftOptions {
+export function resolveTilt(
+  style: TiltStyle | undefined,
+  mode: string,
+): TiltShiftOptions {
   if (!style) return TILT_OFF;
-  const on = mode === "on" || mode === "pre" || mode === "post" || (mode === "default" && style.defaultOn);
+  const on =
+    mode === "on" ||
+    mode === "pre" ||
+    mode === "post" ||
+    (mode === "default" && style.defaultOn);
   if (!on) return TILT_OFF;
   const { defaultOn: _d, ...knobs } = style;
-  return { ...knobs, order: mode === "pre" || mode === "post" ? mode : style.order };
+  return {
+    ...knobs,
+    order: mode === "pre" || mode === "post" ? mode : style.order,
+  };
 }
 
 /** Uniform values for the tilt-shift knobs (pure, unit tested). */
-export function tiltUniforms(t: TiltShiftOptions | undefined): { mode: number; band: [number, number, number, number]; blur: number; depthRange: number; lift: [number, number] } {
+export function tiltUniforms(t: TiltShiftOptions | undefined): {
+  mode: number;
+  band: [number, number, number, number];
+  blur: number;
+  depthRange: number;
+  lift: [number, number];
+} {
   const o = t ?? TILT_OFF;
   const mode = o.order === "pre" ? 1 : o.order === "post" ? 2 : 0;
   return {
     mode,
-    band: [o.bandCenter, Math.max(0, o.bandHalf), Math.max(1e-3, o.falloff), Math.min(1, Math.max(0, o.depthWeight))],
+    band: [
+      o.bandCenter,
+      Math.max(0, o.bandHalf),
+      Math.max(1e-3, o.falloff),
+      Math.min(1, Math.max(0, o.depthWeight)),
+    ],
     blur: mode ? Math.max(0, o.maxBlur) : 0,
     depthRange: Math.max(1e-3, o.depthRange),
     lift: mode ? [o.saturation, o.contrast] : [1, 1],
@@ -79,7 +113,13 @@ export class RetroPass {
 
   constructor(opts: RetroOptions) {
     this.opts = opts;
-    this.rt = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType, minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, depthBuffer: true, samples: 0 });
+    this.rt = new THREE.WebGLRenderTarget(4, 4, {
+      type: THREE.HalfFloatType,
+      minFilter: THREE.NearestFilter,
+      magFilter: THREE.NearestFilter,
+      depthBuffer: true,
+      samples: 0,
+    });
     this.rt.depthTexture = new THREE.DepthTexture(4, 4);
     const tu = tiltUniforms(opts.tilt);
     this.mat = new THREE.ShaderMaterial({
@@ -181,7 +221,11 @@ export class RetroPass {
   }
 
   get enabled(): boolean {
-    return this.opts.pixelScale > 1 || this.opts.paletteLevels > 1 || (this.opts.tilt?.order ?? "off") !== "off";
+    return (
+      this.opts.pixelScale > 1 ||
+      this.opts.paletteLevels > 1 ||
+      (this.opts.tilt?.order ?? "off") !== "off"
+    );
   }
 
   setSize(w: number, h: number): void {
@@ -206,13 +250,22 @@ export class RetroPass {
 
   /** Focus distance (camera to its target) and clip planes for the depth blur, set every frame. */
   setFocus(distance: number, near: number, far: number, active = true): void {
-    this.mat.uniforms.uTilt.value = active ? tiltUniforms(this.opts.tilt).mode : 0;
+    const tu = tiltUniforms(this.opts.tilt);
+    this.mat.uniforms.uTilt.value = active ? tu.mode : 0;
+    // map view (inactive) drops the saturation and contrast lift too (ADR-013)
+    this.mat.uniforms.uLift.value.set(
+      ...(active ? tu.lift : ([1, 1] as [number, number])),
+    );
     this.mat.uniforms.uFocus.value = distance;
     this.mat.uniforms.uNearFar.value.set(near, far);
   }
 
   /** Render `scene` through the pass. The scene pass skips tone mapping (it happens in the quad). */
-  render(gl: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.Camera): void {
+  render(
+    gl: THREE.WebGLRenderer,
+    scene: THREE.Scene,
+    camera: THREE.Camera,
+  ): void {
     const tm = gl.toneMapping;
     gl.setRenderTarget(this.rt);
     gl.toneMapping = THREE.NoToneMapping;

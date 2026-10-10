@@ -24,6 +24,12 @@ describe("data pack", () => {
     }
   });
 
+  it("rejects a lightingDefault that names no preset (BACKLOG 14)", () => {
+    const raw = loadBase();
+    (raw["style.json"] as { lightingDefault?: string }).lightingDefault = "dusk";
+    expect(JSON.stringify(validatePack(raw).issues)).toContain("lightingDefault");
+  });
+
   it("rejects typos and broken references", () => {
     const raw = loadBase();
     (raw["units.json"] as { units: { speeed?: number }[] }).units[0].speeed = 2;
