@@ -256,6 +256,11 @@ export function validateUi(raw: unknown, pack: PackFiles, file = "data/ui.json")
   sk.defaultOpponents.forEach((o, k) => opp.has(o) || issues.push({ file, path: `skirmish.defaultOpponents.${k}`, message: `unknown opponent ${o}` }));
   if (sk.defaultOpponents.length > sk.maxOpponents) issues.push({ file, path: "skirmish.defaultOpponents", message: `more than maxOpponents (${sk.maxOpponents})` });
   if (!pack.ai.difficulties.some((d) => d.id === sk.defaultDifficulty)) issues.push({ file, path: "skirmish.defaultDifficulty", message: `unknown difficulty ${sk.defaultDifficulty}` });
+  // stretch 2: spell combo hints name spells of the pack
+  const spells = new Set(pack.spells.spells.map((sp) => sp.id));
+  res.data.combos?.forEach((c, k) => {
+    for (const f of ["after", "then"] as const) if (!spells.has(c[f])) issues.push({ file, path: `combos.${k}.${f}`, message: `unknown spell ${c[f]}` });
+  });
   return issues.length ? { issues } : { issues, file: res.data };
 }
 

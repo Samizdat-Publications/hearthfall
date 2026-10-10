@@ -1199,6 +1199,8 @@ export interface PackFiles {
 export const UiFileSchema = z.strictObject({
   ...comment,
   skirmish: SkirmishMenuSchema,
+  /** parking lot (stretch 2): after the player casts `after`, a one-time HUD tip suggests `then` (if castable) */
+  combos: z.array(z.strictObject({ ...comment, after: id, then: id, text: z.string().min(1).max(110) })).optional(),
   notes: z.strictObject({
     ...comment,
     /** how long a HUD notification stays up */

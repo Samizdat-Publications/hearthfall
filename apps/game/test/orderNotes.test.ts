@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { SimEvent } from "@hearthfall/sim";
-import { leadInWarning, orderNote } from "../src/orderNotes.ts";
+import { comboHint, leadInWarning, orderNote } from "../src/orderNotes.ts";
 import { world } from "../../../packages/sim/test/helpers.ts";
 
 const ev = (o: Record<string, unknown>) =>
@@ -45,5 +45,20 @@ describe("terrain lead-in warning (BACKLOG 36)", () => {
     expect(leadInWarning(q({ tribe: 1, x: 24, y: 22 }), w, 0)?.key).toBe("leadIn");
     expect(leadInWarning(q({ tribe: 0, x: 24, y: 22 }), w, 0)).toBeNull();
     expect(leadInWarning(q({ tribe: 1, x: 50, y: 50 }), w, 0)).toBeNull();
+  });
+});
+
+describe("spell combo hints (stretch 2)", () => {
+  const combos = [
+    { after: "raise_land", then: "erode", text: "moat" },
+    { after: "hornets", then: "mire", text: "bog" },
+  ];
+  it("suggests the follow-up only after the local player's cast and only when it is castable", () => {
+    const cast = (tribe: number, spell: string) => ev({ type: "spellCast", tribe, spell });
+    expect(comboHint(cast(0, "raise_land"), 0, combos, ["raise_land", "erode"])).toEqual({ key: "combo:raise_land:erode", text: "moat", throttleSec: Infinity });
+    expect(comboHint(cast(1, "raise_land"), 0, combos, ["raise_land", "erode"])).toBeNull();
+    expect(comboHint(cast(0, "raise_land"), 0, combos, ["raise_land"])).toBeNull();
+    expect(comboHint(cast(0, "bolt"), 0, combos, ["bolt", "erode", "mire"])).toBeNull();
+    expect(comboHint(ev({ type: "killed", tribe: 0 }), 0, combos, ["erode"])).toBeNull();
   });
 });

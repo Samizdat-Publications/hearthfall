@@ -636,6 +636,10 @@ Effect primitives (`spells[].effects[]`, discriminated by `type`):
 | `skirmish.maxOpponents` | int | yes |
 | `skirmish.defaultOpponents` | string[] | yes |
 | `skirmish.defaultDifficulty` | string | yes |
+| `combos` | object[] |  |
+| `combos[].after` | string | yes |
+| `combos[].then` | string | yes |
+| `combos[].text` | string | yes |
 | `notes` | object | yes |
 | `notes.seconds` | number | yes |
 | `notes.max` | int | yes |

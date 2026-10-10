@@ -94,6 +94,7 @@ describe("data pack", () => {
     expect(bad((u) => (u.skirmish.defaultDifficulty = "nightmare"))).toEqual(["skirmish.defaultDifficulty"]);
     expect(bad((u) => (u.skirmish.defaultOpponents = ["grumpy"]))).toEqual(["skirmish.defaultOpponents.0"]);
     expect(bad((u) => (u.notes.max = 0))).toEqual(["notes.max"]);
+    expect(bad((u) => (u.combos[0].then = "teleport"))).toEqual(["combos.0.then"]);
     // the shipped pack no longer carries the menu, so a menu edit cannot change the hash
     expect(pack.files.balance.skirmish).toBeUndefined();
   });

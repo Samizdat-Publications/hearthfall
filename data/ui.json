@@ -9,6 +9,12 @@
     "defaultOpponents": ["aggressive"],
     "defaultDifficulty": "normal"
   },
+  "combos": [
+    { "$comment": "Spell combo hints: after the player casts `after`, a tip suggesting `then` shows once per match while `then` is castable. Spell ids from spells.json.", "after": "raise_land", "then": "erode", "text": "Combo: Erode beside your new ridge to cut a moat that drowns attackers." },
+    { "after": "hornets", "then": "mire", "text": "Combo: panicked units run blind, so a Mire in their path swallows them." },
+    { "after": "quake", "then": "erode", "text": "Combo: Erode the cracked land near the shore and the sea takes it." },
+    { "after": "veil", "then": "lightning", "text": "Combo: unseen, your Shaper can walk close and Lightning the rival Shaper." }
+  ],
   "notes": {
     "seconds": 8,
     "max": 4,

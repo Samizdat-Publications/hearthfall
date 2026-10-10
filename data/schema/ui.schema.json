@@ -59,6 +59,36 @@
       ],
       "additionalProperties": false
     },
+    "combos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "$comment": {
+            "type": "string"
+          },
+          "after": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "then": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 110
+          }
+        },
+        "required": [
+          "after",
+          "then",
+          "text"
+        ],
+        "additionalProperties": false
+      }
+    },
     "notes": {
       "type": "object",
       "properties": {

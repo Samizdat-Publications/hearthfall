@@ -116,7 +116,7 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 97. [S] DONE (10/10/2026): the issuers were panic flee repicks (a random point 5 cells off, often snapped to the shore across a strait) and lodge rally points on another landmass. Panic now flees only to points on the unit's own landmass (turning a quarter at a time, cowering when boxed in) and a trainee skips an unreachable rally; regressions in units.test.ts and combat.test.ts; `tools/harness/_failprobe.mjs <seed> <persA> <persB> <minutes>` tallies orderFailed by issuer. 12-seed 25 min ai soak: 882 failed orders down to 71. After a tribe's Hearth falls its settlers and troops keep getting attack-move orders to unreachable points (ai soak seed 1008 turtle v aggressive: about 1300 failed orders, each a full A* search, in the last 40 s; source likely the worship rally in worship.ts or combat chases). Find the issuer, add a reachability check, regression test (BACKLOG 0a soak).
 
 ## Parking lot (ideas, unranked)
-- Wild people tribe that can be Called (converted) for growth.
+- Wild people tribe that can be Called (converted) for growth. Covered: wild people spawn near every Hearth (generator) and the Call spell converts them (DESIGN section 9).
 - Tribe traits (small passive bonuses) as data. DONE (10/10/2026, stretch 2): balance.traits (Devout, Swift, Fertile, Stalwart), personality `trait`, a skirmish setup option (DESIGN section 14); traits.test.ts, session test, e2e.
-- Spell combos (Raise Land then Erode for a moat) highlighted by a hint system.
+- Spell combos (Raise Land then Erode for a moat) highlighted by a hint system. DONE (10/10/2026, stretch 2): `data/ui.json combos`, a one-time HUD tip per combo per match (orderNotes.ts comboHint, game.ts noteFor).
 - Photo mode. DONE (10/10/2026, stretch 2): F toggles it (DESIGN camera section); e2e covers HUD hidden, pause, the PNG download and the restored pause state.

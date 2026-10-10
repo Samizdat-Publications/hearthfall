@@ -32,6 +32,16 @@ export function orderNote(
 }
 
 /**
+ * Parking lot (stretch 2): a spell combo tip (ui.json combos) after the local player casts its first spell,
+ * when the follow-up spell is castable. The key is per combo, so with an endless throttle it shows once a match.
+ */
+export function comboHint(e: SimEvent, me: number, combos: readonly { after: string; then: string; text: string }[], castable: readonly string[]): OrderNote | null {
+  if (e.type !== "spellCast" || e.tribe !== me) return null;
+  const c = combos.find((x) => x.after === e.spell && castable.includes(x.then));
+  return c ? { key: `combo:${c.after}:${c.then}`, text: c.text, throttleSec: Infinity } : null;
+}
+
+/**
  * BACKLOG 36: a rival terrain spell with a lead-in (quake) is about to move land under the local
  * player's units: warn while there is still time to run.
  */

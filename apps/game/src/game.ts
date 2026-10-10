@@ -4,7 +4,7 @@
 // M8: the game flow (main menu, skirmish, pause, saves, settings, end screen) is a `screen` here; the
 // sim only runs while no menu screen is up. menuBridge.ts turns this state into the menu view model.
 // M9: campaign levels (data/levels) run as sessions too; the level runtime decides the end.
-import { leadInWarning, orderNote } from "./orderNotes.ts";
+import { comboHint, leadInWarning, orderNote } from "./orderNotes.ts";
 import type { SessionRole } from "./netGate.ts";
 import {
   validateUi,
@@ -1198,6 +1198,11 @@ export class Game {
     const me = this.localTribe;
     const rival = (t: unknown) => typeof t === "number" && t >= 0 && t !== me;
     switch (e.type) {
+      case "spellCast": {
+        const h = comboHint(e, me, this.ui.combos ?? [], this.castable());
+        if (h) this.notify(h.key, h.text, "info", h.throttleSec);
+        break;
+      }
       case "shaperDied":
         if (e.tribe === me)
           this.notify(
