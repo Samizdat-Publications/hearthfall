@@ -910,6 +910,26 @@
       "when": "2026-10-10T05:07:01.470Z",
       "source": "external:victory_setup.png",
       "bytes": 446196
+    },
+    {
+      "file": "b9/20261010-0522_campaign-route.png",
+      "milestone": "B9",
+      "kind": "screenshot",
+      "caption": "Stretch 2 block E: the campaign becomes a route map of seven levels; spells a Reliquary teaches now carry into later levels",
+      "highlight": false,
+      "when": "2026-10-10T05:22:40.959Z",
+      "source": "external:campaign_map.png",
+      "bytes": 467945
+    },
+    {
+      "file": "b89/20261010-0522_prayer-ring.png",
+      "milestone": "B89",
+      "kind": "screenshot",
+      "caption": "Worship readability: a ring around the Reliquary fills in the praying tribe's color, and the objective shows the prayer percent",
+      "highlight": false,
+      "when": "2026-10-10T05:22:45.340Z",
+      "source": "external:reliquary_prayer.png",
+      "bytes": 534615
     }
   ]
 }

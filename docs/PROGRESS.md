@@ -4,6 +4,7 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 
 ## Now
 Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when STOP exists). Plan: BACKLOG 14a look v3, polish, balance, rules and victory variants, campaign, boats and Skyloft, Forge, map editor (CLAUDE.md "Stretch 2").
+- S2 block E DONE (campaign part 1, ADR-015) at 376ee1d: BACKLOG 9 part (spells taught at a Reliquary carry as campaign `learned`), route map level select, levels 4 to 7 (Old Reliquary, Stone Totem, Many Mouths, Two Fires; bot win and idle loss scenarios each, levels tag 14), 84 golden replay with an embedded level, 85 e2e real level loss and campaign complete, 86 same-tick win beats loss, 89 prayer ring and HUD percent, no false mana warning. Making-of v9.
 - S2 block D DONE (rules, ADR-014) at 460fe89: BACKLOG 13 victory variants in the sim (RulesRuntime): conquest, Hold the Reliquaries (120 s), King of the Hill (240 s), Last Stand (20 min) in balance.victory; skirmish setup picker, HUD progress on the rivals line, AI contest action, soak --rules (12 seeds: 7 by hold, 11 by hill, 2 by last stand), 4 rules scenarios, e2e variant check. Old replays and saves keep their hashes (rules hashed only when set). Sim tickHz is 20.
 - S2 block C DONE (balance): 65 chant breakDamage 600 plus rooted against ranged knock, Warden and Chanter retune (triangle soak 6 v 10 probes 70, 60, 80 percent); 64/71 AI spells by value, turtle towers after half its economy (towerFromPopShare), turtle first wave minute 9 (24-seed ai soak aggressive 9, turtle 8, sneaky 6); 83 level maxTroops, Hold the Line rival cap 8 and second wave 6 (idle loses, turtle defender wins). Soaks ai-idle 12/12, difficulty PASS (easy 0, hard 0.44, brutal 0.75), bots PASS. Playtest-analyst not needed (targets met by probes). Soak minutes: ai-idle 25, difficulty 20 (defaults fail).
 - S2 block B DONE (polish): 45 order failed toast and red marker, 56 troop panel stance icons, build cost chips, rally flag, 81 menu title art, larger menu text, menus shot set (shot-menus qa layer), 36 quake lead-in (terrainOp leadInSeconds, FX.leadIn, edge, dust, warning toast). Full npm run qa PASS at 4c16b37 (about 03:35Z). Soak ai clean after 81 and 36.
@@ -23,9 +24,9 @@ Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when
 - M1 to M5 shipped details: PROGRESS_LOG (and ARCHITECTURE).
 
 ## Next 3 actions
-1. Block D exit DONE: full npm run qa PASS at 460fe89 plus menus re-approved (victory row), making-of b13 victory picker, page republished (v8).
-2. S2 block E campaign part 1 (ADR-015): carry spells taught at Reliquaries, level select map, worship ring (89), levels 4 to 7 with win and lose scenarios, golden replay with a level and site (84), e2e level loss and campaign complete (85, 86).
-3. Then F vehicles (ADR-016, Opus review after D and F), G Forge, H campaign 8 to 13, I map editor, J robustness.
+1. Block E exit: full npm run qa until PASS (levels and menus shots already re-approved).
+2. S2 block F vehicles (ADR-016): water nav layer, boat (carries 5) with embark and disembark commands, Boathouse, AI ferries on islands, Skyloft and balloon, cue SFX (92). Opus milestone-reviewer after D and F.
+3. Then G Forge, H campaign levels 8 to 13, I map editor, J robustness.
 
 ## Blocked
 (none)
