@@ -37,7 +37,7 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 22. [S] DONE (10/10/2026, ADR-020): `t(key, vars)` over flat tables in `data/strings/` (English base, `?lang=` picks one, `pseudo` pads and accents English); menus and the replay bar migrated (76 keys); strings guard; pseudo locale shots check that menu text fits. Follow-ups: migrate the HUD, editor, bridge texts, key names and data-driven names; a language setting once a second table exists.
 
 ## P4: tooling and QA
-23. [M] VisionQA move picker evaluation (VISIONQA section 7) over 16 seeds; keep or remove based on diversity metrics.
+23. [M] DONE (10/10/2026), not adopted: picker built (soak --picker, OpponentAI.setFocus), 16 seeds showed lower diversity (0.32 vs 0.368) and more stalemates (6 vs 4 of 16); results and reasons in VISIONQA section 7. Was: VisionQA move picker evaluation (VISIONQA section 7) over 16 seeds; keep or remove based on diversity metrics.
 24. [S] Nightly-style full soak (64 seeds) script with trend chart of balance metrics over commits. DONE (10/10/2026): `npm run soak:nightly` (ai 64 x 20 plus ai-idle, difficulty, economy, war), rows in `reports/history/soak.jsonl`, chart via `npm run trends`. Its first run found a real bug (seed 1047: a dwelling on sunken land bred settlers into deep water), fixed with scenario `eco_sunken_dwelling_does_not_breed_into_sea`.
 25. [S] Perf trend chart from bench history. DONE (10/10/2026): bench and bench:render append to `reports/history/`, drawn in the same `reports/latest/trends.svg`.
 26. [S] Asset re-generation tool for a single asset with a new prompt, with before/after sheet. DONE (S2): `tools/assets/regen.py` prepare, sheet, restore and selftest (docs/ASSETS.md section 4).

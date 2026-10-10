@@ -74,6 +74,17 @@ Purpose: make soak runs less predictable than scripted bots, cheaply. Off by def
 - Cost guard: a 30-minute match is 60 calls, roughly a cent or less. Disabled automatically when the daily budget is hit.
 - Value check before adopting widely: compare soak metrics (strategy diversity, stalemate rate) with and without the picker over 16 seeds. Keep it only if diversity improves.
 
+**As built and evaluated (BACKLOG 23, stretch 2).** The picker is text only (no minimap) and opt-in per soak: `node --env-file-if-exists=.env tools/harness/cli.mjs soak --mode ai --picker`. `tools/visionqa/picker.mjs` sends each opponent AI's situation every 30 game seconds with one choice over `PICKER_MOVES` (packages/ai/src/opponent.ts: build_army_lodge, build_defense, train_troops, raid_enemy, defend_hearth, claim_shrine, contest_site, cast_spells, scout, sabotage, hold). The answer does not command anything: `OpponentAI.setFocus` adds `ai.shared.focusBoost` (default 0.6) to that action's score for 30 s, so every other consideration still counts. Focus is saved with the AI state. Every ai soak now prints a `diversity:` line (mean pairwise Jensen-Shannon distance of each personality's action mix across matches, the unfinished share and the spread of end minutes), reported but never gated.
+
+Result over 16 seeds, 20 minutes, the same seeds both ways:
+
+| | action mix diversity | unfinished | end minute sd | waves sent (arrived) | cost |
+|---|---|---|---|---|---|
+| no picker | 0.368 | 4/16 | 2.73 | 84 (68) | 0 |
+| picker | 0.320 | 6/16 | 2.22 | 1,296 (218) | $0.036, 0 errors |
+
+Verdict: **not adopted.** Diversity went down, stalemates went up, and a raid_enemy focus makes the AI launch many tiny waves (the attack action re-fires each decision while boosted). The hook and the tool stay because they cost nothing when off and a better move set (or a boost applied to plan choices instead of single actions) can be re-evaluated with the same command. Default soaks and every real match never call the picker.
+
 ## 8. Rules
 
 - Never send anything but game screenshots and game state text to the API. No source code, no keys, no personal paths.
