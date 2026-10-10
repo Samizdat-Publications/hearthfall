@@ -76,6 +76,7 @@ const excused = (tribe, minute, pop) => {
 const minuteTicks = 60 * w.cfg.tickHz;
 const popByMinute = w.tribes.map((tr) => [w.economy.followers(tr.index)]);
 const violations = [];
+const castsDone = [];
 let maxStuck = 0;
 let partial = false;
 const t0 = performance.now();
@@ -86,7 +87,14 @@ for (let k = 0; k < ticks; k++) {
     break;
   }
   const v = w.invariants();
-  for (const e of w.events) if (e.type === "orderGaveUp" && e.reachable === 1 && !e.chase) v.push(`unit ${e.id & 0xffff} gave up ${e.dist} cells from a reachable goal`);
+  for (const e of w.events) {
+    if (e.type === "orderGaveUp" && e.reachable === 1 && !e.chase) v.push(`unit ${e.id & 0xffff} gave up ${e.dist} cells from a reachable goal`);
+    // BACKLOG 67: spells that actually went off, per tribe (the AI stats count casts it ordered)
+    else if (e.type === "spellCast" && e.by !== "site") {
+      const m = (castsDone[e.tribe] ??= {});
+      m[e.spell] = (m[e.spell] ?? 0) + 1;
+    }
+  }
   if (v.length) {
     violations.push(...v.slice(0, 5).map((s) => `tick ${w.tick}: ${s}`));
     break;
@@ -112,5 +120,5 @@ parentPort.postMessage({
   tick: w.tick,
   violations,
   metrics: { ticks: w.tick, avgTickMs: +(ms / Math.max(1, w.tick)).toFixed(3), drowned: ec("drowned"), orderFailed: ec("orderFailed"), orderGaveUp: ec("orderGaveUp"), moves: w.units.ordersIssued, maxStuckSec: +(maxStuck / w.cfg.tickHz).toFixed(1), units: w.count((i) => w.ents.cat[i] === 3), popByMinute, born: ec("born"), buildings: ec("buildingDone"), trained: ec("trained"), killed: ec("killed"), converted: ec("converted"), fireballs: ec("fireball"), eliminated: ec("tribeEliminated"), alive: w.tribes.filter((t) => t.alive).length },
-  ai: aiMode ? { ais: ais.map((a) => ({ tribe: a.tribe, type: a.spec.type, personality: a.spec.personality ?? null, difficulty: a.spec.difficulty ?? null, units: w.count((i) => w.ents.cat[i] === 3 && w.ents.tribe[i] === a.tribe), alive: w.tribes[a.tribe].alive, stats: a.bot.stats ?? null })), alive: w.rules && w.rules.winner >= 0 ? [w.rules.winner] : w.tribes.filter((t) => t.alive).map((t) => t.index), why: w.rules?.why || null, endMinute: +(w.tick / minuteTicks).toFixed(2), spellCast: ec("spellCast") } : null,
+  ai: aiMode ? { ais: ais.map((a) => ({ tribe: a.tribe, type: a.spec.type, personality: a.spec.personality ?? null, difficulty: a.spec.difficulty ?? null, units: w.count((i) => w.ents.cat[i] === 3 && w.ents.tribe[i] === a.tribe), alive: w.tribes[a.tribe].alive, stats: a.bot.stats ?? null, castsDone: castsDone[a.tribe] ?? {} })), alive: w.rules && w.rules.winner >= 0 ? [w.rules.winner] : w.tribes.filter((t) => t.alive).map((t) => t.index), why: w.rules?.why || null, endMinute: +(w.tick / minuteTicks).toFixed(2), spellCast: ec("spellCast") } : null,
 });

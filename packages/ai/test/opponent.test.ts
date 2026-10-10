@@ -120,6 +120,22 @@ describe("OpponentAI (M7)", () => {
     expect(run()).toEqual(run());
   }, 60000);
 
+  it("BACKLOG 67: stats count waves that reached their target, and saves keep the watched waves", () => {
+    const p = basePack();
+    const w = new World({ pack: p.files, packHash: p.hash, seed: 1004, map: { generator: "continents", size: 128, tribes: 2 } });
+    const bots = [makeBot({ type: "opponent", tribe: 0, personality: "sneaky", offset: 0 }), makeBot({ type: "opponent", tribe: 1, personality: "aggressive", offset: 1 })] as OpponentAI[];
+    w.controllers.push(...bots);
+    w.run(15 * 60 * 20);
+    const waves = bots.reduce((s, b) => s + b.stats.waves, 0);
+    const arrived = bots.reduce((s, b) => s + (b.stats.wavesArrived ?? 0), 0);
+    expect(arrived).toBeGreaterThan(0);
+    expect(arrived).toBeLessThanOrEqual(waves);
+    const st = bots[1].saveState();
+    const copy = new OpponentAI({ tribe: 1, personality: "aggressive" });
+    copy.loadState(JSON.parse(JSON.stringify(st)));
+    expect(copy.saveState()).toEqual(st);
+  }, 60000);
+
   it("with no walkable route to the enemy the Shaper raises land across the water", () => {
     const w = world({ generator: "flat", size: 64, tribes: 2 });
     w.spawnBuilding("hearth", 0, 12, 32);

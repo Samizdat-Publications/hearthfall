@@ -32,6 +32,8 @@ export interface OpponentState {
   ferried?: [number, number][];
   /** BACKLOG 98: [boat id, x, y] of a contested site a loaded boat carries its wave to (absent in older saves) */
   goals?: [number, number, number][];
+  /** BACKLOG 67: waves still watched for arrival (absent in older saves) */
+  waves?: { ids: number[]; x: number; y: number; until: number }[];
 }
 
 export interface OpponentOptions {
@@ -59,7 +61,12 @@ export interface OpponentStats {
   /** BACKLOG 10: loaded boats sent to unload on an enemy shore */
   ferries: number;
   scoutedAtTick: number;
+  /** BACKLOG 67: waves with a member alive within shared.threatRadius of their target within WAVE_WATCH_MINUTES (effects, not intents; absent in older saves) */
+  wavesArrived?: number;
 }
+
+/** BACKLOG 67: how long a sent wave is watched for arrival (a stats window, not a tuning number) */
+const WAVE_WATCH_MINUTES = 5;
 
 interface Census {
   w: World;
@@ -117,6 +124,8 @@ export class OpponentAI implements Controller {
   private known = new Set<number>();
   /** BACKLOG 10: boat id to the tick of its last boarding order (a boat is boarded at most once per FERRY_BACKOFF_SECONDS) */
   private ferried = new Map<number, number>();
+  /** BACKLOG 67: sent waves watched until a member reaches the target or the window ends */
+  private watched: { ids: number[]; x: number; y: number; until: number }[] = [];
   /** BACKLOG 98: boat id to the contested site its wave was boarded for (sail() lands it there, not at a Hearth) */
   private goals = new Map<number, [number, number]>();
   /** set once a wave found no walkable route: bridge spells join the prefs even if the personality lacks them */
@@ -224,10 +233,33 @@ export class OpponentAI implements Controller {
     c.idle.length = 0;
   }
 
+  /** BACKLOG 67: a watched wave counts as arrived once a living member is within threatRadius of its target. */
+  private watchWaves(w: World): void {
+    if (!this.watched.length) return;
+    const E = w.ents;
+    const n = w.terrain.size;
+    const r2 = this.sh.threatRadius * this.sh.threatRadius;
+    this.watched = this.watched.filter((v) => {
+      let alive = false;
+      for (const id of v.ids) {
+        const i = E.index(id);
+        if (i < 0) continue;
+        alive = true;
+        const dx = wrapDelta(E.x[i] - v.x, n);
+        const dy = wrapDelta(E.y[i] - v.y, n);
+        if (dx * dx + dy * dy <= r2) {
+          this.stats.wavesArrived = (this.stats.wavesArrived ?? 0) + 1;
+          return false;
+        }
+      }
+      return alive && w.tick < v.until;
+    });
+  }
+
   /** Save game memory: scouted tribes, the scout and the stats (decisions also gate the one-time setup). */
   saveState(): OpponentState {
     const st = this.stats;
-    return { known: [...this.known], scout: this.scout, stats: { ...st, actions: { ...st.actions }, casts: { ...st.casts } }, ferried: [...this.ferried], goals: [...this.goals].map(([b, g]) => [b, g[0], g[1]]) };
+    return { known: [...this.known], scout: this.scout, stats: { ...st, actions: { ...st.actions }, casts: { ...st.casts } }, ferried: [...this.ferried], goals: [...this.goals].map(([b, g]) => [b, g[0], g[1]]), waves: this.watched.map((v) => ({ ...v, ids: [...v.ids] })) };
   }
 
   loadState(state: unknown): void {
@@ -236,6 +268,7 @@ export class OpponentAI implements Controller {
     this.scout = o.scout;
     this.ferried = new Map(o.ferried ?? []);
     this.goals = new Map((o.goals ?? []).map(([b, x, y]) => [b, [x, y]]));
+    this.watched = (o.waves ?? []).map((v) => ({ ...v, ids: [...v.ids] }));
     Object.assign(this.stats, { ...o.stats, actions: { ...o.stats.actions }, casts: { ...o.stats.casts } });
   }
 
@@ -280,6 +313,7 @@ export class OpponentAI implements Controller {
     // BACKLOG 6: the difficulty's resource multiplier goes through the sim as a command (hashed, replayable)
     if (tr.eco.incomeMult !== this.resourceMult) out.push({ tick: w.tick, tribe: this.tribe, type: "handicap", args: { mult: this.resourceMult } });
     this.stats.decisions++;
+    this.watchWaves(w);
     // every decision: spells unlocked mid-match (worship sites) start charging too
     this.setup(w, out);
     const acts = this.actions.filter((a) => (a.id !== "worship" || w.worship.sites.length > 0) && (a.id !== "contest" || this.contested(w).length > 0) && (this.p.shades || !SHADE_ACTIONS.has(a.id)));
@@ -855,6 +889,7 @@ export class OpponentAI implements Controller {
     const eh = target[1];
     out.push(this.cmd(w, "move", { units: c.idle.map((i) => E.idOf(i)), to: [E.x[eh], E.y[eh]], attack: true }));
     this.stats.waves++;
+    this.watched.push({ ids: c.idle.map((i) => E.idOf(i)), x: E.x[eh], y: E.y[eh], until: w.tick + WAVE_WATCH_MINUTES * 60 * w.cfg.tickHz });
     // a healthy Shaper follows the wave and stops short of the Hearth, so her spells reach the fight
     if (c.si >= 0 && this.protectScore(c) === 0 && !w.tribes[this.tribe].pending) {
       const n = w.terrain.size;

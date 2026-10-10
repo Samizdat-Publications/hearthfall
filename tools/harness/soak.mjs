@@ -125,19 +125,24 @@ function aiSpecs(base, args, seeds, t0) {
 function aiReport(mode, results, minutes, idleGate) {
   const lines = [];
   const all = results.flatMap((r) => r.ai?.ais ?? []);
+  // BACKLOG 67: casts are spells that went off (spellCast events of the AI tribes), ordered counts the AI's cast orders
   const casts = {};
+  const ordered = {};
   let waves = 0;
+  let arrived = 0;
   let mixed = 0;
   let bridges = 0;
   for (const a of all) {
-    for (const [k, v] of Object.entries(a.stats?.casts ?? {})) casts[k] = (casts[k] ?? 0) + v;
+    for (const [k, v] of Object.entries(a.castsDone ?? {})) casts[k] = (casts[k] ?? 0) + v;
+    for (const [k, v] of Object.entries(a.stats?.casts ?? {})) ordered[k] = (ordered[k] ?? 0) + v;
     waves += a.stats?.waves ?? 0;
+    arrived += a.stats?.wavesArrived ?? 0;
     mixed += a.stats?.mixedWaves ?? 0;
     bridges += a.stats?.bridges ?? 0;
   }
   const spellTypes = Object.keys(casts).length;
-  const metrics = { casts, spellTypes, waves, mixedWaves: mixed, bridges };
-  lines.push(`ai: spells cast by type ${JSON.stringify(casts)} (${spellTypes} types), waves ${waves} (mixed ${mixed}), bridges ${bridges}`);
+  const metrics = { casts, ordered, spellTypes, waves, wavesArrived: arrived, mixedWaves: mixed, bridges };
+  lines.push(`ai: spells cast by type ${JSON.stringify(casts)} (${spellTypes} types; ordered ${Object.values(ordered).reduce((s, v) => s + v, 0)}), waves ${waves} (arrived ${arrived}, mixed ${mixed}), bridges ${bridges}`);
   const fails = [];
   if (mode !== "bots" && spellTypes < 3) fails.push(`only ${spellTypes} spell types cast`);
   if (mode !== "bots" && mixed < 1) fails.push("no mixed-troop wave");
