@@ -4,6 +4,7 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 
 ## Now
 Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when STOP exists). Plan: BACKLOG 14a look v3, polish, balance, rules and victory variants, campaign, boats and Skyloft, Forge, map editor (CLAUDE.md "Stretch 2").
+- S2 block B DONE (polish): 45 order failed toast and red marker, 56 troop panel stance icons, build cost chips, rally flag, 81 menu title art, larger menu text, menus shot set (shot-menus qa layer), 36 quake lead-in (terrainOp leadInSeconds, FX.leadIn, edge, dust, warning toast). Full npm run qa PASS at 4c16b37 (about 03:35Z). Soak ai clean after 81 and 36.
 - S2 block A DONE (look v3, ADR-013): 14a-1 tilt-shift post on by default, 14a-2 painted water, 14a-3 clumped trees by altitude, 14a-4 v3 thatched dwellings (alias) and snow and strata bands, 14 lighting presets (day, golden, evening) and visual rain. All shot sets re-approved, look set (12) in npm run qa, bench:render baseline re-saved at 3.7 ms (busy PC noise). Sonnet review: no blocker; minor fixes done, rest in BACKLOG 14a (14c).
 - Run 1 done 2026-10-09T23:58Z (about 26.5 h): m0-done to m11-done tagged, every P1 done or cut (5a, see Cuts); full npm run qa PASS at 5b2587a; its sentinel line is in PROGRESS_LOG.
 - Run started: 2026-10-08T21:25:00Z
@@ -25,9 +26,9 @@ Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when
 - M1 to M5 shipped details: PROGRESS_LOG (and ARCHITECTURE).
 
 ## Next 3 actions
-1. S2 block B polish: BACKLOG 45 (order failed toast and marker), 56 (troop panel stance icons and wood costs), 81 (menu title art, bigger text at 720p), 36 (drowning lead-in).
-2. Full npm run qa at least every 4 hours (last PASS at 5b2587a, about 23:50Z; next by about 04:00Z).
-3. Re-run the full soak and shot sets every 3 backlog items (last after 6 and 8).
+1. S2 block C balance: BACKLOG 65 (chant breaks on accumulated damage, ranged interrupt chance, matchup probes), then 64/71 (turtle towers later, castScore by matchup), then 83 (Hold the Line rival cap). Playtest-analyst at most 2 passes.
+2. Full npm run qa at least every 4 hours (last PASS at 4c16b37, about 03:35Z; next by about 07:30Z).
+3. Soaks (economy, ai, ai-idle, bots, difficulty) after every balance change and every 3 items.
 
 ## Blocked
 (none)
