@@ -1,0 +1,32 @@
+{
+  "id": "ai_bridges_strait",
+  "description": "BACKLOG 68: an aggressive opponent whose rival sits across a strait, with no boat and no way to build one, raises land across the water with its Raise Land charges and walks its wave over the ridge to the rival Hearth (the bridge path outside its unit test).",
+  "tags": ["fast", "ai", "terrain"],
+  "seed": 168,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2,
+    "paint": [
+      { "shape": "rect", "at": [32, 32], "size": [10, 64], "aboveSea": -30 },
+      { "shape": "rect", "at": [0, 32], "size": [10, 64], "aboveSea": -30 }
+    ]
+  },
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [52, 32] },
+    { "spawn": "shaper", "tribe": 0, "at": [54, 36] },
+    { "spawn": "hearth", "tribe": 1, "at": [12, 32] },
+    { "spawn": "shaper", "tribe": 1, "at": [14, 36] },
+    { "spawn": "warden", "tribe": 1, "near": [18, 30], "count": 6 }
+  ],
+  "bots": [{ "type": "opponent", "tribe": 1, "personality": "aggressive", "difficulty": "normal" }],
+  "commands": [
+    { "tick": 0, "tribe": 0, "type": "setPriorities", "args": { "build": 0, "upgrade": 0, "breed": 0 } },
+    { "tick": 0, "tribe": -1, "type": "grantCharges", "args": { "tribe": 1, "spell": "raise_land", "n": 3 } }
+  ],
+  "runTicks": 9000,
+  "assert": [
+    { "at": 9000, "expr": "events.count('spellCast') >= 1 && events.count('boarded') == 0" },
+    { "at": 9000, "expr": "count(tribe1.wardens, near([52, 32], 12)) >= 3 && invariants() == 0" }
+  ]
+}
