@@ -1,5 +1,6 @@
 // Economy (M4): settler autonomy (system step 3), construction, dwellings and breeding, trees,
 // mana income and sinks (step 8). All numbers come from the data pack; see DESIGN sections 5, 6, 8.
+import { GEN_DEFAULTS } from "@hearthfall/data";
 import { CAT, NO_ENTITY, type EntityId } from "./entities.ts";
 import { secondsToTicks } from "./config.ts";
 import { cos, sin, TWO_PI } from "./dmath.ts";
@@ -929,7 +930,7 @@ export class EconomySystem {
         const a = w.rng.float("spawn") * TWO_PI;
         const x = (((E.x[k] + cos(a) * 2.2) % n) + n) % n;
         const y = (((E.y[k] + sin(a) * 2.2) % n) + n) % n;
-        if (w.terrain.heightAt(x, y) < w.terrain.sea + 4 || w.terrain.slope(Math.round(x), Math.round(y)) > w.cfg.pack.terrain.trees.maxSlope || w.terrain.scarAt(x, y) > 0) continue;
+        if (w.terrain.heightAt(x, y) < w.terrain.sea + (w.cfg.pack.terrain.gen ?? GEN_DEFAULTS).treeMinAboveSea || w.terrain.slope(Math.round(x), Math.round(y)) > w.cfg.pack.terrain.trees.maxSlope || w.terrain.scarAt(x, y) > 0) continue;
         let crowded = false;
         for (let j = 0; j < E.hi && !crowded; j++) {
           if (!E.alive[j] || (E.cat[j] !== CAT.tree && E.cat[j] !== CAT.building)) continue;

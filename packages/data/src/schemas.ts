@@ -1020,8 +1020,78 @@ export const TerrainFileSchema = z.strictObject({
     })
     .optional(),
   maxRerolls: z.number().int().min(0).max(100),
+  /** BACKLOG 34: generator constants. Optional so frozen golden packs keep their hash; code defaults = GEN_DEFAULTS. */
+  gen: z
+    .strictObject({
+      ...comment,
+      /** generated sea stays at or below sea - shoreGap, generated land starts at sea + shoreGap */
+      shoreGap: z.number().int().min(0),
+      /** trees, rocks and tree regrowth need at least this height above sea */
+      treeMinAboveSea: z.number().int().min(0),
+      /** multiplies the clustered tree density from densityByBand */
+      treeDensityScale: pos,
+      /** a tree sits at cell + jitterMin + random * jitterSpan on each axis */
+      treeJitterMin: z.number().min(0).max(1),
+      treeJitterSpan: z.number().min(0).max(1),
+      /** random placement attempts per wild person or rock */
+      placeTries: z.number().int().positive(),
+      /** Hearth site candidates are tested every this many vertices */
+      hearthCandidateStride: z.number().int().positive(),
+      /** rocks keep this far from each other, and Hearths clear this much past the tree clear radius */
+      rockSpacing: pos,
+      rockHearthExtra: z.number().min(0),
+    })
+    .optional(),
+  /** BACKLOG 34: terrain op shapes. Optional like gen; code defaults = TERRAIN_OPS_DEFAULTS. */
+  ops: z
+    .strictObject({
+      ...comment,
+      /** a footprint is buildable only at or above sea + buildableAboveSea */
+      buildableAboveSea: z.number().int().min(0),
+      /** erosion never sinks land below sea - drownDepth * erodeFloorDrownDepths */
+      erodeFloorDrownDepths: pos,
+      /** flattenToAverage: the inner share of the disc is level, the rest blends back */
+      flattenPlateau: z.number().min(0).max(0.99),
+      /** ridgeLine: cells beyond the half width taper to sea over this many cells */
+      ridgeTaper: pos,
+      /** crater cone: inside craterVentRadius (share of radius) the summit drops by craterVentDepth * height */
+      craterVentRadius: z.number().positive().max(1),
+      craterVentDepth: z.number().min(0).max(1),
+      /** noiseScar: depth * (scarBase + scarNoise * n), plus scarCrack where n > scarCrackAbove */
+      scarCrackAbove: z.number().min(0).max(1),
+      scarCrack: z.number().min(0),
+      scarBase: z.number().min(0),
+      scarNoise: z.number().min(0),
+    })
+    .optional(),
 });
 export type TerrainFile = z.infer<typeof TerrainFileSchema>;
+export type TerrainGen = NonNullable<TerrainFile["gen"]>;
+export type TerrainOps = NonNullable<TerrainFile["ops"]>;
+/** BACKLOG 34: the literals these blocks replaced (packs without them generate and edit exactly as before). */
+export const GEN_DEFAULTS: TerrainGen = {
+  shoreGap: 2,
+  treeMinAboveSea: 4,
+  treeDensityScale: 4,
+  treeJitterMin: 0.2,
+  treeJitterSpan: 0.6,
+  placeTries: 24,
+  hearthCandidateStride: 2,
+  rockSpacing: 3,
+  rockHearthExtra: 3,
+};
+export const TERRAIN_OPS_DEFAULTS: TerrainOps = {
+  buildableAboveSea: 2,
+  erodeFloorDrownDepths: 2,
+  flattenPlateau: 0.75,
+  ridgeTaper: 1.5,
+  craterVentRadius: 0.15,
+  craterVentDepth: 0.25,
+  scarCrackAbove: 0.85,
+  scarCrack: 0.8,
+  scarBase: 0.4,
+  scarNoise: 0.6,
+};
 
 // ---------------------------------------------------------------- manifest.json
 export const ManifestSchema = z.strictObject({

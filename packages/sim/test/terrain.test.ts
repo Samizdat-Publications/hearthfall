@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { wrap, wrapDelta } from "../src/terrain.ts";
-import { flatTerrain } from "./helpers.ts";
+import { GEN_DEFAULTS, TERRAIN_OPS_DEFAULTS, type TerrainGen, type TerrainOps } from "@hearthfall/data";
+import { makeConfig } from "../src/config.ts";
+import { generateMap } from "../src/generator.ts";
+import { Terrain, wrap, wrapDelta } from "../src/terrain.ts";
+import { basePack, flatTerrain } from "./helpers.ts";
 
 const S = 32;
 
@@ -236,5 +239,46 @@ describe("every op is seam invariant", () => {
     expect(q.get(S - 2, S - 1)).toBeLessThan(300);
     expect(q.get(2, 1)).toBeLessThan(300);
     expect(q.get(S - 6, 0)).toBe(300);
+  });
+});
+
+describe("BACKLOG 34: terrain and generator constants are data", () => {
+  it("the shipped blocks equal the old literals, so packs without them behave the same", () => {
+    const tf = basePack().files.terrain;
+    expect(tf.gen).toEqual({ $comment: tf.gen?.$comment, ...GEN_DEFAULTS });
+    expect(tf.ops).toEqual({ $comment: tf.ops?.$comment, ...TERRAIN_OPS_DEFAULTS });
+    expect(flatTerrain().ops).toBe(TERRAIN_OPS_DEFAULTS);
+  });
+
+  it("op knobs steer the ops: ridge taper and buildable height", () => {
+    const mk = (ops: Partial<TerrainOps>) => {
+      const t = new Terrain({ size: 32, seaLevel: 120, heightMax: 1023, drownDepth: 8, maxWalkSlope: 20, maxBuildSlope: 6, ops: { ...TERRAIN_OPS_DEFAULTS, ...ops } });
+      t.heights.fill(100);
+      return t;
+    };
+    const raised = (t: Terrain) => Array.from(t.heights).filter((h) => h > 100).length;
+    const a = mk({});
+    const b = mk({ ridgeTaper: 4 });
+    a.ridgeLine(8, 16, 24, 16, 2, 10);
+    b.ridgeLine(8, 16, 24, 16, 2, 10);
+    expect(raised(b)).toBeGreaterThan(raised(a));
+    const c = mk({ buildableAboveSea: 2 });
+    const d = mk({ buildableAboveSea: 30 });
+    c.heights.fill(130);
+    d.heights.fill(130);
+    expect(c.buildable(4, 4, 2, 2, 4)).toBe(true);
+    expect(d.buildable(4, 4, 2, 2, 4)).toBe(false);
+  });
+
+  it("generator knobs steer the map: a higher tree line plants fewer trees", () => {
+    const p = basePack();
+    const gen = (g: Partial<TerrainGen>) => {
+      const pack = { ...p.files, terrain: { ...p.files.terrain, gen: { ...GEN_DEFAULTS, ...g } } };
+      return generateMap(makeConfig(pack, p.hash), { generator: "continents", size: 128, tribes: 2 }, 7);
+    };
+    const base = gen({});
+    const high = gen({ treeMinAboveSea: 40 });
+    expect(base.trees.length).toBeGreaterThan(0);
+    expect(high.trees.length).toBeLessThan(base.trees.length);
   });
 });

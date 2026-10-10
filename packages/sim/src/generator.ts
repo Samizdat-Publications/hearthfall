@@ -1,6 +1,7 @@
 // Procedural planet generator: seeded tileable fbm heights, Hearth sites on one connected walkable
 // landmass (DESIGN section 11), trees by height band and clusters, wild people near each Hearth.
 // Also the tiny handmade test maps used by scenarios (flat, flat_with_channel).
+import { GEN_DEFAULTS } from "@hearthfall/data";
 import type { SimConfig } from "./config.ts";
 import { bandOf } from "./config.ts";
 import { cos, sin, TWO_PI } from "./dmath.ts";
@@ -70,7 +71,7 @@ export interface GeneratedMap {
 }
 
 function newTerrain(cfg: SimConfig, size: number): Terrain {
-  return new Terrain({ size, seaLevel: cfg.sea, heightMax: cfg.heightMax, drownDepth: cfg.drownDepth, maxWalkSlope: cfg.maxWalkSlope, maxBuildSlope: cfg.maxBuildSlope });
+  return new Terrain({ size, seaLevel: cfg.sea, heightMax: cfg.heightMax, drownDepth: cfg.drownDepth, maxWalkSlope: cfg.maxWalkSlope, maxBuildSlope: cfg.maxBuildSlope, ops: cfg.pack.terrain.ops });
 }
 
 function testMap(cfg: SimConfig, spec: MapSpec): GeneratedMap {
@@ -145,6 +146,8 @@ export function generateMap(cfg: SimConfig, spec: MapSpec, seed: number): Genera
   const preset = cfg.pack.terrain.presets.find((p) => p.id === spec.generator);
   if (!preset) return testMap(cfg, spec);
   const tf = cfg.pack.terrain;
+  const g = tf.gen ?? GEN_DEFAULTS;
+  const treeMin = cfg.sea + g.treeMinAboveSea;
   const [genMin, genMax] = cfg.pack.balance.terrain.generatorRange;
   const n = spec.size;
   const tribes = spec.tribes ?? 2;
@@ -178,12 +181,12 @@ export function generateMap(cfg: SimConfig, spec: MapSpec, seed: number): Genera
       const f = v[i];
       if (f < thr) {
         above[i] = -1;
-        t.heights[i] = Math.round(genMin + (cfg.sea - 2 - genMin) * (f / thr));
+        t.heights[i] = Math.round(genMin + (cfg.sea - g.shoreGap - genMin) * (f / thr));
         continue;
       }
       const u = (f - thr) / span;
       const curved = u * (1 - preset.peakiness) + u * u * preset.peakiness;
-      above[i] = (genMax - cfg.sea - 2) * curved;
+      above[i] = (genMax - cfg.sea - g.shoreGap) * curved;
       landN++;
     }
     // BACKLOG 0a terraced plateaus: each step level for its lower share, then a linear ramp; the level share
@@ -202,7 +205,7 @@ export function generateMap(cfg: SimConfig, spec: MapSpec, seed: number): Genera
           const g = a / tc.step - q;
           a = (q + (g < flat ? 0 : (g - flat) / (1 - flat))) * tc.step;
         }
-        t.heights[i] = Math.round(cfg.sea + 2 + a);
+        t.heights[i] = Math.round(cfg.sea + g.shoreGap + a);
       }
     }
     // 2. Hearth sites on the largest walkable component, spread by farthest-point sampling
@@ -210,8 +213,8 @@ export function generateMap(cfg: SimConfig, spec: MapSpec, seed: number): Genera
     const hp = tf.hearth;
     const r = Math.ceil(hp.flatRadius);
     const cands: number[] = [];
-    for (let y = 0; y < n; y += 2) {
-      for (let x = 0; x < n; x += 2) {
+    for (let y = 0; y < n; y += g.hearthCandidateStride) {
+      for (let x = 0; x < n; x += g.hearthCandidateStride) {
         const i = x + y * n;
         if (comp.labels[i] !== comp.largest || t.heights[i] < cfg.sea + hp.minHeightAboveSea) continue;
         let lo = 1e9;
@@ -274,17 +277,17 @@ export function generateMap(cfg: SimConfig, spec: MapSpec, seed: number): Genera
     for (let y = 0; y < n; y++) {
       for (let x = 0; x < n; x++) {
         const h = t.get(x, y);
-        if (h < cfg.sea + 4 || t.slope(x, y) > tf.trees.maxSlope) continue;
+        if (h < treeMin || t.slope(x, y) > tf.trees.maxSlope) continue;
         const cluster = valueNoise((x / n) * tf.trees.clusterPeriod, (y / n) * tf.trees.clusterPeriod, tf.trees.clusterPeriod, s ^ 0x5bd1e995);
         const band = tf.trees.densityByBand[bandOf(cfg, h)];
         const ring = band > 0 ? groveAt(x, y) : 0;
         if (cluster < tf.trees.clusterThreshold && ring === 0) continue;
-        const dens = Math.max(ring, cluster < tf.trees.clusterThreshold ? 0 : band * (cluster - tf.trees.clusterThreshold) / (1 - tf.trees.clusterThreshold) * 4);
+        const dens = Math.max(ring, cluster < tf.trees.clusterThreshold ? 0 : band * (cluster - tf.trees.clusterThreshold) / (1 - tf.trees.clusterThreshold) * g.treeDensityScale);
         if (!rng.chance("gen", dens)) continue;
         if (hearths.some((hh) => torusDist2(n, x, y, hh.x, hh.y) < clear2)) continue;
-        const tx = wrap(x + 0.2 + rng.float("gen") * 0.6, n);
-        const ty = wrap(y + 0.2 + rng.float("gen") * 0.6, n);
-        if (t.heightAt(tx, ty) < cfg.sea + 4) continue;
+        const tx = wrap(x + g.treeJitterMin + rng.float("gen") * g.treeJitterSpan, n);
+        const ty = wrap(y + g.treeJitterMin + rng.float("gen") * g.treeJitterSpan, n);
+        if (t.heightAt(tx, ty) < treeMin) continue;
         trees.push({ x: tx, y: ty });
       }
     }
@@ -301,7 +304,7 @@ export function generateMap(cfg: SimConfig, spec: MapSpec, seed: number): Genera
     hearths.forEach((h, ti) => {
       const count = wMin + rng.int("gen", wMax - wMin + 1);
       for (let k = 0; k < count; k++) {
-        for (let tryN = 0; tryN < 24; tryN++) {
+        for (let tryN = 0; tryN < g.placeTries; tryN++) {
           const a = rng.float("gen") * TWO_PI;
           const d = dMin + rng.float("gen") * (dMax - dMin);
           const x = wrap(h.x + cos(a) * d, n);
@@ -319,17 +322,18 @@ export function generateMap(cfg: SimConfig, spec: MapSpec, seed: number): Genera
     const rocks: { x: number; y: number }[] = [];
     const rk = tf.rocks;
     if (rk) {
-      const clearH = tf.trees.clearRadiusAroundHearth + 3;
+      const clearH = tf.trees.clearRadiusAroundHearth + g.rockHearthExtra;
+      const space2 = g.rockSpacing * g.rockSpacing;
       const fits = (x: number, y: number, comp: number) =>
-        t.get(x, y) >= cfg.sea + 4 &&
+        t.get(x, y) >= treeMin &&
         t.slope(x, y) <= tf.trees.maxSlope &&
         (comp < 0 ? finalComp.labels[t.idx(x, y)] > 0 : finalComp.labels[t.idx(x, y)] === comp) &&
         !hearths.some((hh) => torusDist2(n, x, y, hh.x, hh.y) < clearH * clearH) &&
-        !rocks.some((o) => torusDist2(n, x, y, o.x, o.y) < 9);
+        !rocks.some((o) => torusDist2(n, x, y, o.x, o.y) < space2);
       const [rMin, rMax] = rk.distance;
       for (const h of hearths) {
         for (let k = 0; k < rk.perHearth; k++) {
-          for (let tryN = 0; tryN < 24; tryN++) {
+          for (let tryN = 0; tryN < g.placeTries; tryN++) {
             const a = ((k + rng.float("gen")) / rk.perHearth) * TWO_PI;
             const d = rMin + rng.float("gen") * (rMax - rMin);
             const x = Math.round(wrap(h.x + cos(a) * d, n)) % n;
@@ -342,7 +346,7 @@ export function generateMap(cfg: SimConfig, spec: MapSpec, seed: number): Genera
       }
       const scatter = Math.round((landN * rk.scatterPerThousandLand) / 1000);
       for (let k = 0; k < scatter; k++) {
-        for (let tryN = 0; tryN < 24; tryN++) {
+        for (let tryN = 0; tryN < g.placeTries; tryN++) {
           const x = rng.int("gen", n);
           const y = rng.int("gen", n);
           if (!fits(x, y, -1)) continue;

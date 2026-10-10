@@ -69,5 +69,30 @@
     "scatterPerThousandLand": 1.2,
     "clearTreesRadius": 1.5
   },
-  "maxRerolls": 12
+  "maxRerolls": 12,
+  "gen": {
+    "$comment": "BACKLOG 34: generator constants (were code literals). shoreGap: generated sea stays at or below sea - gap and land starts at sea + gap. treeMinAboveSea also gates rocks and tree regrowth.",
+    "shoreGap": 2,
+    "treeMinAboveSea": 4,
+    "treeDensityScale": 4,
+    "treeJitterMin": 0.2,
+    "treeJitterSpan": 0.6,
+    "placeTries": 24,
+    "hearthCandidateStride": 2,
+    "rockSpacing": 3,
+    "rockHearthExtra": 3
+  },
+  "ops": {
+    "$comment": "BACKLOG 34: terrain op shapes (were code literals); spell sizes stay in spells.json.",
+    "buildableAboveSea": 2,
+    "erodeFloorDrownDepths": 2,
+    "flattenPlateau": 0.75,
+    "ridgeTaper": 1.5,
+    "craterVentRadius": 0.15,
+    "craterVentDepth": 0.25,
+    "scarCrackAbove": 0.85,
+    "scarCrack": 0.8,
+    "scarBase": 0.4,
+    "scarNoise": 0.6
+  }
 }

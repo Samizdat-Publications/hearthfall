@@ -1,6 +1,7 @@
 // Torus heightmap: integer heights at integer vertex coordinates, wrapping on both axes. Every edit
 // is one of the ops below, records a dirty rectangle (renderer remesh, path invalidation) and bumps
 // `version`. One cell is one world unit across; heights are in height units (balance.json).
+import { TERRAIN_OPS_DEFAULTS, type TerrainOps } from "@hearthfall/data";
 import { hash2 } from "./rng.ts";
 
 /** Dirty rectangle: (x, y) is the wrapped start, w and h never exceed the map size. */
@@ -26,6 +27,8 @@ export interface TerrainParams {
   drownDepth: number;
   maxWalkSlope: number;
   maxBuildSlope: number;
+  /** BACKLOG 34: terrain op shapes (terrain.json ops); missing means TERRAIN_OPS_DEFAULTS */
+  ops?: TerrainOps;
 }
 
 export function wrap(i: number, n: number): number {
@@ -64,6 +67,7 @@ export class Terrain {
   readonly sea: number;
   readonly heightMax: number;
   readonly drownDepth: number;
+  readonly ops: TerrainOps;
   readonly maxWalkSlope: number;
   readonly maxBuildSlope: number;
   readonly heights: Int16Array;
@@ -82,6 +86,7 @@ export class Terrain {
     this.drownDepth = p.drownDepth;
     this.maxWalkSlope = p.maxWalkSlope;
     this.maxBuildSlope = p.maxBuildSlope;
+    this.ops = p.ops ?? TERRAIN_OPS_DEFAULTS;
     const n = p.size * p.size;
     this.heights = heights ? new Int16Array(heights) : new Int16Array(n);
     this.scar = scar ? new Uint16Array(scar) : new Uint16Array(n);
@@ -140,7 +145,7 @@ export class Terrain {
       for (let i = 0; i <= w; i++) {
         const k = this.idx(x + i, y + j);
         const v = this.heights[k];
-        if (v < this.sea + 2 || this.scar[k] > 0) return false;
+        if (v < this.sea + this.ops.buildableAboveSea || this.scar[k] > 0) return false;
         lo = Math.min(lo, v);
         hi = Math.max(hi, v);
       }
@@ -259,9 +264,10 @@ export class Terrain {
     this.version--;
     // (measurement pass above must not count as an edit)
     const target = Math.max(n ? Math.round(sum / n) : this.sea, this.sea + minAboveSea);
+    const p = this.ops.flattenPlateau;
     this.disc(cx, cy, r, (i, t) => {
       const h = this.heights[i];
-      this.put(i, t <= 0.75 ? target : Math.round(h + (target - h) * ((1 - t) / 0.25)));
+      this.put(i, t <= p ? target : Math.round(h + (target - h) * ((1 - t) / (1 - p))));
     });
     return target;
   }
@@ -296,23 +302,26 @@ export class Terrain {
   }
 
   crater(cx: number, cy: number, r: number, height: number, shape: "cone" | "bowl"): void {
+    const vr = this.ops.craterVentRadius;
+    const vd = this.ops.craterVentDepth;
     this.disc(cx, cy, r, (i, t) => {
       let add: number;
       if (shape === "cone") {
         add = height * (1 - t);
-        if (t < 0.15) add -= height * 0.25 * (1 - t / 0.15);
+        if (t < vr) add -= height * vd * (1 - t / vr);
       } else add = -height * (1 - t * t);
       this.put(i, this.heights[i] + Math.round(add));
     });
   }
 
-  /** Raise a land ridge along a segment to at least sea + aboveSea, tapering over 1.5 cells. */
+  /** Raise a land ridge along a segment to at least sea + aboveSea, tapering over ops.ridgeTaper cells. */
   ridgeLine(ax: number, ay: number, bx: number, by: number, width: number, aboveSea: number): void {
     const dx = wrapDelta(bx - ax, this.size);
     const dy = wrapDelta(by - ay, this.size);
     const len2 = dx * dx + dy * dy;
     const half = width / 2;
-    const reach = half + 1.5;
+    const taper = this.ops.ridgeTaper;
+    const reach = half + taper;
     const x0 = Math.floor(Math.min(ax, ax + dx) - reach);
     const x1 = Math.ceil(Math.max(ax, ax + dx) + reach);
     const y0 = Math.floor(Math.min(ay, ay + dy) - reach);
@@ -327,7 +336,7 @@ export class Terrain {
         const qy = py - u * dy;
         const d = Math.sqrt(qx * qx + qy * qy);
         if (d > reach) continue;
-        const f = d <= half ? 1 : 1 - (d - half) / 1.5;
+        const f = d <= half ? 1 : 1 - (d - half) / taper;
         const target = this.sea + Math.round(aboveSea * f);
         const k = this.idx(x, y);
         if (this.heights[k] < target) this.put(k, target);
@@ -338,16 +347,17 @@ export class Terrain {
 
   /** Quake: uneven lowering with deep cracks, noise from a per-cast seed. */
   noiseScar(cx: number, cy: number, r: number, depth: number, seed: number): void {
+    const o = this.ops;
     this.disc(cx, cy, r, (i, t) => {
       const n = hash2(i % this.size, Math.floor(i / this.size), seed) / 4294967296;
-      const crack = n > 0.85 ? 0.8 : 0;
-      this.put(i, this.heights[i] - Math.round(depth * (1 - t * t) * (0.4 + 0.6 * n + crack)));
+      const crack = n > o.scarCrackAbove ? o.scarCrack : 0;
+      this.put(i, this.heights[i] - Math.round(depth * (1 - t * t) * (o.scarBase + o.scarNoise * n + crack)));
     });
   }
 
   /** Erosion step: sink land toward drowning depth, never below it. */
   lowerTowardSea(cx: number, cy: number, r: number, amount: number): void {
-    const floor = this.sea - this.drownDepth * 2;
+    const floor = this.sea - this.drownDepth * this.ops.erodeFloorDrownDepths;
     this.disc(cx, cy, r, (i, t) => {
       const h = this.heights[i];
       if (h > floor) this.put(i, Math.max(floor, h - Math.round(amount * (1 - t * t))));

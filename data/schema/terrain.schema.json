@@ -264,6 +264,134 @@
       "type": "integer",
       "minimum": 0,
       "maximum": 100
+    },
+    "gen": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "shoreGap": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "treeMinAboveSea": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "treeDensityScale": {
+          "type": "number",
+          "minimum": 0
+        },
+        "treeJitterMin": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "treeJitterSpan": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "placeTries": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "hearthCandidateStride": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "rockSpacing": {
+          "type": "number",
+          "minimum": 0
+        },
+        "rockHearthExtra": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "shoreGap",
+        "treeMinAboveSea",
+        "treeDensityScale",
+        "treeJitterMin",
+        "treeJitterSpan",
+        "placeTries",
+        "hearthCandidateStride",
+        "rockSpacing",
+        "rockHearthExtra"
+      ],
+      "additionalProperties": false
+    },
+    "ops": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "buildableAboveSea": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "erodeFloorDrownDepths": {
+          "type": "number",
+          "minimum": 0
+        },
+        "flattenPlateau": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.99
+        },
+        "ridgeTaper": {
+          "type": "number",
+          "minimum": 0
+        },
+        "craterVentRadius": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1
+        },
+        "craterVentDepth": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "scarCrackAbove": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "scarCrack": {
+          "type": "number",
+          "minimum": 0
+        },
+        "scarBase": {
+          "type": "number",
+          "minimum": 0
+        },
+        "scarNoise": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "buildableAboveSea",
+        "erodeFloorDrownDepths",
+        "flattenPlateau",
+        "ridgeTaper",
+        "craterVentRadius",
+        "craterVentDepth",
+        "scarCrackAbove",
+        "scarCrack",
+        "scarBase",
+        "scarNoise"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [
