@@ -13,6 +13,7 @@ import { drawnViewKey, viewKey, viewOutline } from "./minimap.ts";
 import type { CameraState } from "@hearthfall/render";
 import { validateLevel, validatePack, type LevelDef } from "@hearthfall/data";
 import { makeBot } from "@hearthfall/ai";
+import { debugApiAllowed } from "./netGate.ts";
 import { commandsByTick, createLevelWorld, createScenarioWorld, type CampaignCarry, type ScenarioDef } from "@hearthfall/sim";
 
 const canvas = document.getElementById("view") as HTMLCanvasElement;
@@ -156,7 +157,7 @@ function frame(now: number) {
 }
 requestAnimationFrame(frame);
 
-if (__DEBUG_API__ || game.params.debug) {
+if (debugApiAllowed(__DEBUG_API__, !!game.params.debug, game.role)) {
   (window as unknown as { __game: unknown }).__game = {
     frames: () => game.renderer.frames,
     /** e2e (M11 review): make every frame throw, to check the loop stops with the fatal panel */

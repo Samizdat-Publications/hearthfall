@@ -5,6 +5,7 @@
 // sim only runs while no menu screen is up. menuBridge.ts turns this state into the menu view model.
 // M9: campaign levels (data/levels) run as sessions too; the level runtime decides the end.
 import { leadInWarning, orderNote } from "./orderNotes.ts";
+import type { SessionRole } from "./netGate.ts";
 import {
   validateUi,
   type UiFile,
@@ -324,6 +325,8 @@ export class Game {
   world!: World;
   readonly renderer: ThreeRenderer;
   params: GameParams;
+  /** BACKLOG 46: every session hosts until network play exists; a peer gets no debug hook */
+  readonly role: SessionRole = "host";
   paused: boolean;
   private queue: Command[] = [];
   private scenarioCmds: ((tick: number) => Command[]) | null = null;

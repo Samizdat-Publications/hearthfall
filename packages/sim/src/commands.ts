@@ -27,6 +27,19 @@ export function registerCommand(type: string, h: CommandHandler): void {
   COMMANDS.set(type, h);
 }
 
+/**
+ * BACKLOG 46: the ingress rule for commands that arrive from a network peer (BACKLOG 15 lockstep). The sim
+ * trusts tribe -1 (god mode: debug tools, scenarios, level scripts) and skips ownership checks for it in
+ * move, stop and impulse, so only the host may issue it; a peer commands its own tribe and nothing else.
+ * Returns why the command is refused, or null. Local play, replays and scenarios never pass through it.
+ */
+export function peerCommandRefusal(c: { tribe: number; type: string }, peerTribe: number): string | null {
+  if (c.tribe < 0) return "god-mode commands (tribe -1) are host only";
+  if (c.tribe !== peerTribe) return `a peer commands only its own tribe (${peerTribe}), not ${c.tribe}`;
+  if (!COMMANDS.has(c.type)) return `unknown command ${c.type}`;
+  return null;
+}
+
 const finite = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v);
 
 const TERRAIN_OP_FIELDS: Record<string, string[]> = {

@@ -6,7 +6,7 @@ export { CAT, Entities, NO_ENTITY, type EntityId } from "./entities.ts";
 export { Terrain, wrap, wrapDelta, DIRTY_KEEP, type Rect, type DirtyRect, type TerrainOpSpec } from "./terrain.ts";
 export { generateMap, walkableComponents, type MapSpec, type GeneratedMap, type PaintSpec } from "./generator.ts";
 export { makeConfig, bandOf, secondsToTicks, type SimConfig, type BandName } from "./config.ts";
-export { COMMANDS, registerCommand, type Command, type CommandHandler } from "./commands.ts";
+export { COMMANDS, peerCommandRefusal, registerCommand, type Command, type CommandHandler } from "./commands.ts";
 export { NAV, ORDER, UnitSystem } from "./units.ts";
 export { VehicleSystem } from "./vehicles.ts";
 export { BSTATE, TASK, EconomySystem, type TribeEco } from "./economy.ts";
