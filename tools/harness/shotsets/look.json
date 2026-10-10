@@ -1,0 +1,164 @@
+{
+ "$comment": "Look comparisons (BACKLOG 14a, ADR-013): tilt-shift off, pre and post the palette pass at pixel sizes 3 and 2, default and close cameras.",
+ "shots": [
+  {
+   "id": "village_px3_off",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "default",
+    "tiltshift": "off",
+    "pixel": 3
+   },
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.03,
+     0.95
+    ]
+   }
+  },
+  {
+   "id": "village_px3_pre",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "default",
+    "tiltshift": "pre",
+    "pixel": 3
+   },
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.03,
+     0.95
+    ]
+   }
+  },
+  {
+   "id": "village_px3_post",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "default",
+    "tiltshift": "post",
+    "pixel": 3
+   },
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.03,
+     0.95
+    ]
+   }
+  },
+  {
+   "id": "village_px2_off",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "default",
+    "tiltshift": "off",
+    "pixel": 2
+   },
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.03,
+     0.95
+    ]
+   }
+  },
+  {
+   "id": "village_px2_pre",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "default",
+    "tiltshift": "pre",
+    "pixel": 2
+   },
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.03,
+     0.95
+    ]
+   }
+  },
+  {
+   "id": "village_px2_post",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "default",
+    "tiltshift": "post",
+    "pixel": 2
+   },
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.03,
+     0.95
+    ]
+   }
+  },
+  {
+   "id": "close_off",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "close",
+    "tiltshift": "off"
+   },
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.03,
+     0.95
+    ]
+   }
+  },
+  {
+   "id": "close_pre",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "close",
+    "tiltshift": "pre"
+   },
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.03,
+     0.95
+    ]
+   }
+  },
+  {
+   "id": "close_post",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "close",
+    "tiltshift": "post"
+   },
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.03,
+     0.95
+    ]
+   }
+  }
+ ]
+}

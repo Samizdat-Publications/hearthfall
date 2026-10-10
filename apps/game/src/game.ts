@@ -75,6 +75,10 @@ export interface GameParams {
   /** BACKLOG 8: tribe palette and HUD scale overrides (palette=colorblind, uiScale=125); null uses the stored setting */
   palette: string | null;
   uiScale: number | null;
+  /** BACKLOG 14a: tilt-shift override (off, on, pre, post); null uses the stored setting */
+  tiltshift: string | null;
+  /** retro pixel size override for look comparisons (pixel=2); null uses style.json */
+  pixel: number | null;
 }
 
 export function parseParams(search: string): GameParams {
@@ -99,6 +103,8 @@ export function parseParams(search: string): GameParams {
     reveal: q.get("reveal") === "1",
     palette: q.get("palette"),
     uiScale: q.has("uiScale") ? num("uiScale", 100) : null,
+    tiltshift: q.get("tiltshift"),
+    pixel: q.has("pixel") ? num("pixel", 3) : null,
   };
 }
 
@@ -239,6 +245,8 @@ export class Game {
   applyQuality(): void {
     const q = this.params.quality ?? this.settings.quality;
     this.renderer.setRenderScale(QUALITY_SCALE[q] ?? 1);
+    if (this.params.pixel !== null) this.renderer.setPixelScale(this.params.pixel);
+    this.renderer.setTiltShift(this.params.tiltshift ?? this.settings.miniature);
   }
 
   /**

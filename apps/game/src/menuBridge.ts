@@ -6,7 +6,7 @@ import "../../../packages/ui/src/menus.css";
 import type { Game } from "./game.ts";
 import { makeSave, restoreSave, type SkirmishParams } from "./session.ts";
 import { levelOpen } from "./campaign.ts";
-import { PALETTES, QUALITIES, SLOTS, UI_SCALES, deleteSlot, readSlot, slotMeta, storeSettings, writeSlot } from "./storage.ts";
+import { MINIATURE, PALETTES, QUALITIES, SLOTS, UI_SCALES, deleteSlot, readSlot, slotMeta, storeSettings, writeSlot } from "./storage.ts";
 
 const title = (id: string) => id[0].toUpperCase() + id.slice(1);
 const clock = (ticks: number, hz: number) => {
@@ -79,6 +79,8 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
         uiScales: opts(UI_SCALES.map(String), (v) => `${v}%`),
         uiScale: String(game.settings.uiScale),
         subtitles: game.settings.subtitles ? "on" : "off",
+        miniatures: opts(MINIATURE, (v) => (v === "default" ? "Default" : v === "on" ? "On" : "Off")),
+        miniature: game.settings.miniature,
         rebinding: game.rebinding,
         message: settingsMsg ?? (game.params.quality ? `Quality is set by the URL (${game.params.quality}) for this session.` : persistNote()),
       },
@@ -216,7 +218,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
     },
     setSetting: (p) => {
       game.settings = { ...game.settings, ...p } as typeof game.settings;
-      if (p.quality) game.applyQuality();
+      if (p.quality || p.miniature) game.applyQuality();
       if (p.palette !== undefined || p.uiScale !== undefined) game.applyA11y();
       game.player.setVolumes(game.settings);
       settingsMsg = null;

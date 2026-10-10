@@ -3,3 +3,4 @@ export { ThreeRenderer, type ModelStatus, type Renderer, type RenderStats, type 
 export { CAMERA_PRESETS, rigParams, type CameraState } from "./camera.ts";
 export { bendY, type BendUniforms } from "./curve.ts";
 export { CHUNK } from "./terrainMesh.ts";
+export { resolveTilt, tiltUniforms, type TiltOrder, type TiltShiftOptions } from "./retro.ts";

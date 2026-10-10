@@ -154,6 +154,22 @@ if (__DEBUG_API__ || game.params.debug) {
       forceFrameError = true;
     },
     getSummary: () => game.summary(),
+    /** BACKLOG 14a: the live look knobs (tilt-shift order, retro pixel size) */
+    look: () => ({ tilt: game.renderer.retro.opts.tilt?.order ?? "off", pixelScale: game.renderer.retro.opts.pixelScale }),
+    /**
+     * BACKLOG 14a: CPU plus GPU time of one frame (render, then gl.finish waits for the GPU), with the
+     * tilt-shift mode switched for the measure ("off", "pre", "post"; the setting comes back after).
+     */
+    gpuFrameMs: (tilt: string) => {
+      game.renderer.setTiltShift(tilt);
+      const ctx = game.renderer.gl.getContext();
+      const t0 = performance.now();
+      game.renderer.render(performance.now() / 1000);
+      ctx.finish();
+      const ms = performance.now() - t0;
+      game.applyQuality();
+      return ms;
+    },
     getState: (paths?: string[]) => {
       const s = game.summary() as Record<string, unknown>;
       return paths ? Object.fromEntries(paths.map((p) => [p, s[p]])) : s;

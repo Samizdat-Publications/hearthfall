@@ -224,6 +224,22 @@ export const StyleSchema = z.strictObject({
       /** look v2 (BACKLOG 0a): draw scale of the building models, so villages read as villages next to the
        * 1.3x readability-scaled units; keep (scale - 1) x the largest footprint within the building gap */
       buildingScale: z.number().min(0.5).max(2).optional(),
+      /** look v3 (BACKLOG 14a, ADR-013): tilt-shift miniature focus band; `defaultOn` is the settings default */
+      tiltShift: z
+        .strictObject({
+          ...comment,
+          defaultOn: z.boolean(),
+          order: z.enum(["pre", "post"]),
+          bandCenter: z.number().min(0).max(1),
+          bandHalf: z.number().min(0).max(0.5),
+          falloff: z.number().positive().max(1),
+          maxBlur: z.number().min(0).max(8),
+          depthWeight: z.number().min(0).max(1),
+          depthRange: z.number().positive(),
+          saturation: z.number().min(0).max(2),
+          contrast: z.number().min(0.5).max(2),
+        })
+        .optional(),
     })
     .optional(),
   /** sim event type to audio cue (packages/audio AudioHooks); cues without an asset play as silent stubs */

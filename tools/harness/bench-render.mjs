@@ -15,6 +15,9 @@ import { launch, openGame, shotMode, startPreview, viteBuild } from "./web.mjs";
 
 const BUDGET_MEDIAN_MS = 6;
 const MIN_DRAWN = 900;
+/** BACKLOG 14a: extra GPU-inclusive frame time of the tilt-shift pass at 2560x1440 (warn, fail) */
+const TILT_BUDGET_MS = 1.5;
+const TILT_FAIL_MS = 3;
 const ROUNDS = 3;
 const BASE = ROOT + "reports/baselines/bench-render.json";
 const URL_PARAMS = "scenario=render_bench_2000&paused=1&fixedStep=1&quality=high";
@@ -54,6 +57,20 @@ async function pass(browser, url, frames) {
       return out;
     }, [frames, ROUNDS]);
     const models = await page.evaluate(() => window.__game.models());
+    // BACKLOG 14a: GPU-inclusive frame time (gl.finish) with the tilt-shift off and on, best of 3 per frame
+    const tilt = await page.evaluate(async () => {
+      const g = window.__game;
+      const best = { off: [], post: [] };
+      for (let i = 0; i < 40; i++) {
+        g.setCamera({ x: 40, z: 40, yaw: 0.6 + i * 0.15, zoom: 0.32 });
+        for (const m of ["off", "post"]) {
+          let b = 1e9;
+          for (let k = 0; k < 3; k++) b = Math.min(b, g.gpuFrameMs(m));
+          best[m].push(b);
+        }
+      }
+      return best;
+    });
     const ms = samples.map((s) => s.ms);
     return {
       frames: samples.length,
@@ -65,6 +82,8 @@ async function pass(browser, url, frames) {
       drawCallsMedian: pct(samples.map((s) => s.calls), 50),
       trianglesMedian: pct(samples.map((s) => s.tris), 50),
       models: { loaded: models.loaded.length, failed: models.failed.length },
+      gpuOffMs: +pct(tilt.off, 50).toFixed(3),
+      gpuTiltMs: +pct(tilt.post, 50).toFixed(3),
       consoleErrors: consoleErrors.slice(0, 5),
     };
   } finally {
@@ -89,12 +108,16 @@ export default async function benchRender(out, cmd, args) {
   const r = report.real;
   const p = report.placeholders;
   out.line(`real models: median ${r.medianMs} ms (raw ${r.rawMedianMs}), p95 ${r.p95Ms} ms, max ${r.maxMs} ms | ${r.unitsDrawnMedian} units drawn | ${r.drawCallsMedian} calls | ${(r.trianglesMedian / 1e6).toFixed(2)}M tris | models ${r.models.loaded} loaded, ${r.models.failed} failed`);
+  out.line(`frame with GPU (gl.finish): tilt-shift off ${r.gpuOffMs} ms, post ${r.gpuTiltMs} ms (+${(r.gpuTiltMs - r.gpuOffMs).toFixed(2)})`);
   out.line(`placeholders: median ${p.medianMs} ms, p95 ${p.p95Ms} ms | ${p.drawCallsMedian} calls | ${(p.trianglesMedian / 1e6).toFixed(2)}M tris (information)`);
   const fails = [];
   const warns = [];
   if (r.medianMs > BUDGET_MEDIAN_MS) fails.push(`median ${r.medianMs} ms over the ${BUDGET_MEDIAN_MS} ms budget`);
   if (r.unitsDrawnMedian < MIN_DRAWN) fails.push(`only ${r.unitsDrawnMedian} units drawn (need ${MIN_DRAWN})`);
   if (r.models.failed > 0) fails.push(`${r.models.failed} models failed to load`);
+  const tiltCost = r.gpuTiltMs - r.gpuOffMs;
+  if (tiltCost > TILT_FAIL_MS) fails.push(`tilt-shift costs ${tiltCost.toFixed(2)} ms with the GPU (fail above ${TILT_FAIL_MS})`);
+  else if (tiltCost > TILT_BUDGET_MS) warns.push(`tilt-shift costs ${tiltCost.toFixed(2)} ms with the GPU (budget ${TILT_BUDGET_MS})`);
   if (r.consoleErrors.length) fails.push(`console errors: ${r.consoleErrors[0]}`);
   if (existsSync(BASE)) {
     const base = JSON.parse(readFileSync(BASE, "utf8"));

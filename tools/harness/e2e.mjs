@@ -89,6 +89,12 @@ async function flow(browser, url, vp) {
     const a11y = await page.evaluate(() => window.__game.a11y());
     if (a11y.uiScale !== "1.25" || a11y.tribePal.crimson !== "#E95D0B") problem(`a11y settings: ${JSON.stringify(a11y)}`);
     await check("settings-a11y");
+    // BACKLOG 14a: the miniature focus setting switches the tilt-shift pass at once
+    await page.selectOption('[data-ui="set-miniature"]', "off");
+    const lookOff = await page.evaluate(() => window.__game.look());
+    await page.selectOption('[data-ui="set-miniature"]', "default");
+    const lookOn = await page.evaluate(() => window.__game.look());
+    if (lookOff.tilt !== "off" || lookOn.tilt === "off") problem(`miniature setting: off gave ${lookOff.tilt}, default gave ${lookOn.tilt}`);
     await page.selectOption('[data-ui="set-uiscale"]', "100");
     await click("keys-reset");
     await click("back");

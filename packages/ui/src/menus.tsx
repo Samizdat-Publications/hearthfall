@@ -39,6 +39,9 @@ export interface SettingsView {
   uiScales: Choice[];
   uiScale: string;
   subtitles: string;
+  /** BACKLOG 14a: tilt-shift miniature focus (default, on, off) */
+  miniatures: Choice[];
+  miniature: string;
   /** action id waiting for a key press */
   rebinding: string | null;
   message: string | null;
@@ -71,7 +74,7 @@ export interface MenuModel {
 }
 
 export type SetupPatch = Partial<Pick<SetupView, "map" | "size" | "seed" | "opponents" | "difficulty">>;
-export type SettingsPatch = Partial<Pick<SettingsView, "quality" | "master" | "music" | "sfx" | "palette">> & { uiScale?: number; subtitles?: boolean };
+export type SettingsPatch = Partial<Pick<SettingsView, "quality" | "master" | "music" | "sfx" | "palette" | "miniature">> & { uiScale?: number; subtitles?: boolean };
 
 export interface MenuActions {
   go(screen: Screen): void;
@@ -307,6 +310,8 @@ function Settings({ s, act }: { s: SettingsView; act: MenuActions }) {
           <Select ui="set-uiscale" value={s.uiScale} options={s.uiScales} onChange={(v) => act.setSetting({ uiScale: Number(v) })} />
           <label class="menu-label">Subtitles</label>
           <Select ui="set-subtitles" value={s.subtitles} options={ONOFF} onChange={(v) => act.setSetting({ subtitles: v === "on" })} />
+          <label class="menu-label">Miniature focus</label>
+          <Select ui="set-miniature" value={s.miniature} options={s.miniatures} onChange={(v) => act.setSetting({ miniature: v })} />
         </div>
         <div class="keys">
           {s.keys.map((k) => (

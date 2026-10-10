@@ -790,6 +790,26 @@
       "when": "2026-10-09T22:05:55.831Z",
       "source": "external:uiscale_fit.png",
       "bytes": 181770
+    },
+    {
+      "file": "b14/20261010-0047_tiltshift-orders-sheet.png",
+      "milestone": "B14",
+      "kind": "contact-sheet",
+      "caption": "Look v3 tilt-shift test: off, pre and post the palette pass at pixel sizes 3 and 2, plus the close camera; post chosen (ADR-013).",
+      "highlight": false,
+      "when": "2026-10-10T00:47:14.856Z",
+      "source": "external:sheet.png",
+      "bytes": 1078031
+    },
+    {
+      "file": "b14/20261010-0047_tiltshift-orders-crop.png",
+      "milestone": "B14",
+      "kind": "comparison",
+      "caption": "Foreground crop, left to right: no tilt-shift, post (smooth lens blur, the pick) and pre (blur re-dithered into grain).",
+      "highlight": true,
+      "when": "2026-10-10T00:47:19.509Z",
+      "source": "external:tilt_orders_crop.png",
+      "bytes": 140551
     }
   ]
 }

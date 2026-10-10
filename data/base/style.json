@@ -66,7 +66,20 @@
       "stars": 0.55,
       "rim": "#5fa8e0"
     },
-    "foamStrokes": 0.55
+    "foamStrokes": 0.55,
+    "tiltShift": {
+      "$comment": "Tilt-shift miniature focus (BACKLOG 14a, ADR-013): sharp band at the camera focus (screen uv), blur ramps over falloff to maxBlur low-res pixels; depthWeight also blurs by distance from the focus depth. order pre = blur before palette quantization, post = after.",
+      "defaultOn": true,
+      "order": "post",
+      "bandCenter": 0.5,
+      "bandHalf": 0.1,
+      "falloff": 0.32,
+      "maxBlur": 2.5,
+      "depthWeight": 0.6,
+      "depthRange": 0.7,
+      "saturation": 1.15,
+      "contrast": 1.06
+    }
   },
   "tribePalettes": {
     "colorblind": { "azure": "#1D3FE8", "crimson": "#E95D0B", "amber": "#853488", "jade": "#76E7BF" }

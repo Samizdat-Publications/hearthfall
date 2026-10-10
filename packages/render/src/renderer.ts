@@ -12,7 +12,7 @@ import { UnitLayer } from "./unitsLayer.ts";
 import { BuildingLayer } from "./buildingsLayer.ts";
 import { WorshipLayer } from "./worshipLayer.ts";
 import { VfxLayer } from "./vfx.ts";
-import { RetroPass } from "./retro.ts";
+import { RetroPass, resolveTilt } from "./retro.ts";
 import { loadModels, type ModelLoadReport, type ModelParts } from "./models.ts";
 
 /** Real model state (M10): pending while loading; `drawn` lists the model ids the current layers use. */
@@ -345,6 +345,21 @@ export class ThreeRenderer implements Renderer {
     this.cam.z = ((this.cam.z % size) + size) % size;
   }
 
+  /**
+   * BACKLOG 14a: tilt-shift miniature focus. `mode` is "default" (style.json defaultOn), "on" (style
+   * order), "off", "pre" or "post" (an explicit order, for shots and the URL param).
+   */
+  setTiltShift(mode: string): void {
+    this.retro.setOptions({ tilt: resolveTilt(this.styleRender?.tiltShift, mode) });
+    this.resize(this.viewW, this.viewH);
+  }
+
+  /** Retro pixel size override (URL `pixel`, look comparisons); null restores style.json. */
+  setPixelScale(n: number | null): void {
+    this.retro.setOptions({ pixelScale: Math.max(1, Math.round(n ?? this.styleRender?.pixelScale ?? 1)) });
+    this.resize(this.viewW, this.viewH);
+  }
+
   /** Internal render resolution scale (settings quality: 1, 0.75, 0.5). Picking and HUD keep CSS pixels. */
   setRenderScale(s: number): void {
     this.renderScale = Math.min(1, Math.max(0.25, s));
@@ -393,6 +408,7 @@ export class ThreeRenderer implements Renderer {
     this.sky.visible = !this.cam.map && this.scene.visible;
     this.sky.position.copy(this.camera.position);
     this.sky.scale.setScalar((this.camera.far * 0.9) / 900);
+    if (r) this.retro.setFocus(r.distance, this.camera.near, this.camera.far, !this.cam.map);
     if (this.retro.enabled && this.scene.visible) this.retro.render(this.gl, this.scene, this.camera);
     else this.gl.render(this.scene, this.camera);
     this.frames++;

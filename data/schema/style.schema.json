@@ -175,6 +175,76 @@
           "type": "number",
           "minimum": 0.5,
           "maximum": 2
+        },
+        "tiltShift": {
+          "type": "object",
+          "properties": {
+            "$comment": {
+              "type": "string"
+            },
+            "defaultOn": {
+              "type": "boolean"
+            },
+            "order": {
+              "type": "string",
+              "enum": [
+                "pre",
+                "post"
+              ]
+            },
+            "bandCenter": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "bandHalf": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 0.5
+            },
+            "falloff": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 1
+            },
+            "maxBlur": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 8
+            },
+            "depthWeight": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "depthRange": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "saturation": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2
+            },
+            "contrast": {
+              "type": "number",
+              "minimum": 0.5,
+              "maximum": 2
+            }
+          },
+          "required": [
+            "defaultOn",
+            "order",
+            "bandCenter",
+            "bandHalf",
+            "falloff",
+            "maxBlur",
+            "depthWeight",
+            "depthRange",
+            "saturation",
+            "contrast"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [

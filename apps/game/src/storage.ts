@@ -44,6 +44,8 @@ export const QUALITY_SCALE: Record<string, number> = { high: 1, medium: 0.75, lo
 /** BACKLOG 8: tribe color sets (style.json tribePalettes; "default" is the plain palette) and HUD scales in percent */
 export const PALETTES = ["default", "colorblind"] as const;
 export const UI_SCALES = [80, 90, 100, 110, 125, 150] as const;
+/** BACKLOG 14a: tilt-shift miniature focus ("default" follows style.json render.tiltShift.defaultOn) */
+export const MINIATURE = ["default", "on", "off"] as const;
 
 export interface Settings {
   quality: (typeof QUALITIES)[number];
@@ -55,12 +57,13 @@ export interface Settings {
   palette: (typeof PALETTES)[number];
   uiScale: number;
   subtitles: boolean;
+  miniature: (typeof MINIATURE)[number];
 }
 
 const SETTINGS_KEY = "hearthfall.settings.v1";
 
 export function defaultSettings(): Settings {
-  return { quality: "high", master: 80, music: 60, sfx: 80, keymap: defaultKeymap(), palette: "default", uiScale: 100, subtitles: true };
+  return { quality: "high", master: 80, music: 60, sfx: 80, keymap: defaultKeymap(), palette: "default", uiScale: 100, subtitles: true, miniature: "default" };
 }
 
 const vol = (v: unknown, d: number) => (typeof v === "number" && Number.isFinite(v) ? Math.min(100, Math.max(0, Math.round(v))) : d);
@@ -80,6 +83,7 @@ export function loadSettings(kv: KV): Settings {
       palette: (PALETTES as readonly string[]).includes(o.palette as string) ? (o.palette as Settings["palette"]) : d.palette,
       uiScale: (UI_SCALES as readonly number[]).includes(o.uiScale as number) ? (o.uiScale as number) : d.uiScale,
       subtitles: typeof o.subtitles === "boolean" ? o.subtitles : d.subtitles,
+      miniature: (MINIATURE as readonly string[]).includes(o.miniature as string) ? (o.miniature as Settings["miniature"]) : d.miniature,
     };
   } catch {
     return d;

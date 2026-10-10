@@ -22,6 +22,11 @@ describe("settings and save slots (M8)", () => {
     expect(loadSettings(kv)).toMatchObject({ palette: "colorblind", uiScale: 125, subtitles: false });
     kv.setItem("hearthfall.settings.v1", JSON.stringify({ palette: "sepia", uiScale: 333, subtitles: "yes" }));
     expect(loadSettings(kv)).toMatchObject({ palette: "default", uiScale: 100, subtitles: true });
+    // BACKLOG 14a: miniature focus round trips and falls back to "default"
+    expect(storeSettings(kv, { ...defaultSettings(), miniature: "off" })).toBe(true);
+    expect(loadSettings(kv).miniature).toBe("off");
+    kv.setItem("hearthfall.settings.v1", JSON.stringify({ miniature: "blurry" }));
+    expect(loadSettings(kv).miniature).toBe("default");
     kv.setItem("hearthfall.settings.v1", "{not json");
     expect(loadSettings(kv)).toEqual(defaultSettings());
   });
