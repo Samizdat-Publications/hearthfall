@@ -243,7 +243,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
         saves.message = "Only a skirmish or campaign level in progress can be saved.";
         return refresh();
       }
-      const s = makeSave(game.world, sp, game.log, game.pendingCommands(), new Date().toISOString());
+      const s = makeSave(game.world, sp, game.log, game.pendingCommands(), new Date().toISOString(), game.stats);
       const err = writeSlot(game.kv, n, s);
       if (!err) game.lastSave = { tick: s.tick, hash: s.hash };
       saves.message = err ?? `Saved to slot ${n}.`;

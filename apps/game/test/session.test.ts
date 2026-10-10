@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { loadBasePack } from "../../../tools/harness/datapack.mjs";
+import { emptyStats, statsFrom } from "../src/achievements.ts";
 import { createSkirmish, decodeSave, encodeSave, makeSave, restoreSave, type SkirmishParams } from "../src/session.ts";
 
 const pack = loadBasePack().pack!;
@@ -44,5 +45,19 @@ describe("skirmish save games (M8)", () => {
     const s = makeSave(a, P, [], [], "x");
     expect(() => restoreSave(pack, { ...s, packHash: "other" })).toThrow(/different game data/);
     expect(() => restoreSave(pack, { ...s, hash: "0" })).toThrow(/damaged/);
+  });
+
+  it("BACKLOG 79: the end screen stats ride along in the save; older or damaged stats load as 0", () => {
+    const a = createSkirmish(pack, P);
+    a.run(20);
+    const stats = { ...emptyStats(), kills: 7, lost: 3, peakFollowers: 41 };
+    const s = decodeSave(encodeSave(makeSave(a, P, [], [], "x", stats)));
+    expect(statsFrom(s.stats)).toEqual(stats);
+    stats.kills = 99; // the save holds a copy
+    expect(s.stats!.kills).toBe(7);
+    const old = makeSave(a, P, [], [], "x");
+    expect("stats" in old).toBe(false);
+    expect(statsFrom(old.stats)).toEqual(emptyStats());
+    expect(statsFrom({ kills: -1, lost: "3", bogus: 5, peakFollowers: 2 })).toEqual({ ...emptyStats(), peakFollowers: 2 });
   });
 });

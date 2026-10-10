@@ -75,11 +75,13 @@ export interface SaveGame {
   log: Command[];
   /** commands queued for the next tick when the game was saved */
   pending: Command[];
+  /** BACKLOG 79: the local player's match stats (end screen), app side only; older saves lack it */
+  stats?: Record<string, number>;
 }
 
 export const LOG_TAIL = 5000;
 
-export function makeSave(w: World, params: SkirmishParams, log: Command[], pending: Command[], savedAt: string): SaveGame {
+export function makeSave(w: World, params: SkirmishParams, log: Command[], pending: Command[], savedAt: string, stats?: Record<string, number>): SaveGame {
   return {
     version: SAVE_VERSION,
     packHash: w.cfg.packHash,
@@ -91,6 +93,7 @@ export function makeSave(w: World, params: SkirmishParams, log: Command[], pendi
     controllers: w.controllers.filter((c) => c.saveState).map((c) => ({ tribe: c.tribe, state: c.saveState!() })),
     log: log.slice(-LOG_TAIL),
     pending: pending.map((c) => ({ ...c })),
+    ...(stats ? { stats: { ...stats } } : {}),
   };
 }
 

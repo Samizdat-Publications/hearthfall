@@ -60,7 +60,7 @@ import {
   recordWin,
   taughtSpells,
 } from "./campaign.ts";
-import { emptyStats, loadRecords, noteEvent, recordMatch, storeRecords, type Records, type Stats } from "./achievements.ts";
+import { emptyStats, loadRecords, statsFrom, noteEvent, recordMatch, storeRecords, type Records, type Stats } from "./achievements.ts";
 import { REPLAY_KEY, ReplayRun, decodeReplay, encodeReplay, makeReplay, type Replay } from "./replay.ts";
 import {
   QUALITY_SCALE,
@@ -668,6 +668,7 @@ export class Game {
     this.world = w;
     this.scenarioCmds = null;
     this.afterWorld();
+    this.stats = statsFrom(s.stats); // BACKLOG 79: the end screen keeps the kills and losses from before the save
     this.skirmish = { ...sp, ai: [...sp.ai] };
     this.log = [...s.log];
     this.replayStart = s;

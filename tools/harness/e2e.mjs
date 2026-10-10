@@ -239,6 +239,8 @@ async function flow(browser, url, vp) {
     await screenIs("saves");
     await click("save-1");
     await page.waitForFunction(() => window.__game.lastSave() !== null, null, { timeout: 15000 });
+    // BACKLOG 79: the match stats at save time (paused, so they match the save)
+    const statsAtSave = await page.evaluate(() => window.__game.records().match);
     await check("saves");
     await click("back");
     await screenIs("pause");
@@ -255,6 +257,11 @@ async function flow(browser, url, vp) {
     const loaded = await page.evaluate(() => window.__game.lastLoad());
     res.save = { saved, loaded };
     if (!loaded || loaded.hash !== saved.hash || loaded.tick !== saved.tick) problem(`load: ${JSON.stringify(loaded)} differs from save ${JSON.stringify(saved)}`);
+    {
+      const after = await page.evaluate(() => window.__game.records().match);
+      const sum = (o) => Object.values(o).reduce((a, b) => a + b, 0);
+      if (!(sum(statsAtSave) > 0) || Object.keys(statsAtSave).some((k) => after[k] < statsAtSave[k])) problem(`match stats did not survive the load: ${JSON.stringify({ statsAtSave, after })}`);
+    }
     // the frame loop may already have run a tick since the load: step to the same absolute tick, paused
     const again = await page.evaluate(() => {
       window.__game.pause(true);

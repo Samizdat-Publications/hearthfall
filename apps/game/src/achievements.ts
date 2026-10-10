@@ -31,6 +31,17 @@ export function emptyStats(): Stats {
   return s;
 }
 
+/** BACKLOG 79: match stats from a save; unknown keys and bad values are dropped, missing ones are 0 */
+export function statsFrom(raw: unknown): Stats {
+  const s = emptyStats();
+  if (!raw || typeof raw !== "object") return s;
+  for (const k of STAT_KEYS) {
+    const v = (raw as Record<string, unknown>)[k];
+    if (typeof v === "number" && Number.isFinite(v) && v >= 0) s[k] = v;
+  }
+  return s;
+}
+
 /** Count one sim event into the local tribe's match stats. */
 export function noteEvent(s: Stats, e: SimEvent, me: number): void {
   switch (e.type) {
