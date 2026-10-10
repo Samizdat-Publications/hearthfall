@@ -347,10 +347,22 @@ export class UnitSystem {
           E.panic[i] % secondsToTicks(st.repickSeconds, hz) === 0
         ) {
           const a = w.rng.float("combat") * 6.283185307179586;
-          const fx = (((E.x[i] + cosT(a) * st.fleeDistance) % n) + n) % n;
-          const fy = (((E.y[i] + sinT(a) * st.fleeDistance) % n) + n) % n;
-          this.order([i], fx, fy);
-          this.ordersIssued--;
+          // BACKLOG 97: flee only to a point on the unit's own landmass (turning a quarter at a time), never
+          // into the sea or across a cliff, where each repick cost a failed full A* search; boxed in, it cowers
+          const pfi = this.pfOf(i);
+          pfi.refresh();
+          const here = pfi.nearestWalkable(this.vertexOf(E.x[i], E.y[i]), m.snapRadius);
+          let fled = false;
+          for (let q = 0; q < 4 && here >= 0 && !fled; q++) {
+            const fx = (((E.x[i] + cosT(a + q * 1.5707963267948966) * st.fleeDistance) % n) + n) % n;
+            const fy = (((E.y[i] + sinT(a + q * 1.5707963267948966) * st.fleeDistance) % n) + n) % n;
+            const v = pfi.nearestWalkable(this.vertexOf(fx, fy), m.snapRadius);
+            if (v < 0 || pfi.comp[v] !== pfi.comp[here]) continue;
+            this.order([i], fx, fy);
+            this.ordersIssued--;
+            fled = true;
+          }
+          if (!fled) this.stop(i);
         }
         if (E.panic[i] === 0) this.stop(i);
       }

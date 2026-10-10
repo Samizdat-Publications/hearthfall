@@ -259,6 +259,27 @@ describe("combat (M6)", () => {
     expect(w.invariants()).toEqual([]);
   });
 
+  it("a trainee does not walk to a rally point across water (BACKLOG 97, ai soak seed 1002)", () => {
+    const w = arena();
+    const t = w.terrain;
+    // two water channels cut the torus in half; the rally point is on the far side
+    for (let y = 0; y < 64; y++) for (const x of [26, 27, 28, 60, 61, 62]) t.heights[t.idx(x, y)] = 0;
+    t.version++;
+    const lodge = w.spawnBuilding("warden_lodge", 0, 20, 20);
+    const s = w.ents.index(w.spawnUnit("settler", 0, 22, 24));
+    w.step(cmd(0, "setRally", { building: lodge, at: [40, 20] }));
+    w.step(cmd(0, "train", { building: lodge, count: 1 }));
+    w.tribes[0].eco.trainMana = 1000;
+    const failed: string[] = [];
+    for (let k = 0; k < 40 * 20; k++) {
+      w.step([]);
+      for (const e of w.events) if (e.type === "orderFailed") failed.push(JSON.stringify(e));
+    }
+    expect(w.eventCounts.get("trained")).toBe(1);
+    expect(failed).toEqual([]);
+    expect(w.ents.x[s]).toBeLessThan(26);
+  });
+
   it("lodges are paid oldest trainee first, so a cheap lodge with a full queue cannot starve a dearer one (BACKLOG 7)", () => {
     const w = arena();
     // the warden lodge has the lower index, so it used to grab every 150 before the fire lodge reached 180

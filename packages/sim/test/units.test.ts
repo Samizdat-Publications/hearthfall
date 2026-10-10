@@ -56,6 +56,28 @@ describe("unit orders", () => {
     expect(E.alive[i]).toBe(1);
   });
 
+  // regression (BACKLOG 97, ai soak seed 1002 turtle v aggressive): panicked units on a small island picked
+  // flee points in the sea, and every repick was a failed full A* search (about 400 orderFailed a match)
+  it("a panicked unit on a small island flees only on its island, not to the shore across a strait", () => {
+    const w = world({ generator: "flat", size: 64, tribes: 2 });
+    const t = w.terrain;
+    const E = w.ents;
+    w.step([]);
+    const land = t.heights[t.idx(30, 32)];
+    for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) if ((x < 36 && (Math.abs(x - 30) > 2 || Math.abs(y - 32) > 2)) || x > 60) t.heights[t.idx(x, y)] = 0;
+    t.version++;
+    expect(land).toBeGreaterThan(t.sea);
+    const i = E.index(w.spawnUnit("settler", 0, 30.2, 32.3));
+    E.panic[i] = 10 * 20;
+    const failed: string[] = [];
+    for (let k = 0; k < 10 * 20; k++) {
+      w.step([]);
+      for (const e of w.events) if (e.type === "orderFailed") failed.push(JSON.stringify(e));
+    }
+    expect(failed).toEqual([]);
+    expect(E.alive[i]).toBe(1);
+  });
+
   // regression (M7 ai soak, seed 1005 turtle v aggressive): terrain changed under a group's flow
   // field (a quake), the rebuilt field was longer, and the units kept their old best progress, so
   // walking the new detour looked like no progress and they gave up on a reachable goal

@@ -865,7 +865,11 @@ export class CombatSystem {
       E.mode[cur] = CMODE.none;
       E.cd[cur] = 0;
       w.emit("trained", { id: E.idOf(cur), tribe: tr, kind: into, lodge: E.idOf(b) });
-      if (E.mode[b] === 1) w.units.order([cur], E.ax[b], E.ay[b], ORDER.move);
+      // BACKLOG 97: a rally point on another landmass (or one terrain since cut off) is skipped, not walked into a failed search
+      if (E.mode[b] === 1) {
+        const c = this.compAt(E.x[cur], E.y[cur]);
+        if (c >= 0 && c === this.compAt(E.ax[b], E.ay[b])) w.units.order([cur], E.ax[b], E.ay[b], ORDER.move);
+      }
     }
     // the paid lodge starts its first training step next tick; an unaffordable trainee blocks younger ones
     due.sort((a, z) => E.timer[E.index(E.target[a])] - E.timer[E.index(E.target[z])] || a - z);
