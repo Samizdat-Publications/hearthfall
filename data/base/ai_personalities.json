@@ -14,7 +14,8 @@
     "attackScoreBase": 0.35,
     "attackScoreAggression": 0.5,
     "attackScoreSurplus": 0.15,
-    "castReachSlack": 10
+    "castReachSlack": 10,
+    "worshipKeepSettlers": 4
   },
   "personalities": [
     {

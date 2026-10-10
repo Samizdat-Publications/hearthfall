@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { World } from "../../sim/src/world.ts";
 import { CAT } from "../../sim/src/entities.ts";
+import { TASK } from "../../sim/src/economy.ts";
 import { basePack, world } from "../../sim/test/helpers.ts";
 import { OpponentAI, makeBot, type Personality } from "../src/index.ts";
 import { AI_SHARED_DEFAULTS } from "@hearthfall/data";
@@ -135,6 +136,29 @@ describe("OpponentAI (M7)", () => {
     copy.loadState(JSON.parse(JSON.stringify(st)));
     expect(copy.saveState()).toEqual(st);
   }, 60000);
+
+  it("BACKLOG 88: worshipAfterSeconds holds the AI's worshippers until then, whatever its settler count", () => {
+    const firstWorship = (after?: number) => {
+      const w = world({ generator: "flat", size: 64, tribes: 2 });
+      w.spawnBuilding("hearth", 0, 10, 32);
+      w.spawnBuilding("hearth", 1, 50, 32);
+      w.spawnUnit("shaper", 1, 52, 34);
+      for (let k = 0; k < 14; k++) w.spawnUnit("settler", 1, 46 + (k % 7), 36 + Math.floor(k / 7));
+      w.worship.addSite("shrine", 40, 32, { tag: "s", worshippers: 4, prayerSeconds: 45, rewards: [] });
+      w.controllers.push(makeBot({ type: "opponent", tribe: 1, personality: "turtle", offset: 0, ...(after !== undefined ? { worshipAfterSeconds: after } : {}) }));
+      const E = w.ents;
+      for (let t = 0; t < 3000; t++) {
+        w.step([]);
+        for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.tribe[i] === 1 && (E.task[i] === TASK.toWorship || E.task[i] === TASK.worship)) return w.tick;
+      }
+      return -1;
+    };
+    const free = firstWorship();
+    const held = firstWorship(60);
+    expect(free).toBeGreaterThan(0);
+    expect(free).toBeLessThan(60 * 20);
+    expect(held).toBeGreaterThanOrEqual(60 * 20);
+  });
 
   it("with no walkable route to the enemy the Shaper raises land across the water", () => {
     const w = world({ generator: "flat", size: 64, tribes: 2 });

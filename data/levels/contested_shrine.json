@@ -15,7 +15,7 @@
       { "shape": "disc", "at": [48, 78], "r": 9, "aboveSea": -30, "falloff": 4 }
     ]
   },
-  "tribes": [{}, { "ai": "turtle", "difficulty": "easy" }],
+  "tribes": [{}, { "ai": "turtle", "difficulty": "easy", "worshipAfterSeconds": 90 }],
   "spells": ["bolt", "raise_land"],
   "buildings": ["dwelling", "watchtower"],
   "setup": [

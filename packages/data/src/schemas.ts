@@ -932,6 +932,8 @@ export const AiSharedSchema = z.strictObject({
   attackScoreSurplus: z.number(),
   /** targets for a spell are searched this far beyond its range (cells) */
   castReachSlack: z.number().nonnegative(),
+  /** BACKLOG 88: settlers kept home besides the ones sent to worship (optional: shared blocks frozen before it; default 4) */
+  worshipKeepSettlers: z.number().int().nonnegative().optional(),
 });
 export type AiShared = z.infer<typeof AiSharedSchema>;
 export const AI_SHARED_DEFAULTS: AiShared = {
@@ -948,6 +950,7 @@ export const AI_SHARED_DEFAULTS: AiShared = {
   attackScoreAggression: 0.5,
   attackScoreSurplus: 0.15,
   castReachSlack: 10,
+  worshipKeepSettlers: 4,
 };
 export const AiFileSchema = z.strictObject({
   ...comment,
@@ -1312,7 +1315,8 @@ export const LevelSchema = z.strictObject({
   /** tribe 0 is the player; the others are AI opponents by personality */
   tribes: z
     /** maxTroops (BACKLOG 83): the tribe may not train past this many troops (alive, walking to or in training) */
-    .array(z.strictObject({ ai: id.optional(), difficulty: id.optional(), maxTroops: z.number().int().min(0).optional() }))
+    /** worshipAfterSeconds (BACKLOG 88): the AI sends no worshippers before this much play time */
+    .array(z.strictObject({ ai: id.optional(), difficulty: id.optional(), maxTroops: z.number().int().min(0).optional(), worshipAfterSeconds: z.number().min(0).optional() }))
     .min(1)
     .max(4),
   /** spells unlocked at the start for every tribe (campaign unlocks are added for the player) */

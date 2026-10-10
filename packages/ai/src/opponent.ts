@@ -45,6 +45,8 @@ export interface OpponentOptions {
   every?: number;
   /** decision phase within the period (spreads tribes over ticks) */
   offset?: number;
+  /** BACKLOG 88: no worshippers before this much play time (a level's explicit delay) */
+  worshipAfterSeconds?: number;
 }
 
 /** What the controller did, for soak logs and tests (lives outside the sim, never hashed). */
@@ -124,6 +126,7 @@ export class OpponentAI implements Controller {
   private known = new Set<number>();
   /** BACKLOG 10: boat id to the tick of its last boarding order (a boat is boarded at most once per FERRY_BACKOFF_SECONDS) */
   private ferried = new Map<number, number>();
+  private readonly worshipAfter: number;
   /** BACKLOG 67: sent waves watched until a member reaches the target or the window ends */
   private watched: { ids: number[]; x: number; y: number; until: number }[] = [];
   /** BACKLOG 98: boat id to the contested site its wave was boarded for (sail() lands it there, not at a Hearth) */
@@ -139,6 +142,7 @@ export class OpponentAI implements Controller {
     this.difficulty = o.difficulty ?? "normal";
     this.phase = o.offset ?? 0;
     this.periodOverride = o.every;
+    this.worshipAfter = o.worshipAfterSeconds ?? 0;
     // the EconomyBot is called directly at our cadence, so its own every/offset are unused
     this.eco = new EconomyBot({ tribe: o.tribe });
     this.actions = [
@@ -593,10 +597,10 @@ export class OpponentAI implements Controller {
   }
 
   private worshipScore(c: Census): number {
-    if (c.threats.length) return 0;
+    if (c.threats.length || c.w.playTick < this.worshipAfter * c.w.cfg.tickHz) return 0;
     const t = this.worshipTarget(c);
     // keep a working economy at home
-    return t && c.settlers.length >= t.need - t.have + 4 ? 0.75 : 0;
+    return t && c.settlers.length >= t.need - t.have + (this.sh.worshipKeepSettlers ?? 4) ? 0.75 : 0;
   }
 
   private worship(c: Census, out: Command[]): void {

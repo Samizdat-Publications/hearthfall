@@ -220,7 +220,7 @@ export function createLevelWorld(init: LevelInit, pack: PackFiles, packHash: str
   def.tribes.forEach((t, k) => {
     if (k === PLAYER || !t.ai) return;
     if (!makeAi) throw new Error("level has AI tribes but no controller factory was given");
-    w.controllers.push(makeAi({ type: "opponent", tribe: k, personality: t.ai, difficulty: t.difficulty ?? "normal", offset: k - 1 }));
+    w.controllers.push(makeAi({ type: "opponent", tribe: k, personality: t.ai, difficulty: t.difficulty ?? "normal", offset: k - 1, ...(t.worshipAfterSeconds !== undefined ? { worshipAfterSeconds: t.worshipAfterSeconds } : {}) }));
   });
   return w;
 }
