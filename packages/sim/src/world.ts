@@ -71,6 +71,34 @@ export interface WorldInit {
   weather?: "clear" | "rain";
 }
 
+/** BACKLOG 35: the WorldInit a snapshot came from, without the pack files (plain JSON) */
+export type WorldOrigin = Omit<WorldInit, "pack" | "populate">;
+
+/** JSON with sorted object keys, so two equal specs built in different key orders compare equal */
+function canon(v: unknown): string {
+  if (Array.isArray(v)) return `[${v.map(canon).join(",")}]`;
+  if (v && typeof v === "object") {
+    const o = v as Record<string, unknown>;
+    const keys = Object.keys(o)
+      .filter((k) => o[k] !== undefined)
+      .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+    return `{${keys.map((k) => `${JSON.stringify(k)}:${canon(o[k])}`).join(",")}}`;
+  }
+  return JSON.stringify(v);
+}
+
+/** BACKLOG 35: why a snapshot's origin does not fit this init (null when it fits) */
+export function originMismatch(origin: WorldOrigin, init: WorldInit): string | null {
+  if (origin.packHash !== init.packHash) return "different game data";
+  if ((origin.seed | 0) !== (init.seed | 0)) return `seed ${origin.seed} vs ${init.seed}`;
+  if (canon(origin.map) !== canon(init.map)) return "different map";
+  if ((origin.rules ?? null) !== (init.rules ?? null)) return `rules ${origin.rules ?? "none"} vs ${init.rules ?? "none"}`;
+  if (!!origin.forge !== !!init.forge) return "forge phase differs";
+  if ((origin.weather ?? "clear") !== (init.weather ?? "clear")) return "weather differs";
+  if ((origin.level?.def.id ?? null) !== (init.level?.def.id ?? null)) return `level ${origin.level?.def.id ?? "none"} vs ${init.level?.def.id ?? "none"}`;
+  return null;
+}
+
 export interface HashParts {
   all: string;
   terrain: string;
@@ -108,6 +136,8 @@ export interface WorldSnapshot {
   level?: LevelSaved;
   rules?: RulesSaved;
   forge?: ForgeSaved;
+  /** BACKLOG 35: the init this world was built from (no pack files); absent in older saves */
+  origin?: WorldOrigin;
 }
 
 export class World {
@@ -141,12 +171,16 @@ export class World {
   forge: ForgeRuntime | null;
   /** BACKLOG 14b: match weather, fixed for the match */
   readonly weather: "clear" | "rain";
+  /** BACKLOG 35: the init without pack files, carried in every snapshot */
+  readonly origin: WorldOrigin;
   /** BACKLOG 14b: unit speed factor from the weather (1 when clear) */
   readonly speedMult: number;
   controllers: Controller[] = [];
   readonly mapInfo: { generator: string; seedUsed: number; rerolls: number; landFraction: number };
 
   constructor(init: WorldInit) {
+    const { pack: _pack, populate: _populate, ...origin } = init;
+    this.origin = JSON.parse(JSON.stringify(origin)) as WorldOrigin;
     this.cfg = makeConfig(init.pack, init.packHash);
     this.seed = init.seed | 0;
     this.weather = init.weather === "rain" ? "rain" : "clear";
@@ -565,10 +599,19 @@ export class World {
       ...(this.rules ? { rules: this.rules.save() } : {}),
       ...(this.forge ? { forge: this.forge.save() } : {}),
       ...(this.vision.on ? { vision: this.vision.save() } : {}),
+      origin: JSON.parse(JSON.stringify(this.origin)) as WorldOrigin,
     };
   }
 
+  /** BACKLOG 35: rebuild a world from a snapshot alone (its origin) and the pack files it was made with. */
+  static fromSnapshot(pack: PackFiles, snap: WorldSnapshot): World {
+    if (!snap.origin) throw new Error("snapshot has no origin (made before BACKLOG 35): restore it with its WorldInit");
+    return World.restore({ ...snap.origin, pack }, snap);
+  }
+
   static restore(init: WorldInit, snap: WorldSnapshot): World {
+    const why = snap.origin ? originMismatch(snap.origin, init) : null;
+    if (why) throw new Error(`snapshot does not belong to this world: ${why}`);
     const w = new World({ ...init, populate: false });
     w.tick = snap.tick;
     w.terrain.heights.set(snap.heights);

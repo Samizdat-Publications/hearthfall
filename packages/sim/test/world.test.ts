@@ -194,6 +194,35 @@ describe("snapshot and restore", () => {
     b.run(300, cmds);
     expect(b.hash()).toEqual(a.hash());
     expect(b.tick).toBe(600);
+    expect([...b.eventCounts]).toEqual([...a.eventCounts]);
+  });
+
+  it("BACKLOG 35: a snapshot carries its origin; it rebuilds from the pack alone and refuses a different world", async () => {
+    const { basePack } = await import("./helpers.ts");
+    const { World } = await import("../src/world.ts");
+    const p = basePack();
+    const init = { pack: p.files, packHash: p.hash, seed: 21, map: { generator: "continents", size: 128, tribes: 2 }, weather: "rain" as const };
+    const a = new World(init);
+    a.run(200);
+    const snap = JSON.parse(JSON.stringify(a.snapshot(), (_k, v) => (ArrayBuffer.isView(v) ? { $t: v.constructor.name, d: Array.from(v as Int16Array) } : v)), (_k, v) =>
+      v && typeof v === "object" && "$t" in v ? new (globalThis as unknown as Record<string, new (d: number[]) => unknown>)[v.$t](v.d) : v,
+    );
+    expect(snap.origin).toEqual({ packHash: p.hash, seed: 21, map: { generator: "continents", size: 128, tribes: 2 }, weather: "rain" });
+    const b = World.fromSnapshot(p.files, snap);
+    expect(b.hash()).toEqual(a.hash());
+    expect([...b.eventCounts]).toEqual([...a.eventCounts]);
+    a.run(100);
+    b.run(100);
+    expect(b.hash().all).toBe(a.hash().all);
+    // same spec in another key order is the same world
+    expect(() => World.restore({ ...init, map: { tribes: 2, size: 128, generator: "continents" } }, snap)).not.toThrow();
+    expect(() => World.restore({ ...init, seed: 22 }, snap)).toThrow(/seed 21 vs 22/);
+    expect(() => World.restore({ ...init, map: { ...init.map, size: 96 } }, snap)).toThrow(/different map/);
+    expect(() => World.restore({ ...init, weather: "clear" }, snap)).toThrow(/weather/);
+    expect(() => World.restore({ ...init, packHash: "x" }, snap)).toThrow(/different game data/);
+    const { origin: _o, ...old } = snap;
+    expect(() => World.fromSnapshot(p.files, old)).toThrow(/no origin/);
+    expect(World.restore(init, old).hash().all).toBe(World.restore(init, snap).hash().all);
   });
 });
 
