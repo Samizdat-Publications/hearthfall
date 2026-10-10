@@ -1020,6 +1020,26 @@
       "when": "2026-10-10T07:56:06.760Z",
       "source": "external:menu_editor.png",
       "bytes": 506055
+    },
+    {
+      "file": "b37/20261010-0847_map-view-before.png",
+      "milestone": "B37",
+      "kind": "screenshot",
+      "caption": "Map view before BACKLOG 37/40: a perspective camera high above, so the map bulges and its edges follow ragged chunk boundaries",
+      "highlight": false,
+      "when": "2026-10-10T08:47:41.961Z",
+      "source": "external:map_view_before.png",
+      "bytes": 198808
+    },
+    {
+      "file": "b37/20261010-0847_map-view-after.png",
+      "milestone": "B37",
+      "kind": "screenshot",
+      "caption": "Map view after BACKLOG 37/40: an orthographic camera fitted to the window, straight edges, a dark frame past the world edge and a light grid",
+      "highlight": false,
+      "when": "2026-10-10T08:47:42.139Z",
+      "source": "external:map_view_after.png",
+      "bytes": 194348
     }
   ]
 }
