@@ -1010,6 +1010,16 @@
       "when": "2026-10-10T07:38:41.512Z",
       "source": "external:menu_campaign13.png",
       "bytes": 472035
+    },
+    {
+      "file": "b12/20261010-0756_map-editor.png",
+      "milestone": "B12",
+      "kind": "screenshot",
+      "caption": "The map editor: paint sea and hills, drop Hearths, Reliquaries and trees on a live preview planet, pick a goal, then Playtest",
+      "highlight": false,
+      "when": "2026-10-10T07:56:06.760Z",
+      "source": "external:menu_editor.png",
+      "bytes": 506055
     }
   ]
 }

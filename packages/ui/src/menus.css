@@ -62,3 +62,17 @@
 @keyframes route-pulse { 50% { box-shadow: 0 3px 0 #1d130c, 0 0 0 6px rgba(143, 192, 90, 0.35); } }
 @media (prefers-reduced-motion: reduce) { .route-node.open { animation: none; } }
 .route-card .level-desc { white-space: normal; }
+/* BACKLOG 12: map editor side panel (the planet behind it is the live preview) */
+.editor-panel { width: 330px; display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; font-size: 14px; max-height: calc(100vh - 24px); }
+.editor-panel .menu-head { font-size: 19px; }
+.editor-panel .menu-sub { margin: 4px 0 0; }
+.editor-name { flex: 1; width: auto; }
+.editor-tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+.editor-tools .menu-small.on { background: #8dbf5a; border-color: #5e8c3a; color: #fff; }
+.editor-rival { width: 54px; flex: none; font-size: 13px; }
+.editor-check { display: flex; gap: 4px; align-items: center; }
+.editor-issues { margin: 0; padding-left: 18px; color: #ff9a7c; font-size: 12px; font-weight: 400; white-space: normal; }
+.editor-ok { color: #b8e08a; }
+.editor-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.editor-actions > * { flex: 1; }
+.editor-actions .menu-btn { padding: 6px 12px; }

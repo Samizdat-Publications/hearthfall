@@ -3,7 +3,7 @@
   "id": "sky_road",
   "name": "The Sky Road",
   "order": 9,
-  "description": "A Reliquary crowns a sea stack far out from your island. Board two followers onto the balloon, float them over the water, unload on the stack and pray. Grow to 20 followers before the storms come.",
+  "description": "A Reliquary crowns a sea stack far out from your island. Board two followers onto the balloon, float them over the water, unload on the stack and pray. Grow to 20 followers within 15 minutes.",
   "seed": 909,
   "map": {
     "generator": "flat",

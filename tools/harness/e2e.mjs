@@ -283,6 +283,49 @@ async function flow(browser, url, vp) {
     await screenIs("pause");
     await click("quit");
     await screenIs("main");
+    // BACKLOG 12: the map editor: a real left click paints, a goal without its sites blocks Playtest, Save stores
+    // the draft, Playtest runs it as a level and quitting the playtest returns to the editor with the draft
+    await click("editor");
+    await page.waitForSelector('[data-hud="editor"]', { timeout: 10000 });
+    const ed0 = await page.evaluate(() => window.__game.editor());
+    if (!ed0 || ed0.issues.length) problem(`editor did not open on a valid draft: ${JSON.stringify(ed0?.issues)}`);
+    await click("editor-tool-hill");
+    const spotE = await page.evaluate(() => {
+      const r = document.getElementById("view").getBoundingClientRect();
+      return [r.left + r.width * 0.62, r.top + r.height * 0.55];
+    });
+    await page.mouse.click(spotE[0], spotE[1]);
+    const ed1 = await page.evaluate(() => window.__game.editor());
+    if ((ed1?.draft.map.paint?.length ?? 0) !== (ed0?.draft.map.paint?.length ?? 0) + 1) problem("a left click in the editor did not paint a hill");
+    await page.selectOption('[data-ui="editor-goal"]', "hold");
+    if (!(await page.$eval('[data-ui="editor-playtest"]', (e) => e.disabled))) problem("Playtest is enabled while the draft has issues");
+    await check("editor");
+    await click("editor-tool-reliquary");
+    await page.evaluate(() => {
+      const n = window.__game.editor().draft.map.size;
+      window.__game.editorAt(n / 2, n * 0.3);
+      window.__game.editorAt(n / 2, n * 0.7);
+    });
+    const ed2 = await page.evaluate(() => window.__game.editor());
+    if (ed2?.issues.length) problem(`editor issues after placing the sites: ${JSON.stringify(ed2.issues)}`);
+    await click("editor-save");
+    const stored = await page.evaluate(() => localStorage.getItem("hearthfall.editor.v1"));
+    if (!stored?.includes("hold_sites")) problem("Save did not store the draft");
+    await click("editor-playtest");
+    await page.waitForFunction(() => window.__game.editorTest() && window.__game.level() !== null, null, { timeout: 15000 });
+    await page.evaluate(() => window.__game.step(40));
+    const lvE = await page.evaluate(() => window.__game.level());
+    if (lvE?.id !== "custom_level") problem(`editor playtest runs ${JSON.stringify(lvE)}`);
+    await page.keyboard.press("p");
+    await screenIs("pause");
+    const backTxt = await page.textContent('[data-ui="quit"]');
+    if (backTxt?.trim() !== "Back to the editor") problem(`playtest pause quit reads ${backTxt}`);
+    await click("quit");
+    await page.waitForSelector('[data-hud="editor"]', { timeout: 10000 });
+    const ed3 = await page.evaluate(() => window.__game.editor());
+    if (ed3?.draft.rules !== "hold_sites" || ed3.draft.setup.filter((x) => x.site).length !== 2) problem("the editor reopened without the draft");
+    await click("editor-exit");
+    await screenIs("main");
     await click("campaign");
     await screenIs("campaign");
     await click("back");

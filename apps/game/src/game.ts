@@ -30,6 +30,7 @@ import {
   type CameraState,
 } from "@hearthfall/render";
 import { makeBot } from "@hearthfall/ai";
+import { EDITOR_TOOLS, applyTool, draftIssues, draftJson, loadDraft, newDraft, previewWorld, setField, setGoal, setOpponent, storeDraft, type EditorGoal, type EditorTool } from "./editor.ts";
 import { DEFAULT_AI } from "./opponents.ts";
 import {
   actionFor,
@@ -308,6 +309,10 @@ export class Game {
 
   // ---- M8 game flow
   screen: Screen = "none";
+  /** BACKLOG 12: the map editor (null outside it); the world is then the draft's preview and the sim does not step */
+  editor: { draft: LevelDef; undo: LevelDef[]; tool: EditorTool; tribe: number; issues: string[]; note: string | null } | null = null;
+  /** the running level is an editor playtest: it records no campaign win and quitting returns to the editor */
+  editorTest = false;
   /** screens to return to with Back or Escape */
   backStack: Screen[] = [];
   /** true while a match is loaded (pause menu, saving); false on the main menu backdrop */
@@ -542,6 +547,8 @@ export class Game {
 
   /** The main menu over a still planet (no opponents, the sim does not run). */
   showMainMenu(): void {
+    this.editor = null;
+    this.editorTest = false;
     const sk = this.pack.files.balance.skirmish ?? SKIRMISH_DEFAULTS;
     this.params = { ...this.params, scenario: null };
     this.world = createSkirmish(this.pack, {
@@ -588,6 +595,171 @@ export class Game {
     this.backStack = [];
     this.paused = this.params.fixedStep;
     this.onChange();
+  }
+
+  // ---------------------------------------------------------------- BACKLOG 12: map editor
+  /** Open the map editor on the stored draft (or a new one) over its preview world. */
+  openEditor(): void {
+    const draft = loadDraft(this.kv) ?? newDraft();
+    this.editor = { draft, undo: [], tool: "land", tribe: 0, issues: [], note: null };
+    this.editorTest = false;
+    this.screen = "none";
+    this.backStack = [];
+    this.inGame = false;
+    this.skirmish = null;
+    this.scenarioCmds = null;
+    this.editorRebuild(false);
+  }
+
+  /** Rebuild the preview world from the draft (keeping the camera after an edit) and revalidate. */
+  private editorRebuild(keepCamera: boolean): void {
+    const ed = this.editor;
+    if (!ed) return;
+    const cam = { ...this.renderer.cam };
+    this.world = previewWorld(ed.draft, this.pack.files, this.pack.hash);
+    this.afterWorld();
+    this.renderer.revealFog = true;
+    const n = ed.draft.map.size;
+    this.renderer.setCamera(keepCamera ? { x: cam.x, z: cam.z, yaw: cam.yaw, zoom: cam.zoom, map: cam.map } : { x: n / 2, z: n / 2, zoom: 0.58, yaw: 0.6, map: false });
+    ed.issues = draftIssues(ed.draft, this.pack.files);
+    this.onChange();
+  }
+
+  /** Replace the draft (undoable), store it in the browser and rebuild the preview. */
+  editorEdit(next: LevelDef, rebuild = true): void {
+    const ed = this.editor;
+    if (!ed) return;
+    ed.undo.push(ed.draft);
+    if (ed.undo.length > 40) ed.undo.shift();
+    ed.draft = next;
+    ed.note = storeDraft(this.kv, next) ? null : "Could not store the draft in this browser.";
+    if (rebuild) this.editorRebuild(true);
+    else {
+      ed.issues = draftIssues(next, this.pack.files);
+      this.onChange();
+    }
+  }
+
+  /** Apply the current tool (or erase) at map cell (x, z). */
+  editorApply(x: number, z: number, erase = false): void {
+    const ed = this.editor;
+    if (!ed) return;
+    const tool = erase ? "erase" : ed.tool;
+    const next = applyTool(ed.draft, tool, x, z, { tribe: ed.tribe });
+    if (draftJson(next) === draftJson(ed.draft)) return;
+    this.editorEdit(next);
+    ed.tribe = Math.min(ed.tribe, ed.draft.tribes.length);
+  }
+
+  /** Apply the tool at a screen pixel (false when it misses the planet). */
+  editorAt(px: number, py: number, erase = false): boolean {
+    const p = this.renderer.pickTerrain(px, py);
+    if (!this.editor || !p) return false;
+    this.editorApply(p.x, p.z, erase);
+    return true;
+  }
+
+  editorTool(t: EditorTool): void {
+    if (!this.editor) return;
+    this.editor.tool = t;
+    this.onChange();
+  }
+
+  editorTribe(k: number): void {
+    if (!this.editor) return;
+    this.editor.tribe = Math.max(0, Math.min(k, this.editor.draft.tribes.length, 3));
+    this.onChange();
+  }
+
+  editorGoal(g: EditorGoal): void {
+    if (this.editor) this.editorEdit(setGoal(this.editor.draft, g), false);
+  }
+
+  editorOpponent(k: number, ai: string, difficulty: string): void {
+    if (this.editor) this.editorEdit(setOpponent(this.editor.draft, k, ai, difficulty), false);
+  }
+
+  editorField(f: "name" | "timeLimit" | "forge", v: string | number | boolean): void {
+    if (this.editor) this.editorEdit(setField(this.editor.draft, f, v), false);
+  }
+
+  /** A fresh draft of this size on land or sea (undoable). */
+  editorNew(size: number, base: "land" | "sea"): void {
+    if (!this.editor) return;
+    this.editorEdit(newDraft(size, base), false);
+    this.editor.tribe = 0;
+    this.editorRebuild(false);
+  }
+
+  editorUndo(): void {
+    const ed = this.editor;
+    const prev = ed?.undo.pop();
+    if (!ed || !prev) return;
+    ed.draft = prev;
+    ed.tribe = Math.min(ed.tribe, prev.tribes.length);
+    storeDraft(this.kv, prev);
+    this.editorRebuild(true);
+  }
+
+  editorSave(): void {
+    const ed = this.editor;
+    if (!ed) return;
+    ed.note = storeDraft(this.kv, ed.draft) ? (this.persistent ? "Saved in this browser." : "Saved until this tab closes (browser storage is unavailable).") : "Could not store the draft in this browser.";
+    this.onChange();
+  }
+
+  /** Download the draft as a level JSON file (data/levels shape). */
+  editorDownload(): void {
+    const ed = this.editor;
+    if (!ed) return;
+    const url = URL.createObjectURL(new Blob([draftJson(ed.draft)], { type: "application/json" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${ed.draft.id}.json`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    ed.note = `Downloaded ${ed.draft.id}.json.`;
+    this.onChange();
+  }
+
+  /** Play the draft as a level session; quitting it returns to the editor. */
+  editorPlaytest(): boolean {
+    const ed = this.editor;
+    if (!ed || ed.issues.length) return false;
+    storeDraft(this.kv, ed.draft);
+    const def = ed.draft;
+    this.editor = null;
+    try {
+      this.startSkirmish(campaignParams(def, {}));
+    } catch (e) {
+      // the editor stays open with the reason (startSkirmish keeps the preview world when it throws)
+      this.editor = ed;
+      ed.note = `The level could not start: ${(e as Error).message}`;
+      this.onChange();
+      return false;
+    }
+    this.editorTest = true;
+    return true;
+  }
+
+  editorExit(): void {
+    this.showMainMenu();
+  }
+
+  /** Editor keys: 1 to 9 pick a tool, Ctrl+Z undoes, camera keys pan and turn. */
+  private editorKey(e: KeyboardEvent): void {
+    if ((e.target as Element | null)?.closest?.("input, select, textarea")) return;
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
+      e.preventDefault();
+      this.editorUndo();
+      return;
+    }
+    const d = Number(e.key);
+    if (Number.isInteger(d) && d >= 1 && d <= EDITOR_TOOLS.length) {
+      this.editorTool(EDITOR_TOOLS[d - 1]);
+      return;
+    }
+    this.keys.add(e.key.toLowerCase());
   }
 
   go(screen: Screen): void {
@@ -659,7 +831,8 @@ export class Game {
       const me = this.world.tribes[this.localTribe];
       const unlocked = this.pack.files.spells.spells.filter((_, i) => me?.eco.unlocked[i]).map((sp) => sp.id);
       const taught = taughtSpells(unlocked, lv.def, this.skirmish.campaign?.carry ?? {});
-      if (won && !recordWin(this.kv, lv.def.id, this.campaignWon, this.campaignLearned, taught))
+      const shipped = !this.editorTest && this.levels.some((l) => l.id === lv.def.id);
+      if (won && shipped && !recordWin(this.kv, lv.def.id, this.campaignWon, this.campaignLearned, taught))
         this.notify(
           "progress",
           "Campaign progress could not be stored in this browser.",
@@ -967,7 +1140,7 @@ export class Game {
   frame(now: number): void {
     const dt = this.last ? Math.min(0.25, (now - this.last) / 1000) : 0;
     this.last = now;
-    if (!this.paused && this.screen === "none") {
+    if (!this.paused && this.screen === "none" && !this.editor) {
       this.acc += dt;
       const tickDt = 1 / this.world.cfg.tickHz;
       let n = 0;
@@ -1353,6 +1526,11 @@ export class Game {
     );
     this.canvas.addEventListener("contextmenu", (e) => e.preventDefault());
     this.canvas.addEventListener("mousedown", (e) => {
+      // BACKLOG 12: in the map editor a left click applies the tool and a right click erases
+      if (this.editor) {
+        if (e.button === 0 || e.button === 2) this.editorAt(e.clientX, e.clientY, e.button === 2);
+        return;
+      }
       // BACKLOG 11: in the Forge a left click is a brush stroke (orders wait for the match)
       if (e.button === 0 && this.world.forge?.running()) {
         this.forgeAt(e.clientX, e.clientY);
@@ -1473,6 +1651,7 @@ export class Game {
       if (e.key === "Escape") this.menuBack();
       return;
     }
+    if (this.editor) return this.editorKey(e);
     const k = e.key.toLowerCase();
     this.keys.add(k);
     const sel = this.selection.size > 0;

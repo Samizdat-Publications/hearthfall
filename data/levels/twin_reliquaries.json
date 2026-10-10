@@ -33,6 +33,7 @@
     { "spawn": "reliquary", "at": [64, 88], "site": { "tag": "south_reliquary", "worshippers": 3, "prayerSeconds": 30, "uses": 1, "rewards": [{ "type": "charges", "spell": "bolt", "n": 3 }] } }
   ],
   "objectives": [{ "type": "victory" }],
+  "lose": [{ "type": "timeLimit", "seconds": 1500 }],
   "triggers": [
     { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Send people to both Reliquaries and keep the rival away from them. The objective panel counts your time." }] }
   ]

@@ -5,6 +5,7 @@ import { Game, parseParams, type DebugFlags } from "./game.ts";
 import { mountGameHud } from "./hudBridge.ts";
 import { fitHud, hudFits } from "./hudFit.ts";
 import { mountGameMenus } from "./menuBridge.ts";
+import { mountGameEditor } from "./editorBridge.ts";
 import { drawnViewKey, viewKey, viewOutline } from "./minimap.ts";
 import type { CameraState } from "@hearthfall/render";
 import { validateLevel, validatePack, type LevelDef } from "@hearthfall/data";
@@ -73,11 +74,13 @@ try {
   game = new Game(canvas, parseParams(location.search));
   hud = mountGameHud(hudEl, game);
   const menus = mountGameMenus(document.getElementById("menus")!, game);
+  const editorUi = mountGameEditor(document.getElementById("editor")!, game);
   game.onChange = () => {
-    // the HUD hides under a menu screen (and so stays out of the menus' DOM layout checks)
-    hudEl.style.display = game.screen === "none" ? "" : "none";
+    // the HUD hides under a menu screen (and so stays out of the menus' DOM layout checks) and in the map editor
+    hudEl.style.display = game.screen === "none" && !game.editor ? "" : "none";
     hud.refresh();
     menus.refresh();
+    editorUi.refresh();
     refitHud();
   };
   game.onChange();
@@ -88,7 +91,7 @@ try {
 }
 // BACKLOG 8: refit the HUD scale when the setting or the window changes, or when grown content overlaps
 function refitHud() {
-  if (game.screen !== "none") return;
+  if (game.screen !== "none" || game.editor) return;
   // the visual QA calibration flag overlaps panels on purpose: leave them at the wanted scale
   if (document.body.classList.contains("debug-overlap-hud")) {
     fitKey = "";
@@ -265,6 +268,16 @@ if (__DEBUG_API__ || game.params.debug) {
       const r = game.world.rules;
       return r ? { id: r.def.id, winner: r.winner, why: r.why, held: [...r.held] } : null;
     },
+    /** BACKLOG 12: the map editor (null outside it), a tool applied at a map cell, and whether a playtest runs */
+    editor: () => {
+      const ed = game.editor;
+      return ed ? { tool: ed.tool, tribe: ed.tribe, issues: [...ed.issues], undo: ed.undo.length, note: ed.note, draft: JSON.parse(JSON.stringify(ed.draft)) } : null;
+    },
+    editorAt: (x: number, z: number, erase = false) => {
+      game.editorApply(x, z, erase);
+      return game.editor ? game.editor.issues.length : -1;
+    },
+    editorTest: () => game.editorTest,
     /** BACKLOG 11: the Forge phase (null without one) and a screen pixel where the local brush may land */
     forge: () => {
       const f = game.world.forge;

@@ -147,6 +147,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
       },
       titleArt,
       canSave: game.inGame && game.skirmish !== null && !game.ended,
+      editorTest: game.editorTest,
     };
   };
 
@@ -264,7 +265,8 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
       saveSettings();
       refresh();
     },
-    quitToMenu: () => game.showMainMenu(),
+    quitToMenu: () => (game.editorTest ? game.openEditor() : game.showMainMenu()),
+    openEditor: () => game.openEditor(),
     playAgain: () => {
       if (game.skirmish) game.startSkirmish(game.skirmish);
     },

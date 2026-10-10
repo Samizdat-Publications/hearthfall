@@ -87,6 +87,8 @@ export interface MenuModel {
   titleArt?: string;
   /** saving needs a skirmish in progress (scenarios and the menu backdrop cannot be saved) */
   canSave: boolean;
+  /** BACKLOG 12: the match is a map editor playtest (quitting returns to the editor) */
+  editorTest?: boolean;
 }
 
 export type SetupPatch = Partial<Pick<SetupView, "map" | "size" | "seed" | "opponents" | "difficulty" | "victory" | "forge">>;
@@ -110,6 +112,7 @@ export interface MenuActions {
   playAgain(): void;
   playLevel(id: string): void;
   nextLevel(): void;
+  openEditor(): void;
 }
 
 export const menuModel = signal<MenuModel | null>(null);
@@ -153,6 +156,9 @@ function Main({ act, art }: { act: MenuActions; art?: string }) {
       </Btn>
       <Btn ui="load" onClick={() => act.openSaves("load")}>
         Load game
+      </Btn>
+      <Btn ui="editor" onClick={() => act.openEditor()}>
+        Map editor
       </Btn>
       <Btn ui="settings" onClick={() => act.go("settings")}>
         Settings
@@ -312,7 +318,7 @@ function Pause({ m, act }: { m: MenuModel; act: MenuActions }) {
         Settings
       </Btn>
       <Btn ui="quit" onClick={() => act.quitToMenu()}>
-        Quit to menu
+        {m.editorTest ? "Back to the editor" : "Quit to menu"}
       </Btn>
     </div>
   );
@@ -441,7 +447,7 @@ function End({ m, act }: { m: MenuModel; act: MenuActions }) {
         {e.won ? "Play again" : "Try again"}
       </Btn>
       <Btn ui="main-menu" onClick={() => act.quitToMenu()}>
-        Main menu
+        {m.editorTest ? "Back to the editor" : "Main menu"}
       </Btn>
     </div>
   );

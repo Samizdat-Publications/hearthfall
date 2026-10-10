@@ -235,5 +235,6 @@ describe("campaign levels", () => {
     expect(msgs({ rules: undefined })).toContain("a victory objective needs level rules");
     expect(msgs({ rules: "nope" })).toContain("unknown victory rules nope");
     expect(msgs({ rules: "hold_sites", forge: true })).toEqual([]);
+    expect(msgs({ rules: "king_of_hill", setup: ok.setup.filter((s) => !s.site) })).toContain("king_of_hill needs a worship site to hold");
   });
 });

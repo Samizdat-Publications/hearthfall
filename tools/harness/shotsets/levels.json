@@ -138,7 +138,7 @@
      "step": 2
     },
     {
-     "assert": "__game.getSummary().tick > 1000"
+     "assert": "__game.getSummary().tick > 1000 && __game.forge().ops[1] > 0"
     }
    ],
    "kind": "world",

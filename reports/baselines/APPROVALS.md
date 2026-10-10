@@ -96,3 +96,4 @@
 - 2026-10-10T07:06 set menus (4 shots): BACKLOG 11: skirmish setup gained the Forge row
 - 2026-10-10T07:35 set menus (4 shots): S2 H: campaign route has 13 levels, nodes zigzag so neighbors never touch
 - 2026-10-10T07:38 set levels (5 shots): S2 H: look v3 refresh of old level shots; new sky_road_stack and the_forge_moat
+- 2026-10-10T07:55 set menus (5 shots): BACKLOG 12: Map editor button on the main menu; new menu_editor shot of the editor panel over its live preview

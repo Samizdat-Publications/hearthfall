@@ -248,7 +248,9 @@ export function validateLevel(raw: unknown, pack: PackFiles, file = "level"): { 
   });
   if (lv.objectives.some((o) => o.type === "eliminateAll") && lv.tribes.length < 2) bad("objectives", "eliminateAll needs an opponent");
   const variants = pack.balance.victory?.variants ?? [];
-  if (lv.rules && !variants.some((v) => v.id === lv.rules)) bad("rules", `unknown victory rules ${lv.rules}`);
+  const variant = variants.find((v) => v.id === lv.rules);
+  if (lv.rules && !variant) bad("rules", `unknown victory rules ${lv.rules}`);
+  if ((variant?.type === "holdSites" || variant?.type === "kingOfHill") && !lv.setup.some((s) => s.site)) bad("rules", `${lv.rules} needs a worship site to hold`);
   if (lv.objectives.some((o) => o.type === "victory") && !lv.rules) bad("objectives", "a victory objective needs level rules");
   if (lv.forge && !pack.balance.forge) bad("forge", "this pack has no balance.forge");
   return issues.length ? { issues } : { issues, level: lv };

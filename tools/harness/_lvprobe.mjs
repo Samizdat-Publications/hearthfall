@@ -1,4 +1,5 @@
-// temporary: play a level with bots for tribe 0 and print the outcome
+// Dev probe (kept): play a level with bots or scripted commands for tribe 0 and print the outcome.
+// Usage: node tools/harness/_lvprobe.mjs <level> '<botsJson>' '<cmdsJson>' <seconds>
 import { createLevelWorld } from "../../packages/sim/src/level.ts";
 import { commandsByTick } from "../../packages/sim/src/scenario.ts";
 import { makeBot } from "../../packages/ai/src/index.ts";
