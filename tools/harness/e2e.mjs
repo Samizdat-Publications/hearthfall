@@ -202,10 +202,14 @@ async function flow(browser, url, vp) {
     // M9 campaign: only the first level is open; win it, go on to the next, and the menu remembers
     await click("campaign");
     await screenIs("campaign");
-    const order = await page.$$eval('[data-ui^="level-"]', (els) => els.map((e) => ({ ui: e.getAttribute("data-ui"), disabled: e.disabled })));
+    const order = await page.$$eval('.route-node[data-ui^="level-"]', (els) => els.map((e) => ({ ui: e.getAttribute("data-ui"), disabled: e.disabled })));
     if (order.length < 3 || order[0].disabled || !order.slice(1).every((l) => l.disabled)) problem(`campaign: open levels ${JSON.stringify(order)}`);
     await check("campaign");
+    // BACKLOG 9: the route map picks the frontier level; its card plays it
+    const card = await page.textContent('[data-ui="campaign-card"]');
+    if (!card?.includes("1.")) problem(`campaign card does not show the first level: ${card}`);
     await click(order[0].ui);
+    await click("level-play");
     await screenIs("none");
     await page.evaluate(() => window.__game.step(60));
     const lv = await page.evaluate(() => window.__game.level());
@@ -231,6 +235,29 @@ async function flow(browser, url, vp) {
     await screenIs("campaign");
     const open2 = await page.$eval(`[data-ui="${order[1].ui}"]`, (e) => !e.disabled);
     if (!open2) problem("campaign: the second level is still closed after winning the first");
+    // BACKLOG 85: a real loss: an idle player loses the shrine race of level 2, and the end screen says why
+    await click(order[1].ui);
+    await click("level-play");
+    await screenIs("none");
+    await page.evaluate(() => window.__game.step(20 * 240));
+    await screenIs("end");
+    const lost = { title: await page.textContent('[data-ui="end-title"]'), tag: await page.textContent('[data-ui="end-tag"]') };
+    if (lost.title?.trim() !== "Level lost" || lost.tag?.trim() !== "A rival tribe claimed the site first.") problem(`level loss end screen ${JSON.stringify(lost)}`);
+    if (await page.$('[data-ui="next-level"]')) problem("a lost level offers Next level");
+    await click("main-menu");
+    await screenIs("main");
+    // and the last level's win completes the campaign: no Next level
+    const last = order[order.length - 1].ui.slice("level-".length);
+    await page.evaluate((id) => window.__game.playLevel(id), last);
+    await screenIs("none");
+    await page.evaluate(() => window.__game.winLevel());
+    await screenIs("end");
+    const fin = await page.textContent('[data-ui="end-tag"]');
+    if (!/campaign is complete/.test(fin ?? "") || (await page.$('[data-ui="next-level"]'))) problem(`last level end screen: ${fin}`);
+    await click("main-menu");
+    await screenIs("main");
+    await click("campaign");
+    await screenIs("campaign");
     await click("back");
     await screenIs("main");
   } catch (e) {

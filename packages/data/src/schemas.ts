@@ -964,7 +964,7 @@ export const SiteSpecSchema = z.strictObject({
 export type SiteSpec = z.infer<typeof SiteSpecSchema>;
 
 const LevelSetup = z.strictObject({
-  /** unit, building, worship kind or "tree" */
+  /** unit, building, worship kind, "tree" or "rock" */
   spawn: id,
   tribe: z.number().int().min(-1).optional(),
   at: point.optional(),

@@ -1,0 +1,481 @@
+{
+ "id": "level_old_reliquary",
+ "description": "BACKLOG 84: a campaign level with a worship site in a golden: four followers pray at the Reliquary three times (unlockSpell, charges, a worship trigger casting Ward at a point), the Shaper casts the learned Whirlwind, and the objectives latch. The level is embedded so edits to data/levels never turn it red.",
+ "every": 100,
+ "def": {
+  "levelDef": {
+   "$comment": "Teaching level 4: Reliquaries. A Reliquary can be prayed at more than once; its first prayer teaches a spell the campaign keeps (BACKLOG 9 learned carry).",
+   "id": "old_reliquary",
+   "name": "The Old Reliquary",
+   "order": 4,
+   "description": "An old Reliquary stands on the hill. Pray there to learn Whirlwind, pray again for more charges, and grow your tribe to 24 followers before the season turns.",
+   "seed": 404,
+   "map": {
+    "generator": "flat",
+    "size": 96,
+    "landAboveSea": 30,
+    "paint": [
+     {
+      "shape": "disc",
+      "at": [
+       58,
+       48
+      ],
+      "r": 6,
+      "aboveSea": 44,
+      "falloff": 6
+     },
+     {
+      "shape": "disc",
+      "at": [
+       48,
+       16
+      ],
+      "r": 10,
+      "aboveSea": -30,
+      "falloff": 4
+     },
+     {
+      "shape": "disc",
+      "at": [
+       48,
+       80
+      ],
+      "r": 10,
+      "aboveSea": -30,
+      "falloff": 4
+     }
+    ]
+   },
+   "tribes": [
+    {}
+   ],
+   "spells": [
+    "bolt",
+    "raise_land"
+   ],
+   "buildings": [
+    "dwelling",
+    "watchtower"
+   ],
+   "setup": [
+    {
+     "spawn": "hearth",
+     "tribe": 0,
+     "at": [
+      26,
+      48
+     ]
+    },
+    {
+     "spawn": "shaper",
+     "tribe": 0,
+     "at": [
+      29,
+      46
+     ]
+    },
+    {
+     "spawn": "settler",
+     "tribe": 0,
+     "near": [
+      29,
+      51
+     ],
+     "count": 10
+    },
+    {
+     "spawn": "tree",
+     "near": [
+      18,
+      38
+     ],
+     "count": 12,
+     "spacing": 1.2
+    },
+    {
+     "spawn": "tree",
+     "near": [
+      36,
+      60
+     ],
+     "count": 10,
+     "spacing": 1.2
+    },
+    {
+     "spawn": "rock",
+     "near": [
+      20,
+      58
+     ],
+     "count": 3,
+     "spacing": 2
+    },
+    {
+     "spawn": "reliquary",
+     "at": [
+      58,
+      48
+     ],
+     "site": {
+      "tag": "old_reliquary",
+      "worshippers": 4,
+      "prayerSeconds": 30,
+      "uses": 3,
+      "rewards": [
+       {
+        "type": "unlockSpell",
+        "spell": "whirlwind"
+       },
+       {
+        "type": "charges",
+        "spell": "whirlwind",
+        "n": 1
+       },
+       {
+        "type": "message",
+        "text": "The Reliquary teaches Whirlwind. It can answer twice more."
+       }
+      ]
+     }
+    }
+   ],
+   "objectives": [
+    {
+     "type": "worship",
+     "site": "old_reliquary",
+     "text": "Pray at the Reliquary on the hill"
+    },
+    {
+     "type": "followers",
+     "n": 24,
+     "text": "Grow to 24 followers"
+    }
+   ],
+   "lose": [
+    {
+     "type": "timeLimit",
+     "seconds": 900
+    }
+   ],
+   "triggers": [
+    {
+     "when": {
+      "type": "time",
+      "seconds": 1
+     },
+     "do": [
+      {
+       "type": "message",
+       "text": "Send four followers to pray at the Reliquary. Build dwellings so your tribe grows."
+      }
+     ]
+    },
+    {
+     "when": {
+      "type": "worship",
+      "site": "old_reliquary"
+     },
+     "do": [
+      {
+       "type": "spell",
+       "spell": "ward",
+       "at": [
+        58,
+        48
+       ]
+      },
+      {
+       "type": "message",
+       "text": "A ward settles over the hill."
+      }
+     ]
+    },
+    {
+     "when": {
+      "type": "time",
+      "seconds": 600
+     },
+     "do": [
+      {
+       "type": "message",
+       "text": "Five minutes of the season remain."
+      }
+     ]
+    }
+   ]
+  },
+  "carry": {
+   "spells": [
+    "raise_land"
+   ]
+  },
+  "commands": [
+   {
+    "tick": 200,
+    "tribe": 0,
+    "type": "worship",
+    "args": {
+     "units": "tribe0.settlers",
+     "site": "old_reliquary"
+    }
+   },
+   {
+    "tick": 2000,
+    "tribe": 0,
+    "type": "cast",
+    "args": {
+     "spell": "whirlwind",
+     "target": [
+      40,
+      40
+     ]
+    }
+   }
+  ],
+  "runTicks": 3000
+ },
+ "packHash": "4e26b62c",
+ "checkpoints": [
+  {
+   "tick": 100,
+   "all": "aa7d800c",
+   "terrain": "bf7b9507",
+   "entities": "e16b66dc",
+   "rng": "b33d3a73",
+   "meta": "51ea2dc2"
+  },
+  {
+   "tick": 200,
+   "all": "f455340f",
+   "terrain": "bf7b9507",
+   "entities": "e16b66dc",
+   "rng": "b33d3a73",
+   "meta": "9dcf86dd"
+  },
+  {
+   "tick": 300,
+   "all": "61fe1222",
+   "terrain": "bf7b9507",
+   "entities": "637a0f49",
+   "rng": "b33d3a73",
+   "meta": "c3f4f925"
+  },
+  {
+   "tick": 400,
+   "all": "e9d23a08",
+   "terrain": "bf7b9507",
+   "entities": "531c834e",
+   "rng": "b33d3a73",
+   "meta": "fd209ffe"
+  },
+  {
+   "tick": 500,
+   "all": "e3f0e69e",
+   "terrain": "bf7b9507",
+   "entities": "73d6f267",
+   "rng": "b33d3a73",
+   "meta": "1a56bae4"
+  },
+  {
+   "tick": 600,
+   "all": "c7202955",
+   "terrain": "bf7b9507",
+   "entities": "aa3ae37a",
+   "rng": "b33d3a73",
+   "meta": "de928785"
+  },
+  {
+   "tick": 700,
+   "all": "237280a3",
+   "terrain": "bf7b9507",
+   "entities": "c742a701",
+   "rng": "b33d3a73",
+   "meta": "eefa5569"
+  },
+  {
+   "tick": 800,
+   "all": "71b1e849",
+   "terrain": "bf7b9507",
+   "entities": "824a1e56",
+   "rng": "b33d3a73",
+   "meta": "bbec9680"
+  },
+  {
+   "tick": 900,
+   "all": "65fc7d5e",
+   "terrain": "bf7b9507",
+   "entities": "9ebf19eb",
+   "rng": "b33d3a73",
+   "meta": "f9129e8a"
+  },
+  {
+   "tick": 1000,
+   "all": "9a8b66c2",
+   "terrain": "bf7b9507",
+   "entities": "9ebf19eb",
+   "rng": "b33d3a73",
+   "meta": "0fbf829d"
+  },
+  {
+   "tick": 1100,
+   "all": "f769a720",
+   "terrain": "bf7b9507",
+   "entities": "9ebf19eb",
+   "rng": "b33d3a73",
+   "meta": "3f19885b"
+  },
+  {
+   "tick": 1200,
+   "all": "cbca18f6",
+   "terrain": "bf7b9507",
+   "entities": "1f54c757",
+   "rng": "440ba9de",
+   "meta": "56fc5cfa"
+  },
+  {
+   "tick": 1300,
+   "all": "476ccd69",
+   "terrain": "bf7b9507",
+   "entities": "0555ae63",
+   "rng": "440ba9de",
+   "meta": "10a7f060"
+  },
+  {
+   "tick": 1400,
+   "all": "b43a6c4d",
+   "terrain": "bf7b9507",
+   "entities": "c0590263",
+   "rng": "440ba9de",
+   "meta": "5c3b2649"
+  },
+  {
+   "tick": 1500,
+   "all": "4d21b2c4",
+   "terrain": "bf7b9507",
+   "entities": "4a782ba3",
+   "rng": "440ba9de",
+   "meta": "9553d91e"
+  },
+  {
+   "tick": 1600,
+   "all": "6fd343bd",
+   "terrain": "bf7b9507",
+   "entities": "f9ee093b",
+   "rng": "440ba9de",
+   "meta": "47c98da2"
+  },
+  {
+   "tick": 1700,
+   "all": "b641020b",
+   "terrain": "bf7b9507",
+   "entities": "14790d93",
+   "rng": "440ba9de",
+   "meta": "8643d492"
+  },
+  {
+   "tick": 1800,
+   "all": "717c2bb3",
+   "terrain": "bf7b9507",
+   "entities": "b5bfa467",
+   "rng": "440ba9de",
+   "meta": "55d295cb"
+  },
+  {
+   "tick": 1900,
+   "all": "38e92cfb",
+   "terrain": "bf7b9507",
+   "entities": "4143b3df",
+   "rng": "440ba9de",
+   "meta": "bfe5979d"
+  },
+  {
+   "tick": 2000,
+   "all": "dfd5ea77",
+   "terrain": "bf7b9507",
+   "entities": "89b786a7",
+   "rng": "440ba9de",
+   "meta": "ef3545b0"
+  },
+  {
+   "tick": 2100,
+   "all": "5297dc9f",
+   "terrain": "bf7b9507",
+   "entities": "1336b30f",
+   "rng": "bbd9ceb7",
+   "meta": "d70d227a"
+  },
+  {
+   "tick": 2200,
+   "all": "72511aaf",
+   "terrain": "bf7b9507",
+   "entities": "101a7c8a",
+   "rng": "05c50f3f",
+   "meta": "92d9c534"
+  },
+  {
+   "tick": 2300,
+   "all": "46167324",
+   "terrain": "bf7b9507",
+   "entities": "f6e95acc",
+   "rng": "14c82c65",
+   "meta": "e29e00ef"
+  },
+  {
+   "tick": 2400,
+   "all": "061ad52a",
+   "terrain": "bf7b9507",
+   "entities": "87db3a1b",
+   "rng": "4c864b4b",
+   "meta": "759fe062"
+  },
+  {
+   "tick": 2500,
+   "all": "bee69361",
+   "terrain": "bf7b9507",
+   "entities": "8e397b4b",
+   "rng": "4c864b4b",
+   "meta": "c0993698"
+  },
+  {
+   "tick": 2600,
+   "all": "77f47217",
+   "terrain": "bf7b9507",
+   "entities": "99d2c4fb",
+   "rng": "4c864b4b",
+   "meta": "1e6c8810"
+  },
+  {
+   "tick": 2700,
+   "all": "6d966671",
+   "terrain": "bf7b9507",
+   "entities": "6196b3fb",
+   "rng": "4c864b4b",
+   "meta": "78518a6e"
+  },
+  {
+   "tick": 2800,
+   "all": "5d1fe388",
+   "terrain": "bf7b9507",
+   "entities": "8f2ed42f",
+   "rng": "4c864b4b",
+   "meta": "b892f6a7"
+  },
+  {
+   "tick": 2900,
+   "all": "96a94758",
+   "terrain": "bf7b9507",
+   "entities": "f73f5ab7",
+   "rng": "4c864b4b",
+   "meta": "aaa1feb5"
+  },
+  {
+   "tick": 3000,
+   "all": "9d4c0ea3",
+   "terrain": "bf7b9507",
+   "entities": "bf6606ff",
+   "rng": "4c864b4b",
+   "meta": "3c8834da"
+  }
+ ]
+}

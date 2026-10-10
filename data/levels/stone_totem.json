@@ -1,0 +1,45 @@
+{
+  "$comment": "Teaching level 5: totems and building unlocks. Only the Shaper's prayer counts at a totem; this one grants the Warden Lodge for the rest of the campaign.",
+  "id": "stone_totem",
+  "name": "The Stone Totem",
+  "order": 5,
+  "description": "Your people forgot how to build a Warden Lodge, but the stone totem in the north remembers. Lead your Shaper there, raise a lodge, and hold out for seven minutes.",
+  "seed": 505,
+  "map": {
+    "generator": "flat",
+    "size": 96,
+    "landAboveSea": -30,
+    "paint": [
+      { "shape": "disc", "at": [26, 52], "r": 17, "aboveSea": 40, "falloff": 4 },
+      { "shape": "disc", "at": [30, 26], "r": 7, "aboveSea": 46, "falloff": 4 },
+      { "shape": "disc", "at": [72, 52], "r": 15, "aboveSea": 40, "falloff": 4 },
+      { "shape": "rect", "at": [49, 52], "size": [16, 6], "aboveSea": 36 }
+    ]
+  },
+  "tribes": [{}, { "ai": "aggressive", "difficulty": "easy", "maxTroops": 6 }],
+  "spells": ["bolt", "raise_land"],
+  "buildings": ["dwelling", "watchtower"],
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [22, 54] },
+    { "spawn": "shaper", "tribe": 0, "at": [25, 50] },
+    { "spawn": "settler", "tribe": 0, "near": [22, 60], "count": 12 },
+    { "spawn": "hearth", "tribe": 1, "at": [76, 52] },
+    { "spawn": "shaper", "tribe": 1, "at": [72, 50] },
+    { "spawn": "settler", "tribe": 1, "near": [76, 58], "count": 10 },
+    { "spawn": "tree", "near": [14, 46], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [80, 44], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [16, 64], "count": 3, "spacing": 2 },
+    { "spawn": "totem", "at": [30, 26], "site": { "tag": "north_totem", "rewards": [{ "type": "unlockBuilding", "building": "warden_lodge" }, { "type": "message", "text": "The totem remembers: you can build a Warden Lodge." }] } }
+  ],
+  "objectives": [
+    { "type": "worship", "site": "north_totem", "text": "Lead your Shaper to the northern totem within ten minutes" },
+    { "type": "survive", "seconds": 420, "text": "Hold out for seven minutes" }
+  ],
+  "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 600 }],
+  "triggers": [
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Only your Shaper can pray at a totem. Walk it north and order it to worship." }] },
+    { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "message", "text": "Build a Warden Lodge and train wardens before the raiders cross." }] },
+    { "when": { "type": "time", "seconds": 240 }, "do": [{ "type": "raid", "tribe": 1, "to": [22, 54] }, { "type": "message", "text": "Raiders are crossing the causeway!" }] }
+  ],
+  "unlocks": { "buildings": ["warden_lodge"] }
+}

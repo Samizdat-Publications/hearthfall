@@ -25,9 +25,12 @@
     { "spawn": "tree", "near": [22, 40], "count": 6, "spacing": 1.2 },
     { "spawn": "shrine", "at": [46, 32], "site": { "tag": "far_shrine", "worshippers": 3, "rewards": [{ "type": "charges", "spell": "bolt", "n": 2 }, { "type": "message", "text": "The shrine answers: two Bolts are yours to cast." }] } }
   ],
-  "objectives": [{ "type": "worship", "site": "far_shrine", "text": "Pray at the shrine across the strait" }],
+  "objectives": [{ "type": "worship", "site": "far_shrine", "text": "Pray at the shrine across the strait within ten minutes" }],
+  "lose": [{ "type": "timeLimit", "seconds": 600 }],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "charges", "spell": "raise_land", "n": 2 }, { "type": "message", "text": "Walk the Shaper to the eastern shore and Raise Land toward the islet." }] }
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "charges", "spell": "raise_land", "n": 2 }, { "type": "message", "text": "Walk the Shaper to the eastern shore and Raise Land toward the islet." }] },
+    { "when": { "type": "time", "seconds": 150 }, "do": [{ "type": "message", "text": "Strait still open? Raise Land recharges from your mana; cast it from the very edge of the shore." }] },
+    { "when": { "type": "time", "seconds": 420 }, "do": [{ "type": "message", "text": "The tide turns at ten minutes. If you are stuck, restart the level from the pause menu." }] }
   ],
   "unlocks": { "spells": ["raise_land"] }
 }

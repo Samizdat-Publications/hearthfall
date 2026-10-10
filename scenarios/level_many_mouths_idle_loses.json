@@ -1,0 +1,15 @@
+{
+  "id": "level_many_mouths_idle_loses",
+  "description": "Campaign level 6 has a real loss: an idle tribe does not grow and loses when winter comes.",
+  "tags": [
+    "levels"
+  ],
+  "level": "many_mouths",
+  "runTicks": 18020,
+  "assert": [
+    {
+      "at": 18020,
+      "expr": "level.lost && !level.won && invariants() == 0"
+    }
+  ]
+}

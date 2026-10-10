@@ -1,0 +1,25 @@
+{
+  "id": "level_two_fires",
+  "description": "Campaign level 7 is completable: an aggressive player scouts through the fog and defeats both rival tribes.",
+  "tags": [
+    "fast",
+    "levels"
+  ],
+  "level": "two_fires",
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "aggressive",
+      "difficulty": "hard",
+      "offset": 2
+    }
+  ],
+  "runTicks": 12000,
+  "assert": [
+    {
+      "at": 12000,
+      "expr": "level.won && !alive(1) && !alive(2) && alive(0) && invariants() == 0"
+    }
+  ]
+}

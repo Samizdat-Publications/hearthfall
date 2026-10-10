@@ -44,7 +44,8 @@ export function hudFor(game: Game): HudModel {
     cap: tr ? w.economy.popCap(tr.index) : 0,
     manaPerMin: tr?.eco.incomePerMin ?? 0,
     spellsPct: tr?.eco.spellsPct ?? 50,
-    wasting: tr ? w.economy.nextSpell(tr.eco) < 0 && tr.eco.trainDemand <= 0 : false,
+    // BACKLOG 89: no warning when no spell can take mana at all (a level that only hands out charges)
+    wasting: tr ? tr.eco.unlocked.some((u) => u === 1) && w.economy.nextSpell(tr.eco) < 0 && tr.eco.trainDemand <= 0 : false,
     spells: sv,
     selected: game.selection.size,
     attack: game.attackMode,
@@ -72,6 +73,17 @@ const clock = (sec: number) => `${Math.floor(sec / 60)}:${String(Math.max(0, Mat
 const words = (id: string) => id.replace(/_/g, " ");
 
 /** M9: a campaign level's objectives (its own text, else one from the type) and its lose conditions. */
+/** BACKLOG 89: " (prayer 40%, rival 20%)" while someone prays at the tagged site, else "" */
+export function prayerNote(w: Game["world"], tag: string, me: number): string {
+  const s = w.worship.find(tag);
+  if (!s || s.usesLeft <= 0) return "";
+  const pct = (v: number) => `${Math.min(99, Math.floor((100 * v) / s.prayTicks))}%`;
+  const mine = s.progress[me] ?? 0;
+  const rival = Math.max(0, ...s.progress.filter((_, t) => t !== me));
+  if (mine <= 0 && rival <= 0) return "";
+  return rival > 0 ? ` (prayer ${pct(mine)}, rival ${pct(rival)})` : ` (prayer ${pct(mine)})`;
+}
+
 function levelObjectives(game: Game): ObjectiveView[] {
   const w = game.world;
   const lv = w.level!;
@@ -87,7 +99,9 @@ function levelObjectives(game: Game): ObjectiveView[] {
           : o.type === "survive"
             ? `Survive ${clock(o.seconds)}${done ? "" : ` (${left(o.seconds)} left)`}`
             : `Reach ${o.n} followers (${w.economy.followers(game.localTribe)})`;
-    return { text: o.text ?? auto, done, part: `objective-${k}` };
+    // BACKLOG 89: live prayer progress and follower count after authored objective text
+    const live = done ? "" : o.type === "worship" ? prayerNote(w, o.site, game.localTribe) : o.type === "followers" && o.text ? ` (${w.economy.followers(game.localTribe)})` : "";
+    return { text: (o.text ?? auto) + live, done, part: `objective-${k}` };
   });
   (lv.def.lose ?? []).forEach((l, k) => {
     if (l.type === "timeLimit") out.push({ text: `Time left: ${left(l.seconds)}`, done: false, part: `lose-${k}` });

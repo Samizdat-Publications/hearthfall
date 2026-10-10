@@ -3,11 +3,13 @@
 //   npm run replays:rebless -- --reason "why" [--id x]   re-record checkpoints with the current data pack
 // A golden holds a scenario-style definition (seed, map, setup, commands, runTicks), the pack hash it
 // was blessed with, and hash checkpoints every `every` ticks. The pack is frozen to
-// replays/golden/pack/<hash>/ so balance edits in data/base never turn goldens red.
+// replays/golden/pack/<hash>/ so balance edits in data/base never turn goldens red. A golden may embed
+// a whole campaign level (`def.levelDef`, player only, plus `carry`; BACKLOG 84).
 import { appendFileSync, copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { createScenarioWorld, commandsByTick } from "../../packages/sim/src/scenario.ts";
+import { createLevelWorld } from "../../packages/sim/src/level.ts";
 import { loadBasePack, readPackDir } from "./datapack.mjs";
-import { validatePack } from "../../packages/data/src/index.ts";
+import { validateLevel, validatePack } from "../../packages/data/src/index.ts";
 import { ROOT, writeReport } from "./lib.mjs";
 import { makeBot } from "../../packages/ai/src/index.ts";
 
@@ -43,7 +45,13 @@ function freeze(pack) {
 
 /** Run a golden definition, calling onCheckpoint(tick, hashParts) every `every` ticks and at the end. */
 function play(g, pack, onCheckpoint) {
-  const w = createScenarioWorld(g.def, pack.files, pack.hash, makeBot);
+  let w;
+  if (g.def.levelDef) {
+    // BACKLOG 84: the golden embeds its level, so edits to data/levels never turn it red
+    const lv = validateLevel(g.def.levelDef, pack.files);
+    if (!lv.level) throw new Error(`golden ${g.id}: embedded level invalid: ${lv.issues[0]?.path} ${lv.issues[0]?.message}`);
+    w = createLevelWorld({ def: lv.level, carry: g.def.carry }, pack.files, pack.hash, makeBot);
+  } else w = createScenarioWorld(g.def, pack.files, pack.hash, makeBot);
   const cmds = commandsByTick(g.def.commands);
   const every = g.every ?? 100;
   while (w.tick < g.def.runTicks) {

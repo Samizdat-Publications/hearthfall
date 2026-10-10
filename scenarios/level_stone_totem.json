@@ -1,0 +1,36 @@
+{
+  "id": "level_stone_totem",
+  "description": "Campaign level 5 is completable: the Shaper prays at the northern totem (only its prayer counts), the Warden Lodge opens, and a defensive player holds out for seven minutes.",
+  "tags": [
+    "fast",
+    "levels"
+  ],
+  "level": "stone_totem",
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "turtle",
+      "difficulty": "normal",
+      "offset": 1
+    }
+  ],
+  "commands": [
+    {
+      "tick": 40,
+      "tribe": 0,
+      "type": "worship",
+      "args": {
+        "units": "tribe0.shapers",
+        "site": "north_totem"
+      }
+    }
+  ],
+  "runTicks": 8800,
+  "assert": [
+    {
+      "at": 8800,
+      "expr": "level.won && site('north_totem').by == 0 && level.objectivesDone == 2 && alive(0) && invariants() == 0"
+    }
+  ]
+}

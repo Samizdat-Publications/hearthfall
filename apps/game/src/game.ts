@@ -46,10 +46,12 @@ import {
 import {
   campaignCarry,
   levelOpen,
+  loadLearned,
   loadProgress,
   nextLevel,
   ordered,
   recordWin,
+  taughtSpells,
 } from "./campaign.ts";
 import {
   QUALITY_SCALE,
@@ -252,6 +254,8 @@ export class Game {
   readonly levels = loadLevels(this.pack);
   /** campaign levels won (browser storage; this session only when storage is unavailable) */
   campaignWon: string[] = [];
+  /** BACKLOG 9: spells each won level taught in play, carried into later levels */
+  campaignLearned: Record<string, string[]> = {};
   world!: World;
   readonly renderer: ThreeRenderer;
   params: GameParams;
@@ -366,6 +370,7 @@ export class Game {
       st?.alias ?? {},
     );
     this.campaignWon = loadProgress(this.kv);
+    this.campaignLearned = loadLearned(this.kv);
     this.applyQuality();
     this.applyA11y();
     if (params.campaign && !params.scenario)
@@ -519,7 +524,7 @@ export class Game {
     if (!def) throw new Error(`unknown level ${id}`);
     if (!anyway && !levelOpen(this.levels, this.campaignWon, id)) return;
     this.startSkirmish(
-      campaignParams(def, campaignCarry(this.levels, this.campaignWon, id)),
+      campaignParams(def, campaignCarry(this.levels, this.campaignWon, id, this.campaignLearned)),
     );
   }
 
@@ -645,7 +650,10 @@ export class Game {
     if (lv) {
       if (lv.outcome === OUTCOME.none) return;
       const won = lv.outcome === OUTCOME.won;
-      if (won && !recordWin(this.kv, lv.def.id, this.campaignWon))
+      const me = this.world.tribes[this.localTribe];
+      const unlocked = this.pack.files.spells.spells.filter((_, i) => me?.eco.unlocked[i]).map((sp) => sp.id);
+      const taught = taughtSpells(unlocked, lv.def, this.skirmish.campaign?.carry ?? {});
+      if (won && !recordWin(this.kv, lv.def.id, this.campaignWon, this.campaignLearned, taught))
         this.notify(
           "progress",
           "Campaign progress could not be stored in this browser.",

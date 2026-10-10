@@ -1,0 +1,15 @@
+{
+  "id": "level_two_fires_idle_loses",
+  "description": "Campaign level 7 has a real loss: an idle player is eliminated by the southern war band.",
+  "tags": [
+    "levels"
+  ],
+  "level": "two_fires",
+  "runTicks": 16000,
+  "assert": [
+    {
+      "at": 16000,
+      "expr": "level.lost && !alive(0) && invariants() == 0"
+    }
+  ]
+}

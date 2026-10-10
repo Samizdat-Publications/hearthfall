@@ -1,0 +1,42 @@
+{
+  "$comment": "Teaching level 7: conquest under fog. Two rival tribes hide beyond the hills; scout with a unit, then defeat both.",
+  "id": "two_fires",
+  "name": "Two Fires",
+  "order": 7,
+  "description": "Smoke rises from two fires beyond the hills, but you cannot see their villages. Scout them out, then defeat both rival tribes.",
+  "seed": 707,
+  "map": {
+    "generator": "flat",
+    "size": 128,
+    "landAboveSea": 30,
+    "paint": [
+      { "shape": "disc", "at": [64, 40], "r": 9, "aboveSea": 50, "falloff": 8 },
+      { "shape": "disc", "at": [64, 88], "r": 9, "aboveSea": 50, "falloff": 8 },
+      { "shape": "disc", "at": [64, 64], "r": 6, "aboveSea": -30, "falloff": 4 }
+    ]
+  },
+  "tribes": [{}, { "ai": "turtle", "difficulty": "easy" }, { "ai": "aggressive", "difficulty": "easy", "maxTroops": 8 }],
+  "spells": ["bolt", "raise_land", "lightning"],
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [24, 64] },
+    { "spawn": "shaper", "tribe": 0, "at": [27, 61] },
+    { "spawn": "settler", "tribe": 0, "near": [24, 70], "count": 14 },
+    { "spawn": "warden", "tribe": 0, "near": [32, 64], "count": 4 },
+    { "spawn": "hearth", "tribe": 1, "at": [104, 36] },
+    { "spawn": "shaper", "tribe": 1, "at": [101, 39] },
+    { "spawn": "settler", "tribe": 1, "near": [104, 30], "count": 10 },
+    { "spawn": "hearth", "tribe": 2, "at": [104, 92] },
+    { "spawn": "shaper", "tribe": 2, "at": [101, 89] },
+    { "spawn": "settler", "tribe": 2, "near": [104, 98], "count": 10 },
+    { "spawn": "tree", "near": [16, 52], "count": 14, "spacing": 1.2 },
+    { "spawn": "tree", "near": [16, 78], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [112, 24], "count": 10, "spacing": 1.2 },
+    { "spawn": "tree", "near": [112, 104], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [18, 64], "count": 4, "spacing": 2 }
+  ],
+  "objectives": [{ "type": "eliminateAll", "text": "Defeat both rival tribes" }],
+  "triggers": [
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Fog hides the rival villages. Send a warden east to find them." }] },
+    { "when": { "type": "time", "seconds": 300 }, "do": [{ "type": "message", "text": "The northern tribe hides behind towers; the southern one is coming for you." }] }
+  ]
+}

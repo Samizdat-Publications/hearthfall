@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { OUTCOME } from "@hearthfall/sim";
 import { loadBasePack, loadLevels } from "../../../tools/harness/datapack.mjs";
-import { campaignCarry, levelOpen, loadProgress, nextLevel, recordWin } from "../src/campaign.ts";
+import { campaignCarry, levelOpen, loadLearned, loadProgress, nextLevel, recordWin, taughtSpells } from "../src/campaign.ts";
 import { campaignParams, createSkirmish, decodeSave, encodeSave, makeSave, restoreSave } from "../src/session.ts";
 import { MemoryKV } from "../src/storage.ts";
 
@@ -29,6 +29,26 @@ describe("campaign (M9)", () => {
     expect(campaignCarry(levels, back, b.id).spells).toEqual(a.unlocks?.spells ?? []);
     // a level never carries its own unlocks or those of levels not won
     expect(campaignCarry(levels, [], c.id)).toEqual({ spells: [], buildings: [] });
+  });
+
+  it("spells a level taught in play carry into later levels; records without them still load (BACKLOG 9)", () => {
+    const [a, b, c] = levels;
+    const kv = new MemoryKV();
+    kv.setItem("hearthfall.campaign.v1", JSON.stringify({ won: [a.id] }));
+    expect(loadProgress(kv)).toEqual([a.id]);
+    expect(loadLearned(kv)).toEqual({});
+    const won = loadProgress(kv);
+    const learned = loadLearned(kv);
+    const taught = taughtSpells(["raise_land", "bolt", "whirlwind"], b, { spells: ["raise_land"] });
+    expect(taught).toEqual(["whirlwind"].filter((s) => !b.spells.includes(s)));
+    expect(recordWin(kv, b.id, won, learned, ["whirlwind"])).toBe(true);
+    expect(loadLearned(kv)).toEqual({ [b.id]: ["whirlwind"] });
+    expect(campaignCarry(levels, loadProgress(kv), c.id, loadLearned(kv)).spells).toContain("whirlwind");
+    // a replay of the level that teaches nothing new keeps what it taught before
+    expect(recordWin(kv, b.id, won, learned, [])).toBe(true);
+    expect(loadLearned(kv)[b.id]).toEqual(["whirlwind"]);
+    // the level itself and levels before it never get its teachings
+    expect(campaignCarry(levels, loadProgress(kv), b.id, loadLearned(kv)).spells).not.toContain("whirlwind");
   });
 
   it("a damaged progress record reads as no progress", () => {

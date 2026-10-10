@@ -1,0 +1,40 @@
+{
+  "$comment": "Teaching level 4: Reliquaries. A Reliquary can be prayed at more than once; its first prayer teaches a spell the campaign keeps (BACKLOG 9 learned carry).",
+  "id": "old_reliquary",
+  "name": "The Old Reliquary",
+  "order": 4,
+  "description": "An old Reliquary stands on the hill. Pray there to learn Whirlwind, pray again for more charges, and grow your tribe to 24 followers before the season turns.",
+  "seed": 404,
+  "map": {
+    "generator": "flat",
+    "size": 96,
+    "landAboveSea": 30,
+    "paint": [
+      { "shape": "disc", "at": [58, 48], "r": 6, "aboveSea": 44, "falloff": 6 },
+      { "shape": "disc", "at": [48, 16], "r": 10, "aboveSea": -30, "falloff": 4 },
+      { "shape": "disc", "at": [48, 80], "r": 10, "aboveSea": -30, "falloff": 4 }
+    ]
+  },
+  "tribes": [{}],
+  "spells": ["bolt", "raise_land"],
+  "buildings": ["dwelling", "watchtower"],
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [26, 48] },
+    { "spawn": "shaper", "tribe": 0, "at": [29, 46] },
+    { "spawn": "settler", "tribe": 0, "near": [29, 51], "count": 10 },
+    { "spawn": "tree", "near": [18, 38], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [36, 60], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [20, 58], "count": 3, "spacing": 2 },
+    { "spawn": "reliquary", "at": [58, 48], "site": { "tag": "old_reliquary", "worshippers": 4, "prayerSeconds": 30, "uses": 3, "rewards": [{ "type": "unlockSpell", "spell": "whirlwind" }, { "type": "charges", "spell": "whirlwind", "n": 1 }, { "type": "message", "text": "The Reliquary teaches Whirlwind. It can answer twice more." }] } }
+  ],
+  "objectives": [
+    { "type": "worship", "site": "old_reliquary", "text": "Pray at the Reliquary on the hill" },
+    { "type": "followers", "n": 24, "text": "Grow to 24 followers" }
+  ],
+  "lose": [{ "type": "timeLimit", "seconds": 900 }],
+  "triggers": [
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Send four followers to pray at the Reliquary. Build dwellings so your tribe grows." }] },
+    { "when": { "type": "worship", "site": "old_reliquary" }, "do": [{ "type": "spell", "spell": "ward", "at": [58, 48] }, { "type": "message", "text": "A ward settles over the hill." }] },
+    { "when": { "type": "time", "seconds": 600 }, "do": [{ "type": "message", "text": "Five minutes of the season remain." }] }
+  ]
+}

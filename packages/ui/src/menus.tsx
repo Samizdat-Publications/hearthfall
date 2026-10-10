@@ -1,7 +1,8 @@
 // Menus (M8): main menu, skirmish setup, pause, saves, settings and the end screen. Like the HUD,
 // a Preact overlay driven by a plain MenuModel; every intent goes back through MenuActions. Each
 // screen is one centered panel tagged data-hud (so the DOM layout checks cover it) and its buttons
-// carry data-ui names for the e2e test. M9 adds the campaign screen (levels open in order).
+// carry data-ui names for the e2e test. M9 adds the campaign screen (levels open in order), drawn as a
+// route map since BACKLOG 9 (pick a node, then Play on its card).
 import { Fragment, render } from "preact";
 import { signal } from "@preact/signals";
 
@@ -218,25 +219,60 @@ function Setup({ s, act }: { s: SetupView; act: MenuActions }) {
   );
 }
 
+/** BACKLOG 9: the campaign route: the selected level on the map (null: the frontier, the first open level not yet won) */
+const pickedLevel = signal<string | null>(null);
+
+/** node positions on the route, in percent of the map box: left to right along a gentle wave */
+function routePoint(k: number, n: number): [number, number] {
+  const x = n > 1 ? 7 + (86 * k) / (n - 1) : 50;
+  const y = 50 + 30 * Math.sin(k * 1.25 + 0.4);
+  return [x, y];
+}
+
 function Campaign({ m, act }: { m: MenuModel; act: MenuActions }) {
   const v = m.campaign;
+  const n = v.levels.length;
+  const frontier = v.levels.find((l) => l.open && !l.won) ?? v.levels[n - 1];
+  const sel = v.levels.find((l) => l.id === pickedLevel.value) ?? frontier;
+  const k = sel ? v.levels.indexOf(sel) : -1;
+  const pts = v.levels.map((_, i) => routePoint(i, n));
   return (
-    <div data-hud="menu-campaign" class="menu-panel menu-saves">
+    <div data-hud="menu-campaign" class="menu-panel menu-campaign">
       <h2 class="menu-head">Campaign</h2>
-      {v.levels.map((l, k) => (
-        <div key={l.id} class="slot">
+      <div class="route" data-ui="campaign-map">
+        <svg class="route-path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          {pts.slice(1).map((p, i) => (
+            <line key={i} x1={pts[i][0]} y1={pts[i][1]} x2={p[0]} y2={p[1]} class={v.levels[i].won ? "route-seg won" : "route-seg"} />
+          ))}
+        </svg>
+        {v.levels.map((l, i) => (
+          <button
+            key={l.id}
+            class={"route-node" + (l.won ? " won" : l.open ? " open" : " locked") + (sel?.id === l.id ? " picked" : "")}
+            style={{ left: `${pts[i][0]}%`, top: `${pts[i][1]}%` }}
+            data-ui={`level-${l.id}`}
+            disabled={!l.open}
+            title={l.open ? l.name : "Win the level before this one to open it."}
+            onClick={() => (pickedLevel.value = l.id)}
+          >
+            {i + 1}
+          </button>
+        ))}
+      </div>
+      {sel ? (
+        <div class="slot route-card" data-ui="campaign-card">
           <span class="slot-text">
             <b>
-              {k + 1}. {l.name}
-              {l.won ? " (won)" : ""}
+              {k + 1}. {sel.name}
+              {sel.won ? " (won)" : ""}
             </b>
-            <span class="slot-detail level-desc">{l.open ? l.description : "Win the level before this one to open it."}</span>
+            <span class="slot-detail level-desc">{sel.open ? sel.description : "Win the level before this one to open it."}</span>
           </span>
-          <button class="menu-small" data-ui={`level-${l.id}`} disabled={!l.open} onClick={() => act.playLevel(l.id)}>
-            {l.won ? "Replay" : "Play"}
+          <button class="menu-small" data-ui="level-play" disabled={!sel.open} onClick={() => act.playLevel(sel.id)}>
+            {sel.won ? "Replay" : "Play"}
           </button>
         </div>
-      ))}
+      ) : null}
       {v.message ? <p class="menu-note">{v.message}</p> : null}
       <div class="menu-actions">
         <Btn ui="back" onClick={() => act.back()}>

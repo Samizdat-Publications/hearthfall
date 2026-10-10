@@ -227,7 +227,7 @@ export function validateLevel(raw: unknown, pack: PackFiles, file = "level"): { 
       }
       s.site?.rewards.forEach((r, j) => reward(r, `${path}.site.rewards.${j}`));
     } else if (s.site) bad(path, `${s.spawn} is not a worship object`);
-    else if (s.spawn !== "tree" && !units.has(s.spawn) && !buildings.has(s.spawn)) bad(path, `unknown spawn ${s.spawn}`);
+    else if (s.spawn !== "tree" && s.spawn !== "rock" && !units.has(s.spawn) && !buildings.has(s.spawn)) bad(path, `unknown spawn ${s.spawn}`);
     if (s.spawn === "hearth" && s.tribe !== undefined && s.tribe >= 0) hearths.add(s.tribe);
   });
   lv.tribes.forEach((_, k) => hearths.has(k) || bad("setup", `tribe ${k} has no hearth`));

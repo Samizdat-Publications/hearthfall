@@ -1,0 +1,39 @@
+{
+  "$comment": "Teaching level 6: growth under pressure. A followers goal with a deadline while a sneaky rival raids with a few troops.",
+  "id": "many_mouths",
+  "name": "Many Mouths",
+  "order": 6,
+  "description": "A hard winter is coming. Grow to 40 followers within fifteen minutes: build dwellings, keep breeding up, and guard them from the rival raiders.",
+  "seed": 606,
+  "map": {
+    "generator": "flat",
+    "size": 128,
+    "landAboveSea": 30,
+    "paint": [
+      { "shape": "disc", "at": [64, 64], "r": 10, "aboveSea": 46, "falloff": 6 },
+      { "shape": "disc", "at": [64, 20], "r": 12, "aboveSea": -30, "falloff": 4 },
+      { "shape": "disc", "at": [64, 108], "r": 12, "aboveSea": -30, "falloff": 4 }
+    ]
+  },
+  "tribes": [{}, { "ai": "sneaky", "difficulty": "easy", "maxTroops": 4 }],
+  "spells": ["bolt", "raise_land"],
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [30, 64] },
+    { "spawn": "shaper", "tribe": 0, "at": [33, 61] },
+    { "spawn": "settler", "tribe": 0, "near": [30, 70], "count": 12 },
+    { "spawn": "hearth", "tribe": 1, "at": [98, 64] },
+    { "spawn": "shaper", "tribe": 1, "at": [95, 61] },
+    { "spawn": "settler", "tribe": 1, "near": [98, 70], "count": 10 },
+    { "spawn": "tree", "near": [22, 52], "count": 14, "spacing": 1.2 },
+    { "spawn": "tree", "near": [40, 78], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [106, 52], "count": 12, "spacing": 1.2 },
+    { "spawn": "rock", "near": [22, 76], "count": 4, "spacing": 2 },
+    { "spawn": "shrine", "at": [64, 64], "site": { "tag": "hill_shrine", "worshippers": 4, "prayerSeconds": 40, "rewards": [{ "type": "spawn", "unit": "settler", "n": 6 }, { "type": "message", "text": "Six wanderers join the tribe that prayed." }] } }
+  ],
+  "objectives": [{ "type": "followers", "n": 40, "text": "Grow to 40 followers" }],
+  "lose": [{ "type": "timeLimit", "seconds": 900 }, { "type": "hearthLost" }],
+  "triggers": [
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Dwellings breed followers. The hill shrine sends six more to whoever prays first." }] },
+    { "when": { "type": "time", "seconds": 600 }, "do": [{ "type": "message", "text": "Five minutes until the winter." }] }
+  ]
+}

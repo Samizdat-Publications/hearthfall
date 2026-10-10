@@ -1,0 +1,25 @@
+{
+  "id": "level_many_mouths",
+  "description": "Campaign level 6 is completable: a growing player reaches 40 followers well before the 15 minute winter while a sneaky rival raids.",
+  "tags": [
+    "fast",
+    "levels"
+  ],
+  "level": "many_mouths",
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "turtle",
+      "difficulty": "normal",
+      "offset": 1
+    }
+  ],
+  "runTicks": 9600,
+  "assert": [
+    {
+      "at": 9600,
+      "expr": "level.won && invariants() == 0"
+    }
+  ]
+}

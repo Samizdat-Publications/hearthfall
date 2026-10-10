@@ -100,6 +100,36 @@ describe("campaign levels", () => {
     expect(w.combat.troopCount(0)).toBe(2);
   });
 
+  it("a win beats a loss on the same tick: the last rival and the player fall together (BACKLOG 86)", () => {
+    const base = level();
+    const p = basePack();
+    const idle = (spec: { tribe: number }) => ({ tribe: spec.tribe, every: 30, offset: 0, decide: () => [] });
+    const w = createLevelWorld(
+      {
+        def: level({
+          tribes: [{}, { ai: "turtle" }],
+          setup: [...base.setup, { spawn: "hearth", tribe: 1, at: [44, 32] }, { spawn: "shaper", tribe: 1, at: [46, 32] }],
+          objectives: [{ type: "eliminateAll" }],
+          lose: [{ type: "hearthLost" }],
+        }),
+      },
+      p.files,
+      p.hash,
+      idle,
+    );
+    w.run(5);
+    expect(w.level!.outcome).toBe(OUTCOME.none);
+    for (const t of [0, 1]) {
+      w.kill(w.ents.index(w.tribes[t].hearth), "destroyed");
+      w.kill(w.ents.index(w.tribes[t].shaper), "destroyed");
+      for (let i = 0; i < w.ents.hi; i++) if (w.ents.alive[i] && w.ents.tribe[i] === t) w.kill(i, "destroyed");
+    }
+    w.step();
+    expect(w.tribes[0].alive).toBe(false);
+    expect(w.level!.outcome).toBe(OUTCOME.won);
+    expect(w.eventCounts.get("levelLost") ?? 0).toBe(0);
+  });
+
   it("a time limit loses the level", () => {
     const w = make(level({ lose: [{ type: "timeLimit", seconds: 3 }] }));
     w.run(3 * w.cfg.tickHz + 5);

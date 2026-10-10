@@ -84,3 +84,5 @@
 - 2026-10-10T03:06 set menus (4 shots): BACKLOG 81: menu title art, bigger text, column heads
 - 2026-10-10T03:22 set spells (9 shots): BACKLOG 36: quake lead-in edge and dust, new quake_sunk shot
 - 2026-10-10T05:01 set menus (4 shots): BACKLOG 13: skirmish setup gains the Victory picker and hint
+- 2026-10-10T05:20 set levels (3 shots): BACKLOG 89: worship stone lighter, prayer progress ring; new shot old_reliquary_prayer
+- 2026-10-10T05:20 set menus (4 shots): BACKLOG 9: campaign route map replaces the level list

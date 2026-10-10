@@ -1,0 +1,36 @@
+{
+  "id": "level_old_reliquary",
+  "description": "Campaign level 4 is completable: four followers pray at the Reliquary (it answers three times and teaches Whirlwind) and a growing tribe reaches 24 followers.",
+  "tags": [
+    "fast",
+    "levels"
+  ],
+  "level": "old_reliquary",
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "turtle",
+      "difficulty": "normal",
+      "offset": 1
+    }
+  ],
+  "commands": [
+    {
+      "tick": 200,
+      "tribe": 0,
+      "type": "worship",
+      "args": {
+        "units": "tribe0.settlers",
+        "site": "old_reliquary"
+      }
+    }
+  ],
+  "runTicks": 7200,
+  "assert": [
+    {
+      "at": 7200,
+      "expr": "level.won && site('old_reliquary').by == 0 && site('old_reliquary').usesLeft == 0 && events.count('triggerFired') >= 2 && events.count('levelWon') == 1 && invariants() == 0"
+    }
+  ]
+}

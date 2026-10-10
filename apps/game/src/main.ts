@@ -7,8 +7,8 @@ import { fitHud, hudFits } from "./hudFit.ts";
 import { mountGameMenus } from "./menuBridge.ts";
 import { drawnViewKey, viewKey, viewOutline } from "./minimap.ts";
 import type { CameraState } from "@hearthfall/render";
-import { validatePack } from "@hearthfall/data";
-import { commandsByTick, createScenarioWorld, type ScenarioDef } from "@hearthfall/sim";
+import { validateLevel, validatePack, type LevelDef } from "@hearthfall/data";
+import { commandsByTick, createLevelWorld, createScenarioWorld, type CampaignCarry, type ScenarioDef } from "@hearthfall/sim";
 
 const canvas = document.getElementById("view") as HTMLCanvasElement;
 const bootEl = document.getElementById("boot");
@@ -267,6 +267,8 @@ if (__DEBUG_API__ || game.params.debug) {
     /** M9 campaign: the running level (id, outcome 0 none 1 won 2 lost, objectives done), levels won, and a forced level win */
     level: () => (game.world.level ? { id: game.world.level.def.id, outcome: game.world.level.outcome, done: [...game.world.level.done] } : null),
     campaignWon: () => [...game.campaignWon],
+    /** BACKLOG 85: start any campaign level (open or not) for the e2e flow */
+    playLevel: (id: string) => game.playLevel(id, true),
     winLevel: () => {
       game.command({ tribe: -1, type: "completeObjectives" });
       game.step(1);
@@ -284,10 +286,16 @@ if (__DEBUG_API__ || game.params.debug) {
     lastSave: () => game.lastSave,
     lastLoad: () => game.lastLoad,
     /** Run a scenario-style definition headless in this page (cross-engine determinism check). */
-    runDef: (def: ScenarioDef, rawPack: Record<string, unknown>, every = 100) => {
+    runDef: (def: ScenarioDef & { levelDef?: unknown; carry?: CampaignCarry }, rawPack: Record<string, unknown>, every = 100) => {
       const res = validatePack(rawPack);
       if (!res.pack) return { error: "pack invalid" };
-      const w = createScenarioWorld(def, res.pack.files, res.pack.hash);
+      // BACKLOG 84: a golden may embed a whole level (player only: no AI factory here)
+      let lv: LevelDef | null = null;
+      if (def.levelDef) {
+        lv = validateLevel(def.levelDef, res.pack.files).level ?? null;
+        if (!lv) return { error: "level invalid" };
+      }
+      const w = lv ? createLevelWorld({ def: lv, carry: def.carry }, res.pack.files, res.pack.hash) : createScenarioWorld(def, res.pack.files, res.pack.hash);
       const cmds = commandsByTick(def.commands);
       const out: { tick: number; all: string }[] = [];
       while (w.tick < def.runTicks) {

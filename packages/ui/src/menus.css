@@ -47,3 +47,18 @@
 /* BACKLOG 81: title illustration and column heads */
 .menu-art { display: block; box-sizing: border-box; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: 50% 40%; border: 2px solid #2b1d13; box-shadow: 0 2px 0 #1d130c; image-rendering: auto; }
 .menu-sub { grid-column: 1 / -1; margin: 0 0 2px; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: #ffd27a; opacity: 0.85; }
+/* BACKLOG 9: campaign route map */
+.menu-campaign { width: 640px; display: flex; flex-direction: column; gap: 10px; }
+.route { position: relative; height: 210px; background: radial-gradient(ellipse at 50% 60%, #3f5a2c 0%, #2c3f22 55%, #1d2a18 100%); border: 2px solid #2b1d13; box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.55); }
+.route-path { position: absolute; inset: 0; width: 100%; height: 100%; }
+.route-seg { stroke: #c9b48a; stroke-width: 3px; stroke-dasharray: 8 6; vector-effect: non-scaling-stroke; opacity: 0.55; }
+.route-seg.won { stroke: #ffd36b; stroke-dasharray: none; opacity: 0.95; }
+.route-node { position: absolute; width: 38px; height: 38px; margin: -19px 0 0 -19px; border-radius: 50%; border: 3px solid #2b1d13; font: 700 16px system-ui; color: #2b1d13; cursor: pointer; box-shadow: 0 3px 0 #1d130c; }
+.route-node.won { background: #ffd36b; }
+.route-node.open { background: #8fc05a; animation: route-pulse 1.6s ease-in-out infinite; }
+.route-node.locked { background: #6d655b; color: #3a332c; cursor: default; }
+.route-node.picked { outline: 3px solid #f4e6c8; outline-offset: 2px; }
+.route-node:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+@keyframes route-pulse { 50% { box-shadow: 0 3px 0 #1d130c, 0 0 0 6px rgba(143, 192, 90, 0.35); } }
+@media (prefers-reduced-motion: reduce) { .route-node.open { animation: none; } }
+.route-card .level-desc { white-space: normal; }

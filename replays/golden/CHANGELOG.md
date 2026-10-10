@@ -84,3 +84,7 @@ Reason: BACKLOG 0c: entity column stone added (rocks, stone costs)
 Reason: BACKLOG 2: entity column reveal added (Shade disguise), sneaky AI uses Shades
 - spells_duel: final 025f1738 -> 5965f683 (pack c65eaf42)
 - terrain_ops_continents: final 98d0419c -> de47762e (pack c65eaf42)
+
+## 2026-10-10 05:14 UTC
+Reason: BACKLOG 84: new golden level_old_reliquary (a campaign level with a Reliquary)
+- level_old_reliquary: final none -> 9d4c0ea3 (pack 4e26b62c)

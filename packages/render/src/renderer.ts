@@ -455,6 +455,8 @@ export class ThreeRenderer implements Renderer {
       this.pal,
       colors,
       this.models,
+      64,
+      bendMaterial(new THREE.MeshBasicMaterial({ color: "#ffffff", transparent: true, opacity: 0.9, depthWrite: false }), this.bend),
     );
     this.scene.add(this.worship.group);
   }

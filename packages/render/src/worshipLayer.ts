@@ -1,7 +1,8 @@
 // Worship objects (M9): per kind an untinted structure and a tinted part (the color of the tribe
 // leading the prayer, else the last tribe to finish it, else a pale glow). A spent site goes grey.
 // Real GLB models (M10) replace the placeholders, scaled up to the prayer ring, with a banner when the
-// model has no marker color. Static between sim ticks, so no interpolation.
+// model has no marker color. Static between sim ticks, so no interpolation. BACKLOG 89: while a tribe
+// prays, a segmented ring on the ground around the site fills in its color with the prayer's progress.
 import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { CAT, type World } from "@hearthfall/sim";
@@ -10,10 +11,29 @@ import { withBanner, worshipModelId, type ModelParts } from "./models.ts";
 
 /** worship models are drawn larger than their building-sized source so the site reads as a landmark */
 const WORSHIP_MODEL_SCALE = 1.5;
+/** progress ring: segments around the prayer circle, inner and outer radius as a share of it */
+const RING_SEGS = 32;
+const RING_IN = 0.86;
+const RING_OUT = 1.0;
+
+/** one flat annular sector of the progress ring (angle 0 to one segment, minus a small gap), on the ground plane */
+function ringSegment(): THREE.BufferGeometry {
+  const a1 = ((Math.PI * 2) / RING_SEGS) * 0.8;
+  const pts: number[] = [];
+  const steps = 3;
+  for (let k = 0; k < steps; k++) {
+    const t0 = (a1 * k) / steps;
+    const t1 = (a1 * (k + 1)) / steps;
+    const p = (r: number, t: number) => [Math.cos(t) * r, 0, Math.sin(t) * r];
+    pts.push(...p(RING_IN, t0), ...p(RING_OUT, t1), ...p(RING_OUT, t0), ...p(RING_IN, t0), ...p(RING_IN, t1), ...p(RING_OUT, t1));
+  }
+  return new THREE.BufferGeometry().setAttribute("position", new THREE.Float32BufferAttribute(pts, 3));
+}
 
 function worshipGeometry(id: string, pal: Record<string, string>): { body: THREE.BufferGeometry; tint: THREE.BufferGeometry } {
   const C = (k: string, d: string) => new THREE.Color(pal[k] ?? d);
-  const stone = C("stone", "#a9a196");
+  // BACKLOG 89: worship stone a step lighter than building stone so sites stand out from the grass
+  const stone = C("stone", "#a9a196").offsetHSL(0, -0.03, 0.12);
   const dark = C("woodDark", "#5e3a1a");
   const white = new THREE.Color("#ffffff");
   switch (id) {
@@ -56,8 +76,21 @@ export class WorshipLayer {
   private readonly q = new THREE.Quaternion();
   private readonly s = new THREE.Vector3(1, 1, 1);
   private readonly p = new THREE.Vector3();
+  /** BACKLOG 89: prayer progress ring segments (null without a ring material) */
+  private readonly ring: THREE.InstancedMesh | null = null;
+  private readonly unlit = new THREE.Color("#6b6256");
+  private readonly ringCap: number = 0;
 
-  constructor(material: THREE.Material, kinds: { id: string }[], pal: Record<string, string>, tribeColorNames: string[], models: ReadonlyMap<string, ModelParts> | null = null, cap = 64) {
+  constructor(material: THREE.Material, kinds: { id: string }[], pal: Record<string, string>, tribeColorNames: string[], models: ReadonlyMap<string, ModelParts> | null = null, cap = 64, ringMat: THREE.Material | null = null) {
+    if (ringMat) {
+      this.ringCap = cap * RING_SEGS;
+      this.ring = new THREE.InstancedMesh(ringSegment(), ringMat, this.ringCap);
+      this.ring.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(cap * RING_SEGS * 3), 3);
+      this.ring.frustumCulled = false;
+      this.ring.count = 0;
+      this.ring.renderOrder = 2;
+      this.group.add(this.ring);
+    }
     this.tribeColors = tribeColorNames.map((c) => new THREE.Color(pal[c] ?? "#ffffff"));
     this.glow = new THREE.Color(pal.lightning ?? "#bfe8ff");
     for (const k of kinds) {
@@ -81,6 +114,8 @@ export class WorshipLayer {
     const E = w.ents;
     const n = w.terrain.size;
     const counts = new Int32Array(this.kinds.length);
+    const ringR = (w.cfg.pack.buildings.worship.radius ?? 3) + 0.4;
+    let rings = 0;
     for (const site of w.worship.sites) {
       const i = E.index(site.ent);
       if (i < 0 || !E.alive[i] || E.cat[i] !== CAT.worship) continue;
@@ -104,10 +139,33 @@ export class WorshipLayer {
       });
       const who = lead >= 0 ? lead : site.lastBy;
       const col = site.usesLeft <= 0 ? this.spent : who >= 0 ? this.tribeColors[who % this.tribeColors.length] : this.glow;
+      // BACKLOG 89: the leading tribe's prayer progress as a filling ring (only while someone prays)
+      if (this.ring && best > 0 && site.usesLeft > 0 && rings + RING_SEGS <= this.ringCap) {
+        const lit = Math.max(1, Math.round((best / site.prayTicks) * RING_SEGS));
+        const tc = this.tribeColors[lead % this.tribeColors.length];
+        for (let k = 0; k < RING_SEGS; k++) {
+          this.p.set(focusX + ox, y + 0.12, focusZ + oz);
+          this.q.setFromAxisAngle(THREE.Object3D.DEFAULT_UP, -Math.PI / 2 - (k * Math.PI * 2) / RING_SEGS);
+          this.m.compose(this.p, this.q, this.s.set(ringR, 1, ringR));
+          this.ring.setMatrixAt(rings, this.m);
+          this.ring.setColorAt(rings, k < lit ? tc : this.unlit);
+          rings++;
+        }
+        this.s.set(1, 1, 1);
+        // the site model below uses the unscaled matrix
+        this.p.set(focusX + ox, y - 0.05, focusZ + oz);
+        this.q.setFromAxisAngle(THREE.Object3D.DEFAULT_UP, ((i * 2654435761) >>> 0) / 4294967296 * Math.PI * 2);
+        this.m.compose(this.p, this.q, this.s.setScalar(kind.scale));
+      }
       const c = counts[site.kind]++;
       kind.body.setMatrixAt(c, this.m);
       kind.tint.setMatrixAt(c, this.m);
       kind.tint.setColorAt(c, col);
+    }
+    if (this.ring) {
+      this.ring.count = rings;
+      this.ring.instanceMatrix.needsUpdate = true;
+      if (this.ring.instanceColor) this.ring.instanceColor.needsUpdate = true;
     }
     this.kinds.forEach((kind, k) => {
       kind.body.count = counts[k];
