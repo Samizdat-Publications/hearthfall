@@ -396,6 +396,9 @@
     "breeding": {
       "type": "object",
       "properties": {
+        "$comment": {
+          "type": "string"
+        },
         "formula": {
           "type": "string"
         },
@@ -410,7 +413,6 @@
         }
       },
       "required": [
-        "formula",
         "nearCapSlowdownStartPct",
         "nearCapFactorAtCap"
       ],

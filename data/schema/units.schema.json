@@ -363,8 +363,7 @@
       "required": [
         "populationCap",
         "startPopulation",
-        "spiritManaPerMin",
-        "popCapFormula"
+        "spiritManaPerMin"
       ],
       "additionalProperties": false
     }

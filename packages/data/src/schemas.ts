@@ -83,7 +83,9 @@ export const BalanceSchema = z.strictObject({
     }),
   }),
   breeding: z.strictObject({
-    formula: z.string(),
+    ...comment,
+    /** BACKLOG 30: retired free-form text, never read (frozen golden packs still carry it); the rule is the structured fields */
+    formula: z.string().optional(),
     nearCapSlowdownStartPct: z.number().min(0).max(100),
     nearCapFactorAtCap: z.number().min(1),
   }),
@@ -580,7 +582,8 @@ export const UnitsFileSchema = z.strictObject({
     populationCap: z.number().int().positive(),
     startPopulation: z.number().int().nonnegative(),
     spiritManaPerMin: z.number().nonnegative(),
-    popCapFormula: z.string(),
+    /** BACKLOG 30: retired free-form text, never read (frozen golden packs still carry it) */
+    popCapFormula: z.string().optional(),
   }),
 });
 export type UnitDef = z.infer<typeof UnitSchema>;

@@ -74,7 +74,7 @@
     "startWoodPerSettler": 1
   },
   "breeding": {
-    "formula": "base / (0.5 + 0.5 * occupants) * nearCapFactor",
+    "$comment": "Breed time per dwelling = base / (0.5 + 0.5 * occupants) * nearCapFactor; nearCapFactor rises linearly from 1 at nearCapSlowdownStartPct of the pop cap to nearCapFactorAtCap at the cap (economy.ts).",
     "nearCapSlowdownStartPct": 70,
     "nearCapFactorAtCap": 3
   },

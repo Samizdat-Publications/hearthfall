@@ -190,7 +190,6 @@
     "populationCap": 200,
     "startPopulation": 5,
     "spiritManaPerMin": 0,
-    "popCapFormula": "min(populationCap, startPopulation + sum(dwelling supply))",
-    "$comment": "Drown depth lives in balance.json terrain.drownDepthHeightUnits."
+    "$comment": "Pop cap = min(populationCap, startPopulation + the supply of every finished dwelling) (economy.ts popCap). Drown depth lives in balance.json terrain.drownDepthHeightUnits."
   }
 }
