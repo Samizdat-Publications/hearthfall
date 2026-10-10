@@ -391,6 +391,15 @@ export const StyleSchema = z
             glow: z.string().optional(),
           })
           .optional(),
+        /** BACKLOG 37/40: orthographic map view frame: the mask color past the world edge and the grid */
+        mapFrame: z
+          .strictObject({
+            mask: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
+            grid: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
+            gridOpacity: z.number().min(0).max(1).optional(),
+            gridCells: z.number().int().min(4).max(64).optional(),
+          })
+          .optional(),
         /** look v3 (BACKLOG 14a, ADR-013): tilt-shift miniature focus band; `defaultOn` is the settings default */
         tiltShift: z
           .strictObject({

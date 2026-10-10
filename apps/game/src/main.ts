@@ -325,6 +325,8 @@ if (__DEBUG_API__ || game.params.debug) {
     minimapCurrent: () => drawnViewKey === viewKey(game),
     lastSave: () => game.lastSave,
     /** BACKLOG 82: control group sizes, camera bookmarks set and live GPU geometries (a new world resets the first two) */
+    /** BACKLOG 37/40: whether the scene is drawn through the orthographic map camera, and its half extents */
+    view: () => ({ ortho: (game.renderer.view as { isOrthographicCamera?: boolean }).isOrthographicCamera === true, top: game.renderer.mapCam.top, right: game.renderer.mapCam.right }),
     controls: () => ({ groups: game.groups.map((g) => g.length), bookmarks: game.bookmarks.filter(Boolean).length, geometries: game.renderer.gl.info.memory.geometries }),
     /** BACKLOG 76: the full state hash of the running world */
     hash: () => game.world.hash().all,

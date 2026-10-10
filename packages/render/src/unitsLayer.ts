@@ -102,6 +102,16 @@ const SHAPER_DISC = 1.5;
 /** BACKLOG 10: a balloon flies this high above the ground (world units before the readability scale) */
 export const BALLOON_LIFT = 2.2;
 
+/** A per-layer copy of a shared model geometry: the clone shares userData, so drop the shared flag or disposeGroup
+ * would skip the copy and leak it on every setWorld (BACKLOG 93 regression, caught by the e2e reload check). */
+export function ownCopy(g: THREE.BufferGeometry): THREE.BufferGeometry {
+  const c = g.clone();
+  // clone() keeps a reference to the same userData object, so give the copy its own without the flag
+  const { shared: _shared, ...rest } = c.userData;
+  c.userData = rest;
+  return c;
+}
+
 export class UnitLayer {
   readonly group = new THREE.Group();
   /** The local player's tribe: other tribes' veiled units are not drawn (BACKLOG 1). */
@@ -149,7 +159,7 @@ export class UnitLayer {
       // a model's tribe-color triangles are the tinted body, the rest is the untinted detail
       const m = models?.get(unitModelId(id));
       if (m) this.modelIds.push(unitModelId(id));
-      const g = m ? { body: (m.tint ?? empty()).clone(), detail: (m.body ?? empty()).clone() } : kindGeometry(id, pal);
+      const g = m ? { body: ownCopy(m.tint ?? empty()), detail: ownCopy(m.body ?? empty()) } : kindGeometry(id, pal);
       // the rig needs the whole model's height, not the part's
       let height = m?.size.y ?? 0;
       if (!m) {

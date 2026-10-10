@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import * as THREE from "three";
 import { World } from "@hearthfall/sim";
 import { basePack } from "../../sim/test/helpers.ts";
-import { UnitLayer } from "../src/unitsLayer.ts";
+import { UnitLayer, ownCopy } from "../src/unitsLayer.ts";
 
 describe("unit layer", () => {
   it("draws a tribe-colored disc under each tribe unit and a larger one under the Shaper", () => {
@@ -70,5 +70,14 @@ describe("unit layer", () => {
     layer.revealAll = true;
     draw();
     expect(layer.disc.count).toBe(3);
+  });
+
+  it("copies of shared model geometry are owned by the layer, so a world change disposes them (BACKLOG 93)", () => {
+    const shared = new THREE.BoxGeometry(1, 1, 1);
+    shared.userData.shared = true;
+    const own = ownCopy(shared);
+    expect(own.userData.shared).toBeUndefined();
+    expect(shared.userData.shared).toBe(true);
+    expect(own.getAttribute("position").count).toBe(shared.getAttribute("position").count);
   });
 });

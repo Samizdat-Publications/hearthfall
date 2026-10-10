@@ -67,6 +67,11 @@ export class ThreeRenderer implements Renderer {
   readonly gl: THREE.WebGLRenderer;
   readonly scene = new THREE.Scene();
   readonly camera = new THREE.PerspectiveCamera(40, 1, 0.1, 2000);
+  /** BACKLOG 37/40: map view is a straight top-down orthographic projection fitted to the window */
+  readonly mapCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 1, 400);
+  /** map view frame: masks outside the world square plus a coarse grid; visible only in map view */
+  readonly mapFrame = new THREE.Group();
+  private mapFrameSize = 0;
   readonly bend: BendUniforms = makeBendUniforms();
   readonly time = { value: 0 };
   cam: CameraState = { x: 0, z: 0, yaw: 0.6, zoom: 0.42, map: false };
@@ -268,6 +273,9 @@ export class ThreeRenderer implements Renderer {
     this.rally.visible = false;
     for (const m of [pole, pennant]) m.frustumCulled = false;
     this.scene.add(this.rally);
+    this.mapFrame.visible = false;
+    this.mapFrame.renderOrder = 50;
+    this.scene.add(this.mapFrame);
     this.vfx = new VfxLayer(this.bend, undefined, o.style.render?.vfxColors);
     this.scene.add(this.vfx.group);
     const ringMat = (color: string) =>
@@ -656,6 +664,20 @@ export class ThreeRenderer implements Renderer {
     this.camera.updateProjectionMatrix();
   }
 
+  /**
+   * Where the world is drawn around. Map view snaps it to a chunk corner, so the terrain chunks (each placed
+   * within half a world of it) tile exactly the world square the map camera frames (BACKLOG 37/40).
+   */
+  private drawFocus(): [number, number] {
+    if (!this.cam.map) return [this.cam.x, this.cam.z];
+    return [Math.round(this.cam.x / CHUNK) * CHUNK, Math.round(this.cam.z / CHUNK) * CHUNK];
+  }
+
+  /** The camera the scene is drawn and picked through: the orthographic map camera in map view. */
+  get view(): THREE.PerspectiveCamera | THREE.OrthographicCamera {
+    return this.cam.map ? this.mapCam : this.camera;
+  }
+
   render(visualTime: number): void {
     const t0 = performance.now();
     this.gl.info.reset();
@@ -663,6 +685,7 @@ export class ThreeRenderer implements Renderer {
     this.syncTerrain();
     const w = this.world;
     const r = this.syncCamera();
+    const [fx, fz] = this.drawFocus();
     if (w && r) {
       const size = w.terrain.size;
       const half = size / 2;
@@ -671,25 +694,25 @@ export class ThreeRenderer implements Renderer {
       const fog = this.scene.fog as THREE.Fog;
       fog.near = r.fogNear;
       fog.far = r.fogFar;
-      for (const c of this.chunks) c.place(this.cam.x, this.cam.z, size);
+      for (const c of this.chunks) c.place(fx, fz, size);
       this.syncFog(w);
-      this.trees.update(w, this.cam.x, this.cam.z, this.palette.heightScale);
+      this.trees.update(w, fx, fz, this.palette.heightScale);
       this.buildings?.update(
         w,
-        this.cam.x,
-        this.cam.z,
+        fx,
+        fz,
         this.palette.heightScale,
       );
-      this.worship?.update(w, this.cam.x, this.cam.z, this.palette.heightScale);
+      this.worship?.update(w, fx, fz, this.palette.heightScale);
       this.units?.update(
         w,
         this.alpha,
-        this.cam.x,
-        this.cam.z,
+        fx,
+        fz,
         this.palette.heightScale,
         visualTime,
         this.bend.uFadeEnd.value,
-        this.camera,
+        this.view,
         this.bend.uBendK.value,
         this.viewW,
         this.viewH,
@@ -699,22 +722,22 @@ export class ThreeRenderer implements Renderer {
       this.vfx.update(
         w,
         visualTime,
-        this.cam.x,
-        this.cam.z,
+        fx,
+        fz,
         this.palette.heightScale,
       );
-      this.sun.target.position.set(this.cam.x, 0, this.cam.z);
+      this.sun.target.position.set(fx, 0, fz);
       const d = this.lighting?.sunDir ?? [0.4, 0.8, 0.25];
       const k = 95 / Math.hypot(d[0], d[1], d[2]);
       this.sun.position.set(
-        this.cam.x + d[0] * k,
+        fx + d[0] * k,
         d[1] * k,
-        this.cam.z + d[2] * k,
+        fz + d[2] * k,
       );
       this.rain.update(
-        this.cam.x,
-        w.terrain.heightAt(this.cam.x, this.cam.z) * this.palette.heightScale,
-        this.cam.z,
+        fx,
+        w.terrain.heightAt(fx, fz) * this.palette.heightScale,
+        fz,
         visualTime,
       );
     }
@@ -722,16 +745,17 @@ export class ThreeRenderer implements Renderer {
     this.sky.visible = !this.cam.map && this.scene.visible;
     this.sky.position.copy(this.camera.position);
     this.sky.scale.setScalar((this.camera.far * 0.9) / 900);
+    const view = this.view;
     if (r)
       this.retro.setFocus(
         r.distance,
-        this.camera.near,
-        this.camera.far,
+        view.near,
+        view.far,
         !this.cam.map,
       );
     if (this.retro.enabled && this.scene.visible)
-      this.retro.render(this.gl, this.scene, this.camera);
-    else this.gl.render(this.scene, this.camera);
+      this.retro.render(this.gl, this.scene, view);
+    else this.gl.render(this.scene, view);
     this.frames++;
     this.stats.frames = this.frames;
     this.stats.drawCalls = this.gl.info.render.calls;
@@ -903,7 +927,77 @@ export class ThreeRenderer implements Renderer {
     this.bend.uBendK.value = r.bendK;
     this.bend.uBendFocus.value.set(this.cam.x, this.cam.z);
     this.camera.updateMatrixWorld();
+    this.mapFrame.visible = this.cam.map;
+    if (this.cam.map) this.fitMapCamera(t.size, focusY);
     return r;
+  }
+
+  /**
+   * BACKLOG 37/40: fit the orthographic map camera so the whole world square shows with a small margin,
+   * whatever the window aspect, and place the frame (masks past the world edge, grid) around it.
+   */
+  private fitMapCamera(size: number, focusY: number): void {
+    const c = this.mapCam;
+    const [fx, fz] = this.drawFocus();
+    const aspect = this.viewW / Math.max(1, this.viewH);
+    let halfH = (size / 2) * 1.06;
+    if (aspect < 1) halfH /= aspect;
+    const halfW = halfH * aspect;
+    c.left = -halfW;
+    c.right = halfW;
+    c.top = halfH;
+    c.bottom = -halfH;
+    c.near = 1;
+    c.far = 400;
+    c.position.set(fx, focusY + 150, fz);
+    c.up.set(0, 0, -1);
+    c.lookAt(fx, focusY, fz);
+    c.updateProjectionMatrix();
+    c.updateMatrixWorld();
+    if (this.mapFrameSize !== size) this.buildMapFrame(size);
+    this.mapFrame.position.set(fx, focusY + 140, fz);
+    this.mapFrame.updateMatrixWorld(true);
+  }
+
+  private buildMapFrame(size: number): void {
+    for (const ch of [...this.mapFrame.children]) {
+      this.mapFrame.remove(ch);
+      const m = ch as THREE.Mesh;
+      m.geometry?.dispose();
+      (m.material as THREE.Material | undefined)?.dispose();
+    }
+    this.mapFrameSize = size;
+    const half = size / 2;
+    const far = size * 4;
+    const mask = new THREE.MeshBasicMaterial({ color: this.styleRender?.mapFrame?.mask ?? "#1b2633", transparent: true, opacity: 1, depthTest: false, depthWrite: false, fog: false, toneMapped: false });
+    // four bars covering everything outside the world square [-half, half]
+    const bars: [number, number, number, number][] = [
+      [0, -half - far / 2, far * 2 + size, far],
+      [0, half + far / 2, far * 2 + size, far],
+      [-half - far / 2, 0, far, size],
+      [half + far / 2, 0, far, size],
+    ];
+    for (const [x, z, w, d] of bars) {
+      const g = new THREE.PlaneGeometry(w, d);
+      g.rotateX(-Math.PI / 2);
+      const m = new THREE.Mesh(g, mask);
+      m.position.set(x, 0, z);
+      m.renderOrder = 51;
+      m.frustumCulled = false;
+      this.mapFrame.add(m);
+    }
+    const step = this.styleRender?.mapFrame?.gridCells ?? 16;
+    const pts: number[] = [];
+    for (let v = -half; v <= half + 1e-6; v += step) {
+      pts.push(v, 0, -half, v, 0, half, -half, 0, v, half, 0, v);
+    }
+    const lg = new THREE.BufferGeometry();
+    lg.setAttribute("position", new THREE.Float32BufferAttribute(pts, 3));
+    const lm = new THREE.LineBasicMaterial({ color: this.styleRender?.mapFrame?.grid ?? "#f2e6c8", transparent: true, opacity: this.styleRender?.mapFrame?.gridOpacity ?? 0.14, depthTest: false, depthWrite: false, fog: false, toneMapped: false });
+    const lines = new THREE.LineSegments(lg, lm);
+    lines.renderOrder = 52;
+    lines.frustumCulled = false;
+    this.mapFrame.add(lines);
   }
 
   private march(
@@ -922,7 +1016,8 @@ export class ThreeRenderer implements Renderer {
       1 - (py / this.viewH) * 2,
     );
     const ray = new THREE.Raycaster();
-    ray.setFromCamera(ndc, this.camera);
+    const view = this.view;
+    ray.setFromCamera(ndc, view);
     const o = ray.ray.origin;
     const d = ray.ray.direction;
     const k = this.bend.uBendK.value;
@@ -939,7 +1034,7 @@ export class ThreeRenderer implements Renderer {
       return o.y + d.y * dist - (ground - k * (ddx * ddx + ddz * ddz));
     };
     const step = 0.4;
-    const maxDist = this.camera.far;
+    const maxDist = view.far;
     let prev = 0;
     for (let dist = step; dist < maxDist; dist += step) {
       if (above(dist) <= 0) {

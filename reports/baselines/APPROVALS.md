@@ -97,3 +97,4 @@
 - 2026-10-10T07:35 set menus (4 shots): S2 H: campaign route has 13 levels, nodes zigzag so neighbors never touch
 - 2026-10-10T07:38 set levels (5 shots): S2 H: look v3 refresh of old level shots; new sky_road_stack and the_forge_moat
 - 2026-10-10T07:55 set menus (5 shots): BACKLOG 12: Map editor button on the main menu; new menu_editor shot of the editor panel over its live preview
+- 2026-10-10T08:45 set smoke (12 shots): BACKLOG 37/40 orthographic map view with straight edges, frame and grid

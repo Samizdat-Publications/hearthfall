@@ -167,6 +167,20 @@ async function flow(browser, url, vp) {
     });
     if (!current) problem("minimap still shows the old camera footprint 4 frames after a camera move");
     if (JSON.stringify(before) !== JSON.stringify(after)) problem(`minimap footprint before the next frame differs from after it: ${JSON.stringify(before?.slice(0, 2))} vs ${JSON.stringify(after?.slice(0, 2))}`);
+    // BACKLOG 37/40: map view is orthographic: ground picks move linearly with the pointer, whatever the terrain height
+    await page.evaluate(() => window.__game.setCamera("map"));
+    await settle();
+    const mv = await page.evaluate(([w, h]) => {
+      const v = window.__game.view();
+      const a = window.__game.pickTerrain(w / 2, h / 2);
+      const b = window.__game.pickTerrain(w / 2 + 200, h / 2 - 150);
+      return { v, a, b };
+    }, [vp.width, vp.height]);
+    const perPx = (2 * mv.v.top) / vp.height;
+    if (!mv.v.ortho) problem(`map view is not drawn through the orthographic camera: ${JSON.stringify(mv.v)}`);
+    else if (!mv.a || !mv.b || Math.abs(mv.b.x - mv.a.x - 200 * perPx) > 0.6 || Math.abs(mv.b.z - mv.a.z + 150 * perPx) > 0.6) problem(`map view picks are not linear in the pointer: ${JSON.stringify(mv)}`);
+    await page.evaluate(() => window.__game.setCamera("mid"));
+    if ((await page.evaluate(() => window.__game.view())).ortho) problem("leaving map view kept the orthographic camera");
     // BACKLOG 82: a control group (the selected Shaper) and a camera bookmark, which a load must clear
     await page.keyboard.press("Control+1");
     await page.keyboard.press("Control+F1");
