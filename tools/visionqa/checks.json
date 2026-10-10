@@ -1,8 +1,8 @@
 {
   "$comment": "VisionQA check catalog (docs/VISIONQA.md section 4). appliesTo lists shot kinds. passWhen: below (probability must be under threshold), above, or choice. Thresholds come from thresholds.json after calibration (default 0.5).",
   "checks": [
-    { "id": "not_blank", "type": "predicate", "appliesTo": ["world", "map", "hud", "menu"], "passWhen": "below", "instructions": "Is this frame essentially blank: black, white, or a single flat color with no scene content?" },
-    { "id": "terrain_visible", "type": "predicate", "appliesTo": ["world", "map"], "passWhen": "above", "instructions": "Is a landscape with land (green or brown ground) and water clearly visible?" },
+    { "id": "not_blank", "type": "predicate", "appliesTo": ["world", "map", "hud", "menu"], "passWhen": "below", "instructions": "Ignore the HUD panels, buttons and the small minimap in the corner; judge only the large game view behind them. Is that view essentially blank: black, white, or a single flat color with no scene content?" },
+    { "id": "terrain_visible", "type": "predicate", "appliesTo": ["world", "map"], "passWhen": "above", "instructions": "Ignore the HUD panels, buttons and the small minimap in the corner; judge only the large game view behind them. Is a landscape with land (green or brown ground) and water clearly visible in that view?" },
     { "id": "ui_overlap", "type": "predicate", "appliesTo": ["world", "map", "hud", "menu"], "passWhen": "below", "instructions": "Do any interface panels or text labels visibly overlap each other, clip, or run off the screen edge?" },
     { "id": "artifact_suspect", "type": "predicate", "appliesTo": ["world", "map"], "passWhen": "below", "instructions": "Are there obvious rendering glitches: bright magenta or pink missing-texture surfaces, stretched polygons, holes, or z-fighting stripes?" },
     { "id": "scene_kind", "type": "choice", "appliesTo": ["world", "map"], "passWhen": "choice", "instructions": "Which kind of screen is shown?", "choices": [
