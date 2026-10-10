@@ -190,8 +190,30 @@ export class TerrainChunk {
   }
 }
 
-/** Water: depth-tinted turquoise, shoreline foam and (look v2) world-anchored drifting foam strokes. */
-export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: { value: number }, strokes = 0): THREE.ShaderMaterial {
+/** look v3 painted water knobs (style.json render.water, BACKLOG 14a); depths in height units */
+export interface WaterLook {
+  /** depth where the shallow color has fully turned deep */
+  shallowDepth: number;
+  /** width of the pale shore foam line */
+  foamWidth: number;
+  /** depth of the second, fainter foam ring that pulses offshore (0 turns it off) */
+  foamRing: number;
+}
+
+export const WATER_LOOK_V2: WaterLook = { shallowDepth: 30, foamWidth: 10, foamRing: 0 };
+
+/**
+ * Per-cell water depth (sea minus height, height units) for the water shader, row-major x then z like
+ * the heightmap; sampled per fragment with linear filtering and repeat wrap (the torus).
+ */
+export function fillDepth(t: Terrain, out: Float32Array): Float32Array {
+  const n = t.size;
+  for (let z = 0; z < n; z++) for (let x = 0; x < n; x++) out[z * n + x] = t.sea - t.get(x, z);
+  return out;
+}
+
+/** Water: depth-tinted shallows, shoreline foam and (look v2) world-anchored drifting foam strokes. */
+export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: { value: number }, strokes = 0, look: WaterLook = WATER_LOOK_V2): THREE.ShaderMaterial {
   const mat = new THREE.ShaderMaterial({
     transparent: true,
     fog: true,
@@ -203,6 +225,9 @@ export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: {
         uFoam: { value: p.foam.clone() },
         uSun: { value: new THREE.Vector3(0.45, 0.8, 0.35).normalize() },
         uStrokes: { value: strokes },
+        uDepthTex: { value: new THREE.DataTexture(new Float32Array([0, 0, 0, 0]), 2, 2, THREE.RedFormat, THREE.FloatType) },
+        uDepthSize: { value: 0 },
+        uLook: { value: new THREE.Vector3(look.shallowDepth, look.foamWidth, look.foamRing) },
       },
     ]),
     vertexShader: /* glsl */ `
@@ -230,6 +255,9 @@ export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: {
       uniform vec3 uSun;
       uniform float uTime;
       uniform float uStrokes;
+      uniform sampler2D uDepthTex;
+      uniform float uDepthSize;
+      uniform vec3 uLook;
       varying float vDepth;
       float wh(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
       // short wave strokes: rows of cells along a slowly turning swell direction, a hashed share lit
@@ -252,14 +280,25 @@ export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: {
       varying vec3 vWorld;
       void main() {
         if (vDepth < -2.0) discard;
+        // look v3: depth per fragment from the heightmap texture (smooth shallows and a crisp foam line);
+        // without it (uDepthSize 0) the coarse per-vertex depth
+        float dep = uDepthSize > 0.0 ? texture2D(uDepthTex, (vWorld.xz + 0.5) / uDepthSize).r : vDepth;
+        if (dep < 0.0) discard;
         vec3 n = normalize(cross(dFdx(vWorld), dFdy(vWorld)));
-        float t = smoothstep(0.0, uStrokes > 0.0 ? 30.0 : 70.0, vDepth);
+        float t = smoothstep(0.0, uStrokes > 0.0 ? uLook.x : 70.0, dep);
         vec3 col = mix(uShallow, uDeep, t);
         col *= 0.82 + 0.25 * max(dot(n, uSun), 0.0);
-        float foam = (1.0 - smoothstep(0.0, 10.0, vDepth)) * (0.65 + 0.35 * sin(uTime * 2.2 + vDepth * 0.9));
-        col = mix(col, uFoam, clamp(foam, 0.0, 1.0) * 0.85);
+        float wob = 0.18 * sin(vWorld.x * 1.7 + uTime * 0.8) * sin(vWorld.z * 1.3 - uTime * 0.6);
+        float foam = (1.0 - smoothstep(0.0, uLook.y, dep + wob * uLook.y)) * (0.75 + 0.25 * sin(uTime * 2.2 + dep * 0.9));
+        if (uLook.z > 0.0) {
+          // a fainter foam ring offshore that drifts out and fades, like a painted wave line
+          float ph = fract(uTime * 0.12);
+          float ring = 1.0 - smoothstep(0.0, uLook.y * 0.35, abs(dep - uLook.z * (0.6 + 0.8 * ph) + wob * uLook.y));
+          foam = max(foam, ring * 0.55 * (1.0 - ph));
+        }
+        col = mix(col, uFoam, clamp(foam, 0.0, 1.0) * 0.9);
         if (uStrokes > 0.0) {
-          float near = 1.0 - smoothstep(4.0, 40.0, vDepth);
+          float near = 1.0 - smoothstep(4.0, 40.0, dep);
           float s1 = strokeAt(vWorld.xz, uStrokes * (0.3 + 0.4 * near), 0.42);
           float s2 = strokeAt(vWorld.xz + 31.7, uStrokes * 0.45, 0.33);
           col = mix(col, uFoam, s1 * 0.9);

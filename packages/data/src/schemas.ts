@@ -221,6 +221,10 @@ export const StyleSchema = z.strictObject({
       space: z.strictObject({ ...comment, top: hex, horizon: hex, stars: z.number().min(0).max(1), rim: hex }).optional(),
       /** look v2: density of white foam strokes on open water (0 turns them off) */
       foamStrokes: z.number().min(0).max(1).optional(),
+      /** look v3 painted water (BACKLOG 14a): per-fragment depth shallows, crisp foam line, offshore ring */
+      water: z
+        .strictObject({ shallowDepth: z.number().positive(), foamWidth: z.number().positive(), foamRing: z.number().min(0) })
+        .optional(),
       /** look v2 (BACKLOG 0a): draw scale of the building models, so villages read as villages next to the
        * 1.3x readability-scaled units; keep (scale - 1) x the largest footprint within the building gap */
       buildingScale: z.number().min(0.5).max(2).optional(),

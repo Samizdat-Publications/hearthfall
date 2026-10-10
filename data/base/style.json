@@ -67,6 +67,7 @@
       "rim": "#5fa8e0"
     },
     "foamStrokes": 0.55,
+    "water": { "shallowDepth": 26, "foamWidth": 6, "foamRing": 14 },
     "tiltShift": {
       "$comment": "Tilt-shift miniature focus (BACKLOG 14a, ADR-013): sharp band at the camera focus (screen uv), blur ramps over falloff to maxBlur low-res pixels; depthWeight also blurs by distance from the focus depth. order pre = blur before palette quantization, post = after.",
       "defaultOn": true,

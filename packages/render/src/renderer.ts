@@ -6,7 +6,7 @@ import type { Style } from "@hearthfall/data";
 import type { World } from "@hearthfall/sim";
 import { applyCamera, CAMERA_PRESETS, type CameraState } from "./camera.ts";
 import { bendMaterial, makeBendUniforms, type BendUniforms } from "./curve.ts";
-import { CHUNK, makeWaterMaterial, TerrainChunk, type TerrainPalette } from "./terrainMesh.ts";
+import { CHUNK, fillDepth, makeWaterMaterial, TerrainChunk, type TerrainPalette } from "./terrainMesh.ts";
 import { TreeLayer } from "./props.ts";
 import { UnitLayer } from "./unitsLayer.ts";
 import { BuildingLayer } from "./buildingsLayer.ts";
@@ -147,7 +147,7 @@ export class ThreeRenderer implements Renderer {
     this.scene.add(this.sun);
     this.scene.add(this.sun.target);
     this.terrainMat = bendMaterial(new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true }), this.bend, this.detail);
-    this.waterMat = makeWaterMaterial(this.palette, this.bend, this.time, rs?.foamStrokes ?? 0);
+    this.waterMat = makeWaterMaterial(this.palette, this.bend, this.time, rs?.foamStrokes ?? 0, rs?.water);
     this.pal = pal;
     this.basePal = pal;
     this.styleRender = o.style.render;
@@ -205,6 +205,7 @@ export class ThreeRenderer implements Renderer {
   /** BACKLOG 3: draw the whole map (debug and god view); the sim keeps its fog */
   revealFog = false;
   private fogTex: THREE.DataTexture | null = null;
+  private depthTex: THREE.DataTexture | null = null;
   private fogKey = "";
 
   /** Upload the viewer's explored and visible grids to the fog texture when they change. */
@@ -288,8 +289,25 @@ export class ThreeRenderer implements Renderer {
     return { pending: this.modelsPending, loaded: this.modelReport?.loaded ?? [], failed: this.modelReport?.failed ?? [], drawn: [...new Set(drawn)].sort() };
   }
 
+  /** look v3: re-upload the per-cell water depth texture after any terrain change */
+  private syncDepth(): void {
+    const t = this.world!.terrain;
+    const n = t.size;
+    if (!this.depthTex || this.depthTex.image.width !== n) {
+      this.depthTex?.dispose();
+      this.depthTex = new THREE.DataTexture(new Float32Array(n * n), n, n, THREE.RedFormat, THREE.FloatType);
+      this.depthTex.wrapS = this.depthTex.wrapT = THREE.RepeatWrapping;
+      this.depthTex.magFilter = this.depthTex.minFilter = THREE.LinearFilter;
+      this.waterMat.uniforms.uDepthTex.value = this.depthTex;
+      this.waterMat.uniforms.uDepthSize.value = n;
+    }
+    fillDepth(t, this.depthTex.image.data as Float32Array);
+    this.depthTex.needsUpdate = true;
+  }
+
   private rebuildAll(): void {
     const t = this.world!.terrain;
+    this.syncDepth();
     for (const c of this.chunks) c.build(t, this.palette);
     this.cursor = t.version;
     this.stats.fullRebuilds++;
@@ -331,6 +349,7 @@ export class ThreeRenderer implements Renderer {
       }
     }
     for (const i of touched) this.chunks[i].build(t, this.palette);
+    this.syncDepth();
     this.cursor = t.version;
     this.stats.remeshTotal += touched.size;
     this.stats.lastRemesh = touched.size;

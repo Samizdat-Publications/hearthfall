@@ -180,6 +180,20 @@ if (__DEBUG_API__ || game.params.debug) {
       game.paused = p;
     },
     setCamera: (c: string | Partial<CameraState>) => game.renderer.setCamera(c),
+    /** look shots: the nearest low beach cell to (x, z) (land at most 6 above sea, water at least `deep` within 3 cells) */
+    shore: (fx: number, fz: number, deep = 6) => {
+      const t = game.world.terrain;
+      const x = Math.round(fx);
+      const z = Math.round(fz);
+      for (let r = 0; r < t.size / 2; r++)
+        for (let dz = -r; dz <= r; dz++)
+          for (let dx = -r; dx <= r; dx++) {
+            if (Math.max(Math.abs(dx), Math.abs(dz)) !== r || t.get(x + dx, z + dz) < t.sea || t.get(x + dx, z + dz) > t.sea + 6) continue;
+            if (t.sea - t.get(x + dx + 3, z + dz) >= deep || t.sea - t.get(x + dx, z + dz + 3) >= deep || t.sea - t.get(x + dx - 3, z + dz) >= deep || t.sea - t.get(x + dx, z + dz - 3) >= deep)
+              return [x + dx, z + dz];
+          }
+      return [x, z];
+    },
     /** BACKLOG 3: draw through the fog of war (render only) */
     setReveal: (on = true) => {
       game.renderer.revealFog = on;

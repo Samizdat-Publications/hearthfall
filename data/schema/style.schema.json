@@ -171,6 +171,29 @@
           "minimum": 0,
           "maximum": 1
         },
+        "water": {
+          "type": "object",
+          "properties": {
+            "shallowDepth": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "foamWidth": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "foamRing": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "shallowDepth",
+            "foamWidth",
+            "foamRing"
+          ],
+          "additionalProperties": false
+        },
         "buildingScale": {
           "type": "number",
           "minimum": 0.5,

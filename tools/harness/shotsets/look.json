@@ -1,5 +1,5 @@
 {
- "$comment": "Look comparisons (BACKLOG 14a, ADR-013): tilt-shift off, pre and post the palette pass at pixel sizes 3 and 2, default and close cameras.",
+ "$comment": "Look comparisons (BACKLOG 14a, ADR-013): tilt-shift off, pre and post the palette pass at pixel sizes 3 and 2, default and close cameras, plus a coast view for painted water (14a-2).",
  "shots": [
   {
    "id": "village_px3_off",
@@ -156,6 +156,58 @@
    "coverage": {
     "green": [
      0.03,
+     0.95
+    ]
+   }
+  },
+  {
+   "id": "coast_off",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "default",
+    "tiltshift": "off",
+    "reveal": "1"
+   },
+   "kind": "world",
+   "steps": [
+    {
+     "eval": "const h = __game.getSummary().tribes[0].hearth; const c = __game.shore(h[0], h[1]); __game.setCamera({ x: c[0], z: c[1], zoom: 0.24, yaw: 0.6 });"
+    },
+    {
+     "step": 40
+    }
+   ],
+   "coverage": {
+    "green": [
+     0.0,
+     0.95
+    ]
+   }
+  },
+  {
+   "id": "coast_post",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "default",
+    "tiltshift": "post",
+    "reveal": "1"
+   },
+   "kind": "world",
+   "steps": [
+    {
+     "eval": "const h = __game.getSummary().tribes[0].hearth; const c = __game.shore(h[0], h[1]); __game.setCamera({ x: c[0], z: c[1], zoom: 0.24, yaw: 0.6 });"
+    },
+    {
+     "step": 40
+    }
+   ],
+   "coverage": {
+    "green": [
+     0.0,
      0.95
     ]
    }

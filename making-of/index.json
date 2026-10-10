@@ -810,6 +810,16 @@
       "when": "2026-10-10T00:47:19.509Z",
       "source": "external:tilt_orders_crop.png",
       "bytes": 140551
+    },
+    {
+      "file": "b14/20261010-0059_painted-water.png",
+      "milestone": "B14",
+      "kind": "screenshot",
+      "caption": "Look v3, painted water: depth sampled per pixel from a heightmap texture gives smooth turquoise shallows, a crisp shore foam line and a faint wave ring drifting offshore.",
+      "highlight": false,
+      "when": "2026-10-10T00:59:03.027Z",
+      "source": "external:coast_post.png",
+      "bytes": 591224
     }
   ]
 }
