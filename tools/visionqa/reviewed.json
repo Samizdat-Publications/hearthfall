@@ -24,6 +24,12 @@
       "id": "firerain",
       "reason": "BACKLOG 8 bark subtitle 45 px right of the help panel and over the world; no panel overlap (DOM check clean)",
       "at": "2026-10-09"
+    },
+    "aae3f7c57244e2ad73c38edceb9331e11c1e97ae48008f4b718d58eec174d914": {
+      "set": "smoke",
+      "id": "units_select_move",
+      "reason": "no panel overlap; a settler stands behind the build panel at the right edge, which is normal world occlusion",
+      "at": "2026-10-10"
     }
   }
 }
