@@ -253,6 +253,7 @@ if (debugApiAllowed(__DEBUG_API__, !!game.params.debug, game.role)) {
       game.updateTargeting(px, py);
       return game.castAt(px, py);
     },
+    cancelPlacing: () => game.cancelPlacing(),
     placeAtScreen: (building: string, px: number, py: number) => {
       game.startPlacing(building);
       game.updatePlacement(px, py);

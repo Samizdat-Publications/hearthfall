@@ -213,6 +213,26 @@ async function flow(browser, url, vp) {
     await page.mouse.click(vp.width / 2 + 30, vp.height / 2 + 30, { button: "right" });
     const sub = await page.waitForSelector('[data-hud="subtitle"]', { timeout: 5000 }).then((e) => e.textContent(), () => null);
     if (!sub || !/^Shaper:/.test(sub.trim())) problem(`no Shaper subtitle after an order: ${JSON.stringify(await page.evaluate(() => window.__game.a11y().subtitle))}`);
+    // stretch 2 playtest pass: the first two tips can be done with real input (D and a click, then Z and a click)
+    {
+      const tipNow = () => page.evaluate(() => window.__game.getSummary().tip);
+      const ring = [];
+      for (const r of [140, 220, 300]) for (let k = 0; k < 8; k++) ring.push([Math.round(vp.width / 2 + r * Math.cos(k * 0.785)), Math.round(vp.height / 2 + r * 0.6 * Math.sin(k * 0.785))]);
+      for (const [x, y] of ring) {
+        if ((await tipNow()) !== "dwelling") break;
+        await page.keyboard.press("d");
+        await page.mouse.click(x, y);
+        await page.evaluate(() => window.__game.step(10));
+      }
+      await page.evaluate(() => window.__game.cancelPlacing());
+      const afterD = await tipNow();
+      if (afterD === "dwelling") problem("first match tips: D and a click never placed a Dwelling");
+      await page.keyboard.press("z");
+      await page.mouse.click(vp.width / 2 + 40, vp.height / 2 + 20);
+      await page.evaluate(() => window.__game.step(240));
+      const afterZ = await tipNow();
+      if (afterZ === "dwelling" || afterZ === "cast") problem(`first match tips: Z and a click did not cast (tip ${afterZ})`);
+    }
     // the music director runs every frame, not only on frames with sim events (M10 review)
     const m0 = await page.evaluate(() => window.__game.audio().music);
     await settle();
