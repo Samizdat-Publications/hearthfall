@@ -215,9 +215,10 @@ export class UnitSystem {
         )
           continue;
         if (E.flowGoal[i] >= 0) {
-          // flow fields were all dropped above and rebuild from the new terrain: the route may be
-          // longer now, so progress restarts against it
-          E.best[i] = 1e9;
+          // flow fields were all dropped above and rebuild from the new terrain: the route may be longer
+          // now. BACKLOG 72: mark the best as pending (-1 - best); the next movement step raises it to the
+          // rebuilt route only when that is longer, so a truly stuck unit still gives up under repeated edits
+          if (E.best[i] >= 0 && E.best[i] < 1e9) E.best[i] = -1 - E.best[i];
           continue;
         }
         const p = this.paths[i];
@@ -498,6 +499,11 @@ export class UnitSystem {
           }
           // stuck bookkeeping: progress along the route (falls back to straight distance)
           const prog = route >= 0 ? route : gd;
+          if (E.best[i] < 0) {
+            // BACKLOG 72: a terrain edit rebuilt the flow field; progress restarts only against a longer route
+            const old = -1 - E.best[i];
+            E.best[i] = prog > old + m.progressEpsilon ? prog : old;
+          }
           if (prog < E.best[i] - m.progressEpsilon) {
             E.best[i] = prog;
             E.stuck[i] = 0;

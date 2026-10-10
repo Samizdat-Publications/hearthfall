@@ -128,4 +128,28 @@ describe("unit orders", () => {
     expect(gaveUp).toEqual([]);
     expect(Math.abs(E.x[i] - 34) + Math.abs(E.y[i] - 40)).toBeLessThan(2);
   });
+
+  // BACKLOG 72 (M7 re-review): every terrain edit used to restart a flow unit's progress, so a truly stuck
+  // flow unit never gave up while edits came faster than giveUpSeconds (repeated quakes far away)
+  it("a stuck flow-field unit still gives up under repeated terrain edits that do not touch its route", () => {
+    const w = world({ generator: "flat", size: 64, tribes: 1 });
+    const E = w.ents;
+    const ids = Array.from({ length: 8 }, (_, k) => w.spawnUnit("settler", 0, 8 + (k % 4), 8 + Math.floor(k / 4)));
+    w.step([{ tick: 0, tribe: 0, type: "move", args: { units: ids, to: [30, 10] } }]);
+    const pinned = E.index(ids[0]);
+    expect(E.flowGoal[pinned]).toBeGreaterThanOrEqual(0);
+    const px = E.x[pinned];
+    const py = E.y[pinned];
+    let gaveUp = -1;
+    const giveUp = w.cfg.pack.balance.movement.giveUpSeconds * w.cfg.tickHz;
+    for (let t = 0; t < 3 * giveUp && gaveUp < 0; t++) {
+      // something holds the unit in place (it never makes progress)
+      E.x[pinned] = px;
+      E.y[pinned] = py;
+      const cmds = t % 30 === 0 ? [{ tick: w.tick, tribe: -1, type: "terrainOp", args: { op: "noiseScar", x: 40, y: 50, r: 3, depth: 4, seed: t } }] : [];
+      w.step(cmds);
+      for (const e of w.events) if (e.type === "orderGaveUp" && e.id === ids[0]) gaveUp = w.tick;
+    }
+    expect(gaveUp).toBeGreaterThan(0);
+  });
 });
