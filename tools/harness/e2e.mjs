@@ -167,6 +167,11 @@ async function flow(browser, url, vp) {
     });
     if (!current) problem("minimap still shows the old camera footprint 4 frames after a camera move");
     if (JSON.stringify(before) !== JSON.stringify(after)) problem(`minimap footprint before the next frame differs from after it: ${JSON.stringify(before?.slice(0, 2))} vs ${JSON.stringify(after?.slice(0, 2))}`);
+    // BACKLOG 82: a control group (the selected Shaper) and a camera bookmark, which a load must clear
+    await page.keyboard.press("Control+1");
+    await page.keyboard.press("Control+F1");
+    const ctl0 = await page.evaluate(() => window.__game.controls());
+    if (ctl0.groups[1] < 1 || ctl0.bookmarks !== 1) problem(`control group or bookmark not set: ${JSON.stringify(ctl0)}`);
     // pause, save to slot 1, load it back
     await page.keyboard.press("p");
     await screenIs("pause");
@@ -178,6 +183,11 @@ async function flow(browser, url, vp) {
     await check("saves");
     await click("back");
     await screenIs("pause");
+    // BACKLOG 76: 200 ticks on from the save, then the same 200 ticks on from the loaded game must agree
+    const ahead = await page.evaluate(() => {
+      window.__game.step(window.__game.lastSave().tick + 200 - window.__game.getSummary().tick);
+      return { tick: window.__game.getSummary().tick, hash: window.__game.hash() };
+    });
     await click("load");
     await screenIs("saves");
     await click("load-1");
@@ -186,6 +196,32 @@ async function flow(browser, url, vp) {
     const loaded = await page.evaluate(() => window.__game.lastLoad());
     res.save = { saved, loaded };
     if (!loaded || loaded.hash !== saved.hash || loaded.tick !== saved.tick) problem(`load: ${JSON.stringify(loaded)} differs from save ${JSON.stringify(saved)}`);
+    // the frame loop may already have run a tick since the load: step to the same absolute tick, paused
+    const again = await page.evaluate(() => {
+      window.__game.pause(true);
+      window.__game.step(window.__game.lastSave().tick + 200 - window.__game.getSummary().tick);
+      window.__game.pause(false);
+      return { tick: window.__game.getSummary().tick, hash: window.__game.hash() };
+    });
+    res.loadStep = { ahead, again };
+    if (again.tick !== ahead.tick || again.hash !== ahead.hash) problem(`200 ticks after load ${JSON.stringify(again)} differ from 200 ticks after the save ${JSON.stringify(ahead)}`);
+    // BACKLOG 82: the load cleared groups and bookmarks, and loading the same save twice more leaks no geometry
+    await settle();
+    const ctl1 = await page.evaluate(() => window.__game.controls());
+    if (ctl1.groups.some((g) => g > 0) || ctl1.bookmarks !== 0) problem(`a load kept control groups or bookmarks: ${JSON.stringify(ctl1)}`);
+    const geos = [ctl1.geometries];
+    for (let k = 0; k < 2; k++) {
+      await page.keyboard.press("p");
+      await screenIs("pause");
+      await click("load");
+      await screenIs("saves");
+      await click("load-1");
+      await screenIs("none");
+      await settle();
+      geos.push((await page.evaluate(() => window.__game.controls())).geometries);
+    }
+    res.geometries = geos;
+    if (geos[2] > geos[1] || geos[1] > geos[0] + 8) problem(`GPU geometries grow across reloads of one save: ${geos.join(", ")}`);
     // forced win, end screen, back to the menu
     const ended = await page.evaluate(() => window.__game.forceWin());
     if (!ended?.won) problem(`forceWin: ended ${JSON.stringify(ended)}`);
@@ -279,9 +315,13 @@ async function flow(browser, url, vp) {
     await page.evaluate(() => window.__game.step(20 * 125));
     const f2 = await page.evaluate(() => window.__game.forge());
     if (f2?.running || !f2?.ready[0] || (await page.$('[data-hud="forge"]'))) problem(`Forge did not end: ${JSON.stringify(f2)}`);
-    await page.keyboard.press("p");
-    await screenIs("pause");
-    await click("quit");
+    // BACKLOG 75: the defeat path: the local tribe is eliminated and the Defeat end screen shows
+    const lostS = await page.evaluate(() => window.__game.forceLose());
+    if (!lostS || lostS.won) problem(`forceLose: ended ${JSON.stringify(lostS)}`);
+    await screenIs("end");
+    const defeat = { title: await page.textContent('[data-ui="end-title"]'), tag: await page.textContent('[data-ui="end-tag"]') };
+    if (defeat.title?.trim() !== "Defeat" || defeat.tag?.trim() !== "Your tribe is no more.") problem(`defeat end screen ${JSON.stringify(defeat)}`);
+    await click("main-menu");
     await screenIs("main");
     // BACKLOG 12: the map editor: a real left click paints, a goal without its sites blocks Playtest, Save stores
     // the draft, Playtest runs it as a level and quitting the playtest returns to the editor with the draft

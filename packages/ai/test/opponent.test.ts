@@ -20,6 +20,24 @@ function vsIdle(personality: string, seed: number, minutes: number): { w: World;
 const bold: Personality = { id: "test_bold", economyTargetPop: 20, armyMix: { warden: 1 }, aggression: 1, firstAttackMinute: 0, spellPrefs: ["raise_land", "bolt"], scouting: 0, towerAffinity: 0 };
 
 describe("OpponentAI (M7)", () => {
+  // BACKLOG 87: a locked spell may be cast from charges anywhere (spells.ts), which only matters in levels;
+  // a skirmish must never hand out charges of a spell its tribe has not unlocked
+  it("in a skirmish no tribe ever holds charges of a locked spell", () => {
+    const p = basePack();
+    const w = new World({ pack: p.files, packHash: p.hash, seed: 1003, map: { generator: "continents", size: 128, tribes: 2 } });
+    w.controllers.push(makeBot({ type: "opponent", tribe: 0, personality: "aggressive" }), makeBot({ type: "opponent", tribe: 1, personality: "turtle", offset: 1 }));
+    const bad: string[] = [];
+    let charged = 0;
+    for (let t = 0; t < 12 * 60 * w.cfg.tickHz && bad.length === 0; t++) {
+      w.step([]);
+      charged += w.events.filter((e) => e.type === "charged").length;
+      if (t % 20) continue;
+      for (const tr of w.tribes) tr.eco.charges.forEach((c, s) => c > 0 && !tr.eco.unlocked[s] && bad.push(`tick ${w.tick} tribe ${tr.index} holds ${c} of locked spell ${s}`));
+    }
+    expect(bad).toEqual([]);
+    expect(charged).toBeGreaterThan(0);
+  });
+
   it("the aggressive personality builds lodges, trains, casts and eliminates an idle tribe", () => {
     const { w, ai } = vsIdle("aggressive", 1001, 25);
     expect(w.tribes[1].alive).toBe(false);

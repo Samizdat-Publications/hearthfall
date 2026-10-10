@@ -263,6 +263,12 @@ if (__DEBUG_API__ || game.params.debug) {
       game.step(1);
       return game.ended;
     },
+    /** BACKLOG 75: a forced defeat (god mode eliminate of the local tribe) */
+    forceLose: () => {
+      game.command({ tribe: -1, type: "eliminate", args: { tribe: game.localTribe } });
+      game.step(1);
+      return game.ended;
+    },
     /** BACKLOG 13: the skirmish victory rules in the sim (null for a level or an old save) */
     rules: () => {
       const r = game.world.rules;
@@ -318,6 +324,10 @@ if (__DEBUG_API__ || game.params.debug) {
     viewOutline: (fresh = false) => viewOutline(game, fresh),
     minimapCurrent: () => drawnViewKey === viewKey(game),
     lastSave: () => game.lastSave,
+    /** BACKLOG 82: control group sizes, camera bookmarks set and live GPU geometries (a new world resets the first two) */
+    controls: () => ({ groups: game.groups.map((g) => g.length), bookmarks: game.bookmarks.filter(Boolean).length, geometries: game.renderer.gl.info.memory.geometries }),
+    /** BACKLOG 76: the full state hash of the running world */
+    hash: () => game.world.hash().all,
     lastLoad: () => game.lastLoad,
     /** Run a scenario-style definition headless in this page (cross-engine determinism check). */
     runDef: (def: ScenarioDef & { levelDef?: unknown; carry?: CampaignCarry }, rawPack: Record<string, unknown>, every = 100) => {
