@@ -16,7 +16,7 @@ All commands are npm scripts that call `node tools/harness/...` with a hard inte
 | Command | What it does | Max |
 |---|---|---|
 | `npm run qa:fast` | typecheck + guards + unit tests + scenarios tagged `fast` (the inner loop) | 2 min |
-| `npm run check` | typecheck + all guards (determinism, import direction, data schemas, docs freshness, IP names, dash characters, string keys) | 2 min |
+| `npm run check` | typecheck + all guards (determinism, import direction, data schemas, docs freshness, IP names, dash characters, string keys); a guard that scans 0 files fails (BACKLOG 27); the guards' own self-tests are `tools/guards/guards.test.mjs` (in the unit layer) | 2 min |
 | `npm run test:scenarios` | all `scenarios/*.json` headless, parallel workers | 5 min |
 | `npm run test:replays` | golden replays, compare hash checkpoints | 3 min |
 | `npm run soak -- --seeds 8 --minutes 45 --jobs auto` | bot vs AI matches headless in worker_threads (jobs = cores minus 2), invariants and metrics | 9 min |

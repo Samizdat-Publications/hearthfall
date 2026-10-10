@@ -24,10 +24,14 @@ export function run() {
   for (const abs of files) {
     const file = rel(abs);
     if (file === SELF) continue;
-    const src = read(abs);
-    for (const m of src.matchAll(RE)) issues.push({ file, line: lineOf(src, m.index), msg: `original-IP name "${m[1]}" (use our names, DESIGN section 2)` });
+    issues.push(...scan(file, read(abs)));
   }
   return { name: "ip-names", issues, files: files.length };
+}
+
+/** Check one file; exported for the guard self-tests (BACKLOG 27). */
+export function scan(file, src) {
+  return [...src.matchAll(RE)].map((m) => ({ file, line: lineOf(src, m.index), msg: `original-IP name "${m[1]}" (use our names, DESIGN section 2)` }));
 }
 
 if (isMain(import.meta.url)) process.exitCode = report(run());

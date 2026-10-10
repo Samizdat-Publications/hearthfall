@@ -15,10 +15,23 @@ export function run() {
     if (!existsSync(p) || norm(readFileSync(p, "utf8")) !== text) issues.push({ file: `data/schema/${name}`, line: 0, msg: "stale, run npm run data:docs" });
   }
   const scripts = JSON.parse(readFileSync(ROOT + "package.json", "utf8")).scripts;
-  const testing = readFileSync(ROOT + "docs/TESTING.md", "utf8");
-  const sec = testing.slice(testing.indexOf("## 1. Commands"), testing.indexOf("## 2."));
-  for (const m of sec.matchAll(/`npm run ([a-z0-9:-]+)/g)) if (!scripts[m[1]]) issues.push({ file: "docs/TESTING.md", line: 0, msg: `command "npm run ${m[1]}" missing from package.json` });
-  return { name: "docs", issues };
+  issues.push(...missingCommands(readFileSync(ROOT + "docs/TESTING.md", "utf8"), scripts));
+  return { name: "docs", issues, files: 3 + Object.keys(jsonSchemas()).length };
+}
+
+/** npm commands named in TESTING.md section 1 that package.json lacks; exported for the self-tests (BACKLOG 27). */
+export function missingCommands(testing, scripts) {
+  const issues = [];
+  const at = testing.indexOf("## 1. Commands");
+  if (at < 0) return [{ file: "docs/TESTING.md", line: 0, msg: 'section "## 1. Commands" not found' }];
+  const sec = testing.slice(at, testing.indexOf("## 2."));
+  let n = 0;
+  for (const m of sec.matchAll(/`npm run ([a-z0-9:-]+)/g)) {
+    n++;
+    if (!scripts[m[1]]) issues.push({ file: "docs/TESTING.md", line: 0, msg: `command "npm run ${m[1]}" missing from package.json` });
+  }
+  if (!n) issues.push({ file: "docs/TESTING.md", line: 0, msg: "section 1 names no npm command" });
+  return issues;
 }
 
 if (isMain(import.meta.url)) process.exitCode = report(run());

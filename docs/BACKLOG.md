@@ -41,8 +41,8 @@ Order matters: work top down after M11. Re-rank when new findings arrive; keep e
 24. [S] Nightly-style full soak (64 seeds) script with trend chart of balance metrics over commits.
 25. [S] Perf trend chart from bench history.
 26. [S] Asset re-generation tool for a single asset with a new prompt, with before/after sheet.
-27. [S] Guard self-tests for imports, ip-names, dashes, docs and data guards; every guard asserts it scanned more than 0 files (M0 review).
-28. [S] Determinism guard: flag `.sort()` without a comparator, `Intl`, `Symbol` based APIs in sim/ai (M0 review).
+27. [S] Guard self-tests for imports, ip-names, dashes, docs and data guards; every guard asserts it scanned more than 0 files (M0 review). Done in stretch 2: each guard exports a pure check (`scan`, `missingCommands`, `check`) with planted-violation and clean-input tests in `tools/guards/guards.test.mjs`, plus a live test that every guard scans files and passes; the qa guard step fails a guard that reports 0 files.
+28. [S] Determinism guard: flag `.sort()` without a comparator, `Intl`, `Symbol` based APIs in sim/ai (M0 review). Done in stretch 2: also `.toSorted()`, `localeCompare` and `toLocale*`; sim and ai had no hits.
 29. [S] Before any public push: strip absolute personal paths from CLAUDE.md, README.md, OPENING_PROMPT.md and docs/research (M0 review).
 30. [S] Replace free-form formula strings (balance.breeding.formula, units.rules.popCapFormula) with structured params when M4 consumes them; never eval (M0 review).
 31. [S] Tighten the spells terrainOp schema into a union discriminated by `op` with required params per op (M5, M0 review).

@@ -9,11 +9,14 @@ export function run() {
   const issues = [];
   const files = walk(["docs", "data", "packages/ui", "apps", "CLAUDE.md", "README.md", "tools/assets/README.md", "making-of"], [".md", ".json", ".ts", ".tsx", ".html", ".css", ".mjs"]);
   for (const abs of files) {
-    const file = rel(abs);
-    const src = read(abs);
-    for (const m of src.matchAll(RE)) issues.push({ file, line: lineOf(src, m.index), msg: "em or en dash (use a comma, colon, period or spaced hyphen)" });
+    issues.push(...scan(rel(abs), read(abs)));
   }
   return { name: "dashes", issues, files: files.length };
+}
+
+/** Check one file; exported for the guard self-tests (BACKLOG 27). */
+export function scan(file, src) {
+  return [...src.matchAll(RE)].map((m) => ({ file, line: lineOf(src, m.index), msg: "em or en dash (use a comma, colon, period or spaced hyphen)" }));
 }
 
 if (isMain(import.meta.url)) process.exitCode = report(run());

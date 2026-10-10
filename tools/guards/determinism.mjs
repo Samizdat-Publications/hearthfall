@@ -26,6 +26,10 @@ export function scan(file, raw) {
     for (const m of src.matchAll(/\*\*/g)) add(m.index, "the ** operator is banned in sim/ai (use explicit multiplication)");
     for (const g of BANNED_GLOBALS) for (const m of src.matchAll(new RegExp(`(?<![.\\w$])${g}\\b`, "g"))) add(m.index, `${g} is banned in sim/ai (no clocks, timers, DOM or I/O)`);
     for (const m of src.matchAll(/\bfor\s*\([^)]*\bin\b/g)) add(m.index, "for...in is banned in sim/ai (key order hazards); iterate arrays");
+    // BACKLOG 28: default sort orders compare as strings, locale APIs vary by machine, symbols hide state
+    for (const m of src.matchAll(/\.\s*(sort|toSorted)\s*\(\s*\)/g)) add(m.index, `.${m[1]}() without a comparator is banned in sim/ai (string order); pass (a, b) => a - b`);
+    for (const m of src.matchAll(/(?<![.\w$])(Intl|Symbol)\b/g)) add(m.index, `${m[1]} is banned in sim/ai (locale or identity dependent)`);
+    for (const m of src.matchAll(/\.\s*(localeCompare|toLocale\w*)\s*\(/g)) add(m.index, `${m[1]} is banned in sim/ai (locale dependent)`);
     if (file.startsWith("packages/sim/")) for (const m of src.matchAll(/(:\s*any\b|\bas\s+any\b|<any>)/g)) add(m.index, "no `any` in packages/sim");
     for (const m of raw.matchAll(BANNED_IMPORTS)) issues.push({ file, line: lineOf(raw, m.index), msg: `forbidden import in sim/ai: ${m[1]}` });
   }

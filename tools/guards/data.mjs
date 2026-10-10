@@ -9,7 +9,7 @@ export function run() {
   if (res.pack) for (const i of loadLevels(res.pack.files).issues) issues.push({ file: i.file, line: 0, msg: `${i.path || "(root)"}: ${i.message}` });
   // BACKLOG 21: achievements validate against the base pack
   if (res.pack) for (const i of loadAchievements(res.pack.files).issues) issues.push({ file: i.file, line: 0, msg: `${i.path || "(root)"}: ${i.message}` });
-  return { name: "data", issues, hash: res.pack?.hash };
+  return { name: "data", issues, hash: res.pack?.hash, files: res.pack ? Object.keys(res.pack.files).length : 0 };
 }
 
 if (isMain(import.meta.url)) process.exitCode = report(run());

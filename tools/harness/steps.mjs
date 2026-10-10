@@ -19,6 +19,8 @@ export async function guards(out) {
   for (const n of names) {
     const mod = await import(`../guards/${n}.mjs`);
     const res = mod.run();
+    // BACKLOG 27: a guard that scanned nothing (a moved folder, a bad glob) would pass silently
+    if (!(res.files > 0)) res.issues.push({ file: `tools/guards/${n}.mjs`, line: 0, msg: `the ${n} guard scanned 0 files` });
     results.push({ name: n, issues: res.issues });
     for (const i of res.issues.slice(0, 4)) out.line(`[${n}] ${i.file}:${i.line}  ${i.msg}`);
   }
