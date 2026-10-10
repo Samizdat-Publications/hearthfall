@@ -30,15 +30,23 @@ export class EconomyBot implements Controller {
     this.offset = o.offset ?? 0;
     this.slack = o.housingSlack ?? 4;
     this.minRing = o.minRing ?? 4;
-    this.maxRing = o.maxRing ?? 22;
+    this.maxRing = o.maxRing ?? 32;
   }
 
   decide(w: World): Command[] {
     const E = w.ents;
     const h = E.index(w.tribes[this.tribe]?.hearth ?? 0xffffffff);
     if (h < 0) return [];
+    // BACKLOG 48: a plan cut off from the Hearth by later terrain changes cannot be built and would hold
+    // a slot of the open plan limit for good, so cancel it
+    const snap = w.cfg.pack.balance.movement.snapRadius;
+    const home = w.economy.compOf(h, snap);
     let open = 0;
-    for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.cat[i] === CAT.building && E.tribe[i] === this.tribe && E.state[i] !== BSTATE.done) open++;
+    for (let i = 0; i < E.hi; i++) {
+      if (!E.alive[i] || E.cat[i] !== CAT.building || E.tribe[i] !== this.tribe || E.state[i] === BSTATE.done) continue;
+      if (home > 0 && w.economy.compOf(i, snap) !== home) return [{ tick: w.tick, tribe: this.tribe, type: "cancelPlan", args: { id: E.idOf(i) } }];
+      open++;
+    }
     const limit = Math.min(w.cfg.pack.balance.economy.maxOpenPlansPerTribe, 1 + Math.floor(w.economy.followers(this.tribe) / 12));
     if (open >= limit) return [];
     const pop = w.economy.followers(this.tribe);
@@ -68,6 +76,11 @@ export class EconomyBot implements Controller {
     let best: [number, number] | null = null;
     let bestScore = Infinity;
     let firstRing = -1;
+    // BACKLOG 48: only ground the Hearth's settlers can walk to (islands and cliff pockets near the
+    // Hearth used to collect plans nobody could build, which held the tribe's open plan budget forever)
+    // (the same test the settler job pass uses for a site: the component within the snap radius)
+    const snap = w.cfg.pack.balance.movement.snapRadius;
+    const home = w.economy.compAt(hx, hy, snap);
     for (let r = this.minRing; r <= this.maxRing; r++) {
       if (firstRing >= 0 && r > firstRing + 1) break;
       const steps = Math.max(6, Math.floor(r * 2));
@@ -76,6 +89,7 @@ export class EconomyBot implements Controller {
         const cx = Math.round((((hx + dmath.cos(a) * r) % n) + n) % n - fw / 2) + fw / 2;
         const cy = Math.round((((hy + dmath.sin(a) * r) % n) + n) % n - fh / 2) + fh / 2;
         if (w.economy.planBlocker(type, cx, cy)) continue;
+        if (home > 0 && w.economy.compAt(cx, cy, snap) !== home) continue;
         let tree = false;
         for (let i = 0; i < E.hi && !tree && treeFree; i++) {
           if (!E.alive[i] || E.cat[i] !== CAT.tree) continue;

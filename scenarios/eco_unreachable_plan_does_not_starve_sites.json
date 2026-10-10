@@ -1,0 +1,29 @@
+{
+  "id": "eco_unreachable_plan_does_not_starve_sites",
+  "description": "BACKLOG 48 regression: a plan on an islet nobody can reach gets no workers, and the plan placed after it on the mainland is still built (the job pass used to end at the first site with no reachable worker).",
+  "tags": ["fast", "economy"],
+  "seed": 49,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 1,
+    "paint": [
+      { "shape": "disc", "at": [16, 16], "r": 17, "aboveSea": -20, "falloff": 1 },
+      { "shape": "disc", "at": [16, 16], "r": 10, "aboveSea": 40, "falloff": 1 }
+    ]
+  },
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [44, 44] },
+    { "spawn": "settler", "tribe": 0, "near": [46, 42], "count": 5 },
+    { "spawn": "tree", "near": [54, 54], "count": 10, "spacing": 1.2 }
+  ],
+  "commands": [
+    { "tick": 0, "tribe": 0, "type": "placePlan", "args": { "building": "dwelling", "at": [16, 16] } },
+    { "tick": 1, "tribe": 0, "type": "placePlan", "args": { "building": "dwelling", "at": [50, 44] } }
+  ],
+  "runTicks": 1800,
+  "assert": [
+    { "at": 2, "expr": "count(tribe0.dwellings) == 2 && events.count('planPlaced') == 2" },
+    { "at": 1800, "expr": "events.count('buildingDone') == 1 && events.count('drowned') == 0 && invariants() == 0" }
+  ]
+}

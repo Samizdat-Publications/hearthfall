@@ -2,6 +2,8 @@
 // Hearth, attaches a WanderBot per tribe, runs minutes of game time and checks invariants each tick.
 import { parentPort, workerData } from "node:worker_threads";
 import { World } from "../../packages/sim/src/world.ts";
+import { CAT } from "../../packages/sim/src/entities.ts";
+import { BSTATE } from "../../packages/sim/src/economy.ts";
 import { Rng } from "../../packages/sim/src/rng.ts";
 import { walkableComponents } from "../../packages/sim/src/generator.ts";
 import { makeBot } from "../../packages/ai/src/index.ts";
@@ -54,6 +56,23 @@ for (let tr = 0; tr < spec.tribes; tr++) {
   w.controllers.push(makeBot({ type: "wander", tribe: tr, every: 1, offset: 0, spread: 20, chance: 0.4 }));
 }
 const ticks = Math.round(spec.minutes * 60 * w.cfg.tickHz);
+// BACKLOG 48: a tribe that did not grow in a minute is excused only at a real limit: minute 1 (the first
+// dwelling may need its pad flattened), the population cap, or land full (every dwelling at its top level
+// and full, and the economy bot finds no spot for another one)
+const excused = (tribe, minute, pop) => {
+  if (minute === 1 || pop >= w.cfg.pack.units.rules.populationCap) return true;
+  if (pop < w.economy.popCap(tribe)) return false;
+  const E = w.ents;
+  const levels = w.cfg.pack.buildings.buildings[w.cfg.buildingIndex.get("dwelling")].levels;
+  for (let d = 0; d < E.hi; d++) {
+    if (!E.alive[d] || E.tribe[d] !== tribe || E.cat[d] !== CAT.building) continue;
+    if (E.state[d] !== BSTATE.done) return false;
+    if (E.type[d] === w.cfg.buildingIndex.get("dwelling") && E.level[d] < levels.length) return false;
+  }
+  const h = E.index(w.tribes[tribe].hearth);
+  const bot = w.controllers.find((c) => c.tribe === tribe && c.findSpot);
+  return h >= 0 && !!bot && bot.findSpot(w, "dwelling", E.x[h], E.y[h]) === null;
+};
 const minuteTicks = 60 * w.cfg.tickHz;
 const popByMinute = w.tribes.map((tr) => [w.economy.followers(tr.index)]);
 const violations = [];
@@ -76,7 +95,7 @@ for (let k = 0; k < ticks; k++) {
     for (const tr of w.tribes) {
       const pop = w.economy.followers(tr.index);
       const hist = popByMinute[tr.index];
-      if (economyMode && pop <= hist[hist.length - 1]) violations.push(`tick ${w.tick}: tribe ${tr.index} did not grow in minute ${hist.length} (${hist[hist.length - 1]} -> ${pop})`);
+      if (economyMode && pop <= hist[hist.length - 1] && !excused(tr.index, hist.length, pop)) violations.push(`tick ${w.tick}: tribe ${tr.index} did not grow in minute ${hist.length} (${hist[hist.length - 1]} -> ${pop})`);
       hist.push(pop);
     }
     if (violations.length) break;

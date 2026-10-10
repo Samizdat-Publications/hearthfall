@@ -1,0 +1,29 @@
+{
+  "id": "eco_stranded_settler_does_not_block_homes",
+  "description": "BACKLOG 48 regression: an idle settler stranded on a separate islet finds no home; the settlers on the mainland must still move into the dwelling and breed (the home pass used to stop at the first settler without a home).",
+  "tags": ["fast", "economy"],
+  "seed": 48,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 1,
+    "paint": [
+      { "shape": "disc", "at": [12, 12], "r": 9, "aboveSea": -20, "falloff": 1 },
+      { "shape": "disc", "at": [12, 12], "r": 3, "aboveSea": 40, "falloff": 1 }
+    ]
+  },
+  "setup": [
+    { "spawn": "settler", "tribe": 0, "at": [12, 12] },
+    { "spawn": "hearth", "tribe": 0, "at": [36, 36] },
+    { "spawn": "dwelling", "tribe": 0, "at": [42, 36] },
+    { "spawn": "settler", "tribe": 0, "near": [38, 34], "count": 3 }
+  ],
+  "commands": [
+    { "tick": 0, "tribe": 0, "type": "setPriorities", "args": { "build": 0, "upgrade": 0, "breed": 1 } }
+  ],
+  "runTicks": 3600,
+  "assert": [
+    { "at": 1, "expr": "terrain.isLand([12,12]) && !terrain.isLand([12,18]) && count(tribe0.settlers) == 4" },
+    { "at": 3600, "expr": "events.count('born') >= 1 && count(tribe0.settlers, near([12,12], 3)) == 1 && events.count('drowned') == 0 && invariants() == 0" }
+  ]
+}

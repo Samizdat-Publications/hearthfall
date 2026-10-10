@@ -311,11 +311,15 @@ export class EconomySystem {
 
   /** Walkable component of the vertex nearest an entity (0 when none is walkable nearby); r 2 for units, snapRadius for buildings. */
   compOf(i: number, r = 2): number {
+    return this.compAt(this.w.ents.x[i], this.w.ents.y[i], r);
+  }
+
+  /** Walkable component label at a map point (nearest walkable vertex within r), 0 for none. */
+  compAt(x: number, y: number, r = 2): number {
     const pf = this.w.units.pf;
     pf.refresh();
     const n = this.w.terrain.size;
-    const E = this.w.ents;
-    const v = pf.nearestWalkable((((Math.round(E.x[i]) % n) + n) % n) + (((Math.round(E.y[i]) % n) + n) % n) * n, r);
+    const v = pf.nearestWalkable((((Math.round(x) % n) + n) % n) + (((Math.round(y) % n) + n) % n) * n, r);
     return v < 0 ? 0 : pf.comp[v];
   }
 
@@ -644,14 +648,21 @@ export class EconomySystem {
       } else free.splice(free.indexOf(best), 1);
       return best;
     };
+    // nobody left to assign at all; a -1 from take() with candidates left means only that this job's
+    // landmass has nobody, so the next job still gets its workers (BACKLOG 48: one plan on an unreachable
+    // pocket used to end the whole pass, starving every later site, upgrade and home)
+    const spent = () => !free.length && !housed.length;
     // 1. construction sites
     if (pri.build > 0) {
-      for (const s of sites) {
+      sites: for (const s of sites) {
         const doomed = this.doomedTreesIn(s);
         for (const tree of doomed) {
           if (this.inboundTree(tree) > 0) continue;
           const i = take(tree);
-          if (i < 0) return;
+          if (i < 0) {
+            if (spent()) return;
+            continue sites;
+          }
           this.goTo(i, tree, TASK.toTree);
           E.progress[i] = E.idOf(s);
           this.jobs.wood.set(E.idOf(s), (this.jobs.wood.get(E.idOf(s)) ?? 0) + 1);
@@ -672,7 +683,10 @@ export class EconomySystem {
           if (need > 0) {
             need--;
             const i = take(s);
-            if (i < 0) return;
+            if (i < 0) {
+              if (spent()) return;
+              continue sites;
+            }
             if (E.carry[i] > 0) this.goTo(i, s, TASK.haul);
             else {
               const tree = this.nearestTree(i);
@@ -689,7 +703,10 @@ export class EconomySystem {
           if (stoneNeed > 0) {
             stoneNeed--;
             const i = take(s);
-            if (i < 0) return;
+            if (i < 0) {
+              if (spent()) return;
+              continue sites;
+            }
             const rock = this.nearestRock(i);
             if (rock < 0) {
               free.push(i);
@@ -705,7 +722,10 @@ export class EconomySystem {
         const canWork = E.state[s] !== BSTATE.build || this.buildCap(s) > E.progress[s];
         for (let k = 0; k < slots && canWork; k++) {
           const i = take(s);
-          if (i < 0) return;
+          if (i < 0) {
+            if (spent()) return;
+            continue sites;
+          }
           this.goTo(i, s, TASK.toWork);
         }
       }
@@ -719,7 +739,10 @@ export class EconomySystem {
         const need = (next.upgradeWoodAtDoor ?? 0) - E.wood[d] - this.inbound(d, [TASK.toTree, TASK.chop, TASK.haul]);
         for (let k = 0; k < need; k++) {
           const i = take(d);
-          if (i < 0) return;
+          if (i < 0) {
+            if (spent()) return;
+            break;
+          }
           const tree = this.nearestTree(i);
           if (tree < 0) {
             free.push(i);
@@ -745,7 +768,8 @@ export class EconomySystem {
             best = d;
           }
         }
-        if (best < 0) break;
+        // BACKLOG 48: a settler stranded on another landmass finds no home; the rest still look for one
+        if (best < 0) continue;
         this.goTo(i, best, TASK.toHome);
       }
     }
