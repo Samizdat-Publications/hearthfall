@@ -315,6 +315,30 @@
     ]
    },
    "minHud": 6
+  },
+  {
+   "id": "hud_narrow",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "default"
+   },
+   "width": 1024,
+   "height": 640,
+   "steps": [
+    {
+     "step": 200
+    }
+   ],
+   "kind": "hud",
+   "coverage": {
+    "green": [
+     0.03,
+     0.95
+    ]
+   },
+   "minHud": 5
   }
  ]
 }

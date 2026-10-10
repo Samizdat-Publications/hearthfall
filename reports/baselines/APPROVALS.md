@@ -111,3 +111,4 @@
 - 2026-10-10T10:53 set menus (9 shots): BACKLOG 49: Settings key list gains Cancel the selected plan (Delete)
 - 2026-10-10T11:00 set menus (9 shots): BACKLOG 14b: skirmish setup Weather row
 - 2026-10-10T13:08 set forge (1 shots): 0.3 percent drift since block G (later look and sim changes); moat, Hearth and units correct
+- 2026-10-10T13:28 set smoke (13 shots): BACKLOG 52: new hud_narrow shot at 1024x640 (DOM layout check at a narrow width); other shots unchanged
