@@ -33,6 +33,8 @@ export interface LevelSaved {
   outcome: number;
   /** tick the outcome was decided (-1 none) */
   endedAt: number;
+  /** stretch 3: per objective, the tick a `hold` began (-1 not holding); absent when none ever held */
+  holdSince?: number[];
 }
 
 export function levelMap(def: LevelDef): MapSpec {
@@ -45,6 +47,8 @@ export class LevelRuntime {
   fired: number[];
   outcome: number = OUTCOME.none;
   endedAt = -1;
+  /** stretch 3: per objective, the tick its `hold` streak began (-1 none) */
+  holdSince: number[];
   /** building types every tribe may build in this level (null: all) */
   readonly allowed: Set<number> | null;
   private w: World;
@@ -59,6 +63,7 @@ export class LevelRuntime {
     this.def = def;
     this.done = def.objectives.map(() => 0);
     this.fired = (def.triggers ?? []).map(() => 0);
+    this.holdSince = def.objectives.map(() => -1);
     this.allowed = def.buildings ? new Set(def.buildings.map((b) => w.cfg.buildingIndex.get(b)!).filter((b) => b !== undefined)) : null;
   }
 
@@ -87,7 +92,29 @@ export class LevelRuntime {
         return this.countBuildings(PLAYER, o.building, true) >= o.n;
       case "reach":
         return this.unitNear(o.at[0], o.at[1], o.r, o.unit ?? "shaper");
+      case "hold": {
+        if (this.held(o.kind) < o.n) {
+          this.holdSince[k] = -1;
+          return false;
+        }
+        if (this.holdSince[k] < 0) this.holdSince[k] = w.tick;
+        return w.tick - this.holdSince[k] + 1 >= Math.max(1, Math.round(o.seconds * w.cfg.tickHz));
+      }
+      case "clearDens": {
+        const dens = w.beasts.dens;
+        const cleared = dens.filter((d) => d.cleared).length;
+        return dens.length > 0 && cleared >= (o.n ?? dens.length);
+      }
     }
+  }
+
+  /** capturable stones the player holds now (of `kind`, any when undefined) */
+  held(kind: string | undefined): number {
+    const w = this.w;
+    const kt = kind === undefined ? -1 : w.worship.kindIndex(kind);
+    let n = 0;
+    for (const s of w.worship.sites) if (s.lastBy === PLAYER && !s.dormant && w.worship.capturable(s.kind) && (kt < 0 || s.kind === kt) && w.ents.index(s.ent) >= 0) n++;
+    return n;
   }
 
   /** buildings of type `id` that `tribe` owns (only finished ones when `done`) */
@@ -213,10 +240,11 @@ export class LevelRuntime {
     f.u32(0x1e7e1).u32(this.outcome).f64(this.endedAt);
     for (const d of this.done) f.u32(d);
     for (const d of this.fired) f.u32(d);
+    if (this.holdSince.some((h) => h >= 0)) for (const h of this.holdSince) f.u32(h + 1);
   }
 
   save(): LevelSaved {
-    return { done: this.done.slice(), fired: this.fired.slice(), outcome: this.outcome, endedAt: this.endedAt };
+    return { done: this.done.slice(), fired: this.fired.slice(), outcome: this.outcome, endedAt: this.endedAt, ...(this.holdSince.some((h) => h >= 0) ? { holdSince: this.holdSince.slice() } : {}) };
   }
 
   load(s: LevelSaved): void {
@@ -224,6 +252,7 @@ export class LevelRuntime {
     this.fired = s.fired.slice();
     this.outcome = s.outcome;
     this.endedAt = s.endedAt;
+    this.holdSince = s.holdSince ? s.holdSince.slice() : this.def.objectives.map(() => -1);
   }
 }
 

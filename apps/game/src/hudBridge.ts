@@ -103,6 +103,10 @@ function levelObjectives(game: Game): ObjectiveView[] {
           ? `Build ${o.n} ${words(o.building)}${o.n === 1 ? "" : "s"}`
           : o.type === "reach"
             ? `Lead your ${words(o.unit ?? "shaper")} to the marked place`
+            : o.type === "hold"
+              ? `Hold ${o.n} ${o.kind ? words(o.kind) : "stone"}${o.n === 1 ? "" : "s"} at once${o.seconds > 0 ? ` for ${clock(o.seconds)}` : ""} (${lv.held(o.kind)} held${lv.holdSince[k] >= 0 && !done ? `, ${clock(Math.max(0, o.seconds - (w.tick - lv.holdSince[k]) / hz))} left` : ""})`
+              : o.type === "clearDens"
+                ? `Clear ${o.n ?? "every"} wolf den${o.n === 1 ? "" : "s"} (${w.beasts.dens.filter((d) => d.cleared).length} of ${w.beasts.dens.length})`
             : o.type === "eliminateAll"
         ? "Defeat every rival tribe"
         : o.type === "worship"

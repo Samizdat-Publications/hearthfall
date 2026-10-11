@@ -178,6 +178,7 @@ The land and the shrines keep moving after the match starts.
 - **Skirmish option "Ley stones":** none, 3, 6 or 12 (default 6). Stones go on dry land, at least 20 cells from every Hearth and 18 cells from each other, at most one per 1,800 cells of map. Placement is spread evenly over the map and is the same for the same seed.
 - **Map sizes:** skirmish now offers 96, 128, 192 and 256.
 - **Wolves:** wolf dens hold packs of three. A wolf (750 hp, faster than people) bites any tribe's unit that comes within 6 cells while it stays within 11 cells of its den, then walks home. A den with a living wolf regrows a lost one every 75 s; kill the whole pack and the den is cleared for good. Warriors of every kind but Chanters fight wolves on sight. Skirmish option "Wolves": none, 2, 4 or 8 dens (default 4), at least 26 cells from every Hearth. Levels place dens in their setup.
+- **Level objectives:** `hold` (hold n capturable stones, optionally of one kind, at once for a continuous span; losing one restarts the count) and `clearDens` (clear n wolf dens, every den when n is absent).
 
 ## 11. Terrain
 

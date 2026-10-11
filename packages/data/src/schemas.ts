@@ -1418,6 +1418,10 @@ export const ObjectiveSchema = z.discriminatedUnion("type", [
   z.strictObject({ type: z.literal("reach"), at: point, r: pos, unit: id.optional(), ...stage }),
   /** stretch 3: the player owns `n` finished `building` */
   z.strictObject({ type: z.literal("build"), building: id, n: z.number().int().min(1), ...stage }),
+  /** stretch 3: the player holds `n` capturable stones (of `kind`, any when absent) at once for `seconds` without a break */
+  z.strictObject({ type: z.literal("hold"), n: z.number().int().min(1), kind: id.optional(), seconds: z.number().min(0), ...stage }),
+  /** stretch 3: `n` beast dens are cleared (every den when absent) */
+  z.strictObject({ type: z.literal("clearDens"), n: z.number().int().min(1).optional(), ...stage }),
 ]);
 export type Objective = z.infer<typeof ObjectiveSchema>;
 

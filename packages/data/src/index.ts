@@ -251,6 +251,16 @@ export function validateLevel(raw: unknown, pack: PackFiles, file = "level"): { 
     if (o.type === "destroy" && o.tribe >= lv.tribes.length) bad(path, `no tribe ${o.tribe}`);
     if (o.type === "destroy" && !lv.setup.some((s) => s.spawn === o.building && s.tribe === o.tribe)) bad(path, `tribe ${o.tribe} starts with no ${o.building}`);
     if (o.type === "reach" && o.unit && !units.has(o.unit)) bad(path, `unknown unit ${o.unit}`);
+    if (o.type === "hold") {
+      const capturable = new Set((pack.buildings.worship.kinds ?? []).filter((x) => x.capturable).map((x) => x.id));
+      if (o.kind && !capturable.has(o.kind)) bad(path, `${o.kind} is not a capturable worship kind`);
+      const placed = lv.setup.filter((s) => capturable.has(s.spawn) && (!o.kind || s.spawn === o.kind)).reduce((a, s) => a + (s.count ?? 1), 0);
+      if (placed < o.n) bad(path, `the level places ${placed} matching stones, fewer than ${o.n}`);
+    }
+    if (o.type === "clearDens") {
+      const dens = lv.setup.filter((s) => (s.tribe ?? -1) < 0 && pack.units.units.find((u) => u.id === s.spawn)?.beast).length;
+      if (dens < (o.n ?? 1)) bad(path, `the level has ${dens} beast dens, fewer than ${o.n ?? 1}`);
+    }
   });
   lv.lose?.forEach((o, k) => o.type === "siteLost" && !tags.has(o.site) && bad(`lose.${k}`, `no site tagged ${o.site}`));
   lv.triggers?.forEach((t, k) => {

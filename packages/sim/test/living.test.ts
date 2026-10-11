@@ -192,3 +192,58 @@ describe("repeating triggers", () => {
     expect(w.level!.fired[0]).toBe(3);
   });
 });
+
+describe("hold and clearDens objectives", () => {
+  const base = (objectives: LevelDef["objectives"], extra: LevelDef["setup"] = []): LevelDef => ({
+    id: "hold_test",
+    name: "Hold test",
+    order: 99,
+    description: "test",
+    seed: 5,
+    map: { generator: "flat", size: 64, landAboveSea: 20 },
+    tribes: [{}],
+    spells: [],
+    setup: [{ spawn: "hearth", tribe: 0, at: [12, 12] }, { spawn: "shaper", tribe: 0, at: [16, 12] }, { spawn: "settler", tribe: 0, near: [12, 16], count: 3 }, ...extra],
+    objectives,
+    lose: [{ type: "timeLimit", seconds: 600 }],
+  });
+
+  it("hold needs n stones at once for the whole span; losing one restarts it", () => {
+    const def = base([{ type: "hold", n: 2, seconds: 5 }], [
+      { spawn: "ley_stone", at: [30, 30], site: { tag: "a", rewards: [] } },
+      { spawn: "ley_stone", at: [40, 40], site: { tag: "b", rewards: [] } },
+    ]);
+    const p = basePack();
+    const w = createLevelWorld({ def }, p.files, p.hash);
+    const lv = w.level!;
+    w.worship.find("a")!.lastBy = 0;
+    for (let k = 0; k < 6 * w.cfg.tickHz; k++) w.step();
+    expect(lv.done[0]).toBe(0);
+    w.worship.find("b")!.lastBy = 0;
+    for (let k = 0; k < 3 * w.cfg.tickHz; k++) w.step();
+    // a rival takes one away: the streak restarts
+    w.worship.find("b")!.lastBy = -1;
+    w.step();
+    expect(lv.holdSince[0]).toBe(-1);
+    w.worship.find("b")!.lastBy = 0;
+    for (let k = 0; k < 4 * w.cfg.tickHz; k++) w.step();
+    expect(lv.done[0]).toBe(0);
+    const snap = w.snapshot();
+    expect(snap.level?.holdSince?.[0]).toBeGreaterThan(0);
+    for (let k = 0; k < 2 * w.cfg.tickHz; k++) w.step();
+    expect(lv.done[0]).toBe(1);
+    expect(lv.outcome).not.toBe(0);
+  });
+
+  it("clearDens is met when the level's dens are cleared", () => {
+    const def = base([{ type: "clearDens" }], [{ spawn: "wolf", tribe: -1, at: [40, 40], count: 2 }]);
+    const p = basePack();
+    const w = createLevelWorld({ def }, p.files, p.hash);
+    w.step();
+    expect(w.level!.done[0]).toBe(0);
+    for (const id of w.beasts.dens[0].members) w.damage(w.ents.index(id), 1e6, 0, true);
+    w.step();
+    w.step();
+    expect(w.level!.done[0]).toBe(1);
+  });
+});
