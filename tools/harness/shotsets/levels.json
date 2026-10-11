@@ -1,153 +1,327 @@
 {
- "$comment": "M9 campaign levels: worship sites (placeholder meshes) and the level HUD, booted with ?campaign=<level>. Not part of npm run qa (making-of and review only).",
- "shots": [
-  {
-   "id": "narrow_water_shrine",
-   "params": {
-    "campaign": "narrow_water",
-    "camera": "default"
-   },
-   "steps": [
+  "$comment": "Campaign levels (M9, S3 levels 17 to 22): worship sites (placeholder meshes) and the level HUD, booted with ?campaign=<level>. Not part of npm run qa (making-of and review only).",
+  "shots": [
     {
-     "step": 20
+      "id": "narrow_water_shrine",
+      "params": {
+        "campaign": "narrow_water",
+        "camera": "default"
+      },
+      "steps": [
+        {
+          "step": 20
+        },
+        {
+          "eval": "const s = __game.getSummary().sites[0]; __game.setCamera({ x: s.at[0] - 3, z: s.at[1] + 2, zoom: 0.12, yaw: 0.5 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.getSummary().sites.length === 1"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.02,
+          0.99
+        ]
+      }
     },
     {
-     "eval": "const s = __game.getSummary().sites[0]; __game.setCamera({ x: s.at[0] - 3, z: s.at[1] + 2, zoom: 0.12, yaw: 0.5 });"
+      "id": "contested_shrine_hill",
+      "params": {
+        "campaign": "contested_shrine",
+        "camera": "default"
+      },
+      "steps": [
+        {
+          "step": 600
+        },
+        {
+          "eval": "const s = __game.getSummary().sites[0]; __game.setCamera({ x: s.at[0], z: s.at[1] + 3, zoom: 0.18, yaw: 0.9 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.level().outcome === 0"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.02,
+          0.99
+        ]
+      }
     },
     {
-     "step": 2
+      "id": "old_reliquary_prayer",
+      "params": {
+        "campaign": "old_reliquary",
+        "camera": "default"
+      },
+      "steps": [
+        {
+          "step": 2
+        },
+        {
+          "eval": "__game.command({ tribe: 0, type: \"worship\", args: { units: \"tribe0.settlers\", site: \"old_reliquary\" } });"
+        },
+        {
+          "step": 760
+        },
+        {
+          "eval": "const s = __game.getSummary().sites[0]; __game.setCamera({ x: s.at[0] - 1, z: s.at[1] + 3, zoom: 0.16, yaw: 0.7 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.level().outcome === 0"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.02,
+          0.99
+        ]
+      }
     },
     {
-     "assert": "__game.getSummary().sites.length === 1"
+      "id": "sky_road_stack",
+      "params": {
+        "campaign": "sky_road",
+        "camera": "default",
+        "reveal": "1"
+      },
+      "steps": [
+        {
+          "step": 20
+        },
+        {
+          "eval": "__game.setCamera({ x: 54, z: 50, zoom: 0.22, yaw: 0.5 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.getSummary().sites.length === 1"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.005,
+          0.99
+        ]
+      }
+    },
+    {
+      "id": "the_forge_moat",
+      "params": {
+        "campaign": "the_forge",
+        "camera": "default",
+        "reveal": "1"
+      },
+      "steps": [
+        {
+          "step": 1300
+        },
+        {
+          "eval": "__game.setCamera({ x: 96, z: 66, zoom: 0.3, yaw: 0.3 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.getSummary().tick > 1000 && __game.forge().ops[1] > 0"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.02,
+          0.99
+        ]
+      }
+    },
+    {
+      "id": "drowned_fords_fords",
+      "params": {
+        "campaign": "drowned_fords",
+        "camera": "default",
+        "reveal": "1"
+      },
+      "steps": [
+        {
+          "step": 1500
+        },
+        {
+          "eval": "__game.setCamera({ x: 96, z: 92, zoom: 0.3, yaw: 0.4 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.getSummary().tick > 1400"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.02,
+          0.99
+        ]
+      }
+    },
+    {
+      "id": "wolf_country_valley",
+      "params": {
+        "campaign": "wolf_country",
+        "camera": "default",
+        "reveal": "1"
+      },
+      "steps": [
+        {
+          "step": 1500
+        },
+        {
+          "eval": "__game.setCamera({ x: 72, z: 84, zoom: 0.3, yaw: 0.6 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.getSummary().tick > 1400"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.02,
+          0.99
+        ]
+      }
+    },
+    {
+      "id": "pyre_line_isle",
+      "params": {
+        "campaign": "pyre_line",
+        "camera": "default",
+        "reveal": "1"
+      },
+      "steps": [
+        {
+          "step": 1500
+        },
+        {
+          "eval": "__game.setCamera({ x: 46, z: 100, zoom: 0.3, yaw: 0.3 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.getSummary().tick > 1400"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.02,
+          0.99
+        ]
+      }
+    },
+    {
+      "id": "ley_web_knot",
+      "params": {
+        "campaign": "ley_web",
+        "camera": "default",
+        "reveal": "1"
+      },
+      "steps": [
+        {
+          "step": 1500
+        },
+        {
+          "eval": "__game.setCamera({ x: 112, z: 132, zoom: 0.22, yaw: 0.5 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.getSummary().tick > 1400"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.02,
+          0.99
+        ]
+      }
+    },
+    {
+      "id": "tidecallers_bay_flats",
+      "params": {
+        "campaign": "tidecallers_bay",
+        "camera": "default",
+        "reveal": "1"
+      },
+      "steps": [
+        {
+          "step": 1500
+        },
+        {
+          "eval": "__game.setCamera({ x: 90, z: 128, zoom: 0.35, yaw: 0.2 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.getSummary().tick > 1400"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.02,
+          0.99
+        ]
+      }
+    },
+    {
+      "id": "last_hearthfall_hearth",
+      "params": {
+        "campaign": "last_hearthfall",
+        "camera": "default",
+        "reveal": "1"
+      },
+      "steps": [
+        {
+          "step": 1500
+        },
+        {
+          "eval": "__game.setCamera({ x: 126, z: 134, zoom: 0.2, yaw: 0.7 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.getSummary().tick > 1400"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.02,
+          0.99
+        ]
+      }
     }
-   ],
-   "kind": "world",
-   "coverage": {
-    "green": [
-     0.02,
-     0.99
-    ]
-   }
-  },
-  {
-   "id": "contested_shrine_hill",
-   "params": {
-    "campaign": "contested_shrine",
-    "camera": "default"
-   },
-   "steps": [
-    {
-     "step": 600
-    },
-    {
-     "eval": "const s = __game.getSummary().sites[0]; __game.setCamera({ x: s.at[0], z: s.at[1] + 3, zoom: 0.18, yaw: 0.9 });"
-    },
-    {
-     "step": 2
-    },
-    {
-     "assert": "__game.level().outcome === 0"
-    }
-   ],
-   "kind": "world",
-   "coverage": {
-    "green": [
-     0.02,
-     0.99
-    ]
-   }
-  },
-  {
-   "id": "old_reliquary_prayer",
-   "params": {
-    "campaign": "old_reliquary",
-    "camera": "default"
-   },
-   "steps": [
-    {
-     "step": 2
-    },
-    {
-     "eval": "__game.command({ tribe: 0, type: \"worship\", args: { units: \"tribe0.settlers\", site: \"old_reliquary\" } });"
-    },
-    {
-     "step": 760
-    },
-    {
-     "eval": "const s = __game.getSummary().sites[0]; __game.setCamera({ x: s.at[0] - 1, z: s.at[1] + 3, zoom: 0.16, yaw: 0.7 });"
-    },
-    {
-     "step": 2
-    },
-    {
-     "assert": "__game.level().outcome === 0"
-    }
-   ],
-   "kind": "world",
-   "coverage": {
-    "green": [
-     0.02,
-     0.99
-    ]
-   }
-  },
-  {
-   "id": "sky_road_stack",
-   "params": {
-    "campaign": "sky_road",
-    "camera": "default",
-    "reveal": "1"
-   },
-   "steps": [
-    {
-     "step": 20
-    },
-    {
-     "eval": "__game.setCamera({ x: 54, z: 50, zoom: 0.22, yaw: 0.5 });"
-    },
-    {
-     "step": 2
-    },
-    {
-     "assert": "__game.getSummary().sites.length === 1"
-    }
-   ],
-   "kind": "world",
-   "coverage": {
-    "green": [
-     0.005,
-     0.99
-    ]
-   }
-  },
-  {
-   "id": "the_forge_moat",
-   "params": {
-    "campaign": "the_forge",
-    "camera": "default",
-    "reveal": "1"
-   },
-   "steps": [
-    {
-     "step": 1300
-    },
-    {
-     "eval": "__game.setCamera({ x: 96, z: 66, zoom: 0.3, yaw: 0.3 });"
-    },
-    {
-     "step": 2
-    },
-    {
-     "assert": "__game.getSummary().tick > 1000 && __game.forge().ops[1] > 0"
-    }
-   ],
-   "kind": "world",
-   "coverage": {
-    "green": [
-     0.02,
-     0.99
-    ]
-   }
-  }
- ]
+  ]
 }

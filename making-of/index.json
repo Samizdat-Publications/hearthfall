@@ -1140,6 +1140,66 @@
       "when": "2026-10-11T04:35:57.937Z",
       "source": "external:wolves.png",
       "bytes": 616850
+    },
+    {
+      "file": "s3/20261011-0950_tidecallers-bay.png",
+      "milestone": "S3",
+      "kind": "screenshot",
+      "caption": "Level 21 Tidecaller's Bay on a 256 map: the player's island, its Hearth and a capturable stone, with the tidal flats beyond",
+      "highlight": true,
+      "when": "2026-10-11T09:50:07.557Z",
+      "source": "external:tidecallers_bay_flats.png",
+      "bytes": 647944
+    },
+    {
+      "file": "s3/20261011-0950_drowned-fords.png",
+      "milestone": "S3",
+      "kind": "screenshot",
+      "caption": "Level 17 The Drowned Fords: a ley stone with its prayer ring on an island between causeway fords",
+      "highlight": false,
+      "when": "2026-10-11T09:50:08.452Z",
+      "source": "external:drowned_fords_fords.png",
+      "bytes": 702851
+    },
+    {
+      "file": "s3/20261011-0950_wolf-country.png",
+      "milestone": "S3",
+      "kind": "screenshot",
+      "caption": "Level 18 Wolf Country: wolves roam the northern valley the player must clear first",
+      "highlight": false,
+      "when": "2026-10-11T09:50:09.297Z",
+      "source": "external:wolf_country_valley.png",
+      "bytes": 718000
+    },
+    {
+      "file": "s3/20261011-0950_pyre-line.png",
+      "milestone": "S3",
+      "kind": "screenshot",
+      "caption": "Level 19 The Pyre Line: a rival signal pyre and war band on the plateau",
+      "highlight": false,
+      "when": "2026-10-11T09:50:10.197Z",
+      "source": "external:pyre_line_isle.png",
+      "bytes": 609945
+    },
+    {
+      "file": "s3/20261011-0950_last-hearthfall.png",
+      "milestone": "S3",
+      "kind": "screenshot",
+      "caption": "Level 22 The Last Hearthfall: wolves near the central Last Hearth, the finale's four-tribe prize",
+      "highlight": false,
+      "when": "2026-10-11T09:50:11.090Z",
+      "source": "external:last_hearthfall_hearth.png",
+      "bytes": 683196
+    },
+    {
+      "file": "s3/20261011-0950_levels-sheet.png",
+      "milestone": "S3",
+      "kind": "contact-sheet",
+      "caption": "Campaign playtest workflow: levels 20 and 22 shot review (the first sheet covered all six new levels)",
+      "highlight": false,
+      "when": "2026-10-11T09:50:11.978Z",
+      "source": "external:sheet.png",
+      "bytes": 304420
     }
   ]
 }
