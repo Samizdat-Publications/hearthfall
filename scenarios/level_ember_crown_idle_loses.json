@@ -1,0 +1,11 @@
+{
+  "id": "level_ember_crown_idle_loses",
+  "description": "Campaign level 24 has a real loss: the hill never counts for an idle player, but when the mountain wakes on its own at 900 s the northern tribe prays at the crown Reliquary first (siteLost, near tick 18930).",
+  "tags": ["levels"],
+  "level": "ember_crown",
+  "runTicks": 20500,
+  "assert": [
+    { "at": 17000, "expr": "!level.lost && !level.won && rules.held(1) == 0 && rules.held(2) == 0" },
+    { "at": 20500, "expr": "level.lost && !level.won && level.objectivesDone == 0 && site('crown_reliquary').by > 0 && rules.winner < 0 && alive(0) && invariants() == 0" }
+  ]
+}

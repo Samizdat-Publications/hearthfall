@@ -1,0 +1,118 @@
+{
+  "$comment": "Campaign level 24 (S4): King of the Hill whose clock starts mid-level. Three tribes on a 192 map around a volcanic cone; the hilltop Reliquary must stay the first site (it is the hill) and sleeps until the slope wards are held. Staged: clear both dens on the slopes, hold both risen ward stones (the eastern band prays at one, raid pray), claim the waking Reliquary before the northern band prays it away (raid pray), then the victory objective opens (fromStage): the hill clock starts only now and both rivals storm the top on that trigger, so the player must out-hold them for four minutes; then put out the two northern signal pyres, raze the eastern Hearth and then the northern Hearth. At 900 s the crown splits open on its own and both rivals pray at the Reliquary, so an idle player loses it (siteLost). Rivals are capped by maxPopulation. Bot win about 32800.",
+  "id": "ember_crown",
+  "name": "The Ember Crown",
+  "order": 24,
+  "description": "A sleeping volcano rises between three tribes. Clear the wolves on its slopes, win the two ward stones and claim the Reliquary in its crown. Then the hill counts: keep more people on top than either rival for four minutes, and break them both.",
+  "seed": 2424,
+  "map": {
+    "generator": "flat",
+    "size": 192,
+    "landAboveSea": 30,
+    "paint": [
+      { "shape": "disc", "at": [96, 96], "r": 14, "aboveSea": 52, "falloff": 10 },
+      { "shape": "disc", "at": [96, 96], "r": 4, "aboveSea": 48, "falloff": 2 },
+      { "shape": "disc", "at": [96, 158], "r": 9, "aboveSea": -30, "falloff": 4 },
+      { "shape": "disc", "at": [150, 60], "r": 8, "aboveSea": -30, "falloff": 4 },
+      { "shape": "disc", "at": [40, 60], "r": 8, "aboveSea": -30, "falloff": 4 }
+    ]
+  },
+  "tribes": [
+    {},
+    { "ai": "aggressive", "difficulty": "hard", "maxTroops": 12, "maxPopulation": 40, "worshipAfterSeconds": 300 },
+    { "ai": "sneaky", "difficulty": "hard", "maxTroops": 16, "maxPopulation": 40, "worshipAfterSeconds": 300 }
+  ],
+  "rules": "king_of_hill",
+  "spells": ["bolt", "raise_land", "lightning", "whirlwind"],
+  "setup": [
+    { "spawn": "reliquary", "at": [96, 96], "site": { "tag": "crown_reliquary", "worshippers": 4, "prayerSeconds": 40, "uses": 1, "rewards": [{ "type": "charges", "spell": "firerain", "n": 1 }, { "type": "spawn", "unit": "warden", "n": 10 }], "dormant": true } },
+    { "spawn": "hearth", "tribe": 0, "at": [40, 152] },
+    { "spawn": "shaper", "tribe": 0, "at": [44, 148] },
+    { "spawn": "settler", "tribe": 0, "near": [34, 158], "count": 16 },
+    { "spawn": "warden", "tribe": 0, "near": [52, 142], "count": 16 },
+    { "spawn": "warden", "tribe": 0, "near": [44, 144], "count": 6, "stance": "defensive" },
+    { "spawn": "watchtower", "tribe": 0, "at": [50, 140] },
+    { "spawn": "hearth", "tribe": 1, "at": [156, 148] },
+    { "spawn": "shaper", "tribe": 1, "at": [152, 144] },
+    { "spawn": "settler", "tribe": 1, "near": [162, 154], "count": 12 },
+    { "spawn": "warden", "tribe": 1, "near": [146, 140], "count": 9 },
+    { "spawn": "warden", "tribe": 1, "near": [150, 144], "count": 6, "stance": "defensive" },
+    { "spawn": "hearth", "tribe": 2, "at": [96, 32] },
+    { "spawn": "shaper", "tribe": 2, "at": [99, 35] },
+    { "spawn": "settler", "tribe": 2, "near": [96, 24], "count": 12 },
+    { "spawn": "warden", "tribe": 2, "near": [96, 44], "count": 9 },
+    { "spawn": "warden", "tribe": 2, "near": [96, 38], "count": 6, "stance": "defensive" },
+    { "spawn": "signal_pyre", "tribe": 2, "at": [86, 60] },
+    { "spawn": "signal_pyre", "tribe": 2, "at": [106, 60] },
+    { "spawn": "tree", "near": [26, 140], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [168, 138], "count": 10, "spacing": 1.2 },
+    { "spawn": "tree", "near": [84, 20], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [30, 168], "count": 4, "spacing": 2 },
+    { "spawn": "rock", "near": [104, 82], "count": 3, "spacing": 2 },
+    { "spawn": "wolf", "tribe": -1, "at": [80, 112], "count": 4 },
+    { "spawn": "wolf", "tribe": -1, "at": [114, 106], "count": 4 },
+    { "spawn": "ward_stone", "at": [78, 94], "site": { "tag": "ember_ward_w", "rewards": [{ "type": "message", "text": "The western ward glows: its heat strikes foes near the slope." }], "dormant": true } },
+    { "spawn": "ward_stone", "at": [100, 116], "site": { "tag": "ember_ward_s", "rewards": [{ "type": "message", "text": "The southern ward glows over the road to the crown." }], "dormant": true } }
+  ],
+  "objectives": [
+    { "type": "clearDens", "n": 2, "text": "Clear both wolf dens on the slopes of the volcano" },
+    { "type": "hold", "n": 2, "kind": "ward_stone", "seconds": 45, "after": 0, "text": "Pray at both risen ward stones, then hold them together for 45 seconds" },
+    { "type": "worship", "site": "crown_reliquary", "after": 1, "text": "Claim the Reliquary in the crown with four followers before the north prays it away" },
+    { "type": "victory", "fromStage": true, "after": 2, "text": "The hill counts now: keep more people in the crown than any rival for four minutes in all" },
+    { "type": "destroy", "tribe": 2, "building": "signal_pyre", "after": 3, "text": "Put out both northern signal pyres that call their war bands" },
+    { "type": "destroy", "tribe": 1, "building": "hearth", "after": 4, "text": "Raze the eastern war tribe's Hearth" },
+    { "type": "destroy", "tribe": 2, "building": "hearth", "after": 5, "text": "Raze the northern tribe's Hearth" }
+  ],
+  "lose": [
+    { "type": "hearthLost" },
+    { "type": "siteLost", "site": "crown_reliquary" },
+    { "type": "timeLimit", "seconds": 3500 }
+  ],
+  "triggers": [
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "The volcano sleeps between three tribes. Clear its slopes, win the wards and claim the crown before the mountain wakes on its own." }] },
+    { "when": { "type": "objective", "index": 0 }, "do": [
+      { "type": "awaken", "site": "ember_ward_w" },
+      { "type": "awaken", "site": "ember_ward_s" },
+      { "type": "spawn", "unit": "warden", "n": 4, "tribe": 1, "at": [124, 116] },
+      { "type": "raid", "tribe": 1, "to": [100, 116], "n": 6, "pray": "ember_ward_s" },
+      { "type": "message", "text": "The wolves are gone and two ward stones rise. An eastern band climbs to pray at the southern ward." }
+    ] },
+    { "when": { "type": "time", "seconds": 180 }, "do": [
+      { "type": "spawn", "unit": "warden", "n": 8, "tribe": 2, "at": [96, 68] },
+      { "type": "raid", "tribe": 2, "to": [96, 96], "n": 8 },
+      { "type": "message", "text": "A northern war band comes down past the pyres onto the cone." }
+    ] },
+    { "when": { "type": "objective", "index": 1 }, "do": [
+      { "type": "awaken", "site": "crown_reliquary" },
+      { "type": "spawn", "unit": "warden", "n": 6, "at": [90, 106] },
+      { "type": "spawn", "unit": "warden", "n": 4, "tribe": 2, "at": [96, 70] },
+      { "type": "raid", "tribe": 2, "to": [96, 96], "n": 6, "pray": "crown_reliquary" },
+      { "type": "message", "text": "The crown cracks and the Reliquary rises. Ward keepers join you, and the north sends a band to pray it away." }
+    ] },
+    { "when": { "type": "objective", "index": 2 }, "do": [
+      { "type": "spawn", "unit": "warden", "n": 6, "tribe": 1, "at": [122, 110] },
+      { "type": "spawn", "unit": "warden", "n": 6, "tribe": 2, "at": [96, 70] },
+      { "type": "raid", "tribe": 1, "to": [96, 96], "n": 10 },
+      { "type": "raid", "tribe": 2, "to": [96, 96], "n": 10 },
+      { "type": "message", "text": "The crown is yours and the hill now counts. Both rivals storm the top: keep more people there than they have." }
+    ] },
+    { "when": { "type": "time", "seconds": 600, "every": 240 }, "do": [
+      { "type": "raid", "tribe": 1, "to": [96, 96], "n": 6 },
+      { "type": "raid", "tribe": 2, "to": [96, 96], "n": 6 },
+      { "type": "message", "text": "Both rivals send raiders up the cone." }
+    ] },
+    { "when": { "type": "time", "seconds": 900 }, "do": [
+      { "type": "awaken", "site": "crown_reliquary" },
+      { "type": "raid", "tribe": 2, "to": [96, 96], "n": 10, "pray": "crown_reliquary" },
+      { "type": "raid", "tribe": 1, "to": [96, 96], "n": 10, "pray": "crown_reliquary" },
+      { "type": "message", "text": "The mountain wakes on its own. Whoever has not claimed the crown now sees both rivals kneel there." }
+    ] },
+    { "when": { "type": "objective", "index": 3 }, "do": [
+      { "type": "spawn", "unit": "warden", "n": 8, "tribe": 2, "at": [96, 38], "stance": "defensive" },
+      { "type": "spawn", "unit": "warden", "n": 8, "tribe": 1, "at": [150, 144], "stance": "defensive" },
+      { "type": "message", "text": "You are king of the hill. Both rivals dig in behind posted guards; the north still lights its signal pyres." }
+    ] },
+    { "when": { "type": "objective", "index": 4 }, "do": [{ "type": "message", "text": "The pyres are cold and the north falls quiet. Break the eastern war tribe first, then the north." }] },
+    { "when": { "type": "time", "seconds": 3200 }, "do": [{ "type": "message", "text": "Five minutes remain before the volcano buries the valley." }] }
+  ]
+}

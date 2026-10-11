@@ -1,0 +1,19 @@
+{
+  "id": "level_ember_crown",
+  "description": "Campaign level 24 is completable under a King of the Hill clock that starts mid-level: the opponent bot for the player clears the slope dens, holds both ward stones, claims the crown Reliquary (the hill clock stays at zero until then), out-holds both storming rivals for four minutes, puts out the northern pyres and razes the eastern, then the northern Hearth (bot wins near tick 33750).",
+  "tags": ["levels"],
+  "level": "ember_crown",
+  "bots": [
+    { "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 2 }
+  ],
+  "runTicks": 36000,
+  "assert": [
+    { "at": 3000, "expr": "level.objectivesDone == 1 && rules.held(0) == 0 && rules.held(1) == 0 && rules.held(2) == 0 && !level.won" },
+    { "at": 8000, "expr": "level.objectivesDone == 2 && rules.held(0) == 0 && rules.held(1) == 0 && rules.held(2) == 0 && rules.winner < 0" },
+    { "at": 12000, "expr": "level.objectivesDone == 3 && site('crown_reliquary').by == 0 && rules.held(0) > 100 && rules.winner < 0" },
+    { "at": 17000, "expr": "level.objectivesDone == 4 && rules.winner == 0 && alive(1) && alive(2)" },
+    { "at": 25000, "expr": "level.objectivesDone == 5 && alive(1) && alive(2) && !level.won" },
+    { "at": 31000, "expr": "level.objectivesDone == 6 && !alive(1) && alive(2) && !level.won" },
+    { "at": 36000, "expr": "level.won && level.objectivesDone == 7 && rules.winner == 0 && rules.held(1) < 120 && rules.held(2) < 120 && invariants() == 0" }
+  ]
+}
