@@ -1,0 +1,15 @@
+{
+  "id": "level_waking_stones_idle_loses",
+  "description": "Campaign level 14 has a real loss: an idle player never wakes the stones and runs out of time.",
+  "tags": [
+    "levels"
+  ],
+  "level": "waking_stones",
+  "runTicks": 30000,
+  "assert": [
+    {
+      "at": 30000,
+      "expr": "level.lost && alive(1) && invariants() == 0"
+    }
+  ]
+}

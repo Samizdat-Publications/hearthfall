@@ -1218,6 +1218,20 @@
                           "items": false,
                           "minItems": 2,
                           "maxItems": 2
+                        },
+                        "from": {
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "number"
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 2,
+                          "maxItems": 2
                         }
                       },
                       "required": [
@@ -1260,6 +1274,14 @@
                           "items": false,
                           "minItems": 2,
                           "maxItems": 2
+                        },
+                        "stance": {
+                          "type": "string",
+                          "enum": [
+                            "aggressive",
+                            "defensive",
+                            "passive"
+                          ]
                         }
                       },
                       "required": [
@@ -1294,6 +1316,11 @@
                           "items": false,
                           "minItems": 2,
                           "maxItems": 2
+                        },
+                        "n": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 200
                         }
                       },
                       "required": [

@@ -158,6 +158,8 @@ Spell UX: hover shows exact area preview on the curved terrain, range ring aroun
 
 - **Shrine:** needs N worshippers (1 to 8). Each missing worshipper halves prayer speed. Default prayer 37.5 s at full count. Grants one-shot spell charges or one building, then sinks.
 - **Prayer chains (stretch 3):** a level site can start dormant (sunk, refuses worship) and wake when another site's `awaken` reward names it; a `reveal` reward lifts the fog over a disc. Praying at one place opens the way to the next.
+- **Level scripting primitives (stretch 3):** staged objectives (`after`), `destroy`, `reach` (a pulsing beacon) and `build` objectives; `area` and `followers` triggers; `spawn` with a `stance` (a `defensive` unit is a posted guard the AI never drafts); `raid` with an optional cap `n` (posted guards stay); `spell` with a `from` point (scripted land bridges). The AI sends troops to clear a site held by enemy guardians before it sends worshippers.
+- **Campaign level 14, The Waking Stones:** a three-site prayer chain across islands; wardens rise around the last Reliquary, and at minute 20 the rival raises its own bridges and raids, then races for the Reliquary from minute 30.
 - **Reliquary:** same mechanic, grants a permanent spell or building unlock (campaign progression and skirmish objective).
 - **Totem:** level-scripted trigger (raise a land bridge, spawn wild people, reveal map).
 

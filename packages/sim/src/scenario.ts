@@ -2,6 +2,7 @@
 // golden replays and the game's loadScenario debug hook.
 import type { PackFiles, SiteSpec } from "@hearthfall/data";
 import type { Command } from "./commands.ts";
+import { STANCE } from "./combat.ts";
 import { cos, sin } from "./dmath.ts";
 import type { MapSpec } from "./generator.ts";
 import { wrap } from "./terrain.ts";
@@ -18,6 +19,8 @@ export interface SetupEntry {
   spacing?: number;
   /** worship kinds (shrine, reliquary, totem): the site's tag, worshippers, uses and rewards */
   site?: SiteSpec;
+  /** stretch 3: units start in this stance; "defensive" units are posted guards the opponent AI never sends away */
+  stance?: "aggressive" | "defensive" | "passive";
 }
 
 export interface ScenarioDef {
@@ -69,7 +72,10 @@ export function applySetup(w: World, setup: readonly SetupEntry[]): void {
       y = wrap(y, n);
       if (s.spawn === "tree") w.spawnTree(x, y);
       else if (s.spawn === "rock") w.spawnRock(x, y);
-      else if (w.cfg.unitIndex.has(s.spawn)) w.spawnUnit(s.spawn, tribe, x, y);
+      else if (w.cfg.unitIndex.has(s.spawn)) {
+        const id = w.spawnUnit(s.spawn, tribe, x, y);
+        if (s.stance) w.ents.stance[w.ents.index(id)] = STANCE[s.stance];
+      }
       else if (w.cfg.buildingIndex.has(s.spawn)) w.spawnBuilding(s.spawn, tribe, x, y);
       else if (w.worship.kindIndex(s.spawn) >= 0) w.worship.addSite(s.spawn, x, y, s.site ?? { rewards: [] });
       else throw new Error(`unknown spawn kind ${s.spawn}`);

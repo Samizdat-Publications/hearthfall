@@ -4,6 +4,8 @@ import type { SiteSpec } from "@hearthfall/data";
 import { CAT } from "../src/entities.ts";
 import { TASK } from "../src/economy.ts";
 import { World } from "../src/world.ts";
+import { STANCE } from "../src/combat.ts";
+import { applyReward } from "../src/worship.ts";
 import { basePack, world } from "./helpers.ts";
 
 const SITE = [32, 32] as const;
@@ -200,5 +202,21 @@ describe("worship sites", () => {
     // the woken site now accepts worshippers
     w.step([{ tick: w.tick, tribe: 0, type: "worship", args: { units: [settler], site: "next" } }]);
     expect(w.events.find((e) => e.type === "commandRejected")).toBeUndefined();
+  });
+
+  it("S3 scripted events: a raid sends at most n troops and leaves posted guards; a spell can be cast from a given point", () => {
+    const w = world({ generator: "flat", size: 64, tribes: 2 });
+    w.spawnBuilding("hearth", 1, 50, 32);
+    const E = w.ents;
+    const troops = Array.from({ length: 6 }, (_, k) => w.spawnUnit("warden", 1, 44 + (k % 3), 30 + Math.floor(k / 3)));
+    const guard = w.spawnUnit("warden", 1, 48, 40);
+    E.stance[E.index(guard)] = STANCE.defensive;
+    w.step([]);
+    applyReward(w, 1, { type: "raid", tribe: 1, to: [10, 32], n: 4 }, 0, 0);
+    expect(w.events.find((e) => e.type === "raid")).toMatchObject({ tribe: 1, n: 4 });
+    expect(E.order[E.index(guard)]).toBe(0);
+    expect(troops.filter((t) => E.order[E.index(t)] !== 0).length).toBe(4);
+    applyReward(w, 1, { type: "spell", spell: "raise_land", from: [40, 20], at: [30, 20] }, 5, 5);
+    expect(w.events.find((e) => e.type === "spellCast")).toMatchObject({ x: 30, y: 20, cx: 40, cy: 20, by: "site" });
   });
 });

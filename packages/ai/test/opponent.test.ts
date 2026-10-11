@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { World } from "../../sim/src/world.ts";
 import { CAT } from "../../sim/src/entities.ts";
 import { TASK } from "../../sim/src/economy.ts";
+import { STANCE } from "../../sim/src/combat.ts";
 import { basePack, world } from "../../sim/test/helpers.ts";
 import { OpponentAI, makeBot, type Personality } from "../src/index.ts";
 import { AI_SHARED_DEFAULTS } from "@hearthfall/data";
@@ -181,6 +182,36 @@ describe("OpponentAI (M7)", () => {
     expect(free).toBeGreaterThan(0);
     expect(free).toBeLessThan(60 * 20);
     expect(held).toBeGreaterThanOrEqual(60 * 20);
+  });
+
+  it("S3: a site held by enemy guardians gets troops first and worshippers only once it is clear", () => {
+    const w = world({ generator: "flat", size: 64, tribes: 2 });
+    w.spawnBuilding("hearth", 0, 8, 32);
+    w.spawnBuilding("hearth", 1, 50, 32);
+    w.spawnUnit("shaper", 1, 52, 34);
+    for (let k = 0; k < 14; k++) w.spawnUnit("settler", 1, 46 + (k % 7), 36 + Math.floor(k / 7));
+    for (let k = 0; k < 6; k++) w.spawnUnit("warden", 1, 44 + (k % 3), 30 + Math.floor(k / 3));
+    w.worship.addSite("shrine", 38, 32, { tag: "s", worshippers: 4, prayerSeconds: 45, rewards: [] });
+    const E = w.ents;
+    const guards = [0, 1].map((k) => w.spawnUnit("warden", 0, 38 + k, 33));
+    for (const g of guards) E.stance[E.index(g)] = STANCE.defensive;
+    // the AI reads its tribe's vision, which the first steps fill in
+    for (let t = 0; t < 5; t++) w.step([]);
+    w.controllers.push(makeBot({ type: "opponent", tribe: 1, personality: "turtle", offset: 0, worshipAfterSeconds: 0 }));
+    let prayedWhileGuarded = false;
+    let prayed = -1;
+    for (let t = 0; t < 4000 && prayed < 0; t++) {
+      w.step([]);
+      const held = guards.some((g) => E.index(g) >= 0);
+      for (let i = 0; i < E.hi; i++)
+        if (E.alive[i] && E.tribe[i] === 1 && (E.task[i] === TASK.toWorship || E.task[i] === TASK.worship)) {
+          if (held) prayedWhileGuarded = true;
+          prayed = w.tick;
+        }
+    }
+    expect(prayedWhileGuarded).toBe(false);
+    expect(guards.every((g) => E.index(g) < 0)).toBe(true);
+    expect(prayed).toBeGreaterThan(0);
   });
 
   it("with no walkable route to the enemy the Shaper raises land across the water", () => {

@@ -4,7 +4,7 @@
 // difficulty noise from the world's "ai" rng stream, and runs the best ones (score >= 0.5, at most
 // three) through ordinary Commands. Dwelling upkeep is delegated to the EconomyBot. Deterministic:
 // entity index order, arrays only, the ai rng stream for noise and picks.
-import { BSTATE, CAT, NAV, NO_ENTITY, TASK, dmath, wrapDelta, type Command, type Controller, type World } from "@hearthfall/sim";
+import { BSTATE, CAT, NAV, NO_ENTITY, STANCE, TASK, dmath, wrapDelta, type Command, type Controller, type World } from "@hearthfall/sim";
 import { AI_SHARED_DEFAULTS, type AiShared } from "@hearthfall/data";
 import { EconomyBot } from "./economyBot.ts";
 
@@ -473,7 +473,8 @@ export class OpponentAI implements Controller {
           else if (w.combat.isSaboteur(E.type[i])) c.shades.push(i);
           else if (def.trainedAt) {
             c.troops.set(def.id, (c.troops.get(def.id) ?? 0) + 1);
-            if (E.inside[i] < 0 && E.mode[i] === 0 && E.order[i] === 0 && E.atk[i] === NO_ENTITY && i !== E.index(this.scout) && !this.posted(w, i)) c.idle.push(i);
+            // stretch 3: a unit on the defensive stance is a posted guard (levels place them; the AI never sets it)
+            if (E.inside[i] < 0 && E.mode[i] === 0 && E.order[i] === 0 && E.atk[i] === NO_ENTITY && E.stance[i] !== STANCE.defensive && i !== E.index(this.scout) && !this.posted(w, i)) c.idle.push(i);
           }
         }
       } else if (E.tribe[i] >= 0 && E.cat[i] === CAT.unit && E.veil[i] === 0 && !w.combat.disguised(i) && w.tribes[E.tribe[i]]?.alive && this.sees(w, i)) {
@@ -604,37 +605,51 @@ export class OpponentAI implements Controller {
     if (ids.length) out.push(this.cmd(c.w, "move", { units: ids, to: [E.x[t], E.y[t]], attack: true }));
   }
 
-  /** nearest reachable worship site still giving, with how many own units already pray there */
-  private worshipTarget(c: Census): { tag: string; si: number; need: number; have: number } | null {
+  /** nearest reachable worship site still giving, with how many own units already pray there; a site held by
+   * seen enemy troops (level guardians) only when no free site is left, flagged so troops clear it first */
+  private worshipTarget(c: Census): { tag: string; si: number; need: number; have: number; guarded: boolean } | null {
     const w = c.w;
     const E = w.ents;
     const n = w.terrain.size;
     const home = this.comp(w, E.x[c.h], E.y[c.h]);
     const kinds = w.cfg.pack.buildings.worship.kinds ?? [];
-    let best: { tag: string; si: number; need: number; have: number } | null = null;
+    let best: { tag: string; si: number; need: number; have: number; guarded: boolean } | null = null;
     let bd = Infinity;
     for (const s of w.worship.sites) {
       const si = E.index(s.ent);
       // totems are level scripting for the player's Shaper
       if (si < 0 || s.usesLeft <= 0 || s.dormant || kinds[s.kind]?.shaperOnly) continue;
       if (this.comp(w, E.x[si], E.y[si]) !== home) continue;
+      // stretch 3: never walk worshippers into a site held by seen enemy troops (level guardians)
+      const guarded = this.guarded(w, si);
       let have = 0;
       for (const i of c.settlers) if ((E.task[i] === TASK.toWorship || E.task[i] === TASK.worship) && E.index(E.target[i]) === si) have++;
       if (have >= s.need) continue;
       const dx = wrapDelta(E.x[si] - E.x[c.h], n);
       const dy = wrapDelta(E.y[si] - E.y[c.h], n);
-      const d = dx * dx + dy * dy;
+      const d = dx * dx + dy * dy + (guarded ? 1e9 : 0);
       if (d < bd) {
         bd = d;
-        best = { tag: s.tag, si, need: s.need, have };
+        best = { tag: s.tag, si, need: s.need, have, guarded };
       }
     }
     return best;
   }
 
+  private guarded(w: World, si: number): boolean {
+    const E = w.ents;
+    const units = w.cfg.pack.units.units;
+    for (let j = 0; j < E.hi; j++) {
+      if (!E.alive[j] || E.cat[j] !== CAT.unit || E.tribe[j] === this.tribe || E.tribe[j] < 0 || E.inside[j] >= 0) continue;
+      if (units[E.type[j]].trainedAt && this.dist2(w, j, si) < 64 && this.sees(w, j)) return true;
+    }
+    return false;
+  }
+
   private worshipScore(c: Census): number {
     if (c.threats.length || c.w.playTick < this.worshipAfter * c.w.cfg.tickHz) return 0;
     const t = this.worshipTarget(c);
+    if (t?.guarded) return c.idle.length >= 3 ? 0.75 : 0;
     // keep a working economy at home
     return t && c.settlers.length >= t.need - t.have + (this.sh.worshipKeepSettlers ?? 4) ? 0.75 : 0;
   }
@@ -644,6 +659,11 @@ export class OpponentAI implements Controller {
     if (!t) return;
     const E = c.w.ents;
     const n = c.w.terrain.size;
+    if (t.guarded) {
+      // clear the guardians with idle troops; worshippers follow once the site is free
+      if (c.idle.length >= 3) out.push(this.cmd(c.w, "move", { units: c.idle.map((i) => E.idOf(i)), to: [E.x[t.si], E.y[t.si]], attack: true }));
+      return;
+    }
     const free = c.settlers
       .filter((i) => E.task[i] !== TASK.toWorship && E.task[i] !== TASK.worship && E.inside[i] < 0)
       .map((i) => {

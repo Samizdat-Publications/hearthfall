@@ -8,6 +8,7 @@ import { registerCommand } from "./commands.ts";
 import { secondsToTicks } from "./config.ts";
 import { cos, sin } from "./dmath.ts";
 import { TASK } from "./economy.ts";
+import { STANCE } from "./combat.ts";
 import { applyEffects } from "./effects.ts";
 import { CAT, NO_ENTITY, type EntityId } from "./entities.ts";
 import type { Fnv } from "./hash.ts";
@@ -332,10 +333,11 @@ export function applyReward(w: World, tribe: number, r: Reward, x: number, y: nu
     case "spell": {
       const s = w.cfg.spellIndex.get(r.spell);
       if (s === undefined) return;
-      // cast from the site toward `at` (a totem raising a bridge), or on the site itself
+      // cast from the site (or `from`) toward `at` (a totem raising a bridge), or on the site itself
       const [px, py] = r.at ?? [x, y];
-      applyEffects({ w, tribe, spell: r.spell, x: px, y: py, casterX: x, casterY: y }, w.cfg.pack.spells.spells[s].effects);
-      w.emit("spellCast", { tribe, spell: r.spell, x: px, y: py, cx: x, cy: y, by: "site" });
+      const [cx, cy] = r.from ?? [x, y];
+      applyEffects({ w, tribe, spell: r.spell, x: px, y: py, casterX: cx, casterY: cy }, w.cfg.pack.spells.spells[s].effects);
+      w.emit("spellCast", { tribe, spell: r.spell, x: px, y: py, cx, cy, by: "site" });
       return;
     }
     case "spawn": {
@@ -344,7 +346,8 @@ export function applyReward(w: World, tribe: number, r: Reward, x: number, y: nu
       const n = w.terrain.size;
       for (let k = 0; k < r.n; k++) {
         const rr = 1.2 + 0.7 * Math.sqrt(k + 0.5);
-        w.spawnUnit(r.unit, owner, wrap(bx + cos(k * GOLDEN_ANGLE) * rr, n), wrap(by + sin(k * GOLDEN_ANGLE) * rr, n));
+        const id = w.spawnUnit(r.unit, owner, wrap(bx + cos(k * GOLDEN_ANGLE) * rr, n), wrap(by + sin(k * GOLDEN_ANGLE) * rr, n));
+        if (r.stance) w.ents.stance[w.ents.index(id)] = STANCE[r.stance];
       }
       w.emit("rewardSpawn", { tribe: owner, unit: r.unit, n: r.n });
       return;
@@ -355,6 +358,8 @@ export function applyReward(w: World, tribe: number, r: Reward, x: number, y: nu
       const ids: number[] = [];
       for (let i = 0; i < E.hi; i++) {
         if (!E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] !== r.tribe || E.inside[i] >= 0 || !units[E.type[i]].trainedAt) continue;
+        if (E.stance[i] === STANCE.defensive) continue;
+        if (r.n !== undefined && ids.length >= r.n) break;
         w.combat.clear(i);
         ids.push(i);
       }

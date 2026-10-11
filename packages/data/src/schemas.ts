@@ -1251,8 +1251,8 @@ export const RewardSchema = z.discriminatedUnion("type", [
   z.strictObject({ type: z.literal("unlockSpell"), spell: id }),
   /** permanent building unlock, ignoring follower tiers and level limits */
   z.strictObject({ type: z.literal("unlockBuilding"), building: id }),
-  /** a spell's effects at a point (the site when `at` is absent), cast by nobody: totem land bridges */
-  z.strictObject({ type: z.literal("spell"), spell: id, at: point.optional() }),
+  /** a spell's effects at a point (the site when `at` is absent), cast by nobody from `from` (the site by default): totem land bridges, scripted raids */
+  z.strictObject({ type: z.literal("spell"), spell: id, at: point.optional(), from: point.optional() }),
   /** units for the rewarded tribe (or `tribe`, -1 for wild people) near a point (the site by default) */
   z.strictObject({
     type: z.literal("spawn"),
@@ -1260,12 +1260,15 @@ export const RewardSchema = z.discriminatedUnion("type", [
     n: z.number().int().min(1).max(50),
     tribe: z.number().int().min(-1).optional(),
     at: point.optional(),
+    /** stretch 3: "defensive" spawns posted guards (the opponent AI never sends them away) */
+    stance: z.enum(["aggressive", "defensive", "passive"]).optional(),
   }),
-  /** level scripting: every trained troop of `tribe` attack-moves to `to` (a war band crossing) */
+  /** level scripting: every trained troop of `tribe` (at most `n`, posted guards excluded) attack-moves to `to` (a war band crossing) */
   z.strictObject({
     type: z.literal("raid"),
     tribe: z.number().int().min(0),
     to: point,
+    n: z.number().int().min(1).max(200).optional(),
   }),
   /** prayer chains: wake a dormant site (by tag) so it can be worshipped; it rises from the ground */
   z.strictObject({ type: z.literal("awaken"), site: id }),
@@ -1300,6 +1303,8 @@ const LevelSetup = z.strictObject({
   count: z.number().int().min(1).max(200).optional(),
   spacing: pos.optional(),
   site: SiteSpecSchema.optional(),
+  /** stretch 3: units start in this stance; "defensive" units are posted guards the opponent AI never sends away */
+  stance: z.enum(["aggressive", "defensive", "passive"]).optional(),
 });
 
 /** stretch 3: a staged objective stays hidden and unchecked until objective `after` is done */
