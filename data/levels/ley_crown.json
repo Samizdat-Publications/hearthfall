@@ -1,0 +1,70 @@
+{
+  "$comment": "Campaign level 16 (stretch 3): a crown of stones. Seven capturable stones (two ley, three ward, two seer; the centre ward and the north seer carry per-site auras and rewards) sit on a rotationally symmetric continent; the sneaky rival contests them, and the Shaper must hold the middle and the west ley before breaking the tribe.",
+  "id": "ley_crown",
+  "name": "The Ley Crown",
+  "order": 16,
+  "description": "Seven old stones ring this continent. Whoever prayed last holds a stone, and a rival can pray it away. Take the centre ward and the western ley, feed on their mana, then break the tribe in the east.",
+  "seed": 1616,
+  "map": {
+    "generator": "flat",
+    "size": 192,
+    "landAboveSea": -30,
+    "paint": [
+      { "shape": "disc", "at": [96, 96], "r": 84, "aboveSea": 36, "falloff": 8 },
+      { "shape": "disc", "at": [96, 72], "r": 7, "aboveSea": -30, "falloff": 3 },
+      { "shape": "disc", "at": [96, 120], "r": 7, "aboveSea": -30, "falloff": 3 },
+      { "shape": "disc", "at": [96, 96], "r": 14, "aboveSea": 52, "falloff": 6 }
+    ]
+  },
+  "tribes": [{}, { "ai": "sneaky", "difficulty": "normal", "maxTroops": 12, "worshipAfterSeconds": 240 }],
+  "spells": ["bolt", "raise_land", "hornets"],
+  "buildings": ["dwelling", "watchtower", "warden_lodge"],
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [36, 96] },
+    { "spawn": "shaper", "tribe": 0, "at": [42, 94] },
+    { "spawn": "settler", "tribe": 0, "near": [36, 104], "count": 14 },
+    { "spawn": "warden", "tribe": 0, "near": [46, 96], "count": 3 },
+    { "spawn": "tree", "near": [28, 82], "count": 14, "spacing": 1.2 },
+    { "spawn": "tree", "near": [30, 114], "count": 12, "spacing": 1.2 },
+    { "spawn": "rock", "near": [46, 108], "count": 3, "spacing": 2 },
+    { "spawn": "hearth", "tribe": 1, "at": [156, 96] },
+    { "spawn": "shaper", "tribe": 1, "at": [150, 98] },
+    { "spawn": "settler", "tribe": 1, "near": [156, 88], "count": 12 },
+    { "spawn": "tree", "near": [164, 110], "count": 14, "spacing": 1.2 },
+    { "spawn": "tree", "near": [162, 78], "count": 12, "spacing": 1.2 },
+    { "spawn": "rock", "near": [146, 84], "count": 3, "spacing": 2 },
+    { "spawn": "ley_stone", "at": [60, 66], "site": { "tag": "west_ley", "rewards": [{ "type": "message", "text": "The western ley is yours. It pays mana while you hold it." }] } },
+    { "spawn": "ley_stone", "at": [132, 126], "site": { "tag": "east_ley", "rewards": [{ "type": "message", "text": "The eastern ley changes hands." }] } },
+    { "spawn": "ward_stone", "at": [62, 126], "site": { "tag": "west_ward", "rewards": [{ "type": "message", "text": "The southwestern ward guards your flank." }] } },
+    { "spawn": "ward_stone", "at": [130, 66], "site": { "tag": "east_ward", "rewards": [{ "type": "message", "text": "The northeastern ward changes hands." }] } },
+    {
+      "spawn": "ward_stone",
+      "at": [96, 96],
+      "site": {
+        "tag": "crown_ward",
+        "worshippers": 4,
+        "prayerSeconds": 30,
+        "aura": { "type": "strike", "amount": 300, "r": 11, "every": 3 },
+        "rewards": [
+          { "type": "charges", "spell": "lightning", "n": 1 },
+          { "type": "reveal", "at": [96, 96], "r": 30 },
+          { "type": "message", "text": "The crown ward is yours: it strikes at anything that comes near, and one Lightning answers your prayer." }
+        ]
+      }
+    },
+    { "spawn": "seer_stone", "at": [96, 46], "site": { "tag": "north_seer", "aura": { "type": "sight", "amount": 0, "r": 24, "every": 1 }, "rewards": [{ "type": "message", "text": "The northern seer shows the whole north." }] } },
+    { "spawn": "seer_stone", "at": [96, 146], "site": { "tag": "south_seer", "rewards": [{ "type": "message", "text": "The southern seer changes hands." }] } }
+  ],
+  "objectives": [
+    { "type": "worship", "site": "crown_ward", "text": "Hold the crown ward in the centre with four followers" },
+    { "type": "worship", "site": "west_ley", "text": "Pray at the western ley stone" },
+    { "type": "eliminateAll", "after": 0, "text": "Break the tribe in the east" }
+  ],
+  "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 1500 }],
+  "triggers": [
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Send followers to pray at the stones. Whoever prayed last holds one." }] },
+    { "when": { "type": "worship", "site": "crown_ward" }, "do": [{ "type": "message", "text": "The crown is yours. The east will come for it." }, { "type": "spawn", "unit": "warden", "n": 3, "tribe": 1, "at": [140, 96], "stance": "aggressive" }] },
+    { "when": { "type": "time", "seconds": 600, "every": 300 }, "do": [{ "type": "raid", "tribe": 1, "to": [96, 96], "n": 6 }, { "type": "message", "text": "The eastern war band marches on the crown." }] },
+    { "when": { "type": "time", "seconds": 1200 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+  ]
+}

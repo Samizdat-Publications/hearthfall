@@ -1,0 +1,10 @@
+{
+  "id": "level_tidewalk_idle_loses",
+  "description": "Campaign level 15 has a real loss: an idle player never wakes the totem or crosses and runs out of time.",
+  "tags": ["levels"],
+  "level": "tidewalk",
+  "runTicks": 24100,
+  "assert": [
+    { "at": 24100, "expr": "level.lost && alive(0) && alive(1) && invariants() == 0" }
+  ]
+}

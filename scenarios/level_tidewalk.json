@@ -1,0 +1,14 @@
+{
+  "id": "level_tidewalk",
+  "description": "Campaign level 15 is completable: the Shaper wakes the shore totem, the causeway rises, and the opponent bot for the player crosses it and breaks the eastern tribe while the flats flood and drain.",
+  "tags": ["levels"],
+  "level": "tidewalk",
+  "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "normal", "offset": 1 }],
+  "commands": [
+    { "tick": 40, "tribe": 0, "type": "worship", "args": { "units": "tribe0.shapers", "site": "tide_totem" } }
+  ],
+  "runTicks": 22000,
+  "assert": [
+    { "at": 22000, "expr": "level.won && !alive(1) && alive(0) && level.objectivesDone == 2 && invariants() == 0" }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "$comment": "Campaign level 15 (stretch 3): a tide. Two sand flats between the west island, a middle islet and the east island sink and rise on repeating triggers; the shore totem raises a permanent causeway (two line shapes) to the rival island.",
+  "id": "tidewalk",
+  "name": "Tidewalk",
+  "order": 15,
+  "description": "The sand flats between these islands drown and drain by turns. Cross at low water, or wake the shore totem and raise a causeway that never sinks. Then break the tribe in the east.",
+  "seed": 1515,
+  "map": {
+    "generator": "flat",
+    "size": 128,
+    "landAboveSea": -30,
+    "paint": [
+      { "shape": "disc", "at": [24, 64], "r": 16, "aboveSea": 40, "falloff": 4 },
+      { "shape": "disc", "at": [104, 64], "r": 16, "aboveSea": 40, "falloff": 4 },
+      { "shape": "disc", "at": [64, 64], "r": 9, "aboveSea": 38, "falloff": 3 },
+      { "shape": "rect", "at": [45, 64], "size": [20, 8], "aboveSea": 5, "falloff": 2 },
+      { "shape": "rect", "at": [83, 64], "size": [20, 8], "aboveSea": 5, "falloff": 2 }
+    ]
+  },
+  "tribes": [{}, { "ai": "turtle", "difficulty": "normal", "maxTroops": 8 }],
+  "spells": ["bolt", "raise_land", "hornets"],
+  "buildings": ["dwelling", "watchtower", "warden_lodge"],
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [20, 62] },
+    { "spawn": "shaper", "tribe": 0, "at": [26, 62] },
+    { "spawn": "settler", "tribe": 0, "near": [20, 70], "count": 12 },
+    { "spawn": "tree", "near": [14, 52], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [20, 78], "count": 8, "spacing": 1.2 },
+    { "spawn": "rock", "near": [30, 56], "count": 3, "spacing": 2 },
+    { "spawn": "hearth", "tribe": 1, "at": [108, 62] },
+    { "spawn": "shaper", "tribe": 1, "at": [102, 62] },
+    { "spawn": "settler", "tribe": 1, "near": [108, 70], "count": 10 },
+    { "spawn": "tree", "near": [112, 52], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [98, 74], "count": 3, "spacing": 2 },
+    { "spawn": "tree", "near": [62, 60], "count": 4, "spacing": 1.2 },
+    {
+      "spawn": "ley_stone",
+      "at": [64, 66],
+      "site": {
+        "tag": "islet_stone",
+        "rewards": [{ "type": "message", "text": "The islet stone is yours: it draws mana while you hold it." }]
+      }
+    },
+    {
+      "spawn": "totem",
+      "at": [32, 76],
+      "site": {
+        "tag": "tide_totem",
+        "rewards": [
+          { "type": "shape", "shape": "line", "at": [32, 76], "to": [64, 86], "width": 3, "aboveSea": 10, "falloff": 2, "seconds": 20 },
+          { "type": "shape", "shape": "line", "at": [64, 86], "to": [96, 76], "width": 3, "aboveSea": 10, "falloff": 2, "seconds": 20 },
+          { "type": "reveal", "at": [96, 70], "r": 14 },
+          { "type": "message", "text": "The totem lifts a causeway toward the eastern island. The tide cannot take it." }
+        ]
+      }
+    }
+  ],
+  "objectives": [
+    { "type": "worship", "site": "tide_totem", "text": "Wake the shore totem (only your Shaper can pray there)" },
+    { "type": "eliminateAll", "after": 0, "text": "Cross to the eastern island and break the tribe" }
+  ],
+  "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 1200 }],
+  "triggers": [
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Pray at the totem on the southern shore, or cross the flats while the tide is out." }] },
+    { "when": { "type": "time", "seconds": 80, "every": 120 }, "do": [{ "type": "message", "text": "The tide is turning. The flats will go under in ten seconds." }] },
+    { "when": { "type": "time", "seconds": 90, "every": 120 }, "do": [
+      { "type": "shape", "shape": "rect", "at": [45, 64], "size": [14, 8], "aboveSea": -8, "falloff": 2, "seconds": 8 },
+      { "type": "shape", "shape": "rect", "at": [83, 64], "size": [14, 8], "aboveSea": -8, "falloff": 2, "seconds": 8 }
+    ] },
+    { "when": { "type": "time", "seconds": 140, "every": 120 }, "do": [{ "type": "message", "text": "The water is drawing back. The flats rise in ten seconds." }] },
+    { "when": { "type": "time", "seconds": 150, "every": 120 }, "do": [
+      { "type": "shape", "shape": "rect", "at": [45, 64], "size": [14, 8], "aboveSea": 5, "falloff": 2, "seconds": 8 },
+      { "type": "shape", "shape": "rect", "at": [83, 64], "size": [14, 8], "aboveSea": 5, "falloff": 2, "seconds": 8 }
+    ] },
+    { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "message", "text": "Raise a Warden Lodge and march along the causeway before the water takes the flats." }] },
+    { "when": { "type": "time", "seconds": 900 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+  ]
+}
