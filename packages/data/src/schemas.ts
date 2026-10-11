@@ -1399,6 +1399,8 @@ export const RewardSchema = z.discriminatedUnion("type", [
     n: z.number().int().min(1).max(200).optional(),
     /** S4: the raiders pray at this site (a stone they want to take) instead of attack-moving to `to`, when it is awake and not theirs */
     pray: id.optional(),
+    /** S4 L6-C: only the units this trigger's earlier spawn rewards just made march (no troop elsewhere is drafted) */
+    fresh: z.boolean().optional(),
   }),
   /** prayer chains: wake a dormant site (by tag) so it can be worshipped; it rises from the ground */
   z.strictObject({ type: z.literal("awaken"), site: id }),
@@ -1480,7 +1482,8 @@ export const ObjectiveSchema = z.discriminatedUnion("type", [
   z.strictObject({ type: z.literal("worship"), site: id, ...fromStage, ...stage }),
   /** `fromStage`: count from the tick the stage opened (its `after` is done), not from the match start */
   z.strictObject({ type: z.literal("survive"), seconds: pos, fromStage: z.boolean().optional(), ...stage }),
-  z.strictObject({ type: z.literal("followers"), n: z.number().int().min(1), ...stage }),
+  /** S4 L6-C: with `fromStage` the player gains `n` followers over the count it had when the stage opened */
+  z.strictObject({ type: z.literal("followers"), n: z.number().int().min(1), ...fromStage, ...stage }),
   /** BACKLOG 13 in the campaign: win the level's victory rules (`rules`); a rival winning them loses the level */
   /** with `fromStage` the rules (site clocks, the Last Stand timer) start counting only when this stage opens */
   z.strictObject({ type: z.literal("victory"), ...fromStage, ...stage }),
@@ -1495,6 +1498,8 @@ export const ObjectiveSchema = z.discriminatedUnion("type", [
   /** stretch 3: `n` beast dens are cleared (every den when absent); with `at` and `r` only dens within r of at count */
   /** with `fromStage` only dens cleared after the stage opened count (n absent: every den standing then) */
   z.strictObject({ type: z.literal("clearDens"), n: z.number().int().min(1).optional(), at: point.optional(), r: pos.optional(), ...fromStage, ...stage }),
+  /** S4 L6-C: the player kills `n` units of `tribe` (any rival when absent; wild beasts never count), of type `unit` when set; only kills while the stage is open count */
+  z.strictObject({ type: z.literal("kill"), n: z.number().int().min(1), tribe: z.number().int().min(1).optional(), unit: id.optional(), ...stage }),
 ]);
 export type Objective = z.infer<typeof ObjectiveSchema>;
 
@@ -1523,6 +1528,8 @@ export const TriggerSchema = z.strictObject({
     /** stretch 3: the player reaches `n` followers */
     z.strictObject({ type: z.literal("followers"), n: z.number().int().min(1) }),
   ]),
+  /** S4 L6-C: the trigger stops firing once objective `until` is done (bounds a repeating spawn) */
+  until: z.number().int().min(0).optional(),
   /** actions use the reward vocabulary; the receiving tribe is the player (0) unless the trigger is a worship by another tribe */
   do: z.array(RewardSchema).min(1),
 });

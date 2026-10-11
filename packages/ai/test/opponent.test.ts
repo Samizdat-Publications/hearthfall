@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { World } from "../../sim/src/world.ts";
 import { CAT } from "../../sim/src/entities.ts";
-import { TASK } from "../../sim/src/economy.ts";
+import { BSTATE, TASK } from "../../sim/src/economy.ts";
 import { STANCE } from "../../sim/src/combat.ts";
 import { basePack, world } from "../../sim/test/helpers.ts";
 import { OpponentAI, makeBot, type Personality } from "../src/index.ts";
@@ -408,6 +408,41 @@ describe("OpponentAI (M7)", () => {
     const shaper = w.tribes[0].shaper;
     const go = ai.decide(w).filter((c) => c.type === "move" && (c.args.units as number[]).includes(shaper));
     expect(go.map((c) => c.args.to)).toEqual([[100, 30]]);
+  });
+
+  it("S4 L6-C: the level bot plans the buildings an open build objective asks for, and stops at n", () => {
+    const p = basePack();
+    const def: LevelDef = {
+      id: "build_test", name: "Build test", order: 99, description: "test", seed: 4,
+      map: { generator: "flat", size: 64, landAboveSea: 20 },
+      tribes: [{}], spells: [],
+      setup: [
+        { spawn: "hearth", tribe: 0, at: [20, 32] }, { spawn: "shaper", tribe: 0, at: [22, 34] },
+        { spawn: "settler", tribe: 0, near: [20, 28], count: 12 }, { spawn: "rock", near: [28, 36], count: 3 }, { spawn: "tree", near: [12, 40], count: 8 },
+      ],
+      objectives: [{ type: "build", building: "watchtower", n: 2 }],
+    };
+    const w = createLevelWorld({ def }, p.files, p.hash);
+    w.step([]);
+    const tower = w.cfg.buildingIndex.get("watchtower");
+    const towers = () => {
+      let n = 0;
+      for (let i = 0; i < w.ents.hi; i++) if (w.ents.alive[i] && w.ents.cat[i] === CAT.building && w.ents.tribe[i] === 0 && w.ents.type[i] === tower) n++;
+      return n;
+    };
+    // a tower shy personality plans no towers of its own: this one comes from the objective
+    const ai = new OpponentAI({ tribe: 0, personality: { ...bold, firstAttackMinute: 99 }, every: 1 });
+    w.step(ai.decide(w));
+    expect(towers()).toBe(1);
+    // with n standing (plans count), the goal asks for no more even with every plan slot free
+    w.spawnBuilding("watchtower", 0, 26, 26);
+    for (let i = 0; i < w.ents.hi; i++) if (w.ents.alive[i] && w.ents.cat[i] === CAT.building && w.ents.type[i] !== tower && w.ents.state[i] !== BSTATE.done && w.ents.tribe[i] === 0) w.kill(i, "test");
+    expect(towers()).toBe(2);
+    expect(ai.decide(w).filter((c) => c.type === "placePlan" && c.args.building === "watchtower")).toEqual([]);
+    // a skirmish world (no level) never gets them
+    const sk = world({ generator: "flat", size: 64, tribes: 2 });
+    const other = new OpponentAI({ tribe: 0, personality: { ...bold, firstAttackMinute: 99 }, every: 1 });
+    for (let k = 0; k < 6; k++) expect(other.decide(sk).filter((c) => c.type === "placePlan" && c.args.building === "watchtower")).toEqual([]);
   });
 
   it("S4: the level bot leaves a stone it lost twice to the enemy for a while, and the memory survives a save", () => {

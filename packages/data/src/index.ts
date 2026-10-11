@@ -251,6 +251,8 @@ export function validateLevel(raw: unknown, pack: PackFiles, file = "level"): { 
     if (o.type === "destroy" && o.tribe >= lv.tribes.length) bad(path, `no tribe ${o.tribe}`);
     if (o.type === "destroy" && !lv.setup.some((s) => s.spawn === o.building && s.tribe === o.tribe)) bad(path, `tribe ${o.tribe} starts with no ${o.building}`);
     if (o.type === "reach" && o.unit && !units.has(o.unit)) bad(path, `unknown unit ${o.unit}`);
+    if (o.type === "kill" && o.unit && !units.has(o.unit)) bad(path, `unknown unit ${o.unit}`);
+    if (o.type === "kill" && o.tribe !== undefined && o.tribe >= lv.tribes.length) bad(path, `no tribe ${o.tribe}`);
     if (o.type === "hold") {
       const capturable = new Set((pack.buildings.worship.kinds ?? []).filter((x) => x.capturable).map((x) => x.id));
       if (o.kind && !capturable.has(o.kind)) bad(path, `${o.kind} is not a capturable worship kind`);
@@ -273,6 +275,8 @@ export function validateLevel(raw: unknown, pack: PackFiles, file = "level"): { 
   lv.triggers?.forEach((t, k) => {
     if (t.when.type === "worship" && !tags.has(t.when.site)) bad(`triggers.${k}.when`, `no site tagged ${t.when.site}`);
     if (t.when.type === "objective" && t.when.index >= lv.objectives.length) bad(`triggers.${k}.when`, `no objective ${t.when.index}`);
+    if (t.until !== undefined && t.until >= lv.objectives.length) bad(`triggers.${k}.until`, `no objective ${t.until}`);
+    t.do.forEach((r, j) => r.type === "raid" && r.fresh && !t.do.slice(0, j).some((s) => s.type === "spawn") && bad(`triggers.${k}.do.${j}`, "a fresh raid needs a spawn before it"));
     if (t.when.type === "area" && t.when.unit && !units.has(t.when.unit)) bad(`triggers.${k}.when`, `unknown unit ${t.when.unit}`);
     t.do.forEach((r, j) => reward(r, `triggers.${k}.do.${j}`));
   });

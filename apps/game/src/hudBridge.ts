@@ -105,6 +105,8 @@ function levelObjectives(game: Game): ObjectiveView[] {
             ? `Lead your ${words(o.unit ?? "shaper")} to the marked place`
             : o.type === "hold"
               ? `Hold ${o.n} ${o.kind ? words(o.kind) : "stone"}${o.n === 1 ? "" : "s"} at once${o.seconds > 0 ? ` for ${clock(o.seconds)}` : ""} (${lv.held(o.kind)} held${lv.holdSince[k] >= 0 && !done ? `, ${clock(Math.max(0, o.seconds - (w.tick - lv.holdSince[k]) / hz))} left` : ""})`
+              : o.type === "kill"
+                ? `Defeat ${o.n} ${o.unit ? words(o.unit) : "enemy"}${o.n === 1 ? "" : "s"}${o.tribe !== undefined ? ` of tribe ${o.tribe + 1}` : ""} (${Math.min(o.n, lv.base[k])} of ${o.n})`
               : o.type === "clearDens"
                 ? `Clear ${o.n ?? "every"} wolf den${o.n === 1 ? "" : "s"} (${w.beasts.dens.filter((d) => d.cleared).length} of ${w.beasts.dens.length})`
             : o.type === "eliminateAll"
@@ -115,7 +117,9 @@ function levelObjectives(game: Game): ObjectiveView[] {
             ? `Survive ${clock(o.seconds)}${done ? "" : ` (${left(o.seconds)} left)`}`
             : o.type === "victory"
               ? (victoryLine(w, game.localTribe) ?? w.rules?.def.name ?? "Win the day")
-              : `Reach ${o.n} followers (${w.economy.followers(game.localTribe)})`;
+              : o.fromStage
+                ? `Gain ${o.n} more followers (${Math.max(0, w.economy.followers(game.localTribe) - lv.base[k])} of ${o.n})`
+                : `Reach ${o.n} followers (${w.economy.followers(game.localTribe)})`;
     // BACKLOG 89: live prayer progress and follower count after authored objective text; BACKLOG 13 the rules progress
     const rl = o.type === "victory" && o.text ? victoryLine(w, game.localTribe) : null;
     const live = done ? "" : o.type === "worship" ? prayerNote(w, o.site, game.localTribe) : o.type === "followers" && o.text ? ` (${w.economy.followers(game.localTribe)})` : rl ? `: ${rl}` : "";

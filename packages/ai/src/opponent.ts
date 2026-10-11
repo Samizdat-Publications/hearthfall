@@ -134,6 +134,8 @@ const FERRY_BACKOFF_SECONDS = 90;
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 /** BACKLOG 2: actions scored only for personalities with shades, so the others draw the same noise as before */
 const SHADE_ACTIONS = new Set(["buildDen", "trainShade", "sabotage"]);
+/** S4 L6-C: buildings a level's build objective leaves to the AI's own crossing and support logic */
+const OWN_TIMING = new Set(["boathouse", "skyloft", "spirit_well", "mending_hut"]);
 
 export class OpponentAI implements Controller {
   readonly tribe: number;
@@ -393,6 +395,8 @@ export class OpponentAI implements Controller {
     this.watchStones(w);
     // every decision: spells unlocked mid-match (worship sites) start charging too
     this.setup(w, out);
+    // S4 L6-C: a level's build objective takes a plan slot before the scored actions do
+    this.buildGoal(c, out);
     const acts = this.actions.filter((a) => (a.id !== "worship" || w.worship.sites.length > 0) && (a.id !== "contest" || this.contested(w).length > 0) && (a.id !== "hunt" || w.beasts.dens.some((d) => !d.cleared)) && (a.id !== "buildSupport" || w.cfg.buildingIndex.has("spirit_well") || w.cfg.buildingIndex.has("mending_hut")) && (this.p.shades || !SHADE_ACTIONS.has(a.id)));
     const boost = this.focus !== null && w.tick < this.focusUntil ? (this.sh.focusBoost ?? 0.6) : 0;
     const scored = acts.map((a, k) => ({ a, k, s: a.score(c) + (w.rng.float("ai") - 0.5) * 2 * this.noise + (a.id === this.focus ? boost : 0) }));
@@ -786,6 +790,31 @@ export class OpponentAI implements Controller {
     const id = E.idOf(i);
     for (let j = out.length - 1; j >= 0; j--) if (out[j].type === "move" && (out[j].args.units as number[]).length === 1 && (out[j].args.units as number[])[0] === id) out.splice(j, 1);
     out.push(this.cmd(w, "move", { units: [id], to: [o.at[0], o.at[1]] }));
+  }
+
+  /**
+   * S4 L6-C: in a level, the bot playing tribe 0 plans the building an open `build` objective asks for,
+   * one plan at a time (plans and finished ones count toward n), under the open plan limit. Crossing and support
+   * buildings (Boathouse, Skyloft, Spirit Well, Mending Hut) stay with the AI's own timing: it raises them when it needs them.
+   */
+  private buildGoal(c: Census, out: Command[]): void {
+    const w = c.w;
+    const lv = w.level;
+    if (!lv || this.tribe !== 0 || c.threats.length || c.open + out.filter((x) => x.type === "placePlan").length >= w.cfg.pack.balance.economy.maxOpenPlansPerTribe) return;
+    const E = w.ents;
+    for (let k = 0; k < lv.def.objectives.length; k++) {
+      const o = lv.def.objectives[k];
+      if (o.type !== "build" || lv.done[k] || !lv.open(k) || OWN_TIMING.has(o.building) || !this.canMake(c, o.building)) continue;
+      const b = w.cfg.buildingIndex.get(o.building);
+      let have = 0;
+      for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.cat[i] === CAT.building && E.tribe[i] === this.tribe && E.type[i] === b) have++;
+      if (have >= o.n) continue;
+      // first in the list: the economy's plan this decision may want the same spot, and the sim takes the earlier one
+      const plan: Command[] = [];
+      this.build(c, plan, o.building);
+      out.unshift(...plan);
+      return;
+    }
   }
 
   /** idle troops attack-move on a den by home (wolves bite settlers and worshippers) */

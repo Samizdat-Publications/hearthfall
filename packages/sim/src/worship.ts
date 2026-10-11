@@ -331,7 +331,7 @@ export class WorshipSystem {
 }
 
 /** Give one reward to `tribe` at (x, y) (a site, or a level trigger's anchor). */
-export function applyReward(w: World, tribe: number, r: Reward, x: number, y: number): void {
+export function applyReward(w: World, tribe: number, r: Reward, x: number, y: number, spawned?: number[]): void {
   const t = w.tribes[tribe];
   switch (r.type) {
     case "charges": {
@@ -375,6 +375,7 @@ export function applyReward(w: World, tribe: number, r: Reward, x: number, y: nu
         const rr = 1.2 + 0.7 * Math.sqrt(k + 0.5);
         const id = w.spawnUnit(r.unit, owner, wrap(bx + cos(k * GOLDEN_ANGLE) * rr, n), wrap(by + sin(k * GOLDEN_ANGLE) * rr, n));
         if (r.stance) w.ents.stance[w.ents.index(id)] = STANCE[r.stance];
+        spawned?.push(id);
       }
       w.emit("rewardSpawn", { tribe: owner, unit: r.unit, n: r.n });
       return;
@@ -383,7 +384,10 @@ export function applyReward(w: World, tribe: number, r: Reward, x: number, y: nu
       const E = w.ents;
       const units = w.cfg.pack.units.units;
       const ids: number[] = [];
+      // S4 L6-C: a fresh raid drafts only what this trigger just spawned
+      const fresh = r.fresh ? new Set((spawned ?? []).map((id) => E.index(id)).filter((i) => i >= 0)) : null;
       for (let i = 0; i < E.hi; i++) {
+        if (fresh && !fresh.has(i)) continue;
         if (!E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] !== r.tribe || E.inside[i] >= 0 || !units[E.type[i]].trainedAt) continue;
         if (E.stance[i] === STANCE.defensive) continue;
         if (r.n !== undefined && ids.length >= r.n) break;

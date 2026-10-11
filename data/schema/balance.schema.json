@@ -1459,6 +1459,9 @@
                         "pray": {
                           "type": "string",
                           "pattern": "^[a-z][a-z0-9_]*$"
+                        },
+                        "fresh": {
+                          "type": "boolean"
                         }
                       },
                       "required": [

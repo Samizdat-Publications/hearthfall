@@ -56,7 +56,7 @@ export class LevelRuntime {
   openedAt: number[];
   /** S4: per objective, cleared dens in its area when a fromStage clearDens opened */
   base: number[];
-  /** S4: the level has stage-relative goals (fromStage), so openedAt is state */
+  /** S4: the level has stage-relative goals (fromStage) or kill counts (kept in base), so openedAt and base are state */
   readonly staged: boolean;
   /** building types every tribe may build in this level (null: all) */
   readonly allowed: Set<number> | null;
@@ -93,7 +93,7 @@ export class LevelRuntime {
     this.holdSince = def.objectives.map(() => -1);
     this.openedAt = def.objectives.map(() => -1);
     this.base = def.objectives.map(() => 0);
-    this.staged = def.objectives.some((o) => "fromStage" in o && o.fromStage === true);
+    this.staged = def.objectives.some((o) => ("fromStage" in o && o.fromStage === true) || o.type === "kill");
     this.allowed = def.buildings ? new Set(def.buildings.map((b) => w.cfg.buildingIndex.get(b)!).filter((b) => b !== undefined)) : null;
   }
 
@@ -122,7 +122,12 @@ export class LevelRuntime {
         return me.alive && w.tick - this.holdSince[k] + 1 >= need;
       }
       case "followers":
-        return w.economy.followers(PLAYER) >= o.n;
+        if (!o.fromStage) return w.economy.followers(PLAYER) >= o.n;
+        // S4 L6-C: gained since the stage opened
+        if (w.tick === this.openedAt[k]) this.base[k] = w.economy.followers(PLAYER);
+        return later && w.economy.followers(PLAYER) >= this.base[k] + o.n;
+      case "kill":
+        return this.base[k] >= o.n;
       case "victory":
         return w.rules?.winner === PLAYER;
       case "destroy":
@@ -159,6 +164,20 @@ export class LevelRuntime {
         return dens.length > 0 && cleared >= (o.n ?? dens.length);
       }
     }
+  }
+
+  /** S4 L6-C: units of `tribe` (any rival when undefined) of type `unit` the player killed this tick (struck down or drowned after its hit) */
+  private kills(tribe: number | undefined, unit: string | undefined): number {
+    const w = this.w;
+    const type = unit === undefined ? -1 : (w.cfg.unitIndex.get(unit) ?? -2);
+    let n = 0;
+    for (const e of w.events) {
+      if ((e.type !== "killed" && e.type !== "drowned") || e.cat !== CAT.unit || e.by !== PLAYER) continue;
+      const t = e.tribe as number;
+      if ((tribe === undefined ? t < 1 : t !== tribe) || (type !== -1 && e.kind !== type)) continue;
+      n++;
+    }
+    return n;
   }
 
   /** capturable stones the player holds now (of `kind`, any when undefined) */
@@ -225,6 +244,7 @@ export class LevelRuntime {
     const w = this.w;
     this.def.objectives.forEach((o, k) => {
       if (this.openedAt[k] < 0 && this.open(k)) this.openedAt[k] = w.tick;
+      if (o.type === "kill" && !this.done[k] && this.open(k)) this.base[k] += this.kills(o.tribe, o.unit);
       if (!this.done[k] && this.open(k) && this.objectiveMet(k)) {
         this.done[k] = 1;
         w.emit("objectiveComplete", { index: k, kind: o.type });
@@ -239,6 +259,7 @@ export class LevelRuntime {
       // stretch 3: a repeating time trigger counts its firings in `fired`
       const repeat = t.when.type === "time" && t.when.every !== undefined;
       if (this.fired[k] && !repeat) return;
+      if (t.until !== undefined && this.done[t.until]) return;
       let tribe = PLAYER;
       let x = 0;
       let y = 0;
@@ -277,7 +298,13 @@ export class LevelRuntime {
       }
       this.fired[k] = repeat ? this.fired[k] + 1 : 1;
       w.emit("triggerFired", { index: k });
-      for (const r of t.do) applyReward(w, tribe, r, x, y);
+      const spawned: number[] = [];
+      for (const r of t.do) {
+        // S4 L6-C: a repeating trigger no longer spawns for, or raids with, a tribe that has fallen
+        const owner = r.type === "spawn" ? (r.tribe ?? tribe) : r.type === "raid" ? r.tribe : -1;
+        if (repeat && owner >= 0 && !w.tribes[owner]?.alive) continue;
+        applyReward(w, tribe, r, x, y, spawned);
+      }
     });
     if (this.done.every((d) => d === 1)) this.finish(OUTCOME.won, "objectives");
     else {
