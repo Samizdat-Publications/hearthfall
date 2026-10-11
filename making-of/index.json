@@ -1116,7 +1116,7 @@
       "milestone": "S3",
       "kind": "asset-sheet",
       "caption": "Living world assets: ley, ward and seer stones, the wolf, and landscape decor (ruin, standing stone, bush, log, mushroom ring)",
-      "highlight": false,
+      "highlight": true,
       "when": "2026-10-11T03:59:55.955Z",
       "source": "external:s3_living_sheet.png",
       "bytes": 359118
@@ -1136,7 +1136,7 @@
       "milestone": "S3",
       "kind": "screenshot",
       "caption": "Wolves: a pack at its den bites the first Warden as five attack-move in; the 'Wolves are hunting' notice warns the player. Dens regrow lost wolves until the whole pack falls.",
-      "highlight": false,
+      "highlight": true,
       "when": "2026-10-11T04:35:57.937Z",
       "source": "external:wolves.png",
       "bytes": 616850

@@ -19,7 +19,7 @@ Update it at every gate: after each backlog item commit, each milestone exit, an
 1. Archive the new images (`add` above; `--highlight` for hero shots, which also become the cover). Captions say what was added, changed, fixed or removed. An entry may carry `"change": "fixed"` (or added, changed, removed, explored) in index.json to override the chip, which otherwise comes from the kind.
 2. `cd C:\Users\stewa\Documents\Claude\Hearthfall` then `npm run making-of -- page` (tools/harness/makingof_page.py with the template tools/harness/makingof_template.html; needs the .venv with Pillow). Output: `making-of/site/` (gitignored, rebuilt from index.json, chapters.json and git).
 3. Republish with the Artifact tool: `url` = the live page above, `file_path` = `making-of/site/index.html`, `root` = `making-of/site`, `files` = the published paths in `making-of/site/publish.json` (its keys, `img/...`). A session that has not published it yet reads it first (`action: "read"` with the url), then publishes. Never publish without `url` (that makes a second page).
-4. Chapter titles and blurbs live in `making-of/chapters.json`; new chapters go there (tags list the milestone tags they collect; `B` collects every backlog tag).
+4. Chapter titles and blurbs live in `making-of/chapters.json`; new chapters go there, appended LAST (the page renders chapters in file order and Stewart reads the newest at the bottom) (tags list the milestone tags they collect; `B` collects every backlog tag).
 
 ## When images get archived (built into the workflow)
 
