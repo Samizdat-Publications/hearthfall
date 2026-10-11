@@ -1,9 +1,9 @@
 {
-  "$comment": "Campaign level 23 (S4): stone defense on raid pray. A 256 continent; the player's valley sits in the middle, ringed by four capturable stones on low hills (two ley, a ward facing west, a seer facing east). The western tribe (aggressive hard, two Warden Lodges behind towers) and the eastern tribe (turtle behind towers) send war bands that pray at the player's stones to steal them, on timers and when stages open; a band whose stone is already theirs marches on the Hearth instead. maxPopulation keeps both rivals small and worshipAfterSeconds keeps their own AI off the stones, so only the bands steal. Staged: claim two stones, hold all four for 180 s while the first bands come (the first eastern band steals the seer mid-hold), burn the western lodges (fromStage), retake the old ley the east raises in its own hands under guard (fromStage worship), raze the eastern Hearth (fromStage), break both (fromStage). Bot win about 29500.",
+  "$comment": "Campaign level 23 (S4): stone defense on raid pray. A 256 continent; the player's valley sits in the middle, ringed by four capturable stones on low hills (two ley, a ward facing west, a seer facing east). The western tribe (aggressive hard, two Warden Lodges behind towers) and the eastern tribe (turtle behind towers) send war bands that pray at the player's stones to steal them, on timers and when stages open; a band whose stone is already theirs marches on the Hearth instead. maxPopulation keeps both rivals small and worshipAfterSeconds keeps their own AI off the stones, so only the bands steal. Staged: claim two stones, hold all four for 180 s while the first bands come (the first eastern band steals the seer mid-hold), burn the western lodges (fromStage), retake the old ley the east raises in its own hands under guard (fromStage worship), hold all three leys for 120 s while one eastern band prays at the old ley and a fresh one at the southern ley, then raze the eastern Hearth and break both (fromStage eliminateAll; a separate raze stage finished on the same tick as the break, so it was folded in). Bot win about 30100.",
   "id": "stolen_stones",
   "name": "The Stolen Stones",
   "order": 23,
-  "description": "Four old stones ring your valley, and both neighbours want them. Claim them, hold all four while war bands come to pray them away, burn the western lodges, win back the stone the east carried off, then raze the eastern Hearth and break both tribes.",
+  "description": "Four old stones ring your valley, and both neighbours want them. Claim them, hold all four while war bands come to pray them away, burn the western lodges, win back the old ley the east carried off and hold all three leys, then raze the eastern Hearth.",
   "seed": 2323,
   "map": {
     "generator": "flat",
@@ -81,8 +81,8 @@
     { "type": "hold", "n": 4, "seconds": 180, "after": 0, "text": "Hold all four valley stones at once for three minutes while war bands come to pray them away" },
     { "type": "destroy", "tribe": 1, "building": "warden_lodge", "fromStage": true, "after": 1, "text": "Stop the western bands: burn the western tribe's Warden Lodges" },
     { "type": "worship", "site": "old_ley", "fromStage": true, "after": 2, "text": "Win back the old ley stone the eastern tribe raised in its own hands" },
-    { "type": "destroy", "tribe": 2, "building": "hearth", "fromStage": true, "after": 3, "text": "Pass the eastern towers and raze the eastern Hearth" },
-    { "type": "eliminateAll", "fromStage": true, "after": 4, "text": "Break both tribes" }
+    { "type": "hold", "n": 3, "kind": "ley_stone", "seconds": 120, "after": 3, "text": "Hold the old ley and both valley leys at once for two minutes while two eastern bands come to pray them away" },
+    { "type": "eliminateAll", "fromStage": true, "after": 4, "text": "Raze the eastern Hearth and break both tribes" }
   ],
   "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 3300 }],
   "triggers": [
@@ -125,11 +125,13 @@
     {
       "when": { "type": "objective", "index": 3 },
       "do": [
+        { "type": "spawn", "unit": "warden", "n": 9, "tribe": 2, "at": [164, 170] },
         { "type": "raid", "tribe": 2, "to": [128, 128], "n": 8, "pray": "old_ley" },
-        { "type": "message", "text": "The old ley is yours, and the east comes to pray it back. Raze the eastern Hearth." }
+        { "type": "raid", "tribe": 2, "to": [128, 128], "n": 9, "pray": "south_ley" },
+        { "type": "message", "text": "The old ley is yours. The east sends one band to pray it back and another at your southern ley. Hold all three leys." }
       ]
     },
-    { "when": { "type": "objective", "index": 4 }, "do": [{ "type": "message", "text": "The eastern fire is out. Break what is left of both tribes." }] },
+    { "when": { "type": "objective", "index": 4 }, "do": [{ "type": "message", "text": "Three leys sing for you. The east pulls its guards back to the Hearth: raze it and break what is left of both tribes." }] },
     { "when": { "type": "time", "seconds": 3000 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
   ]
 }

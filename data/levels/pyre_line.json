@@ -1,168 +1,973 @@
 {
-  "$comment": "Campaign level 19 (stretch 3): a ridge of beacon fires. The near rival keeps signal pyres along a long ridge; once they are dark the valley shrine wakes the far beacon, whose prayer raises a land bridge (shape reward) to the far rival's plateau and wakes a ward stone where it lands. Holding that ward under the plateau towers lifts a second bridge to the beacon isle, where a third rival has grown out of reach. Raise Land is not taught here: the bridges are the only way across.",
+  "$comment": "Campaign level 19 (stretch 3): a ridge of beacon fires. The near rival keeps signal pyres along a long ridge; once they are dark, posted plateau wardens hold the valley shrine and then the far beacon, whose prayer raises a land bridge to the brutal plateau, wakes two ward stones (one under the plateau towers, one behind its Hearth) and lowers the beacon isle's bridge. The isle tribe raids to pray the wards away while the player holds both, then all three tribes must fall, and a last causeway opens Wolf Rock, where a wolf pack guards the oldest beacon. Raise Land is not taught here: the bridges are the only way across.",
   "id": "pyre_line",
   "name": "The Pyre Line",
   "order": 19,
-  "description": "A long ridge carries a line of beacon fires, and a rival tends each one. Put out the pyres, pray the far beacon awake, take the ward stone under the plateau towers, and cross to the beacon isle to break all three tribes.",
+  "description": "A long ridge carries a line of beacon fires, and a rival tends each one. Put out the pyres, drive the plateau wardens off two shrines, hold two ward stones against the isle tribe, break all three tribes, then light the old beacon on Wolf Rock.",
   "seed": 1919,
   "map": {
     "generator": "flat",
     "size": 192,
     "landAboveSea": -30,
     "paint": [
-      { "shape": "rect", "at": [72, 96], "size": [100, 26], "aboveSea": 34, "falloff": 6 },
-      { "shape": "disc", "at": [30, 96], "r": 22, "aboveSea": 36, "falloff": 6 },
-      { "shape": "disc", "at": [58, 122], "r": 12, "aboveSea": 12, "falloff": 4 },
-      { "shape": "disc", "at": [112, 96], "r": 9, "aboveSea": 46, "falloff": 4 },
-      { "shape": "disc", "at": [160, 96], "r": 20, "aboveSea": 44, "falloff": 6 },
-      { "shape": "disc", "at": [160, 34], "r": 15, "aboveSea": 38, "falloff": 5 }
+      {
+        "shape": "rect",
+        "at": [
+          72,
+          96
+        ],
+        "size": [
+          100,
+          26
+        ],
+        "aboveSea": 34,
+        "falloff": 6
+      },
+      {
+        "shape": "disc",
+        "at": [
+          30,
+          96
+        ],
+        "r": 22,
+        "aboveSea": 36,
+        "falloff": 6
+      },
+      {
+        "shape": "disc",
+        "at": [
+          58,
+          122
+        ],
+        "r": 12,
+        "aboveSea": 12,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          112,
+          96
+        ],
+        "r": 9,
+        "aboveSea": 46,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          160,
+          96
+        ],
+        "r": 20,
+        "aboveSea": 44,
+        "falloff": 6
+      },
+      {
+        "shape": "disc",
+        "at": [
+          160,
+          34
+        ],
+        "r": 15,
+        "aboveSea": 38,
+        "falloff": 5
+      },
+      {
+        "shape": "disc",
+        "at": [
+          112,
+          142
+        ],
+        "r": 8,
+        "aboveSea": 30,
+        "falloff": 3
+      }
     ]
   },
   "tribes": [
     {},
-    { "ai": "turtle", "difficulty": "hard", "maxTroops": 16, "worshipAfterSeconds": 2400 },
-    { "ai": "turtle", "difficulty": "brutal", "maxTroops": 24, "worshipAfterSeconds": 2400 },
-    { "ai": "aggressive", "difficulty": "hard", "maxTroops": 12, "worshipAfterSeconds": 2400 }
+    {
+      "ai": "turtle",
+      "difficulty": "hard",
+      "maxTroops": 16,
+      "worshipAfterSeconds": 2400
+    },
+    {
+      "ai": "turtle",
+      "difficulty": "brutal",
+      "maxTroops": 24,
+      "worshipAfterSeconds": 2400
+    },
+    {
+      "ai": "aggressive",
+      "difficulty": "hard",
+      "maxTroops": 12,
+      "worshipAfterSeconds": 2400
+    }
   ],
-  "spells": ["bolt", "hornets"],
-  "buildings": ["dwelling", "watchtower", "warden_lodge"],
+  "spells": [
+    "bolt",
+    "hornets"
+  ],
+  "buildings": [
+    "dwelling",
+    "watchtower",
+    "warden_lodge"
+  ],
   "setup": [
-    { "spawn": "hearth", "tribe": 0, "at": [28, 96] },
-    { "spawn": "shaper", "tribe": 0, "at": [34, 94] },
-    { "spawn": "settler", "tribe": 0, "near": [28, 104], "count": 14 },
-    { "spawn": "warden", "tribe": 0, "near": [38, 98], "count": 4 },
-    { "spawn": "tree", "near": [20, 84], "count": 14, "spacing": 1.2 },
-    { "spawn": "tree", "near": [22, 110], "count": 12, "spacing": 1.2 },
-    { "spawn": "rock", "near": [40, 106], "count": 3, "spacing": 2 },
-    { "spawn": "ley_stone", "at": [34, 82], "site": { "tag": "home_ley", "rewards": [{ "type": "message", "text": "The home ley pays mana while you hold it." }] } },
-    { "spawn": "hearth", "tribe": 1, "at": [86, 96] },
-    { "spawn": "shaper", "tribe": 1, "at": [90, 94] },
-    { "spawn": "settler", "tribe": 1, "near": [86, 104], "count": 12 },
-    { "spawn": "warden", "tribe": 1, "near": [80, 96], "count": 4 },
-    { "spawn": "signal_pyre", "tribe": 1, "at": [46, 90] },
-    { "spawn": "signal_pyre", "tribe": 1, "at": [58, 102] },
-    { "spawn": "signal_pyre", "tribe": 1, "at": [72, 90] },
-    { "spawn": "signal_pyre", "tribe": 1, "at": [98, 102] },
-    { "spawn": "signal_pyre", "tribe": 1, "at": [106, 90] },
-    { "spawn": "watchtower", "tribe": 1, "at": [66, 98] },
-    { "spawn": "watchtower", "tribe": 1, "at": [96, 92] },
-    { "spawn": "tree", "near": [80, 108], "count": 12, "spacing": 1.2 },
-    { "spawn": "tree", "near": [92, 84], "count": 10, "spacing": 1.2 },
-    { "spawn": "rock", "near": [76, 104], "count": 3, "spacing": 2 },
-    { "spawn": "hearth", "tribe": 2, "at": [162, 96] },
-    { "spawn": "shaper", "tribe": 2, "at": [158, 98] },
-    { "spawn": "settler", "tribe": 2, "near": [162, 104], "count": 12 },
-    { "spawn": "warden", "tribe": 2, "near": [154, 96], "count": 5 },
-    { "spawn": "watchtower", "tribe": 2, "at": [148, 86] },
-    { "spawn": "watchtower", "tribe": 2, "at": [148, 106] },
-    { "spawn": "watchtower", "tribe": 2, "at": [152, 96] },
-    { "spawn": "watchtower", "tribe": 2, "at": [158, 82] },
-    { "spawn": "watchtower", "tribe": 2, "at": [158, 110] },
-    { "spawn": "watchtower", "tribe": 2, "at": [140, 96] },
-    { "spawn": "signal_pyre", "tribe": 2, "at": [146, 78] },
-    { "spawn": "signal_pyre", "tribe": 2, "at": [146, 114] },
-    { "spawn": "tree", "near": [168, 84], "count": 12, "spacing": 1.2 },
-    { "spawn": "tree", "near": [170, 108], "count": 10, "spacing": 1.2 },
-    { "spawn": "rock", "near": [156, 106], "count": 3, "spacing": 2 },
-    { "spawn": "hearth", "tribe": 3, "at": [160, 32] },
-    { "spawn": "shaper", "tribe": 3, "at": [156, 36] },
-    { "spawn": "settler", "tribe": 3, "near": [164, 36], "count": 10 },
-    { "spawn": "warden", "tribe": 3, "near": [160, 42], "count": 4 },
-    { "spawn": "watchtower", "tribe": 3, "at": [160, 44] },
-    { "spawn": "tree", "near": [152, 26], "count": 8, "spacing": 1.2 },
-    { "spawn": "rock", "near": [168, 28], "count": 3, "spacing": 2 },
-    { "spawn": "tree", "near": [56, 122], "count": 6, "spacing": 1.2 },
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        28,
+        96
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        34,
+        94
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        28,
+        104
+      ],
+      "count": 14
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        38,
+        98
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        20,
+        84
+      ],
+      "count": 14,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        22,
+        110
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        40,
+        106
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "ley_stone",
+      "at": [
+        34,
+        82
+      ],
+      "site": {
+        "tag": "home_ley",
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The home ley pays mana while you hold it."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        86,
+        96
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        90,
+        94
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        86,
+        104
+      ],
+      "count": 12
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        80,
+        96
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "signal_pyre",
+      "tribe": 1,
+      "at": [
+        46,
+        90
+      ]
+    },
+    {
+      "spawn": "signal_pyre",
+      "tribe": 1,
+      "at": [
+        58,
+        102
+      ]
+    },
+    {
+      "spawn": "signal_pyre",
+      "tribe": 1,
+      "at": [
+        72,
+        90
+      ]
+    },
+    {
+      "spawn": "signal_pyre",
+      "tribe": 1,
+      "at": [
+        98,
+        102
+      ]
+    },
+    {
+      "spawn": "signal_pyre",
+      "tribe": 1,
+      "at": [
+        106,
+        90
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        66,
+        98
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        96,
+        92
+      ]
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        80,
+        108
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        92,
+        84
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        76,
+        104
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 2,
+      "at": [
+        162,
+        96
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 2,
+      "at": [
+        158,
+        98
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 2,
+      "near": [
+        162,
+        104
+      ],
+      "count": 12
+    },
+    {
+      "spawn": "warden",
+      "tribe": 2,
+      "near": [
+        154,
+        96
+      ],
+      "count": 5
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        148,
+        86
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        148,
+        106
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        152,
+        96
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        158,
+        82
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        158,
+        110
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        140,
+        96
+      ]
+    },
+    {
+      "spawn": "signal_pyre",
+      "tribe": 2,
+      "at": [
+        146,
+        78
+      ]
+    },
+    {
+      "spawn": "signal_pyre",
+      "tribe": 2,
+      "at": [
+        146,
+        114
+      ]
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        168,
+        84
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        170,
+        108
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        156,
+        106
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 3,
+      "at": [
+        160,
+        32
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 3,
+      "at": [
+        156,
+        36
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 3,
+      "near": [
+        164,
+        36
+      ],
+      "count": 10
+    },
+    {
+      "spawn": "warden",
+      "tribe": 3,
+      "near": [
+        160,
+        42
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 3,
+      "at": [
+        160,
+        44
+      ]
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        152,
+        26
+      ],
+      "count": 8,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        168,
+        28
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        56,
+        122
+      ],
+      "count": 6,
+      "spacing": 1.2
+    },
     {
       "spawn": "shrine",
-      "at": [58, 120],
+      "at": [
+        58,
+        120
+      ],
       "site": {
         "tag": "valley_shrine",
         "dormant": true,
         "worshippers": 4,
         "prayerSeconds": 60,
         "rewards": [
-          { "type": "awaken", "site": "far_beacon" },
-          { "type": "reveal", "at": [116, 98], "r": 14 },
-          { "type": "charges", "spell": "lightning", "n": 1 },
-          { "type": "message", "text": "The valley shrine answers: the far beacon at the end of the ridge is waking." }
+          {
+            "type": "awaken",
+            "site": "far_beacon"
+          },
+          {
+            "type": "reveal",
+            "at": [
+              116,
+              98
+            ],
+            "r": 14
+          },
+          {
+            "type": "charges",
+            "spell": "lightning",
+            "n": 1
+          },
+          {
+            "type": "message",
+            "text": "The valley shrine answers: the far beacon at the end of the ridge is waking."
+          }
         ]
       }
     },
     {
       "spawn": "shrine",
-      "at": [116, 98],
+      "at": [
+        116,
+        98
+      ],
       "site": {
         "tag": "far_beacon",
         "dormant": true,
         "worshippers": 5,
         "prayerSeconds": 90,
         "rewards": [
-          { "type": "awaken", "site": "bridgehead_ward" },
-          { "type": "shape", "shape": "line", "at": [112, 96], "to": [148, 96], "width": 4, "aboveSea": 12, "falloff": 2, "seconds": 20 },
-          { "type": "reveal", "at": [150, 96], "r": 16 },
-          { "type": "charges", "spell": "lightning", "n": 2 },
-          { "type": "message", "text": "The far beacon lights and a land bridge rises across the strait to the plateau." }
+          {
+            "type": "awaken",
+            "site": "bridgehead_ward"
+          },
+          {
+            "type": "awaken",
+            "site": "plateau_ward"
+          },
+          {
+            "type": "shape",
+            "shape": "line",
+            "at": [
+              112,
+              96
+            ],
+            "to": [
+              148,
+              96
+            ],
+            "width": 4,
+            "aboveSea": 12,
+            "falloff": 2,
+            "seconds": 20
+          },
+          {
+            "type": "reveal",
+            "at": [
+              150,
+              96
+            ],
+            "r": 16
+          },
+          {
+            "type": "charges",
+            "spell": "lightning",
+            "n": 2
+          },
+          {
+            "type": "message",
+            "text": "The far beacon lights and a land bridge rises across the strait to the plateau."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        110,
+        144
+      ],
+      "count": 3
+    },
+    {
+      "spawn": "shrine",
+      "at": [
+        114,
+        140
+      ],
+      "site": {
+        "tag": "wolf_beacon",
+        "dormant": true,
+        "worshippers": 6,
+        "prayerSeconds": 60,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The old beacon on Wolf Rock burns again, and the whole Pyre Line is yours."
+          }
         ]
       }
     },
     {
       "spawn": "ward_stone",
-      "at": [144, 96],
+      "at": [
+        144,
+        96
+      ],
       "site": {
         "tag": "bridgehead_ward",
         "dormant": true,
         "worshippers": 4,
         "prayerSeconds": 30,
-        "rewards": [{ "type": "message", "text": "The bridgehead ward is yours. Keep it, and it will lift a bridge to the beacon isle." }]
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The bridgehead ward is yours. Take the ward behind the plateau Hearth as well and keep both."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "ward_stone",
+      "at": [
+        174,
+        96
+      ],
+      "site": {
+        "tag": "plateau_ward",
+        "dormant": true,
+        "worshippers": 4,
+        "prayerSeconds": 30,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The plateau ward is yours. Keep both wards against the isle tribe."
+          }
+        ]
       }
     }
   ],
   "objectives": [
-    { "type": "destroy", "tribe": 1, "building": "signal_pyre", "text": "Put out the signal pyres of the ridge tribe" },
-    { "type": "worship", "site": "valley_shrine", "after": 0, "text": "Send four followers to pray at the valley shrine" },
-    { "type": "worship", "site": "far_beacon", "after": 1, "text": "Pray at the far beacon to raise the land bridge" },
+    {
+      "type": "destroy",
+      "tribe": 1,
+      "building": "signal_pyre",
+      "text": "Put out the signal pyres of the ridge tribe"
+    },
+    {
+      "type": "worship",
+      "site": "valley_shrine",
+      "after": 0,
+      "text": "Clear the plateau wardens from the valley shrine and pray there with four followers"
+    },
+    {
+      "type": "worship",
+      "site": "far_beacon",
+      "after": 1,
+      "text": "Clear the plateau wardens from the far beacon and pray there to raise the land bridge"
+    },
     {
       "type": "hold",
-      "n": 1,
+      "n": 2,
       "kind": "ward_stone",
       "seconds": 90,
       "after": 2,
-      "text": "Cross the bridge, take the bridgehead ward stone from under the plateau towers and keep it for ninety seconds"
+      "text": "Cross the bridge, take the ward under the plateau towers and the one behind the plateau Hearth, and keep both for ninety seconds"
     },
-    { "type": "eliminateAll", "after": 3, "text": "Cross the second bridge to the beacon isle and break all three tribes" }
+    {
+      "type": "eliminateAll",
+      "after": 3,
+      "text": "Cross the second bridge to the beacon isle and break all three tribes"
+    },
+    {
+      "type": "worship",
+      "site": "wolf_beacon",
+      "after": 4,
+      "text": "Cross to Wolf Rock, break the wolf pack and light the old beacon there with six followers"
+    }
   ],
   "lose": [
-    { "type": "hearthLost" },
-    { "type": "timeLimit", "seconds": 2600 }
+    {
+      "type": "hearthLost"
+    },
+    {
+      "type": "timeLimit",
+      "seconds": 2800
+    }
   ],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "The ridge tribe keeps five signal pyres. Break their line before anything else." }] },
     {
-      "when": { "type": "objective", "index": 0 },
+      "when": {
+        "type": "time",
+        "seconds": 1
+      },
       "do": [
-        { "type": "awaken", "site": "valley_shrine" },
-        { "type": "reveal", "at": [58, 120], "r": 12 },
-        { "type": "message", "text": "The beacons are dark. A shrine wakes in the southern valley, and their war band comes for you." },
-        { "type": "raid", "tribe": 1, "to": [28, 96], "n": 6 }
+        {
+          "type": "message",
+          "text": "The ridge tribe keeps five signal pyres. Break their line before anything else."
+        }
       ]
     },
     {
-      "when": { "type": "worship", "site": "far_beacon" },
+      "when": {
+        "type": "objective",
+        "index": 0
+      },
       "do": [
-        { "type": "spawn", "unit": "warden", "n": 4, "tribe": 2, "at": [146, 96], "stance": "defensive" },
-        { "type": "message", "text": "The plateau tribe posts guards where the bridge lands and marches on the ward stone there." },
-        { "type": "raid", "tribe": 2, "to": [144, 96], "n": 12 }
+        {
+          "type": "awaken",
+          "site": "valley_shrine"
+        },
+        {
+          "type": "reveal",
+          "at": [
+            58,
+            120
+          ],
+          "r": 12
+        },
+        {
+          "type": "message",
+          "text": "The beacons are dark. A shrine wakes in the southern valley, but plateau wardens have waded ashore to hold it."
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 6,
+          "tribe": 2,
+          "at": [
+            60,
+            118
+          ],
+          "stance": "defensive"
+        }
       ]
     },
-    { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "message", "text": "A ward stone rises where the bridge lands. Take it and keep it." }] },
     {
-      "when": { "type": "objective", "index": 3 },
+      "when": {
+        "type": "worship",
+        "site": "far_beacon"
+      },
       "do": [
-        { "type": "shape", "shape": "line", "at": [160, 78], "to": [160, 46], "width": 4, "aboveSea": 12, "falloff": 2, "seconds": 20 },
-        { "type": "reveal", "at": [160, 36], "r": 18 },
-        { "type": "message", "text": "The ward holds, and a second bridge rises north to the beacon isle. Break all three tribes." }
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 2,
+          "at": [
+            146,
+            96
+          ],
+          "stance": "defensive"
+        },
+        {
+          "type": "message",
+          "text": "The plateau tribe posts guards where the bridge lands and marches on the ward stone there."
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            144,
+            96
+          ],
+          "n": 12
+        }
       ]
     },
-    { "when": { "type": "time", "seconds": 2300 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+    {
+      "when": {
+        "type": "objective",
+        "index": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 6,
+          "tribe": 2,
+          "at": [
+            118,
+            96
+          ],
+          "stance": "defensive"
+        },
+        {
+          "type": "message",
+          "text": "Plateau wardens have waded over to guard the far beacon. Clear them before you pray there."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 2
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "line",
+          "at": [
+            160,
+            78
+          ],
+          "to": [
+            160,
+            46
+          ],
+          "width": 4,
+          "aboveSea": 12,
+          "falloff": 2,
+          "seconds": 20
+        },
+        {
+          "type": "reveal",
+          "at": [
+            160,
+            36
+          ],
+          "r": 18
+        },
+        {
+          "type": "message",
+          "text": "Two ward stones rise on the plateau and the beacon isle lowers a bridge. Take both wards and keep them while the isle tribe comes down to pray them away."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "worship",
+        "site": "bridgehead_ward"
+      },
+      "do": [
+        {
+          "type": "raid",
+          "tribe": 3,
+          "to": [
+            174,
+            96
+          ],
+          "n": 8,
+          "pray": "plateau_ward"
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "worship",
+        "site": "plateau_ward"
+      },
+      "do": [
+        {
+          "type": "raid",
+          "tribe": 3,
+          "to": [
+            144,
+            96
+          ],
+          "n": 8,
+          "pray": "bridgehead_ward"
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 900,
+        "every": 120
+      },
+      "do": [
+        {
+          "type": "raid",
+          "tribe": 3,
+          "to": [
+            174,
+            96
+          ],
+          "n": 6,
+          "pray": "plateau_ward"
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 3
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "The wards hold. Cross to the beacon isle and break all three tribes."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 4
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "line",
+          "at": [
+            112,
+            106
+          ],
+          "to": [
+            112,
+            136
+          ],
+          "width": 4,
+          "aboveSea": 12,
+          "falloff": 2,
+          "seconds": 20
+        },
+        {
+          "type": "awaken",
+          "site": "wolf_beacon"
+        },
+        {
+          "type": "reveal",
+          "at": [
+            112,
+            142
+          ],
+          "r": 12
+        },
+        {
+          "type": "message",
+          "text": "The three tribes are broken. A causeway rises south from the far beacon to Wolf Rock, where the oldest beacon of the line stands in a wolf den."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 2500
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Five minutes remain."
+        }
+      ]
+    }
   ]
 }

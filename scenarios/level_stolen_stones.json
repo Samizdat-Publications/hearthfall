@@ -1,6 +1,6 @@
 {
   "id": "level_stolen_stones",
-  "description": "Campaign level 23 is completable: the opponent bot for the player claims the four valley stones, holds them through the first eastern band's theft and retake, burns the western lodges, wins back the guarded old ley, razes the eastern Hearth and breaks both tribes (bot wins near tick 29500).",
+  "description": "Campaign level 23 is completable: the opponent bot for the player claims the four valley stones, holds them through the first eastern band's theft and retake, burns the western lodges, wins back the guarded old ley, holds all three leys while two eastern bands come to pray them away, then razes the eastern Hearth and breaks both tribes (bot wins near tick 30100).",
   "tags": [
     "levels"
   ],
@@ -14,7 +14,7 @@
       "offset": 1
     }
   ],
-  "runTicks": 36000,
+  "runTicks": 34000,
   "assert": [
     {
       "at": 4000,
@@ -29,11 +29,15 @@
       "expr": "level.objectivesDone == 3 && alive(2)"
     },
     {
-      "at": 27000,
-      "expr": "level.objectivesDone == 4 && site('old_ley').by == 0 && alive(2)"
+      "at": 26500,
+      "expr": "level.objectivesDone == 4 && site('old_ley').by == 0 && alive(2) && !level.won"
     },
     {
-      "at": 36000,
+      "at": 29000,
+      "expr": "level.objectivesDone == 5 && site('south_ley').by == 0 && alive(2) && !level.won"
+    },
+    {
+      "at": 34000,
       "expr": "level.won && !alive(1) && !alive(2) && alive(0) && level.objectivesDone == 6 && invariants() == 0"
     }
   ]

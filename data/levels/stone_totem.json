@@ -1,5 +1,5 @@
 {
-  "$comment": "Teaching level 5 (overhaul, paced): totems and terrain shaping. The totem on the northern islet (reached with Raise Land) restores the Warden Lodge and lifts a permanent causeway across the 36 cell strait to the rival island; raiders cross it too. Build a lodge, then hold the contested middle ley stone while the four causeway towers burn (parallel stages), then break a tribe whose Hearth keeps four posted guards. Bot wins about 11500.",
+  "$comment": "Teaching level 5 (overhaul, paced): totems and terrain shaping. The totem on the northern islet (reached with Raise Land) restores the Warden Lodge and lifts a permanent causeway across the 36 cell strait to the rival island; raiders cross it too. Build a lodge, then hold the contested middle ley stone while the four causeway towers burn (parallel stages), then break a tribe whose Hearth keeps four posted guards. Bot wins about 12600; the clock is 26000 ticks.",
   "id": "stone_totem",
   "name": "The Stone Totem",
   "order": 5,
@@ -62,17 +62,17 @@
     { "type": "worship", "site": "north_totem", "text": "Raise Land to the northern islet and have your Shaper pray at the totem" },
     { "type": "build", "building": "warden_lodge", "n": 1, "after": 0, "text": "Raise a Warden Lodge and train wardens" },
     { "type": "hold", "n": 1, "kind": "ley_stone", "seconds": 180, "after": 1, "text": "Cross the causeway, pray at the ley stone on the middle islet and hold it for three minutes" },
-    { "type": "destroy", "tribe": 1, "building": "watchtower", "after": 1, "text": "Burn all four Watchtowers at the far end of the causeway" },
+    { "type": "destroy", "tribe": 1, "building": "watchtower", "after": 1, "text": "Burn every rival Watchtower: the four at the far end of the causeway and any they raise again" },
     { "type": "eliminateAll", "after": 2, "text": "Once the ley stone is yours, break the rival tribe" }
   ],
-  "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 1200 }],
+  "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 1300 }],
   "triggers": [
     { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "charges", "spell": "raise_land", "n": 2 }, { "type": "message", "text": "Only your Shaper can pray at a totem. Walk her to the northern shore and Raise Land toward the islet." }] },
     { "when": { "type": "area", "at": [34, 30], "r": 6, "unit": "shaper" }, "do": [{ "type": "message", "text": "Order the Shaper to worship the totem." }] },
     { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "message", "text": "Build a Warden Lodge and train wardens before the raiders cross the causeway." }] },
     { "when": { "type": "time", "seconds": 300 }, "do": [{ "type": "raid", "tribe": 1, "to": [22, 64] }, { "type": "message", "text": "Raiders are crossing the causeway!" }] },
     { "when": { "type": "time", "seconds": 540, "every": 240 }, "do": [{ "type": "raid", "tribe": 1, "to": [22, 64], "n": 12 }, { "type": "message", "text": "Another band marches over the causeway." }] },
-    { "when": { "type": "time", "seconds": 900 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+    { "when": { "type": "time", "seconds": 1000 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
   ],
   "unlocks": { "buildings": ["warden_lodge"] }
 }

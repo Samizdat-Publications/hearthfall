@@ -1,9 +1,9 @@
 {
-  "$comment": "Campaign level 18 (stretch 3): highland valleys full of wolf dens that hunt only the player (beastPrey player) while two rivals grow beyond a gorge. Clear the north valley; raze the sneaky tribe signal pyre that watches the northern pass; clear the south valley; pray at the gorge shrine to raise a land bridge; clear the two packs on the eastern slopes; pray away the two ley stones the turtle tribe holds behind posted guards (dormant until the slopes are clear) and keep two ley stones for a minute while it still stands; then break both tribes.",
+  "$comment": "Campaign level 18 (stretch 3): highland valleys full of wolf dens that hunt only the player (beastPrey player) while two rivals grow beyond a gorge. Clear the north valley; raze the sneaky tribe signal pyre that watches the northern pass; clear the south valley; pray at the gorge shrine to raise a land bridge east and an instant causeway to the wolf isle, a small island in the gorge that nothing can reach before the shrine (so its two packs cannot be cleared early); clear both isle packs (their dormant seer stone draws the bot there); pray away the turtle tribe ley stones (dormant until the isle is clear, six more posted guards arrive then) and keep two ley stones for two minutes; then break both tribes. The isle causeway is instant on purpose: a rising causeway to an awake site stalls the sim (see engine notes).",
   "id": "wolf_country",
   "name": "Wolf Country",
   "order": 18,
-  "description": "Highland valleys crawl with wolves that hunt only you, while two tribes beyond the gorge grow unbothered. Clear the valleys, raze the pyre that watches the pass, raise a land bridge at the gorge shrine, clear the eastern slopes, take the turtle tribe's ley stones, and break both tribes.",
+  "description": "Highland valleys crawl with wolves that hunt only you, while two tribes beyond the gorge grow unbothered. Clear the valleys, raze the pyre that watches the pass, raise the gorge bridges, clear the wolf isle, take the turtle tribe ley stones, and break both tribes.",
   "seed": 1818,
   "beastPrey": "player",
   "map": {
@@ -103,6 +103,16 @@
         "r": 6,
         "aboveSea": 60,
         "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          96,
+          66
+        ],
+        "r": 8,
+        "aboveSea": 40,
+        "falloff": 3
       }
     ]
   },
@@ -407,19 +417,19 @@
       "spawn": "wolf",
       "tribe": -1,
       "at": [
-        118,
-        72
+        93,
+        63
       ],
-      "count": 4
+      "count": 6
     },
     {
       "spawn": "wolf",
       "tribe": -1,
       "at": [
-        118,
-        120
+        99,
+        69
       ],
-      "count": 4
+      "count": 6
     },
     {
       "spawn": "tree",
@@ -449,7 +459,7 @@
         "tag": "gorge_shrine",
         "dormant": true,
         "worshippers": 4,
-        "prayerSeconds": 30,
+        "prayerSeconds": 45,
         "rewards": [
           {
             "type": "shape",
@@ -468,6 +478,26 @@
             "seconds": 15
           },
           {
+            "type": "shape",
+            "shape": "line",
+            "at": [
+              72,
+              66
+            ],
+            "to": [
+              90,
+              66
+            ],
+            "width": 4,
+            "aboveSea": 12,
+            "falloff": 2,
+            "seconds": 0
+          },
+          {
+            "type": "awaken",
+            "site": "isle_seer"
+          },
+          {
             "type": "reveal",
             "at": [
               132,
@@ -482,7 +512,32 @@
           },
           {
             "type": "message",
-            "text": "The gorge shrine raises a land bridge to the eastern highlands, and six wanderers join you."
+            "text": "The gorge shrine raises a land bridge to the east and a causeway north to the wolf isle, and six wanderers join you."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "seer_stone",
+      "at": [
+        96,
+        66
+      ],
+      "site": {
+        "tag": "isle_seer",
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "reveal",
+            "at": [
+              140,
+              96
+            ],
+            "r": 30
+          },
+          {
+            "type": "message",
+            "text": "The isle seer is yours and shows the eastern highlands."
           }
         ]
       }
@@ -625,24 +680,24 @@
       "type": "worship",
       "site": "gorge_shrine",
       "after": 2,
-      "text": "Send four followers to pray at the gorge shrine and raise a land bridge"
+      "text": "Send four followers to pray at the gorge shrine to raise a land bridge east and a causeway to the wolf isle"
     },
     {
       "type": "clearDens",
       "at": [
-        118,
-        96
+        96,
+        66
       ],
-      "r": 30,
+      "r": 14,
       "after": 3,
-      "text": "Cross the bridge and clear the two wolf dens on the eastern slopes"
+      "text": "Cross the causeway to the wolf isle in the gorge and clear both packs denning by its seer stone"
     },
     {
       "type": "hold",
       "n": 2,
-      "seconds": 60,
+      "seconds": 120,
       "after": 4,
-      "text": "Pray away at least one of the turtle tribe's ley stones past its guards, then keep two ley stones at once for a minute",
+      "text": "Pray away at least one of the turtle tribe ley stones past its guards, then keep two ley stones at once for two minutes",
       "kind": "ley_stone"
     },
     {
@@ -739,14 +794,14 @@
         {
           "type": "reveal",
           "at": [
-            118,
-            96
+            96,
+            66
           ],
-          "r": 30
+          "r": 16
         },
         {
           "type": "message",
-          "text": "The bridge stands. Two packs den on the eastern slopes, hunting only you: clear them."
+          "text": "The bridge stands, and a causeway reaches the wolf isle in the gorge. Two packs den by its seer stone, hunting only you: clear them."
         }
       ]
     },
@@ -763,6 +818,17 @@
         {
           "type": "awaken",
           "site": "east_ley_b"
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 6,
+          "tribe": 2,
+          "at": [
+            138,
+            108
+          ],
+          "stance": "defensive"
         },
         {
           "type": "reveal",
@@ -783,7 +849,7 @@
         },
         {
           "type": "message",
-          "text": "The slopes are quiet. Two ley stones rise in the turtle tribe's fields behind its guards. Pray them away and keep two ley stones for a minute."
+          "text": "The isle is quiet. Two ley stones rise in the turtle tribe fields, and it posts more guards. Pray one away and keep two ley stones for two minutes."
         }
       ]
     },

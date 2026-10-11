@@ -1,5 +1,5 @@
 {
-  "$comment": "Campaign level 14 (hard pass): a prayer chain. The shore totem raises a ridge to the middle island and wakes its shrine; a wolf den guards the shrine and another haunts home; the shrine wakes the Reliquary, which rival guardians rise to defend, and the Reliquary wakes an eastern ley stone on the middle island. At minute 6 the rival raises its bridges, raids, and its priests start to seek the stones, the shrine and the Reliquary (losing either site to them loses the level). Staged: wake the shore stone, clear two dens, pray at the shrine, take the Reliquary, take and hold three stones for three minutes while the priests try to pray them away, then break the eastern tribe, which sends a war band and digs in a ring of guards the moment the hold is done.",
+  "$comment": "Campaign level 14 (hard pass): a prayer chain. The shore totem raises a ridge to the middle island and wakes its shrine; a wolf den guards the shrine and another haunts home; the shrine wakes the Reliquary, which rival guardians rise to defend, and the Reliquary wakes an eastern ley stone on the middle island. At minute 6 the rival raises its bridges, raids, and its priests start to seek the stones, the shrine and the Reliquary (losing either site to them loses the level). Staged: wake the shore stone, clear two dens, pray at the shrine, take the Reliquary, take and hold three stones for two minutes and 45 seconds while the priests try to pray them away, then break the eastern tribe, which sends a war band and digs in a ring of guards the moment the hold is done.",
   "id": "waking_stones",
   "name": "The Waking Stones",
   "order": 14,
@@ -416,9 +416,9 @@
     {
       "type": "hold",
       "n": 3,
-      "seconds": 180,
+      "seconds": 165,
       "after": 3,
-      "text": "Take the eastern ley on the middle island, then hold it and both home stones at once for three minutes while their priests try to pray them away"
+      "text": "Take the eastern ley on the middle island, then hold it and both home stones at once for two minutes and 45 seconds while their priests try to pray them away"
     },
     {
       "type": "eliminateAll",
@@ -504,7 +504,7 @@
       "do": [
         {
           "type": "message",
-          "text": "Take the eastern ley on the middle island and hold all three stones for three minutes."
+          "text": "Take the eastern ley on the middle island and hold all three stones for two minutes and 45 seconds."
         }
       ]
     },

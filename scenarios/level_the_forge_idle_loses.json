@@ -1,15 +1,10 @@
 {
   "id": "level_the_forge_idle_loses",
-  "description": "Campaign level 12 has a real loss: the level timer (35 minutes) starts after the Forge and an idle player runs out of time.",
-  "tags": [
-    "levels"
-  ],
+  "description": "Campaign level 12 has a real loss: after the Forge the digger's war bands cross the plain every four minutes and raze an idle player's Hearth.",
+  "tags": ["levels"],
   "level": "the_forge",
-  "runTicks": 44500,
+  "runTicks": 16000,
   "assert": [
-    {
-      "at": 44500,
-      "expr": "level.lost && forge.endedAt == 2400 && alive(1) && invariants() == 0"
-    }
+    { "at": 16000, "expr": "level.lost && forge.endedAt == 2400 && alive(1) && !alive(0) && invariants() == 0" }
   ]
 }

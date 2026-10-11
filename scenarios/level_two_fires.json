@@ -1,6 +1,6 @@
 {
   "id": "level_two_fires",
-  "description": "Campaign level 7 is completable: an aggressive hard bot prays at the seer stone, burns the northern Hearth, holds two ley stones against the southern tribe for 90 s while it breaks both rivals under fog (bot wins about 17500).",
+  "description": "Campaign level 7 is completable: an aggressive hard bot prays at the seer stone, burns the northern Hearth, holds two ley stones for 50 s while the southern tribe still lives and contests them, then uses the eight wardens the stones raise to break the south under fog (bot wins about 14650).",
   "tags": [
     "fast",
     "levels"
@@ -15,18 +15,22 @@
       "offset": 2
     }
   ],
-  "runTicks": 20000,
+  "runTicks": 17000,
   "assert": [
     {
       "at": 6000,
       "expr": "level.objectivesDone == 1 && !level.won && alive(1)"
     },
     {
-      "at": 10000,
-      "expr": "level.objectivesDone == 2 && !level.won && alive(2)"
+      "at": 12000,
+      "expr": "level.objectivesDone == 2 && !level.won && !alive(1) && alive(2)"
     },
     {
-      "at": 20000,
+      "at": 14000,
+      "expr": "level.objectivesDone == 3 && !level.won && alive(2)"
+    },
+    {
+      "at": 17000,
       "expr": "level.won && !alive(1) && !alive(2) && alive(0) && level.objectivesDone == 4 && invariants() == 0"
     }
   ]

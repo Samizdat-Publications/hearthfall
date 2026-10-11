@@ -1,9 +1,9 @@
 {
-  "$comment": "Campaign level 21 (stretch 3): a bay ringed by islands. A shore totem raises a causeway to Reed Isle, its shrine raises two more to the wolf islands (clear those two dens), the Shaper crosses tidal flats to Tidecaller's Rock, which wakes a tide shrine; at 130 followers the rock lifts causeways to the two rival islands (turtle north, sneaky south, both with posted wardens) and whoever still stands raids it. The south's watchtowers guard its causeway end and must burn before the war stage opens. Breaking both raises a dry road past the flats and a causeway to the bay mouth, where a wolf pack guards the Tidecaller's altar. Tides drown the flats for 40 of every 120 seconds.",
+  "$comment": "Campaign level 21 (stretch 3): a bay ringed by islands. A shore totem raises a causeway to Reed Isle, its shrine raises two more to the wolf islands (clear those two dens), the Shaper crosses tidal flats to Tidecaller's Rock, which wakes a tide shrine; at 130 followers the rock lifts causeways to the two rival islands (turtle north, sneaky south, both with posted wardens) and whoever still stands raids it. The south's watchtowers and posted wardens guard its causeway end. Breaking both raises a dry road past the flats and a causeway to the bay mouth, where a wolf pack guards the Tidecaller's altar. Tides drown the flats for 40 of every 120 seconds.",
   "id": "tidecallers_bay",
   "name": "Tidecaller's Bay",
   "order": 21,
-  "description": "A great bay ringed by islands, and the water keeps its own hours. Wake the shore totem, pray at Reed Isle, clear the wolf islands, cross the flats to Tidecaller's Rock, grow until it raises causeways, burn the southern towers, break both island tribes, then wake the altar.",
+  "description": "A great bay ringed by islands, and the water keeps its own hours. Wake the shore totem, pray at Reed Isle, clear the wolf islands, cross the flats to Tidecaller's Rock, grow until it raises causeways, break both island tribes behind their towers and wardens, then wake the altar.",
   "seed": 2121,
   "beastPrey": "player",
   "map": {
@@ -658,21 +658,14 @@
       "text": "Grow the tribe to 130 followers; the rock answers only a people that large"
     },
     {
-      "type": "destroy",
-      "tribe": 2,
-      "building": "watchtower",
-      "after": 5,
-      "text": "Cross the southern causeway and burn the southern tribe's watchtowers"
-    },
-    {
       "type": "eliminateAll",
-      "after": 6,
+      "after": 5,
       "text": "Break both island tribes, across the causeways or by boat"
     },
     {
       "type": "worship",
       "site": "tidecaller_altar",
-      "after": 7,
+      "after": 6,
       "text": "Cross the new eastern causeway, break the wolf pack on the bay mouth and pray at the Tidecaller's altar with eight followers"
     }
   ],
@@ -890,7 +883,7 @@
         },
         {
           "type": "message",
-          "text": "The rock lifts causeways to both islands, and any island tribe still standing marches on it. Cross the southern causeway and burn its towers."
+          "text": "The rock lifts causeways to both islands, and any island tribe still standing marches on it. Break both island tribes."
         }
       ]
     },
@@ -898,32 +891,6 @@
       "when": {
         "type": "objective",
         "index": 6
-      },
-      "do": [
-        {
-          "type": "spawn",
-          "unit": "warden",
-          "n": 10,
-          "at": [
-            142,
-            124
-          ]
-        },
-        {
-          "type": "charges",
-          "spell": "lightning",
-          "n": 3
-        },
-        {
-          "type": "message",
-          "text": "The southern towers burn, and the bay folk rise with you: wardens wade ashore at the rock. Break both island tribes."
-        }
-      ]
-    },
-    {
-      "when": {
-        "type": "objective",
-        "index": 7
       },
       "do": [
         {

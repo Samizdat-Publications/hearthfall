@@ -1,5 +1,5 @@
 {
-  "$comment": "Level 13 (hard pass): three 192-map islands, a Forge, boats and balloons, two normal rivals with towers and war bands that cross at minutes 8 and 15. Wolf dens haunt the home island and three home stones (ley, ward, seer) pay off for whoever holds them. Staged: clear both dens, raise a Spirit Well, then in parallel grow to 100 followers and raze the eastern Hearth, then break both tribes. The old 90 second home-stone hold was dropped: no rival can reach those stones, so it was only waiting.",
+  "$comment": "Level 13 (hard pass): three 192-map islands, a Forge, boats and balloons, two normal rivals with towers and war bands that cross at minutes 8 and 15, each capped at 50 people so the final sweep is a push, not a slog. Wolf dens haunt the home island and three home stones (ley, ward, seer) pay off for whoever holds them. Staged: clear both dens, raise a Spirit Well, then in parallel grow to 100 followers and raze the eastern Hearth, then break both tribes. The old 90 second home-stone hold was dropped: no rival can reach those stones, so it was only waiting.",
   "id": "sea_of_fires",
   "name": "Sea of Fires",
   "order": 13,
@@ -17,8 +17,8 @@
   },
   "tribes": [
     {},
-    { "ai": "aggressive", "difficulty": "normal", "maxTroops": 14 },
-    { "ai": "sneaky", "difficulty": "normal", "maxTroops": 14 }
+    { "ai": "aggressive", "difficulty": "normal", "maxTroops": 14, "maxPopulation": 50 },
+    { "ai": "sneaky", "difficulty": "normal", "maxTroops": 14, "maxPopulation": 50 }
   ],
   "forge": true,
   "spells": ["bolt", "raise_land", "lightning", "flatten", "whirlwind"],

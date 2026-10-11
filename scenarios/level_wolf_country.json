@@ -1,14 +1,14 @@
 {
   "id": "level_wolf_country",
-  "description": "Campaign level 18 is completable unscripted: the opponent bot for the player clears the northern valley dens, razes the signal pyre, clears the southern valley, prays at the gorge shrine for a land bridge, clears the eastern slopes, takes the turtle tribe's ley stones and holds two for a minute while both tribes still stand, then breaks both highland tribes.",
+  "description": "Campaign level 18 is completable unscripted: the opponent bot for the player clears the northern valley dens, razes the signal pyre, clears the southern valley, prays at the gorge shrine for a land bridge and a causeway to the wolf isle, clears both isle packs, takes the turtle tribe ley stones and keeps two for two minutes, then breaks both highland tribes. The isle dens cannot be reached before the shrine.",
   "tags": ["levels"],
   "level": "wolf_country",
   "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 1 }],
-  "runTicks": 30000,
+  "runTicks": 32000,
   "assert": [
     { "at": 6000, "expr": "level.objectivesDone >= 1 && alive(1) && alive(2)" },
-    { "at": 14000, "expr": "level.objectivesDone >= 3 && alive(1) && alive(2)" },
-    { "at": 22000, "expr": "level.objectivesDone >= 6 && alive(1) && alive(2) && !level.won" },
-    { "at": 30000, "expr": "level.won && !alive(1) && !alive(2) && alive(0) && level.objectivesDone == 7 && invariants() == 0" }
+    { "at": 12000, "expr": "level.objectivesDone >= 2 && level.objectivesDone <= 3 && alive(1) && alive(2) && !level.won" },
+    { "at": 16000, "expr": "level.objectivesDone >= 4 && alive(1) && alive(2) && !level.won" },
+    { "at": 32000, "expr": "level.won && !alive(1) && !alive(2) && alive(0) && level.objectivesDone == 7 && invariants() == 0" }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "id": "level_sky_road",
-  "description": "Campaign level 9 is completable: firecallers float to the stacks in two balloons and pray, a Skyloft goes up, a balloon shoots the guards off the risen eastern stack and its firecallers pray there, then the same off the far seer stack, both balloons burn the raiders' two Watchtowers from the air, and an opponent bot beats back the revenge raid and grows to 90 (bot wins about 16800).",
+  "description": "Campaign level 9 is completable: firecallers float to the stacks in two balloons and pray, a Skyloft goes up, a balloon shoots the guards off the risen eastern stack and its firecallers pray there, then the same off the far seer stack, both balloons burn the raiders' two Watchtowers from the air, then both balloons fly over the raiders' Hearth and are shot down, and the opponent bot beats back the revenge raid, builds new balloons at the Skyloft, ferries wardens across and burns the raiders' Hearth (bot wins about 16400).",
   "tags": ["levels"],
   "level": "sky_road",
   "bots": [
@@ -27,9 +27,11 @@
     { "tick": 7390, "tribe": 0, "type": "board", "args": {"units": [18,19], "vehicle": 24} },
     { "tick": 7390, "tribe": 0, "type": "board", "args": {"units": [16,17], "vehicle": 25} },
     { "tick": 7480, "tribe": 0, "type": "move", "args": {"units": [24], "to": [113,68], "attack": true} },
-    { "tick": 7480, "tribe": 0, "type": "move", "args": {"units": [25], "to": [115,94], "attack": true} }
+    { "tick": 7480, "tribe": 0, "type": "move", "args": {"units": [25], "to": [115,94], "attack": true} },
+    { "tick": 9000, "tribe": 0, "type": "move", "args": {"units": [24], "to": [128,78], "attack": true} },
+    { "tick": 9000, "tribe": 0, "type": "move", "args": {"units": [25], "to": [131,83], "attack": true} }
   ],
-  "runTicks": 20000,
+  "runTicks": 18000,
   "assert": [
     { "at": 1300, "expr": "level.objectivesDone == 1 && site('sky_reliquary').by == -1" },
     { "at": 3000, "expr": "level.objectivesDone == 2 && site('sky_reliquary').by == 0 && site('east_ward').by == -1" },
@@ -37,7 +39,8 @@
     { "at": 6500, "expr": "level.objectivesDone == 4 && site('east_ward').by == 0 && site('far_seer').by == -1" },
     { "at": 8000, "expr": "level.objectivesDone == 5 && site('far_seer').by == 0 && !level.won" },
     { "at": 9000, "expr": "level.objectivesDone == 6 && !level.won" },
-    { "at": 16000, "expr": "level.objectivesDone == 6 && !level.won" },
-    { "at": 20000, "expr": "level.won && level.objectivesDone == 7 && alive(0) && events.count('unloaded') >= 4 && invariants() == 0" }
+    { "at": 12000, "expr": "level.objectivesDone == 6 && !level.won && alive(1) && hp(tribe1.hearth) == 4000" },
+    { "at": 16000, "expr": "level.objectivesDone == 6 && !level.won && alive(1)" },
+    { "at": 18000, "expr": "level.won && level.objectivesDone == 7 && alive(0) && count(tribe1.hearth) == 0 && events.count('unloaded') >= 4 && events.count('boarded') > 12 && invariants() == 0" }
   ]
 }

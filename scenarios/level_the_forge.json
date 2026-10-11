@@ -1,20 +1,20 @@
 {
   "id": "level_the_forge",
-  "description": "Campaign level 12 is completable: after the Forge (the turtle digs its moat) wardens clear the wolf dens, a hard player AI wins the risen middle ward and holds three stones, wins the hill seer stone, razes the diggers and grows to 70.",
+  "description": "Campaign level 12 is completable: after the Forge (the turtle digs its moat) wardens clear the wolf dens, a hard player AI wins the risen middle ward and holds three stones, wins the hill seer stone, grows to 55 against the digger's war bands, then razes the dug-in digger's Hearth.",
   "tags": ["levels"],
   "level": "the_forge",
   "bots": [
     { "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 2 }
   ],
   "commands": [
-    { "tick": 2600, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [64, 56], "attack": true }},
-    { "tick": 4200, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [64, 104], "attack": true }}
+    { "tick": 2600, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [64, 56], "attack": true } },
+    { "tick": 4200, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [64, 104], "attack": true } }
   ],
   "runTicks": 24000,
   "assert": [
     { "at": 6000, "expr": "level.objectivesDone == 1 && forge.endedAt > 0 && site('north_seer').by == -1" },
     { "at": 9000, "expr": "level.objectivesDone == 3 && site('mid_ward').by == 0 && site('north_seer').by == 0 && alive(1)" },
-    { "at": 12000, "expr": "level.objectivesDone == 4 && !alive(1) && !level.won" },
+    { "at": 16000, "expr": "level.objectivesDone == 4 && alive(1) && !level.won" },
     { "at": 24000, "expr": "level.won && level.objectivesDone == 5 && forge.endedAt > 0 && forge.ops(1) > 0 && !alive(1) && invariants() == 0" }
   ]
 }

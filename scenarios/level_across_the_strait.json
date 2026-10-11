@@ -1,6 +1,6 @@
 {
   "id": "level_across_the_strait",
-  "description": "Campaign level 8 is completable: wardens clear the three wolf dens on the home island, a hard player AI builds a Boathouse, kills the rival guards on the waking seer stone and prays there, then ferries waves across the strait, razes the rival Hearth and breaks the tribe while growing to 80 (bot wins about 14900).",
+  "description": "Campaign level 8 is completable: wardens clear the three wolf dens on the home island, a hard player AI builds a Boathouse, kills the rival guards on the waking seer stone and prays there, then ferries waves across the strait, grows to 65 while the war goes on, razes the rival Hearth and breaks the tribe (bot wins about 13450).",
   "tags": [
     "levels"
   ],
@@ -55,7 +55,7 @@
       }
     }
   ],
-  "runTicks": 18000,
+  "runTicks": 15500,
   "assert": [
     {
       "at": 4000,
@@ -70,11 +70,15 @@
       "expr": "level.objectivesDone == 3 && !level.won && site('home_seer').by == 0 && alive(1)"
     },
     {
-      "at": 14000,
-      "expr": "level.objectivesDone == 5 && !level.won && !alive(1)"
+      "at": 13000,
+      "expr": "level.objectivesDone == 3 && !level.won && alive(1)"
     },
     {
-      "at": 18000,
+      "at": 13300,
+      "expr": "level.objectivesDone == 4 && !level.won && alive(1)"
+    },
+    {
+      "at": 15500,
       "expr": "level.won && !alive(1) && alive(0) && events.count('boarded') > 0 && level.objectivesDone == 6 && invariants() == 0"
     }
   ]

@@ -1,36 +1,14 @@
 {
   "id": "level_tidecallers_bay",
-  "description": "Campaign level 21 is completable: the Shaper wakes the shore totem, followers pray at Reed Isle, wardens clear both wolf islands, the Shaper crosses the tidal flats to Tidecaller's Rock, followers pray at its tide shrine, the tribe grows to 130, the opponent bot for the player burns the southern watchtowers, breaks both island tribes, clears the bay-mouth wolves and prays at the Tidecaller's altar (bot wins near tick 31800).",
-  "tags": [
-    "levels"
-  ],
+  "description": "Campaign level 21 is completable: the Shaper wakes the shore totem, followers pray at Reed Isle, wardens clear both wolf islands, the Shaper crosses the tidal flats to Tidecaller's Rock, followers pray at its tide shrine, the tribe grows to 130, the opponent bot for the player breaks both island tribes past the southern towers and wardens, clears the bay-mouth wolves and prays at the Tidecaller's altar (bot wins near tick 31700).",
+  "tags": ["levels"],
   "level": "tidecallers_bay",
-  "bots": [
-    {
-      "type": "opponent",
-      "tribe": 0,
-      "personality": "aggressive",
-      "difficulty": "normal",
-      "offset": 1
-    }
-  ],
-  "runTicks": 35000,
+  "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "normal", "offset": 1 }],
+  "runTicks": 37000,
   "assert": [
-    {
-      "at": 12000,
-      "expr": "level.objectivesDone == 4 && alive(1) && alive(2)"
-    },
-    {
-      "at": 22000,
-      "expr": "level.objectivesDone == 6 && alive(2) && count(tribe2.watchtowers) > 0"
-    },
-    {
-      "at": 27000,
-      "expr": "level.objectivesDone == 8 && !alive(1) && !alive(2)"
-    },
-    {
-      "at": 35000,
-      "expr": "level.won && !alive(1) && !alive(2) && alive(0) && level.objectivesDone == 9 && site('tidecaller_altar').by == 0 && invariants() == 0"
-    }
+    { "at": 12000, "expr": "level.objectivesDone == 4 && alive(1) && alive(2)" },
+    { "at": 22000, "expr": "level.objectivesDone == 6 && alive(2) && count(tribe2.watchtowers) > 0" },
+    { "at": 28000, "expr": "level.objectivesDone == 7 && !alive(1) && !alive(2) && !level.won" },
+    { "at": 37000, "expr": "level.won && !alive(1) && !alive(2) && alive(0) && level.objectivesDone == 8 && site('tidecaller_altar').by == 0 && invariants() == 0" }
   ]
 }

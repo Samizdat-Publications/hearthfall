@@ -1,6 +1,6 @@
 {
   "id": "level_sea_of_fires",
-  "description": "Campaign level 13 is completable: after the Forge wardens clear the wolf dens, a hard player AI raises a Spirit Well, grows to 100 followers, ferries waves across the sea, razes the eastern Hearth and defeats both island tribes.",
+  "description": "Campaign level 13 is completable: after the Forge wardens clear the wolf dens, a hard player AI raises a Spirit Well, ferries waves across the sea and razes the eastern Hearth while the southern tribe still stands, then grows to 100 followers and defeats both island tribes (rivals capped at 50 people).",
   "tags": [
     "levels"
   ],
@@ -42,14 +42,18 @@
       }
     }
   ],
-  "runTicks": 30000,
+  "runTicks": 25000,
   "assert": [
     {
       "at": 12000,
       "expr": "level.objectivesDone == 2 && count(tribe0.spirit_wells) >= 1 && alive(1) && !level.won"
     },
     {
-      "at": 30000,
+      "at": 17500,
+      "expr": "level.objectivesDone == 3 && count(tribe1.hearths) == 0 && alive(2) && !level.won"
+    },
+    {
+      "at": 25000,
       "expr": "level.won && !alive(1) && !alive(2) && events.count('boarded') > 0 && level.objectivesDone == 5 && invariants() == 0"
     }
   ]

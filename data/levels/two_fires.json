@@ -1,9 +1,9 @@
 {
-  "$comment": "Teaching level 7 (overhaul, paced): two rivals under fog on a 160 map. A seer stone shows the two fires; the player burns the smaller northern Hearth, then holds two of the three ley stones for 90 s while the southern rival prays them away, alongside breaking both tribes. Bot wins about 13000; the old hold of all three stones was only met after the south fell.",
+  "$comment": "Teaching level 7 (overhaul, paced): two rivals under fog on a 160 map. A seer stone shows the two fires; the player burns the smaller northern Hearth, then must hold two of the three ley stones at once for 50 s while the southern tribe still lives and prays them away; the stones then raise eight wardens at the centre for the last push to break the south. Bot wins about 14650 (seer 900, north Hearth 9200, hold 13550); the time limit is 2.2x that.",
   "id": "two_fires",
   "name": "Two Fires",
   "order": 7,
-  "description": "Smoke rises from two fires beyond the hills, and you cannot see their villages. Pray at the seer stone, burn the northern Hearth, then hold two ley stones at once against the south tribe and defeat them both.",
+  "description": "Smoke rises from two fires beyond the hills, and you cannot see their villages. Pray at the seer stone, burn the northern Hearth, hold two ley stones at once against the south tribe, then break both tribes.",
   "seed": 707,
   "map": {
     "generator": "flat",
@@ -17,11 +17,7 @@
       { "shape": "disc", "at": [104, 120], "r": 8, "aboveSea": 50, "falloff": 8 }
     ]
   },
-  "tribes": [
-    {},
-    { "ai": "turtle", "difficulty": "normal", "maxTroops": 4, "worshipAfterSeconds": 180 },
-    { "ai": "aggressive", "difficulty": "normal", "maxTroops": 8, "worshipAfterSeconds": 240 }
-  ],
+  "tribes": [{}, { "ai": "turtle", "difficulty": "normal", "maxTroops": 4, "worshipAfterSeconds": 180 }, { "ai": "aggressive", "difficulty": "normal", "maxTroops": 8, "worshipAfterSeconds": 240 }],
   "spells": ["bolt", "raise_land", "lightning"],
   "setup": [
     { "spawn": "hearth", "tribe": 0, "at": [26, 80] },
@@ -48,11 +44,7 @@
       "site": {
         "tag": "hill_seer",
         "aura": { "type": "sight", "amount": 0, "r": 22, "every": 1 },
-        "rewards": [
-          { "type": "reveal", "at": [130, 32], "r": 16 },
-          { "type": "reveal", "at": [130, 128], "r": 16 },
-          { "type": "message", "text": "The seer stone shows you both fires: a village in the north and one in the south." }
-        ]
+        "rewards": [{ "type": "reveal", "at": [130, 32], "r": 16 }, { "type": "reveal", "at": [130, 128], "r": 16 }, { "type": "message", "text": "The seer stone shows you both fires: a village in the north and one in the south." }]
       }
     },
     { "spawn": "ley_stone", "at": [64, 44], "site": { "tag": "north_ley", "rewards": [{ "type": "message", "text": "The northern ley stone changes hands." }] } },
@@ -63,15 +55,19 @@
   "objectives": [
     { "type": "worship", "site": "hill_seer", "text": "Pray at the seer stone on the hill to find the two fires" },
     { "type": "destroy", "tribe": 1, "building": "hearth", "after": 0, "text": "Take the northern fire first: burn the Hearth of the northern tribe" },
-    { "type": "hold", "n": 2, "kind": "ley_stone", "seconds": 90, "after": 1, "text": "Hold two of the three ley stones at once for a minute and a half" },
-    { "type": "eliminateAll", "after": 1, "text": "Defeat both rival tribes" }
+    { "type": "hold", "n": 2, "kind": "ley_stone", "seconds": 50, "after": 1, "text": "Hold two of the three ley stones at once for 50 seconds while the south tribe prays them away" },
+    { "type": "eliminateAll", "after": 2, "text": "The stones raise a war band at the centre: use it to defeat both rival tribes" }
   ],
-  "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 1500 }],
+  "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 1600 }],
   "triggers": [
     { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Fog hides the rival villages. Pray at the seer stone on the hill east of your Hearth." }] },
     { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "message", "text": "Ley stones pay mana to whoever prayed last. Take them, and burn the northern Hearth." }] },
-    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "message", "text": "The northern fire is out. Hold two ley stones while the south tribe tries to pray them away, and break both tribes." }] },
+    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "message", "text": "The northern fire is out. Now hold two ley stones at once while the south tribe tries to pray them away." }] },
     { "when": { "type": "time", "seconds": 480, "every": 300 }, "do": [{ "type": "raid", "tribe": 2, "to": [26, 80], "n": 8 }, { "type": "message", "text": "The southern tribe sends a war band." }] },
-    { "when": { "type": "time", "seconds": 1200 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+    { "when": { "type": "time", "seconds": 1300 }, "do": [{ "type": "message", "text": "Five minutes remain." }] },
+    {
+      "when": { "type": "objective", "index": 2 },
+      "do": [{ "type": "spawn", "unit": "warden", "n": 8, "tribe": 0, "at": [92, 84] }, { "type": "message", "text": "The ley stones answer: eight wardens rise at the central stone. Break the southern tribe." }]
+    }
   ]
 }

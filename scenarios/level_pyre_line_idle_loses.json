@@ -3,8 +3,8 @@
   "description": "Campaign level 19 has a real loss: an idle player never douses a pyre and the ridge tribe burns the Hearth.",
   "tags": ["levels"],
   "level": "pyre_line",
-  "runTicks": 52100,
+  "runTicks": 56100,
   "assert": [
-    { "at": 52100, "expr": "level.lost && alive(1) && alive(2) && alive(3) && invariants() == 0" }
+    { "at": 56100, "expr": "level.lost && alive(1) && alive(2) && alive(3) && invariants() == 0" }
   ]
 }

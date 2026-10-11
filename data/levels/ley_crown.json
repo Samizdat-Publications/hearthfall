@@ -1,9 +1,9 @@
 {
-  "$comment": "Campaign level 16 (stretch 3, hard pass): a crown of stones. Seven capturable stones (two ley, three ward, two seer; the centre ward and the north seer carry per-site auras and rewards) sit on a rotationally symmetric continent, and two wolf packs den by the north seer and the southwestern ward. Staged: take the western ley, clear both packs (which wakes the dormant crown ward), take the crown, hold all three ward stones for three minutes (the northeastern one sits by the sneaky rival, who prays stones away and sends war bands at the crown), then raze the eastern watchtowers.",
+  "$comment": "Campaign level 16 (stretch 3, hard pass): a crown of stones. Seven capturable stones (two ley, three ward, two seer) sit on a rotationally symmetric continent, and two wolf packs den by the north seer and the southwestern ward. Staged prayer chain: take the western ley, clear both packs (which wakes the dormant crown ward), take the crown (which wakes the north seer, already held by the sneaky rival), pray the seer away, keep six of the seven stones at once for two minutes while the rival prays them back and raids, then break the eastern tribe. The rival is hard but capped at 14 troops; its village is a fort (four watchtowers, twelve posted wardens) and three more posted wardens arrive every 100 s from minute 4, so the longer the player waits the harder the last stage gets.",
   "id": "ley_crown",
   "name": "The Ley Crown",
   "order": 16,
-  "description": "Seven old stones ring this continent, and wolves den by two of them. Whoever prayed last holds a stone, and a rival can pray it away. Take the western ley, clear the packs, wake and seize the crown, hold all three wards against the east, then raze its towers.",
+  "description": "Seven old stones ring this continent, and wolves den by two of them. Whoever prayed last holds a stone, and a rival can pray it away. Take the western ley, clear the packs, wake the crown and the seer, keep six of them against the east, then break it.",
   "seed": 1616,
   "map": {
     "generator": "flat",
@@ -56,8 +56,8 @@
     {},
     {
       "ai": "sneaky",
-      "difficulty": "normal",
-      "maxTroops": 12,
+      "difficulty": "hard",
+      "maxTroops": 14,
       "worshipAfterSeconds": 120
     }
   ],
@@ -208,6 +208,32 @@
         150,
         96
       ],
+      "count": 8,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        160,
+        82
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        162,
+        110
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        140,
+        96
+      ],
       "count": 4,
       "stance": "defensive"
     },
@@ -324,8 +350,12 @@
             "r": 30
           },
           {
+            "type": "awaken",
+            "site": "north_seer"
+          },
+          {
             "type": "message",
-            "text": "The crown ward is yours: it strikes at anything that comes near, and one Lightning answers your prayer."
+            "text": "The crown ward is yours: it strikes at anything near, one Lightning answers you, and the northern seer wakes."
           }
         ],
         "dormant": true
@@ -347,11 +377,21 @@
         },
         "rewards": [
           {
+            "type": "reveal",
+            "at": [
+              96,
+              46
+            ],
+            "r": 26
+          },
+          {
             "type": "message",
-            "text": "The northern seer shows the whole north."
+            "text": "The northern seer is yours and shows the whole north. Now keep six of the seven stones at once."
           }
-        ]
-      }
+        ],
+        "dormant": true
+      },
+      "tribe": 1
     },
     {
       "spawn": "seer_stone",
@@ -388,19 +428,22 @@
       "text": "Take the crown ward in the centre with four followers (it wakes when the packs are gone)"
     },
     {
-      "type": "hold",
-      "n": 3,
-      "kind": "ward_stone",
-      "seconds": 180,
+      "type": "worship",
+      "site": "north_seer",
       "after": 2,
-      "text": "Hold all three ward stones at once for three minutes: the southwestern ward, the crown and the northeastern ward by the eastern village"
+      "text": "The crown woke the northern seer, and the east holds it: pray it away"
     },
     {
-      "type": "destroy",
-      "tribe": 1,
-      "building": "watchtower",
+      "type": "hold",
+      "n": 6,
+      "seconds": 120,
       "after": 3,
-      "text": "Raze every eastern watchtower (or break the tribe)"
+      "text": "Keep six of the seven stones at once for two minutes while the east prays them away"
+    },
+    {
+      "type": "eliminateAll",
+      "after": 4,
+      "text": "March east, raze the watchtowers and break the eastern tribe"
     }
   ],
   "lose": [
@@ -461,7 +504,7 @@
       "do": [
         {
           "type": "message",
-          "text": "The crown is yours, and the east marches on it. Now hold all three ward stones at once for three minutes."
+          "text": "The crown is yours, and the east marches on it. The northern seer has woken in the east's hands: pray it away."
         },
         {
           "type": "spawn",
@@ -496,26 +539,15 @@
           "type": "raid",
           "tribe": 1,
           "to": [
-            96,
-            96
+            60,
+            66
           ],
-          "n": 6
+          "n": 6,
+          "pray": "west_ley"
         },
         {
           "type": "message",
-          "text": "The eastern war band marches on the crown."
-        }
-      ]
-    },
-    {
-      "when": {
-        "type": "objective",
-        "index": 3
-      },
-      "do": [
-        {
-          "type": "message",
-          "text": "The wards are yours. March east and raze their watchtowers."
+          "text": "An eastern war band comes to pray the western ley away."
         }
       ]
     },
@@ -528,6 +560,72 @@
         {
           "type": "message",
           "text": "Five minutes remain."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 3
+      },
+      "do": [
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            96,
+            46
+          ],
+          "n": 6,
+          "pray": "north_seer"
+        },
+        {
+          "type": "message",
+          "text": "The seer is yours. Keep six stones at once while the east comes to pray them back."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 4
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "The stones are yours. March east, raze the watchtowers and break the tribe."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 240,
+        "every": 100
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 1,
+          "at": [
+            152,
+            96
+          ],
+          "stance": "defensive"
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 240
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "The east posts fresh wardens around its village, and more come every few minutes. Do not wait too long."
         }
       ]
     }
