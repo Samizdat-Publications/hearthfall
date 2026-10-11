@@ -500,6 +500,7 @@ export class OpponentAI implements Controller {
     const bdefs = w.cfg.pack.buildings.buildings;
     const n = w.terrain.size;
     const c: Census = { w, h, si: E.index(tr.shaper), minute: w.playTick / (60 * w.cfg.tickHz), pop: w.economy.followers(this.tribe), settlers: [], troops: new Map(), idle: [], shades: [], lodges: new Map(), towers: [], open: 0, threats: [], enemies: [], boats: [], boathouse: false, balloons: [], skyloft: false };
+    const scripted = this.tribe !== 0 && w.level?.def.tribes[this.tribe]?.keepRaiders === true;
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i]) continue;
       if (E.tribe[i] === this.tribe) {
@@ -519,7 +520,9 @@ export class OpponentAI implements Controller {
           else if (def.trainedAt) {
             c.troops.set(def.id, (c.troops.get(def.id) ?? 0) + 1);
             // stretch 3: a unit on the defensive stance is a posted guard (levels place them; the AI never sets it)
-            if (E.inside[i] < 0 && E.mode[i] === 0 && E.order[i] === 0 && E.atk[i] === NO_ENTITY && E.stance[i] !== STANCE.defensive && i !== E.index(this.scout) && !this.posted(w, i)) c.idle.push(i);
+            // S4 L6-C: with the level's keepRaiders, a rival's troops praying at a site (a scripted raid on a stone) are busy too
+            const praying = scripted && E.task[i] === TASK.worship;
+            if (E.inside[i] < 0 && E.mode[i] === 0 && E.order[i] === 0 && E.atk[i] === NO_ENTITY && E.stance[i] !== STANCE.defensive && !praying && i !== E.index(this.scout) && !this.posted(w, i)) c.idle.push(i);
           }
         }
       } else if (w.hostile(E.tribe[i], this.tribe) && E.cat[i] === CAT.unit && E.veil[i] === 0 && !w.combat.disguised(i) && w.tribes[E.tribe[i]]?.alive && this.sees(w, i)) {

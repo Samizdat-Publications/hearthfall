@@ -1566,7 +1566,8 @@ export const LevelSchema = z.strictObject({
     /** maxTroops (BACKLOG 83): the tribe may not train past this many troops (alive, walking to or in training) */
     /** worshipAfterSeconds (BACKLOG 88): the AI sends no worshippers before this much play time */
     /** maxPopulation (S4): the tribe's population cap never rises above this (dwellings still breed up to it) */
-    .array(z.strictObject({ ai: id.optional(), difficulty: id.optional(), maxTroops: z.number().int().min(0).optional(), maxPopulation: z.number().int().min(1).optional(), worshipAfterSeconds: z.number().min(0).optional() }))
+    /** keepRaiders (S4 L6-C): this rival's AI leaves its troops kneeling at a stone (a scripted pray raid) alone instead of drafting them into waves */
+    .array(z.strictObject({ ai: id.optional(), difficulty: id.optional(), maxTroops: z.number().int().min(0).optional(), maxPopulation: z.number().int().min(1).optional(), worshipAfterSeconds: z.number().min(0).optional(), keepRaiders: z.boolean().optional() }))
     .min(1)
     .max(4),
   /** spells unlocked at the start for every tribe (campaign unlocks are added for the player) */

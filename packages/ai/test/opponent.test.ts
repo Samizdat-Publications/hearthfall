@@ -445,6 +445,32 @@ describe("OpponentAI (M7)", () => {
     for (let k = 0; k < 6; k++) expect(other.decide(sk).filter((c) => c.type === "placePlan" && c.args.building === "watchtower")).toEqual([]);
   });
 
+  it("S4 L6-C: with keepRaiders a level rival's troops praying at a stone (a scripted raid) are busy: its wave leaves them be", () => {
+    const p = basePack();
+    const def: LevelDef = {
+      id: "pray_test", name: "Pray test", order: 99, description: "test", seed: 4,
+      map: { generator: "flat", size: 64, landAboveSea: 20 },
+      tribes: [{}, { keepRaiders: true }], spells: [],
+      setup: [
+        { spawn: "hearth", tribe: 0, at: [12, 32] }, { spawn: "shaper", tribe: 0, at: [13, 34] },
+        { spawn: "hearth", tribe: 1, at: [50, 32] }, { spawn: "shaper", tribe: 1, at: [50, 35] },
+        { spawn: "ley_stone", at: [40, 14], site: { tag: "s", rewards: [] } },
+      ],
+      objectives: [{ type: "survive", seconds: 600 }],
+    };
+    const w = createLevelWorld({ def }, p.files, p.hash);
+    const ids: number[] = [];
+    for (let k = 0; k < 8; k++) ids.push(w.spawnUnit("warden", 1, 46 - (k % 4), 28 + Math.floor(k / 4)));
+    w.step([{ tick: w.tick, tribe: 1, type: "worship", args: { units: ids.slice(0, 4), site: "s" } }]);
+    // walk there (an order) and kneel (no order, only the worship task)
+    for (let k = 0; k < 60 * w.cfg.tickHz && !ids.slice(0, 4).every((id) => w.ents.task[w.ents.index(id)] === TASK.worship); k++) w.step([]);
+    expect(ids.slice(0, 4).every((id) => w.ents.task[w.ents.index(id)] === TASK.worship)).toBe(true);
+    const moved = (out: { type: string; args: Record<string, unknown> }[]) => new Set(out.filter((c) => c.type === "move").flatMap((c) => c.args.units as number[]));
+    const sent = moved(new OpponentAI({ tribe: 1, personality: bold, every: 1 }).decide(w));
+    for (const id of ids.slice(0, 4)) expect(sent.has(id)).toBe(false);
+    expect(ids.slice(4).some((id) => sent.has(id))).toBe(true);
+  });
+
   it("S4: the level bot leaves a stone it lost twice to the enemy for a while, and the memory survives a save", () => {
     const p = basePack();
     const def: LevelDef = {
