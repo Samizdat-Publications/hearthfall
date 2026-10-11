@@ -3,26 +3,23 @@
 Read this first after any restart or context compaction. Keep "Now" under 25 lines. History goes to `docs/PROGRESS_LOG.md` (append only, never read it whole).
 
 ## Now
-Stretch 3 started: 2026-10-10T21:45:00Z (Stewart after playing levels 1 to 3: "legitimately good"; wants levels far more complex as the campaign ramps: more buildings, resources, spells, objectives, plus the handoff items). Quota is tight (62 percent used, resets Thursday): Haiku for QA digging and docs, Sonnet for soaks and level drafts, main session for sim code. No run sentinel or STATUS line this stretch.
-- S3 DONE: prayer chains (ed566ba): dormant sites, awaken and reveal rewards, validation, sunk render.
-- S3 DONE: level primitives: objectives destroy, reach (gold beacon ring), build, and staged objectives (`after`, hidden until open); triggers area and followers; site woke and reveal bursts.
-- S3 closed: counter tuning at equal numbers (analyst, 7 probe runs): 10 v 10 is a deterministic cliff (100 to 0 percent per pair), so equal numbers cannot sit at 65 to 80 by data without breaking the 6 v 10 probes, which already meet the band. Equal 100 percent accepted (see Balance gaps).
-- S3 DONE: AI uses the unused spells: spell value counts traps, sinking land, storms and building damage, building targets value the whole village; prefs gain call, volcano, erode, mire. ai soak 16 x 20: call 51, mire 4, volcano 1, erode 1 (were 0); wins aggressive 2, sneaky 4, turtle 4, unfinished 6.
-- S3 DONE: campaign level 14 The Waking Stones (three-site chain, warden guardians, minute 20 bridge raid, minute 30 Reliquary race); primitives: spawn stance (defensive = posted guard), raid cap `n`, spell `from`; AI clears guarded sites with troops before worshipping. Bot win at tick 31913, idle loss at 25679; goldens unchanged.
-- S3 DONE: content pack 1: Spirit Well (mana), Mending Hut (heal aura), Signal Pyre (sight 18, spots Shades); spells Sanctuary (healOverTime) and Deluge; AI builds the well and hut and casts Sanctuary on hurt troops; skirmish Reliquaries offer both spells. Assets $1.08 (Meshy, Gemini, ElevenLabs). No third hauled resource yet (stone already exists; a new one touches about 150 sites): revisit if levels need it.
-- Stretch 2 (2026-10-10, 24 h) DONE: tag s2-done, full npm run qa PASS at 5e11f16; its Now lines moved to PROGRESS_LOG (S3 trim).
-- Run 1 done 2026-10-09T23:58Z (about 26.5 h): m0-done to m11-done tagged, every P1 done or cut (5a, see Cuts); full npm run qa PASS at 5b2587a; its sentinel line is in PROGRESS_LOG.
-- Run started: 2026-10-08T21:25:00Z
-- Earlier work: BACKLOG 0a to 8 and M0 to M11 (details in PROGRESS_LOG and ARCHITECTURE).
+Stretch 3 started: 2026-10-10T21:45:00Z (Stewart, after about 40 min of play: deeper levels, bigger and more interesting worlds, more interactive pieces like prayer sites and raised land bridges; redo the easy early levels). No run sentinel or STATUS line this stretch. Session 2 handoff written 2026-10-12T00:50Z; last green commit b05cf48 (qa:fast PASS, scenarios 98/98, bench:render 3.7 ms).
+- S3 DONE (session 1): prayer chains, level primitives (destroy, reach, build, staged `after`, area and followers triggers), AI casts call, mire, erode and volcano, content pack 1 (Spirit Well, Mending Hut, Signal Pyre, Sanctuary, Deluge), level 14 The Waking Stones; details in PROGRESS_LOG.
+- S3 DONE: living world (9e913d7): capturable ley, ward and seer stones; shape rewards (tides, causeways); repeating triggers; 256 maps; landscape decor and assets. Levels 15 Tidewalk and 16 Ley Crown (ed3118a).
+- S3 DONE: wolves (1f5994b): beast dens that hunt near home, regrow, and clear for good; skirmish Wolves option. hold and clearDens objectives (f24077f). The AI clears dens guarding sites (50fc741) and hunts dens within 30 cells of its Hearth (48df176); wolves drawn at 0.7 scale; combat_wolves_den scenario and shot.
+- S3 DONE: campaign overhaul, all 14 early levels (bf2d1d8, f3dc5a0): staged goals using stones, wolves, chains and holds; every bot win is longer (L1 2x, L3 2.5x, L7 2.1x). Many Mouths became The Winter Pack. Waking Stones lost its padding survive stage: hard 22-troop rival, 150 followers, 3 minute hold, bot win about tick 21000 of 48000.
+- S3 DONE: Stewart's zoom note: ground detail now shows one wheel step farther out (maxZoom 0.36, radius 26). Held ward and seer stones draw a dashed reach ring. HUD right column stacks objectives over the build list (e2e overlap fix).
+- Engine gaps found by the level agents (not yet built): survive is absolute, not relative to its stage; hold and clearDens cannot be seeded per tribe; beasts also kill rival settlers; the rival AI never uses balloons and never attacks non-Hearth buildings (so destroy only fits Hearths); the bot cannot destroy buildings of eliminated tribes; no dwelling-count objective.
+- Stretch 2 (2026-10-10, 24 h) DONE: tag s2-done, full npm run qa PASS at 5e11f16. Run 1 done 2026-10-09T23:58Z: m0-done to m11-done tagged. Run started: 2026-10-08T21:25:00Z.
 - Screenshot mode: headless-shell + GPU args (RTX 5070 Ti Laptop). VisionQA provider ON (about $0.00003 per low shot).
-- Machine: often at 100 percent CPU (OneDrive sync; another project's simulations and GPU benchmarks with their own headless browsers, leave them alone). Wall-clock timing is noisy; bench uses deterministic replay minima; full qa needs several reruns.
+- Machine: often at 100 percent CPU (other projects' sims and benchmarks, leave them alone). Wall-clock timing is noisy, and bench readings of 6 to 7 ms while agents run scenarios are load, not regressions (idle: 3.7 ms).
 - Keys: Meshy, ElevenLabs, Gemini, OpenAI present; Tripo, PixelLab missing.
-- Making-of archive: making-of/ via `npm run making-of -- add`; storyboard in making-of/README.md. Making-of page (Stewart's request): https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5, rebuild with `npm run making-of -- page` and republish to that URL after every backlog item (README steps).
+- Making-of page: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5 (version 29), rebuild with `npm run making-of -- page` and republish after every backlog item (README steps).
 
 ## Next 3 actions
-1. Content for the ramp: new buildings, a second resource and new spells (design pass in DESIGN, data first, sim primitives with tests, assets via asset-producer within the $30 budget, about $18 left).
-2. Campaign levels 14 to 25 built on prayer chains, staged objectives (after), destroy, reach, build, area triggers and 3 to 4 tribes; Sonnet drafts JSON, main session reviews; each level gets a scripted or bot win scenario.
-3. Complexity pass on levels 6 to 13 with the new primitives (guarded sites: rival or wild units placed at a site in setup).
+1. Engine gaps above, smallest first: survive relative to its stage, per-tribe seeding for hold and clearDens, AI attacks non-Hearth buildings (then destroy objectives on Shrines and Pyres), beasts ignore or flee rival villages by option.
+2. Campaign levels 17 to 22 on 192 and 256 maps with 3 to 4 tribes, wolves, tides and stone networks; a Sonnet agent drafts each level, the main session reviews and brackets the bot win tick with a temporary probe scenario (delete it after).
+3. Campaign-wide playtest and balance pass (a good moment for a short ultracode burst: one agent per level probing win tick, idle loss and objective pacing in parallel), then a full npm run qa and tag s3-done.
 
 ## Blocked
 (none)
