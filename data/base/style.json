@@ -83,7 +83,7 @@
     },
     "terrainBands": { "snowStart": 445, "snowFull": 495, "strataSand": 0.55, "snowBright": 1.55 },
     "trees": { "clumpLow": 0.75, "clumpHigh": 0.08, "bandLow": 0.12, "bandHigh": 0.4, "modelShare": 0.15, "hueJitter": 0.12, "sizeBase": 0.8, "sizeJitter": 0.5, "sizeAtNoWood": 0.6, "woodFull": 4 },
-    "groundDetail": { "enabled": true, "radius": 22, "maxZoom": 0.3, "tufts": 1.1, "flowers": 0.25, "pebbles": 0.5, "shoreBand": 0.04, "highBand": 0.55, "maxSlope": 3, "flowerColors": ["#f2e6c8", "#e8c33a", "#d86a8a", "#b07cff"] },
+    "groundDetail": { "enabled": true, "radius": 26, "maxZoom": 0.36, "tufts": 1.1, "flowers": 0.25, "pebbles": 0.5, "shoreBand": 0.04, "highBand": 0.55, "maxSlope": 3, "flowerColors": ["#f2e6c8", "#e8c33a", "#d86a8a", "#b07cff"] },
     "decor": { "enabled": true, "radius": 44, "maxZoom": 0.62, "density": 0.022, "maxSlope": 4, "kinds": [
       { "id": "prop.bush_a", "weight": 6, "low": 0.03, "high": 0.6, "size": 0.9 },
       { "id": "prop.log_a", "weight": 2, "low": 0.05, "high": 0.55, "size": 1.3 },

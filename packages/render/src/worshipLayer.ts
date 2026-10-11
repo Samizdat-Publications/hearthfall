@@ -3,6 +3,7 @@
 // Real GLB models (M10) replace the placeholders, scaled up to the prayer ring, with a banner when the
 // model has no marker color. Static between sim ticks, so no interpolation. BACKLOG 89: while a tribe
 // prays, a segmented ring on the ground around the site fills in its color with the prayer's progress.
+// Stretch 3: a held ward, seer or healing stone draws a thin dashed ring at its aura's reach in its holder's color.
 import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { CAT, type World } from "@hearthfall/sim";
@@ -16,16 +17,20 @@ const RING_SEGS = 32;
 const RING_IN = 0.86;
 const RING_OUT = 1.0;
 
-/** one flat annular sector of the progress ring (angle 0 to one segment, minus a small gap), on the ground plane */
-function ringSegment(): THREE.BufferGeometry {
-  const a1 = ((Math.PI * 2) / RING_SEGS) * 0.8;
+/** aura reach ring: dashes around the circle, a thin band at the radius */
+const REACH_SEGS = 40;
+const REACH_IN = 0.965;
+
+/** one flat annular sector of a ring (angle 0 to one segment times `fill`), on the ground plane */
+function ringSegment(segs = RING_SEGS, inner = RING_IN, fill = 0.8): THREE.BufferGeometry {
+  const a1 = ((Math.PI * 2) / segs) * fill;
   const pts: number[] = [];
   const steps = 3;
   for (let k = 0; k < steps; k++) {
     const t0 = (a1 * k) / steps;
     const t1 = (a1 * (k + 1)) / steps;
     const p = (r: number, t: number) => [Math.cos(t) * r, 0, Math.sin(t) * r];
-    pts.push(...p(RING_IN, t0), ...p(RING_OUT, t1), ...p(RING_OUT, t0), ...p(RING_IN, t0), ...p(RING_IN, t1), ...p(RING_OUT, t1));
+    pts.push(...p(inner, t0), ...p(RING_OUT, t1), ...p(RING_OUT, t0), ...p(inner, t0), ...p(inner, t1), ...p(RING_OUT, t1));
   }
   return new THREE.BufferGeometry().setAttribute("position", new THREE.Float32BufferAttribute(pts, 3));
 }
@@ -83,6 +88,10 @@ export class WorshipLayer {
   private readonly ring: THREE.InstancedMesh | null = null;
   private readonly unlit = new THREE.Color("#6b6256");
   private readonly ringCap: number = 0;
+  /** stretch 3: aura reach dashes of held stones */
+  private readonly reach: THREE.InstancedMesh | null = null;
+  private readonly reachCap: number = 0;
+  private readonly reachCol = new THREE.Color();
 
   constructor(material: THREE.Material, kinds: { id: string }[], pal: Record<string, string>, tribeColorNames: string[], models: ReadonlyMap<string, ModelParts> | null = null, cap = 64, ringMat: THREE.Material | null = null) {
     if (ringMat) {
@@ -93,6 +102,13 @@ export class WorshipLayer {
       this.ring.count = 0;
       this.ring.renderOrder = 2;
       this.group.add(this.ring);
+      this.reachCap = 16 * REACH_SEGS;
+      this.reach = new THREE.InstancedMesh(ringSegment(REACH_SEGS, REACH_IN, 0.55), ringMat, this.reachCap);
+      this.reach.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(this.reachCap * 3), 3);
+      this.reach.frustumCulled = false;
+      this.reach.count = 0;
+      this.reach.renderOrder = 2;
+      this.group.add(this.reach);
     }
     this.tribeColors = tribeColorNames.map((c) => new THREE.Color(pal[c] ?? "#ffffff"));
     this.glow = new THREE.Color(pal.lightning ?? "#bfe8ff");
@@ -113,13 +129,20 @@ export class WorshipLayer {
     }
   }
 
+  /** stretch 3: instances of aura reach dashes drawn last update */
+  get reachCount(): number {
+    return this.reach?.count ?? 0;
+  }
+
   update(w: World, focusX: number, focusZ: number, heightScale: number): void {
     const E = w.ents;
     const n = w.terrain.size;
     const counts = new Int32Array(this.kinds.length);
     const ringR = (w.cfg.pack.buildings.worship.radius ?? 3) + 0.4;
     let rings = 0;
-    for (const site of w.worship.sites) {
+    let reaches = 0;
+    for (let si = 0; si < w.worship.sites.length; si++) {
+      const site = w.worship.sites[si];
       const i = E.index(site.ent);
       if (i < 0 || !E.alive[i] || E.cat[i] !== CAT.worship) continue;
       const kind = this.kinds[site.kind];
@@ -162,10 +185,32 @@ export class WorshipLayer {
         this.q.setFromAxisAngle(THREE.Object3D.DEFAULT_UP, ((i * 2654435761) >>> 0) / 4294967296 * Math.PI * 2);
         this.m.compose(this.p, this.q, this.s.setScalar(kind.scale));
       }
+      // stretch 3: a held stone's aura reach (strike, heal, sight) as a dashed ring in its holder's color
+      const held = this.reach ? w.living.siteAura(si) : null;
+      if (this.reach && held && held.aura.type !== "mana" && held.aura.r > ringR && reaches + REACH_SEGS <= this.reachCap) {
+        this.reachCol.copy(this.tribeColors[held.holder % this.tribeColors.length]).lerp(this.unlit, 0.25);
+        for (let k = 0; k < REACH_SEGS; k++) {
+          this.p.set(focusX + ox, y + 0.1, focusZ + oz);
+          this.q.setFromAxisAngle(THREE.Object3D.DEFAULT_UP, (k * Math.PI * 2) / REACH_SEGS);
+          this.m.compose(this.p, this.q, this.s.set(held.aura.r, 1, held.aura.r));
+          this.reach.setMatrixAt(reaches, this.m);
+          this.reach.setColorAt(reaches, this.reachCol);
+          reaches++;
+        }
+        this.s.set(1, 1, 1);
+        this.p.set(focusX + ox, y - sunk, focusZ + oz);
+        this.q.setFromAxisAngle(THREE.Object3D.DEFAULT_UP, ((i * 2654435761) >>> 0) / 4294967296 * Math.PI * 2);
+        this.m.compose(this.p, this.q, this.s.setScalar(kind.scale));
+      }
       const c = counts[site.kind]++;
       kind.body.setMatrixAt(c, this.m);
       kind.tint.setMatrixAt(c, this.m);
       kind.tint.setColorAt(c, col);
+    }
+    if (this.reach) {
+      this.reach.count = reaches;
+      this.reach.instanceMatrix.needsUpdate = true;
+      if (this.reach.instanceColor) this.reach.instanceColor.needsUpdate = true;
     }
     if (this.ring) {
       this.ring.count = rings;

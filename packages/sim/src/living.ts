@@ -130,6 +130,12 @@ export class LivingSystem {
   }
 
   // ---------------------------------------------------------------- site auras
+  /** Read-only for the renderer: the aura site k runs and its holder, or null when it runs none. */
+  siteAura(k: number): { aura: Aura; holder: number } | null {
+    const h = this.held(k);
+    return h ? { aura: h.aura, holder: h.holder } : null;
+  }
+
   /** the aura a site runs for its holder, or null (dormant, unheld, not capturable, holder gone) */
   private held(k: number): { aura: Aura; holder: number; i: number } | null {
     const w = this.w;

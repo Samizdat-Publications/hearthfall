@@ -172,7 +172,7 @@ Spell UX: hover shows exact area preview on the curved terrain, range ring aroun
 
 The land and the shrines keep moving after the match starts.
 
-- **Capturable stones:** three kinds of stone stand on dry land and work for whoever holds them. A **ley stone** needs 3 worshippers for 20 s and pays its holder 150 mana per minute. A **ward stone** needs 3 worshippers for 24 s and strikes the nearest enemy unit within 8 cells for 220 every 3 s. A **seer stone** needs 2 worshippers for 15 s and lets its holder see within 18 cells.
+- **Capturable stones:** three kinds of stone stand on dry land and work for whoever holds them. A **ley stone** needs 3 worshippers for 20 s and pays its holder 150 mana per minute. A **ward stone** needs 3 worshippers for 24 s and strikes the nearest enemy unit within 8 cells for 220 every 3 s. A **seer stone** needs 2 worshippers for 15 s and lets its holder see within 18 cells. A held ward or seer stone draws a dashed ring on the ground at its reach, in its holder's color.
 - **Holding:** whoever prayed last holds a stone. A rival can pray it away; the holder cannot pray at it again. Stones are never used up, and the victory variants do not count them.
 - **Shaping:** shape rewards (a disc, rect or line) raise causeways or sink fords gradually over their seconds, not at once. A unit on land that goes under drowns. Repeating time triggers (`every`) allow tides.
 - **Skirmish option "Ley stones":** none, 3, 6 or 12 (default 6). Stones go on dry land, at least 20 cells from every Hearth and 18 cells from each other, at most one per 1,800 cells of map. Placement is spread evenly over the map and is the same for the same seed.
