@@ -132,6 +132,63 @@ export function trimBase(g: THREE.BufferGeometry, height: number, yFrac: number,
   return geometryFrom(pos, col) ?? g;
 }
 
+/** style.json render.modelFix entry (L6-B): see schemas.ts for the field meanings. */
+export interface ModelFix {
+  recolor?: { from: string; to: string; tol?: number; minY?: number }[];
+  dropPlate?: { yFrac: number; rMax: number };
+}
+
+/**
+ * L6-B: fix a loaded model in place of regenerating the asset. `recolor` remaps vertex colors (palette snap landed
+ * thatch on skin2, so the roofs read orange): a triangle whose three vertices are within `tol` sRGB per channel of
+ * `from` and whose centroid is above `minY` (fraction of model height) takes `to`. `dropPlate` removes the baked
+ * ground plate (trimBase). Only the body part changes; the tint part (tribe color) is left alone. The returned
+ * geometries are new, so the shared source stays untouched.
+ */
+export function fixModel(parts: ModelParts, fix: ModelFix): ModelParts {
+  let body = parts.body;
+  if (!body) return parts;
+  if (fix.dropPlate) body = trimBase(body, parts.size.y, fix.dropPlate.yFrac, fix.dropPlate.rMax);
+  if (fix.recolor?.length) {
+    const rules = fix.recolor.map((r) => ({
+      from: new THREE.Color(r.from).getHex(THREE.SRGBColorSpace),
+      to: new THREE.Color(r.to),
+      tol: r.tol ?? 4,
+      minY: (r.minY ?? 0) * parts.size.y,
+    }));
+    const g = body === parts.body ? body.clone() : body;
+    const p = g.getAttribute("position");
+    const c = g.getAttribute("color");
+    for (let t = 0; t < p.count / 3; t++) {
+      const i = t * 3;
+      const cy = (p.getY(i) + p.getY(i + 1) + p.getY(i + 2)) / 3;
+      for (const r of rules) {
+        if (cy < r.minY) continue;
+        let all = true;
+        for (let v = 0; v < 3 && all; v++) all = near(hexOf(c.getX(i + v), c.getY(i + v), c.getZ(i + v)), r.from, r.tol);
+        if (!all) continue;
+        for (let v = 0; v < 3; v++) c.setXYZ(i + v, r.to.r, r.to.g, r.to.b);
+        break;
+      }
+    }
+    c.needsUpdate = true;
+    body = g;
+  }
+  return { ...parts, body };
+}
+
+/** Apply `fixes` (model id to ModelFix) to a loaded model map, marking the new geometries shared. */
+export function applyModelFixes(models: Map<string, ModelParts>, fixes: Record<string, ModelFix> | undefined): void {
+  if (!fixes) return;
+  for (const [id, fix] of Object.entries(fixes)) {
+    const m = models.get(id);
+    if (!m) continue;
+    const f = fixModel(m, fix);
+    if (f.body && f.body !== m.body) f.body.userData.shared = true;
+    models.set(id, f);
+  }
+}
+
 function solid(g: THREE.BufferGeometry, c: THREE.Color): THREE.BufferGeometry {
   const ng = g.index ? g.toNonIndexed() : g;
   ng.deleteAttribute("uv");

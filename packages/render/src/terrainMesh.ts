@@ -40,7 +40,11 @@ export interface TerrainBandsLook {
   strataSand: number;
   /** snow brightness over the palette color, with a slight cool tint, so caps stay white under the warm sun */
   snowBright: number;
+  /** per channel multiplier of the snow color (before snowBright); counters the warm sun so caps read white. Default SNOW_TINT_DEFAULT. */
+  snowTint?: readonly [number, number, number];
 }
+
+export const SNOW_TINT_DEFAULT: readonly [number, number, number] = [0.97, 1, 1.06];
 
 const tmp = new THREE.Color();
 const tmp2 = new THREE.Color();
@@ -70,7 +74,8 @@ export function faceColor(p: TerrainPalette, sea: number, h0: number, h1: number
     [p.look ? p.look.snowStart : b.peak - 20, p.rock],
     [p.look ? p.look.snowFull : b.peak + 10, p.snow],
   ];
-  const snow = p.look ? tmp3.copy(p.snow).multiply(tmp.setRGB(p.look.snowBright * 0.97, p.look.snowBright, p.look.snowBright * 1.06)) : p.snow;
+  const st = p.look?.snowTint ?? SNOW_TINT_DEFAULT;
+  const snow = p.look ? tmp3.copy(p.snow).multiply(tmp.setRGB(p.look.snowBright * st[0], p.look.snowBright * st[1], p.look.snowBright * st[2])) : p.snow;
   stops[stops.length - 1][1] = snow;
   if (avg < sea) out.copy(p.sandWet).lerp(p.water, Math.min(1, (sea - avg) / 60));
   else if (avg >= stops[stops.length - 1][0]) out.copy(snow);

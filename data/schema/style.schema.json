@@ -315,6 +315,69 @@
             "pattern": "^[a-z]+\\.[a-z0-9_]+$"
           }
         },
+        "modelFix": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "pattern": "^[a-z]+\\.[a-z0-9_]+$"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "recolor": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "from": {
+                      "type": "string",
+                      "pattern": "^#[0-9a-fA-F]{6}$"
+                    },
+                    "to": {
+                      "type": "string",
+                      "pattern": "^#[0-9a-fA-F]{6}$"
+                    },
+                    "tol": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 40
+                    },
+                    "minY": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "from",
+                    "to"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "dropPlate": {
+                "type": "object",
+                "properties": {
+                  "yFrac": {
+                    "type": "number",
+                    "minimum": 0.01,
+                    "maximum": 0.5
+                  },
+                  "rMax": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "yFrac",
+                  "rMax"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "additionalProperties": false
+          }
+        },
         "terrainBands": {
           "type": "object",
           "properties": {
@@ -337,6 +400,29 @@
               "type": "number",
               "minimum": 0.5,
               "maximum": 2
+            },
+            "snowTint": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "number",
+                  "minimum": 0.3,
+                  "maximum": 2
+                },
+                {
+                  "type": "number",
+                  "minimum": 0.3,
+                  "maximum": 2
+                },
+                {
+                  "type": "number",
+                  "minimum": 0.3,
+                  "maximum": 2
+                }
+              ],
+              "items": false,
+              "minItems": 3,
+              "maxItems": 3
             }
           },
           "required": [

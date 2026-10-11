@@ -1200,6 +1200,46 @@
       "when": "2026-10-11T09:50:11.978Z",
       "source": "external:sheet.png",
       "bytes": 304420
+    },
+    {
+      "file": "s4/20261011-1837_l6b-snow-before.png",
+      "milestone": "S4",
+      "kind": "comparison",
+      "caption": "L6-B before: snow caps read cream and pink under the warm sun and ACES",
+      "highlight": false,
+      "when": "2026-10-11T18:37:44.855Z",
+      "source": "external:peak_post.png",
+      "bytes": 814176
+    },
+    {
+      "file": "s4/20261011-1837_l6b-snow-after.png",
+      "milestone": "S4",
+      "kind": "comparison",
+      "caption": "L6-B after: snowTint [0.82, 1.14, 1.5] with snowBright 1.7 counters the warm sun, caps read white",
+      "highlight": true,
+      "when": "2026-10-11T18:37:45.618Z",
+      "source": "external:peak_post.png",
+      "bytes": 816504
+    },
+    {
+      "file": "s4/20261011-1837_l6b-thatch-before.png",
+      "milestone": "S4",
+      "kind": "comparison",
+      "caption": "L6-B before: v3 thatched hut roof lands orange (palette snap put skin2 on the straw)",
+      "highlight": false,
+      "when": "2026-10-11T18:37:46.879Z",
+      "source": "external:hutA.png",
+      "bytes": 195219
+    },
+    {
+      "file": "s4/20261011-1837_l6b-thatch-after.png",
+      "milestone": "S4",
+      "kind": "comparison",
+      "caption": "L6-B after: modelFix recolors the roof to golden straw and drops the baked ground plate (style.json render.modelFix)",
+      "highlight": false,
+      "when": "2026-10-11T18:37:47.595Z",
+      "source": "external:hutA.png",
+      "bytes": 195574
     }
   ]
 }

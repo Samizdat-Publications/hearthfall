@@ -443,6 +443,30 @@ export const StyleSchema = z
             z.string().regex(/^[a-z]+\.[a-z0-9_]+$/),
           )
           .optional(),
+        /**
+         * L6-B per model fixes applied at load, keyed by the model id the game asks for (after modelAlias, models.ts
+         * fixModel): recolor remaps palette-snapped vertex colors (from within tol sRGB per channel, only triangles
+         * whose centroid is above minY of the model height) and dropPlate removes a baked ground plate (triangles in
+         * the bottom yFrac of the height that reach past rMax from the pivot axis).
+         */
+        modelFix: z
+          .record(
+            z.string().regex(/^[a-z]+\.[a-z0-9_]+$/),
+            z.strictObject({
+              recolor: z
+                .array(
+                  z.strictObject({
+                    from: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+                    to: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+                    tol: z.number().int().min(0).max(40).optional(),
+                    minY: z.number().min(0).max(1).optional(),
+                  }),
+                )
+                .optional(),
+              dropPlate: z.strictObject({ yFrac: z.number().min(0.01).max(0.5), rMax: z.number().min(0) }).optional(),
+            }),
+          )
+          .optional(),
         /** look v3 snow caps and sandstone strata (BACKLOG 14a-4, terrainMesh.ts TerrainBandsLook), height units */
         terrainBands: z
           .strictObject({
@@ -450,6 +474,8 @@ export const StyleSchema = z
             snowFull: z.number().int().min(0),
             strataSand: z.number().min(0).max(1),
             snowBright: z.number().min(0.5).max(2),
+            /** per channel multiplier of the snow color, to counter the warm sun (default [0.97, 1, 1.06]) */
+            snowTint: z.tuple([z.number().min(0.3).max(2), z.number().min(0.3).max(2), z.number().min(0.3).max(2)]).optional(),
           })
           .refine(
             (b) => b.snowFull > b.snowStart,

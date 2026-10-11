@@ -43,3 +43,24 @@ describe("look v3 terrain bands", () => {
     expect(found).toBe(true);
   });
 });
+
+describe("L6-B snow tint", () => {
+  it("snowTint counters the warm sun: configured caps are bluer than the neutral tint, and the default stays the old cool tint", () => {
+    const b = basePack().files.style.render!.terrainBands!;
+    const h = b.snowFull + 15;
+    const cap = (tint: readonly [number, number, number] | undefined) => {
+      const p = pal(true);
+      p.look = { ...p.look!, snowTint: tint };
+      return faceColor(p, 120, h, h, h, 0, 11, new THREE.Color(), 0);
+    };
+    const neutral = cap([1, 1, 1]);
+    const set = cap(b.snowTint);
+    expect(b.snowTint).toBeDefined();
+    expect(set.b / set.r).toBeGreaterThan(neutral.b / neutral.r);
+    // omitted knob = the look v3 default (0.97, 1, 1.06)
+    const dflt = cap(undefined);
+    const old = cap([0.97, 1, 1.06]);
+    expect(dflt.r).toBeCloseTo(old.r, 6);
+    expect(dflt.b).toBeCloseTo(old.b, 6);
+  });
+});

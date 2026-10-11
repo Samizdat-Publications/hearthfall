@@ -3,7 +3,7 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import * as THREE from "three";
-import { aliasModels, buildingModelIds, loadModels, modelTriangles, sceneGeometry, splitModel, trimBase, unitModelId, withBanner, worshipModelId, TREE_MODELS } from "../src/models.ts";
+import { aliasModels, applyModelFixes, fixModel, type ModelFix, type ModelParts, buildingModelIds, loadModels, modelTriangles, sceneGeometry, splitModel, trimBase, unitModelId, withBanner, worshipModelId, TREE_MODELS } from "../src/models.ts";
 
 const ROOT = new URL("../../../", import.meta.url);
 const style = JSON.parse(readFileSync(new URL("data/base/style.json", ROOT), "utf8"));
@@ -95,5 +95,80 @@ describe("BACKLOG 14a-4 model alias", () => {
   it("every alias in style.json targets a model file that exists", () => {
     const alias: Record<string, string> = style.render.modelAlias ?? {};
     for (const to of Object.values(alias)) expect(existsSync(new URL(`assets/models/${to}.glb`, ROOT))).toBe(true);
+  });
+});
+
+describe("L6-B model fixes", () => {
+  const tri = (pos: number[], hex: string) => {
+    const c = new THREE.Color(hex);
+    return { pos, col: [c.r, c.g, c.b, c.r, c.g, c.b, c.r, c.g, c.b] };
+  };
+  const build = (tris: { pos: number[]; col: number[] }[], height: number): ModelParts => {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.Float32BufferAttribute(tris.flatMap((t) => t.pos), 3));
+    g.setAttribute("color", new THREE.Float32BufferAttribute(tris.flatMap((t) => t.col), 3));
+    return { body: g, tint: null, tintShare: 0, size: new THREE.Vector3(2, height, 2) };
+  };
+  const hexAt = (g: THREE.BufferGeometry, tri: number) => {
+    const c = g.getAttribute("color");
+    return new THREE.Color().setRGB(c.getX(tri * 3), c.getY(tri * 3), c.getZ(tri * 3), THREE.LinearSRGBColorSpace).getHexString(THREE.SRGBColorSpace);
+  };
+
+  it("recolor remaps only matching triangles above minY, leaving the source geometry untouched", () => {
+    const roof = tri([0, 1.5, 0, 0.5, 1.5, 0, 0, 1.8, 0.5], "#B98058");
+    const lowSkin = tri([0, 0.1, 0, 0.5, 0.1, 0, 0, 0.3, 0.5], "#B98058");
+    const wood = tri([0, 1.5, 0, 0.5, 1.5, 0, 0, 1.8, 0.5], "#8B5A2B");
+    const src = build([roof, lowSkin, wood], 2);
+    const fixed = fixModel(src, { recolor: [{ from: "#B98058", to: "#DDB85E", minY: 0.3 }] });
+    expect(hexAt(fixed.body!, 0).toLowerCase()).toBe("ddb85e");
+    expect(hexAt(fixed.body!, 1).toLowerCase()).toBe("b98058");
+    expect(hexAt(fixed.body!, 2).toLowerCase()).toBe("8b5a2b");
+    expect(hexAt(src.body!, 0).toLowerCase()).toBe("b98058");
+  });
+
+  it("dropPlate removes low wide triangles and keeps the walls", () => {
+    const plate = tri([0.9, 0, 0, 0, 0, 0.9, -0.9, 0.1, 0], "#5E3A1A");
+    const wall = tri([0.5, 0, 0, 0, 0, 0.5, 0, 0.9, 0], "#E2B48C");
+    const fixed = fixModel(build([plate, wall], 2), { dropPlate: { yFrac: 0.15, rMax: 0.8 } });
+    expect(fixed.body!.getAttribute("position").count).toBe(3);
+  });
+
+  it("the small v3 hut ships fixed by style.json: golden roofs (no skin2 above 30 percent) and no wide plate triangles", async () => {
+    const fix: Record<string, ModelFix> = style.render.modelFix;
+    const { models } = await loadModels({ "building.dwelling_small": "building.dwelling_small_v3.glb" }, AZURE, read);
+    const m = models.get("building.dwelling_small")!;
+    const before = m.body!.getAttribute("position").count;
+    applyModelFixes(models, fix);
+    const g = models.get("building.dwelling_small")!.body!;
+    expect(g.getAttribute("position").count).toBeLessThan(before);
+    const p = g.getAttribute("position");
+    const skin2 = new THREE.Color(style.palette.skin2).getHex(THREE.SRGBColorSpace);
+    const c = g.getAttribute("color");
+    const sc = new THREE.Color();
+    let golden = 0;
+    for (let t = 0; t < p.count / 3; t++) {
+      const i = t * 3;
+      const cy = (p.getY(i) + p.getY(i + 1) + p.getY(i + 2)) / 3;
+      sc.setRGB(c.getX(i), c.getY(i), c.getZ(i), THREE.LinearSRGBColorSpace);
+      const hex = sc.getHex(THREE.SRGBColorSpace);
+      if (cy >= 0.3 * m.size.y) {
+        expect(hex).not.toBe(skin2);
+        if (hex === new THREE.Color(fix["building.dwelling_small"].recolor![0].to).getHex(THREE.SRGBColorSpace)) golden++;
+      }
+      let low = true;
+      let wide = false;
+      for (let v = 0; v < 3; v++) {
+        if (p.getY(i + v) > m.size.y * 0.15) low = false;
+        if (Math.hypot(p.getX(i + v), p.getZ(i + v)) > 0.8) wide = true;
+      }
+      expect(low && wide).toBe(false);
+    }
+    expect(golden).toBeGreaterThan(50);
+  });
+
+  it("every modelFix id in style.json names a model the game loads", () => {
+    const alias: Record<string, string> = style.render.modelAlias ?? {};
+    const ids = new Set([...Object.keys(urls), ...Object.keys(alias)]);
+    for (const id of Object.keys(style.render.modelFix ?? {})) expect(ids.has(id), id).toBe(true);
   });
 });

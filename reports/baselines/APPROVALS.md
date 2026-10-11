@@ -143,3 +143,4 @@
 - 2026-10-11T10:16 set spells2 (9 shots): S3: landscape decor and wider ground detail; hud_all_spells grants all 18 spells (Sanctuary, Deluge)
 - 2026-10-11T10:18 set combat (8 shots): S3: landscape decor layer (grass tufts, flowers) and wider ground detail; wolves baseline already post-decor passes
 - 2026-10-11T10:18 set look (13 shots): S3: HUD build list gains signal_pyre, mending_hut, spirit_well (content pack 1) plus decor; uniform 2.5% diff, scenes unchanged
+- 2026-10-11T19:56 set look (13 shots): L6-B golden thatch on v3 dwellings, intended

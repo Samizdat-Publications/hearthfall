@@ -30,7 +30,7 @@ import { BuildingLayer } from "./buildingsLayer.ts";
 import { WorshipLayer } from "./worshipLayer.ts";
 import { VfxLayer } from "./vfx.ts";
 import { RetroPass, resolveTilt } from "./retro.ts";
-import { loadModels, type ModelLoadReport, type ModelParts } from "./models.ts";
+import { applyModelFixes, loadModels, type ModelLoadReport, type ModelParts } from "./models.ts";
 
 /** Real model state (M10): pending while loading; `drawn` lists the model ids the current layers use. */
 export interface ModelStatus {
@@ -507,6 +507,7 @@ export class ThreeRenderer implements Renderer {
         this.basePal.azure ?? "#2e6fd8",
         fetchBytes,
       );
+      applyModelFixes(models, this.styleRender?.modelFix);
       this.models = models;
       this.modelReport = report;
       for (const m of this.trees.meshes) {
