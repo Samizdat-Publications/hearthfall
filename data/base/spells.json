@@ -357,6 +357,29 @@
           "radius": 6
         }
       ]
+    },
+    {
+      "id": "sanctuary",
+      "$comment": "Stretch 3: a mending ground; the caster tribe's units inside heal quickly while it lasts.",
+      "tier": 2,
+      "cost": 550,
+      "maxCharges": 3,
+      "range": 10,
+      "aiTarget": "ownFighting",
+      "effects": [{ "type": "healOverTime", "radius": 4, "seconds": 10, "healPerSecond": 120 }]
+    },
+    {
+      "id": "deluge",
+      "$comment": "Stretch 3: a wave out of the ground: flings units outward and sinks the land a little, so shore villages flood.",
+      "tier": 3,
+      "cost": 1500,
+      "maxCharges": 2,
+      "range": 9,
+      "aiTarget": "units",
+      "effects": [
+        { "type": "knockback", "radius": 5, "force": 4, "edgeFalloff": 0.4 },
+        { "type": "terrainOp", "op": "lowerTowardSea", "radius": 4, "depth": 6, "seconds": 4 }
+      ]
     }
   ],
   "entities": [

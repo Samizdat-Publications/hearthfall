@@ -8,7 +8,7 @@ import { CAT, NO_ENTITY } from "./entities.ts";
 import { secondsToTicks } from "./config.ts";
 import { ORDER } from "./units.ts";
 import { BSTATE, TASK } from "./economy.ts";
-import { knockUnit } from "./effects.ts";
+import { healUnit, knockUnit, within } from "./effects.ts";
 import { registerCommand, type Command } from "./commands.ts";
 import { wrapDelta, type TerrainOpSpec } from "./terrain.ts";
 import type { World } from "./world.ts";
@@ -397,6 +397,7 @@ export class CombatSystem {
     const idleScan = secondsToTicks(cb.idleAcquireSeconds, hz);
     const giveUp = secondsToTicks(w.cfg.pack.balance.movement.giveUpSeconds, hz);
     this.updateShapers();
+    this.updateMending();
     this.updateTrainingAndGarrisons();
     // building indices, ascending, for acquire's fallback scan (a few dozen against thousands of units)
     this.buildings.length = 0;
@@ -717,6 +718,21 @@ export class CombatSystem {
       if (i < 0) continue;
       const max = w.cfg.pack.units.units[E.type[i]].hp;
       if (E.hp[i] < max && w.tick - E.hitTick[i] >= delay) E.hp[i] = Math.min(max, E.hp[i] + cb.shaperRegenPerSecond / w.cfg.tickHz);
+    }
+  }
+
+  /** stretch 3: finished buildings with a heal aura (Mending Hut) mend their tribe's units once a second. */
+  private updateMending(): void {
+    const w = this.w;
+    const E = w.ents;
+    const hz = w.cfg.tickHz;
+    if (w.tick % hz !== 0) return;
+    const defs = w.cfg.pack.buildings.buildings;
+    for (let b = 0; b < E.hi; b++) {
+      if (!E.alive[b] || E.cat[b] !== CAT.building || E.state[b] !== BSTATE.done) continue;
+      const h = defs[E.type[b]].heal;
+      if (!h) continue;
+      for (const u of within(w, CAT.unit, E.x[b], E.y[b], h.radius)) if (E.tribe[u] === E.tribe[b] && E.inside[u] < 0) healUnit(w, u, h.perSecond);
     }
   }
 

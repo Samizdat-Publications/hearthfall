@@ -175,7 +175,7 @@ describe("worship sites", () => {
         expect(Math.min(...d)).toBeGreaterThanOrEqual(12);
         if (tribes === 2) expect(Math.abs(d[0] - d[1])).toBeLessThan(2 * 10 * Math.SQRT2 + 1);
       }
-      expect(sites[0].rewards.map((r) => (r.type === "unlockSpell" ? r.spell : "")).join()).toBe("veil,ward,beguile,whirlwind");
+      expect(sites[0].rewards.map((r) => (r.type === "unlockSpell" ? r.spell : "")).join()).toBe("veil,ward,beguile,whirlwind,sanctuary");
     }
     // handmade test maps (scenarios, levels) have no generated Hearths, so they never get skirmish sites
     expect(world({ generator: "flat", size: 64, tribes: 2 }).worship.sites.length).toBe(0);

@@ -142,7 +142,7 @@
         "disguise": true,
         "detectRadius": 5,
         "revealSeconds": 12,
-        "detectors": ["shaper", "watchtower"]
+        "detectors": ["shaper", "watchtower", "signal_pyre"]
       },
       "trainedAt": "shade_den",
       "trainSeconds": 16,

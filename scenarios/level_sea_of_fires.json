@@ -14,10 +14,10 @@
       "offset": 2
     }
   ],
-  "runTicks": 15000,
+  "runTicks": 18000,
   "assert": [
     {
-      "at": 15000,
+      "at": 18000,
       "expr": "level.won && !alive(1) && !alive(2) && events.count('boarded') > 0 && invariants() == 0"
     }
   ]

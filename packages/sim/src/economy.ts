@@ -978,6 +978,13 @@ export class EconomySystem {
       const tr = E.tribe[i];
       if (tr >= 0 && tr < rates.length) rates[tr] += this.manaRate(i);
     }
+    // stretch 3: finished buildings with their own mana (Spirit Well)
+    const defs = w.cfg.pack.buildings.buildings;
+    for (let i = 0; i < E.hi; i++) {
+      if (!E.alive[i] || E.cat[i] !== CAT.building || E.state[i] !== BSTATE.done) continue;
+      const m = defs[E.type[i]].manaPerMin;
+      if (m !== undefined && E.tribe[i] >= 0 && E.tribe[i] < rates.length) rates[E.tribe[i]] += m;
+    }
     for (const tr of w.tribes) {
       const rate = rates[tr.index] * tr.eco.incomeMult * (w.traitMods[tr.index]?.income ?? 1);
       tr.eco.incomePerMin = tr.alive ? rate : 0;

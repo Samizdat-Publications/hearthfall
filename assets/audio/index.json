@@ -1,13 +1,13 @@
 {
   "schema": 1,
-  "generated": "2026-10-10T09:07:07Z",
+  "generated": "2026-10-11T02:31:56Z",
   "format": "ogg vorbis, 44.1 kHz",
   "loudness_targets_lufs": {
     "sfx": -18.0,
     "music": -16.0,
     "voice": -18.0
   },
-  "count": 44,
+  "count": 46,
   "entries": {
     "music.battle": {
       "file": "assets/audio/music.battle.ogg",
@@ -172,6 +172,17 @@
       "prompt": "a soft rising chime, a gentle bell glissando, warm and welcoming",
       "event": "converted"
     },
+    "sfx.deluge_cast": {
+      "file": "assets/audio/sfx.deluge_cast.ogg",
+      "kind": "sfx",
+      "duration_s": 2.0,
+      "lufs": -18.3,
+      "true_peak_db": -6.8,
+      "bytes": 41510,
+      "sha256": "fc9e18d796a4a9ae6cbe6f6eae6ab7cb0d0e7776c743856afbe15fc68dac9209",
+      "prompt": "a big surging whoosh of water bursting from the ground, a heavy splash and rushing flood roar",
+      "event": "deluge_cast"
+    },
     "sfx.died": {
       "file": "assets/audio/sfx.died.ogg",
       "kind": "sfx",
@@ -325,6 +336,17 @@
       "sha256": "237ac7ee7f86963b14ed86c1280c5bbcef074bd7c4d87f13e902daccfe59f242",
       "prompt": "a deep rumble of rising earth, rocks grinding upward",
       "event": "raise_land"
+    },
+    "sfx.sanctuary_cast": {
+      "file": "assets/audio/sfx.sanctuary_cast.ogg",
+      "kind": "sfx",
+      "duration_s": 1.6,
+      "lufs": -18.0,
+      "true_peak_db": -7.1,
+      "bytes": 33862,
+      "sha256": "d3adfc4f71109e7911ba7d8d8f90d8014010193a980b0d7a13dc3d89d7a61ad2",
+      "prompt": "a warm gentle rising chime and soft choir shimmer, a healing blessing with a bright sparkle at the end",
+      "event": "sanctuary_cast"
     },
     "sfx.trained": {
       "file": "assets/audio/sfx.trained.ogg",

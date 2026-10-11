@@ -36,7 +36,7 @@ export function registerEffect(type: string, fn: EffectFn): void {
  * cd = ticks to the next kill; erode progress2 = depth per step; leadIn (BACKLOG 36) holds a terrainOp
  * with `leadInSeconds` until its timer runs out, ax, ay = the caster position at the cast.
  */
-export const FX = { area: 1, erode: 2, storm: 3, mover: 4, trap: 5, wraith: 6, leadIn: 7 } as const;
+export const FX = { area: 1, erode: 2, storm: 3, mover: 4, trap: 5, wraith: 6, leadIn: 7, heal: 8 } as const;
 
 export function applyEffects(ctx: EffectCtx, effects: readonly EffectDef[]): void {
   for (const e of effects) {
@@ -44,6 +44,12 @@ export function applyEffects(ctx: EffectCtx, effects: readonly EffectDef[]): voi
     if (!fn) throw new Error(`no effect primitive registered for "${e.type}"`);
     fn(ctx, e);
   }
+}
+
+/** Heal unit i by amount, up to its full hp (stretch 3: Sanctuary, Mending Hut). */
+export function healUnit(w: World, i: number, amount: number): void {
+  const max = w.cfg.pack.units.units[w.ents.type[i]].hp;
+  if (w.ents.hp[i] < max) w.ents.hp[i] = Math.min(max, w.ents.hp[i] + amount);
 }
 
 /** Live entity indices of a category within radius r of (x, y), ascending. */
@@ -337,6 +343,13 @@ registerEffect("areaOverTime", (c, e) => {
   w.ents.progress2[i] = e.damagePerSecond / w.cfg.tickHz;
 });
 
+registerEffect("healOverTime", (c, e) => {
+  if (e.type !== "healOverTime") return;
+  const w = c.w;
+  const i = fxEntity(c, FX.heal, e.radius, secondsToTicks(e.seconds, w.cfg.tickHz));
+  w.ents.progress2[i] = e.healPerSecond / w.cfg.tickHz;
+});
+
 registerEffect("projectileStorm", (c, e) => {
   if (e.type !== "projectileStorm") return;
   const i = fxEntity(c, FX.storm, e.radius, secondsToTicks(e.seconds, c.w.cfg.tickHz));
@@ -530,6 +543,9 @@ export function updateEffects(w: World): void {
       switch (E.state[i]) {
         case FX.area:
           for (const u of within(w, CAT.unit, E.x[i], E.y[i], E.progress[i])) if (E.tribe[u] !== E.tribe[i]) w.damage(u, E.progress2[i], E.tribe[i], false);
+          break;
+        case FX.heal:
+          for (const u of within(w, CAT.unit, E.x[i], E.y[i], E.progress[i])) if (E.tribe[u] === E.tribe[i]) healUnit(w, u, E.progress2[i]);
           break;
         case FX.erode:
           // the first step went in at the cast; one more each full second while time is left

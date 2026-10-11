@@ -144,6 +144,28 @@
             ],
             "additionalProperties": false
           },
+          "heal": {
+            "type": "object",
+            "properties": {
+              "radius": {
+                "type": "number",
+                "minimum": 0
+              },
+              "perSecond": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "radius",
+              "perSecond"
+            ],
+            "additionalProperties": false
+          },
+          "manaPerMin": {
+            "type": "number",
+            "minimum": 0
+          },
           "buildable": {
             "type": "boolean"
           },

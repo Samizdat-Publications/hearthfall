@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generated": "2026-10-10T09:07:07Z",
+  "generated": "2026-10-11T02:31:57Z",
   "sizes": [
     128,
     256
   ],
-  "count": 41,
+  "count": 46,
   "entries": {
     "icon.building.boathouse": {
       "file_256": "assets/icons/icon.building.boathouse.png",
@@ -56,6 +56,13 @@
       "source": "blender thumbnail, grey background keyed to transparent",
       "model": "building.hearth"
     },
+    "icon.building.mending_hut": {
+      "file_256": "assets/icons/icon.building.mending_hut.png",
+      "file_128": "assets/icons/icon.building.mending_hut_128.png",
+      "kind": "building",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "building.mending_hut"
+    },
     "icon.building.reliquary": {
       "file_256": "assets/icons/icon.building.reliquary.png",
       "file_128": "assets/icons/icon.building.reliquary_128.png",
@@ -77,12 +84,26 @@
       "source": "blender thumbnail, grey background keyed to transparent",
       "model": "building.shrine"
     },
+    "icon.building.signal_pyre": {
+      "file_256": "assets/icons/icon.building.signal_pyre.png",
+      "file_128": "assets/icons/icon.building.signal_pyre_128.png",
+      "kind": "building",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "building.signal_pyre"
+    },
     "icon.building.skyloft": {
       "file_256": "assets/icons/icon.building.skyloft.png",
       "file_128": "assets/icons/icon.building.skyloft_128.png",
       "kind": "building",
       "source": "blender thumbnail, grey background keyed to transparent",
       "model": "building.skyloft"
+    },
+    "icon.building.spirit_well": {
+      "file_256": "assets/icons/icon.building.spirit_well.png",
+      "file_128": "assets/icons/icon.building.spirit_well_128.png",
+      "kind": "building",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "building.spirit_well"
     },
     "icon.building.totem": {
       "file_256": "assets/icons/icon.building.totem.png",
@@ -140,6 +161,13 @@
       "source": "gemini + ref_04",
       "prompt": "a carved wooden horn with three glowing pale green sound rings radiating from it, spell icon"
     },
+    "icon.spell.deluge": {
+      "file_256": "assets/icons/icon.spell.deluge.png",
+      "file_128": "assets/icons/icon.spell.deluge_128.png",
+      "kind": "spell",
+      "source": "gemini + ref_04",
+      "prompt": "a big blue wave bursting upward out of cracked brown ground, curling white foam crest and flying spray, spell icon"
+    },
     "icon.spell.erode": {
       "file_256": "assets/icons/icon.spell.erode.png",
       "file_128": "assets/icons/icon.spell.erode_128.png",
@@ -195,6 +223,13 @@
       "kind": "spell",
       "source": "gemini + ref_04",
       "prompt": "a jagged brown earthen ridge of rock rising up out of flat green ground with lifting chunks, spell icon"
+    },
+    "icon.spell.sanctuary": {
+      "file_256": "assets/icons/icon.spell.sanctuary.png",
+      "file_128": "assets/icons/icon.spell.sanctuary_128.png",
+      "kind": "spell",
+      "source": "gemini + ref_04",
+      "prompt": "a circle of soft green-gold healing light on the ground, a ring of glowing leaves and small sprouting flowers around a warm golden glow, with gentle rising sparkles, spell icon"
     },
     "icon.spell.veil": {
       "file_256": "assets/icons/icon.spell.veil.png",

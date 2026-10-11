@@ -99,7 +99,7 @@
       "$comment": "BACKLOG 95: effect colors by spell (every spell in spells.json has one; vfx.test checks), own-unit status halos, fireball fire, and the rest. The impact shapes stay code in render/src/vfx.ts.",
       "spells": {
         "bolt": "#ff9a3c", "call": "#7fd4ff", "hornets": "#ffd23a", "raise_land": "#c9a65a", "lightning": "#8fc8ff", "flatten": "#d9cbb0",
-        "quake": "#8a6a4a", "volcano": "#ff3b10", "veil": "#9fb4c8", "ward": "#ffd76a", "beguile": "#ff7ad9", "whirlwind": "#d8d2c0",
+        "quake": "#8a6a4a", "volcano": "#ff3b10", "veil": "#9fb4c8", "ward": "#ffd76a", "beguile": "#ff7ad9", "whirlwind": "#d8d2c0", "sanctuary": "#8fe0a0", "deluge": "#3f8fd8",
         "mire": "#6b7a2a", "erode": "#4f7f95", "firerain": "#ff5a1f", "wraith": "#b8f0ff"
       },
       "statuses": { "ward": "#ffd76a", "beguile": "#ff7ad9", "veil": "#9fb4c8" },

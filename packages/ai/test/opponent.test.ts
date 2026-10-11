@@ -214,6 +214,39 @@ describe("OpponentAI (M7)", () => {
     expect(prayed).toBeGreaterThan(0);
   });
 
+  it("S3: a grown village plans a Spirit Well, and a Mending Hut once it fields troops", () => {
+    const plans = (troops: number) => {
+      const w = world({ generator: "flat", size: 64, tribes: 2 });
+      w.spawnBuilding("hearth", 0, 20, 32);
+      w.spawnBuilding("hearth", 1, 56, 32);
+      w.spawnUnit("shaper", 0, 22, 32);
+      w.spawnUnit("shaper", 1, 58, 32);
+      for (let k = 0; k < 4; k++) w.spawnRock(14 + k * 2, 24, 16);
+      for (let k = 0; k < 12; k++) w.spawnTree(8 + (k % 4) * 2, 18 + Math.floor(k / 4) * 2);
+      for (let k = 0; k < 30; k++) w.spawnUnit("settler", 0, 14 + (k % 10), 38 + Math.floor(k / 10));
+      for (let k = 0; k < troops; k++) w.spawnUnit("warden", 0, 26 + (k % 3), 28 + Math.floor(k / 3));
+      w.controllers.push(makeBot({ type: "opponent", tribe: 0, personality: "turtle", offset: 0 }));
+      const E = w.ents;
+      const out = new Set<string>();
+      for (let t = 0; t < 2400; t++) {
+        w.step([]);
+        for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.cat[i] === CAT.building && E.tribe[i] === 0) out.add(w.cfg.pack.buildings.buildings[E.type[i]].id);
+      }
+      return [...out];
+    };
+    // plenty of plan slots, so the test sees the choice and not the wood race (the pack is shared: restore it)
+    const eco = world({ generator: "flat", size: 32, tribes: 1 }).cfg.pack.balance.economy as { maxOpenPlansPerTribe: number };
+    const keep = eco.maxOpenPlansPerTribe;
+    eco.maxOpenPlansPerTribe = 12;
+    try {
+      const built = plans(0);
+      expect(built).toContain("spirit_well");
+      expect(built).not.toContain("mending_hut");
+    } finally {
+      eco.maxOpenPlansPerTribe = keep;
+    }
+  });
+
   it("with no walkable route to the enemy the Shaper raises land across the water", () => {
     const w = world({ generator: "flat", size: 64, tribes: 2 });
     w.spawnBuilding("hearth", 0, 12, 32);

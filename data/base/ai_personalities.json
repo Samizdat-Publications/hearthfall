@@ -40,6 +40,8 @@
         "volcano",
         "quake",
         "erode",
+        "deluge",
+        "sanctuary",
         "call"
       ],
       "scouting": 0.6,
@@ -67,6 +69,7 @@
         "mire",
         "erode",
         "bolt",
+        "sanctuary",
         "call"
       ],
       "scouting": 0.9,
@@ -101,6 +104,8 @@
         "volcano",
         "flatten",
         "quake",
+        "sanctuary",
+        "deluge",
         "call"
       ],
       "scouting": 0.4,

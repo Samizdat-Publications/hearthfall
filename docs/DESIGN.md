@@ -111,6 +111,9 @@ Counter triangle (must be statistically verified by soak tests): Warden beats Fi
 | Watchtower | 5 | 2 | 1x1 | Garrison 1 to 2, range bonus |
 | Warden Lodge / Fire Lodge / Chant House / Shade Den | 8 | 3 | 3x3 | Training queues |
 | Boathouse | 5 | 0 | 3x3 | Built beside water; keeps up to 2 boats (one per 45 s), each carries 5 |
+| Spirit Well (S3) | 6 | 3 | 2x2 | Adds 105 mana per minute (three housed settlers); town tier |
+| Mending Hut (S3) | 5 | 1 | 2x2 | Heals own units within 5 cells by 30 hp/s; village tier |
+| Signal Pyre (S3) | 3 | 1 | 1x1 | Sight 18, spots Shades; village tier |
 | Skyloft | 11 | 4 | 3x3 | Keeps up to 2 balloons (one per 70 s), each carries 2; only Firecallers fire from vehicles (+2 range) |
 
 Construction: player places a plan; settlers auto-assign, flatten the footprint toward its average height, deliver wood, build. Footprint must be above water and below a max slope after flattening. Plans blocked by trees or units resolve automatically (units step aside, trees get chopped first).
@@ -134,10 +137,12 @@ Composable from effect primitives (see `docs/ARCHITECTURE.md` section 6). Range 
 | 2 | **Lightning** | 800 | 4 | 12 | Single target heavy damage, can kill a Shaper |
 | 2 | **Beguile** | 850 | 3 | 8 | Units fight for you for 40 s |
 | 2 | **Whirlwind** | 900 | 3 | 8 | Moving vortex, flings units and buildings |
+| 2 | **Sanctuary** (S3) | 550 | 3 | 10 | Mending ground: own units inside heal 120 hp/s for 10 s |
 | 3 | **Mire** | 1000 | 3 | 8 | Sinkhole bog that kills the first 10 units entering |
 | 3 | **Flatten** | 1250 | 3 | 8 | Levels a region |
 | 3 | **Quake** | 1750 | 2 | 8 | Cracks and lowers land, damages buildings |
 | 3 | **Erode** | 2100 | 2 | 8 | Sinks land toward water |
+| 3 | **Deluge** (S3) | 1500 | 2 | 9 | Wave out of the ground: flings units outward and sinks the land a little |
 | 4 | **Firerain** | 4000 | 2 | 8 | Meteor storm |
 | 4 | **Wraith** | 5100 | 1 | 6 | Summoned flying killer, 200 s or 40 kills |
 | 4 | **Volcano** | 8000 | 1 | 6 | Raises a cone, lava, leaves scarred unbuildable land that heals slowly |

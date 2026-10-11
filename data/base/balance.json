@@ -108,8 +108,8 @@
     "$comment": "In-match unlock tiers (DESIGN 3a). A tier opens when the tribe first reaches its follower count and stays open. Buildings not listed in any tier are always available. Spells unlock by worship (M9).",
     "tiers": [
       { "id": "camp", "followers": 0, "buildings": ["dwelling"] },
-      { "id": "village", "followers": 10, "buildings": ["watchtower", "warden_lodge", "boathouse"] },
-      { "id": "town", "followers": 18, "buildings": ["fire_lodge", "chant_house", "shade_den", "skyloft"] }
+      { "id": "village", "followers": 10, "buildings": ["watchtower", "warden_lodge", "boathouse", "signal_pyre", "mending_hut"] },
+      { "id": "town", "followers": 18, "buildings": ["fire_lodge", "chant_house", "shade_den", "skyloft", "spirit_well"] }
     ]
   },
   "victory": {
@@ -164,7 +164,8 @@
           { "type": "unlockSpell", "spell": "veil" },
           { "type": "unlockSpell", "spell": "ward" },
           { "type": "unlockSpell", "spell": "beguile" },
-          { "type": "unlockSpell", "spell": "whirlwind" }
+          { "type": "unlockSpell", "spell": "whirlwind" },
+          { "type": "unlockSpell", "spell": "sanctuary" }
         ]
       },
       {
@@ -174,7 +175,8 @@
           { "type": "unlockSpell", "spell": "mire" },
           { "type": "unlockSpell", "spell": "erode" },
           { "type": "unlockSpell", "spell": "firerain" },
-          { "type": "unlockSpell", "spell": "wraith" }
+          { "type": "unlockSpell", "spell": "wraith" },
+          { "type": "unlockSpell", "spell": "deluge" }
         ]
       }
     ]
@@ -202,7 +204,7 @@
     "everySeconds": 0.5,
     "unitSight": 7,
     "buildingSight": 6,
-    "sight": { "shaper": 10, "watchtower": 12, "hearth": 9, "shade": 8 }
+    "sight": { "shaper": 10, "watchtower": 12, "hearth": 9, "shade": 8, "signal_pyre": 18 }
   },
   "statuses": {
     "$comment": "Status effects applied by spells (M5). Seconds and cells.",

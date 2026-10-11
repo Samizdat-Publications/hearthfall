@@ -174,6 +174,8 @@ export class OpponentAI implements Controller {
       { id: "scout", score: (c) => this.scoutScore(c), act: (c, out) => this.sendScout(c, out) },
       { id: "buildLodge", score: (c) => this.lodgeScore(c), act: (c, out) => this.buildLodge(c, out) },
       { id: "buildTower", score: (c) => this.towerScore(c), act: (c, out) => this.build(c, out, "watchtower") },
+      // stretch 3: Spirit Well and Mending Hut once the village stands (scores 0 in packs without them)
+      { id: "buildSupport", score: (c) => (this.supportBuilding(c) ? 0.5 : 0), act: (c, out) => this.build(c, out, this.supportBuilding(c)!) },
       { id: "garrison", score: (c) => this.garrisonScore(c), act: (c, out) => this.garrison(c, out) },
       { id: "train", score: (c) => this.trainScore(c), act: (c, out) => this.train(c, out) },
       { id: "attack", score: (c) => this.attackScore(c), act: (c, out) => this.attack(c, out) },
@@ -355,7 +357,7 @@ export class OpponentAI implements Controller {
     this.watchWaves(w);
     // every decision: spells unlocked mid-match (worship sites) start charging too
     this.setup(w, out);
-    const acts = this.actions.filter((a) => (a.id !== "worship" || w.worship.sites.length > 0) && (a.id !== "contest" || this.contested(w).length > 0) && (this.p.shades || !SHADE_ACTIONS.has(a.id)));
+    const acts = this.actions.filter((a) => (a.id !== "worship" || w.worship.sites.length > 0) && (a.id !== "contest" || this.contested(w).length > 0) && (a.id !== "buildSupport" || w.cfg.buildingIndex.has("spirit_well") || w.cfg.buildingIndex.has("mending_hut")) && (this.p.shades || !SHADE_ACTIONS.has(a.id)));
     const boost = this.focus !== null && w.tick < this.focusUntil ? (this.sh.focusBoost ?? 0.6) : 0;
     const scored = acts.map((a, k) => ({ a, k, s: a.score(c) + (w.rng.float("ai") - 0.5) * 2 * this.noise + (a.id === this.focus ? boost : 0) }));
     scored.sort((x, y) => y.s - x.s || x.k - y.k);
@@ -731,6 +733,25 @@ export class OpponentAI implements Controller {
     if (!c.threats.length && c.pop < this.p.economyTargetPop * (this.p.towerFromPopShare ?? 0)) return 0;
     const want = Math.round(this.p.towerAffinity * 3);
     return c.towers.length < want ? 0.3 + 0.6 * this.p.towerAffinity : 0;
+  }
+
+  /** stretch 3: the support building the tribe still lacks: a Spirit Well past 60 percent of the economy target,
+   * a Mending Hut once 6 troops stand; none at the open plan limit or while the Hearth is threatened */
+  private supportBuilding(c: Census): string | null {
+    const w = c.w;
+    if (c.threats.length || c.open >= w.cfg.pack.balance.economy.maxOpenPlansPerTribe || c.settlers.length < this.keep() * 0.5) return null;
+    const E = w.ents;
+    const want = (id: string, when: boolean): boolean => {
+      const b = w.cfg.buildingIndex.get(id);
+      if (b === undefined || !when || w.economy.buildingLock(this.tribe, b) || !this.supplied(c, id)) return false;
+      for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.cat[i] === CAT.building && E.tribe[i] === this.tribe && E.type[i] === b) return false;
+      return true;
+    };
+    let troops = 0;
+    for (const v of c.troops.values()) troops += v;
+    if (want("spirit_well", c.pop >= this.p.economyTargetPop * 0.6)) return "spirit_well";
+    if (want("mending_hut", troops >= 6)) return "mending_hut";
+    return null;
   }
 
   /** BACKLOG 0c: a building that needs stone is only worth planning with a rock on the Hearth's landmass. */
@@ -1208,6 +1229,7 @@ export class OpponentAI implements Controller {
       const reach = def.range + this.sh.castReachSlack;
       const kind = def.aiTarget ?? "none";
       if (kind === "none" || kind === "bridge") continue;
+      const heals = def.effects.some((e) => e.type === "healOverTime");
       const killsCaster = def.effects.some((e) => e.type === "damageRadius" && (e.canKill?.length ?? 0) > 0);
       let best = -1;
       let bestScore = 0;
@@ -1218,7 +1240,7 @@ export class OpponentAI implements Controller {
         if (kind === "ownFighting" || kind === "ownMarching") {
           // own trained troops: Ward on those already fighting, Veil on a wave still on its way
           if (tribe !== this.tribe || E.cat[i] !== CAT.unit || !w.cfg.pack.units.units[E.type[i]].trainedAt) continue;
-          ok = kind === "ownFighting" ? E.atk[i] !== NO_ENTITY && E.ward[i] === 0 : E.order[i] !== 0 && E.atk[i] === NO_ENTITY && E.veil[i] === 0;
+          ok = kind === "ownFighting" ? E.atk[i] !== NO_ENTITY && (heals ? E.hp[i] < 0.7 * w.cfg.pack.units.units[E.type[i]].hp : E.ward[i] === 0) : E.order[i] !== 0 && E.atk[i] === NO_ENTITY && E.veil[i] === 0;
         } else if (kind === "wild") ok = E.cat[i] === CAT.unit && E.type[i] === w.economy.typeWild;
         else if (tribe >= 0 && tribe !== this.tribe && w.tribes[tribe]?.alive) ok = kind === "buildings" ? E.cat[i] === CAT.building && E.state[i] === BSTATE.done && this.seenB(w, i) : E.cat[i] === CAT.unit && E.veil[i] === 0 && !w.combat.disguised(i) && this.sees(w, i);
         if (!ok) continue;

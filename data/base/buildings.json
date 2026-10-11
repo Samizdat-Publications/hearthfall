@@ -128,7 +128,10 @@
       "hp": 4000,
       "destructible": true,
       "rebuildable": false
-    }
+    },
+    { "id": "spirit_well", "$comment": "Stretch 3: a well of spirit that adds manaPerMin to its tribe while it stands (as much as three housed settlers).", "footprint": [2, 2], "wood": 6, "stone": 3, "manaPerMin": 105, "hp": 1200 },
+    { "id": "mending_hut", "$comment": "Stretch 3: heals the tribe's units within radius by perSecond hp each second.", "footprint": [2, 2], "wood": 5, "stone": 1, "heal": { "radius": 5, "perSecond": 30 }, "hp": 900 },
+    { "id": "signal_pyre", "$comment": "Stretch 3: a tall fire that sees far (balance sight) and spots Shades.", "footprint": [1, 1], "wood": 3, "stone": 1, "hp": 600 }
   ],
   "construction": {
     "flattenToAverage": true,

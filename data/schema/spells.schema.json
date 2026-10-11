@@ -227,6 +227,34 @@
                   "properties": {
                     "type": {
                       "type": "string",
+                      "const": "healOverTime"
+                    },
+                    "radius": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "seconds": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "healPerSecond": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "radius",
+                    "seconds",
+                    "healPerSecond"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
                       "const": "statusApply"
                     },
                     "status": {
@@ -956,6 +984,34 @@
                     "radius",
                     "seconds",
                     "damagePerSecond"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "healOverTime"
+                    },
+                    "radius": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "seconds": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "healPerSecond": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "radius",
+                    "seconds",
+                    "healPerSecond"
                   ],
                   "additionalProperties": false
                 },

@@ -13,7 +13,7 @@ import { ROOT } from "./lib.mjs";
 const DIR = ROOT + "making-of/";
 const INDEX = DIR + "index.json";
 export const KINDS = ["concept", "screenshot", "contact-sheet", "asset-sheet", "asset-thumb", "comparison", "diagram"];
-const MILESTONE = /^(M\d{1,2}|A\d|B\d{1,3}|run)$/;
+const MILESTONE = /^(M\d{1,2}|A\d|B\d{1,3}|S\d|run)$/;
 
 function load() {
   try {

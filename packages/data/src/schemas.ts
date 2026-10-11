@@ -677,6 +677,10 @@ export const BuildingSchema = z.strictObject({
   placement: z.enum(["shore"]).optional(),
   /** BACKLOG 10: a finished building keeps up to max of this vehicle per building, one every seconds */
   makes: z.strictObject({ unit: id, max: z.number().int().positive(), seconds: pos }).optional(),
+  /** stretch 3: a finished building heals its tribe's units within radius, perSecond hp each (Mending Hut) */
+  heal: z.strictObject({ radius: pos, perSecond: pos }).optional(),
+  /** stretch 3: a finished building adds this much mana per minute to its tribe (Spirit Well) */
+  manaPerMin: pos.optional(),
   buildable: z.boolean().optional(),
   hp: pos,
   destructible: z.boolean().optional(),
@@ -784,6 +788,13 @@ const Effect = z.discriminatedUnion("type", [
     radius: pos,
     seconds: pos,
     damagePerSecond: pos,
+  }),
+  /** stretch 3: a mending ground that heals the caster tribe's units inside it, up to their full hp (Sanctuary) */
+  z.strictObject({
+    type: z.literal("healOverTime"),
+    radius: pos,
+    seconds: pos,
+    healPerSecond: pos,
   }),
   z.strictObject({
     type: z.literal("statusApply"),

@@ -1100,6 +1100,16 @@
       "when": "2026-10-10T18:36:08.198Z",
       "source": "external:1280x720-play.png",
       "bytes": 623780
+    },
+    {
+      "file": "s3/20261011-0232_s3-content-pack.png",
+      "milestone": "S3",
+      "kind": "asset-sheet",
+      "caption": "Stretch 3 content pack: spirit well, mending hut and signal pyre building icons plus sanctuary and deluge spell icons",
+      "highlight": false,
+      "when": "2026-10-11T02:32:56.285Z",
+      "source": "external:s3_content_pack_sheet.png",
+      "bytes": 277651
     }
   ]
 }

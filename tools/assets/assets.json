@@ -16461,6 +16461,1076 @@
       "request_hash": null,
       "approved": false,
       "qa": {}
+    },
+    {
+      "id": "building.spirit_well",
+      "class": "buildings",
+      "prompt": "round stone-ringed well with a low mossy rim of stacked fieldstones, a small wooden crossbeam with a rope and bucket over it, the water inside glowing with pale cyan-white spirit light and a few drifting motes of light rising from it",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1500,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "stone",
+        "textured": true,
+        "footprint": 2.0
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-11T02:29:24Z",
+          "finished": "2026-10-11T02:29:39Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.spirit_well/concept.jpg",
+          "sha256": "e30880058fb54d4027160e276f428ff2f12994a7dae6849236bf361924f09ba9",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 379299,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "91ebc10c1cd9fc85202bebb6a7591c3cdfc094b3cb2e71552f43643108882cb8"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a128cb-ae87-74b3-baa4-804d9ce479fc",
+          "started": "2026-10-11T02:29:39Z",
+          "finished": "2026-10-11T02:31:03Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.spirit_well/model.glb",
+          "sha256": "e67a51cf6cf14bb9e14b9f75a4b933256ae2059e5752f1e616252cb125f8bc3c",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "bytes": 2152024,
+            "progress": 100
+          },
+          "request_hash": "e26f4c7871c0f500c51c73ee469b2f01c20e423c8c8abe0834c460c9f6ab719b"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-11T02:31:07Z",
+          "finished": "2026-10-11T02:31:21Z",
+          "cost": null,
+          "output_path": "assets/models/building.spirit_well.glb",
+          "sha256": "0f16091398c5bffa61dd401cd160549353f0c758059790a5b7ebeea3097aefd7",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1175,
+            "tris_out": 1158,
+            "decimated": false,
+            "scale": 2.0,
+            "bounds_min": [
+              -1.0,
+              -1.0,
+              0.0
+            ],
+            "bounds_max": [
+              1.0,
+              1.0,
+              1.9451
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "cloth",
+              "forest",
+              "lightning",
+              "moss",
+              "rock",
+              "rockDark",
+              "scar",
+              "skin1",
+              "skin2",
+              "skin3",
+              "snow",
+              "stone",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "moss": 4,
+              "forest": 128,
+              "rock": 377,
+              "rockDark": 239,
+              "snow": 10,
+              "wood": 50,
+              "woodDark": 144,
+              "stone": 83,
+              "skin1": 7,
+              "skin2": 27,
+              "skin3": 3,
+              "cloth": 31,
+              "lightning": 10,
+              "scar": 45
+            },
+            "tribe_faces": 0,
+            "tribe_names": [],
+            "tribe_height_range": null,
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "6fcce68331ebf3ef3589fcdb7e9a32399f185695d7782cd980afc459684834ea"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-11T02:31:36Z",
+          "cost": null,
+          "output_path": "assets/icons/building.spirit_well.png",
+          "sha256": "92c544c6ec61e6e6417c540fdb801736158cacb76a3d644ea56670201f905817",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 1158,
+        "verts": 3472,
+        "bounds": {
+          "min": [
+            -1.0,
+            0.0,
+            -1.0
+          ],
+          "max": [
+            1.0,
+            1.9451,
+            1.0
+          ],
+          "size": [
+            2.0,
+            1.9451,
+            2.0
+          ]
+        },
+        "bytes": 147108,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "boundary_edges": 114,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "building.mending_hut",
+      "class": "buildings",
+      "prompt": "small herbalist hut with a round golden thatched roof, wattle walls, bundles of drying herbs and flowers hanging from the eaves, a small clay chimney with a curl of soft green smoke, a few clay pots of herbs by the door",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1400,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "wood",
+        "textured": true,
+        "footprint": 2.0
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-11T02:29:41Z",
+          "finished": "2026-10-11T02:29:53Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.mending_hut/concept.jpg",
+          "sha256": "9cf42883a17e08b2ab319d46c76fc29260beb78c1f06f13a9416ee1f72b6e374",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 366859,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "0d7d7c006311b9d6624edf7049d547193d2851306de93c52f2f1ea7abd0766af"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a128cb-e674-72d7-a055-a71d346d891d",
+          "started": "2026-10-11T02:29:53Z",
+          "finished": "2026-10-11T02:31:05Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.mending_hut/model.glb",
+          "sha256": "caeb2c9658678ece91f3afb55919bfbab97537df53d49ad7dd30d8f94cecbc1a",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "bytes": 2111300,
+            "progress": 100
+          },
+          "request_hash": "3d6c8451d2d87f8360f3b53abe4971f5f95320efc508a3694fe186fe2c7913b8"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-11T02:31:21Z",
+          "finished": "2026-10-11T02:31:25Z",
+          "cost": null,
+          "output_path": "assets/models/building.mending_hut.glb",
+          "sha256": "ac804af53319cf23d17d2b0feb8f8d7a8a488176fb2f74031b2b5c2a8d5b09f1",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1221,
+            "tris_out": 1219,
+            "decimated": false,
+            "scale": 2.0,
+            "bounds_min": [
+              -1.0,
+              -0.9944,
+              0.0
+            ],
+            "bounds_max": [
+              1.0,
+              0.9944,
+              1.9988
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "fire",
+              "forest",
+              "moss",
+              "rock",
+              "rockDark",
+              "scar",
+              "skin1",
+              "skin2",
+              "skin3",
+              "stone",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "moss": 1,
+              "forest": 136,
+              "rock": 10,
+              "rockDark": 199,
+              "wood": 118,
+              "woodDark": 96,
+              "thatch": 205,
+              "stone": 112,
+              "skin1": 46,
+              "skin2": 19,
+              "skin3": 126,
+              "azure": 7,
+              "fire": 18,
+              "scar": 126
+            },
+            "tribe_faces": 7,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.246,
+              0.295
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "0fd9e35f835f9586f4d4af2e0e050d962ef3ec0ea9a5297165d8c3fc0bf2eb22"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-11T02:31:36Z",
+          "cost": null,
+          "output_path": "assets/icons/building.mending_hut.png",
+          "sha256": "9ffb11d2c92390432bbd9fdb91bdeb88a06b820f84c43d6c3f4cfb4762d26770",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 1219,
+        "verts": 3656,
+        "bounds": {
+          "min": [
+            -1.0,
+            0.0,
+            -0.9944
+          ],
+          "max": [
+            1.0,
+            1.9988,
+            0.9944
+          ],
+          "size": [
+            2.0,
+            1.9988,
+            1.9888
+          ]
+        },
+        "bytes": 154872,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "boundary_edges": 65,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "building.signal_pyre",
+      "class": "buildings",
+      "prompt": "tall slender tower of stacked logs, crisscross lashed wooden frame narrowing upward, with a big bright orange bonfire burning in an open basket on top, sparks and smoke rising, a ladder up one side",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1800,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "wood",
+        "textured": true,
+        "height": 3.0
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-11T02:29:55Z",
+          "finished": "2026-10-11T02:30:09Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.signal_pyre/concept.jpg",
+          "sha256": "9a24b2c78b877884b2213371cdbbb398a2ef4e2a540df960cea5c09b47a1469a",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 372407,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "c390bb7354996c3a955e0dd4deca98ee39b9e79877dccf7a93a2396c5f8d5afb"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a128cc-3d07-72ca-a707-c3d2115acde9",
+          "started": "2026-10-11T02:30:09Z",
+          "finished": "2026-10-11T02:31:07Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.signal_pyre/model.glb",
+          "sha256": "dadf2f68cbe5e7984a23be19416b07b5ab25ad4fc81037f9c537701f2cebb351",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "bytes": 2642828,
+            "progress": 100
+          },
+          "request_hash": "b99673abebbe8b79447b9272d3a112213e9d27f427db646c76e1680c3f0388cb"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-11T02:31:25Z",
+          "finished": "2026-10-11T02:31:30Z",
+          "cost": null,
+          "output_path": "assets/models/building.signal_pyre.glb",
+          "sha256": "fcf82ec3cec2fc5f7930424fc7da4db0cefc60a66470b57ab81f8ca3428f64a6",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1752,
+            "tris_out": 1752,
+            "decimated": false,
+            "scale": 3.0,
+            "bounds_min": [
+              -0.782,
+              -0.7483,
+              0.0
+            ],
+            "bounds_max": [
+              0.782,
+              0.7483,
+              3.0
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "fire",
+              "rock",
+              "rockDark",
+              "sand",
+              "scar",
+              "skin1",
+              "skin2",
+              "skin3",
+              "stone",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "sand": 19,
+              "rock": 46,
+              "rockDark": 163,
+              "wood": 168,
+              "woodDark": 632,
+              "thatch": 19,
+              "stone": 70,
+              "skin1": 16,
+              "skin2": 231,
+              "skin3": 229,
+              "fire": 79,
+              "scar": 80
+            },
+            "tribe_faces": 0,
+            "tribe_names": [],
+            "tribe_height_range": null,
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "3addf9bfe8c7843d20724e045a1689a423671390860f1afcb46debd9c8c85b17"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-11T02:31:36Z",
+          "cost": null,
+          "output_path": "assets/icons/building.signal_pyre.png",
+          "sha256": "1e0eca80f4b4c454950e20e5f1c5f3d7b391922d2bbb3cf5054f45598ee4731b",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 1752,
+        "verts": 5255,
+        "bounds": {
+          "min": [
+            -0.782,
+            0.0,
+            -0.7483
+          ],
+          "max": [
+            0.782,
+            3.0,
+            0.7483
+          ],
+          "size": [
+            1.564,
+            3.0,
+            1.4966
+          ]
+        },
+        "bytes": 222048,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "icon.spell.sanctuary",
+      "class": "icons",
+      "prompt": "a circle of soft green-gold healing light on the ground, a ring of glowing leaves and small sprouting flowers around a warm golden glow, with gentle rising sparkles, spell icon",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "icon"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-11T02:30:17Z",
+          "finished": "2026-10-11T02:30:35Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/icon.spell.sanctuary/concept.jpg",
+          "sha256": "f79353e0b0f3dd8f70ec418cecbfee0f4bca9bbd0d66c4633e277a74cc72c5b3",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 440191,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "7a74d5a07b20cc1d19fff277a3a1c6a452286ffb09d1c7110dcf6a4d245e141b"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-11T02:30:35Z",
+          "finished": "2026-10-11T02:30:37Z",
+          "cost": null,
+          "output_path": "assets/icons/icon.spell.sanctuary.png",
+          "sha256": "0271cb653c6b226872756183f129b3d141cf55351086e96f60a3debd50f80658",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "output_128": "assets/icons/icon.spell.sanctuary_128.png",
+            "size": [
+              256,
+              256
+            ],
+            "warnings": [],
+            "bg_frac": 0.6569089889526367,
+            "band_frac": 0.010828018188476562,
+            "pocket_frac": 0.0
+          },
+          "request_hash": "0212c5f95d5be9897e5f8efc6d3ae86315a496b1ab4b23bfe4e7528d187ca48c"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "icon.spell.deluge",
+      "class": "icons",
+      "prompt": "a big blue wave bursting upward out of cracked brown ground, curling white foam crest and flying spray, spell icon",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "gemini",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "kind": "icon"
+      },
+      "steps": {
+        "model": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-11T02:30:37Z",
+          "finished": "2026-10-11T02:30:54Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/icon.spell.deluge/concept.jpg",
+          "sha256": "545ea765b71ba3f3926a8e394873a64d28acc8db8281b5fac3020f8604138987",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 452344,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "1367e000bad1330f8f588294f79c60454e69be90efc23ab59e82750ed7922216"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-11T02:30:54Z",
+          "finished": "2026-10-11T02:30:55Z",
+          "cost": null,
+          "output_path": "assets/icons/icon.spell.deluge.png",
+          "sha256": "3a8d7617436bffd7e0367b86e45f8d4ae45cca363446cd6cad9eeaa10652e57b",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "output_128": "assets/icons/icon.spell.deluge_128.png",
+            "size": [
+              256,
+              256
+            ],
+            "warnings": [],
+            "bg_frac": 0.5900564193725586,
+            "band_frac": 0.0148468017578125,
+            "pocket_frac": 0.0
+          },
+          "request_hash": "5e1f9e753b230080bc0ea5acce57a9e8f5652b6dbe545a1c611d909459f239bc"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.sanctuary_cast",
+      "class": "sfx",
+      "prompt": "a warm gentle rising chime and soft choir shimmer, a healing blessing with a bright sparkle at the end",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.6,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-11T02:30:55Z",
+          "finished": "2026-10-11T02:30:57Z",
+          "cost": {
+            "usd": 0.0032,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.sanctuary_cast/sfx.sanctuary_cast.mp3",
+          "sha256": "5ec8e123621c6ad336b33475400525a5f1aaa371753c25c7d943444bd3900758",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 26793,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "9"
+            }
+          },
+          "request_hash": "90f44421d1858e8e0383de9b15df1a5938068f94259bf25498b9e6c9a09fea74"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-11T02:30:57Z",
+          "finished": "2026-10-11T02:30:58Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.sanctuary_cast.ogg",
+          "sha256": "d3adfc4f71109e7911ba7d8d8f90d8014010193a980b0d7a13dc3d89d7a61ad2",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 33862,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "c237a083e803a410b6e61cfe9d29bb5863978bdc5410e81d3637adc43ca71134"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.deluge_cast",
+      "class": "sfx",
+      "prompt": "a big surging whoosh of water bursting from the ground, a heavy splash and rushing flood roar",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 2.0,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-11T02:30:58Z",
+          "finished": "2026-10-11T02:31:00Z",
+          "cost": {
+            "usd": 0.004,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.deluge_cast/sfx.deluge_cast.mp3",
+          "sha256": "12a3032dc8a0a6529de3e7ce62b5e9e9719ac71e800a0681142860181e4c092e",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 33062,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "11"
+            }
+          },
+          "request_hash": "f06eb9aa71980f6f853294023a29207f76e4ee3334766fc326ffcf577455bfc0"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-11T02:31:00Z",
+          "finished": "2026-10-11T02:31:01Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.deluge_cast.ogg",
+          "sha256": "fc9e18d796a4a9ae6cbe6f6eae6ab7cb0d0e7776c743856afbe15fc68dac9209",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 41510,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "85c06944f81c8d41e8e21606289334d6f5049c13f4d6d640e9244885c76b344b"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
     }
   ]
 }
