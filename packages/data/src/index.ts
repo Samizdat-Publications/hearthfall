@@ -206,7 +206,9 @@ export function validateLevel(raw: unknown, pack: PackFiles, file = "level"): { 
     if (r.type === "spawn" && !units.has(r.unit)) bad(path, `unknown unit ${r.unit}`);
     if (r.type === "spawn" && r.tribe !== undefined && r.tribe >= lv.tribes.length) bad(path, `no tribe ${r.tribe}`);
     if (r.type === "raid" && r.tribe >= lv.tribes.length) bad(path, `no tribe ${r.tribe}`);
+    if (r.type === "awaken") awakens.push({ site: r.site, path });
   };
+  const awakens: { site: string; path: string }[] = [];
   const tags = new Set<string>();
   const hearths = new Set<number>();
   lv.setup.forEach((s, k) => {
@@ -225,6 +227,9 @@ export function validateLevel(raw: unknown, pack: PackFiles, file = "level"): { 
     if (s.spawn === "hearth" && s.tribe !== undefined && s.tribe >= 0) hearths.add(s.tribe);
   });
   lv.tribes.forEach((_, k) => hearths.has(k) || bad("setup", `tribe ${k} has no hearth`));
+  // prayer chains: every awaken names a dormant site, and every dormant site can be woken
+  const dormant = new Set(lv.setup.flatMap((s) => (s.site?.dormant && s.site.tag ? [s.site.tag] : [])));
+  lv.setup.forEach((s, k) => s.site?.dormant && !s.site.tag && bad(`setup.${k}.site`, "a dormant site needs a tag"));
   lv.objectives.forEach((o, k) => o.type === "worship" && !tags.has(o.site) && bad(`objectives.${k}`, `no site tagged ${o.site}`));
   lv.lose?.forEach((o, k) => o.type === "siteLost" && !tags.has(o.site) && bad(`lose.${k}`, `no site tagged ${o.site}`));
   lv.triggers?.forEach((t, k) => {
@@ -232,6 +237,8 @@ export function validateLevel(raw: unknown, pack: PackFiles, file = "level"): { 
     if (t.when.type === "objective" && t.when.index >= lv.objectives.length) bad(`triggers.${k}.when`, `no objective ${t.when.index}`);
     t.do.forEach((r, j) => reward(r, `triggers.${k}.do.${j}`));
   });
+  awakens.forEach((a) => dormant.has(a.site) || bad(a.path, `no dormant site tagged ${a.site}`));
+  dormant.forEach((tag) => awakens.some((a) => a.site === tag) || bad("setup", `dormant site ${tag} is never awakened`));
   if (lv.objectives.some((o) => o.type === "eliminateAll") && lv.tribes.length < 2) bad("objectives", "eliminateAll needs an opponent");
   const variants = pack.balance.victory?.variants ?? [];
   const variant = variants.find((v) => v.id === lv.rules);

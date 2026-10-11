@@ -157,6 +157,7 @@ Spell UX: hover shows exact area preview on the curved terrain, range ring aroun
 ## 10. Worship objects
 
 - **Shrine:** needs N worshippers (1 to 8). Each missing worshipper halves prayer speed. Default prayer 37.5 s at full count. Grants one-shot spell charges or one building, then sinks.
+- **Prayer chains (stretch 3):** a level site can start dormant (sunk, refuses worship) and wake when another site's `awaken` reward names it; a `reveal` reward lifts the fog over a disc. Praying at one place opens the way to the next.
 - **Reliquary:** same mechanic, grants a permanent spell or building unlock (campaign progression and skirmish objective).
 - **Totem:** level-scripted trigger (raise a land bridge, spawn wild people, reveal map).
 

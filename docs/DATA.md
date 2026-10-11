@@ -178,7 +178,7 @@ Base pack `base` version 0.1.0, content hash `fc2a3d2c`.
 | `skirmishWorship.sites[].kind` | string | yes |
 | `skirmishWorship.sites[].worshippers` | int |  |
 | `skirmishWorship.sites[].prayerSeconds` | number |  |
-| `skirmishWorship.sites[].rewards` | object or object or object or object or object or object or object[] | yes |
+| `skirmishWorship.sites[].rewards` | object or object or object or object or object or object or object or object or object[] | yes |
 | `gates` | object | yes |
 | `gates.counterTriangleMinWinPct` | number | yes |
 | `gates.maxPersonalityWinPct` | number | yes |

@@ -170,6 +170,15 @@ describe("campaign levels", () => {
     expect(msgs).toContain("tribe 0 is the player");
   });
 
+  it("validateLevel checks prayer chains: awaken names a dormant site and every dormant site can wake", () => {
+    const base = level();
+    const site = (tag: string, dormant: boolean, rewards: object[]) => ({ spawn: "shrine", at: [20, 32], site: { tag, dormant, rewards } });
+    const msgs = (setup: object[]) => validateLevel({ ...base, setup: [...base.setup, ...setup] }, basePack().files).issues.map((i) => i.message);
+    expect(msgs([site("a", false, [{ type: "awaken", site: "b" }]), site("b", true, [{ type: "message", text: "hi" }])])).toEqual([]);
+    expect(msgs([site("b", true, [{ type: "message", text: "hi" }])])).toContain("dormant site b is never awakened");
+    expect(msgs([site("a", false, [{ type: "awaken", site: "zz" }])])).toContain("no dormant site tagged zz");
+  });
+
   // S2 block H: levels may name victory rules (a victory objective) and open with a Forge
   const duel = (over: Partial<LevelDef>) =>
     level({

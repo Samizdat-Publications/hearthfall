@@ -178,4 +178,27 @@ describe("worship sites", () => {
     // handmade test maps (scenarios, levels) have no generated Hearths, so they never get skirmish sites
     expect(world({ generator: "flat", size: 64, tribes: 2 }).worship.sites.length).toBe(0);
   });
+
+  it("prayer chains: a dormant site refuses worship until another site's awaken reward wakes it; reveal lifts fog", () => {
+    const w = camp({ tag: "s", rewards: [{ type: "awaken", site: "next" }, { type: "reveal", at: [6, 44], r: 4 }] });
+    w.worship.addSite("shrine", 48, 16, { tag: "next", dormant: true, rewards: [{ type: "charges", spell: "veil", n: 1 }] });
+    // a sleeping site is refused with a reason and hashed, so a chain change shows in replays
+    const settler = w.spawnUnit("settler", 0, 46, 16);
+    w.step([{ tick: w.tick, tribe: 0, type: "worship", args: { units: [settler], site: "next" } }]);
+    expect(w.events).toContainEqual(expect.objectContaining({ type: "commandRejected", reason: expect.stringContaining("asleep") }));
+    const before = w.hash().meta;
+    const fogged = w.vision.on ? w.vision.seen(0, 6, 44) : false;
+    pray(w, 0, 4);
+    expect(runUntil(w, "worshipComplete", prayTicks(w) * 2)).toBeGreaterThan(0);
+    expect(w.events).toContainEqual(expect.objectContaining({ type: "siteAwakened", site: "next" }));
+    expect(w.worship.find("next")!.dormant).toBeUndefined();
+    expect(w.hash().meta).not.toBe(before);
+    expect(w.vision.on).toBe(true);
+    expect(fogged).toBe(false);
+    expect(w.vision.seen(0, 6, 44)).toBe(true);
+    expect(w.vision.seen(1, 6, 44)).toBe(false);
+    // the woken site now accepts worshippers
+    w.step([{ tick: w.tick, tribe: 0, type: "worship", args: { units: [settler], site: "next" } }]);
+    expect(w.events.find((e) => e.type === "commandRejected")).toBeUndefined();
+  });
 });

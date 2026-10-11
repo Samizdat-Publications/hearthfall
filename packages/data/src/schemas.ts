@@ -1267,6 +1267,10 @@ export const RewardSchema = z.discriminatedUnion("type", [
     tribe: z.number().int().min(0),
     to: point,
   }),
+  /** prayer chains: wake a dormant site (by tag) so it can be worshipped; it rises from the ground */
+  z.strictObject({ type: z.literal("awaken"), site: id }),
+  /** lift the fog over a disc (the site by default) for the rewarded tribe: shows where a chain leads */
+  z.strictObject({ type: z.literal("reveal"), at: point.optional(), r: z.number().min(1).max(64) }),
   /** a message for the player (HUD notification) */
   z.strictObject({
     type: z.literal("message"),
@@ -1281,6 +1285,8 @@ export const SiteSpecSchema = z.strictObject({
   worshippers: z.number().int().min(1).max(8).optional(),
   prayerSeconds: pos.optional(),
   uses: z.number().int().min(1).optional(),
+  /** prayer chains: asleep (sunk, cannot be worshipped) until an awaken reward names it */
+  dormant: z.boolean().optional(),
   rewards: z.array(RewardSchema),
 });
 export type SiteSpec = z.infer<typeof SiteSpecSchema>;

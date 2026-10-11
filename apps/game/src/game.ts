@@ -1348,6 +1348,9 @@ export class Game {
             "bad",
           );
         break;
+      case "siteAwakened":
+        this.notify(`aw${e.site}`, "A sleeping stone has woken. It can be worshipped now.", "good");
+        break;
       case "worshipFailed":
         if (e.tribe === me)
           this.notify(

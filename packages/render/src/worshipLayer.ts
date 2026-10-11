@@ -64,6 +64,9 @@ function worshipGeometry(id: string, pal: Record<string, string>): { body: THREE
   }
 }
 
+/** how far a dormant site sits below the ground, in model units */
+const DORMANT_SINK = 0.9;
+
 export class WorshipLayer {
   readonly group = new THREE.Group();
   private kinds: { body: THREE.InstancedMesh; tint: THREE.InstancedMesh; scale: number }[] = [];
@@ -126,7 +129,9 @@ export class WorshipLayer {
       ox -= Math.round(ox / n) * n;
       oz -= Math.round(oz / n) * n;
       const y = Math.max(w.terrain.heightAt(E.x[i], E.y[i]), w.terrain.sea) * heightScale;
-      this.p.set(focusX + ox, y - 0.05, focusZ + oz);
+      // prayer chains: a sleeping site sits half sunk and unlit until another prayer wakes it
+      const sunk = site.dormant ? DORMANT_SINK * kind.scale : 0.05;
+      this.p.set(focusX + ox, y - sunk, focusZ + oz);
       this.q.setFromAxisAngle(THREE.Object3D.DEFAULT_UP, ((i * 2654435761) >>> 0) / 4294967296 * Math.PI * 2);
       this.m.compose(this.p, this.q, this.s.setScalar(kind.scale));
       let lead = -1;
@@ -138,7 +143,7 @@ export class WorshipLayer {
         }
       });
       const who = lead >= 0 ? lead : site.lastBy;
-      const col = site.usesLeft <= 0 ? this.spent : who >= 0 ? this.tribeColors[who % this.tribeColors.length] : this.glow;
+      const col = site.usesLeft <= 0 || site.dormant ? this.spent : who >= 0 ? this.tribeColors[who % this.tribeColors.length] : this.glow;
       // BACKLOG 89: the leading tribe's prayer progress as a filling ring (only while someone prays)
       if (this.ring && best > 0 && site.usesLeft > 0 && rings + RING_SEGS <= this.ringCap) {
         const lit = Math.max(1, Math.round((best / site.prayTicks) * RING_SEGS));
@@ -153,7 +158,7 @@ export class WorshipLayer {
         }
         this.s.set(1, 1, 1);
         // the site model below uses the unscaled matrix
-        this.p.set(focusX + ox, y - 0.05, focusZ + oz);
+        this.p.set(focusX + ox, y - sunk, focusZ + oz);
         this.q.setFromAxisAngle(THREE.Object3D.DEFAULT_UP, ((i * 2654435761) >>> 0) / 4294967296 * Math.PI * 2);
         this.m.compose(this.p, this.q, this.s.setScalar(kind.scale));
       }

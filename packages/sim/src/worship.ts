@@ -30,6 +30,8 @@ export interface Site {
   progress: number[];
   /** tribe that last completed it (-1 none) */
   lastBy: number;
+  /** prayer chains: asleep until an awaken reward wakes it (absent in older saves: awake) */
+  dormant?: boolean;
 }
 
 export interface WorshipState {
@@ -79,6 +81,7 @@ export class WorshipSystem {
       rewards: spec.rewards.map((r) => ({ ...r })),
       progress: w.tribes.map(() => 0),
       lastBy: -1,
+      ...(spec.dormant ? { dormant: true } : {}),
     });
     return id;
   }
@@ -199,7 +202,7 @@ export class WorshipSystem {
       if (task !== TASK.toWorship && task !== TASK.worship) continue;
       const si = E.index(E.target[i]);
       const k = si < 0 ? undefined : siteOf.get(si);
-      if (k === undefined || this.sites[k].usesLeft <= 0) {
+      if (k === undefined || this.sites[k].usesLeft <= 0 || this.sites[k].dormant) {
         E.task[i] = TASK.idle;
         E.target[i] = NO_ENTITY;
         continue;
@@ -225,7 +228,7 @@ export class WorshipSystem {
     const factor = ws.missingWorshipperSpeedFactor;
     const decay = ((ws.decayPerSecond ?? 0) / w.cfg.tickHz);
     this.sites.forEach((s, k) => {
-      if (s.usesLeft <= 0 || E.index(s.ent) < 0) return;
+      if (s.usesLeft <= 0 || s.dormant || E.index(s.ent) < 0) return;
       const shaperOnly = this.kinds()[s.kind].shaperOnly === true;
       let winner = -1;
       for (let t = 0; t < T; t++) {
@@ -273,6 +276,11 @@ export class WorshipSystem {
   /** Adds nothing when the map has no sites, so pre-M9 replay hashes are unchanged. */
   hashInto(f: Fnv): void {
     if (!this.sites.length && !this.granted.some((g) => g.length)) return;
+    // prayer chains: only worlds with a sleeping site hash the flags, so older replays keep their hashes
+    if (this.sites.some((s) => s.dormant)) {
+      f.u32(0xd0a7);
+      for (const s of this.sites) f.u32(s.dormant ? 1 : 0);
+    }
     f.u32(0x5717e5).u32(this.sites.length);
     for (const s of this.sites) {
       f.u32(s.ent).u32(s.kind).u32(s.need).u32(s.prayTicks).u32(s.usesLeft).u32(s.lastBy + 1);
@@ -354,6 +362,20 @@ export function applyReward(w: World, tribe: number, r: Reward, x: number, y: nu
       w.emit("raid", { tribe: r.tribe, n: ids.length });
       return;
     }
+    case "awaken": {
+      const s = w.worship.find(r.site);
+      if (!s || !s.dormant) return;
+      delete s.dormant;
+      const si = w.ents.index(s.ent);
+      w.emit("siteAwakened", { tribe, site: s.tag, x: si >= 0 ? w.ents.x[si] : x, y: si >= 0 ? w.ents.y[si] : y });
+      return;
+    }
+    case "reveal": {
+      const [px, py] = r.at ?? [x, y];
+      w.vision.reveal(tribe, px, py, r.r);
+      w.emit("revealed", { tribe, x: px, y: py, r: r.r });
+      return;
+    }
     case "message":
       w.emit("levelMessage", { tribe, text: r.text });
       return;
@@ -369,6 +391,7 @@ registerCommand("worship", {
     const s = w.worship.find(c.args.site);
     if (!s || w.ents.index(s.ent) < 0) return "no such worship site";
     if (s.usesLeft <= 0) return "this site has nothing left to give";
+    if (s.dormant) return "this site is asleep: pray elsewhere to wake it";
     return null;
   },
   apply(w, c) {

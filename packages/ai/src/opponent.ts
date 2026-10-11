@@ -616,7 +616,7 @@ export class OpponentAI implements Controller {
     for (const s of w.worship.sites) {
       const si = E.index(s.ent);
       // totems are level scripting for the player's Shaper
-      if (si < 0 || s.usesLeft <= 0 || kinds[s.kind]?.shaperOnly) continue;
+      if (si < 0 || s.usesLeft <= 0 || s.dormant || kinds[s.kind]?.shaperOnly) continue;
       if (this.comp(w, E.x[si], E.y[si]) !== home) continue;
       let have = 0;
       for (const i of c.settlers) if ((E.task[i] === TASK.toWorship || E.task[i] === TASK.worship) && E.index(E.target[i]) === si) have++;

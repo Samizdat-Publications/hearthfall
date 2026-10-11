@@ -87,6 +87,22 @@ export class VisionSystem {
     return this.seesEntity(tribe, i) || this.seen(tribe, E.x[i], E.y[i]);
   }
 
+  /** prayer chains (reveal reward): mark a disc of radius r map cells explored for `tribe` */
+  reveal(tribe: number, x: number, y: number, r: number): void {
+    if (!this.on || tribe < 0 || tribe >= this.explored.length) return;
+    const g = this.gw;
+    const rc = r / this.cell + 0.5;
+    const R = Math.ceil(rc);
+    const cx = Math.floor(x / this.cell);
+    const cy = Math.floor(y / this.cell);
+    const exp = this.explored[tribe];
+    for (let dy = -R; dy <= R; dy++) {
+      const yy = (((cy + dy) % g) + g) % g;
+      for (let dx = -R; dx <= R; dx++) if (dx * dx + dy * dy <= rc * rc) exp[yy * g + ((((cx + dx) % g) + g) % g)] = 1;
+    }
+    this.version++;
+  }
+
   /** step 10: recompute on the cadence (also called once after world generation) */
   update(force = false): void {
     if (!this.on || (!force && this.w.tick % this.every !== 0)) return;
