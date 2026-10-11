@@ -1,0 +1,98 @@
+{
+  "id": "teams_conquest_team_wins",
+  "description": "Leg 5 (L5-D): under conquest a team wins together: once the lone rival falls the first tribe of the surviving team is the winner while its ally still stands.",
+  "tags": [
+    "fast",
+    "teams",
+    "rules"
+  ],
+  "seed": 5,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 3
+  },
+  "rules": "conquest",
+  "teams": [
+    0,
+    0,
+    1
+  ],
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        12,
+        32
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        14,
+        30
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        12,
+        50
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        14,
+        48
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        30,
+        32
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 2,
+      "at": [
+        36,
+        32
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "tick": 1,
+      "tribe": 1,
+      "type": "move",
+      "args": {
+        "units": "tribe1.wardens",
+        "to": [
+          36,
+          32
+        ],
+        "attack": true
+      }
+    }
+  ],
+  "runTicks": 900,
+  "assert": [
+    {
+      "at": 1,
+      "expr": "rules.winner == -1"
+    },
+    {
+      "at": 900,
+      "expr": "!alive(2) && alive(0) && alive(1) && rules.winner == 0 && rules.why == 'conquest' && events.count('matchWon') == 1 && invariants() == 0"
+    }
+  ]
+}

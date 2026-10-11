@@ -1036,16 +1036,20 @@ export class Game {
     if (this.world.tribes.length < 2) return;
     const ts = this.world.tribes;
     const me = ts[this.localTribe];
-    const rules = this.world.rules;
+    const w = this.world;
+    // Leg 5 (L5-D): while an ally still stands, a fallen player watches the match on (one tribe per team: as before)
+    const teamUp = ts.some((t) => t.alive && w.allied(t.index, this.localTribe));
+    const rules = w.rules;
     if (rules) {
-      // BACKLOG 13 (ADR-014): the sim decides the winner; losing the local tribe ends the match for the player
-      if (me?.alive && rules.winner < 0) return;
-      this.ended = { won: Boolean(me?.alive) && rules.winner === this.localTribe, why: me?.alive ? rules.why : "eliminated" };
+      // BACKLOG 13 (ADR-014): the sim decides the winner; losing the local team ends the match for the player
+      if (teamUp && rules.winner < 0) return;
+      const won = rules.winner >= 0 && w.allied(rules.winner, this.localTribe);
+      this.ended = { won, why: won || me?.alive ? rules.why : "eliminated" };
     } else {
-      // saves from before the sim rules: every rival out wins, the local tribe out loses
-      const rivalsOut = ts.every((t) => t.index === this.localTribe || !t.alive);
-      if (me?.alive && !rivalsOut) return;
-      this.ended = { won: Boolean(me?.alive) };
+      // saves from before the sim rules: every rival out wins, the local team out loses
+      const rivalsOut = ts.every((t) => !t.alive || w.allied(t.index, this.localTribe));
+      if (teamUp && !rivalsOut) return;
+      this.ended = { won: teamUp };
     }
     if (this.ended.won) this.voice("voice.shaper.victory");
     this.keepRecords(this.ended.won);

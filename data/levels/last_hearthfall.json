@@ -2,7 +2,7 @@
   "$comment": "Campaign level 22 (stretch 3), the finale: a centre island, three rival isles (north sneaky, east aggressive, south hard turtle) joined to it by tidal flats. A shore totem raises the home causeway, the ember shrine wakes three stones in rival hands, two wolf dens guard the centre, clearing them wakes the Last Hearth (volcano) and its southern guardians, lighting it brings three war bands, the southern towers fall to an assault (freed wardens join), then every tribe falls.",
   "id": "last_hearthfall",
   "name": "The Last Hearthfall",
-  "order": 22,
+  "order": 25,
   "description": "Four tribes, one old fire. Wake the shore totem, pray at the ember shrine, pry two stones from rival hands, clear the wolves from the centre, take the Last Hearth from its guardians, raze the southern towers and break all three tribes.",
   "seed": 2222,
   "beastPrey": "player",

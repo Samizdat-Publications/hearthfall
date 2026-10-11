@@ -95,6 +95,8 @@ export function makeCtx(w) {
     effects: sel((i) => E.cat[i] === CAT.effect),
     charges: (tribe, spell) => w.tribes[tribe]?.eco.charges[w.cfg.spellIndex.get(spell)] ?? -1,
     alive: (tribe) => w.tribes[tribe]?.alive ?? false,
+    /** BACKLOG 3 and Leg 5: does `tribe` see the point now (always true with fog off) */
+    sees: (tribe, p) => w.vision.sees(tribe, p[0], p[1]),
     /** M9: campaign level state and worship sites by tag */
     level: {
       won: w.level?.outcome === OUTCOME.won,

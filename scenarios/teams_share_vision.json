@@ -1,0 +1,62 @@
+{
+  "id": "teams_share_vision",
+  "description": "Leg 5 (L5-D): under fog an ally sees what its teammate's scout sees (balance.teams.shareVision); the rival on another team does not.",
+  "tags": [
+    "fast",
+    "teams"
+  ],
+  "seed": 9,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 3,
+    "fog": true
+  },
+  "teams": [
+    0,
+    0,
+    1
+  ],
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        8,
+        8
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        8,
+        56
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 2,
+      "at": [
+        56,
+        8
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "at": [
+        40,
+        40
+      ]
+    }
+  ],
+  "commands": [],
+  "runTicks": 40,
+  "assert": [
+    {
+      "at": 40,
+      "expr": "sees(1, [40, 40]) && sees(0, [40, 40]) && !sees(2, [40, 40]) && sees(0, [8, 56]) && invariants() == 0"
+    }
+  ]
+}

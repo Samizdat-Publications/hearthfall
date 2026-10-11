@@ -84,7 +84,10 @@ export class RulesRuntime {
       });
     }
     const alive = w.tribes.filter((t) => t.alive);
-    if (w.tribes.length > 1 && alive.length === 1) return this.finish(alive[0].index, "conquest");
+    // Leg 5 (L5-D): the last team standing wins (the winner is its first living tribe)
+    if (w.tribes.length > 1 && alive.length && alive.every((t) => w.allied(t.index, alive[0].index))) {
+      if (alive.length === 1 || w.tribes.some((t) => !w.allied(t.index, alive[0].index))) return this.finish(alive[0].index, "conquest");
+    }
     if (!alive.length) return;
     const d = this.def;
     const hz = w.cfg.tickHz;
@@ -102,15 +105,17 @@ export class RulesRuntime {
     const counts = sites.map((s) => this.presence(s.x, s.y));
     if (d.type === "holdSites") {
       for (const t of w.tribes) {
-        const holds = t.alive && counts.every((c) => c[t.index] > 0 && c.every((k, o) => o === t.index || k === 0));
+        // allies may stand on the site too; any rival there breaks the hold
+        const holds = t.alive && counts.every((c) => c[t.index] > 0 && c.every((k, o) => w.allied(o, t.index) || k === 0));
         this.held[t.index] = holds ? this.held[t.index] + hz : 0;
       }
     } else {
-      const c = counts[0];
+      // Leg 5 (L5-D): a team counts its members together (plain skirmish: every tribe alone)
+      const c = counts[0].map((_, t) => counts[0].reduce((s, k, o) => (w.allied(o, t) ? s + k : s), 0));
       let top = -1;
       for (let t = 0; t < c.length; t++) if (w.tribes[t].alive && c[t] > 0 && (top < 0 || c[t] > c[top])) top = t;
       // a tie scores nobody
-      if (top >= 0 && c.every((k, o) => o === top || k < c[top])) this.held[top] += hz;
+      if (top >= 0 && c.every((k, o) => w.allied(o, top) || k < c[top])) this.held[top] += hz;
     }
     const goal = this.goalTicks();
     for (let t = 0; t < this.held.length; t++) if (this.held[t] >= goal) return this.finish(t, d.type);

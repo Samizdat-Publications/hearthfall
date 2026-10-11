@@ -192,12 +192,12 @@ export class CombatSystem {
     if (this.kind[E.type[i]] === KIND.saboteur) {
       // a Shade sabotages: any tree, or an enemy building that is not a Hearth and not already alight
       if (c === CAT.tree) return true;
-      if (c !== CAT.building || tj < 0 || tj === E.tribe[i] || !w.tribes[tj]?.alive) return false;
+      if (c !== CAT.building || tj < 0 || !w.hostile(E.tribe[i], tj) || !w.tribes[tj]?.alive) return false;
       return w.tribes[tj].hearth !== E.idOf(j) && E.burn[j] === 0;
     }
     // stretch 3: wild beasts are fair game for every fighter but a Chanter
     if (tj < 0) return c === CAT.unit && w.beasts.isBeast(E.type[j]) && E.inside[j] < 0 && this.kind[E.type[i]] !== KIND.chanter && E.tribe[i] >= 0;
-    if (tj === E.tribe[i] || !w.tribes[tj]?.alive) return false;
+    if (w.allied(tj, E.tribe[i]) || !w.tribes[tj]?.alive) return false;
     if (c === CAT.unit && (E.veil[j] > 0 || this.disguised(j))) return false;
     if (this.kind[E.type[i]] === KIND.chanter) return c === CAT.unit && E.inside[j] < 0 && this.convertible[E.type[j]];
     // melee cannot reach a boat or a balloon (BACKLOG 10); missiles and spells can
@@ -260,7 +260,7 @@ export class CombatSystem {
         for (let j = H.head[b]; j !== -1; j = H.next[j]) {
           // cheap rejections first (friends and out of range), the full check last
           const tj = E.tribe[j];
-          if (tj === tr || (tj < 0 && !w.beasts.isBeast(E.type[j]))) continue;
+          if (tj === tr || (tj < 0 ? !w.beasts.isBeast(E.type[j]) : w.allied(tj, tr))) continue;
           const dx = wrapDelta(E.x[j] - x, n);
           const dy = wrapDelta(E.y[j] - y, n);
           const dd = dx * dx + dy * dy;
@@ -557,7 +557,7 @@ export class CombatSystem {
     w.emit("fireball", { id: E.idOf(i), tribe: tr, x, y, fx: E.x[i], fy: E.y[i], bands });
     const r2 = rd.radius * rd.radius;
     for (let j = 0; j < E.hi; j++) {
-      if (!E.alive[j] || E.tribe[j] < 0 || E.tribe[j] === tr) continue;
+      if (!E.alive[j] || !w.hostile(E.tribe[j], tr)) continue;
       const dx = wrapDelta(E.x[j] - x, n);
       const dy = wrapDelta(E.y[j] - y, n);
       const d2 = dx * dx + dy * dy;
@@ -623,14 +623,14 @@ export class CombatSystem {
       const tr = E.tribe[i];
       let by = -1;
       for (const b of this.buildings) {
-        if (!E.alive[b] || E.tribe[b] < 0 || E.tribe[b] === tr || !this.detectBuilding.has(E.type[b]) || E.state[b] !== BSTATE.done) continue;
+        if (!E.alive[b] || !w.hostile(E.tribe[b], tr) || !this.detectBuilding.has(E.type[b]) || E.state[b] !== BSTATE.done) continue;
         if (this.dist(i, E.x[b], E.y[b]) <= s.detectRadius + this.halfSize(b)) {
           by = b;
           break;
         }
       }
       for (let j = 0; by < 0 && j < E.hi; j++) {
-        if (!E.alive[j] || E.cat[j] !== CAT.unit || E.tribe[j] < 0 || E.tribe[j] === tr || E.inside[j] >= 0 || !this.detectUnit.has(E.type[j])) continue;
+        if (!E.alive[j] || E.cat[j] !== CAT.unit || !w.hostile(E.tribe[j], tr) || E.inside[j] >= 0 || !this.detectUnit.has(E.type[j])) continue;
         if (this.dist(i, E.x[j], E.y[j]) <= s.detectRadius) by = j;
       }
       if (by < 0) continue;
@@ -737,7 +737,7 @@ export class CombatSystem {
       if (!E.alive[b] || E.cat[b] !== CAT.building || E.state[b] !== BSTATE.done) continue;
       const h = defs[E.type[b]].heal;
       if (!h) continue;
-      for (const u of within(w, CAT.unit, E.x[b], E.y[b], h.radius)) if (E.tribe[u] === E.tribe[b] && E.inside[u] < 0) healUnit(w, u, h.perSecond);
+      for (const u of within(w, CAT.unit, E.x[b], E.y[b], h.radius)) if (w.allied(E.tribe[u], E.tribe[b]) && E.inside[u] < 0) healUnit(w, u, h.perSecond);
     }
   }
 
@@ -985,7 +985,7 @@ registerCommand("attack", {
     // BACKLOG 2: Shades may be sent at trees; a disguised enemy Shade cannot be picked out
     if (t >= 0 && w.ents.cat[t] === CAT.tree) return idx.every((i) => w.combat.isSaboteur(w.ents.type[i])) ? null : "no such target";
     if (t < 0 || (w.ents.cat[t] !== CAT.unit && w.ents.cat[t] !== CAT.building) || w.combat.disguised(t)) return "no such target";
-    if (w.ents.tribe[t] < 0 || w.ents.tribe[t] === w.ents.tribe[idx[0]]) return "target is not an enemy";
+    if (!w.hostile(w.ents.tribe[t], w.ents.tribe[idx[0]])) return "target is not an enemy";
     return null;
   },
   apply(w, c) {

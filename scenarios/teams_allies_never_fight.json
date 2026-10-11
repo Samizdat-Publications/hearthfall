@@ -1,0 +1,144 @@
+{
+  "id": "teams_allies_never_fight",
+  "description": "Leg 5 (L5-D): Wardens of two tribes on one team stand side by side and never fight, a rival's Wardens walking in are fought by both, and an attack order on an ally is refused.",
+  "tags": [
+    "fast",
+    "teams"
+  ],
+  "seed": 7,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 3
+  },
+  "teams": [
+    0,
+    0,
+    1
+  ],
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        8,
+        8
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        8,
+        56
+      ]
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 2,
+      "at": [
+        56,
+        32
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        30,
+        30
+      ],
+      "count": 3,
+      "spacing": 0.6
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        31,
+        32
+      ],
+      "count": 3,
+      "spacing": 0.6
+    },
+    {
+      "spawn": "warden",
+      "tribe": 2,
+      "near": [
+        48,
+        32
+      ],
+      "count": 2,
+      "spacing": 0.6
+    }
+  ],
+  "commands": [
+    {
+      "tick": 0,
+      "tribe": 0,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 1,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 0,
+      "tribe": 2,
+      "type": "setPriorities",
+      "args": {
+        "build": 0,
+        "upgrade": 0,
+        "breed": 0
+      }
+    },
+    {
+      "tick": 10,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.wardens",
+        "to": [
+          31,
+          32
+        ],
+        "attack": true
+      }
+    },
+    {
+      "tick": 200,
+      "tribe": 2,
+      "type": "move",
+      "args": {
+        "units": "tribe2.wardens",
+        "to": [
+          31,
+          31
+        ],
+        "attack": true
+      }
+    }
+  ],
+  "runTicks": 900,
+  "assert": [
+    {
+      "at": 190,
+      "expr": "count(tribe0.wardens)==3&&count(tribe1.wardens)==3&&hp(tribe0.wardens)==hp(tribe1.wardens)&&invariants()==0"
+    },
+    {
+      "at": 900,
+      "expr": "count(tribe2.wardens)==0&&count(tribe0.wardens)+count(tribe1.wardens)>=4&&invariants()==0"
+    }
+  ]
+}

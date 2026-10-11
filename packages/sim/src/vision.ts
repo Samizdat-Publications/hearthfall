@@ -123,7 +123,29 @@ export class VisionSystem {
     }
     // stretch 3: held sight stones (living world)
     for (const s of w.living.sightSources()) this.stamp(s.tribe, s.x, s.y, s.r);
+    // Leg 5 (L5-D): allies see what their team sees (balance.teams.shareVision)
+    if (w.cfg.pack.balance.teams?.shareVision) this.shareTeams();
     this.version++;
+  }
+
+  /** OR the visible and explored grids of every tribe on a team into each member's grids. */
+  private shareTeams(): void {
+    const tm = this.w.teamOf;
+    const T = this.visible.length;
+    for (let a = 0; a < T; a++) {
+      // the first member of each team gathers, then hands the union back
+      let first = true;
+      for (let b = 0; b < a; b++) if (tm[b] === tm[a]) first = false;
+      if (!first) continue;
+      const mates: number[] = [];
+      for (let b = a; b < T; b++) if (tm[b] === tm[a]) mates.push(b);
+      if (mates.length < 2) continue;
+      for (const grids of [this.visible, this.explored]) {
+        const u = grids[a];
+        for (const b of mates) if (b !== a) for (let k = 0; k < u.length; k++) u[k] |= grids[b][k];
+        for (const b of mates) if (b !== a) grids[b].set(u);
+      }
+    }
   }
 
   /** a disc of radius r map cells, in grid cells (cell centers within r + half a cell): visible and explored */

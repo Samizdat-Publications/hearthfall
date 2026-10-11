@@ -86,6 +86,11 @@ export interface WorldInit {
   leyStones?: number;
   /** stretch 3 (living world): wolf dens scattered on a skirmish map (balance.beasts); absent or 0: none, older replays */
   wolfDens?: number;
+  /**
+   * Leg 5 (L5-D): team id per tribe index; tribes on one team never fight, win together and (with
+   * balance.teams.shareVision) share sight. Absent: every tribe alone (older replays, plain skirmishes).
+   */
+  teams?: number[];
 }
 
 /** Multipliers a tribe trait applies (balance.traits); NO_TRAIT for a tribe without one. */
@@ -122,6 +127,7 @@ export function originMismatch(origin: WorldOrigin, init: WorldInit): string | n
   if (!!origin.forge !== !!init.forge) return "forge phase differs";
   if ((origin.weather ?? "clear") !== (init.weather ?? "clear")) return "weather differs";
   if (canon(origin.traits ?? []) !== canon(init.traits ?? [])) return "tribe traits differ";
+  if (canon(origin.teams ?? []) !== canon(init.teams ?? [])) return "teams differ";
   if ((origin.level?.def.id ?? null) !== (init.level?.def.id ?? null)) return `level ${origin.level?.def.id ?? "none"} vs ${init.level?.def.id ?? "none"}`;
   return null;
 }
@@ -212,6 +218,8 @@ export class World {
   readonly speedMult: number;
   /** stretch 2: per tribe index, the trait multipliers (NO_TRAIT when none) */
   readonly traitMods: TraitMods[];
+  /** Leg 5 (L5-D): team id per tribe index (each tribe its own team when WorldInit.teams is absent) */
+  readonly teamOf: number[] = [];
   controllers: Controller[] = [];
   readonly mapInfo: { generator: string; seedUsed: number; rerolls: number; landFraction: number };
 
@@ -245,6 +253,7 @@ export class World {
     const tribeCount = init.map.tribes ?? gen.hearths.length;
     this.vision.init(tribeCount);
     for (let t = 0; t < tribeCount; t++) this.tribes.push({ index: t, color: TRIBE_COLORS[t % 4], hearth: NO_ENTITY, alive: true, eco: newTribeEco(this), shaper: NO_ENTITY, respawnAt: -1, casting: null, pending: null });
+    for (let t = 0; t < tribeCount; t++) this.teamOf.push(init.teams?.[t] ?? t + 1000);
     this.rules = init.rules ? new RulesRuntime(this, init.rules) : null;
     this.forge = init.forge ? new ForgeRuntime(this) : null;
     if (init.populate !== false) {
@@ -259,6 +268,17 @@ export class World {
       if (!init.level && init.wolfDens) this.beasts.placeDens(gen.hearths, init.wolfDens);
     }
     this.vision.update(true);
+  }
+
+  // ---------------------------------------------------------------- Leg 5 (L5-D): teams
+  /** Two tribes that fight: both real tribes (not wild or neutral) on different teams. */
+  hostile(a: number, b: number): boolean {
+    return a >= 0 && b >= 0 && a !== b && this.teamOf[a] !== this.teamOf[b];
+  }
+
+  /** The same tribe, or two tribes on one team. */
+  allied(a: number, b: number): boolean {
+    return a === b || (a >= 0 && b >= 0 && this.teamOf[a] === this.teamOf[b]);
   }
 
   // ---------------------------------------------------------------- spawning (setup and effects)

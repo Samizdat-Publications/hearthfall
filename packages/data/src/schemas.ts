@@ -276,6 +276,8 @@ export const BalanceSchema = z.strictObject({
    * Leg 5 (LAN play, packages/net): lockstep input delay in ticks, the state hash compare interval in ticks,
    * and how long a stalled partner may hold the match before the HUD says so. Read by the app, not the sim.
    */
+  /** Leg 5 (L5-D): teams (WorldInit.teams); shareVision: allies see what their team sees */
+  teams: z.strictObject({ ...comment, shareVision: z.boolean() }).optional(),
   net: z
     .strictObject({
       ...comment,

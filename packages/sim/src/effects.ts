@@ -79,7 +79,7 @@ registerEffect("damageRadius", (c, e) => {
   const casterH = w.terrain.heightAt(c.casterX, c.casterY);
   const pops = wardPoppers(w).has(c.spell);
   for (const i of within(w, CAT.unit, c.x, c.y, e.radius)) {
-    if (w.ents.tribe[i] === c.tribe) continue;
+    if (w.allied(w.ents.tribe[i], c.tribe)) continue;
     if (pops && w.ents.ward[i] > 0) {
       w.ents.ward[i] = 0;
       w.emit("wardPopped", { id: w.ents.idOf(i), by: c.spell, x: w.ents.x[i], y: w.ents.y[i] });
@@ -130,7 +130,7 @@ registerEffect("knockback", (c, e) => {
   const E = w.ents;
   const n = w.terrain.size;
   for (const i of within(w, CAT.unit, c.x, c.y, e.radius)) {
-    if (E.tribe[i] === c.tribe) continue;
+    if (w.allied(E.tribe[i], c.tribe)) continue;
     const dx = wrapDelta(E.x[i] - c.x, n);
     const dy = wrapDelta(E.y[i] - c.y, n);
     const d = Math.sqrt(dx * dx + dy * dy);
@@ -148,7 +148,7 @@ registerEffect("convertRadius", (c, e) => {
   const settler = w.cfg.unitIndex.get("settler");
   for (const i of within(w, CAT.unit, c.x, c.y, e.radius)) {
     if (converted >= e.max || room <= 0) break;
-    if (E.tribe[i] === c.tribe || unitIs(w, i, e.excludes)) continue;
+    if (w.allied(E.tribe[i], c.tribe) || unitIs(w, i, e.excludes)) continue;
     if (e.targets && !unitIs(w, i, e.targets)) continue;
     if (!w.cfg.pack.units.units[E.type[i]].convertible) continue;
     const from = E.tribe[i];
@@ -196,7 +196,7 @@ registerEffect("statusApply", (c, e) => {
   let left = e.max ?? Infinity;
   for (const i of within(w, CAT.unit, c.x, c.y, need(e.radius, "statusApply radius"))) {
     // own-target statuses land on the caster's units, the rest on everyone else; only those count against max
-    if (own ? E.tribe[i] !== c.tribe : E.tribe[i] === c.tribe) continue;
+    if (own ? !w.allied(E.tribe[i], c.tribe) : w.allied(E.tribe[i], c.tribe)) continue;
     if (e.status === "beguiled" && (E.tribe[i] < 0 || isCasterUnit(w, i) || E.beguile[i] > 0)) continue;
     // a boat or balloon is never beguiled (its riders would sail for the enemy) and never panics (D+F review)
     if ((e.status === "beguiled" || e.status === "panic") && w.vehicles.isVehicle(i)) continue;
@@ -312,7 +312,7 @@ registerEffect("damageBuildingsRadius", (c, e) => {
   if (e.type !== "damageBuildingsRadius") return;
   const w = c.w;
   for (const i of within(w, CAT.building, c.x, c.y, e.radius)) {
-    if (w.ents.tribe[i] === c.tribe) continue;
+    if (w.allied(w.ents.tribe[i], c.tribe)) continue;
     const def = w.cfg.pack.buildings.buildings[w.ents.type[i]];
     w.damage(i, (def.hp * e.damagePct) / 100, c.tribe, true);
   }
@@ -425,11 +425,11 @@ function stormImpact(w: World, i: number): void {
   const tr = E.tribe[i];
   w.emit("meteor", { tribe: tr, x, y, r: e.impactRadius });
   for (const u of within(w, CAT.unit, x, y, e.impactRadius)) {
-    if (E.tribe[u] === tr) continue;
+    if (w.allied(E.tribe[u], tr)) continue;
     w.damage(u, e.damage, tr, false);
     if (e.knockback && E.alive[u]) knockUnit(w, u, wrapDelta(E.x[u] - x, n), wrapDelta(E.y[u] - y, n), e.knockback);
   }
-  for (const b of within(w, CAT.building, x, y, e.impactRadius)) if (E.tribe[b] !== tr) w.damage(b, e.damage, tr, true);
+  for (const b of within(w, CAT.building, x, y, e.impactRadius)) if (!w.allied(E.tribe[b], tr)) w.damage(b, e.damage, tr, true);
 }
 
 /** Whirlwind: wander, fling the units it touches, wear down buildings. */
@@ -453,7 +453,7 @@ function moverStep(w: World, i: number): void {
   const tr = E.tribe[i];
   for (const u of within(w, CAT.unit, E.x[i], E.y[i], e.radius)) {
     // the caster's own units are spared; a unit still flying from a fling is not flung again
-    if (E.tribe[u] === tr || E.ktick[u] > 0) continue;
+    if (w.allied(E.tribe[u], tr) || E.ktick[u] > 0) continue;
     const dx = wrapDelta(E.x[u] - E.x[i], n);
     const dy = wrapDelta(E.y[u] - E.y[i], n);
     // out and round: the outward push plus a quarter turn along the spin
@@ -462,7 +462,7 @@ function moverStep(w: World, i: number): void {
   }
   if (e.buildingDamagePctPerSecond) {
     for (const b of within(w, CAT.building, E.x[i], E.y[i], e.radius + 0.5)) {
-      if (E.tribe[b] === tr) continue;
+      if (w.allied(E.tribe[b], tr)) continue;
       const def = w.cfg.pack.buildings.buildings[E.type[b]];
       w.damage(b, (def.hp * e.buildingDamagePctPerSecond) / 100 / hz, tr, true);
     }
@@ -475,7 +475,7 @@ function trapStep(w: World, i: number): void {
   const tr = E.tribe[i];
   for (const u of within(w, CAT.unit, E.x[i], E.y[i], E.progress[i])) {
     if (E.level[i] === 0) break;
-    if (E.tribe[u] === tr || isCasterUnit(w, u)) continue;
+    if (w.allied(E.tribe[u], tr) || isCasterUnit(w, u)) continue;
     E.level[i]--;
     w.emit("mired", { id: E.idOf(u), x: E.x[u], y: E.y[u], tribe: E.tribe[u] });
     E.lastHit[u] = tr;
@@ -493,7 +493,7 @@ function wraithStep(w: World, i: number): void {
   const tr = E.tribe[i];
   if (E.cd[i] > 0) E.cd[i]--;
   let t = E.target[i] === NO_ENTITY ? -1 : E.index(E.target[i]);
-  const huntable = (u: number) => u >= 0 && E.alive[u] && E.cat[u] === CAT.unit && E.inside[u] < 0 && E.tribe[u] >= 0 && E.tribe[u] !== tr && E.veil[u] === 0 && !w.combat.disguised(u) && E.ward[u] === 0 && !isCasterUnit(w, u) && !w.vehicles.isVehicle(u);
+  const huntable = (u: number) => u >= 0 && E.alive[u] && E.cat[u] === CAT.unit && E.inside[u] < 0 && w.hostile(E.tribe[u], tr) && E.veil[u] === 0 && !w.combat.disguised(u) && E.ward[u] === 0 && !isCasterUnit(w, u) && !w.vehicles.isVehicle(u);
   if (!huntable(t) || w.tick % hz === 0) {
     let best = -1;
     let bd = e.huntRadius * e.huntRadius;
@@ -542,10 +542,10 @@ export function updateEffects(w: World): void {
     if (E.cat[i] === CAT.effect) {
       switch (E.state[i]) {
         case FX.area:
-          for (const u of within(w, CAT.unit, E.x[i], E.y[i], E.progress[i])) if (E.tribe[u] !== E.tribe[i]) w.damage(u, E.progress2[i], E.tribe[i], false);
+          for (const u of within(w, CAT.unit, E.x[i], E.y[i], E.progress[i])) if (!w.allied(E.tribe[u], E.tribe[i])) w.damage(u, E.progress2[i], E.tribe[i], false);
           break;
         case FX.heal:
-          for (const u of within(w, CAT.unit, E.x[i], E.y[i], E.progress[i])) if (E.tribe[u] === E.tribe[i]) healUnit(w, u, E.progress2[i]);
+          for (const u of within(w, CAT.unit, E.x[i], E.y[i], E.progress[i])) if (w.allied(E.tribe[u], E.tribe[i])) healUnit(w, u, E.progress2[i]);
           break;
         case FX.erode:
           // the first step went in at the cast; one more each full second while time is left

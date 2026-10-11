@@ -34,6 +34,8 @@ export interface SkirmishParams {
   trait?: string;
   /** Leg 5 (L5-C): tribes played by people over LAN play, one per seat in seat order (absent: [0], the local player only) */
   humans?: number[];
+  /** Leg 5 (L5-D): team id per tribe index (WorldInit.teams; absent: every tribe alone) */
+  teams?: number[];
   /** M9: set when this session is a campaign level (the other fields then mirror the level) */
   campaign?: { def: LevelDef; carry: CampaignCarry };
 }
@@ -60,7 +62,7 @@ export function campaignParams(def: LevelDef, carry: CampaignCarry): SkirmishPar
 
 export function skirmishInit(pack: ValidatedPack, p: SkirmishParams): WorldInit {
   if (p.campaign) return levelWorldInit({ def: p.campaign.def, carry: p.campaign.carry }, pack.files, pack.hash);
-  return { pack: pack.files, packHash: pack.hash, seed: p.seed, map: { generator: p.level, size: p.size, tribes: p.tribes }, ...(p.rules ? { rules: p.rules } : {}), ...(p.forge ? { forge: true } : {}), ...(p.weather === "rain" ? { weather: "rain" as const } : {}), ...(p.trait ? { traits: skirmishTraits(pack, p) } : {}), ...(p.leyStones ? { leyStones: p.leyStones } : {}), ...(p.wolfDens ? { wolfDens: p.wolfDens } : {}) };
+  return { pack: pack.files, packHash: pack.hash, seed: p.seed, map: { generator: p.level, size: p.size, tribes: p.tribes }, ...(p.rules ? { rules: p.rules } : {}), ...(p.forge ? { forge: true } : {}), ...(p.weather === "rain" ? { weather: "rain" as const } : {}), ...(p.trait ? { traits: skirmishTraits(pack, p) } : {}), ...(p.leyStones ? { leyStones: p.leyStones } : {}), ...(p.wolfDens ? { wolfDens: p.wolfDens } : {}), ...(p.teams ? { teams: [...p.teams] } : {}) };
 }
 
 /** stretch 2: trait per tribe index: the player's pick, then each AI tribe's personality trait (none for economy bots). */

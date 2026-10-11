@@ -1083,6 +1083,21 @@
       ],
       "additionalProperties": false
     },
+    "teams": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "shareVision": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "shareVision"
+      ],
+      "additionalProperties": false
+    },
     "net": {
       "type": "object",
       "properties": {

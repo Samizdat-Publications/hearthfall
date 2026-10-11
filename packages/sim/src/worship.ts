@@ -431,7 +431,7 @@ registerCommand("worship", {
     if (!s || w.ents.index(s.ent) < 0) return "no such worship site";
     if (s.usesLeft <= 0) return "this site has nothing left to give";
     if (s.dormant) return "this site is asleep: pray elsewhere to wake it";
-    if (w.worship.capturable(s.kind) && s.lastBy === c.tribe) return "your tribe already holds this stone";
+    if (w.worship.capturable(s.kind) && w.allied(s.lastBy, c.tribe)) return s.lastBy === c.tribe ? "your tribe already holds this stone" : "your team already holds this stone";
     return null;
   },
   apply(w, c) {
