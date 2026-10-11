@@ -9,7 +9,7 @@
   "assert": [
     {
       "at": 14000,
-      "expr": "level.lost && rules.winner == 1 && rules.why == 'holdSites' && alive(0) && invariants() == 0"
+      "expr": "level.lost && rules.winner == 1 && rules.why == 'holdSites' && invariants() == 0"
     }
   ]
 }

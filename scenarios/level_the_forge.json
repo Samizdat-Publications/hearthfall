@@ -1,24 +1,15 @@
 {
   "id": "level_the_forge",
-  "description": "Campaign level 12 is completable: after the Forge (the turtle digs its moat) a hard player AI defeats the digger tribe.",
-  "tags": [
-    "levels"
-  ],
+  "description": "Campaign level 12 is completable: after the Forge (the turtle digs its moat) wardens clear the wolf dens and a hard player AI holds stones, grows and razes the diggers.",
+  "tags": ["levels"],
   "level": "the_forge",
-  "bots": [
-    {
-      "type": "opponent",
-      "tribe": 0,
-      "personality": "aggressive",
-      "difficulty": "hard",
-      "offset": 2
-    }
+  "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 2 }],
+  "commands": [
+    { "tick": 2600, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [64, 56], "attack": true } },
+    { "tick": 4200, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [64, 104], "attack": true } }
   ],
-  "runTicks": 12000,
+  "runTicks": 20000,
   "assert": [
-    {
-      "at": 12000,
-      "expr": "level.won && forge.endedAt > 0 && forge.ops(1) > 0 && !alive(1) && invariants() == 0"
-    }
+    { "at": 20000, "expr": "level.won && level.objectivesDone == 5 && forge.endedAt > 0 && forge.ops(1) > 0 && !alive(1) && invariants() == 0" }
   ]
 }

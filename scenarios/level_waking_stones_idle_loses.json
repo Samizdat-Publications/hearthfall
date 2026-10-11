@@ -5,10 +5,10 @@
     "levels"
   ],
   "level": "waking_stones",
-  "runTicks": 30000,
+  "runTicks": 49000,
   "assert": [
     {
-      "at": 30000,
+      "at": 49000,
       "expr": "level.lost && alive(1) && invariants() == 0"
     }
   ]

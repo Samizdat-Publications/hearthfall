@@ -1,42 +1,67 @@
 {
-  "$comment": "Teaching level 8: boats (BACKLOG 10). The rival lives across a strait; ferry an army over in boats from a Boathouse.",
+  "$comment": "Level 8 (hard pass): boats. Two 28-radius islands on a 160 sea. No boat to start: raise a Boathouse. Wolf dens prowl the home hills, the rival (aggressive, ferries too, capped at 14 troops) holds two towers and the far ward stone. Staged: boathouse, then clear 3 dens + hold 3 stones 90 s + grow to 90 followers, then raze the rival Hearth and eliminate.",
   "id": "across_the_strait",
   "name": "Across the Strait",
   "order": 8,
-  "description": "A rival tribe lives across the strait. Board followers onto your boat, sail to the far shore and unload them, build a Boathouse for more boats, and defeat the rival within 20 minutes.",
+  "description": "A rival lives across a wide strait and wolves prowl your island. Raise a Boathouse, clear three wolf dens, hold three stones at once for a minute and a half, grow to 90 followers, then ferry an army over, raze the rival Hearth and break the tribe.",
   "seed": 808,
   "map": {
     "generator": "flat",
-    "size": 128,
-    "landAboveSea": 30,
+    "size": 160,
+    "landAboveSea": -30,
     "paint": [
-      { "shape": "rect", "at": [64, 64], "size": [18, 128], "aboveSea": -30 },
-      { "shape": "rect", "at": [0, 64], "size": [18, 128], "aboveSea": -30 }
+      { "shape": "disc", "at": [40, 80], "r": 28, "aboveSea": 36, "falloff": 6 },
+      { "shape": "disc", "at": [120, 80], "r": 28, "aboveSea": 36, "falloff": 6 }
     ]
   },
-  "tribes": [{}, { "ai": "turtle", "difficulty": "easy", "maxTroops": 8 }],
+  "tribes": [
+    {},
+    { "ai": "aggressive", "difficulty": "easy", "maxTroops": 14 }
+  ],
   "spells": ["bolt", "lightning"],
   "buildings": ["dwelling", "watchtower", "warden_lodge", "fire_lodge", "boathouse"],
   "setup": [
-    { "spawn": "hearth", "tribe": 0, "at": [32, 64] },
-    { "spawn": "shaper", "tribe": 0, "at": [35, 61] },
-    { "spawn": "settler", "tribe": 0, "near": [30, 70], "count": 14 },
-    { "spawn": "warden", "tribe": 0, "near": [42, 64], "count": 5 },
-    { "spawn": "boat", "tribe": 0, "at": [56, 64] },
-    { "spawn": "hearth", "tribe": 1, "at": [96, 64] },
-    { "spawn": "shaper", "tribe": 1, "at": [99, 61] },
-    { "spawn": "settler", "tribe": 1, "near": [98, 70], "count": 10 },
-    { "spawn": "tree", "near": [24, 48], "count": 14, "spacing": 1.2 },
-    { "spawn": "tree", "near": [26, 82], "count": 10, "spacing": 1.2 },
-    { "spawn": "tree", "near": [104, 46], "count": 10, "spacing": 1.2 },
-    { "spawn": "rock", "near": [22, 64], "count": 4, "spacing": 2 }
+    { "spawn": "hearth", "tribe": 0, "at": [32, 80] },
+    { "spawn": "shaper", "tribe": 0, "at": [36, 77] },
+    { "spawn": "settler", "tribe": 0, "near": [30, 86], "count": 14 },
+    { "spawn": "warden", "tribe": 0, "near": [44, 80], "count": 5 },
+    { "spawn": "hearth", "tribe": 1, "at": [128, 80] },
+    { "spawn": "shaper", "tribe": 1, "at": [124, 77] },
+    { "spawn": "settler", "tribe": 1, "near": [130, 86], "count": 12 },
+    { "spawn": "warden", "tribe": 1, "near": [118, 80], "count": 3 },
+    { "spawn": "watchtower", "tribe": 1, "at": [120, 72] },
+    { "spawn": "watchtower", "tribe": 1, "at": [134, 90] },
+    { "spawn": "tree", "near": [22, 62], "count": 14, "spacing": 1.2 },
+    { "spawn": "tree", "near": [24, 100], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [136, 62], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [136, 100], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [24, 80], "count": 4, "spacing": 2 },
+    { "spawn": "rock", "near": [138, 82], "count": 3, "spacing": 2 },
+    { "spawn": "wolf", "tribe": -1, "at": [56, 58], "count": 4 },
+    { "spawn": "wolf", "tribe": -1, "at": [100, 80], "count": 3 },
+    { "spawn": "wolf", "tribe": -1, "at": [66, 80], "count": 5 },
+    { "spawn": "wolf", "tribe": -1, "at": [58, 102], "count": 4 },
+    { "spawn": "ley_stone", "at": [44, 56], "site": { "tag": "home_ley", "rewards": [{ "type": "message", "text": "The home ley is yours. It pays mana while you hold it." }] }},
+    { "spawn": "ward_stone", "at": [44, 102], "site": { "tag": "home_ward", "rewards": [{ "type": "message", "text": "The home ward guards your shore." }] }},
+    { "spawn": "seer_stone", "at": [22, 80], "site": { "tag": "home_seer", "rewards": [{ "type": "message", "text": "The home seer watches the water." }] }},
+    { "spawn": "ward_stone", "at": [122, 58], "site": { "tag": "far_ward", "rewards": [{ "type": "message", "text": "The ward on the far island changes hands." }] }}
   ],
-  "objectives": [{ "type": "eliminateAll", "text": "Cross the strait and defeat the rival tribe" }],
-  "lose": [{ "type": "timeLimit", "seconds": 1200 }],
+  "objectives": [
+    { "type": "build", "building": "boathouse", "n": 1, "text": "Raise a Boathouse on your shore" },
+    { "type": "clearDens", "n": 3, "after": 0, "text": "Clear three wolf dens" },
+    { "type": "hold", "n": 3, "seconds": 90, "after": 0, "text": "Hold three stones at once for a minute and a half" },
+    { "type": "followers", "n": 90, "after": 0, "text": "Grow to 90 followers before the final assault" },
+    { "type": "destroy", "tribe": 1, "building": "hearth", "after": 3, "text": "Land on the far island and raze the rival Hearth" },
+    { "type": "eliminateAll", "after": 4, "text": "Break the rival tribe, shaper and all" }
+  ],
+  "lose": [
+    { "type": "hearthLost" },
+    { "type": "timeLimit", "seconds": 1800 }
+  ],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Select wardens and right-click your boat to board. Select the boat and right-click the far shore to sail and unload." }] },
-    { "when": { "type": "time", "seconds": 90 }, "do": [{ "type": "message", "text": "One boat carries five. Build a Boathouse on the shore for more." }] },
-    { "when": { "type": "time", "seconds": 900 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "No boat waits for you. Build a Boathouse, and watch the wolves in the hills." }] },
+    { "when": { "type": "time", "seconds": 420 }, "do": [{ "type": "raid", "tribe": 1, "to": [32, 80], "n": 6 }, { "type": "message", "text": "The rival's war band is crossing the strait." }] },
+    { "when": { "type": "time", "seconds": 1500 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
   ],
   "unlocks": { "buildings": ["boathouse"] }
 }

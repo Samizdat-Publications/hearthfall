@@ -5,11 +5,11 @@
     "levels"
   ],
   "level": "the_forge",
-  "runTicks": 32500,
+  "runTicks": 39500,
   "assert": [
     {
-      "at": 32500,
-      "expr": "level.lost && forge.endedAt == 2400 && playTick >= 30000 && alive(1) && invariants() == 0"
+      "at": 39500,
+      "expr": "level.lost && forge.endedAt == 2400 && alive(1) && invariants() == 0"
     }
   ]
 }

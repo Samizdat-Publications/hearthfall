@@ -1,41 +1,65 @@
 {
-  "$comment": "Teaching level 9: balloons (BACKLOG 10). A Reliquary crowns a sea stack that no path or boat reaches; float two followers up in a balloon.",
+  "$comment": "Level 9 (hard pass): balloons. Three sea stacks (a Reliquary, a ley stone, a ward stone) float over open water that only balloons cross; the rival island is unreachable but its war band is dropped on the home shore every four minutes; wolves prowl home. Pray at the stacks, raise a Skyloft, clear two dens, hold two stones 90 s, grow to 45.",
   "id": "sky_road",
   "name": "The Sky Road",
   "order": 9,
-  "description": "A Reliquary crowns a sea stack far out from your island. Board two followers onto the balloon, float them over the water, unload on the stack and pray. Grow to 20 followers within 15 minutes.",
+  "description": "Three sea stacks stand far out from your island and only balloons reach them. Float firecallers to the Reliquary, raise a Skyloft, clear two wolf dens, hold two stacks at once for a minute and a half and grow to 45 followers while sky raiders land on your shore.",
   "seed": 909,
   "map": {
     "generator": "flat",
-    "size": 96,
+    "size": 160,
     "landAboveSea": -30,
     "paint": [
-      { "shape": "disc", "at": [28, 48], "r": 18, "aboveSea": 30, "falloff": 5 },
-      { "shape": "disc", "at": [66, 48], "r": 4, "aboveSea": 60, "falloff": 2 }
+      { "shape": "disc", "at": [30, 80], "r": 22, "aboveSea": 30, "falloff": 5 },
+      { "shape": "disc", "at": [130, 80], "r": 16, "aboveSea": 30, "falloff": 5 },
+      { "shape": "disc", "at": [74, 46], "r": 4, "aboveSea": 60, "falloff": 2 },
+      { "shape": "disc", "at": [78, 112], "r": 4, "aboveSea": 60, "falloff": 2 },
+      { "shape": "disc", "at": [96, 80], "r": 4, "aboveSea": 60, "falloff": 2 }
     ]
   },
-  "tribes": [{}],
-  "spells": ["bolt", "raise_land"],
-  "buildings": ["dwelling", "watchtower", "skyloft"],
+  "tribes": [
+    {},
+    { "ai": "sneaky", "difficulty": "normal", "maxTroops": 10 }
+  ],
+  "spells": ["bolt", "lightning"],
+  "buildings": ["dwelling", "watchtower", "warden_lodge", "fire_lodge", "skyloft"],
   "setup": [
-    { "spawn": "hearth", "tribe": 0, "at": [24, 48] },
-    { "spawn": "shaper", "tribe": 0, "at": [27, 45] },
-    { "spawn": "settler", "tribe": 0, "near": [22, 54], "count": 10 },
-    { "spawn": "firecaller", "tribe": 0, "near": [38, 48], "count": 2 },
-    { "spawn": "balloon", "tribe": 0, "at": [40, 48] },
-    { "spawn": "tree", "near": [18, 38], "count": 12, "spacing": 1.2 },
-    { "spawn": "tree", "near": [20, 60], "count": 10, "spacing": 1.2 },
-    { "spawn": "rock", "near": [32, 58], "count": 3, "spacing": 2 },
-    { "spawn": "reliquary", "at": [66, 48], "site": { "tag": "sky_reliquary", "worshippers": 2, "prayerSeconds": 20, "uses": 2, "rewards": [{ "type": "unlockSpell", "spell": "hornets" }, { "type": "charges", "spell": "hornets", "n": 1 }, { "type": "message", "text": "The sky Reliquary teaches Hornets." }] } }
+    { "spawn": "hearth", "tribe": 0, "at": [30, 80] },
+    { "spawn": "shaper", "tribe": 0, "at": [33, 77] },
+    { "spawn": "settler", "tribe": 0, "near": [26, 86], "count": 12 },
+    { "spawn": "firecaller", "tribe": 0, "near": [40, 80], "count": 6 },
+    { "spawn": "warden", "tribe": 0, "near": [38, 86], "count": 4 },
+    { "spawn": "balloon", "tribe": 0, "at": [44, 78] },
+    { "spawn": "balloon", "tribe": 0, "at": [44, 84] },
+    { "spawn": "tree", "near": [18, 66], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [20, 98], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [34, 96], "count": 4, "spacing": 2 },
+    { "spawn": "wolf", "tribe": -1, "at": [44, 60], "count": 4 },
+    { "spawn": "wolf", "tribe": -1, "at": [46, 102], "count": 4 },
+    { "spawn": "hearth", "tribe": 1, "at": [130, 80] },
+    { "spawn": "shaper", "tribe": 1, "at": [127, 77] },
+    { "spawn": "settler", "tribe": 1, "near": [132, 86], "count": 12 },
+    { "spawn": "tree", "near": [124, 70], "count": 8, "spacing": 1.2 },
+    { "spawn": "reliquary", "at": [74, 46], "site": { "tag": "sky_reliquary", "worshippers": 2, "prayerSeconds": 20, "uses": 2, "rewards": [{ "type": "unlockSpell", "spell": "hornets" }, { "type": "charges", "spell": "hornets", "n": 1 }, { "type": "message", "text": "The sky Reliquary teaches Hornets." }] }},
+    { "spawn": "ley_stone", "at": [78, 112], "site": { "tag": "south_ley", "worshippers": 2, "rewards": [{ "type": "message", "text": "The southern stack pays mana while you hold it." }] }},
+    { "spawn": "ward_stone", "at": [96, 80], "site": { "tag": "east_ward", "worshippers": 2, "rewards": [{ "type": "message", "text": "The eastern stack guards the way to the rival island." }] }}
   ],
   "objectives": [
-    { "type": "worship", "site": "sky_reliquary", "text": "Pray at the Reliquary on the sea stack" },
-    { "type": "followers", "n": 20, "text": "Grow to 20 followers" }
+    { "type": "worship", "site": "sky_reliquary", "text": "Pray at the Reliquary on the northern stack" },
+    { "type": "build", "building": "skyloft", "n": 1, "text": "Raise a Skyloft for more balloons" },
+    { "type": "clearDens", "n": 2, "text": "Clear both wolf dens" },
+    { "type": "hold", "n": 2, "seconds": 90, "after": 0, "text": "Hold two stacks at once for a minute and a half" },
+    { "type": "followers", "n": 45, "after": 1, "text": "Grow to 45 followers" }
   ],
-  "lose": [{ "type": "timeLimit", "seconds": 900 }],
+  "lose": [
+    { "type": "hearthLost" },
+    { "type": "timeLimit", "seconds": 1500 }
+  ],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Select the two firecallers and right-click the balloon to board. Send the balloon east over the water to the sea stack and unload them there." }] },
-    { "when": { "type": "worship", "site": "sky_reliquary" }, "do": [{ "type": "message", "text": "A Skyloft builds more balloons. Firecallers can shoot from them." }] }
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Board two firecallers on a balloon and float them to the stacks. Three of you must hold the line at home." }] },
+    { "when": { "type": "time", "seconds": 240, "every": 240 }, "do": [{ "type": "spawn", "unit": "warden", "n": 3, "tribe": 1, "at": [48, 80], "stance": "aggressive" }, { "type": "message", "text": "Sky raiders land on your shore." }] },
+    { "when": { "type": "worship", "site": "sky_reliquary" }, "do": [{ "type": "message", "text": "A Skyloft builds more balloons. Firecallers can shoot from them." }] },
+    { "when": { "type": "time", "seconds": 1200 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
   ],
   "unlocks": { "buildings": ["skyloft"] }
 }

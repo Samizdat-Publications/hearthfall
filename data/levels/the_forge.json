@@ -1,37 +1,58 @@
 {
-  "$comment": "Teaching level 12: Forge mode (BACKLOG 11). The level opens with a Forge; the turtle rival digs a moat, the player shapes a defense or a road.",
+  "$comment": "Level 12 (hard pass): Forge mode on a 160 map. After the Forge the turtle rival (normal, 14 troops, towers, posted guards) sits behind its moat. Wolf dens haunt the central plain, stones pay and guard. Staged: clear two dens, hold two stones 90 s, grow to 60 followers, then raze the rival Hearth and break the tribe.",
   "id": "the_forge",
   "name": "The Forge",
   "order": 12,
-  "description": "Before the battle, both tribes reshape the land around their Hearths. Raise walls or dig a moat, then press Ready. The rival is a careful digger: defeat it within 25 minutes.",
+  "description": "Before the battle, both tribes reshape the land around their Hearths. Raise walls or dig a moat, then press Ready. Clear two wolf dens, hold two stones for a minute and a half, grow to 70 followers, then cross the careful digger's moat, raze its Hearth and break the tribe.",
   "seed": 1212,
   "map": {
     "generator": "flat",
-    "size": 128,
+    "size": 160,
     "landAboveSea": 30,
     "paint": [
-      { "shape": "disc", "at": [64, 30], "r": 8, "aboveSea": 46, "falloff": 6 },
-      { "shape": "disc", "at": [64, 98], "r": 8, "aboveSea": 46, "falloff": 6 }
+      { "shape": "disc", "at": [80, 36], "r": 9, "aboveSea": 46, "falloff": 6 },
+      { "shape": "disc", "at": [80, 124], "r": 9, "aboveSea": 46, "falloff": 6 }
     ]
   },
-  "tribes": [{}, { "ai": "turtle", "difficulty": "easy", "maxTroops": 10 }],
+  "tribes": [
+    {},
+    { "ai": "turtle", "difficulty": "normal", "maxTroops": 14 }
+  ],
   "forge": true,
   "spells": ["bolt", "raise_land", "lightning", "flatten"],
   "setup": [
-    { "spawn": "hearth", "tribe": 0, "at": [32, 64] },
-    { "spawn": "shaper", "tribe": 0, "at": [35, 61] },
-    { "spawn": "settler", "tribe": 0, "near": [28, 70], "count": 14 },
-    { "spawn": "warden", "tribe": 0, "near": [40, 64], "count": 4 },
-    { "spawn": "hearth", "tribe": 1, "at": [96, 64] },
-    { "spawn": "shaper", "tribe": 1, "at": [93, 61] },
-    { "spawn": "settler", "tribe": 1, "near": [100, 70], "count": 12 },
-    { "spawn": "tree", "near": [22, 50], "count": 12, "spacing": 1.2 },
-    { "spawn": "tree", "near": [106, 80], "count": 12, "spacing": 1.2 },
-    { "spawn": "rock", "near": [24, 78], "count": 4, "spacing": 2 }
+    { "spawn": "hearth", "tribe": 0, "at": [32, 80] },
+    { "spawn": "shaper", "tribe": 0, "at": [35, 77] },
+    { "spawn": "settler", "tribe": 0, "near": [28, 86], "count": 14 },
+    { "spawn": "warden", "tribe": 0, "near": [42, 80], "count": 5 },
+    { "spawn": "hearth", "tribe": 1, "at": [128, 80] },
+    { "spawn": "shaper", "tribe": 1, "at": [125, 77] },
+    { "spawn": "settler", "tribe": 1, "near": [132, 86], "count": 14 },
+    { "spawn": "warden", "tribe": 1, "near": [112, 80], "count": 4, "stance": "defensive" },
+    { "spawn": "watchtower", "tribe": 1, "at": [116, 72] },
+    { "spawn": "watchtower", "tribe": 1, "at": [116, 90] },
+    { "spawn": "tree", "near": [22, 64], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [138, 96], "count": 12, "spacing": 1.2 },
+    { "spawn": "rock", "near": [24, 96], "count": 4, "spacing": 2 },
+    { "spawn": "wolf", "tribe": -1, "at": [64, 56], "count": 4 },
+    { "spawn": "wolf", "tribe": -1, "at": [64, 104], "count": 4 },
+    { "spawn": "ley_stone", "at": [46, 62], "site": { "tag": "home_ley", "rewards": [{ "type": "message", "text": "The home ley pays mana while you hold it." }] }},
+    { "spawn": "ward_stone", "at": [46, 98], "site": { "tag": "home_ward", "rewards": [{ "type": "message", "text": "The home ward guards your southern flank." }] }},
+    { "spawn": "ward_stone", "at": [80, 80], "site": { "tag": "mid_ward", "rewards": [{ "type": "message", "text": "The middle ward commands the road to the moat." }] }}
   ],
-  "objectives": [{ "type": "eliminateAll", "text": "Defeat the digger tribe" }],
-  "lose": [{ "type": "timeLimit", "seconds": 1500 }],
+  "objectives": [
+    { "type": "clearDens", "n": 2, "text": "Clear both wolf dens" },
+    { "type": "hold", "n": 2, "seconds": 90, "after": 0, "text": "Hold two stones at once for a minute and a half" },
+    { "type": "followers", "n": 70, "after": 0, "text": "Grow to 70 followers" },
+    { "type": "destroy", "tribe": 1, "building": "hearth", "after": 2, "text": "Cross the moat and raze the digger's Hearth" },
+    { "type": "eliminateAll", "after": 3, "text": "Break the digger tribe" }
+  ],
+  "lose": [
+    { "type": "hearthLost" },
+    { "type": "timeLimit", "seconds": 1800 }
+  ],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "The Forge is over. Flatten or Raise Land can bridge a moat." }] }
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "The Forge is over. Flatten or Raise Land can bridge a moat. Wolves hold the central plain." }] },
+    { "when": { "type": "time", "seconds": 600 }, "do": [{ "type": "raid", "tribe": 1, "to": [32, 80], "n": 5 }, { "type": "message", "text": "The digger sends a war band across the plain." }] }
   ]
 }

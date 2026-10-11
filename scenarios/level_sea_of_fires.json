@@ -1,24 +1,15 @@
 {
   "id": "level_sea_of_fires",
-  "description": "Campaign level 13 (finale) is completable: after the Forge a hard player AI ferries waves across the sea and defeats both island tribes.",
-  "tags": [
-    "levels"
-  ],
+  "description": "Campaign level 13 (finale) is completable: after the Forge wardens clear the wolf dens and a hard player AI holds the stones, grows, ferries waves across the sea and defeats both island tribes.",
+  "tags": ["levels"],
   "level": "sea_of_fires",
-  "bots": [
-    {
-      "type": "opponent",
-      "tribe": 0,
-      "personality": "aggressive",
-      "difficulty": "hard",
-      "offset": 2
-    }
+  "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 2 }],
+  "commands": [
+    { "tick": 2600, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [58, 36], "attack": true } },
+    { "tick": 4200, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [60, 78], "attack": true } }
   ],
-  "runTicks": 18000,
+  "runTicks": 30000,
   "assert": [
-    {
-      "at": 18000,
-      "expr": "level.won && !alive(1) && !alive(2) && events.count('boarded') > 0 && invariants() == 0"
-    }
+    { "at": 30000, "expr": "level.won && !alive(1) && !alive(2) && events.count('boarded') > 0 && level.objectivesDone == 6 && invariants() == 0" }
   ]
 }

@@ -1,15 +1,10 @@
 {
   "id": "level_across_the_strait_idle_loses",
-  "description": "Campaign level 8 has a real loss: an idle player never crosses the strait and runs out of time.",
-  "tags": [
-    "levels"
-  ],
+  "description": "Campaign level 8 has a real loss: an idle player never raises a Boathouse and the rival's ferried war band razes the Hearth.",
+  "tags": ["levels"],
   "level": "across_the_strait",
-  "runTicks": 24100,
+  "runTicks": 12000,
   "assert": [
-    {
-      "at": 24100,
-      "expr": "level.lost && alive(0) && alive(1) && invariants() == 0"
-    }
+    { "at": 12000, "expr": "level.lost && alive(1) && invariants() == 0" }
   ]
 }

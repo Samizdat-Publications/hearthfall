@@ -1,95 +1,570 @@
 {
-  "$comment": "Campaign level 14 (stretch 3): a prayer chain. The shore totem raises a ridge to the middle island and wakes its shrine; the shrine raises a ridge north and wakes the Reliquary, which rival guardians rise to defend; with Quake and the Fire Lodge the player breaks the eastern tribe.",
+  "$comment": "Campaign level 14 (hard pass): a prayer chain. The shore totem raises a ridge to the middle island and wakes its shrine; a wolf den guards the shrine and another haunts home; the shrine wakes the Reliquary, which rival guardians rise to defend. Staged: wake the shore stone, clear two dens, pray at the shrine, take the Reliquary, hold two home stones 90 s, grow to 70 followers, then break the eastern tribe (towers, guards, a war band).",
   "id": "waking_stones",
   "name": "The Waking Stones",
   "order": 14,
-  "description": "Old stones sleep under these islands. Pray at one and the next wakes. Follow the chain to the Reliquary in the north, then break the tribe in the east.",
+  "description": "Old stones sleep under these islands, and wolves guard two of them. Pray at one and the next wakes. Clear both dens, follow the chain to the Reliquary in the north, hold two stones at home for a minute and a half, grow to 70 followers, hold out until the 29th minute and break the tribe in the east.",
   "seed": 1414,
   "map": {
     "generator": "flat",
     "size": 128,
     "landAboveSea": -30,
     "paint": [
-      { "shape": "disc", "at": [30, 64], "r": 16, "aboveSea": 40, "falloff": 4 },
-      { "shape": "disc", "at": [62, 64], "r": 10, "aboveSea": 38, "falloff": 3 },
-      { "shape": "disc", "at": [62, 44], "r": 9, "aboveSea": 42, "falloff": 3 },
-      { "shape": "disc", "at": [100, 64], "r": 16, "aboveSea": 40, "falloff": 4 }
+      {
+        "shape": "disc",
+        "at": [
+          30,
+          64
+        ],
+        "r": 16,
+        "aboveSea": 40,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          62,
+          64
+        ],
+        "r": 10,
+        "aboveSea": 38,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          62,
+          44
+        ],
+        "r": 9,
+        "aboveSea": 42,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          100,
+          64
+        ],
+        "r": 16,
+        "aboveSea": 40,
+        "falloff": 4
+      }
     ]
   },
-  "tribes": [{}, { "ai": "turtle", "difficulty": "normal", "maxTroops": 10, "worshipAfterSeconds": 1800 }],
-  "spells": ["bolt", "raise_land", "hornets"],
-  "buildings": ["dwelling", "watchtower", "warden_lodge"],
+  "tribes": [
+    {},
+    {
+      "ai": "turtle",
+      "difficulty": "hard",
+      "maxTroops": 22,
+      "worshipAfterSeconds": 1800
+    }
+  ],
+  "spells": [
+    "bolt",
+    "raise_land",
+    "hornets"
+  ],
+  "buildings": [
+    "dwelling",
+    "watchtower",
+    "warden_lodge"
+  ],
   "setup": [
-    { "spawn": "hearth", "tribe": 0, "at": [26, 64] },
-    { "spawn": "shaper", "tribe": 0, "at": [32, 62] },
-    { "spawn": "settler", "tribe": 0, "near": [26, 70], "count": 12 },
-    { "spawn": "tree", "near": [20, 54], "count": 12, "spacing": 1.2 },
-    { "spawn": "tree", "near": [22, 74], "count": 10, "spacing": 1.2 },
-    { "spawn": "rock", "near": [34, 74], "count": 3, "spacing": 2 },
-    { "spawn": "hearth", "tribe": 1, "at": [104, 64] },
-    { "spawn": "shaper", "tribe": 1, "at": [100, 62] },
-    { "spawn": "settler", "tribe": 1, "near": [104, 70], "count": 12 },
-    { "spawn": "tree", "near": [108, 54], "count": 12, "spacing": 1.2 },
-    { "spawn": "rock", "near": [94, 74], "count": 3, "spacing": 2 },
-    { "spawn": "tree", "near": [58, 44], "count": 5, "spacing": 1.2 },
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        26,
+        64
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        32,
+        62
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        26,
+        70
+      ],
+      "count": 12
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        20,
+        54
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        22,
+        74
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        34,
+        74
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        104,
+        64
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        100,
+        62
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        104,
+        70
+      ],
+      "count": 12
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        108,
+        54
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        94,
+        74
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        58,
+        44
+      ],
+      "count": 5,
+      "spacing": 1.2
+    },
     {
       "spawn": "totem",
-      "at": [42, 64],
+      "at": [
+        42,
+        64
+      ],
       "site": {
         "tag": "shore_stone",
         "rewards": [
-          { "type": "spell", "spell": "raise_land", "at": [54, 64] },
-          { "type": "awaken", "site": "mid_shrine" },
-          { "type": "reveal", "at": [62, 64], "r": 10 },
-          { "type": "message", "text": "The shore stone lifts a ridge to the middle island, and something stirs there." }
+          {
+            "type": "spell",
+            "spell": "raise_land",
+            "at": [
+              54,
+              64
+            ]
+          },
+          {
+            "type": "awaken",
+            "site": "mid_shrine"
+          },
+          {
+            "type": "reveal",
+            "at": [
+              62,
+              64
+            ],
+            "r": 10
+          },
+          {
+            "type": "message",
+            "text": "The shore stone lifts a ridge to the middle island, and something stirs there."
+          }
         ]
       }
     },
     {
       "spawn": "shrine",
-      "at": [62, 66],
+      "at": [
+        62,
+        66
+      ],
       "site": {
         "tag": "mid_shrine",
         "dormant": true,
         "worshippers": 4,
         "rewards": [
-          { "type": "spell", "spell": "raise_land", "at": [62, 52] },
-          { "type": "awaken", "site": "north_reliquary" },
-          { "type": "reveal", "at": [62, 44], "r": 10 },
-          { "type": "charges", "spell": "lightning", "n": 2 },
-          { "type": "message", "text": "The shrine answers with two Lightnings and a ridge to the north. The Reliquary there is waking." }
+          {
+            "type": "spell",
+            "spell": "raise_land",
+            "at": [
+              62,
+              52
+            ]
+          },
+          {
+            "type": "awaken",
+            "site": "north_reliquary"
+          },
+          {
+            "type": "reveal",
+            "at": [
+              62,
+              44
+            ],
+            "r": 10
+          },
+          {
+            "type": "charges",
+            "spell": "lightning",
+            "n": 2
+          },
+          {
+            "type": "message",
+            "text": "The shrine answers with two Lightnings and a ridge to the north. The Reliquary there is waking."
+          }
         ]
       }
     },
     {
       "spawn": "reliquary",
-      "at": [62, 42],
+      "at": [
+        62,
+        42
+      ],
       "site": {
         "tag": "north_reliquary",
         "dormant": true,
         "rewards": [
-          { "type": "unlockSpell", "spell": "quake" },
-          { "type": "unlockBuilding", "building": "fire_lodge" },
-          { "type": "message", "text": "The Reliquary teaches Quake, and your people remember the Fire Lodge." }
+          {
+            "type": "unlockSpell",
+            "spell": "quake"
+          },
+          {
+            "type": "unlockBuilding",
+            "building": "fire_lodge"
+          },
+          {
+            "type": "message",
+            "text": "The Reliquary teaches Quake, and your people remember the Fire Lodge."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        92,
+        64
+      ],
+      "count": 6
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        94,
+        56
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        94,
+        72
+      ]
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        40,
+        50
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        68,
+        60
+      ],
+      "count": 3
+    },
+    {
+      "spawn": "ley_stone",
+      "at": [
+        20,
+        52
+      ],
+      "site": {
+        "tag": "home_ley",
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The home ley pays mana while you hold it."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "ward_stone",
+      "at": [
+        34,
+        78
+      ],
+      "site": {
+        "tag": "home_ward",
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The home ward guards your southern shore."
+          }
         ]
       }
     }
   ],
   "objectives": [
-    { "type": "worship", "site": "shore_stone", "text": "Wake the shore stone (only your Shaper can pray there)" },
-    { "type": "worship", "site": "mid_shrine", "after": 0, "text": "Send four followers to the shrine on the middle island" },
-    { "type": "worship", "site": "north_reliquary", "after": 1, "text": "Take the Reliquary on the northern islet from its guardians" },
-    { "type": "eliminateAll", "after": 2, "text": "Break the tribe in the east" }
+    {
+      "type": "worship",
+      "site": "shore_stone",
+      "text": "Wake the shore stone (only your Shaper can pray there)"
+    },
+    {
+      "type": "clearDens",
+      "n": 2,
+      "after": 0,
+      "text": "Clear the wolf dens at home and on the middle island"
+    },
+    {
+      "type": "worship",
+      "site": "mid_shrine",
+      "after": 1,
+      "text": "Send four followers to the shrine on the middle island"
+    },
+    {
+      "type": "worship",
+      "site": "north_reliquary",
+      "after": 2,
+      "text": "Take the Reliquary on the northern islet from its guardians"
+    },
+    {
+      "type": "hold",
+      "n": 2,
+      "seconds": 180,
+      "after": 3,
+      "text": "Hold two home stones at once for three minutes"
+    },
+    {
+      "type": "followers",
+      "n": 150,
+      "after": 3,
+      "text": "Grow to 150 followers"
+    },
+    {
+      "type": "eliminateAll",
+      "after": 5,
+      "text": "Break the tribe in the east"
+    }
   ],
-  "lose": [{ "type": "hearthLost" }, { "type": "siteLost", "site": "north_reliquary" }],
+  "lose": [
+    {
+      "type": "hearthLost"
+    },
+    {
+      "type": "siteLost",
+      "site": "north_reliquary"
+    },
+    {
+      "type": "timeLimit",
+      "seconds": 2400
+    }
+  ],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Walk your Shaper to the stone on the eastern shore and order it to worship." }] },
-    { "when": { "type": "area", "at": [62, 64], "r": 6, "unit": "shaper" }, "do": [{ "type": "message", "text": "Four followers must pray at this shrine. Bring them across the ridge." }] },
-    { "when": { "type": "worship", "site": "mid_shrine" }, "do": [{ "type": "spawn", "unit": "warden", "n": 4, "tribe": 1, "at": [62, 38], "stance": "defensive" }, { "type": "message", "text": "Guardians of the eastern tribe rise around the Reliquary. Train Wardens before you pray there." }] },
-    { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "message", "text": "Raise Land toward the eastern island and bring the Quake to their Hearth." }] },
-    { "when": { "type": "time", "seconds": 1080 }, "do": [{ "type": "message", "text": "The eastern tribe is gathering. Its war band comes soon." }] },
-    { "when": { "type": "time", "seconds": 1200 }, "do": [{ "type": "spell", "spell": "raise_land", "from": [86, 64], "at": [70, 64] }, { "type": "spell", "spell": "raise_land", "from": [78, 64], "at": [62, 64] }, { "type": "spell", "spell": "raise_land", "from": [54, 64], "at": [44, 64] }, { "type": "message", "text": "The eastern tribe raises land from the sea!" }] },
-    { "when": { "type": "time", "seconds": 1210 }, "do": [{ "type": "raid", "tribe": 1, "to": [26, 64], "n": 5 }, { "type": "message", "text": "Their war band marches on your Hearth. Their priests will seek the Reliquary within ten minutes." }] }
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Walk your Shaper to the stone on the eastern shore and order it to worship."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "area",
+        "at": [
+          62,
+          64
+        ],
+        "r": 6,
+        "unit": "shaper"
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Four followers must pray at this shrine. Bring them across the ridge."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "worship",
+        "site": "mid_shrine"
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            62,
+            38
+          ],
+          "stance": "defensive"
+        },
+        {
+          "type": "message",
+          "text": "Guardians of the eastern tribe rise around the Reliquary. Train Wardens before you pray there."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 3
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Raise Land toward the eastern island and bring the Quake to their Hearth."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1080
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "The eastern tribe is gathering. Its war band comes soon."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1200
+      },
+      "do": [
+        {
+          "type": "spell",
+          "spell": "raise_land",
+          "from": [
+            86,
+            64
+          ],
+          "at": [
+            70,
+            64
+          ]
+        },
+        {
+          "type": "spell",
+          "spell": "raise_land",
+          "from": [
+            78,
+            64
+          ],
+          "at": [
+            62,
+            64
+          ]
+        },
+        {
+          "type": "spell",
+          "spell": "raise_land",
+          "from": [
+            54,
+            64
+          ],
+          "at": [
+            44,
+            64
+          ]
+        },
+        {
+          "type": "message",
+          "text": "The eastern tribe raises land from the sea!"
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1210
+      },
+      "do": [
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            26,
+            64
+          ],
+          "n": 5
+        },
+        {
+          "type": "message",
+          "text": "Their war band marches on your Hearth. Their priests will seek the Reliquary within ten minutes."
+        }
+      ]
+    }
   ],
-  "unlocks": { "spells": ["quake"], "buildings": ["fire_lodge"] }
+  "unlocks": {
+    "spells": [
+      "quake"
+    ],
+    "buildings": [
+      "fire_lodge"
+    ]
+  }
 }

@@ -1,44 +1,71 @@
 {
-  "$comment": "Level 13, the finale: three islands, a Forge, boats and balloons, two rivals. Everything the campaign taught.",
+  "$comment": "Level 13 (hard pass), the finale: three 192-map islands, a Forge, boats and balloons, two normal rivals with towers. Wolf dens haunt the home island, three stones to hold, 80 followers, then both rival Hearths must fall and both tribes break. Staged.",
   "id": "sea_of_fires",
   "name": "Sea of Fires",
   "order": 13,
-  "description": "Three tribes on three islands. Shape your shore in the Forge, then build boats or balloons and defeat both rivals within 30 minutes.",
+  "description": "Three tribes on three islands. Shape your shore in the Forge, clear the wolves from your hills, hold three stones for a minute and a half, grow to 80 followers, then ferry armies over and raze both rival Hearths within 35 minutes.",
   "seed": 1313,
   "map": {
     "generator": "flat",
-    "size": 128,
+    "size": 192,
     "landAboveSea": -30,
     "paint": [
-      { "shape": "disc", "at": [32, 40], "r": 20, "aboveSea": 30, "falloff": 5 },
-      { "shape": "disc", "at": [96, 40], "r": 18, "aboveSea": 30, "falloff": 5 },
-      { "shape": "disc", "at": [64, 100], "r": 18, "aboveSea": 30, "falloff": 5 }
+      { "shape": "disc", "at": [44, 56], "r": 26, "aboveSea": 36, "falloff": 6 },
+      { "shape": "disc", "at": [148, 56], "r": 24, "aboveSea": 36, "falloff": 6 },
+      { "shape": "disc", "at": [96, 146], "r": 24, "aboveSea": 36, "falloff": 6 }
     ]
   },
-  "tribes": [{}, { "ai": "aggressive", "difficulty": "easy", "maxTroops": 8 }, { "ai": "sneaky", "difficulty": "easy", "maxTroops": 8 }],
+  "tribes": [
+    {},
+    { "ai": "aggressive", "difficulty": "normal", "maxTroops": 14 },
+    { "ai": "sneaky", "difficulty": "normal", "maxTroops": 14 }
+  ],
   "forge": true,
   "spells": ["bolt", "raise_land", "lightning", "flatten", "whirlwind"],
   "setup": [
-    { "spawn": "hearth", "tribe": 0, "at": [30, 40] },
-    { "spawn": "shaper", "tribe": 0, "at": [33, 37] },
-    { "spawn": "settler", "tribe": 0, "near": [26, 46], "count": 16 },
-    { "spawn": "warden", "tribe": 0, "near": [38, 42], "count": 5 },
-    { "spawn": "boat", "tribe": 0, "at": [55, 44] },
-    { "spawn": "hearth", "tribe": 1, "at": [98, 40] },
-    { "spawn": "shaper", "tribe": 1, "at": [95, 37] },
-    { "spawn": "settler", "tribe": 1, "near": [102, 46], "count": 12 },
-    { "spawn": "hearth", "tribe": 2, "at": [64, 102] },
-    { "spawn": "shaper", "tribe": 2, "at": [67, 99] },
-    { "spawn": "settler", "tribe": 2, "near": [62, 108], "count": 12 },
-    { "spawn": "tree", "near": [22, 30], "count": 14, "spacing": 1.2 },
-    { "spawn": "tree", "near": [104, 30], "count": 10, "spacing": 1.2 },
-    { "spawn": "tree", "near": [56, 110], "count": 10, "spacing": 1.2 },
-    { "spawn": "rock", "near": [24, 52], "count": 4, "spacing": 2 }
+    { "spawn": "hearth", "tribe": 0, "at": [36, 56] },
+    { "spawn": "shaper", "tribe": 0, "at": [39, 53] },
+    { "spawn": "settler", "tribe": 0, "near": [32, 62], "count": 16 },
+    { "spawn": "warden", "tribe": 0, "near": [48, 56], "count": 6 },
+    { "spawn": "boat", "tribe": 0, "at": [70, 60] },
+    { "spawn": "hearth", "tribe": 1, "at": [156, 56] },
+    { "spawn": "shaper", "tribe": 1, "at": [153, 53] },
+    { "spawn": "settler", "tribe": 1, "near": [160, 62], "count": 14 },
+    { "spawn": "warden", "tribe": 1, "near": [144, 56], "count": 3 },
+    { "spawn": "watchtower", "tribe": 1, "at": [146, 48] },
+    { "spawn": "watchtower", "tribe": 1, "at": [146, 66] },
+    { "spawn": "hearth", "tribe": 2, "at": [96, 152] },
+    { "spawn": "shaper", "tribe": 2, "at": [99, 149] },
+    { "spawn": "settler", "tribe": 2, "near": [92, 158], "count": 14 },
+    { "spawn": "warden", "tribe": 2, "near": [96, 140], "count": 3 },
+    { "spawn": "watchtower", "tribe": 2, "at": [86, 140] },
+    { "spawn": "watchtower", "tribe": 2, "at": [106, 140] },
+    { "spawn": "tree", "near": [28, 44], "count": 14, "spacing": 1.2 },
+    { "spawn": "tree", "near": [160, 44], "count": 10, "spacing": 1.2 },
+    { "spawn": "tree", "near": [86, 160], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [30, 70], "count": 4, "spacing": 2 },
+    { "spawn": "wolf", "tribe": -1, "at": [58, 36], "count": 4 },
+    { "spawn": "wolf", "tribe": -1, "at": [60, 78], "count": 4 },
+    { "spawn": "ley_stone", "at": [38, 38], "site": { "tag": "home_ley", "rewards": [{ "type": "message", "text": "The home ley pays mana while you hold it." }] }},
+    { "spawn": "ward_stone", "at": [36, 76], "site": { "tag": "home_ward", "rewards": [{ "type": "message", "text": "The home ward guards your southern shore." }] }},
+    { "spawn": "seer_stone", "at": [24, 56], "site": { "tag": "home_seer", "rewards": [{ "type": "message", "text": "The home seer watches the water." }] }}
   ],
-  "objectives": [{ "type": "eliminateAll", "text": "Defeat both island tribes" }],
-  "lose": [{ "type": "timeLimit", "seconds": 1800 }],
+  "objectives": [
+    { "type": "clearDens", "n": 2, "text": "Clear both wolf dens on your island" },
+    { "type": "hold", "n": 3, "seconds": 90, "after": 0, "text": "Hold three stones at once for a minute and a half" },
+    { "type": "followers", "n": 80, "after": 0, "text": "Grow to 80 followers" },
+    { "type": "destroy", "tribe": 1, "building": "hearth", "after": 2, "text": "Ferry over and raze the eastern Hearth" },
+    { "type": "destroy", "tribe": 2, "building": "hearth", "after": 3, "text": "Raze the southern Hearth" },
+    { "type": "eliminateAll", "after": 4, "text": "Break both island tribes" }
+  ],
+  "lose": [
+    { "type": "hearthLost" },
+    { "type": "timeLimit", "seconds": 2100 }
+  ],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Ferry wardens in your boat, or build a Skyloft and float firecallers over their villages." }] },
-    { "when": { "type": "time", "seconds": 1500 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Clear the wolves, hold your stones, then ferry wardens in your boat or float firecallers over their villages." }] },
+    { "when": { "type": "time", "seconds": 480 }, "do": [{ "type": "raid", "tribe": 1, "to": [36, 56], "n": 5 }, { "type": "message", "text": "The eastern war band is crossing the sea." }] },
+    { "when": { "type": "time", "seconds": 900 }, "do": [{ "type": "raid", "tribe": 2, "to": [36, 56], "n": 5 }, { "type": "message", "text": "The southern war band is crossing the sea." }] },
+    { "when": { "type": "time", "seconds": 1800 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
   ]
 }

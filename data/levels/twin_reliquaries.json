@@ -1,40 +1,58 @@
 {
-  "$comment": "Teaching level 10: the Hold the Reliquaries victory (BACKLOG 13). Win by keeping people at both Reliquaries, with no rival there, for two minutes.",
+  "$comment": "Level 10 (hard pass): Hold the Reliquaries. Both Reliquaries are posted with rival guards and haunted by wolf dens; ward stones on the hills let you keep them. Staged: clear both dens, hold both ward stones 60 s, then keep people at both Reliquaries with no rival beside them for two minutes. Normal aggressive rival, reinforced every four minutes. Last stage: 60 followers.",
   "id": "twin_reliquaries",
   "name": "The Twin Reliquaries",
   "order": 10,
-  "description": "Two Reliquaries stand between you and a rival tribe. Whoever keeps people at both, with no rival beside them, for two minutes wins the valley. Defeating the rival works too.",
+  "description": "Two Reliquaries stand between you and a rival tribe, each posted with rival guards and haunted by wolves. Clear both dens, hold both ward stones on the hills for a minute, then keep people at both Reliquaries with no rival beside them for two minutes, and grow to 60 followers.",
   "seed": 1010,
   "map": {
     "generator": "flat",
-    "size": 128,
+    "size": 160,
     "landAboveSea": 30,
     "paint": [
-      { "shape": "disc", "at": [64, 40], "r": 6, "aboveSea": 40, "falloff": 6 },
-      { "shape": "disc", "at": [64, 88], "r": 6, "aboveSea": 40, "falloff": 6 },
-      { "shape": "disc", "at": [64, 64], "r": 7, "aboveSea": -30, "falloff": 4 }
+      { "shape": "disc", "at": [80, 44], "r": 8, "aboveSea": 40, "falloff": 6 },
+      { "shape": "disc", "at": [80, 116], "r": 8, "aboveSea": 40, "falloff": 6 },
+      { "shape": "disc", "at": [80, 80], "r": 10, "aboveSea": -30, "falloff": 4 }
     ]
   },
-  "tribes": [{}, { "ai": "sneaky", "difficulty": "easy", "maxTroops": 8 }],
+  "tribes": [
+    {},
+    { "ai": "aggressive", "difficulty": "normal", "maxTroops": 18 }
+  ],
   "rules": "hold_sites",
   "spells": ["bolt", "raise_land", "lightning"],
   "setup": [
-    { "spawn": "hearth", "tribe": 0, "at": [28, 64] },
-    { "spawn": "shaper", "tribe": 0, "at": [31, 61] },
-    { "spawn": "settler", "tribe": 0, "near": [26, 70], "count": 14 },
-    { "spawn": "warden", "tribe": 0, "near": [36, 64], "count": 4 },
-    { "spawn": "hearth", "tribe": 1, "at": [100, 64] },
-    { "spawn": "shaper", "tribe": 1, "at": [97, 61] },
-    { "spawn": "settler", "tribe": 1, "near": [102, 70], "count": 12 },
-    { "spawn": "tree", "near": [20, 50], "count": 12, "spacing": 1.2 },
-    { "spawn": "tree", "near": [108, 78], "count": 12, "spacing": 1.2 },
-    { "spawn": "rock", "near": [22, 76], "count": 4, "spacing": 2 },
-    { "spawn": "reliquary", "at": [64, 40], "site": { "tag": "north_reliquary", "worshippers": 3, "prayerSeconds": 30, "uses": 1, "rewards": [{ "type": "charges", "spell": "lightning", "n": 2 }] } },
-    { "spawn": "reliquary", "at": [64, 88], "site": { "tag": "south_reliquary", "worshippers": 3, "prayerSeconds": 30, "uses": 1, "rewards": [{ "type": "charges", "spell": "bolt", "n": 3 }] } }
+    { "spawn": "hearth", "tribe": 0, "at": [30, 80] },
+    { "spawn": "shaper", "tribe": 0, "at": [33, 77] },
+    { "spawn": "settler", "tribe": 0, "near": [28, 86], "count": 14 },
+    { "spawn": "warden", "tribe": 0, "near": [40, 80], "count": 6 },
+    { "spawn": "hearth", "tribe": 1, "at": [130, 80] },
+    { "spawn": "shaper", "tribe": 1, "at": [127, 77] },
+    { "spawn": "settler", "tribe": 1, "near": [132, 86], "count": 12 },
+    { "spawn": "warden", "tribe": 1, "near": [80, 40], "count": 5, "stance": "defensive" },
+    { "spawn": "warden", "tribe": 1, "near": [80, 120], "count": 5, "stance": "defensive" },
+    { "spawn": "tree", "near": [20, 66], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [138, 94], "count": 12, "spacing": 1.2 },
+    { "spawn": "rock", "near": [24, 94], "count": 4, "spacing": 2 },
+    { "spawn": "wolf", "tribe": -1, "at": [96, 40], "count": 4 },
+    { "spawn": "wolf", "tribe": -1, "at": [96, 120], "count": 4 },
+    { "spawn": "reliquary", "at": [80, 44], "site": { "tag": "north_reliquary", "worshippers": 3, "prayerSeconds": 30, "uses": 1, "rewards": [{ "type": "charges", "spell": "lightning", "n": 2 }] }},
+    { "spawn": "reliquary", "at": [80, 116], "site": { "tag": "south_reliquary", "worshippers": 3, "prayerSeconds": 30, "uses": 1, "rewards": [{ "type": "charges", "spell": "bolt", "n": 3 }] }},
+    { "spawn": "ward_stone", "at": [72, 54], "site": { "tag": "north_ward", "rewards": [{ "type": "message", "text": "The north ward guards the hill against the rival." }] }},
+    { "spawn": "ward_stone", "at": [72, 106], "site": { "tag": "south_ward", "rewards": [{ "type": "message", "text": "The south ward guards the hill against the rival." }] }}
   ],
-  "objectives": [{ "type": "victory" }],
-  "lose": [{ "type": "timeLimit", "seconds": 1500 }],
+  "objectives": [
+    { "type": "clearDens", "n": 2, "text": "Clear both wolf dens by the Reliquaries" },
+    { "type": "hold", "n": 2, "seconds": 60, "after": 0, "text": "Hold both ward stones for a minute" },
+    { "type": "followers", "n": 60, "after": 1, "text": "Grow to 60 followers to hold the valley" },
+    { "type": "victory", "after": 2 }
+  ],
+  "lose": [
+    { "type": "hearthLost" },
+    { "type": "timeLimit", "seconds": 1800 }
+  ],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Send people to both Reliquaries and keep the rival away from them. The objective panel counts your time." }] }
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Guards stand at both Reliquaries and wolves haunt the hills. Clear them, take the ward stones, then keep people at both Reliquaries." }] },
+    { "when": { "type": "time", "seconds": 240, "every": 240 }, "do": [{ "type": "spawn", "unit": "warden", "n": 4, "tribe": 1, "at": [108, 80], "stance": "aggressive" }, { "type": "message", "text": "Rival reinforcements march on the valley." }] }
   ]
 }

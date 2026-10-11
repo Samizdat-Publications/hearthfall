@@ -1,24 +1,15 @@
 {
   "id": "level_twin_reliquaries",
-  "description": "Campaign level 10 is completable under Hold the Reliquaries: a hard player AI holds both sites (or defeats the rival).",
-  "tags": [
-    "levels"
-  ],
+  "description": "Campaign level 10 is completable under Hold the Reliquaries: wardens clear both wolf dens and the posted guards while a hard player AI takes the ward stones and holds both Reliquaries.",
+  "tags": ["levels"],
   "level": "twin_reliquaries",
-  "bots": [
-    {
-      "type": "opponent",
-      "tribe": 0,
-      "personality": "aggressive",
-      "difficulty": "hard",
-      "offset": 2
-    }
+  "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 2 }],
+  "commands": [
+    { "tick": 600, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [96, 40], "attack": true } },
+    { "tick": 3000, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [96, 120], "attack": true } }
   ],
-  "runTicks": 10000,
+  "runTicks": 18000,
   "assert": [
-    {
-      "at": 10000,
-      "expr": "level.won && rules.winner == 0 && invariants() == 0"
-    }
+    { "at": 18000, "expr": "level.won && level.objectivesDone == 4 && rules.winner == 0 && invariants() == 0" }
   ]
 }

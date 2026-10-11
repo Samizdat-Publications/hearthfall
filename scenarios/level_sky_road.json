@@ -1,55 +1,28 @@
 {
   "id": "level_sky_road",
-  "description": "Campaign level 9 is completable: two firecallers float to the sea stack in the balloon, unload and pray while an economy bot grows the tribe to 20.",
-  "tags": [
-    "fast",
-    "levels"
-  ],
+  "description": "Campaign level 9 is completable: firecallers float to the northern, southern and eastern stacks in two balloons and pray, wardens clear both wolf dens, a Skyloft goes up and an opponent bot defends the shore against raiders and grows the tribe.",
+  "tags": ["levels"],
   "level": "sky_road",
   "bots": [
-    {
-      "type": "economy",
-      "tribe": 0,
-      "offset": 0
-    }
+    { "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 2 }
   ],
   "commands": [
-    {
-      "tick": 1,
-      "tribe": 0,
-      "type": "board",
-      "args": {
-        "units": "tribe0.firecallers",
-        "vehicle": "tribe0.balloons"
-      }
-    },
-    {
-      "tick": 60,
-      "tribe": 0,
-      "type": "unload",
-      "args": {
-        "units": "tribe0.balloons",
-        "to": [
-          65,
-          48
-        ]
-      }
-    },
-    {
-      "tick": 1000,
-      "tribe": 0,
-      "type": "worship",
-      "args": {
-        "units": "tribe0.firecallers",
-        "site": "sky_reliquary"
-      }
-    }
+    { "tick": 1, "tribe": 0, "type": "board", "args": { "units": [14, 15], "vehicle": 24 }},
+    { "tick": 1, "tribe": 0, "type": "board", "args": { "units": [16, 17], "vehicle": 25 }},
+    { "tick": 60, "tribe": 0, "type": "unload", "args": { "units": [24], "to": [74, 47] }},
+    { "tick": 60, "tribe": 0, "type": "unload", "args": { "units": [25], "to": [78, 111] }},
+    { "tick": 2200, "tribe": 0, "type": "placePlan", "args": { "building": "skyloft", "at": [38, 70] }},
+    { "tick": 1500, "tribe": 0, "type": "worship", "args": { "units": [14, 15], "site": "sky_reliquary" } },
+    { "tick": 1500, "tribe": 0, "type": "worship", "args": { "units": [16, 17], "site": "south_ley" } },
+    { "tick": 1600, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [44, 60], "attack": true }},
+    { "tick": 2100, "tribe": 0, "type": "move", "args": { "units": [24], "to": [44, 80] }},
+    { "tick": 3200, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [46, 102], "attack": true }},
+    { "tick": 4200, "tribe": 0, "type": "board", "args": { "units": [18, 19], "vehicle": 24 }},
+    { "tick": 4400, "tribe": 0, "type": "unload", "args": { "units": [24], "to": [96, 81] }},
+    { "tick": 6000, "tribe": 0, "type": "worship", "args": { "units": [18, 19], "site": "east_ward" } }
   ],
-  "runTicks": 3000,
+  "runTicks": 12000,
   "assert": [
-    {
-      "at": 3000,
-      "expr": "level.won && site('sky_reliquary').by == 0 && events.count('unloaded') >= 1 && invariants() == 0"
-    }
+    { "at": 12000, "expr": "level.won && alive(0) && events.count('unloaded') >= 3 && invariants() == 0" }
   ]
 }

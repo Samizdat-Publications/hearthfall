@@ -1,25 +1,15 @@
 {
   "id": "level_the_hill",
-  "description": "Campaign level 11 is completable under King of the Hill: a hard player AI holds the hilltop Reliquary for four minutes.",
-  "tags": [
-    "fast",
-    "levels"
-  ],
+  "description": "Campaign level 11 is completable under King of the Hill: wardens clear both wolf dens while a hard player AI takes the stones and holds the hilltop Reliquary for four minutes in all.",
+  "tags": ["levels"],
   "level": "the_hill",
-  "bots": [
-    {
-      "type": "opponent",
-      "tribe": 0,
-      "personality": "aggressive",
-      "difficulty": "hard",
-      "offset": 2
-    }
+  "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 2 }],
+  "commands": [
+    { "tick": 600, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [66, 90], "attack": true } },
+    { "tick": 2400, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [94, 72], "attack": true } }
   ],
-  "runTicks": 6000,
+  "runTicks": 20000,
   "assert": [
-    {
-      "at": 6000,
-      "expr": "level.won && rules.winner == 0 && rules.held(0) >= 240 && invariants() == 0"
-    }
+    { "at": 20000, "expr": "level.won && level.objectivesDone == 4 && rules.winner == 0 && invariants() == 0" }
   ]
 }

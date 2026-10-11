@@ -1,14 +1,14 @@
 {
   "id": "level_waking_stones",
-  "description": "Campaign level 14 is completable: the Shaper wakes the shore stone, followers pray the middle shrine awake and bridged, the opponent bot for the player trains through the guardians, takes the Reliquary and breaks the eastern tribe.",
+  "description": "Campaign level 14 is completable: the Shaper wakes the shore stone, wardens clear both wolf dens, followers pray at the middle shrine, the opponent bot for the player trains through the guardians, takes the Reliquary, holds the home stones, grows and breaks the eastern tribe.",
   "tags": ["levels"],
   "level": "waking_stones",
-  "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "normal", "offset": 1 }],
+  "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 1 }],
   "commands": [
     { "tick": 40, "tribe": 0, "type": "worship", "args": { "units": "tribe0.shapers", "site": "shore_stone" } }
   ],
-  "runTicks": 38000,
+  "runTicks": 36000,
   "assert": [
-    { "at": 38000, "expr": "level.won && site('north_reliquary').by == 0 && level.objectivesDone == 4 && invariants() == 0" }
+    { "at": 36000, "expr": "level.won && site('north_reliquary').by == 0 && level.objectivesDone == 7 && invariants() == 0" }
   ]
 }
