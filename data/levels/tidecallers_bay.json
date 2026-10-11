@@ -1,0 +1,819 @@
+{
+  "$comment": "Campaign level 21 (stretch 3): a bay ringed by islands. A shore totem raises a causeway to Reed Isle, its shrine raises two more to the wolf islands, the Shaper must cross tidal flats to Tidecaller's Rock, and the rock lifts permanent causeways to both rival islands. Tides drown the flats for 40 of every 120 seconds. Ward stone at the bay mouth.",
+  "id": "tidecallers_bay",
+  "name": "Tidecaller's Bay",
+  "order": 21,
+  "description": "A great bay ringed by islands, and the water keeps its own hours. Wake the shore totem, pray at Reed Isle, clear the wolves from the outer islands, cross the tidal flats to Tidecaller's Rock, hold it, then break both island tribes.",
+  "seed": 2121,
+  "beastPrey": "player",
+  "map": {
+    "generator": "flat",
+    "size": 256,
+    "landAboveSea": -30,
+    "paint": [
+      {
+        "shape": "rect",
+        "at": [
+          118,
+          128
+        ],
+        "size": [
+          52,
+          6
+        ],
+        "aboveSea": 5,
+        "falloff": 2
+      },
+      {
+        "shape": "disc",
+        "at": [
+          38,
+          128
+        ],
+        "r": 26,
+        "aboveSea": 40,
+        "falloff": 5
+      },
+      {
+        "shape": "disc",
+        "at": [
+          92,
+          128
+        ],
+        "r": 12,
+        "aboveSea": 38,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          142,
+          128
+        ],
+        "r": 9,
+        "aboveSea": 38,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          128,
+          40
+        ],
+        "r": 20,
+        "aboveSea": 40,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          128,
+          216
+        ],
+        "r": 20,
+        "aboveSea": 40,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          204,
+          58
+        ],
+        "r": 28,
+        "aboveSea": 40,
+        "falloff": 5
+      },
+      {
+        "shape": "disc",
+        "at": [
+          204,
+          198
+        ],
+        "r": 28,
+        "aboveSea": 40,
+        "falloff": 5
+      },
+      {
+        "shape": "disc",
+        "at": [
+          232,
+          128
+        ],
+        "r": 8,
+        "aboveSea": 36,
+        "falloff": 3
+      }
+    ]
+  },
+  "tribes": [
+    {},
+    {
+      "ai": "aggressive",
+      "difficulty": "hard",
+      "maxTroops": 16
+    },
+    {
+      "ai": "sneaky",
+      "difficulty": "normal",
+      "maxTroops": 10
+    }
+  ],
+  "spells": [
+    "bolt",
+    "raise_land",
+    "hornets",
+    "lightning"
+  ],
+  "buildings": [
+    "dwelling",
+    "watchtower",
+    "warden_lodge",
+    "boathouse",
+    "mending_hut"
+  ],
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        34,
+        128
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        44,
+        124
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        34,
+        136
+      ],
+      "count": 16
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        48,
+        130
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        24,
+        110
+      ],
+      "count": 14,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        26,
+        148
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        50,
+        144
+      ],
+      "count": 4,
+      "spacing": 2
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        208,
+        56
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        200,
+        62
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        212,
+        66
+      ],
+      "count": 14
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        192,
+        72
+      ],
+      "count": 5,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        190,
+        62
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        190,
+        50
+      ]
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        216,
+        44
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        196,
+        78
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 2,
+      "at": [
+        208,
+        200
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 2,
+      "at": [
+        200,
+        194
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 2,
+      "near": [
+        212,
+        190
+      ],
+      "count": 14
+    },
+    {
+      "spawn": "warden",
+      "tribe": 2,
+      "near": [
+        192,
+        184
+      ],
+      "count": 5,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        190,
+        194
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        190,
+        206
+      ]
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        216,
+        212
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        196,
+        178
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        90,
+        120
+      ],
+      "count": 5,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        124,
+        36
+      ],
+      "count": 6,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        124,
+        220
+      ],
+      "count": 6,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        126,
+        42
+      ],
+      "count": 5
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        130,
+        214
+      ],
+      "count": 5
+    },
+    {
+      "spawn": "totem",
+      "at": [
+        62,
+        128
+      ],
+      "site": {
+        "tag": "shore_totem",
+        "rewards": [
+          {
+            "type": "shape",
+            "shape": "line",
+            "at": [
+              62,
+              128
+            ],
+            "to": [
+              84,
+              128
+            ],
+            "width": 3,
+            "aboveSea": 10,
+            "falloff": 2,
+            "seconds": 15
+          },
+          {
+            "type": "awaken",
+            "site": "reed_shrine"
+          },
+          {
+            "type": "reveal",
+            "at": [
+              92,
+              128
+            ],
+            "r": 16
+          },
+          {
+            "type": "message",
+            "text": "The shore totem lifts a causeway to Reed Isle, and a shrine stirs there."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "shrine",
+      "at": [
+        95,
+        128
+      ],
+      "site": {
+        "tag": "reed_shrine",
+        "dormant": true,
+        "worshippers": 4,
+        "rewards": [
+          {
+            "type": "shape",
+            "shape": "line",
+            "at": [
+              94,
+              117
+            ],
+            "to": [
+              124,
+              56
+            ],
+            "width": 3,
+            "aboveSea": 10,
+            "falloff": 2,
+            "seconds": 25
+          },
+          {
+            "type": "shape",
+            "shape": "line",
+            "at": [
+              94,
+              139
+            ],
+            "to": [
+              124,
+              200
+            ],
+            "width": 3,
+            "aboveSea": 10,
+            "falloff": 2,
+            "seconds": 25
+          },
+          {
+            "type": "reveal",
+            "at": [
+              128,
+              40
+            ],
+            "r": 22
+          },
+          {
+            "type": "reveal",
+            "at": [
+              128,
+              216
+            ],
+            "r": 22
+          },
+          {
+            "type": "charges",
+            "spell": "lightning",
+            "n": 2
+          },
+          {
+            "type": "message",
+            "text": "The shrine raises ridges north and south and grants two Lightnings. Wolves hold both outer islands."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "ley_stone",
+      "at": [
+        88,
+        134
+      ],
+      "site": {
+        "tag": "reed_ley",
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The Reed Isle ley pays mana while you hold it."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "seer_stone",
+      "at": [
+        142,
+        134
+      ],
+      "site": {
+        "tag": "rock_seer",
+        "aura": {
+          "type": "sight",
+          "amount": 0,
+          "r": 30,
+          "every": 1
+        },
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The rock's seer shows the whole bay to whoever holds it."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "ward_stone",
+      "at": [
+        231,
+        128
+      ],
+      "site": {
+        "tag": "mouth_ward",
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The bay-mouth ward strikes at anything that sails near."
+          }
+        ]
+      }
+    }
+  ],
+  "objectives": [
+    {
+      "type": "worship",
+      "site": "shore_totem",
+      "text": "Wake the shore totem (only your Shaper can pray there)"
+    },
+    {
+      "type": "worship",
+      "site": "reed_shrine",
+      "after": 0,
+      "text": "Send four followers to the shrine on Reed Isle"
+    },
+    {
+      "type": "clearDens",
+      "after": 1,
+      "text": "Clear the wolf dens on the northern and southern islands"
+    },
+    {
+      "type": "reach",
+      "at": [
+        142,
+        128
+      ],
+      "r": 5,
+      "unit": "shaper",
+      "after": 2,
+      "text": "Cross the tidal flats and stand your Shaper on Tidecaller's Rock"
+    },
+    {
+      "type": "survive",
+      "seconds": 150,
+      "fromStage": true,
+      "after": 3,
+      "text": "Hold the rock while the rivals come for it"
+    },
+    {
+      "type": "hold",
+      "n": 2,
+      "seconds": 240,
+      "after": 4,
+      "text": "Hold two stones at once for four minutes: the rock seer, the Reed ley or the bay-mouth ward"
+    },
+    {
+      "type": "followers",
+      "n": 175,
+      "after": 5,
+      "text": "Grow the tribe to 175 followers"
+    },
+    {
+      "type": "eliminateAll",
+      "after": 6,
+      "text": "Cross the new causeways and break both island tribes"
+    }
+  ],
+  "lose": [
+    {
+      "type": "hearthLost"
+    },
+    {
+      "type": "timeLimit",
+      "seconds": 2400
+    }
+  ],
+  "triggers": [
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Walk your Shaper to the totem on the eastern shore and order it to worship."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 70,
+        "every": 120
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "The tide is turning. The flats at the rock go under in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 80,
+        "every": 120
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            120,
+            128
+          ],
+          "size": [
+            18,
+            6
+          ],
+          "aboveSea": -8,
+          "falloff": 2,
+          "seconds": 8
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 110,
+        "every": 120
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "The water draws back. The flats rise in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 120,
+        "every": 120
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            120,
+            128
+          ],
+          "size": [
+            18,
+            6
+          ],
+          "aboveSea": 5,
+          "falloff": 2,
+          "seconds": 8
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Raise a Warden Lodge and send wardens along the ridges: clear both packs."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 2
+      },
+      "do": [
+        {
+          "type": "reveal",
+          "at": [
+            142,
+            128
+          ],
+          "r": 14
+        },
+        {
+          "type": "message",
+          "text": "The packs are broken. Cross the flats to Tidecaller's Rock at low water; a drowned crossing drowns the walker."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 3
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "line",
+          "at": [
+            150,
+            122
+          ],
+          "to": [
+            180,
+            80
+          ],
+          "width": 3,
+          "aboveSea": 10,
+          "falloff": 2,
+          "seconds": 20
+        },
+        {
+          "type": "shape",
+          "shape": "line",
+          "at": [
+            150,
+            134
+          ],
+          "to": [
+            180,
+            176
+          ],
+          "width": 3,
+          "aboveSea": 10,
+          "falloff": 2,
+          "seconds": 20
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            142,
+            128
+          ],
+          "n": 8
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            142,
+            128
+          ],
+          "n": 8
+        },
+        {
+          "type": "message",
+          "text": "The rock lifts causeways to both rivals. They are marching on you across them. Hold the rock!"
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 4
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "The rock holds. Grow your tribe, then take the causeways and break both rivals."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1800
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Ten minutes remain."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "id": "level_wolf_country",
+  "description": "Campaign level 18 is completable: wardens clear the wolf dens of both valleys, followers pray at the gorge shrine to raise a land bridge, the opponent bot for the player razes the signal pyre and breaks both highland tribes.",
+  "tags": [
+    "levels"
+  ],
+  "level": "wolf_country",
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "aggressive",
+      "difficulty": "hard",
+      "offset": 1
+    }
+  ],
+  "commands": [
+    {
+      "tick": 2400,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.wardens",
+        "to": [
+          40,
+          44
+        ],
+        "attack": true
+      }
+    },
+    {
+      "tick": 4400,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.wardens",
+        "to": [
+          62,
+          48
+        ],
+        "attack": true
+      }
+    },
+    {
+      "tick": 6400,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.wardens",
+        "to": [
+          42,
+          66
+        ],
+        "attack": true
+      }
+    },
+    {
+      "tick": 7400,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.wardens",
+        "to": [
+          30,
+          56
+        ],
+        "attack": true
+      }
+    },
+    {
+      "tick": 8400,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.wardens",
+        "to": [
+          40,
+          150
+        ],
+        "attack": true
+      }
+    },
+    {
+      "tick": 10400,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.wardens",
+        "to": [
+          62,
+          144
+        ],
+        "attack": true
+      }
+    },
+    {
+      "tick": 12400,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.wardens",
+        "to": [
+          42,
+          126
+        ],
+        "attack": true
+      }
+    },
+    {
+      "tick": 13400,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.wardens",
+        "to": [
+          30,
+          134
+        ],
+        "attack": true
+      }
+    }
+  ],
+  "runTicks": 25000,
+  "assert": [
+    {
+      "at": 25000,
+      "expr": "level.won && !alive(1) && !alive(2) && alive(0) && level.objectivesDone == 7 && invariants() == 0"
+    }
+  ]
+}

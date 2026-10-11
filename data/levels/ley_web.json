@@ -1,0 +1,92 @@
+{
+  "$comment": "Campaign level 20 (stretch 3): a web of eleven capturable stones (ley, ward, seer) across a 256 continent with four lakes. Three rivals each start holding two stones near their Hearth; five neutral stones (two near the player, the centre ward on its hill, two lakeside seers) are contested as the rivals begin to pray. Staged: take two, hold five at once for six minutes, grow to 100 followers, break all three tribes.",
+  "id": "ley_web",
+  "name": "The Ley Web",
+  "order": 20,
+  "description": "Eleven old stones are strung across this continent like knots in a net, and three rival tribes each keep two. Take your share, hold five at once for six minutes while the rivals pray against you, outgrow them, then break all three tribes.",
+  "seed": 2020,
+  "map": {
+    "generator": "flat",
+    "size": 256,
+    "landAboveSea": -30,
+    "paint": [
+      { "shape": "disc", "at": [128, 128], "r": 112, "aboveSea": 36, "falloff": 10 },
+      { "shape": "disc", "at": [88, 88], "r": 14, "aboveSea": -30, "falloff": 4 },
+      { "shape": "disc", "at": [168, 88], "r": 14, "aboveSea": -30, "falloff": 4 },
+      { "shape": "disc", "at": [168, 168], "r": 14, "aboveSea": -30, "falloff": 4 },
+      { "shape": "disc", "at": [88, 168], "r": 14, "aboveSea": -30, "falloff": 4 },
+      { "shape": "disc", "at": [128, 128], "r": 14, "aboveSea": 52, "falloff": 6 }
+    ]
+  },
+  "tribes": [
+    {},
+    { "ai": "aggressive", "difficulty": "normal", "maxTroops": 8, "worshipAfterSeconds": 480 },
+    { "ai": "sneaky", "difficulty": "normal", "maxTroops": 8, "worshipAfterSeconds": 660 },
+    { "ai": "turtle", "difficulty": "normal", "maxTroops": 8, "worshipAfterSeconds": 840 }
+  ],
+  "spells": ["bolt", "raise_land", "hornets"],
+  "buildings": ["dwelling", "watchtower", "warden_lodge"],
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [44, 128] },
+    { "spawn": "shaper", "tribe": 0, "at": [50, 126] },
+    { "spawn": "settler", "tribe": 0, "near": [44, 136], "count": 14 },
+    { "spawn": "warden", "tribe": 0, "near": [54, 128], "count": 4 },
+    { "spawn": "tree", "near": [36, 114], "count": 14, "spacing": 1.2 },
+    { "spawn": "tree", "near": [38, 144], "count": 12, "spacing": 1.2 },
+    { "spawn": "rock", "near": [54, 138], "count": 3, "spacing": 2 },
+
+    { "spawn": "hearth", "tribe": 1, "at": [128, 44] },
+    { "spawn": "shaper", "tribe": 1, "at": [126, 50] },
+    { "spawn": "settler", "tribe": 1, "near": [136, 44], "count": 12 },
+    { "spawn": "warden", "tribe": 1, "near": [128, 54], "count": 3 },
+    { "spawn": "tree", "near": [114, 36], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [144, 36], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [138, 54], "count": 3, "spacing": 2 },
+
+    { "spawn": "hearth", "tribe": 2, "at": [212, 128] },
+    { "spawn": "shaper", "tribe": 2, "at": [206, 130] },
+    { "spawn": "settler", "tribe": 2, "near": [212, 136], "count": 12 },
+    { "spawn": "warden", "tribe": 2, "near": [202, 128], "count": 3 },
+    { "spawn": "tree", "near": [220, 114], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [218, 144], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [202, 138], "count": 3, "spacing": 2 },
+
+    { "spawn": "hearth", "tribe": 3, "at": [128, 212] },
+    { "spawn": "shaper", "tribe": 3, "at": [130, 206] },
+    { "spawn": "settler", "tribe": 3, "near": [120, 212], "count": 12 },
+    { "spawn": "warden", "tribe": 3, "near": [128, 202], "count": 3 },
+    { "spawn": "watchtower", "tribe": 3, "at": [118, 202] },
+    { "spawn": "watchtower", "tribe": 3, "at": [138, 202] },
+    { "spawn": "tree", "near": [114, 220], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [144, 220], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [138, 222], "count": 3, "spacing": 2 },
+
+    { "spawn": "ley_stone", "at": [68, 152], "site": { "tag": "west_ley", "rewards": [{ "type": "message", "text": "The western ley is yours. It pays mana while you hold it." }] } },
+    { "spawn": "ward_stone", "at": [68, 104], "site": { "tag": "west_ward", "rewards": [{ "type": "message", "text": "The western ward guards your northern flank." }] } },
+    { "spawn": "ward_stone", "at": [128, 128], "site": { "tag": "heart_ward", "worshippers": 4, "prayerSeconds": 30, "aura": { "type": "strike", "amount": 300, "r": 11, "every": 3 }, "rewards": [{ "type": "reveal", "at": [128, 128], "r": 40 }, { "type": "message", "text": "The heart ward strikes at anything that comes near. Rivals will pray against you here." }] } },
+    { "spawn": "seer_stone", "at": [106, 106], "site": { "tag": "north_west_seer", "rewards": [{ "type": "message", "text": "The north-western seer shows the lake shore." }] } },
+    { "spawn": "seer_stone", "at": [106, 150], "site": { "tag": "south_west_seer", "rewards": [{ "type": "message", "text": "The south-western seer shows the lake shore." }] } },
+
+    { "spawn": "ley_stone", "tribe": 1, "at": [104, 66], "site": { "tag": "north_ley", "rewards": [{ "type": "message", "text": "A northern stone changes hands." }] } },
+    { "spawn": "seer_stone", "tribe": 1, "at": [152, 66], "site": { "tag": "north_seer", "rewards": [{ "type": "message", "text": "A northern stone changes hands." }] } },
+    { "spawn": "seer_stone", "tribe": 2, "at": [190, 104], "site": { "tag": "east_seer", "rewards": [{ "type": "message", "text": "An eastern stone changes hands." }] } },
+    { "spawn": "ley_stone", "tribe": 2, "at": [190, 152], "site": { "tag": "east_ley", "rewards": [{ "type": "message", "text": "An eastern stone changes hands." }] } },
+    { "spawn": "seer_stone", "tribe": 3, "at": [104, 190], "site": { "tag": "south_seer", "rewards": [{ "type": "message", "text": "A southern stone changes hands." }] } },
+    { "spawn": "ley_stone", "tribe": 3, "at": [152, 190], "site": { "tag": "south_ley", "rewards": [{ "type": "message", "text": "A southern stone changes hands." }] } }
+  ],
+  "objectives": [
+    { "type": "hold", "n": 2, "seconds": 20, "text": "Take two stones and keep them" },
+    { "type": "hold", "n": 5, "seconds": 360, "after": 0, "text": "Hold five stones at once for six minutes" },
+    { "type": "followers", "n": 100, "after": 1, "text": "Grow to 100 followers" },
+    { "type": "eliminateAll", "after": 2, "text": "Break all three rival tribes" }
+  ],
+  "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 2400 }],
+  "triggers": [
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Pray at the stones near you. The rivals already hold six and will soon pray for the rest." }] },
+    { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "message", "text": "Two stones are yours. Hold five at once and feel the web pull taut." }] },
+    { "when": { "type": "time", "seconds": 420, "every": 300 }, "do": [{ "type": "raid", "tribe": 1, "to": [128, 128], "n": 5 }, { "type": "message", "text": "A northern war band marches on the heart ward." }] },
+    { "when": { "type": "time", "seconds": 600, "every": 360 }, "do": [{ "type": "raid", "tribe": 2, "to": [68, 128], "n": 5 }, { "type": "message", "text": "An eastern war band marches west along the ley lines." }] },
+    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "message", "text": "Five stones held. Now outgrow them and break the tribes." }] },
+    { "when": { "type": "time", "seconds": 2100 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+  ]
+}

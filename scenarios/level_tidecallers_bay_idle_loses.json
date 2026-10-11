@@ -1,0 +1,15 @@
+{
+  "id": "level_tidecallers_bay_idle_loses",
+  "description": "Campaign level 21 has a real loss: an idle player never wakes the totem, and the rivals sail over and burn the Hearth long before the time limit.",
+  "tags": [
+    "levels"
+  ],
+  "level": "tidecallers_bay",
+  "runTicks": 12000,
+  "assert": [
+    {
+      "at": 12000,
+      "expr": "level.lost && alive(1) && alive(2) && invariants() == 0"
+    }
+  ]
+}

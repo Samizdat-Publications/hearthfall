@@ -1,0 +1,128 @@
+{
+  "$comment": "Campaign level 17 (stretch 3): a river delta. Six islands linked by sand fords that two repeating tides drown and drain out of step. A sneaky rival holds two ley stones on the north island (seeded to its tribe); the Shaper holds a ford ward at the centre against both rivals, prays the ley stones away (the second raises a permanent causeway), then breaks both tribes.",
+  "id": "drowned_fords",
+  "name": "The Drowned Fords",
+  "order": 17,
+  "description": "A river delta of six islands joined by sand fords that drown and drain by turns. Seize the ford ward at the centre and hold it, pray the sneaky tribe's ley stones out of its hands to raise a causeway the tide cannot take, then break both rivals.",
+  "seed": 1717,
+  "map": {
+    "generator": "flat",
+    "size": 192,
+    "landAboveSea": -30,
+    "paint": [
+      { "shape": "disc", "at": [32, 96], "r": 21, "aboveSea": 40, "falloff": 4 },
+      { "shape": "disc", "at": [96, 96], "r": 12, "aboveSea": 38, "falloff": 3 },
+      { "shape": "disc", "at": [96, 40], "r": 16, "aboveSea": 40, "falloff": 4 },
+      { "shape": "disc", "at": [96, 152], "r": 16, "aboveSea": 40, "falloff": 4 },
+      { "shape": "disc", "at": [160, 44], "r": 20, "aboveSea": 40, "falloff": 4 },
+      { "shape": "disc", "at": [160, 148], "r": 20, "aboveSea": 40, "falloff": 4 },
+      { "shape": "rect", "at": [68, 96], "size": [34, 8], "aboveSea": 5, "falloff": 2 },
+      { "shape": "rect", "at": [96, 70], "size": [8, 30], "aboveSea": 5, "falloff": 2 },
+      { "shape": "rect", "at": [96, 122], "size": [8, 30], "aboveSea": 5, "falloff": 2 },
+      { "shape": "rect", "at": [126, 40], "size": [30, 8], "aboveSea": 5, "falloff": 2 },
+      { "shape": "rect", "at": [126, 152], "size": [30, 8], "aboveSea": 5, "falloff": 2 }
+    ]
+  },
+  "tribes": [
+    {},
+    { "ai": "sneaky", "difficulty": "normal", "maxTroops": 12, "worshipAfterSeconds": 300 },
+    { "ai": "aggressive", "difficulty": "normal", "maxTroops": 12 }
+  ],
+  "spells": ["bolt", "raise_land", "hornets", "lightning"],
+  "buildings": ["dwelling", "watchtower", "warden_lodge"],
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [28, 96] },
+    { "spawn": "shaper", "tribe": 0, "at": [36, 94] },
+    { "spawn": "settler", "tribe": 0, "near": [28, 104], "count": 14 },
+    { "spawn": "warden", "tribe": 0, "near": [40, 96], "count": 3 },
+    { "spawn": "tree", "near": [20, 84], "count": 14, "spacing": 1.2 },
+    { "spawn": "tree", "near": [22, 112], "count": 12, "spacing": 1.2 },
+    { "spawn": "rock", "near": [40, 106], "count": 4, "spacing": 2 },
+    { "spawn": "hearth", "tribe": 1, "at": [160, 40] },
+    { "spawn": "shaper", "tribe": 1, "at": [154, 44] },
+    { "spawn": "settler", "tribe": 1, "near": [162, 48], "count": 12 },
+    { "spawn": "warden", "tribe": 1, "near": [148, 44], "count": 2 },
+    { "spawn": "tree", "near": [168, 34], "count": 12, "spacing": 1.2 },
+    { "spawn": "rock", "near": [150, 54], "count": 3, "spacing": 2 },
+    { "spawn": "hearth", "tribe": 2, "at": [160, 152] },
+    { "spawn": "shaper", "tribe": 2, "at": [154, 148] },
+    { "spawn": "settler", "tribe": 2, "near": [162, 144], "count": 12 },
+    { "spawn": "warden", "tribe": 2, "near": [148, 148], "count": 2 },
+    { "spawn": "tree", "near": [168, 158], "count": 12, "spacing": 1.2 },
+    { "spawn": "rock", "near": [150, 138], "count": 3, "spacing": 2 },
+    { "spawn": "tree", "near": [92, 34], "count": 6, "spacing": 1.2 },
+    { "spawn": "tree", "near": [92, 160], "count": 6, "spacing": 1.2 },
+    {
+      "spawn": "ward_stone",
+      "at": [96, 96],
+      "site": {
+        "tag": "ford_ward",
+        "worshippers": 3,
+        "prayerSeconds": 24,
+        "rewards": [
+          { "type": "charges", "spell": "lightning", "n": 2 },
+          { "type": "reveal", "at": [96, 96], "r": 34 },
+          { "type": "message", "text": "The ford ward is yours. It strikes what crosses the water, and two Lightnings answer your prayer. Both rivals march for it." }
+        ]
+      }
+    },
+    {
+      "spawn": "ley_stone",
+      "tribe": 1,
+      "at": [88, 36],
+      "site": { "tag": "north_ley_a", "rewards": [{ "type": "message", "text": "The first ley stone is yours. One more, and the delta will serve you." }] }
+    },
+    {
+      "spawn": "ley_stone",
+      "tribe": 1,
+      "at": [104, 46],
+      "site": {
+        "tag": "north_ley_b",
+        "rewards": [
+          { "type": "shape", "shape": "line", "at": [108, 50], "to": [142, 52], "width": 3, "aboveSea": 10, "falloff": 2, "seconds": 20 },
+          { "type": "reveal", "at": [150, 46], "r": 20 },
+          { "type": "message", "text": "The second ley stone lifts a causeway toward the sneaky tribe's island. The tide cannot take it." }
+        ]
+      }
+    }
+  ],
+  "objectives": [
+    { "type": "worship", "site": "ford_ward", "text": "Cross at low water and pray at the ford ward in the centre" },
+    { "type": "survive", "seconds": 150, "fromStage": true, "after": 0, "text": "Hold the ford while both rivals counterattack" },
+    { "type": "worship", "site": "north_ley_a", "after": 1, "text": "Pray the first ley stone away from the sneaky tribe (north island)" },
+    { "type": "worship", "site": "north_ley_b", "after": 2, "text": "Pray the second ley stone away to raise a causeway" },
+    { "type": "eliminateAll", "after": 3, "text": "Break both rival tribes" }
+  ],
+  "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 1800 }],
+  "triggers": [
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "The fords drown and drain by turns. Cross while the sand is dry, and pray at the ward in the centre." }] },
+    { "when": { "type": "time", "seconds": 80, "every": 120 }, "do": [{ "type": "message", "text": "The tide is turning on the home and centre fords. Ten seconds." }] },
+    { "when": { "type": "time", "seconds": 90, "every": 120 }, "do": [
+      { "type": "shape", "shape": "rect", "at": [68, 96], "size": [26, 8], "aboveSea": -8, "falloff": 2, "seconds": 8 },
+      { "type": "shape", "shape": "rect", "at": [96, 70], "size": [8, 22], "aboveSea": -8, "falloff": 2, "seconds": 8 },
+      { "type": "shape", "shape": "rect", "at": [96, 122], "size": [8, 22], "aboveSea": -8, "falloff": 2, "seconds": 8 }
+    ] },
+    { "when": { "type": "time", "seconds": 150, "every": 120 }, "do": [
+      { "type": "shape", "shape": "rect", "at": [68, 96], "size": [26, 8], "aboveSea": 5, "falloff": 2, "seconds": 8 },
+      { "type": "shape", "shape": "rect", "at": [96, 70], "size": [8, 22], "aboveSea": 5, "falloff": 2, "seconds": 8 },
+      { "type": "shape", "shape": "rect", "at": [96, 122], "size": [8, 22], "aboveSea": 5, "falloff": 2, "seconds": 8 }
+    ] },
+    { "when": { "type": "time", "seconds": 20, "every": 120 }, "do": [{ "type": "message", "text": "Water is rising on the eastern fords." }] },
+    { "when": { "type": "time", "seconds": 30, "every": 120 }, "do": [
+      { "type": "shape", "shape": "rect", "at": [126, 40], "size": [22, 8], "aboveSea": -8, "falloff": 2, "seconds": 8 },
+      { "type": "shape", "shape": "rect", "at": [126, 152], "size": [22, 8], "aboveSea": -8, "falloff": 2, "seconds": 8 }
+    ] },
+    { "when": { "type": "time", "seconds": 90, "every": 120 }, "do": [
+      { "type": "shape", "shape": "rect", "at": [126, 40], "size": [22, 8], "aboveSea": 5, "falloff": 2, "seconds": 8 },
+      { "type": "shape", "shape": "rect", "at": [126, 152], "size": [22, 8], "aboveSea": 5, "falloff": 2, "seconds": 8 }
+    ] },
+    { "when": { "type": "objective", "index": 0 }, "do": [
+      { "type": "raid", "tribe": 1, "to": [96, 96], "n": 8 },
+      { "type": "raid", "tribe": 2, "to": [96, 96], "n": 8 },
+      { "type": "message", "text": "Both rivals are crossing for the ford ward. Hold it." }
+    ] },
+    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "message", "text": "The counterattack breaks. The sneaky tribe's ley stones lie on the north island." }] },
+    { "when": { "type": "time", "seconds": 900, "every": 300 }, "do": [{ "type": "raid", "tribe": 2, "to": [96, 96], "n": 6 }, { "type": "message", "text": "A war band wades toward the centre." }] },
+    { "when": { "type": "time", "seconds": 1500 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+  ]
+}

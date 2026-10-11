@@ -1,0 +1,11 @@
+{
+  "id": "level_drowned_fords",
+  "description": "Campaign level 17 is completable: the opponent bot for the player crosses the drowning fords, holds the ford ward against both rivals, prays the sneaky tribe's ley stones away and breaks both tribes.",
+  "tags": ["levels"],
+  "level": "drowned_fords",
+  "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "normal", "offset": 1 }],
+  "runTicks": 24000,
+  "assert": [
+    { "at": 24000, "expr": "level.won && !alive(1) && !alive(2) && alive(0) && level.objectivesDone == 5 && invariants() == 0" }
+  ]
+}

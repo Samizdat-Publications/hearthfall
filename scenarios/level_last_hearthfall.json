@@ -1,0 +1,61 @@
+{
+  "id": "level_last_hearthfall",
+  "description": "Campaign level 22 (finale) is completable: the Shaper wakes the shore totem, followers pray at the ember shrine, wardens clear the centre dens, the opponent bot for the player takes the Last Hearth, pries two stones from rivals, razes the southern towers and breaks all three tribes.",
+  "tags": [
+    "levels"
+  ],
+  "level": "last_hearthfall",
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "aggressive",
+      "difficulty": "hard",
+      "offset": 1
+    }
+  ],
+  "commands": [
+    {
+      "tick": 40,
+      "tribe": 0,
+      "type": "worship",
+      "args": {
+        "units": "tribe0.shapers",
+        "site": "shore_totem"
+      }
+    },
+    {
+      "tick": 2800,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.wardens",
+        "to": [
+          112,
+          100
+        ],
+        "attack": true
+      }
+    },
+    {
+      "tick": 5500,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.wardens",
+        "to": [
+          146,
+          158
+        ],
+        "attack": true
+      }
+    }
+  ],
+  "runTicks": 34100,
+  "assert": [
+    {
+      "at": 34100,
+      "expr": "level.won && !alive(1) && !alive(2) && !alive(3) && alive(0) && level.objectivesDone == 7 && invariants() == 0"
+    }
+  ]
+}
