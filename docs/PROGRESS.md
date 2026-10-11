@@ -3,6 +3,9 @@
 Read this first after any restart or context compaction. Keep "Now" under 25 lines. History goes to `docs/PROGRESS_LOG.md` (append only, never read it whole).
 
 ## Now
+Stretch 3 started: 2026-10-10T21:45:00Z (Stewart after playing levels 1 to 3: "legitimately good"; wants levels far more complex as the campaign ramps: more buildings, resources, spells, objectives, plus the handoff items). Quota is tight (62 percent used, resets Thursday): Haiku for QA digging and docs, Sonnet for soaks and level drafts, main session for sim code. No run sentinel or STATUS line this stretch.
+- S3 DONE: prayer chains (ed566ba): dormant sites, awaken and reveal rewards, validation, sunk render.
+- S3 DONE: AI uses the unused spells: spell value counts traps, sinking land, storms and building damage, building targets value the whole village; prefs gain call, volcano, erode, mire. ai soak 16 x 20: call 51, mire 4, volcano 1, erode 1 (were 0); wins aggressive 2, sneaky 4, turtle 4, unfinished 6.
 Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when STOP exists). Plan: BACKLOG 14a look v3, polish, balance, rules and victory variants, campaign, boats and Skyloft, Forge, map editor (CLAUDE.md "Stretch 2").
 - S2 backlog S items DONE (qa:fast green each; scenarios after sim edits; e2e after 79, 35, 50, 78; goldens unchanged): 79 end screen stats survive a load, 44 treeVersion on chop test, 72 flow progress kept away from edits, 35 self-contained saves (`World.fromSnapshot`, origin check), 50 controller specs in saves and replays, 61 chanter reach inset data, 69 AI shared tuning data, 30 formula strings retired, 31 terrainOp nested union, 78 data/ui.json outside the pack hash (ADR-022, base pack hash changed once). Then 34 terrain and generator literals (terrain.json gen and ops), 66 opponent_skirmish golden, 67 soak AI effect metrics, 68 AI bridge scenario, 59 chase give-up soak gate, 88 level worship delay, 95 vfx colors in style.json (38 superseded), 41 camera rig and tree size in style.json render.
 - Stretch 2 end ritual (queue empty, plan allows it before s2h 23): full npm run qa PASS at 5e11f16 (s2h 18.7); soak:nightly and bots PASS; State of the game and First human playtest rewritten; tag s2-done.
@@ -27,9 +30,9 @@ Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when
 - Making-of archive: making-of/ via `npm run making-of -- add`; storyboard in making-of/README.md. Making-of page (Stewart's request): https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5, rebuild with `npm run making-of -- page` and republish to that URL after every backlog item (README steps).
 
 ## Next 3 actions
-1. Stretch 2 is done (tag s2-done). Wait for Stewart's first playtest notes ("First human playtest" below) and turn them into BACKLOG items.
-2. Candidates without his input: AI use of Volcano, Call, Mire and Erode; counters at equal numbers about 75 percent; static web deploy (needs his OK).
-3. Keep the loop: qa:fast per commit, full qa every 4 h of work, soak:nightly after sim or AI changes.
+1. Handoff: counter tuning at equal numbers toward 75 percent (playtest-analyst, data only).
+2. Level primitives for complex levels: objectives destroy (tagged building), reach (area), and multi-site worship; triggers on area entered, site awakened, followers; guarded sites (wild or neutral camps).
+3. Campaign build-out: complexity pass on levels 6 to 13, then levels 14 to 25 built on chains, multi-stage objectives and 3 to 4 tribes; new buildings, a resource and new spells as the curve needs them (assets via asset-producer within budget).
 
 ## Blocked
 (none)

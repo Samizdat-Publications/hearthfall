@@ -1209,7 +1209,7 @@ export class OpponentAI implements Controller {
         // a spell that can kill a Shaper values one even alone (BACKLOG 7: the last Shaper of a fallen tribe)
         const score =
           kind === "buildings"
-            ? 2 + (w.cfg.pack.buildings.buildings[E.type[i]].id === "hearth" ? 3 : 0)
+            ? this.buildingsAt(w, i, this.reachRadius(def))
             : this.clusterAt(w, i, kind === "wild") + (kind === "units" && killsCaster && w.cfg.pack.units.units[E.type[i]].isCaster ? 2 : 0);
         // own-troop spells need a real group (a lone soldier is not worth the charge)
         if ((kind === "ownFighting" || kind === "ownMarching") && score < 3) continue;
@@ -1233,11 +1233,47 @@ export class OpponentAI implements Controller {
     return pick;
   }
 
-  /** rough kill power of a spell: its radius damage per target over a Warden's hp, capped at 1 */
-  private power(def: { effects: readonly { type: string; damage?: number }[] }): number {
-    let dmg = 0;
-    for (const e of def.effects) if (e.type === "damageRadius" && e.damage) dmg += e.damage;
-    return Math.min(1, dmg / 2600);
+  /**
+   * rough kill power of a spell, 0 to 1: radius damage per target over a Warden's hp, plus (S3 handoff:
+   * the AI never cast Mire, Erode or Volcano because they scored 0 here) traps that kill, land that sinks
+   * or burns, storms and building damage
+   */
+  private power(def: { effects: readonly { type: string; damage?: number; kills?: number; op?: string; damagePct?: number; count?: number; damagePerSecond?: number; seconds?: number }[] }): number {
+    let p = 0;
+    for (const e of def.effects) {
+      if (e.type === "damageRadius" && e.damage) p += e.damage / 2600;
+      else if (e.type === "trap" && e.kills) p += Math.min(1, e.kills / 10);
+      else if (e.type === "terrainOp" && (e.op === "lowerTowardSea" || e.op === "crater" || e.op === "noiseScar")) p += 0.6;
+      else if (e.type === "damageBuildingsRadius" && e.damagePct) p += e.damagePct / 100;
+      else if (e.type === "projectileStorm" && e.damage && e.count) p += (e.damage * e.count) / 2600 / 4;
+      else if (e.type === "areaOverTime" && e.damagePerSecond && e.seconds) p += (e.damagePerSecond * e.seconds) / 2600;
+    }
+    return Math.min(1, p);
+  }
+
+  /** the widest radius among a spell's effects (how much of a village one cast covers) */
+  private reachRadius(def: { effects: readonly object[] }): number {
+    let r = 1;
+    for (const e of def.effects) {
+      const er = (e as { radius?: unknown }).radius;
+      if (typeof er === "number" && er > r) r = er;
+    }
+    return r;
+  }
+
+  /** value of a building target: finished, seen rival buildings within r of building i (a Hearth counts 4) */
+  private buildingsAt(w: World, i: number, r: number): number {
+    const E = w.ents;
+    const n = w.terrain.size;
+    let v = 0;
+    for (let j = 0; j < E.hi; j++) {
+      if (!E.alive[j] || E.cat[j] !== CAT.building || E.tribe[j] !== E.tribe[i] || E.state[j] !== BSTATE.done) continue;
+      const dx = wrapDelta(E.x[j] - E.x[i], n);
+      const dy = wrapDelta(E.y[j] - E.y[i], n);
+      if (dx * dx + dy * dy > r * r || !this.seenB(w, j)) continue;
+      v += w.cfg.pack.buildings.buildings[E.type[j]].id === "hearth" ? 4 : 1;
+    }
+    return v + 1;
   }
 
   private clusterAt(w: World, i: number, wild: boolean): number {

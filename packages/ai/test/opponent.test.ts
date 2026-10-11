@@ -304,6 +304,41 @@ describe("OpponentAI (M7)", () => {
     expect((cast?.args as { spell?: string } | undefined)?.spell).toBe("lightning");
   });
 
+  it("S3 handoff: traps and terrain spells have value, so Mire beats Bolt on a cluster and Erode aims at the village, not a lone hut", () => {
+    const setup = () => {
+      const w = world({ generator: "flat", size: 64, tribes: 2 });
+      w.spawnBuilding("hearth", 0, 12, 32);
+      w.spawnBuilding("hearth", 1, 56, 32);
+      w.spawnUnit("shaper", 0, 24, 32);
+      w.spawnUnit("shaper", 1, 58, 32);
+      return w;
+    };
+    const arm = (w: World, ids: string[]) => {
+      for (const id of ids) {
+        const s = w.cfg.spellIndex.get(id)!;
+        w.tribes[0].eco.unlocked[s] = 1;
+        w.tribes[0].eco.charges[s] = 1;
+      }
+    };
+    const pick = (w: World, prefs: string[]) => {
+      const ai = new OpponentAI({ tribe: 0, personality: { ...bold, spellPrefs: prefs, firstAttackMinute: 99 }, every: 1 });
+      return ai.decide(w).find((c) => c.type === "cast")?.args as { spell?: string; target?: [number, number] } | undefined;
+    };
+    const a = setup();
+    for (let k = 0; k < 3; k++) a.spawnUnit("warden", 1, 30 + k * 0.5, 32);
+    a.step([]);
+    arm(a, ["bolt", "mire"]);
+    expect(pick(a, ["bolt", "mire"])?.spell).toBe("mire");
+    const b = setup();
+    b.spawnBuilding("dwelling", 1, 26, 40);
+    for (const [x, y] of [[30, 26], [33, 26], [30, 23], [33, 23]]) b.spawnBuilding("dwelling", 1, x, y);
+    b.step([]);
+    arm(b, ["erode"]);
+    const cast = pick(b, ["erode"]);
+    expect(cast?.spell).toBe("erode");
+    expect(cast!.target![1]).toBeLessThan(30);
+  });
+
   it("a tower minded personality plans no tower before half its economy target (BACKLOG 64)", () => {
     const towerScore = (target: number) => {
       const w = world({ generator: "flat", size: 64, tribes: 2 });

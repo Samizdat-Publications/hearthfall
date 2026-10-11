@@ -37,7 +37,10 @@
         "ward",
         "bolt",
         "lightning",
-        "quake"
+        "volcano",
+        "quake",
+        "erode",
+        "call"
       ],
       "scouting": 0.6,
       "towerAffinity": 0.2,
@@ -61,7 +64,10 @@
         "whirlwind",
         "wraith",
         "raise_land",
-        "bolt"
+        "mire",
+        "erode",
+        "bolt",
+        "call"
       ],
       "scouting": 0.9,
       "towerAffinity": 0.3,
@@ -92,9 +98,10 @@
         "lightning",
         "bolt",
         "hornets",
+        "volcano",
         "flatten",
         "quake",
-        "volcano"
+        "call"
       ],
       "scouting": 0.4,
       "towerAffinity": 0.5,
