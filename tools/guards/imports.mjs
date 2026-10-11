@@ -1,5 +1,5 @@
 // Import-direction guard (docs/ARCHITECTURE.md section 2): sim -> data only; ai -> sim, data;
-// render, ui, audio -> sim (read only), data; apps/game wires everything.
+// render, ui, audio -> sim (read only), data; net (lockstep core) -> sim, data; apps/game wires everything.
 import { isMain, lineOf, read, rel, report, walk } from "./lib.mjs";
 
 const ALLOWED = {
@@ -9,6 +9,7 @@ const ALLOWED = {
   render: ["sim", "data", "three"],
   ui: ["sim", "data", "preact", "@preact/signals"],
   audio: ["sim", "data"],
+  net: ["sim", "data"],
 };
 
 export function run() {

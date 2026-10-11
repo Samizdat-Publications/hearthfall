@@ -1,4 +1,4 @@
-// Determinism guard for packages/sim and packages/ai (docs/ARCHITECTURE.md section 3).
+// Determinism guard for packages/sim, packages/ai and the lockstep core packages/net (docs/ARCHITECTURE.md section 3).
 import { isMain, lineOf, read, rel, report, stripCode, walk } from "./lib.mjs";
 
 const MATH_ALLOW = new Set(["abs", "min", "max", "floor", "ceil", "round", "trunc", "sign", "sqrt", "imul", "fround", "clz32"]);
@@ -7,7 +7,7 @@ const BANNED_IMPORTS = /from\s+["'](three|three\/.*|preact.*|node:.*|fs|path|os|
 
 export function run() {
   const issues = [];
-  const files = walk(["packages/sim/src", "packages/ai/src"], [".ts"]);
+  const files = walk(["packages/sim/src", "packages/ai/src", "packages/net/src"], [".ts"]);
   for (const abs of files) issues.push(...scan(rel(abs), read(abs)));
   return { name: "determinism", issues, files: files.length };
 }

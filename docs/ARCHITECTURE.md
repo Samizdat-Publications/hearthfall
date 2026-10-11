@@ -40,6 +40,7 @@ hearthfall/
     render/                     three.js renderer, reads sim snapshots, never writes sim state
     ui/                         Preact HUD and menus
     audio/                      Web Audio wrapper, positional SFX, music layers
+    net/                        lockstep core, wire check, in-memory transport (Leg 5)
   apps/
     game/                       Vite app: wires sim + render + ui + input; exposes window.__game debug API
   tools/
@@ -53,7 +54,7 @@ hearthfall/
   assets/                       generated runtime assets (glb, ogg, png) + thumbnails, committed (no git LFS; keep under ~300 MB)
 ```
 
-Dependency direction is strict: `sim` depends only on `data`. `ai` depends on `sim` and `data`. `render`, `ui`, `audio` depend on `sim` types (read only). `apps/game` wires everything. `tools/harness` may import anything. Enforce with a guard script that scans imports.
+Dependency direction is strict: `sim` depends only on `data`. `ai` depends on `sim` and `data`. `render`, `ui`, `audio` depend on `sim` types (read only). `net` (the lockstep core) depends on `sim` and `data` and sits under the determinism guard. `apps/game` wires everything. `tools/harness` may import anything. Enforce with a guard script that scans imports.
 
 ## 3. Simulation core (`packages/sim`)
 
@@ -244,4 +245,4 @@ Agents read `getSummary()` and headless harness output first. Screenshots are th
 
 ## 10. Extension points (design for weeks of growth)
 
-New unit, building, spell, AI personality, level, terrain biome, or mod pack: data only. New effect primitive, new system, new renderer backend, new controller type: code with a test, registered through a registry, never a switch statement buried in a system. Multiplayer later: lockstep over WebSocket using the same Command stream and per-tick hash comparison for desync detection.
+New unit, building, spell, AI personality, level, terrain biome, or mod pack: data only. New effect primitive, new system, new renderer backend, new controller type: code with a test, registered through a registry, never a switch statement buried in a system. Multiplayer (Leg 5, BACKLOG 15, plan in ROADMAP): lockstep over WebSocket using the same Command stream and periodic hash comparison for desync detection. As built (L5-A): `packages/net` `Lockstep` takes seats, an input delay D and a hash interval; each seat sends exactly one batch per tick (empty too) for tick t + D, a tick runs only when every seat's batch is in, the commands go to `World.step` in seat order, an optional `filter` (the host passes `peerCommandRefusal`) drops commands identically on every seat, late, duplicate and bad-seat batches are logged as `faults` and ignored, and a hash mismatch sets `desync` and stops stepping. `advance(max, run, hashOf)` is the driver loop. `parseNetMsg` checks socket input. `LoopbackHub` is a seeded in-memory transport with latency and reordering for tests. Rule: anything that runs on one peer only (a bot in a human seat, UI helpers) must never touch world state, including the world rng; AI tribes run as world controllers on every peer.
