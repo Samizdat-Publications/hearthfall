@@ -16,7 +16,7 @@ Stretch 3 started: 2026-10-10T21:45:00Z (Stewart, after about 40 min of play: de
 - Screenshot mode: headless-shell + GPU args (RTX 5070 Ti Laptop). VisionQA provider ON (about $0.00003 per low shot).
 - Machine: often at 100 percent CPU (other projects' sims and benchmarks, leave them alone). Wall-clock timing is noisy, and bench readings of 6 to 7 ms while agents run scenarios are load, not regressions (idle: 3.7 ms).
 - Keys: Meshy, ElevenLabs, Gemini, OpenAI present; Tripo, PixelLab missing.
-- Making-of page: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5 (version 31), rebuild with `npm run making-of -- page` and republish after every backlog item (README steps).
+- Making-of page: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5 (version 32), rebuild with `npm run making-of -- page` and republish after every backlog item (README steps).
 
 ## Next 3 actions
 1. Engine gaps from the campaign playtest (7 tuners hit the first): stage-relative objectives (a fromStage option on hold, worship, destroy, eliminateAll and clearDens, so a goal met before its stage opens does not complete the tick it opens); a per-stage clock for victory rules (King of the Hill, holdSites); a per-tribe population cap (tribes[].maxPopulation) so late rivals neither collapse nor snowball to 200 and stalemate.
