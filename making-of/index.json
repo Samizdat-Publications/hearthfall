@@ -1130,6 +1130,16 @@
       "when": "2026-10-11T03:59:57.300Z",
       "source": "external:close_off.png",
       "bytes": 196983
+    },
+    {
+      "file": "s3/20261011-0435_wolves-den.png",
+      "milestone": "S3",
+      "kind": "screenshot",
+      "caption": "Wolves: a pack at its den bites the first Warden as five attack-move in; the 'Wolves are hunting' notice warns the player. Dens regrow lost wolves until the whole pack falls.",
+      "highlight": false,
+      "when": "2026-10-11T04:35:57.937Z",
+      "source": "external:wolves.png",
+      "bytes": 616850
     }
   ]
 }
