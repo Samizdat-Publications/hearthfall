@@ -1,0 +1,50 @@
+{
+  "id": "level_cloud_isles",
+  "description": "The Cloud Isles (level 22) won by the hard opponent bot as the player: a scripted first Skyloft, then the bot floats worshippers to the Reliquary and the Gale Shrine, takes both ley isles, holds three isle stones against sky raiders, crosses the risen causeway and breaks the rival.",
+  "tags": [
+    "levels"
+  ],
+  "level": "cloud_isles",
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "aggressive",
+      "difficulty": "hard",
+      "offset": 1
+    }
+  ],
+  "commands": [
+    {
+      "tick": 1,
+      "tribe": 0,
+      "type": "placePlan",
+      "args": {
+        "building": "skyloft",
+        "at": [
+          40,
+          118
+        ]
+      }
+    }
+  ],
+  "runTicks": 30700,
+  "assert": [
+    {
+      "at": 4000,
+      "expr": "level.objectivesDone == 2 && site('sky_reliquary').by == 0 && !level.lost"
+    },
+    {
+      "at": 12000,
+      "expr": "level.objectivesDone == 4 && site('gale_shrine').by == 0 && site('south_ley').by == 0"
+    },
+    {
+      "at": 22000,
+      "expr": "level.objectivesDone == 5 && alive(1) && !level.lost"
+    },
+    {
+      "at": 30700,
+      "expr": "level.won && level.objectivesDone == 7 && !alive(1) && alive(0) && invariants() == 0"
+    }
+  ]
+}

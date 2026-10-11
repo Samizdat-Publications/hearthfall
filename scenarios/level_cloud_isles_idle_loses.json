@@ -1,0 +1,19 @@
+{
+  "id": "level_cloud_isles_idle_loses",
+  "description": "The Cloud Isles with an idle player: no Skyloft rises, the rival floats worshippers to the Gale Shrine and prays it first, and the level is lost by siteLost.",
+  "tags": [
+    "levels"
+  ],
+  "level": "cloud_isles",
+  "runTicks": 15200,
+  "assert": [
+    {
+      "at": 14000,
+      "expr": "!level.lost && level.objectivesDone == 0"
+    },
+    {
+      "at": 15200,
+      "expr": "level.lost && !level.won && site('gale_shrine').by == 1 && level.objectivesDone == 0 && alive(0) && invariants() == 0"
+    }
+  ]
+}

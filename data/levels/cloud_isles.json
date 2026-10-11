@@ -1,0 +1,76 @@
+{
+  "$comment": "Campaign level 22 (S4): a balloon archipelago on open sea. Home island west, rival island east with two Skylofts, posted guards and no lodges; five high isles between that only balloons reach. The Reliquary isle and the mist seer isle lie within 30 cells of the player Hearth, so the rival never floats worshippers there; the far south isle carries a ley stone and a strong storm ward side by side. Staged: raise a Skyloft (scripted in the bot scenario, the bot has no build objective handling), pray at the near Reliquary (teaches Whirlwind, wakes both ley isles), win the Gale Shrine before the rival balloons do (siteLost, the idle loss at about tick 14950), pray both ley isles and hold them, hold three isle stones for four minutes while raiders land on the north ley and pray it away, then the stones lift a causeway and unlock the lodges: burn the rival Skylofts and break the tribe. Bot win about 26700.",
+  "id": "cloud_isles",
+  "name": "The Cloud Isles",
+  "order": 22,
+  "description": "Isles float high over open sea and only balloons reach them. Raise a Skyloft, pray at the near Reliquary, beat the rival's balloons to the Gale Shrine, take both ley isles, hold three isle stones against sky raiders, then burn the rival's Skylofts and break them.",
+  "seed": 2207,
+  "map": {
+    "generator": "flat",
+    "size": 256,
+    "landAboveSea": -30,
+    "paint": [
+      { "shape": "disc", "at": [34, 128], "r": 24, "aboveSea": 30, "falloff": 5 },
+      { "shape": "disc", "at": [222, 128], "r": 22, "aboveSea": 30, "falloff": 5 },
+      { "shape": "disc", "at": [72, 108], "r": 4, "aboveSea": 60, "falloff": 2 },
+      { "shape": "disc", "at": [72, 148], "r": 4, "aboveSea": 60, "falloff": 2 },
+      { "shape": "disc", "at": [124, 76], "r": 4, "aboveSea": 60, "falloff": 2 },
+      { "shape": "disc", "at": [166, 68], "r": 4, "aboveSea": 60, "falloff": 2 },
+      { "shape": "disc", "at": [158, 184], "r": 6, "aboveSea": 60, "falloff": 2 }
+    ]
+  },
+  "tribes": [
+    {},
+    { "ai": "sneaky", "difficulty": "normal", "maxTroops": 0, "maxPopulation": 40, "worshipAfterSeconds": 560 }
+  ],
+  "spells": ["bolt", "lightning"],
+  "buildings": ["dwelling", "watchtower", "skyloft"],
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [52, 128] },
+    { "spawn": "shaper", "tribe": 0, "at": [48, 132] },
+    { "spawn": "settler", "tribe": 0, "near": [36, 132], "count": 18 },
+    { "spawn": "firecaller", "tribe": 0, "near": [46, 142], "count": 2 },
+    { "spawn": "tree", "near": [22, 114], "count": 14, "spacing": 1.2 },
+    { "spawn": "tree", "near": [22, 144], "count": 12, "spacing": 1.2 },
+    { "spawn": "rock", "near": [36, 110], "count": 4, "spacing": 2 },
+    { "spawn": "hearth", "tribe": 1, "at": [228, 128] },
+    { "spawn": "shaper", "tribe": 1, "at": [224, 132] },
+    { "spawn": "settler", "tribe": 1, "near": [230, 136], "count": 14 },
+    { "spawn": "warden", "tribe": 1, "near": [206, 128], "count": 8, "stance": "defensive" },
+    { "spawn": "warden", "tribe": 1, "near": [212, 114], "count": 4, "stance": "defensive" },
+    { "spawn": "warden", "tribe": 1, "near": [212, 142], "count": 4, "stance": "defensive" },
+    { "spawn": "warden", "tribe": 1, "near": [232, 128], "count": 6, "stance": "defensive" },
+    { "spawn": "skyloft", "tribe": 1, "at": [210, 116] },
+    { "spawn": "skyloft", "tribe": 1, "at": [210, 140] },
+    { "spawn": "tree", "near": [236, 114], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [236, 144], "count": 3, "spacing": 2 },
+    { "spawn": "reliquary", "at": [72, 108], "site": { "tag": "sky_reliquary", "worshippers": 2, "prayerSeconds": 20, "rewards": [{ "type": "unlockSpell", "spell": "whirlwind" }, { "type": "charges", "spell": "whirlwind", "n": 1 }, { "type": "awaken", "site": "north_ley" }, { "type": "awaken", "site": "south_ley" }, { "type": "reveal", "at": [124, 76], "r": 8 }, { "type": "message", "text": "The sky Reliquary teaches Whirlwind. Two ley isles rise in the east, and the rival's balloons are stirring." }] }},
+    { "spawn": "shrine", "at": [124, 76], "site": { "tag": "gale_shrine", "worshippers": 2, "rewards": [{ "type": "charges", "spell": "lightning", "n": 2 }, { "type": "message", "text": "The Gale Shrine is yours: two Lightnings. Now take both ley isles from the rival." }] }},
+    { "spawn": "ley_stone", "at": [166, 68], "site": { "tag": "north_ley", "worshippers": 2, "dormant": true, "rewards": [{ "type": "message", "text": "The northern ley isle pays you mana while you hold it." }] }},
+    { "spawn": "ley_stone", "at": [156, 185], "site": { "tag": "south_ley", "worshippers": 2, "prayerSeconds": 26, "dormant": true, "rewards": [{ "type": "message", "text": "The southern ley isle pays you mana while you hold it." }] }},
+    { "spawn": "ward_stone", "at": [160, 183], "site": { "tag": "storm_ward", "worshippers": 2, "dormant": true, "aura": { "type": "strike", "amount": 700, "r": 9, "every": 2 }, "rewards": [{ "type": "message", "text": "The storm ward strikes any rival who lands beside it, at its own stone or the ley next to it." }] }},
+    { "spawn": "seer_stone", "at": [72, 148], "site": { "tag": "mist_seer", "worshippers": 2, "dormant": true, "rewards": [{ "type": "message", "text": "The mist seer watches the sea south of home." }] }}
+  ],
+  "objectives": [
+    { "type": "build", "building": "skyloft", "n": 1, "text": "Raise a Skyloft: only balloons reach the isles" },
+    { "type": "worship", "site": "sky_reliquary", "after": 0, "text": "Float two followers to the near isle and pray at the sky Reliquary" },
+    { "type": "worship", "site": "gale_shrine", "after": 1, "text": "Pray at the Gale Shrine before the rival's balloons reach it" },
+    { "type": "hold", "n": 2, "kind": "ley_stone", "seconds": 30, "after": 2, "text": "Pray both ley isles from the rival and hold them together for thirty seconds" },
+    { "type": "hold", "n": 3, "seconds": 240, "after": 3, "text": "Hold three isle stones at once for four minutes while the rival floats worshippers and raiders onto them" },
+    { "type": "destroy", "tribe": 1, "building": "skyloft", "fromStage": true, "after": 4, "text": "Cross the risen causeway and burn the rival's Skylofts" },
+    { "type": "eliminateAll", "after": 5, "text": "Break the rival tribe" }
+  ],
+  "lose": [
+    { "type": "hearthLost" },
+    { "type": "siteLost", "site": "gale_shrine" },
+    { "type": "timeLimit", "seconds": 3100 }
+  ],
+  "triggers": [
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Raise a Skyloft. If the rival's balloons pray at the Gale Shrine first, the isles are theirs." }] },
+    { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "reveal", "at": [166, 68], "r": 8 }, { "type": "reveal", "at": [158, 184], "r": 10 }] },
+    { "when": { "type": "objective", "index": 3 }, "do": [{ "type": "awaken", "site": "storm_ward" }, { "type": "awaken", "site": "mist_seer" }, { "type": "spawn", "unit": "firecaller", "n": 2, "tribe": 1, "at": [166, 68] }, { "type": "raid", "tribe": 1, "to": [166, 68], "n": 2, "pray": "north_ley" }, { "type": "message", "text": "A ward rises beside the southern ley and a seer near home. Sky raiders land on the northern ley isle to pray it away." }] },
+    { "when": { "type": "objective", "index": 4 }, "do": [{ "type": "shape", "shape": "line", "at": [60, 128], "to": [202, 128], "width": 4, "aboveSea": 10, "falloff": 2, "seconds": 30 }, { "type": "unlockBuilding", "building": "warden_lodge" }, { "type": "unlockBuilding", "building": "fire_lodge" }, { "type": "spawn", "unit": "warden", "n": 8, "at": [64, 128] }, { "type": "spawn", "unit": "warden", "n": 6, "tribe": 1, "at": [198, 128] }, { "type": "raid", "tribe": 1, "to": [56, 128], "n": 8 }, { "type": "message", "text": "The three stones lift a causeway out of the sea, and the rival marches over it. Cross and burn their Skylofts." }] },
+    { "when": { "type": "objective", "index": 5 }, "do": [{ "type": "charges", "spell": "lightning", "n": 2 }, { "type": "message", "text": "The Skylofts burn. Break the rival tribe." }] },
+    { "when": { "type": "time", "seconds": 2800 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+  ]
+}
