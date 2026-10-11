@@ -1,10 +1,14 @@
 // M11 production build served as plain static files (no Vite at runtime).
 //   npm run serve            serve apps/game/dist on http://127.0.0.1:5182/ until Ctrl+C (for playing)
+//   npm run serve -- --lan   also listen on the home network (0.0.0.0) for LAN play; prints the LAN URLs
+//                            (Leg 5: the lockstep relay is always mounted at /net)
 //   npm run qa -- prod layer build production, serve it in-process, boot the game in Chromium, check
 //                            the first frame, all models loaded, no console errors, boot screen gone
 import { createServer } from "node:http";
 import { existsSync, readFileSync, statSync } from "node:fs";
+import { networkInterfaces } from "node:os";
 import { extname, join, resolve, sep } from "node:path";
+import { Relay } from "../net/relay.mjs";
 import { ROOT, writeReport } from "./lib.mjs";
 import { launch, openGame, shotMode, viteBuild } from "./web.mjs";
 
@@ -21,8 +25,8 @@ const TYPES = {
   ".woff2": "font/woff2",
 };
 
-/** Serve a folder of static files on 127.0.0.1; returns {url, close}. */
-export function startStatic(dir = DIST, port = 5182) {
+/** Serve a folder of static files on 127.0.0.1 (or `host`) with the LAN relay at /net; returns {url, port, relay, close}. */
+export function startStatic(dir = DIST, port = 5182, host = "127.0.0.1") {
   const base = resolve(dir) + sep;
   const server = createServer((req, res) => {
     try {
@@ -46,12 +50,23 @@ export function startStatic(dir = DIST, port = 5182) {
       res.end();
     }
   });
+  const relay = new Relay().attach(server);
+  const sockets = new Set();
+  server.on("connection", (s) => {
+    sockets.add(s);
+    s.on("close", () => sockets.delete(s));
+  });
   return new Promise((done, reject) => {
     server.once("error", reject);
-    server.listen(port, "127.0.0.1", () => {
+    server.listen(port, host, () => {
       const at = server.address();
       const p = typeof at === "object" && at ? at.port : port;
-      done({ url: `http://127.0.0.1:${p}/`, close: () => new Promise((r) => server.close(() => r())) });
+      // close() also ends open sockets (relay WebSockets would otherwise keep the server alive)
+      const close = () => new Promise((r) => {
+        server.close(() => r());
+        for (const s of sockets) s.destroy();
+      });
+      done({ url: `http://127.0.0.1:${p}/`, port: p, relay, close });
     });
   });
 }
@@ -61,15 +76,24 @@ export async function serveCmd(out, args = {}) {
   // BACKLOG 96: --port N (default 5182) and a readable message when the port is taken
   const port = args.port === undefined ? 5182 : Number(args.port);
   if (!Number.isInteger(port) || port < 1 || port > 65535) return out.finish("FAIL", `--port must be a port number, got ${args.port}`);
+  const lan = args.lan === true || args.lan === "true";
   let s;
   try {
-    s = await startStatic(DIST, port);
+    s = await startStatic(DIST, port, lan ? "0.0.0.0" : "127.0.0.1");
   } catch (e) {
     if (e?.code === "EADDRINUSE") return out.finish("FAIL", `port ${port} is in use (is Hearthfall already being served?); try npm run serve -- --port ${port + 1}`);
     throw e;
   }
   console.log(`Hearthfall is being served at ${s.url} (Ctrl+C to stop)`);
+  if (lan) for (const ip of lanAddresses()) console.log(`LAN play: the other computer opens http://${ip}:${s.port}/ (Windows may ask to allow Node on private networks)`);
   await new Promise(() => {});
+}
+
+/** IPv4 addresses of this machine on the local network (no loopback). */
+export function lanAddresses() {
+  const out = [];
+  for (const list of Object.values(networkInterfaces())) for (const a of list ?? []) if (a.family === "IPv4" && !a.internal) out.push(a.address);
+  return out;
 }
 
 export async function prodCmd(out) {
