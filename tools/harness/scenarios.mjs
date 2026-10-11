@@ -17,6 +17,7 @@ export function loadScenarios(filter = {}) {
     const def = JSON.parse(readFileSync(dir + f, "utf8"));
     def.__file = `scenarios/${f}`;
     if (filter.tag && !(def.tags ?? []).includes(filter.tag)) continue;
+    if (filter.skipTag && (def.tags ?? []).includes(filter.skipTag)) continue;
     if (filter.id && def.id !== filter.id) continue;
     out.push(def);
   }
@@ -181,7 +182,7 @@ export default async function scenariosCmd(out, _cmd, args) {
     out.line("data pack invalid; run npm run data:check");
     return out.finish("FAIL", "1");
   }
-  const defs = loadScenarios({ tag: typeof args.tag === "string" ? args.tag : undefined, id: typeof args.id === "string" ? args.id : undefined });
+  const defs = loadScenarios({ tag: typeof args.tag === "string" ? args.tag : undefined, id: typeof args.id === "string" ? args.id : undefined, skipTag: typeof args["skip-tag"] === "string" ? args["skip-tag"] : undefined });
   if (!defs.length) return out.finish("SKIP", "no matching scenarios");
   const results = defs.map((d) => runScenario(d, res.pack));
   writeReport("scenarios.json", results);

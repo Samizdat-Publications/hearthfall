@@ -10,7 +10,9 @@ import { guards, typecheck, unit } from "./steps.mjs";
 const LAYERS = [
   { id: "check", cmd: ["check"], timeoutMs: 120000 },
   { id: "unit", cmd: ["unit"], timeoutMs: 180000 },
-  { id: "scenarios", cmd: ["scenarios"], timeoutMs: 300000 },
+  // campaign level scenarios run as their own layer: stretch 3 levels play 5000 to 42000 ticks each
+  { id: "scenarios", cmd: ["scenarios", "--skip-tag", "levels"], timeoutMs: 300000 },
+  { id: "scenarios-levels", cmd: ["scenarios", "--tag", "levels"], timeoutMs: 480000 },
   { id: "replays", cmd: ["replays"], timeoutMs: 180000 },
   { id: "bench", cmd: ["bench"], timeoutMs: 240000 },
   { id: "bench-render", cmd: ["bench-render"], timeoutMs: 240000 },

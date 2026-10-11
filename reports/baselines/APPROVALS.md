@@ -136,3 +136,10 @@
 - 2026-10-10T18:42 set menus (9 shots): main menu: How to play button, flatter title art under 800 px tall so the pseudo-locale replay row fits
 - 2026-10-11T03:47 set look (13 shots): S3 living world: landscape decor layer (bushes, logs, mushroom rings, ruins, standing stones), S3 content and vision changes since S2
 - 2026-10-11T04:33 set combat (1 shots): S3: new wolves shot: a pack at its den, the first bite as Wardens attack-move in (wolf drawn at 0.7 scale)
+- 2026-10-11T10:00 set menus (9 shots): S3: skirmish Ley stones and Wolves options, 22-level campaign map, living world terrain and decor
+- 2026-10-11T10:12 set smoke (1 shots): S3: landscape decor layer and wider ground detail (9e913d7, aca13d2), content pack 1 build buttons (hud_troops locked count 7 to 10)
+- 2026-10-11T10:13 set smoke (13 shots): S3: landscape decor layer and wider ground detail (9e913d7, aca13d2), content pack 1 build buttons (hud_troops locked count 7 to 10)
+- 2026-10-11T10:14 set spells (9 shots): S3: landscape decor layer and wider ground detail (9e913d7, aca13d2); every spell VFX still draws
+- 2026-10-11T10:16 set spells2 (9 shots): S3: landscape decor and wider ground detail; hud_all_spells grants all 18 spells (Sanctuary, Deluge)
+- 2026-10-11T10:18 set combat (8 shots): S3: landscape decor layer (grass tufts, flowers) and wider ground detail; wolves baseline already post-decor passes
+- 2026-10-11T10:18 set look (13 shots): S3: HUD build list gains signal_pyre, mending_hut, spirit_well (content pack 1) plus decor; uniform 2.5% diff, scenes unchanged

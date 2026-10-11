@@ -272,13 +272,13 @@
      }
     },
     {
-     "eval": "['bolt','call','hornets','raise_land','lightning','flatten','quake','volcano','veil','ward','beguile','whirlwind','mire','erode','firerain','wraith'].forEach((spell) => __game.command({ tribe: -1, type: 'grantCharges', args: { tribe: 0, spell, n: 1 } }))"
+     "eval": "['bolt','call','hornets','raise_land','lightning','flatten','quake','volcano','veil','ward','beguile','whirlwind','mire','erode','firerain','wraith','sanctuary','deluge'].forEach((spell) => __game.command({ tribe: -1, type: 'grantCharges', args: { tribe: 0, spell, n: 1 } }))"
     },
     {
      "step": 2
     },
     {
-     "assert": "document.querySelectorAll('[data-hud=spellbar] .spell').length === 16 && document.querySelector('[data-hud=spellbar]').getBoundingClientRect().height > 90"
+     "assert": "document.querySelectorAll('[data-hud=spellbar] .spell').length === 18 && document.querySelector('[data-hud=spellbar]').getBoundingClientRect().height > 90"
     }
    ],
    "kind": "hud",
