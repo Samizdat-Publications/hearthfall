@@ -1,0 +1,15 @@
+{
+  "id": "level_stolen_stones_idle_loses",
+  "description": "Campaign level 23 has a real loss: an idle player never prays at the valley stones, the rivals take them and their war bands march on the valley until the player's tribe is eliminated (near tick 7900).",
+  "tags": [
+    "levels"
+  ],
+  "level": "stolen_stones",
+  "runTicks": 10000,
+  "assert": [
+    {
+      "at": 10000,
+      "expr": "level.lost && !level.won && !alive(0) && level.objectivesDone == 0 && alive(1) && alive(2) && invariants() == 0"
+    }
+  ]
+}

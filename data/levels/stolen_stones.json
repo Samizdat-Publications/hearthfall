@@ -1,0 +1,135 @@
+{
+  "$comment": "Campaign level 23 (S4): stone defense on raid pray. A 256 continent; the player's valley sits in the middle, ringed by four capturable stones on low hills (two ley, a ward facing west, a seer facing east). The western tribe (aggressive hard, two Warden Lodges behind towers) and the eastern tribe (turtle behind towers) send war bands that pray at the player's stones to steal them, on timers and when stages open; a band whose stone is already theirs marches on the Hearth instead. maxPopulation keeps both rivals small and worshipAfterSeconds keeps their own AI off the stones, so only the bands steal. Staged: claim two stones, hold all four for 180 s while the first bands come (the first eastern band steals the seer mid-hold), burn the western lodges (fromStage), retake the old ley the east raises in its own hands under guard (fromStage worship), raze the eastern Hearth (fromStage), break both (fromStage). Bot win about 29500.",
+  "id": "stolen_stones",
+  "name": "The Stolen Stones",
+  "order": 23,
+  "description": "Four old stones ring your valley, and both neighbours want them. Claim them, hold all four while war bands come to pray them away, burn the western lodges, win back the stone the east carried off, then raze the eastern Hearth and break both tribes.",
+  "seed": 2323,
+  "map": {
+    "generator": "flat",
+    "size": 256,
+    "landAboveSea": -30,
+    "paint": [
+      { "shape": "disc", "at": [128, 128], "r": 116, "aboveSea": 34, "falloff": 10 },
+      { "shape": "disc", "at": [128, 100], "r": 6, "aboveSea": 46, "falloff": 5 },
+      { "shape": "disc", "at": [128, 156], "r": 6, "aboveSea": 46, "falloff": 5 },
+      { "shape": "disc", "at": [100, 128], "r": 6, "aboveSea": 46, "falloff": 5 },
+      { "shape": "disc", "at": [156, 128], "r": 6, "aboveSea": 46, "falloff": 5 },
+      { "shape": "disc", "at": [80, 76], "r": 12, "aboveSea": -30, "falloff": 4 },
+      { "shape": "disc", "at": [176, 180], "r": 12, "aboveSea": -30, "falloff": 4 },
+      { "shape": "disc", "at": [80, 180], "r": 10, "aboveSea": -30, "falloff": 4 }
+    ]
+  },
+  "tribes": [
+    {},
+    { "ai": "aggressive", "difficulty": "hard", "maxTroops": 12, "maxPopulation": 48, "worshipAfterSeconds": 3600 },
+    { "ai": "turtle", "difficulty": "normal", "maxTroops": 14, "maxPopulation": 50, "worshipAfterSeconds": 3600 }
+  ],
+  "spells": ["bolt", "raise_land", "hornets", "lightning"],
+  "buildings": ["dwelling", "watchtower", "warden_lodge", "mending_hut"],
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [128, 128] },
+    { "spawn": "shaper", "tribe": 0, "at": [132, 124] },
+    { "spawn": "settler", "tribe": 0, "near": [128, 136], "count": 14 },
+    { "spawn": "warden", "tribe": 0, "near": [136, 130], "count": 4 },
+    { "spawn": "tree", "near": [116, 116], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [142, 142], "count": 12, "spacing": 1.2 },
+    { "spawn": "rock", "near": [118, 140], "count": 4, "spacing": 2 },
+    { "spawn": "hearth", "tribe": 1, "at": [30, 128] },
+    { "spawn": "shaper", "tribe": 1, "at": [36, 124] },
+    { "spawn": "settler", "tribe": 1, "near": [30, 136], "count": 12 },
+    { "spawn": "warden", "tribe": 1, "near": [44, 128], "count": 6 },
+    { "spawn": "warden_lodge", "tribe": 1, "at": [44, 116] },
+    { "spawn": "warden_lodge", "tribe": 1, "at": [44, 140] },
+    { "spawn": "warden", "tribe": 1, "near": [50, 128], "count": 5, "stance": "defensive" },
+    { "spawn": "watchtower", "tribe": 1, "at": [52, 122] },
+    { "spawn": "watchtower", "tribe": 1, "at": [52, 134] },
+    { "spawn": "tree", "near": [24, 112], "count": 12, "spacing": 1.2 },
+    { "spawn": "rock", "near": [26, 144], "count": 3, "spacing": 2 },
+    { "spawn": "hearth", "tribe": 2, "at": [226, 128] },
+    { "spawn": "shaper", "tribe": 2, "at": [220, 132] },
+    { "spawn": "settler", "tribe": 2, "near": [226, 120], "count": 14 },
+    { "spawn": "warden", "tribe": 2, "near": [212, 128], "count": 6 },
+    { "spawn": "watchtower", "tribe": 2, "at": [210, 118] },
+    { "spawn": "watchtower", "tribe": 2, "at": [210, 138] },
+    { "spawn": "warden", "tribe": 2, "near": [208, 128], "count": 4, "stance": "defensive" },
+    { "spawn": "tree", "near": [232, 144], "count": 12, "spacing": 1.2 },
+    { "spawn": "rock", "near": [232, 112], "count": 3, "spacing": 2 },
+    { "spawn": "ley_stone", "at": [128, 100], "site": { "tag": "north_ley", "rewards": [{ "type": "message", "text": "The northern ley changes hands." }] } },
+    { "spawn": "ley_stone", "at": [128, 156], "site": { "tag": "south_ley", "rewards": [{ "type": "message", "text": "The southern ley changes hands." }] } },
+    { "spawn": "ward_stone", "at": [100, 128], "site": { "tag": "west_ward", "rewards": [{ "type": "message", "text": "The western ward changes hands. It strikes for whoever prayed last." }] } },
+    {
+      "spawn": "seer_stone",
+      "at": [156, 128],
+      "site": { "tag": "east_seer", "rewards": [{ "type": "reveal", "at": [210, 128], "r": 18 }, { "type": "message", "text": "The eastern seer changes hands." }] }
+    },
+    {
+      "spawn": "ley_stone",
+      "at": [190, 96],
+      "tribe": 2,
+      "site": {
+        "tag": "old_ley",
+        "dormant": true,
+        "worshippers": 5,
+        "prayerSeconds": 30,
+        "rewards": [{ "type": "message", "text": "The old ley stone is back in your hands." }]
+      }
+    }
+  ],
+  "objectives": [
+    { "type": "hold", "n": 2, "seconds": 10, "text": "Pray at two of the stones that ring your valley" },
+    { "type": "hold", "n": 4, "seconds": 180, "after": 0, "text": "Hold all four valley stones at once for three minutes while war bands come to pray them away" },
+    { "type": "destroy", "tribe": 1, "building": "warden_lodge", "fromStage": true, "after": 1, "text": "Stop the western bands: burn the western tribe's Warden Lodges" },
+    { "type": "worship", "site": "old_ley", "fromStage": true, "after": 2, "text": "Win back the old ley stone the eastern tribe raised in its own hands" },
+    { "type": "destroy", "tribe": 2, "building": "hearth", "fromStage": true, "after": 3, "text": "Pass the eastern towers and raze the eastern Hearth" },
+    { "type": "eliminateAll", "fromStage": true, "after": 4, "text": "Break both tribes" }
+  ],
+  "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 3300 }],
+  "triggers": [
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Four stones ring your valley. Pray at them before your neighbours do." }] },
+    {
+      "when": { "type": "objective", "index": 0 },
+      "do": [
+        { "type": "raid", "tribe": 1, "to": [128, 128], "n": 5, "pray": "west_ward" },
+        { "type": "message", "text": "A western band comes to pray at the ward stone. Take all four stones and hold them." }
+      ]
+    },
+    {
+      "when": { "type": "time", "seconds": 120 },
+      "do": [{ "type": "raid", "tribe": 2, "to": [128, 128], "n": 5, "pray": "east_seer" }, { "type": "message", "text": "The first eastern band comes to pray the eastern seer away." }]
+    },
+    {
+      "when": { "type": "time", "seconds": 600, "every": 240 },
+      "do": [{ "type": "raid", "tribe": 1, "to": [128, 128], "n": 6, "pray": "north_ley" }, { "type": "message", "text": "A western war band comes for the northern ley." }]
+    },
+    {
+      "when": { "type": "time", "seconds": 720, "every": 300 },
+      "do": [{ "type": "raid", "tribe": 2, "to": [128, 128], "n": 6, "pray": "east_seer" }, { "type": "message", "text": "An eastern war band comes for the eastern seer." }]
+    },
+    {
+      "when": { "type": "objective", "index": 1 },
+      "do": [
+        { "type": "raid", "tribe": 1, "to": [128, 128], "n": 8, "pray": "south_ley" },
+        { "type": "message", "text": "The ring held. The bands come from the western lodges: burn them." }
+      ]
+    },
+    {
+      "when": { "type": "objective", "index": 2 },
+      "do": [
+        { "type": "awaken", "site": "old_ley" },
+        { "type": "spawn", "unit": "warden", "n": 8, "tribe": 2, "at": [193, 99], "stance": "defensive" },
+        { "type": "reveal", "at": [190, 96], "r": 14 },
+        { "type": "message", "text": "The western lodges burn. The east raises an old ley stone it carried off long ago, under guard. Win it back." }
+      ]
+    },
+    {
+      "when": { "type": "objective", "index": 3 },
+      "do": [
+        { "type": "raid", "tribe": 2, "to": [128, 128], "n": 8, "pray": "old_ley" },
+        { "type": "message", "text": "The old ley is yours, and the east comes to pray it back. Raze the eastern Hearth." }
+      ]
+    },
+    { "when": { "type": "objective", "index": 4 }, "do": [{ "type": "message", "text": "The eastern fire is out. Break what is left of both tribes." }] },
+    { "when": { "type": "time", "seconds": 3000 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+  ]
+}
