@@ -35,6 +35,9 @@ export interface LevelSaved {
   endedAt: number;
   /** stretch 3: per objective, the tick a `hold` began (-1 not holding); absent when none ever held */
   holdSince?: number[];
+  /** S4: per objective, the tick its stage opened (-1 not yet) and its clearDens baseline; only in levels with fromStage goals */
+  openedAt?: number[];
+  base?: number[];
 }
 
 export function levelMap(def: LevelDef): MapSpec {
@@ -49,9 +52,33 @@ export class LevelRuntime {
   endedAt = -1;
   /** stretch 3: per objective, the tick its `hold` streak began, or a `fromStage` survive's stage opened (-1 none) */
   holdSince: number[];
+  /** S4: per objective, the tick its stage first opened (-1 not yet), kept only when `staged` */
+  openedAt: number[];
+  /** S4: per objective, cleared dens in its area when a fromStage clearDens opened */
+  base: number[];
+  /** S4: the level has stage-relative goals (fromStage), so openedAt is state */
+  readonly staged: boolean;
   /** building types every tribe may build in this level (null: all) */
   readonly allowed: Set<number> | null;
   private w: World;
+
+  /** S4: the level's cap on a tribe's people (followers), or -1 for none */
+  popCap(tribe: number): number {
+    return this.def.tribes[tribe]?.maxPopulation ?? -1;
+  }
+
+  /**
+   * S4: with a fromStage `victory` objective the rules count only once its stage is open, from that tick
+   * (-1 while it is still closed; 0 when the rules count from the start).
+   */
+  rulesSince(): number {
+    let since = 0;
+    this.def.objectives.forEach((o, k) => {
+      if (o.type !== "victory" || !o.fromStage || since < 0) return;
+      since = this.openedAt[k] < 0 ? -1 : Math.max(since, this.openedAt[k]);
+    });
+    return since;
+  }
 
   /** BACKLOG 83: the level's cap on a tribe's trained troops, or -1 for none */
   troopCap(tribe: number): number {
@@ -64,6 +91,9 @@ export class LevelRuntime {
     this.done = def.objectives.map(() => 0);
     this.fired = (def.triggers ?? []).map(() => 0);
     this.holdSince = def.objectives.map(() => -1);
+    this.openedAt = def.objectives.map(() => -1);
+    this.base = def.objectives.map(() => 0);
+    this.staged = def.objectives.some((o) => "fromStage" in o && o.fromStage === true);
     this.allowed = def.buildings ? new Set(def.buildings.map((b) => w.cfg.buildingIndex.get(b)!).filter((b) => b !== undefined)) : null;
   }
 
@@ -75,10 +105,14 @@ export class LevelRuntime {
     const w = this.w;
     const o = this.def.objectives[k];
     const me = w.tribes[PLAYER];
+    // S4: a fromStage goal cannot be met on the tick its stage opens (a trigger on the earlier stage may
+    // still be placing its targets), so a goal already true at the opening does not complete at once
+    const later = !("fromStage" in o && o.fromStage === true) || w.tick > this.openedAt[k];
     switch (o.type) {
       case "eliminateAll":
-        return w.tribes.every((t) => t.index === PLAYER || !t.alive);
+        return later && w.tribes.every((t) => t.index === PLAYER || !t.alive);
       case "worship":
+        if (o.fromStage) return later && w.events.some((e) => e.type === "worshipComplete" && e.tribe === PLAYER && e.site === o.site);
         return this.siteBy(o.site) === PLAYER;
       case "survive": {
         const need = Math.round(o.seconds * w.cfg.tickHz);
@@ -93,7 +127,7 @@ export class LevelRuntime {
         return w.rules?.winner === PLAYER;
       case "destroy":
         // an eliminated tribe's leftover buildings cannot be targeted, so its fall counts too
-        return !w.tribes[o.tribe]?.alive || this.countBuildings(o.tribe, o.building, false) === 0;
+        return later && (!w.tribes[o.tribe]?.alive || this.countBuildings(o.tribe, o.building, false) === 0);
       case "build":
         return this.countBuildings(PLAYER, o.building, true) >= o.n;
       case "reach":
@@ -116,6 +150,12 @@ export class LevelRuntime {
           return dx * dx + dy * dy <= r * r;
         }) : w.beasts.dens;
         const cleared = dens.filter((d) => d.cleared).length;
+        if (o.fromStage) {
+          // S4: only dens cleared after the stage opened count (every den still standing then, when n is absent)
+          if (w.tick === this.openedAt[k]) this.base[k] = cleared;
+          const need = o.n ?? dens.length - this.base[k];
+          return later && cleared - this.base[k] >= need;
+        }
         return dens.length > 0 && cleared >= (o.n ?? dens.length);
       }
     }
@@ -182,6 +222,7 @@ export class LevelRuntime {
     if (this.outcome !== OUTCOME.none) return;
     const w = this.w;
     this.def.objectives.forEach((o, k) => {
+      if (this.openedAt[k] < 0 && this.open(k)) this.openedAt[k] = w.tick;
       if (!this.done[k] && this.open(k) && this.objectiveMet(k)) {
         this.done[k] = 1;
         w.emit("objectiveComplete", { index: k, kind: o.type });
@@ -254,10 +295,11 @@ export class LevelRuntime {
     for (const d of this.done) f.u32(d);
     for (const d of this.fired) f.u32(d);
     if (this.holdSince.some((h) => h >= 0)) for (const h of this.holdSince) f.u32(h + 1);
+    if (this.staged) for (let k = 0; k < this.openedAt.length; k++) f.u32(this.openedAt[k] + 1).u32(this.base[k]);
   }
 
   save(): LevelSaved {
-    return { done: this.done.slice(), fired: this.fired.slice(), outcome: this.outcome, endedAt: this.endedAt, ...(this.holdSince.some((h) => h >= 0) ? { holdSince: this.holdSince.slice() } : {}) };
+    return { done: this.done.slice(), fired: this.fired.slice(), outcome: this.outcome, endedAt: this.endedAt, ...(this.holdSince.some((h) => h >= 0) ? { holdSince: this.holdSince.slice() } : {}), ...(this.staged ? { openedAt: this.openedAt.slice(), base: this.base.slice() } : {}) };
   }
 
   load(s: LevelSaved): void {
@@ -266,6 +308,8 @@ export class LevelRuntime {
     this.outcome = s.outcome;
     this.endedAt = s.endedAt;
     this.holdSince = s.holdSince ? s.holdSince.slice() : this.def.objectives.map(() => -1);
+    this.openedAt = s.openedAt ? s.openedAt.slice() : this.def.objectives.map(() => -1);
+    this.base = s.base ? s.base.slice() : this.def.objectives.map(() => 0);
   }
 }
 

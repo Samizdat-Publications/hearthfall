@@ -88,8 +88,11 @@ export class RulesRuntime {
     if (!alive.length) return;
     const d = this.def;
     const hz = w.cfg.tickHz;
+    // S4: in a level whose victory objective is staged, the rules clock starts when that stage opens
+    const since = w.level ? w.level.rulesSince() : 0;
+    if (since < 0) return;
     if (d.type === "lastStand") {
-      if (w.playTick + 1 < this.goalTicks()) return;
+      if ((since > 0 ? w.tick - since : w.playTick) + 1 < this.goalTicks()) return;
       let best = alive[0].index;
       for (const t of alive) if (w.economy.followers(t.index) > w.economy.followers(best)) best = t.index;
       return this.finish(best, "lastStand");

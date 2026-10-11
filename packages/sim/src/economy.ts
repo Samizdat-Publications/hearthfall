@@ -133,7 +133,10 @@ export class EconomySystem {
       if (!E.alive[i] || E.cat[i] !== CAT.building || E.tribe[i] !== tribe || E.state[i] !== BSTATE.done || E.type[i] !== this.typeDwelling) continue;
       supply += this.dwellingLevel(i).supply;
     }
-    return Math.min(rules.populationCap, rules.startPopulation + supply);
+    const cap = Math.min(rules.populationCap, rules.startPopulation + supply);
+    // S4: a level may cap a tribe's population (late rivals neither snowball nor stall the level)
+    const lv = w.level?.popCap(tribe) ?? -1;
+    return lv >= 0 ? Math.min(cap, lv) : cap;
   }
 
   dwellingLevel(i: number): { capacity: number; supply: number; breedSeconds: number; upgradeWood?: number; upgradeWoodAtDoor?: number } {

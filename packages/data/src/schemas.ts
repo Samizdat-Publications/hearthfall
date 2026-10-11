@@ -1404,17 +1404,21 @@ const LevelSetup = z.strictObject({
 
 /** stretch 3: a staged objective stays hidden and unchecked until objective `after` is done */
 const stage = { text: z.string().optional(), after: z.number().int().min(0).optional() };
+/** S4: a staged goal counts only what happens after its stage opens (never met on the opening tick) */
+const fromStage = { fromStage: z.boolean().optional() };
 
 export const ObjectiveSchema = z.discriminatedUnion("type", [
-  z.strictObject({ type: z.literal("eliminateAll"), ...stage }),
-  z.strictObject({ type: z.literal("worship"), site: id, ...stage }),
+  z.strictObject({ type: z.literal("eliminateAll"), ...fromStage, ...stage }),
+  /** with `fromStage` the player must complete the site after the stage opened (holding it before does not count) */
+  z.strictObject({ type: z.literal("worship"), site: id, ...fromStage, ...stage }),
   /** `fromStage`: count from the tick the stage opened (its `after` is done), not from the match start */
   z.strictObject({ type: z.literal("survive"), seconds: pos, fromStage: z.boolean().optional(), ...stage }),
   z.strictObject({ type: z.literal("followers"), n: z.number().int().min(1), ...stage }),
   /** BACKLOG 13 in the campaign: win the level's victory rules (`rules`); a rival winning them loses the level */
-  z.strictObject({ type: z.literal("victory"), ...stage }),
+  /** with `fromStage` the rules (site clocks, the Last Stand timer) start counting only when this stage opens */
+  z.strictObject({ type: z.literal("victory"), ...fromStage, ...stage }),
   /** stretch 3: `tribe` has no `building` left (any state), e.g. raze a rival's Watchtowers */
-  z.strictObject({ type: z.literal("destroy"), tribe: z.number().int().min(1), building: id, ...stage }),
+  z.strictObject({ type: z.literal("destroy"), tribe: z.number().int().min(1), building: id, ...fromStage, ...stage }),
   /** stretch 3: one of the player's `unit` (default the Shaper) stands within `r` of `at` */
   z.strictObject({ type: z.literal("reach"), at: point, r: pos, unit: id.optional(), ...stage }),
   /** stretch 3: the player owns `n` finished `building` */
@@ -1422,7 +1426,8 @@ export const ObjectiveSchema = z.discriminatedUnion("type", [
   /** stretch 3: the player holds `n` capturable stones (of `kind`, any when absent) at once for `seconds` without a break */
   z.strictObject({ type: z.literal("hold"), n: z.number().int().min(1), kind: id.optional(), seconds: z.number().min(0), ...stage }),
   /** stretch 3: `n` beast dens are cleared (every den when absent); with `at` and `r` only dens within r of at count */
-  z.strictObject({ type: z.literal("clearDens"), n: z.number().int().min(1).optional(), at: point.optional(), r: pos.optional(), ...stage }),
+  /** with `fromStage` only dens cleared after the stage opened count (n absent: every den standing then) */
+  z.strictObject({ type: z.literal("clearDens"), n: z.number().int().min(1).optional(), at: point.optional(), r: pos.optional(), ...fromStage, ...stage }),
 ]);
 export type Objective = z.infer<typeof ObjectiveSchema>;
 
@@ -1486,7 +1491,8 @@ export const LevelSchema = z.strictObject({
   tribes: z
     /** maxTroops (BACKLOG 83): the tribe may not train past this many troops (alive, walking to or in training) */
     /** worshipAfterSeconds (BACKLOG 88): the AI sends no worshippers before this much play time */
-    .array(z.strictObject({ ai: id.optional(), difficulty: id.optional(), maxTroops: z.number().int().min(0).optional(), worshipAfterSeconds: z.number().min(0).optional() }))
+    /** maxPopulation (S4): the tribe's population cap never rises above this (dwellings still breed up to it) */
+    .array(z.strictObject({ ai: id.optional(), difficulty: id.optional(), maxTroops: z.number().int().min(0).optional(), maxPopulation: z.number().int().min(1).optional(), worshipAfterSeconds: z.number().min(0).optional() }))
     .min(1)
     .max(4),
   /** spells unlocked at the start for every tribe (campaign unlocks are added for the player) */

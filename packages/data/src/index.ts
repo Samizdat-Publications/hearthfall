@@ -263,7 +263,7 @@ export function validateLevel(raw: unknown, pack: PackFiles, file = "level"): { 
       const dens = lv.setup.filter((s) => (s.tribe ?? -1) < 0 && pack.units.units.find((u) => u.id === s.spawn)?.beast && inArea(s.near ?? s.at)).length;
       if (dens < (o.n ?? 1)) bad(path, `the level has ${dens} beast dens${o.at ? " in the area" : ""}, fewer than ${o.n ?? 1}`);
     }
-    if (o.type === "survive" && o.fromStage && o.after === undefined) bad(path, "fromStage needs after");
+    if ("fromStage" in o && o.fromStage && o.after === undefined) bad(path, "fromStage needs after");
   });
   lv.lose?.forEach((o, k) => o.type === "siteLost" && !tags.has(o.site) && bad(`lose.${k}`, `no site tagged ${o.site}`));
   lv.triggers?.forEach((t, k) => {

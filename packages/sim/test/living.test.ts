@@ -262,6 +262,106 @@ describe("hold and clearDens objectives", () => {
     expect(w.level!.done[0]).toBe(1);
   });
 
+  it("S4 fromStage: a destroy goal already true when its stage opens completes a tick later, never on the opening tick", () => {
+    const def = { ...base([{ type: "reach", at: [40, 40], r: 2 }, { type: "destroy", tribe: 1, building: "watchtower", fromStage: true, after: 0 }, { type: "survive", seconds: 600 }]), tribes: [{}, {}] };
+    const p = basePack();
+    const w = createLevelWorld({ def }, p.files, p.hash);
+    const lv = w.level!;
+    expect(lv.staged).toBe(true);
+    const si = w.ents.index(w.tribes[0].shaper);
+    w.ents.x[si] = 40;
+    w.ents.y[si] = 40;
+    w.step();
+    expect(lv.done[0]).toBe(1);
+    // world.tick has moved past the step that opened the stage
+    expect(lv.openedAt[1]).toBe(w.tick - 1);
+    expect(lv.done[1]).toBe(0);
+    w.step();
+    expect(lv.done[1]).toBe(1);
+    expect(w.snapshot().level?.openedAt?.[1]).toBe(w.tick - 2);
+  });
+
+  it("S4 fromStage: a worship goal needs a completion after its stage opened, holding the site before does not count", () => {
+    const def = base([{ type: "reach", at: [40, 40], r: 2 }, { type: "worship", site: "w", fromStage: true, after: 0 }, { type: "survive", seconds: 600 }], [{ spawn: "ley_stone", at: [30, 30], site: { tag: "w", rewards: [] } }]);
+    const p = basePack();
+    const w = createLevelWorld({ def }, p.files, p.hash);
+    const lv = w.level!;
+    w.worship.find("w")!.lastBy = 0;
+    const si = w.ents.index(w.tribes[0].shaper);
+    w.ents.x[si] = 40;
+    w.ents.y[si] = 40;
+    for (let k = 0; k < 3 * w.cfg.tickHz; k++) w.step();
+    expect(lv.done[0]).toBe(1);
+    expect(lv.done[1]).toBe(0);
+    // a rival takes the stone, the player prays it back: that completion counts
+    w.worship.find("w")!.lastBy = 1;
+    const ids: number[] = [];
+    for (let k = 0; k < 10; k++) ids.push(w.spawnUnit("settler", 0, 28 + (k % 5) * 0.6, 28 + Math.floor(k / 5) * 0.6));
+    w.step([{ tick: w.tick, tribe: 0, type: "worship", args: { units: ids, site: "w" } }]);
+    let at = -1;
+    for (let k = 0; k < 120 * w.cfg.tickHz && at < 0; k++) {
+      w.step();
+      if (w.events.some((e) => e.type === "worshipComplete" && e.tribe === 0)) at = w.tick;
+    }
+    expect(at).toBeGreaterThan(0);
+    expect(lv.done[1]).toBe(1);
+  });
+
+  it("S4 fromStage: clearDens counts only dens cleared after the stage opened", () => {
+    const def = base([{ type: "reach", at: [20, 40], r: 2 }, { type: "clearDens", fromStage: true, after: 0 }, { type: "survive", seconds: 600 }], [
+      { spawn: "wolf", tribe: -1, at: [40, 40], count: 1 },
+      { spawn: "wolf", tribe: -1, at: [50, 20], count: 1 },
+    ]);
+    const p = basePack();
+    const w = createLevelWorld({ def }, p.files, p.hash);
+    const lv = w.level!;
+    for (const id of w.beasts.dens[0].members) w.damage(w.ents.index(id), 1e6, 0, true);
+    for (let k = 0; k < 3; k++) w.step();
+    const si = w.ents.index(w.tribes[0].shaper);
+    w.ents.x[si] = 20;
+    w.ents.y[si] = 40;
+    for (let k = 0; k < 3; k++) w.step();
+    expect(lv.done[0]).toBe(1);
+    expect(lv.base[1]).toBe(1);
+    expect(lv.done[1]).toBe(0);
+    for (const id of w.beasts.dens[1].members) w.damage(w.ents.index(id), 1e6, 0, true);
+    for (let k = 0; k < 3; k++) w.step();
+    expect(lv.done[1]).toBe(1);
+  });
+
+  it("S4: a level tribe's maxPopulation caps its population", () => {
+    const def = { ...base([{ type: "survive", seconds: 600 }]), tribes: [{ maxPopulation: 4 }] };
+    const p = basePack();
+    const w = createLevelWorld({ def }, p.files, p.hash);
+    expect(w.economy.popCap(0)).toBe(4);
+    const free = createLevelWorld({ def: base([{ type: "survive", seconds: 600 }]) }, p.files, p.hash);
+    expect(free.economy.popCap(0)).toBeGreaterThan(4);
+  });
+
+  it("S4: a fromStage victory objective starts the rules clock when its stage opens", () => {
+    const def: LevelDef = {
+      ...base([{ type: "reach", at: [40, 40], r: 2 }, { type: "victory", fromStage: true, after: 0 }], [
+        { spawn: "hearth", tribe: 1, at: [52, 52] },
+        { spawn: "shaper", tribe: 1, at: [50, 52] },
+        { spawn: "reliquary", at: [24, 32], site: { tag: "a", rewards: [] } },
+      ]),
+      tribes: [{}, {}],
+      rules: "king_of_hill",
+    };
+    const p = basePack();
+    const w = createLevelWorld({ def }, p.files, p.hash);
+    for (let k = 0; k < 4; k++) w.ents.stance[w.ents.index(w.spawnUnit("warden", 0, 24 + k * 0.5, 32))] = 2;
+    for (let k = 0; k < 5 * w.cfg.tickHz; k++) w.step();
+    expect(w.level!.rulesSince()).toBe(-1);
+    expect(w.rules!.held[0]).toBe(0);
+    const si = w.ents.index(w.tribes[0].shaper);
+    w.ents.x[si] = 40;
+    w.ents.y[si] = 40;
+    for (let k = 0; k < 5 * w.cfg.tickHz; k++) w.step();
+    expect(w.level!.rulesSince()).toBeGreaterThan(0);
+    expect(w.rules!.held[0]).toBeGreaterThan(0);
+  });
+
   it("a capturable stone with a tribe in the setup starts held by that tribe", () => {
     const def = base([{ type: "hold", n: 1, seconds: 1 }], [{ spawn: "ley_stone", tribe: 0, at: [30, 30], site: { tag: "a", rewards: [] } }]);
     const p = basePack();
