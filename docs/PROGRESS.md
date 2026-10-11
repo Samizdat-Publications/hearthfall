@@ -4,10 +4,10 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 
 ## Now
 Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and backlog autonomously for 24 h, workflows for the full playtest, then plan the next leg and start it). Commit prefix S4. Stretch 3 done: tag s3-done at 146a467 (summary in PROGRESS_LOG).
-- S4 DONE: stage-relative goals (0cb646a), raid pray and worship under threat (95b6a65), AI worship across water by boat or balloon (02d5a68).
-- S4 DONE Leg 5 LAN play (BACKLOG 15) L5-A to L5-F: lockstep core (c8996a9), relay (0ec8f69), versus (6f92f99), teams in the sim (3300a5f), co-op and AI takeover (05c76ea), rejoin by snapshot, rejoin wait, desync report (b4f8203). Left in the leg: campaign co-op.
-- S4 DONE BACKLOG 9 level 22 The Cloud Isles (8f816ec). Levels 23 Stolen Stones and 24 Ember Crown: agents running. The Last Hearthfall is order 25.
-- Engine gaps from the Cloud Isles agent: the bot ignores build objectives, the rival AI may reassign praying raiders, raid picks troops by entity index, attack waves take every balloon, siteLost is not stage gated.
+- S4 DONE: stage-relative goals (0cb646a), raid pray and worship under threat (95b6a65), AI worship across water by boat or balloon (02d5a68), siteLost stage gate (b359244).
+- S4 DONE Leg 5 LAN play (BACKLOG 15): L5-A to L5-F plus the campaign together (7c0f1df). Internet play waits for Stewart (public relay, deploy).
+- S4 DONE BACKLOG 9: 25 levels (22 Cloud Isles, 23 Stolen Stones, 24 Ember Crown); campaign rerun workflow over all 25 (bd7fb5e), every level scenario green.
+- S4 Leg 6 "ready for people" (ROADMAP): L6-A LAN replays and L6-D playtest kit (46c4690), L6-B look follow-ups (d9a2209) DONE. Left: L6-C level engine gaps, then a campaign fix round, L6-E balance.
 - Stretch 2 (2026-10-10, 24 h) DONE: tag s2-done, full npm run qa PASS at 5e11f16. Run 1 done 2026-10-09T23:58Z: m0-done to m11-done tagged. Run started: 2026-10-08T21:25:00Z.
 - Screenshot mode: headless-shell + GPU args (RTX 5070 Ti Laptop). VisionQA provider ON (about $0.00003 per low shot).
 - Machine: often at 100 percent CPU (other projects' sims and benchmarks, leave them alone). Wall-clock timing is noisy, and bench readings of 6 to 7 ms while agents run scenarios are load, not regressions (idle: 3.7 ms).
@@ -15,9 +15,9 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 - Making-of page: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5 (version 32), rebuild with `npm run making-of -- page` and republish after every backlog item (README steps).
 
 ## Next 3 actions
-1. (agents running) Levels 23 Stolen Stones and 24 Ember Crown: review, scenarios --tag levels, qa:fast, commit.
-2. Campaign rerun with tools/workflows/campaign-playtest.js on all 25 levels: fix the ramp inversions (L13 to L14, L17 to L19), Two Fires limit under 2x the win, the skeptic leftovers under Balance gaps, and the engine gaps above where cheap.
-3. Leg 5 rest: campaign co-op (both players on tribe 0's team); then full npm run qa, making-of page, and plan the next leg.
+1. L6-C level engine gaps (ROADMAP): the level bot works `build` objectives, `raid` `fresh`, the AI leaves scripted raiders alone, waves leave a vehicle home, map paint `cone` and `ridge`, `tribes[].buildings`; a "break the war band" objective (kill N of a tribe within a stage). One scenario each; every level scenario green.
+2. Campaign fix round: the curve critic's follow-ups under Balance gaps (workflow `args.fixes`, `lastOrder` 25), then scenarios --tag levels.
+3. L6-E balance (equal probe jitter, triangle retune), full npm run qa, making-of page republish.
 
 ## Blocked
 (none)
@@ -28,7 +28,7 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 
 ## Balance gaps
 - Stretch 3 (2026-10-10): equal-number counters stay 100 percent by design decision: the 10 v 10 probe has no formation jitter, so each pair is deterministic; real games mix armies and the outnumbered probes (70, 60, 80) carry the counter feel. Revisit only with jitter in the equal probe (tools/harness/soak.mjs, triangle-probe.mjs) and a full retune.
-- Stretch 3 campaign (2026-10-11, f50dec8): verified bot wins by order 5300, 7073, 8550, 8900, 11468, 12405, 12794, 14930, 16810, 17308, 18870, 20967, 23250, 22557, 25000, 25250, 29618, 26412, 25065, 30400, 31800, 41500. Inversions L13 to L14 and L17 to L18 to L19; L22 above the 34000 target line. Skeptic leftovers: sky_road's followers-90 growth tail is about half the level; wolf_country is bistable by seed offset (mean about 23400, offsets 0 and 5 under the band floor) and its eastern dens are reachable early; ley_web's hold-8 is uncontested (about 1000 ticks). Most need the engine gaps in Next 1 and 2.
+- S4 campaign rerun (2026-10-11, bd7fb5e): verified bot wins by order 5300, 7100, 8550, 8883, 12530, 12405, 14650, 13400, 16400, 17116, 18870, 20251, 20500, 21750, 24000, 23505, 20708, 21473, 26770, 28324, 31693, 28400, 30100, 33750, 37900 (target line about 5000 + 1208 per level, band 25 percent). Out of band: stone_totem +27 percent (paced by the bot's build-up). Dips: 17 and 18 below 14 to 16; 22 and 23 below 21; near ties 5/6, 7/8, 15/16. Critic follow-ups: (1) last_hearthfall: 2 of 8 offsets never win (tribe 3 towers); (2) ley_crown: unbounded warden spawn, offset 12 stalemates; (3) drowned_fords ward hold and wolf_country late hold uncontested, aim 24000 to 25500; (4) hold_the_line survive stage won by the starting wardens; (5) old_reliquary followers 44 met idle; (6) the_forge followers 55 already met for a slow human; (7) stolen_stones old_ley raid never arrives; (8) stone_totem overshoot accepted; (9) small text fixes (many_mouths, sky_road clock message, cloud_isles sky_gate text); (10) variety: 15 of 25 levels end in eliminateAll.
 (soft gate numbers that missed their targets, with the milestone)
 - M7 ai soak (12 seeds x 40 min, normal): wins sneaky 8, aggressive 2, turtle 2, unfinished 0, median 13.4 min (ok). Sneaky takes 8 of 12 wins (its pair win rates are over the 70 percent cap); 2 analyst passes plus garrison and training code did not fix it (BACKLOG 64, 71).
 - M6/M7 counter triangle: 100 percent every pair (target band 65 to 80); probes: Firecaller 6 v Chanter 10 and Chanter 6 v Warden 10 still win 100 percent, mixed mirror 40 to 50 percent (BACKLOG 65).
