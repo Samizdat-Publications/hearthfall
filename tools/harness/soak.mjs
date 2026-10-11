@@ -47,6 +47,12 @@ async function triangle(out, seeds) {
     const rs = Array.from({ length: seeds }, (_, k) => runMatchup(p.files, p.hash, a, b, 101 + k, { perSide: 6, perSideB: 10, jitter: 3 }));
     probes.push({ probe: `${a} 6 v ${b} 10`, winPct: pct(rs, "a"), drawPct: pct(rs, "draw") });
   }
+  // S4 L6-E: equal numbers in a loose formation (the gated pairs above stand in tight ranks, so each pair is
+  // nearly deterministic); this is the equal-number counter rate a real fight sees, band 65 to 80
+  for (const [a, b] of [["warden", "firecaller"], ["firecaller", "chanter"], ["chanter", "warden"]]) {
+    const rs = Array.from({ length: seeds }, (_, k) => runMatchup(p.files, p.hash, a, b, 301 + k, { jitter: 3 }));
+    probes.push({ probe: `${a} v ${b} loose`, winPct: pct(rs, "a"), drawPct: pct(rs, "draw") });
+  }
   const mix = "warden+firecaller+chanter";
   const mirror = Array.from({ length: seeds }, (_, k) => runMatchup(p.files, p.hash, mix, mix, 201 + k, { perSide: 9, jitter: 3 }));
   probes.push({ probe: "mixed 9 v mixed 9", winPct: pct(mirror, "a"), drawPct: pct(mirror, "draw") });
