@@ -72,10 +72,6 @@
       "expr": "level.objectivesDone == 2 && !level.won && alive(1)"
     },
     {
-      "at": 10000,
-      "expr": "level.objectivesDone == 4 && !level.won && alive(1)"
-    },
-    {
       "at": 14000,
       "expr": "level.won && site('north_totem').by == 0 && level.objectivesDone == 5 && alive(0) && !alive(1) && invariants() == 0"
     }

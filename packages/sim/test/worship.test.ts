@@ -219,4 +219,27 @@ describe("worship sites", () => {
     applyReward(w, 1, { type: "spell", spell: "raise_land", from: [40, 20], at: [30, 20] }, 5, 5);
     expect(w.events.find((e) => e.type === "spellCast")).toMatchObject({ x: 30, y: 20, cx: 40, cy: 20, by: "site" });
   });
+
+  it("S4: a raid with pray sends its war band to pray at a stone the player holds, and attack-moves once the stone is theirs", () => {
+    const w = world({ generator: "flat", size: 64, tribes: 2 });
+    w.spawnBuilding("hearth", 1, 50, 32);
+    w.worship.addSite("ley_stone", 20, 32, { tag: "ley", rewards: [] });
+    const s = w.worship.find("ley")!;
+    s.lastBy = 0;
+    const E = w.ents;
+    const troops = Array.from({ length: 4 }, (_, k) => w.spawnUnit("warden", 1, 44 + (k % 2), 30 + Math.floor(k / 2)));
+    w.step([]);
+    applyReward(w, 1, { type: "raid", tribe: 1, to: [10, 32], pray: "ley" }, 0, 0);
+    expect(w.events.find((e) => e.type === "raid")).toMatchObject({ tribe: 1, n: 4, site: "ley" });
+    expect(troops.every((t) => E.task[E.index(t)] === TASK.toWorship)).toBe(true);
+    let taken = false;
+    for (let k = 0; k < 90 * w.cfg.tickHz && !taken; k++) {
+      w.step();
+      taken = s.lastBy === 1;
+    }
+    expect(taken).toBe(true);
+    w.step([]);
+    applyReward(w, 1, { type: "raid", tribe: 1, to: [10, 32], pray: "ley" }, 0, 0);
+    expect(w.events.find((e) => e.type === "raid")?.site).toBeUndefined();
+  });
 });

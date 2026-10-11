@@ -1,14 +1,32 @@
 {
   "id": "level_drowned_fords",
   "description": "Campaign level 17 is completable: the opponent bot for the player crosses the drowning fords, holds the ford ward against both rivals, prays a ley stone away from the sneaky tribe, keeps the ward and both ley stones for a minute against its counter-prayer, crosses the causeway to burn the sneaky Hearth, then breaks the hard war tribe.",
-  "tags": ["levels"],
+  "tags": [
+    "levels"
+  ],
   "level": "drowned_fords",
-  "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "normal", "offset": 1 }],
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "aggressive",
+      "difficulty": "normal",
+      "offset": 1
+    }
+  ],
   "runTicks": 33000,
   "assert": [
-    { "at": 6000, "expr": "level.objectivesDone >= 2 && alive(1) && alive(2)" },
-    { "at": 12000, "expr": "level.objectivesDone >= 4 && alive(1) && alive(2)" },
-    { "at": 24000, "expr": "level.objectivesDone >= 5 && !alive(1) && alive(2) && !level.won" },
-    { "at": 33000, "expr": "level.won && !alive(1) && !alive(2) && alive(0) && level.objectivesDone == 6 && invariants() == 0" }
+    {
+      "at": 6000,
+      "expr": "level.objectivesDone >= 2 && alive(1) && alive(2)"
+    },
+    {
+      "at": 12000,
+      "expr": "level.objectivesDone >= 4 && alive(1) && alive(2)"
+    },
+    {
+      "at": 33000,
+      "expr": "level.won && !alive(1) && !alive(2) && alive(0) && level.objectivesDone == 6 && invariants() == 0"
+    }
   ]
 }

@@ -1056,6 +1056,11 @@ export const AiSharedSchema = z.strictObject({
   worshipKeepSettlers: z.number().int().nonnegative().optional(),
   /** BACKLOG 23: score added to the action a move picker focuses on (OpponentAI.setFocus) */
   focusBoost: z.number().nonnegative().optional(),
+  /** S4: worship score while the village is threatened, for a site farther than defendRadius from every threat (0 never) */
+  worshipUnderThreat: z.number().min(0).max(1).optional(),
+  /** S4: the level bot (tribe 0) leaves an enemy-held stone alone for stoneGiveUpMinutes after losing it this many times */
+  stoneGiveUpLosses: z.number().int().min(1).optional(),
+  stoneGiveUpMinutes: z.number().min(0).optional(),
 });
 export type AiShared = z.infer<typeof AiSharedSchema>;
 export const AI_SHARED_DEFAULTS: AiShared = {
@@ -1073,6 +1078,9 @@ export const AI_SHARED_DEFAULTS: AiShared = {
   attackScoreSurplus: 0.15,
   castReachSlack: 10,
   worshipKeepSettlers: 4,
+  worshipUnderThreat: 0.4,
+  stoneGiveUpLosses: 2,
+  stoneGiveUpMinutes: 3,
 };
 export const AiFileSchema = z.strictObject({
   ...comment,
@@ -1332,6 +1340,8 @@ export const RewardSchema = z.discriminatedUnion("type", [
     tribe: z.number().int().min(0),
     to: point,
     n: z.number().int().min(1).max(200).optional(),
+    /** S4: the raiders pray at this site (a stone they want to take) instead of attack-moving to `to`, when it is awake and not theirs */
+    pray: id.optional(),
   }),
   /** prayer chains: wake a dormant site (by tag) so it can be worshipped; it rises from the ground */
   z.strictObject({ type: z.literal("awaken"), site: id }),

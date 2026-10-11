@@ -410,6 +410,44 @@ describe("OpponentAI (M7)", () => {
     expect(go.map((c) => c.args.to)).toEqual([[100, 30]]);
   });
 
+  it("S4: the level bot leaves a stone it lost twice to the enemy for a while, and the memory survives a save", () => {
+    const p = basePack();
+    const def: LevelDef = {
+      id: "stone_test", name: "Stone test", order: 99, description: "test", seed: 4,
+      map: { generator: "flat", size: 64, landAboveSea: 20 },
+      tribes: [{}, {}], spells: [],
+      setup: [
+        { spawn: "hearth", tribe: 0, at: [12, 32] }, { spawn: "shaper", tribe: 0, at: [14, 34] },
+        { spawn: "hearth", tribe: 1, at: [52, 32] }, { spawn: "shaper", tribe: 1, at: [50, 34] },
+        { spawn: "settler", tribe: 0, near: [12, 36], count: 12 },
+        { spawn: "ley_stone", at: [24, 32], site: { tag: "ley", rewards: [] } },
+      ],
+      objectives: [{ type: "hold", n: 1, seconds: 600 }],
+    };
+    const w = createLevelWorld({ def }, p.files, p.hash);
+    w.step([]);
+    const ai = new OpponentAI({ tribe: 0, personality: { ...bold, firstAttackMinute: 99 }, every: 1 });
+    const s = w.worship.find("ley")!;
+    const prays = () => ai.decide(w).some((c) => c.type === "worship" && c.args.site === "ley");
+    expect(prays()).toBe(true);
+    for (let k = 0; k < 2; k++) {
+      s.lastBy = 0;
+      ai.decide(w);
+      s.lastBy = 1;
+      w.step([]);
+      ai.decide(w);
+    }
+    expect(prays()).toBe(false);
+    const st = ai.saveState();
+    expect(st.stones?.[0]?.[0]).toBe("ley");
+    const again = new OpponentAI({ tribe: 0, personality: { ...bold, firstAttackMinute: 99 }, every: 1 });
+    again.loadState(st);
+    expect(again.saveState().stones).toEqual(st.stones);
+    // after stoneGiveUpMinutes the stone is fair game again
+    for (let k = 0; k < (AI_SHARED_DEFAULTS.stoneGiveUpMinutes ?? 3) * 60 * w.cfg.tickHz + 2; k++) w.step([]);
+    expect(prays()).toBe(true);
+  });
+
   it("a hunted Shaper stranded out of reach on foot is struck down with a Shaper-killing spell (regression, ai-idle soak seed 1003)", () => {
     const w = world({ generator: "flat", size: 64, tribes: 2 });
     w.spawnBuilding("hearth", 0, 12, 32);

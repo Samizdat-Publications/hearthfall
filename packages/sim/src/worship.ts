@@ -390,8 +390,12 @@ export function applyReward(w: World, tribe: number, r: Reward, x: number, y: nu
         w.combat.clear(i);
         ids.push(i);
       }
-      if (ids.length) w.units.order(ids, r.to[0], r.to[1], ORDER.attackMove);
-      w.emit("raid", { tribe: r.tribe, n: ids.length });
+      // S4: a raid on a stone: the war band prays there (contesting the holder) when it can
+      const site = r.pray !== undefined ? w.worship.find(r.pray) : undefined;
+      const prayable = site !== undefined && !site.dormant && site.usesLeft > 0 && w.ents.index(site.ent) >= 0 && !(w.worship.capturable(site.kind) && site.lastBy === r.tribe);
+      if (ids.length && prayable) w.worship.send(ids, site);
+      else if (ids.length) w.units.order(ids, r.to[0], r.to[1], ORDER.attackMove);
+      w.emit("raid", { tribe: r.tribe, n: ids.length, ...(prayable ? { site: site.tag } : {}) });
       return;
     }
     case "awaken": {

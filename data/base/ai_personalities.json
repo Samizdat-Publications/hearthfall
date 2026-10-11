@@ -15,7 +15,10 @@
     "attackScoreAggression": 0.5,
     "attackScoreSurplus": 0.15,
     "castReachSlack": 10,
-    "worshipKeepSettlers": 4
+    "worshipKeepSettlers": 4,
+    "worshipUnderThreat": 0.4,
+    "stoneGiveUpLosses": 2,
+    "stoneGiveUpMinutes": 3
   },
   "personalities": [
     {

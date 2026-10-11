@@ -36,6 +36,8 @@ export interface OpponentState {
   waves?: { ids: number[]; x: number; y: number; until: number }[];
   /** BACKLOG 23: [focused action id, until tick] set by a move picker (absent when none) */
   focus?: [string, number];
+  /** S4: level bot stone memory: [tag, held (1/0), losses, skip until tick] (absent in older saves) */
+  stones?: [string, number, number, number][];
 }
 
 /**
@@ -151,6 +153,8 @@ export class OpponentAI implements Controller {
   private watched: { ids: number[]; x: number; y: number; until: number }[] = [];
   /** BACKLOG 98: boat id to the contested site its wave was boarded for (sail() lands it there, not at a Hearth) */
   private goals = new Map<number, [number, number]>();
+  /** S4: per capturable stone (level bot only): held at the last decision, times lost, skipped until this tick */
+  private stones = new Map<string, { held: boolean; losses: number; until: number }>();
   /** set once a wave found no walkable route: bridge spells join the prefs even if the personality lacks them */
   private needBridge = false;
   private scout = NO_ENTITY;
@@ -300,7 +304,7 @@ export class OpponentAI implements Controller {
   /** Save game memory: scouted tribes, the scout and the stats (decisions also gate the one-time setup). */
   saveState(): OpponentState {
     const st = this.stats;
-    return { known: [...this.known], scout: this.scout, stats: { ...st, actions: { ...st.actions }, casts: { ...st.casts } }, ferried: [...this.ferried], goals: [...this.goals].map(([b, g]) => [b, g[0], g[1]]), waves: this.watched.map((v) => ({ ...v, ids: [...v.ids] })), ...(this.focus ? { focus: [this.focus, this.focusUntil] as [string, number] } : {}) };
+    return { known: [...this.known], scout: this.scout, stats: { ...st, actions: { ...st.actions }, casts: { ...st.casts } }, ferried: [...this.ferried], goals: [...this.goals].map(([b, g]) => [b, g[0], g[1]]), waves: this.watched.map((v) => ({ ...v, ids: [...v.ids] })), ...(this.stones.size ? { stones: [...this.stones].map(([t, s]) => [t, s.held ? 1 : 0, s.losses, s.until] as [string, number, number, number]) } : {}), ...(this.focus ? { focus: [this.focus, this.focusUntil] as [string, number] } : {}) };
   }
 
   loadState(state: unknown): void {
@@ -310,6 +314,7 @@ export class OpponentAI implements Controller {
     this.ferried = new Map(o.ferried ?? []);
     this.goals = new Map((o.goals ?? []).map(([b, x, y]) => [b, [x, y]]));
     this.watched = (o.waves ?? []).map((v) => ({ ...v, ids: [...v.ids] }));
+    this.stones = new Map((o.stones ?? []).map(([t, h, l, u]) => [t, { held: h === 1, losses: l, until: u }]));
     this.focus = o.focus?.[0] ?? null;
     this.focusUntil = o.focus?.[1] ?? -1;
     Object.assign(this.stats, { ...o.stats, actions: { ...o.stats.actions }, casts: { ...o.stats.casts } });
@@ -357,6 +362,7 @@ export class OpponentAI implements Controller {
     if (tr.eco.incomeMult !== this.resourceMult) out.push({ tick: w.tick, tribe: this.tribe, type: "handicap", args: { mult: this.resourceMult } });
     this.stats.decisions++;
     this.watchWaves(w);
+    this.watchStones(w);
     // every decision: spells unlocked mid-match (worship sites) start charging too
     this.setup(w, out);
     const acts = this.actions.filter((a) => (a.id !== "worship" || w.worship.sites.length > 0) && (a.id !== "contest" || this.contested(w).length > 0) && (a.id !== "hunt" || w.beasts.dens.some((d) => !d.cleared)) && (a.id !== "buildSupport" || w.cfg.buildingIndex.has("spirit_well") || w.cfg.buildingIndex.has("mending_hut")) && (this.p.shades || !SHADE_ACTIONS.has(a.id)));
@@ -626,6 +632,8 @@ export class OpponentAI implements Controller {
       if (si < 0 || s.usesLeft <= 0 || s.dormant || kinds[s.kind]?.shaperOnly) continue;
       // stretch 3: a ley stone this tribe already holds has nothing to pray for
       if (kinds[s.kind]?.capturable && s.lastBy === this.tribe) continue;
+      // S4: a stone the level bot keeps losing is left alone for a while
+      if (kinds[s.kind]?.capturable && (this.stones.get(s.tag)?.until ?? -1) > w.tick) continue;
       if (this.comp(w, E.x[si], E.y[si]) !== home) continue;
       // stretch 3: never walk worshippers into a site held by seen enemy troops (level guardians)
       const guarded = this.guarded(w, si);
@@ -769,8 +777,39 @@ export class OpponentAI implements Controller {
     return false;
   }
 
+  /**
+   * S4: the bot playing tribe 0 in a level counts how often it loses each stone it took; after
+   * stoneGiveUpLosses it leaves that stone to the enemy for stoneGiveUpMinutes (no endless retake loop).
+   */
+  private watchStones(w: World): void {
+    if (!w.level || this.tribe !== 0) return;
+    const kinds = w.cfg.pack.buildings.worship.kinds ?? [];
+    for (const s of w.worship.sites) {
+      if (!kinds[s.kind]?.capturable) continue;
+      const m = this.stones.get(s.tag) ?? { held: false, losses: 0, until: -1 };
+      const held = s.lastBy === this.tribe;
+      if (m.held && !held && s.lastBy >= 0) {
+        m.losses++;
+        if (m.losses >= (this.sh.stoneGiveUpLosses ?? 2)) {
+          m.losses = 0;
+          m.until = w.tick + Math.round((this.sh.stoneGiveUpMinutes ?? 3) * 60 * w.cfg.tickHz);
+        }
+      }
+      m.held = held;
+      if (m.held || m.losses || m.until >= 0) this.stones.set(s.tag, m);
+    }
+  }
+
   private worshipScore(c: Census): number {
-    if (c.threats.length || c.w.playTick < this.worshipAfter * c.w.cfg.tickHz) return 0;
+    if (c.w.playTick < this.worshipAfter * c.w.cfg.tickHz) return 0;
+    if (c.threats.length) {
+      // S4: a far site may still be prayed at while home is threatened (not a guarded one)
+      const soft = this.sh.worshipUnderThreat ?? 0;
+      const t = soft > 0 ? this.worshipTarget(c) : null;
+      if (!t || t.guarded) return 0;
+      const r2 = this.sh.defendRadius * this.sh.defendRadius;
+      return c.threats.every((i) => this.dist2(c.w, i, t.si) > r2) ? soft : 0;
+    }
     const t = this.worshipTarget(c);
     if (t?.guarded) return c.idle.length >= 3 ? 0.75 : 0;
     // keep a working economy at home
