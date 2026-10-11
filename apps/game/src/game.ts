@@ -29,6 +29,7 @@ import {
   createScenarioWorld,
   shaperIndex,
   wrapDelta,
+  type BotSpec,
   type Command,
   type ScenarioDef,
   type SimEvent,
@@ -70,7 +71,7 @@ import {
   taughtSpells,
 } from "./campaign.ts";
 import { emptyStats, loadRecords, statsFrom, noteEvent, recordMatch, storeRecords, type Records, type Stats } from "./achievements.ts";
-import { REPLAY_KEY, ReplayRun, decodeReplay, encodeReplay, makeReplay, type Replay } from "./replay.ts";
+import { REPLAY_KEY, ReplayRun, decodeReplay, encodeReplay, makeReplay, type ControllerChange, type Replay } from "./replay.ts";
 import {
   browserKV,
   loadSettings,
@@ -423,6 +424,8 @@ export class Game {
   replayLog: Command[] = [];
   /** BACKLOG 19: the save this session was loaded from; its replay starts there */
   replayStart: SaveGame | null = null;
+  /** L6-A: AI takeovers of this match (a LAN partner left), for the replay */
+  takeovers: ControllerChange[] = [];
   /** BACKLOG 19: the replay being watched (null in a normal session); seekTo is a pending seek tick or -1 */
   replay: { run: ReplayRun; speed: number; follow: boolean; seekTo: number; verified: boolean | null } | null = null;
   /** BACKLOG 19: the replay of the match that just ended (end screen Watch and Download) */
@@ -595,6 +598,7 @@ export class Game {
     this.log = [];
     this.replayLog = [];
     this.replayStart = null;
+    this.takeovers = [];
     this.replay = null;
     this.ended = null;
     this.stats = emptyStats();
@@ -729,7 +733,10 @@ export class Game {
     const sp = this.skirmish;
     for (const t of humansOf(sp)) {
       if (t === this.localTribe || !this.world.tribes[t]?.alive) continue;
-      this.world.controllers.push(makeBot({ type: "opponent", tribe: t, personality: sp.ai.find((a) => a !== "none" && a !== "economy") ?? "aggressive", difficulty: sp.difficulty, offset: t }));
+      const bot: BotSpec = { type: "opponent", tribe: t, personality: sp.ai.find((a) => a !== "none" && a !== "economy") ?? "aggressive", difficulty: sp.difficulty, offset: t };
+      this.world.controllers.push(makeBot(bot));
+      // L6-A: the replay attaches the same AI at this tick
+      this.takeovers.push({ tick: this.world.tick, bot });
     }
     this.net.leave();
     this.net = null;
@@ -754,7 +761,10 @@ export class Game {
     this.adoptSave(w, s);
     this.localTribe = tribe;
     this.stats = stats;
-    this.replayStart = null;
+    // L6-A: this page's replay restarts from the host's snapshot
+    this.replayStart = s;
+    this.replayLog = [];
+    this.takeovers = [];
     this.paused = false;
     if (screen === "pause") this.screen = "pause";
     return w.tick;
@@ -1234,10 +1244,15 @@ export class Game {
   }
 
   // ---------------------------------------------------------------- BACKLOG 19: replays
+  /** L6-A test hook: keep the match so far as the last replay, as if it ended now (the match goes on). */
+  keepReplayNow(): void {
+    this.keepReplay();
+  }
+
   /** The ended match as a replay, kept for the end screen and stored as the last replay when it fits. */
   private keepReplay(): void {
     if (!this.skirmish) return;
-    this.lastReplay = makeReplay(this.world, this.skirmish, this.replayStart, this.replayLog, new Date().toISOString());
+    this.lastReplay = makeReplay(this.world, this.skirmish, this.replayStart, this.replayLog, new Date().toISOString(), this.takeovers);
     try {
       this.kv.setItem(REPLAY_KEY, encodeReplay(this.lastReplay));
     } catch {

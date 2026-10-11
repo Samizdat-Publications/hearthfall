@@ -729,6 +729,7 @@ const howto = () => [
   [t("howto.spells.head"), t("howto.spells.text")],
   [t("howto.army.head"), t("howto.army.text")],
   [t("howto.camera.head"), t("howto.camera.text")],
+  [t("howto.together.head"), t("howto.together.text")],
   [t("howto.start.head"), t("howto.start.text")],
 ];
 function HowTo({ act }: { act: MenuActions }) {

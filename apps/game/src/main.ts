@@ -305,6 +305,11 @@ if (debugApiAllowed(__DEBUG_API__, !!game.params.debug, game.role)) {
       return rp ? { tick: rp.run.tick, startTick: rp.run.startTick, endTick: rp.run.replay.endTick, speed: rp.speed, follow: rp.follow, verified: rp.verified, seeking: rp.seekTo >= 0, paused: game.paused, hash: game.world.hash().all } : null;
     },
     lastReplay: () => (game.lastReplay ? { endTick: game.lastReplay.endTick, endHash: game.lastReplay.endHash, commands: game.lastReplay.commands.length } : null),
+    /** L6-A: keep the match so far as the last replay (the match goes on) */
+    keepReplayNow: () => {
+      game.keepReplayNow();
+      return game.lastReplay ? { endTick: game.lastReplay.endTick, start: game.lastReplay.start?.tick ?? 0, changes: game.lastReplay.controllerChanges?.length ?? 0 } : null;
+    },
     watchLastReplay: () => {
       if (game.lastReplay) game.watchReplay(game.lastReplay);
       return game.replay !== null;

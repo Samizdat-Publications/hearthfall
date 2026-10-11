@@ -30,6 +30,8 @@
   "howto.army.text": "Click a lodge to train Wardens (melee), Firecallers (ranged), Chanters (convert rivals) or Shades (disguise and sabotage). Drag a box to select, right click to move, A then click to attack-move, R to retreat, G to garrison a Watchtower.",
   "howto.camera.head": "Camera and keys",
   "howto.camera.text": "Wheel to zoom, Q and E to rotate, M for the whole world, click the minimap to jump there. P or Esc pauses, F is photo mode, H shows every key in play. Keys can be changed in Settings.",
+  "howto.together.head": "Play together",
+  "howto.together.text": "Two computers on one home network can share a match. The host computer serves the game with npm run serve -- --lan and both open the address it prints. One picks Play together, hosts and reads out the room code; the other types it and joins. Play against each other, as one team against the AI, or through the campaign side by side. If a computer drops out it rejoins on its own; if it does not come back, the AI plays its tribe. The replay of a shared match plays back on either computer.",
   "howto.start.head": "Where to start",
   "howto.start.text": "Play the Campaign first: each level teaches one idea. In Skirmish, start with one easy rival. Keep your Shaper safe, and remember the land is a weapon: Raise Land builds ground, Erode and Quake sink it under your enemies.",
   "menu.loadGame": "Load game",

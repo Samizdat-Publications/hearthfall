@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import { loadBasePack } from "../../../tools/harness/datapack.mjs";
 import { ReplayRun, decodeReplay, encodeReplay, makeReplay } from "../src/replay.ts";
 import { createSkirmish, makeSave, restoreSave, type SkirmishParams } from "../src/session.ts";
-import type { Command } from "@hearthfall/sim";
+import type { BotSpec, Command } from "@hearthfall/sim";
+import { makeBot } from "@hearthfall/ai";
 
 const pack = loadBasePack().pack!;
 const P: SkirmishParams = { seed: 21, level: "continents", size: 96, tribes: 2, ai: ["aggressive"], difficulty: "normal" };
@@ -77,6 +78,31 @@ describe("replays (BACKLOG 19)", () => {
     expect(run.startTick).toBe(300);
     expect(run.seek(run.replay.endTick)).toBe(true);
     expect(run.verified()).toBe(true);
+  });
+
+  it("L6-A: an AI takeover mid-match is recorded as a controller change and attached at its tick on playback", () => {
+    const { w, log } = play(300);
+    const bot: BotSpec = { type: "opponent", tribe: 0, personality: "turtle", difficulty: "normal", offset: 0 };
+    w.controllers.push(makeBot(bot));
+    const changes = [{ tick: w.tick, bot }];
+    w.run(500);
+    const r = decodeReplay(encodeReplay(makeReplay(w, P, null, log, "x", changes)), pack);
+    // the recorded opponents are the ones from the start; the takeover comes in at its tick
+    expect(r.bots).toEqual([{ type: "opponent", tribe: 1, personality: "aggressive", difficulty: "normal", offset: 1 }]);
+    expect(r.controllerChanges).toEqual(changes);
+    const run = new ReplayRun(pack, r, 200);
+    expect(run.seek(800)).toBe(true);
+    expect(run.verified()).toBe(true);
+    // seeking back before the takeover and forward again attaches it once
+    run.seek(100);
+    expect(run.world.controllers.length).toBe(1);
+    run.seek(800);
+    expect(run.world.controllers.length).toBe(2);
+    expect(run.verified()).toBe(true);
+    // without the change the AI never plays tribe 0 and the end does not match
+    const bare = new ReplayRun(pack, { ...r, controllerChanges: undefined }, 200);
+    bare.seek(800);
+    expect(bare.verified()).toBe(false);
   });
 
   it("a replay with a different command log does not verify; foreign data is refused", () => {

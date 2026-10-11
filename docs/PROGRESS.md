@@ -74,6 +74,8 @@ Rewritten at the end of stretch 2 (2026-10-11, about 47 h after the first run st
 5. Online co-op against the AI (BACKLOG 15).
 
 ## First human playtest
+Two computers or a group session: see `docs/PLAYTEST.md` (LAN setup, what to try together, what to bring back).
+
 **Ready: yes.**
 - The whole loop works from the main menu to the end screen in Chrome and Edge, and saves, loads and replays work.
 - A new player gets a How to play page, six first match tips and a campaign that teaches one idea per level.

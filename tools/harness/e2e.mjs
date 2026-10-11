@@ -92,11 +92,11 @@ async function flow(browser, url, vp) {
   try {
     await screenIs("main");
     await check("main");
-    // stretch 2 playtest pass: the How to play page lists six parts and Back returns to the main menu
+    // stretch 2 playtest pass: the How to play page lists its parts (L6-D: Play together is the sixth) and Back returns to the main menu
     await click("howto");
     await screenIs("howto");
-    const parts = await page.$$eval(".howto-part", (els) => els.length);
-    if (parts !== 6) problem(`how to play shows ${parts} parts, expected 6`);
+    const heads = await page.$$eval(".howto-part h3", (els) => els.map((e) => e.textContent ?? ""));
+    if (heads.length !== 7 || heads[5] !== "Play together") problem(`how to play parts: ${JSON.stringify(heads)}, expected 7 with Play together sixth`);
     await check("howto");
     await click("back");
     await screenIs("main");
@@ -602,6 +602,16 @@ async function lanFlow(browser, url, mode) {
     if (ra.desync || rb.desync || ra.away || rb.tries) problem(`after the rejoin: ${JSON.stringify([ra, rb])}`);
     // one side quits (the host in versus, the partner in co-op): the other plays on with the AI in that seat
     const [quits, stays] = mode === "coop" ? [b, a] : [a, b];
+    // L6-A: each page's replay of the match plays back to its recorded end (the rejoined page's starts at the snapshot)
+    const watch = async (p, who) => {
+      const lr = await p.evaluate(() => window.__game.lastReplay());
+      if (!(await p.evaluate(() => window.__game.watchLastReplay()))) return problem(`${who}: no LAN replay to watch`);
+      await p.evaluate((t) => window.__game.replaySeek(t), lr.endTick);
+      const rp = await p.evaluate(() => window.__game.replay());
+      if (rp?.tick !== lr.endTick || rp.verified !== true) problem(`${who} LAN replay: ${JSON.stringify({ lr, rp })}`);
+      return rp;
+    };
+    const kq = await quits.page.evaluate(() => window.__game.keepReplayNow());
     await quits.page.keyboard.press("Escape");
     await until(quits.page, () => window.__game.screen() === "pause");
     if (!(await quits.page.$('[data-ui="pause-net"]'))) problem("the pause menu in a LAN match has no note that the match keeps running");
@@ -613,6 +623,13 @@ async function lanFlow(browser, url, mode) {
     if (!bots.includes(mode === "coop" ? 1 : 0)) problem(`no AI took over the leaver's tribe: bots ${JSON.stringify(bots)}`);
     await stays.page.screenshot({ path: `${DIR}lan-${mode}-partner-left.png` });
     res.screens.push({ name: `lan-${mode}-partner-left` });
+    const ks = await stays.page.evaluate(() => window.__game.keepReplayNow());
+    if (ks?.changes !== 1) problem(`the staying page's replay has ${ks?.changes} AI takeovers, expected 1`);
+    if ((b === quits ? kq : ks)?.start < 300) problem(`the rejoined page's replay does not start at the snapshot: ${JSON.stringify([kq, ks])}`);
+    await until(quits.page, () => window.__game.screen() === "main");
+    await watch(quits.page, "quitter");
+    await watch(stays.page, "stayer");
+    res.lanReplay = { quitter: kq, stayer: ks };
   } catch (e) {
     problem(`lan flow: ${String(e.message).split("\n")[0]}`);
   }

@@ -4,6 +4,7 @@
 // save every `every` ticks so seeking back restores the nearest one instead of replaying from the start.
 // No renderer here, so it is unit tested in Node.
 import type { ValidatedPack } from "@hearthfall/data";
+import { makeBot } from "@hearthfall/ai";
 import type { BotSpec, Command, World } from "@hearthfall/sim";
 import { createSkirmish, decodeData, encodeData, makeSave, recordedBots, restoreSave, type SaveGame, type SkirmishParams } from "./session.ts";
 
@@ -26,9 +27,19 @@ export interface Replay {
   savedAt: string;
   /** BACKLOG 50: the specs of the opponents that ran; playback builds exactly these (older replays: from params) */
   bots?: BotSpec[];
+  /** L6-A: AI players attached mid-match (a LAN partner left), each at the tick it took over */
+  controllerChanges?: ControllerChange[];
 }
 
-export function makeReplay(w: World, params: SkirmishParams, start: SaveGame | null, commands: Command[], savedAt: string): Replay {
+export interface ControllerChange {
+  tick: number;
+  bot: BotSpec;
+}
+
+export function makeReplay(w: World, params: SkirmishParams, start: SaveGame | null, commands: Command[], savedAt: string, changes: readonly ControllerChange[] = []): Replay {
+  // controllers attached mid-match are the last ones; the replay starts without them and attaches them at their tick
+  const all = recordedBots(w);
+  const bots = all && changes.length ? all.slice(0, all.length - changes.length) : all;
   return {
     version: REPLAY_VERSION,
     packHash: w.cfg.packHash,
@@ -38,7 +49,8 @@ export function makeReplay(w: World, params: SkirmishParams, start: SaveGame | n
     endTick: w.tick,
     endHash: w.hash().all,
     savedAt,
-    ...(recordedBots(w) ? { bots: recordedBots(w) } : {}),
+    ...(bots ? { bots } : {}),
+    ...(changes.length ? { controllerChanges: changes.map((c) => ({ tick: c.tick, bot: JSON.parse(JSON.stringify(c.bot)) as BotSpec })) } : {}),
   };
 }
 
@@ -109,6 +121,7 @@ export class ReplayRun {
   /** One tick with the recorded commands of this tick (no-op at the end). */
   step(): void {
     if (this.done) return;
+    for (const c of this.replay.controllerChanges ?? []) if (c.tick === this.world.tick) this.world.controllers.push(makeBot(c.bot));
     this.world.step((this.byTick.get(this.world.tick) ?? []).map((c) => ({ ...c, args: { ...c.args } })));
     if ((this.world.tick - this.startTick) % this.every === 0) this.checkpoint();
   }
