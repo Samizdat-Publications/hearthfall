@@ -1008,7 +1008,9 @@ export class OpponentAI implements Controller {
     const home = this.comp(w, E.x[c.h], E.y[c.h]);
     // known enemies first, then any start site (a wave scouts as it goes)
     const ranked = [...c.enemies.filter(([t]) => this.known.has(t)), ...c.enemies.filter(([t]) => !this.known.has(t))];
-    const target = ranked.find(([, eh]) => this.comp(w, E.x[eh], E.y[eh]) === home);
+    // stretch 3: a level's open destroy objective for this tribe (the bot playing tribe 0) comes before any Hearth
+    const goal = this.destroyTarget(c, home);
+    const target: [number, number] | undefined = goal >= 0 ? [E.tribe[goal], goal] : ranked.find(([, eh]) => this.comp(w, E.x[eh], E.y[eh]) === home);
     if (!target) {
       if (E.cat[ranked[0][1]] === CAT.unit) this.approach(c, out, ranked[0][1], home);
       this.ferry(c, out, E.x[ranked[0][1]], E.y[ranked[0][1]], home, false);
@@ -1030,6 +1032,32 @@ export class OpponentAI implements Controller {
     }
     const kinds = new Set(c.idle.map((i) => E.type[i]));
     if (kinds.size >= 2) this.stats.mixedWaves++;
+  }
+
+  /** stretch 3: nearest building named by an open `destroy` objective of the level (tribe 0 only), on the home landmass, or -1 */
+  private destroyTarget(c: Census, home: number): number {
+    const w = c.w;
+    const lv = w.level;
+    if (!lv || this.tribe !== 0) return -1;
+    const E = w.ents;
+    const n = w.terrain.size;
+    let best = -1;
+    let bestD = Infinity;
+    lv.def.objectives.forEach((o, k) => {
+      if (o.type !== "destroy" || lv.done[k] || !lv.open(k) || !w.tribes[o.tribe]?.alive) return;
+      const type = w.cfg.buildingIndex.get(o.building);
+      for (let i = 0; i < E.hi; i++) {
+        if (!E.alive[i] || E.cat[i] !== CAT.building || E.tribe[i] !== o.tribe || E.type[i] !== type || this.comp(w, E.x[i], E.y[i]) !== home) continue;
+        const dx = wrapDelta(E.x[i] - E.x[c.h], n);
+        const dy = wrapDelta(E.y[i] - E.y[c.h], n);
+        const d = dx * dx + dy * dy;
+        if (d < bestD) {
+          best = i;
+          bestD = d;
+        }
+      }
+    });
+    return best;
   }
 
   /** BACKLOG 10: no land route to the enemy, so boats carry the wave. Without a boat the tribe raises a

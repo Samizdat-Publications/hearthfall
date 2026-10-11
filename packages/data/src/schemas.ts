@@ -1408,7 +1408,8 @@ const stage = { text: z.string().optional(), after: z.number().int().min(0).opti
 export const ObjectiveSchema = z.discriminatedUnion("type", [
   z.strictObject({ type: z.literal("eliminateAll"), ...stage }),
   z.strictObject({ type: z.literal("worship"), site: id, ...stage }),
-  z.strictObject({ type: z.literal("survive"), seconds: pos, ...stage }),
+  /** `fromStage`: count from the tick the stage opened (its `after` is done), not from the match start */
+  z.strictObject({ type: z.literal("survive"), seconds: pos, fromStage: z.boolean().optional(), ...stage }),
   z.strictObject({ type: z.literal("followers"), n: z.number().int().min(1), ...stage }),
   /** BACKLOG 13 in the campaign: win the level's victory rules (`rules`); a rival winning them loses the level */
   z.strictObject({ type: z.literal("victory"), ...stage }),
@@ -1420,8 +1421,8 @@ export const ObjectiveSchema = z.discriminatedUnion("type", [
   z.strictObject({ type: z.literal("build"), building: id, n: z.number().int().min(1), ...stage }),
   /** stretch 3: the player holds `n` capturable stones (of `kind`, any when absent) at once for `seconds` without a break */
   z.strictObject({ type: z.literal("hold"), n: z.number().int().min(1), kind: id.optional(), seconds: z.number().min(0), ...stage }),
-  /** stretch 3: `n` beast dens are cleared (every den when absent) */
-  z.strictObject({ type: z.literal("clearDens"), n: z.number().int().min(1).optional(), ...stage }),
+  /** stretch 3: `n` beast dens are cleared (every den when absent); with `at` and `r` only dens within r of at count */
+  z.strictObject({ type: z.literal("clearDens"), n: z.number().int().min(1).optional(), at: point.optional(), r: pos.optional(), ...stage }),
 ]);
 export type Objective = z.infer<typeof ObjectiveSchema>;
 
@@ -1496,6 +1497,8 @@ export const LevelSchema = z.strictObject({
   rules: id.optional(),
   /** BACKLOG 11: the level opens with a Forge phase (balance.forge); level timers start at its end */
   forge: z.boolean().optional(),
+  /** stretch 3: "player" makes the level's beasts hunt only the player's tribe (rival villages are left alone); default "all" */
+  beastPrey: z.enum(["all", "player"]).optional(),
   /** BACKLOG 14b: the level is played in rain (balance.weather.rain) */
   weather: z.enum(["clear", "rain"]).optional(),
   setup: z.array(LevelSetup).min(1),

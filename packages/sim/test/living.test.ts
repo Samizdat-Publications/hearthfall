@@ -246,4 +246,68 @@ describe("hold and clearDens objectives", () => {
     w.step();
     expect(w.level!.done[0]).toBe(1);
   });
+
+  it("clearDens with at and r counts only the dens in that area", () => {
+    const def = base([{ type: "clearDens", at: [40, 40], r: 6 }], [
+      { spawn: "wolf", tribe: -1, at: [40, 40], count: 1 },
+      { spawn: "wolf", tribe: -1, at: [12, 40], count: 1 },
+    ]);
+    const p = basePack();
+    const w = createLevelWorld({ def }, p.files, p.hash);
+    for (const id of w.beasts.dens[1].members) w.damage(w.ents.index(id), 1e6, 0, true);
+    for (let k = 0; k < 3; k++) w.step();
+    expect(w.level!.done[0]).toBe(0);
+    for (const id of w.beasts.dens[0].members) w.damage(w.ents.index(id), 1e6, 0, true);
+    for (let k = 0; k < 3; k++) w.step();
+    expect(w.level!.done[0]).toBe(1);
+  });
+
+  it("a capturable stone with a tribe in the setup starts held by that tribe", () => {
+    const def = base([{ type: "hold", n: 1, seconds: 1 }], [{ spawn: "ley_stone", tribe: 0, at: [30, 30], site: { tag: "a", rewards: [] } }]);
+    const p = basePack();
+    const w = createLevelWorld({ def }, p.files, p.hash);
+    expect(w.worship.find("a")!.lastBy).toBe(0);
+    for (let k = 0; k < 2 * w.cfg.tickHz; k++) w.step();
+    expect(w.level!.done[0]).toBe(1);
+  });
+
+  it("a fromStage survive counts from the tick its stage opened", () => {
+    const def = base([{ type: "reach", at: [40, 40], r: 2 }, { type: "survive", seconds: 3, fromStage: true, after: 0 }]);
+    const p = basePack();
+    const w = createLevelWorld({ def }, p.files, p.hash);
+    const lv = w.level!;
+    for (let k = 0; k < 5 * w.cfg.tickHz; k++) w.step();
+    expect(lv.done[1]).toBe(0);
+    // the Shaper arrives: the 3 s count starts now, not at tick 0
+    const si = w.ents.index(w.tribes[0].shaper);
+    w.ents.x[si] = 40;
+    w.ents.y[si] = 40;
+    w.step();
+    expect(lv.done[0]).toBe(1);
+    for (let k = 0; k < 2 * w.cfg.tickHz; k++) w.step();
+    expect(lv.done[1]).toBe(0);
+    for (let k = 0; k < 1 * w.cfg.tickHz + 2; k++) w.step();
+    expect(lv.done[1]).toBe(1);
+  });
+
+  it("beastPrey player: wolves leave a rival's units alone but still bite the player's", () => {
+    const def: LevelDef = { ...base([{ type: "survive", seconds: 600 }], [{ spawn: "wolf", tribe: -1, at: [40, 40], count: 2 }, { spawn: "settler", tribe: 1, at: [41, 40] }, { spawn: "hearth", tribe: 1, at: [52, 52] }]), tribes: [{}, {}], beastPrey: "player" };
+    const p = basePack();
+    const w = createLevelWorld({ def }, p.files, p.hash);
+    const bites = [0, 0];
+    const run = (sec: number) => {
+      for (let k = 0; k < sec * w.cfg.tickHz; k++) {
+        w.step();
+        for (const e of w.events) if (e.type === "beastBite") bites[(e as unknown as { tribe: number }).tribe]++;
+      }
+    };
+    run(4);
+    expect(bites[1]).toBe(0);
+    const si = w.ents.index(w.tribes[0].shaper);
+    w.ents.x[si] = 41;
+    w.ents.y[si] = 41;
+    run(4);
+    expect(bites[0]).toBeGreaterThan(0);
+    expect(bites[1]).toBe(0);
+  });
 });

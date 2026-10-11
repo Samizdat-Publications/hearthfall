@@ -47,7 +47,7 @@ export class LevelRuntime {
   fired: number[];
   outcome: number = OUTCOME.none;
   endedAt = -1;
-  /** stretch 3: per objective, the tick its `hold` streak began (-1 none) */
+  /** stretch 3: per objective, the tick its `hold` streak began, or a `fromStage` survive's stage opened (-1 none) */
   holdSince: number[];
   /** building types every tribe may build in this level (null: all) */
   readonly allowed: Set<number> | null;
@@ -80,14 +80,20 @@ export class LevelRuntime {
         return w.tribes.every((t) => t.index === PLAYER || !t.alive);
       case "worship":
         return this.siteBy(o.site) === PLAYER;
-      case "survive":
-        return me.alive && w.playTick + 1 >= Math.round(o.seconds * w.cfg.tickHz);
+      case "survive": {
+        const need = Math.round(o.seconds * w.cfg.tickHz);
+        if (!o.fromStage) return me.alive && w.playTick + 1 >= need;
+        // stretch 3: counted from the tick the stage opened (holdSince doubles as the stage start)
+        if (this.holdSince[k] < 0) this.holdSince[k] = w.tick;
+        return me.alive && w.tick - this.holdSince[k] + 1 >= need;
+      }
       case "followers":
         return w.economy.followers(PLAYER) >= o.n;
       case "victory":
         return w.rules?.winner === PLAYER;
       case "destroy":
-        return this.countBuildings(o.tribe, o.building, false) === 0;
+        // an eliminated tribe's leftover buildings cannot be targeted, so its fall counts too
+        return !w.tribes[o.tribe]?.alive || this.countBuildings(o.tribe, o.building, false) === 0;
       case "build":
         return this.countBuildings(PLAYER, o.building, true) >= o.n;
       case "reach":
@@ -101,7 +107,14 @@ export class LevelRuntime {
         return w.tick - this.holdSince[k] + 1 >= Math.max(1, Math.round(o.seconds * w.cfg.tickHz));
       }
       case "clearDens": {
-        const dens = w.beasts.dens;
+        const n = w.terrain.size;
+        const at = o.at;
+        const r = o.r ?? 0;
+        const dens = at ? w.beasts.dens.filter((d) => {
+          const dx = wrapDelta(d.x - at[0], n);
+          const dy = wrapDelta(d.y - at[1], n);
+          return dx * dx + dy * dy <= r * r;
+        }) : w.beasts.dens;
         const cleared = dens.filter((d) => d.cleared).length;
         return dens.length > 0 && cleared >= (o.n ?? dens.length);
       }

@@ -70,7 +70,9 @@ export class BeastSystem {
   private prey(j: number): boolean {
     const w = this.w;
     const E = w.ents;
-    return j >= 0 && !!E.alive[j] && E.cat[j] === CAT.unit && E.tribe[j] >= 0 && E.inside[j] < 0 && E.veil[j] === 0 && !w.vehicles.isVehicle(j);
+    if (j < 0 || !E.alive[j] || E.cat[j] !== CAT.unit || E.tribe[j] < 0 || E.inside[j] >= 0 || E.veil[j] !== 0 || w.vehicles.isVehicle(j)) return false;
+    // a level with beastPrey "player" keeps its beasts off rival villages (the player is tribe 0)
+    return w.level?.def.beastPrey !== "player" || E.tribe[j] === 0;
   }
 
   private distTo(i: number, x: number, y: number): number {

@@ -83,7 +83,12 @@ export function applySetup(w: World, setup: readonly SetupEntry[]): void {
         if (s.stance) w.ents.stance[w.ents.index(id)] = STANCE[s.stance];
       }
       else if (w.cfg.buildingIndex.has(s.spawn)) w.spawnBuilding(s.spawn, tribe, x, y);
-      else if (w.worship.kindIndex(s.spawn) >= 0) w.worship.addSite(s.spawn, x, y, s.site ?? { rewards: [] });
+      else if (w.worship.kindIndex(s.spawn) >= 0) {
+        const id = w.worship.addSite(s.spawn, x, y, s.site ?? { rewards: [] });
+        // stretch 3: a capturable stone with a tribe starts held by it
+        const site = w.worship.sites[w.worship.sites.length - 1];
+        if (tribe >= 0 && site.ent === id && w.worship.capturable(site.kind)) site.lastBy = tribe;
+      }
       else throw new Error(`unknown spawn kind ${s.spawn}`);
     }
   }

@@ -258,9 +258,12 @@ export function validateLevel(raw: unknown, pack: PackFiles, file = "level"): { 
       if (placed < o.n) bad(path, `the level places ${placed} matching stones, fewer than ${o.n}`);
     }
     if (o.type === "clearDens") {
-      const dens = lv.setup.filter((s) => (s.tribe ?? -1) < 0 && pack.units.units.find((u) => u.id === s.spawn)?.beast).length;
-      if (dens < (o.n ?? 1)) bad(path, `the level has ${dens} beast dens, fewer than ${o.n ?? 1}`);
+      if ((o.at === undefined) !== (o.r === undefined)) bad(path, "at and r go together");
+      const inArea = (p: readonly number[] | undefined) => !o.at || !o.r || (p !== undefined && (p[0] - o.at[0]) * (p[0] - o.at[0]) + (p[1] - o.at[1]) * (p[1] - o.at[1]) <= o.r * o.r);
+      const dens = lv.setup.filter((s) => (s.tribe ?? -1) < 0 && pack.units.units.find((u) => u.id === s.spawn)?.beast && inArea(s.near ?? s.at)).length;
+      if (dens < (o.n ?? 1)) bad(path, `the level has ${dens} beast dens${o.at ? " in the area" : ""}, fewer than ${o.n ?? 1}`);
     }
+    if (o.type === "survive" && o.fromStage && o.after === undefined) bad(path, "fromStage needs after");
   });
   lv.lose?.forEach((o, k) => o.type === "siteLost" && !tags.has(o.site) && bad(`lose.${k}`, `no site tagged ${o.site}`));
   lv.triggers?.forEach((t, k) => {

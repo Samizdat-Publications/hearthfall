@@ -5,7 +5,8 @@ import { TASK } from "../../sim/src/economy.ts";
 import { STANCE } from "../../sim/src/combat.ts";
 import { basePack, world } from "../../sim/test/helpers.ts";
 import { OpponentAI, makeBot, type Personality } from "../src/index.ts";
-import { AI_SHARED_DEFAULTS } from "@hearthfall/data";
+import { AI_SHARED_DEFAULTS, type LevelDef } from "@hearthfall/data";
+import { createLevelWorld } from "../../sim/src/level.ts";
 
 function vsIdle(personality: string, seed: number, minutes: number): { w: World; ai: OpponentAI } {
   const p = basePack();
@@ -349,6 +350,37 @@ describe("OpponentAI (M7)", () => {
     expect(wave).toBeDefined();
     const [x, y] = wave!.args.to as number[];
     expect(Math.abs(x - w.ents.x[enemy]) + Math.abs(y - w.ents.y[enemy])).toBeLessThan(2);
+  });
+
+  it("in a level, the bot playing tribe 0 sends its wave at an open destroy objective before the Hearth (stretch 3)", () => {
+    const p = basePack();
+    const def: LevelDef = {
+      id: "destroy_test", name: "Destroy test", order: 99, description: "test", seed: 3,
+      map: { generator: "flat", size: 64, landAboveSea: 20 },
+      tribes: [{}, {}], spells: [],
+      setup: [
+        { spawn: "hearth", tribe: 0, at: [12, 32] }, { spawn: "shaper", tribe: 0, at: [13, 34] },
+        { spawn: "hearth", tribe: 1, at: [50, 32] }, { spawn: "shaper", tribe: 1, at: [50, 35] },
+        { spawn: "signal_pyre", tribe: 1, at: [32, 12] },
+      ],
+      objectives: [{ type: "destroy", tribe: 1, building: "signal_pyre" }],
+    };
+    const w = createLevelWorld({ def }, p.files, p.hash);
+    for (let k = 0; k < 5; k++) w.spawnUnit("warden", 0, 14 + k, 28);
+    w.step([]);
+    let pi = -1;
+    for (let i = 0; i < w.ents.hi; i++) if (w.ents.alive[i] && w.ents.cat[i] === CAT.building && w.ents.tribe[i] === 1 && w.ents.type[i] === w.cfg.buildingIndex.get("signal_pyre")) pi = i;
+    expect(pi).toBeGreaterThanOrEqual(0);
+    const ai = new OpponentAI({ tribe: 0, personality: bold, every: 1 });
+    const wave = ai.decide(w).find((c) => c.type === "move" && c.args.attack);
+    expect(wave).toBeDefined();
+    const [x, y] = wave!.args.to as number[];
+    expect(Math.abs(x - w.ents.x[pi]) + Math.abs(y - w.ents.y[pi])).toBeLessThan(2);
+    // once the Pyre is gone the wave goes for the Hearth again
+    w.kill(pi, "test");
+    w.step([]);
+    const next = new OpponentAI({ tribe: 0, personality: bold, every: 1 }).decide(w).find((c) => c.type === "move" && c.args.attack);
+    expect((next!.args.to as number[])[0]).toBeCloseTo(w.ents.x[w.ents.index(w.tribes[1].hearth)], 0);
   });
 
   it("a hunted Shaper stranded out of reach on foot is struck down with a Shaper-killing spell (regression, ai-idle soak seed 1003)", () => {
