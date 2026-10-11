@@ -1,6 +1,6 @@
 {
   "id": "level_many_mouths",
-  "description": "Campaign level 6 is completable: wardens clear the three wolf dens in stages (the hill shrine is prayed once its pack is gone), then followers hold the southern ley stone while raider bands march on it, the tribe grows to 50 and the raiders are broken (bot wins about 13500).",
+  "description": "Campaign level 6 is completable: wardens clear the three wolf dens in stages (the hill shrine is prayed once its pack is gone); the cleared packs wake the southern ley stone with four posted raider guards, which the wardens cut down before followers pray there ahead of the rival worshippers; then the raiders are broken (bot wins about 12405).",
   "tags": [
     "levels"
   ],
@@ -52,6 +52,15 @@
       }
     },
     {
+      "tick": 7900,
+      "tribe": 0,
+      "type": "worship",
+      "args": {
+        "units": "tribe0.settlers",
+        "site": "south_ley"
+      }
+    },
+    {
       "tick": 8400,
       "tribe": 0,
       "type": "move",
@@ -62,15 +71,6 @@
           50
         ],
         "attack": true
-      }
-    },
-    {
-      "tick": 8700,
-      "tribe": 0,
-      "type": "worship",
-      "args": {
-        "units": "tribe0.settlers",
-        "site": "south_ley"
       }
     },
     {
@@ -87,7 +87,7 @@
       }
     }
   ],
-  "runTicks": 17000,
+  "runTicks": 15000,
   "assert": [
     {
       "at": 3000,
@@ -95,15 +95,19 @@
     },
     {
       "at": 7000,
-      "expr": "level.objectivesDone == 2 && !level.won"
+      "expr": "level.objectivesDone == 2 && site('south_ley').by == -1 && !level.won"
     },
     {
-      "at": 12000,
-      "expr": "level.objectivesDone == 4 && !level.won"
+      "at": 7760,
+      "expr": "level.objectivesDone == 3 && count(tribe1.wardens, near([88,112],8)) >= 3 && site('south_ley').by == -1"
     },
     {
-      "at": 17000,
-      "expr": "level.won && !alive(1) && alive(0) && level.objectivesDone == 6 && invariants() == 0"
+      "at": 10000,
+      "expr": "level.objectivesDone == 4 && site('south_ley').by == 0 && alive(1) && !level.won"
+    },
+    {
+      "at": 15000,
+      "expr": "level.won && !alive(1) && alive(0) && level.objectivesDone == 5 && invariants() == 0"
     }
   ]
 }

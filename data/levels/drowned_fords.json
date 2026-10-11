@@ -1,9 +1,9 @@
 {
-  "$comment": "Campaign level 17 (stretch 3): a river delta. Six islands linked by sand fords that two repeating tides drown and drain out of step. The Shaper holds a ford ward at the centre against both rivals; then two ley stones seeded to the sneaky rival wake on the north island (dormant until the hold is done), and praying them away raises a permanent causeway; burn the sneaky Hearth, then break the war tribe.",
+  "$comment": "Campaign level 17 (stretch 3): a river delta. Six islands linked by sand fords that two repeating tides drown and drain out of step. The Shaper holds a ford ward at the centre against both rivals; then two ley stones seeded to the sneaky rival wake on the north island (dormant until the hold is done), and praying them away raises a permanent causeway; keep the ward and both stones for a minute, cross the causeway and burn the sneaky Hearth, then break the war tribe.",
   "id": "drowned_fords",
   "name": "The Drowned Fords",
   "order": 17,
-  "description": "A river delta of six islands joined by sand fords that drown and drain by turns. Seize the ford ward and hold it, pray the sneaky tribe's ley stones away to raise a causeway the tide cannot take, burn its Hearth, then break the war tribe.",
+  "description": "A river delta of six islands joined by sand fords that drown and drain by turns. Seize the ford ward and hold it, pray the sneaky tribe's ley stones away to raise a causeway the tide cannot take and keep all three, cross it and burn the sneaky Hearth, then break the war tribe.",
   "seed": 1717,
   "map": {
     "generator": "flat",
@@ -26,7 +26,7 @@
   "tribes": [
     {},
     { "ai": "sneaky", "difficulty": "normal", "maxTroops": 14, "worshipAfterSeconds": 300 },
-    { "ai": "aggressive", "difficulty": "normal", "maxTroops": 18 }
+    { "ai": "aggressive", "difficulty": "hard", "maxTroops": 18 }
   ],
   "spells": ["bolt", "raise_land", "hornets", "lightning"],
   "buildings": ["dwelling", "watchtower", "warden_lodge"],
@@ -92,11 +92,12 @@
     { "type": "survive", "seconds": 150, "fromStage": true, "after": 0, "text": "Hold the ford while both rivals counterattack" },
     { "type": "worship", "site": "north_ley_a", "after": 1, "text": "Pray the first ley stone away from the sneaky tribe (north island)" },
     { "type": "hold", "n": 3, "seconds": 60, "after": 2, "text": "Pray the second ley stone away too, then keep the ford ward and both ley stones for a minute" },
-    { "type": "eliminateAll", "after": 3, "text": "Cross the causeway and break both rival tribes" }
+    { "type": "destroy", "tribe": 1, "building": "hearth", "after": 3, "text": "Cross the causeway and burn the sneaky tribe's Hearth on the north-east island" },
+    { "type": "eliminateAll", "after": 4, "text": "Break the war tribe on the south-east island and any sneaky stragglers" }
   ],
   "lose": [
     { "type": "hearthLost" },
-    { "type": "timeLimit", "seconds": 2800 }
+    { "type": "timeLimit", "seconds": 3000 }
   ],
   "triggers": [
     {
@@ -163,13 +164,17 @@
       "when": { "type": "objective", "index": 3 },
       "do": [
         { "type": "raid", "tribe": 2, "to": [96, 96], "n": 12 },
-        { "type": "message", "text": "The ley stones answer. The war tribe sends everything it has at the ford: break both tribes." }
+        { "type": "message", "text": "The ley stones answer and the causeway holds. Cross it and burn the sneaky Hearth while the war tribe storms the ford." }
       ]
+    },
+    {
+      "when": { "type": "objective", "index": 4 },
+      "do": [{ "type": "message", "text": "The sneaky Hearth is ash. Only the war tribe stands: break it." }]
     },
     {
       "when": { "type": "time", "seconds": 900, "every": 300 },
       "do": [{ "type": "raid", "tribe": 2, "to": [96, 96], "n": 6 }, { "type": "message", "text": "A war band wades toward the centre." }]
     },
-    { "when": { "type": "time", "seconds": 2500 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+    { "when": { "type": "time", "seconds": 2700 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
   ]
 }

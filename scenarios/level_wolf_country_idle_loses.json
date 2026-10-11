@@ -3,8 +3,8 @@
   "description": "Campaign level 18 has a real loss: an idle player is hunted by the wolves or runs out of time in the highlands.",
   "tags": ["levels"],
   "level": "wolf_country",
-  "runTicks": 48100,
+  "runTicks": 54100,
   "assert": [
-    { "at": 48100, "expr": "level.lost && invariants() == 0" }
+    { "at": 54100, "expr": "level.lost && invariants() == 0" }
   ]
 }

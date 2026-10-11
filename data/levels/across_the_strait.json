@@ -1,9 +1,9 @@
 {
-  "$comment": "Level 8 (paced): boats. Two 28-radius islands on a 160 sea. Staged: clear the three home dens, raise a Boathouse (no boat to start), which wakes the dormant home seer stone and sends the rival war band at it; hold all three home stones 90 s; then raze the rival Hearth and break the tribe (aggressive, ferries too, capped at 12 troops) while growing to 90. Bot wins about 16500.",
+  "$comment": "Level 8 (paced): boats. Two 28-radius islands on a 160 sea. Staged: clear the three home dens, raise a Boathouse (no boat to start), which wakes the dormant home seer stone with four posted rival guards on it and sends the rival war band there; kill the guards and pray at the seer; then raze the rival Hearth and break the tribe (aggressive, ferries too, capped at 14 troops) while growing to 80.",
   "id": "across_the_strait",
   "name": "Across the Strait",
   "order": 8,
-  "description": "A rival lives across a wide strait and wolves prowl your island. Clear the three wolf dens, raise a Boathouse, wake the seer stone and hold all three home stones, grow to 90 followers, then ferry an army over, raze the rival Hearth and break the tribe.",
+  "description": "A rival lives across a wide strait and wolves prowl your island. Clear the three wolf dens, raise a Boathouse, take the waking seer stone from the rival guards, then ferry an army over to raze the rival Hearth and break the tribe while you grow to 80 followers.",
   "seed": 808,
   "map": {
     "generator": "flat",
@@ -16,7 +16,7 @@
   },
   "tribes": [
     {},
-    { "ai": "aggressive", "difficulty": "easy", "maxTroops": 12 }
+    { "ai": "aggressive", "difficulty": "easy", "maxTroops": 14 }
   ],
   "spells": ["bolt", "lightning"],
   "buildings": ["dwelling", "watchtower", "warden_lodge", "fire_lodge", "boathouse"],
@@ -49,10 +49,10 @@
   "objectives": [
     { "type": "clearDens", "n": 3, "at": [40, 80], "r": 34, "text": "Train wardens and clear the three wolf dens on your island" },
     { "type": "build", "building": "boathouse", "n": 1, "after": 0, "text": "Raise a Boathouse on your shore" },
-    { "type": "hold", "n": 3, "seconds": 90, "after": 1, "text": "Pray at the waking seer stone and hold all three home stones at once for a minute and a half" },
+    { "type": "worship", "site": "home_seer", "after": 1, "text": "Kill the rival guards at the waking seer stone on your western shore and pray there" },
     { "type": "destroy", "tribe": 1, "building": "hearth", "after": 2, "text": "Ferry an army across the strait and raze the rival Hearth" },
     { "type": "eliminateAll", "after": 2, "text": "Break the rival tribe, Shaper and all" },
-    { "type": "followers", "n": 90, "after": 1, "text": "Grow to 90 followers" }
+    { "type": "followers", "n": 80, "after": 1, "text": "Grow to 80 followers" }
   ],
   "lose": [
     { "type": "hearthLost" },
@@ -60,7 +60,7 @@
   ],
   "triggers": [
     { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Wolves prowl your hills and no boat waits for you. Clear the dens, then build a Boathouse." }] },
-    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "awaken", "site": "home_seer" }, { "type": "raid", "tribe": 1, "to": [22, 80] }, { "type": "message", "text": "The Boathouse wakes the old seer stone on your western shore, and the rival war band sails for it." }] },
+    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "awaken", "site": "home_seer" }, { "type": "spawn", "unit": "warden", "n": 4, "tribe": 1, "at": [22, 80], "stance": "defensive" }, { "type": "raid", "tribe": 1, "to": [22, 80] }, { "type": "message", "text": "The Boathouse wakes the old seer stone on your western shore. Rival guards hold it and their war band sails to join them." }] },
     { "when": { "type": "time", "seconds": 420 }, "do": [{ "type": "raid", "tribe": 1, "to": [32, 80], "n": 6 }, { "type": "message", "text": "The rival's war band is crossing the strait." }] },
     { "when": { "type": "time", "seconds": 1500 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
   ],

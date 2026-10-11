@@ -1,10 +1,16 @@
 {
   "id": "level_contested_shrine_idle_loses",
-  "description": "Campaign level 2 can be lost: a player who never sends worshippers watches the rival tribe walk out at minute 3 and claim a shrine.",
-  "tags": ["fast", "levels"],
+  "description": "Campaign level 2 can be lost: a player who never sends worshippers watches the rival tribe walk out at second 90 (the level trigger says the same) and claim the hill shrine, the only awake shrine (lost at about tick 4205).",
+  "tags": [
+    "fast",
+    "levels"
+  ],
   "level": "contested_shrine",
   "runTicks": 7000,
   "assert": [
-    { "at": 7000, "expr": "level.lost && !level.won && (site('pass_shrine').by == 1 || site('hill_shrine').by == 1) && events.count('levelLost') == 1" }
+    {
+      "at": 7000,
+      "expr": "level.lost && !level.won && (site('pass_shrine').by == 1 || site('hill_shrine').by == 1) && events.count('levelLost') == 1"
+    }
   ]
 }

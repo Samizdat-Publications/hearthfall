@@ -5,10 +5,10 @@
     "levels"
   ],
   "level": "sky_road",
-  "runTicks": 34100,
+  "runTicks": 38100,
   "assert": [
     {
-      "at": 34100,
+      "at": 38100,
       "expr": "level.lost && site('sky_reliquary').by == -1 && invariants() == 0"
     }
   ]

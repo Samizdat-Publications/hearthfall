@@ -1,81 +1,445 @@
 {
-  "$comment": "Teaching level 6 (overhaul, paced): wolves and clearing dens. Three wolf dens guard the hill shrine (eight settlers), a ley stone and a ward stone on a 160 map; wardens must clear them in stages, then three parallel goals: hold the ley stone while raider bands march on it, grow to 50 and break the raiders. Bot wins about 13500.",
+  "$comment": "Teaching level 6 (overhaul, paced S3): wolves and clearing dens on a 160 map. Three wolf dens guard the hill shrine (eight settlers), the sunken southern ley stone and the ward stone; wardens clear them in stages. The cleared packs wake the ley stone with four posted raider guards, and the rival sends worshippers for it: cut the guards down and pray there first (each capture sends the raiders at it), then break the raiders. Bot wins about 12405.",
   "id": "many_mouths",
   "name": "The Winter Pack",
   "order": 6,
-  "description": "A hard winter has driven the wolves down from the hills. Three packs guard the shrine, the ley stone and the ward stone. Train wardens and clear every den, hold the ley stone against the raiders, and grow to 50 followers and break the raiders before the snows close in.",
+  "description": "A hard winter has driven the wolves down from the hills. Clear the three packs to reach the shrine and wake the ley stone, take the stone from the raiders' guards before their worshippers pray it, then march east and break the raiders before the snows close in.",
   "seed": 606,
   "map": {
     "generator": "flat",
     "size": 160,
     "landAboveSea": 30,
     "paint": [
-      { "shape": "disc", "at": [60, 50], "r": 7, "aboveSea": 44, "falloff": 6 },
-      { "shape": "disc", "at": [80, 22], "r": 14, "aboveSea": -30, "falloff": 4 },
-      { "shape": "disc", "at": [80, 142], "r": 14, "aboveSea": -30, "falloff": 4 },
-      { "shape": "disc", "at": [70, 84], "r": 8, "aboveSea": -30, "falloff": 4 },
-      { "shape": "disc", "at": [96, 54], "r": 6, "aboveSea": 40, "falloff": 5 }
+      {
+        "shape": "disc",
+        "at": [
+          60,
+          50
+        ],
+        "r": 7,
+        "aboveSea": 44,
+        "falloff": 6
+      },
+      {
+        "shape": "disc",
+        "at": [
+          80,
+          22
+        ],
+        "r": 14,
+        "aboveSea": -30,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          80,
+          142
+        ],
+        "r": 14,
+        "aboveSea": -30,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          70,
+          84
+        ],
+        "r": 8,
+        "aboveSea": -30,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          96,
+          54
+        ],
+        "r": 6,
+        "aboveSea": 40,
+        "falloff": 5
+      }
     ]
   },
-  "tribes": [{}, { "ai": "sneaky", "difficulty": "normal", "maxTroops": 8, "worshipAfterSeconds": 240 }],
-  "spells": ["bolt", "raise_land"],
-  "buildings": ["dwelling", "watchtower", "warden_lodge", "mending_hut"],
+  "tribes": [
+    {},
+    {
+      "ai": "sneaky",
+      "difficulty": "normal",
+      "maxTroops": 8,
+      "worshipAfterSeconds": 240
+    }
+  ],
+  "spells": [
+    "bolt",
+    "raise_land"
+  ],
+  "buildings": [
+    "dwelling",
+    "watchtower",
+    "warden_lodge",
+    "mending_hut"
+  ],
   "setup": [
-    { "spawn": "hearth", "tribe": 0, "at": [28, 80] },
-    { "spawn": "shaper", "tribe": 0, "at": [32, 77] },
-    { "spawn": "settler", "tribe": 0, "near": [28, 86], "count": 14 },
-    { "spawn": "hearth", "tribe": 1, "at": [134, 80] },
-    { "spawn": "shaper", "tribe": 1, "at": [130, 77] },
-    { "spawn": "settler", "tribe": 1, "near": [134, 86], "count": 10 },
-    { "spawn": "tree", "near": [20, 68], "count": 14, "spacing": 1.2 },
-    { "spawn": "tree", "near": [40, 96], "count": 12, "spacing": 1.2 },
-    { "spawn": "tree", "near": [22, 96], "count": 10, "spacing": 1.2 },
-    { "spawn": "tree", "near": [44, 70], "count": 10, "spacing": 1.2 },
-    { "spawn": "rock", "near": [22, 90], "count": 5, "spacing": 2 },
-    { "spawn": "tree", "near": [126, 68], "count": 12, "spacing": 1.2 },
-    { "spawn": "tree", "near": [142, 96], "count": 10, "spacing": 1.2 },
-    { "spawn": "rock", "near": [126, 92], "count": 3, "spacing": 2 },
-    { "spawn": "wolf", "tribe": -1, "at": [58, 46], "count": 3 },
-    { "spawn": "wolf", "tribe": -1, "at": [86, 118], "count": 3 },
-    { "spawn": "wolf", "tribe": -1, "at": [98, 50], "count": 3 },
-    { "spawn": "tree", "near": [64, 58], "count": 6, "spacing": 1.2 },
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        28,
+        80
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        32,
+        77
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        28,
+        86
+      ],
+      "count": 14
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        134,
+        80
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        130,
+        77
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        134,
+        86
+      ],
+      "count": 10
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        20,
+        68
+      ],
+      "count": 14,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        40,
+        96
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        22,
+        96
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        44,
+        70
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        22,
+        90
+      ],
+      "count": 5,
+      "spacing": 2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        126,
+        68
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        142,
+        96
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        126,
+        92
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        58,
+        46
+      ],
+      "count": 3
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        86,
+        118
+      ],
+      "count": 3
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        98,
+        50
+      ],
+      "count": 3
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        64,
+        58
+      ],
+      "count": 6,
+      "spacing": 1.2
+    },
     {
       "spawn": "shrine",
-      "at": [60, 52],
+      "at": [
+        60,
+        52
+      ],
       "site": {
         "tag": "hill_shrine",
         "worshippers": 4,
         "prayerSeconds": 40,
-        "rewards": [{ "type": "spawn", "unit": "settler", "n": 8 }, { "type": "message", "text": "Eight wanderers join the tribe that prayed." }]
+        "rewards": [
+          {
+            "type": "spawn",
+            "unit": "settler",
+            "n": 8
+          },
+          {
+            "type": "message",
+            "text": "Eight wanderers join the tribe that prayed."
+          }
+        ]
       }
     },
     {
       "spawn": "ley_stone",
-      "at": [86, 114],
-      "site": { "tag": "south_ley", "rewards": [{ "type": "message", "text": "The southern ley stone is yours. It pays mana while you hold it, and raiders will try to pray it away." }] }
+      "at": [
+        86,
+        114
+      ],
+      "site": {
+        "tag": "south_ley",
+        "rewards": [
+          {
+            "type": "raid",
+            "tribe": 1,
+            "to": [
+              86,
+              114
+            ]
+          },
+          {
+            "type": "message",
+            "text": "The southern ley stone pays mana to whoever holds it. Raiders march on it now."
+          }
+        ],
+        "dormant": true
+      }
     },
     {
       "spawn": "ward_stone",
-      "at": [98, 56],
-      "site": { "tag": "north_ward", "rewards": [{ "type": "message", "text": "The northern ward stone guards the pass." }] }
+      "at": [
+        98,
+        56
+      ],
+      "site": {
+        "tag": "north_ward",
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The northern ward stone guards the pass."
+          }
+        ]
+      }
     }
   ],
   "objectives": [
-    { "type": "clearDens", "n": 1, "text": "Train wardens and clear the wolf den on the shrine hill" },
-    { "type": "worship", "site": "hill_shrine", "after": 0, "text": "Send four followers to pray at the hill shrine" },
-    { "type": "clearDens", "after": 1, "text": "Clear the remaining wolf dens" },
-    { "type": "hold", "n": 1, "kind": "ley_stone", "seconds": 180, "after": 2, "text": "Pray at the southern ley stone and hold it for three minutes while raiders try to take it" },
-    { "type": "followers", "n": 50, "after": 2, "text": "Grow to 50 followers" },
-    { "type": "eliminateAll", "after": 2, "text": "March east and break the raiders for good" }
+    {
+      "type": "clearDens",
+      "n": 1,
+      "text": "Train wardens and clear the wolf den on the shrine hill"
+    },
+    {
+      "type": "worship",
+      "site": "hill_shrine",
+      "after": 0,
+      "text": "Send four followers to pray at the hill shrine"
+    },
+    {
+      "type": "clearDens",
+      "after": 1,
+      "text": "Clear the remaining wolf dens"
+    },
+    {
+      "type": "worship",
+      "site": "south_ley",
+      "after": 2,
+      "text": "Cut down the raiders' guards at the southern ley stone and pray there before their worshippers do"
+    },
+    {
+      "type": "eliminateAll",
+      "after": 3,
+      "text": "March east and break the raiders for good"
+    }
   ],
-  "lose": [{ "type": "timeLimit", "seconds": 1500 }, { "type": "hearthLost" }],
+  "lose": [
+    {
+      "type": "timeLimit",
+      "seconds": 1500
+    },
+    {
+      "type": "hearthLost"
+    }
+  ],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Wolves bite anything that comes near their dens. Raise a Warden Lodge and train wardens; they fight wolves on sight." }] },
-    { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "message", "text": "The shrine hill is clear. Send four followers to pray." }] },
-    { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "message", "text": "The packs are broken. The raiders from the east will come for the ley stone." }] },
-    { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "raid", "tribe": 1, "to": [86, 114] }] },
-    { "when": { "type": "time", "seconds": 600, "every": 240 }, "do": [{ "type": "raid", "tribe": 1, "to": [86, 114], "n": 4 }, { "type": "message", "text": "Raiders are marching on the southern ley stone." }] },
-    { "when": { "type": "time", "seconds": 420, "every": 300 }, "do": [{ "type": "raid", "tribe": 1, "to": [28, 80], "n": 4 }, { "type": "message", "text": "Raiders are crossing the plain." }] },
-    { "when": { "type": "time", "seconds": 1200 }, "do": [{ "type": "message", "text": "Five minutes until the snows close in." }] }
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Wolves bite anything that comes near their dens. Raise a Warden Lodge and train wardens; they fight wolves on sight."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 0
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "The shrine hill is clear. Send four followers to pray."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 2
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "south_ley"
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            88,
+            112
+          ],
+          "stance": "defensive"
+        },
+        {
+          "type": "message",
+          "text": "The packs are broken and the southern ley stone has risen. Raider guards already stand at it; their worshippers are on the way."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 420,
+        "every": 300
+      },
+      "do": [
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            28,
+            80
+          ],
+          "n": 4
+        },
+        {
+          "type": "message",
+          "text": "Raiders are crossing the plain."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 3
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "The ley stone is yours. Now march east and break the raiders for good."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1200
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Five minutes until the snows close in."
+        }
+      ]
+    }
   ]
 }

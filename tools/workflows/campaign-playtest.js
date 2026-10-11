@@ -15,6 +15,8 @@ export const meta = {
 //   2. Workflow({ scriptPath: 'tools/workflows/campaign-playtest.js', args: <that JSON> })
 //   3. Afterwards: confirm no scenarios/zz_probe_* files remain, run npm run test:scenarios and npm run qa:fast,
 //      review git diff data/levels scenarios, commit as S3: ..., update PROGRESS.
+// Fix round: also pass args.fixes = {<levelid>: [problem, ...]} (skeptic findings from an earlier run), args.lastOrder =
+// the campaign's last order (so a subset keeps the full target line) and args.skipCurve = true.
 // Agents edit only their own level files, never commit, and never run the full suites (other agents' probe files
 // sit in scenarios/ while the run is live).
 
@@ -22,7 +24,8 @@ const levels = (args && args.levels) || []
 const perAgent = (args && args.perAgent) || 2
 if (!levels.length) throw new Error('pass args.levels: [{id, order}, ...] (see the header comment)')
 const total = levels.length
-const lastOrder = Math.max(...levels.map((l) => l.order))
+const lastOrder = (args && args.lastOrder) || Math.max(...levels.map((l) => l.order))
+const fixes = (args && args.fixes) || {}
 
 const batches = []
 for (let i = 0; i < levels.length; i += perAgent) batches.push(levels.slice(i, i + perAgent))
@@ -51,6 +54,13 @@ Pacing targets for level ${l.id} (campaign order ${l.order} of ${lastOrder}):
 - Levels from order 8 up should use at least 4 staged objectives (after) and at least two of: stones (ley, ward, seer), wolves, prayer chains, holds, triggers, tides or causeways, a third tribe. Thin late levels (few objectives) must gain stages.
 - Keep each level's theme, name and description idea; reword text to match new goals. Objective text tells the player what to do in plain words.
 `
+
+const FIXES = (batch) => {
+  const parts = batch
+    .filter((l) => fixes[l.id])
+    .map((l) => `Level ${l.id}: a skeptical reviewer of the previous tuning round found these problems. Fix every one in data, or report it under engineGaps when data cannot fix it. Do not trade one defect for another (no new padding, no loosened asserts):\n${fixes[l.id].map((f) => '- ' + f).join('\n')}`)
+  return parts.length ? '\n' + parts.join('\n\n') + '\n' : ''
+}
 
 const TUNE_SCHEMA = {
   type: 'object',
@@ -104,7 +114,7 @@ const tuneOne = (batch) => {
     `You are tuning Hearthfall campaign levels ${ids} in C:\\Users\\stewa\\Documents\\Claude\\Hearthfall.
 ${RULES}${PROBE}
 For each level: measure the current bot win timeline, then change the level data so it meets the pacing targets below, then measure again and iterate (at most 4 tuning rounds per level). Update scenarios/level_<id>.json so runTicks covers the new win with margin and its asserts still check the win and the staged goals; keep the idle scenario losing. Data-only levers: objectives (types, counts, seconds, after chains), tribes (ai, difficulty, maxTroops, worshipAfterSeconds), setup (units, buildings, sites, dens, stones), triggers, lose (timeLimit), map size and features if the schema allows.
-${batch.map(PACING).join('\n')}
+${batch.map(PACING).join('\n')}${FIXES(batch)}
 Return the structured result for every level in the batch, with honest numbers.`,
     { label: `tune:${ids}`, phase: 'Tune', schema: TUNE_SCHEMA },
   )
@@ -124,6 +134,12 @@ ${batch.map(PACING).join('\n')}`,
 }
 
 const results = await pipeline(batches, tuneOne, checkOne)
+if (args && args.skipCurve) {
+  const tunedOnly = results.filter(Boolean).flatMap((r) => (r.tuned ? r.tuned.levels : []))
+  const checkedOnly = results.filter(Boolean).flatMap((r) => (r.checked ? r.checked.levels : []))
+  const missingOnly = levels.filter((l) => !checkedOnly.some((c) => c.id === l.id)).map((l) => l.id)
+  return { tuned: tunedOnly, checked: checkedOnly, curve: null, missing: missingOnly }
+}
 
 phase('Curve')
 const tunedAll = []

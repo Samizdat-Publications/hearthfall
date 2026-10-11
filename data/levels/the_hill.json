@@ -1,64 +1,541 @@
 {
-  "$comment": "Level 11 (pacing pass): King of the Hill. Three tribes on a 160 map around one hilltop Reliquary (it must stay the first site). Wolf dens haunt the foot of the hill; clearing them raises two ward stones on the slopes (prayer chain) that both rivals want. Staged: clear both dens, hold all three stones 60 s, keep more people on the hilltop than any rival for four minutes in all, raze the northern Hearth, then the eastern Hearth, then grow to 70. The northern rival is hard.",
+  "$comment": "Level 11 (pacing pass 2): King of the Hill. Three tribes on a 160 map around one hilltop Reliquary (it must stay the first site; it sleeps until the stones are held). King of the Hill counts from the first tick, so the victory objective runs in parallel and unstaged; rivals fight for the top with war bands (a northern band at 150 s, an eastern band when the dens fall, a northern band when the stones are held) and regular raids. Staged: clear both dens, hold all three stones 60 s, pray at the waking Reliquary before a rival does, raze the northern Hearth, then the eastern Hearth (both dig in with posted guards once the Reliquary is taken).",
   "id": "the_hill",
   "name": "The Hill",
   "order": 11,
-  "description": "Three tribes share one hill and wolves haunt its foot. Clear the dens, win and hold the three stones, keep more people on the hilltop than any rival for four minutes in all, raze both rival Hearths and grow to 70 followers.",
+  "description": "Three tribes want one hill and wolves haunt its foot. Keep more people on the hilltop than any rival for four minutes in all while you clear the dens, hold the three stones, claim the waking Reliquary and raze both rival Hearths.",
   "seed": 1111,
   "map": {
     "generator": "flat",
     "size": 160,
     "landAboveSea": 30,
     "paint": [
-      { "shape": "disc", "at": [80, 80], "r": 10, "aboveSea": 46, "falloff": 8 },
-      { "shape": "disc", "at": [80, 44], "r": 6, "aboveSea": -30, "falloff": 4 }
+      {
+        "shape": "disc",
+        "at": [
+          80,
+          80
+        ],
+        "r": 10,
+        "aboveSea": 46,
+        "falloff": 8
+      },
+      {
+        "shape": "disc",
+        "at": [
+          80,
+          44
+        ],
+        "r": 6,
+        "aboveSea": -30,
+        "falloff": 4
+      }
     ]
   },
   "tribes": [
     {},
-    { "ai": "aggressive", "difficulty": "hard", "maxTroops": 14 },
-    { "ai": "sneaky", "difficulty": "hard", "maxTroops": 16 }
+    {
+      "ai": "aggressive",
+      "difficulty": "hard",
+      "maxTroops": 14,
+      "worshipAfterSeconds": 300
+    },
+    {
+      "ai": "sneaky",
+      "difficulty": "hard",
+      "maxTroops": 16,
+      "worshipAfterSeconds": 300
+    }
   ],
   "rules": "king_of_hill",
-  "spells": ["bolt", "raise_land", "lightning", "whirlwind"],
+  "spells": [
+    "bolt",
+    "raise_land",
+    "lightning",
+    "whirlwind"
+  ],
   "setup": [
-    { "spawn": "reliquary", "at": [80, 80], "site": { "tag": "hill_reliquary", "worshippers": 4, "prayerSeconds": 40, "uses": 1, "rewards": [{ "type": "charges", "spell": "whirlwind", "n": 1 }] }},
-    { "spawn": "hearth", "tribe": 0, "at": [30, 120] },
-    { "spawn": "shaper", "tribe": 0, "at": [33, 117] },
-    { "spawn": "settler", "tribe": 0, "near": [26, 126], "count": 14 },
-    { "spawn": "warden", "tribe": 0, "near": [40, 114], "count": 8 },
-    { "spawn": "hearth", "tribe": 1, "at": [130, 120] },
-    { "spawn": "shaper", "tribe": 1, "at": [127, 117] },
-    { "spawn": "settler", "tribe": 1, "near": [134, 126], "count": 12 },
-    { "spawn": "warden", "tribe": 1, "near": [120, 114], "count": 6 },
-    { "spawn": "hearth", "tribe": 2, "at": [80, 24] },
-    { "spawn": "shaper", "tribe": 2, "at": [83, 27] },
-    { "spawn": "settler", "tribe": 2, "near": [80, 18], "count": 12 },
-    { "spawn": "warden", "tribe": 2, "near": [80, 34], "count": 7 },
-    { "spawn": "tree", "near": [20, 112], "count": 12, "spacing": 1.2 },
-    { "spawn": "tree", "near": [140, 112], "count": 10, "spacing": 1.2 },
-    { "spawn": "tree", "near": [70, 14], "count": 10, "spacing": 1.2 },
-    { "spawn": "rock", "near": [24, 132], "count": 4, "spacing": 2 },
-    { "spawn": "wolf", "tribe": -1, "at": [94, 72], "count": 4 },
-    { "spawn": "wolf", "tribe": -1, "at": [66, 90], "count": 4 },
-    { "spawn": "ward_stone", "at": [72, 72], "site": { "tag": "hill_ward", "rewards": [{ "type": "message", "text": "The hill ward strikes whoever stands near the top." }], "dormant": true }},
-    { "spawn": "ward_stone", "at": [88, 88], "site": { "tag": "foot_ward", "rewards": [{ "type": "message", "text": "The foot ward watches the southern road." }], "dormant": true }},
-    { "spawn": "ley_stone", "at": [48, 104], "site": { "tag": "home_ley", "rewards": [{ "type": "message", "text": "The home ley pays mana while you hold it." }] }}
+    {
+      "spawn": "reliquary",
+      "at": [
+        80,
+        80
+      ],
+      "site": {
+        "tag": "hill_reliquary",
+        "worshippers": 4,
+        "prayerSeconds": 40,
+        "uses": 1,
+        "rewards": [
+          {
+            "type": "charges",
+            "spell": "whirlwind",
+            "n": 1
+          }
+        ],
+        "dormant": true
+      }
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        30,
+        120
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        33,
+        117
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        26,
+        126
+      ],
+      "count": 14
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        40,
+        114
+      ],
+      "count": 14
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        130,
+        120
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        127,
+        117
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        134,
+        126
+      ],
+      "count": 12
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        120,
+        114
+      ],
+      "count": 9
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 2,
+      "at": [
+        80,
+        24
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 2,
+      "at": [
+        83,
+        27
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 2,
+      "near": [
+        80,
+        18
+      ],
+      "count": 12
+    },
+    {
+      "spawn": "warden",
+      "tribe": 2,
+      "near": [
+        80,
+        34
+      ],
+      "count": 9
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        20,
+        112
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        140,
+        112
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        70,
+        14
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        24,
+        132
+      ],
+      "count": 4,
+      "spacing": 2
+    },
+    {
+      "spawn": "warden",
+      "tribe": 2,
+      "near": [
+        80,
+        30
+      ],
+      "count": 6,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        124,
+        116
+      ],
+      "count": 6,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        94,
+        72
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        66,
+        90
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "ward_stone",
+      "at": [
+        72,
+        72
+      ],
+      "site": {
+        "tag": "hill_ward",
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The hill ward strikes whoever stands near the top."
+          }
+        ],
+        "dormant": true
+      }
+    },
+    {
+      "spawn": "ward_stone",
+      "at": [
+        88,
+        88
+      ],
+      "site": {
+        "tag": "foot_ward",
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The foot ward watches the southern road."
+          }
+        ],
+        "dormant": true
+      }
+    },
+    {
+      "spawn": "ley_stone",
+      "at": [
+        48,
+        104
+      ],
+      "site": {
+        "tag": "home_ley",
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The home ley pays mana while you hold it."
+          }
+        ]
+      }
+    }
   ],
   "objectives": [
-    { "type": "clearDens", "n": 2, "text": "Clear both wolf dens at the foot of the hill" },
-    { "type": "hold", "n": 3, "seconds": 60, "after": 0, "text": "Pray at both risen ward stones and hold all three stones at once for a minute" },
-    { "type": "victory", "after": 1, "text": "Keep more people on the hilltop than any rival for four minutes in all" },
-    { "type": "destroy", "tribe": 2, "building": "hearth", "after": 2, "text": "Raze the northern tribe's Hearth" },
-    { "type": "destroy", "tribe": 1, "building": "hearth", "after": 3, "text": "Raze the eastern tribe's Hearth" },
-    { "type": "followers", "n": 70, "after": 4, "text": "Grow to 70 followers to claim the valley" }
+    {
+      "type": "clearDens",
+      "n": 2,
+      "text": "Clear both wolf dens at the foot of the hill"
+    },
+    {
+      "type": "hold",
+      "n": 3,
+      "seconds": 60,
+      "after": 0,
+      "text": "Pray at both risen ward stones, then hold all three stones at once for a minute"
+    },
+    {
+      "type": "victory",
+      "text": "Keep more people on the hilltop than any rival for four minutes in all (the count runs from the start)"
+    },
+    {
+      "type": "worship",
+      "site": "hill_reliquary",
+      "after": 1,
+      "text": "Pray at the waking hilltop Reliquary with four followers before a rival does"
+    },
+    {
+      "type": "destroy",
+      "tribe": 2,
+      "building": "hearth",
+      "after": 3,
+      "text": "Raze the northern tribe's Hearth"
+    },
+    {
+      "type": "destroy",
+      "tribe": 1,
+      "building": "hearth",
+      "after": 4,
+      "text": "Raze the eastern tribe's Hearth"
+    }
   ],
   "lose": [
-    { "type": "hearthLost" },
-    { "type": "timeLimit", "seconds": 2000 }
+    {
+      "type": "hearthLost"
+    },
+    {
+      "type": "siteLost",
+      "site": "hill_reliquary"
+    },
+    {
+      "type": "timeLimit",
+      "seconds": 2000
+    }
   ],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Two rivals want the hill. Clear the wolves, win the stones, put more people on top than anyone else, then break both rivals." }] },
-    { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "awaken", "site": "hill_ward" }, { "type": "awaken", "site": "foot_ward" }, { "type": "message", "text": "With the wolves gone, two ward stones rise on the slopes. Both rivals want them." }] }
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Two rivals want the hill. Get people onto the top and keep them there, clear the wolves, win the stones, then break both rivals."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 0
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "hill_ward"
+        },
+        {
+          "type": "awaken",
+          "site": "foot_ward"
+        },
+        {
+          "type": "message",
+          "text": "With the wolves gone, two ward stones rise on the slopes, and an eastern war band storms the hilltop."
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 6,
+          "tribe": 1,
+          "at": [
+            104,
+            96
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            80,
+            80
+          ],
+          "n": 8
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 150
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 10,
+          "tribe": 2,
+          "at": [
+            80,
+            56
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            80,
+            80
+          ],
+          "n": 10
+        },
+        {
+          "type": "message",
+          "text": "A northern war band climbs the hill. Keep more people on top than they have."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 1
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "hill_reliquary"
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 6,
+          "tribe": 2,
+          "at": [
+            80,
+            56
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            80,
+            80
+          ],
+          "n": 10
+        },
+        {
+          "type": "message",
+          "text": "The Reliquary on the hilltop wakes. The northern tribe sends a war band to claim it."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 420,
+        "every": 240
+      },
+      "do": [
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            80,
+            80
+          ],
+          "n": 6
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            80,
+            80
+          ],
+          "n": 6
+        },
+        {
+          "type": "message",
+          "text": "Both rivals send raiders up the hill."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 3
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 8,
+          "tribe": 2,
+          "at": [
+            80,
+            32
+          ],
+          "stance": "defensive"
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 10,
+          "tribe": 1,
+          "at": [
+            124,
+            116
+          ],
+          "stance": "defensive"
+        },
+        {
+          "type": "message",
+          "text": "Both rivals dig in: posted guards now stand around their Hearths."
+        }
+      ]
+    }
   ]
 }

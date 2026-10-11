@@ -1,9 +1,9 @@
 {
-  "$comment": "Level 9 (pacing pass): balloons. Sea stacks (a Reliquary, a ley stone, a ward stone) float over open water that only balloons cross; the rival island is unreachable but four raiders are dropped on the home shore every four minutes; two wolf dens prowl home. Staged chain: pray at the Reliquary, raise a Skyloft, hold two stacks for a minute; that wakes a guarded seer stack by the rival island (prayer chain): shoot its guards from a balloon and pray there, burn the raiders' shore Watchtower from the air, then grow to 80.",
+  "$comment": "Level 9 (paced): balloons. Sea stacks (a Reliquary, a ley stone, a ward stone, a seer stone) float over open water that only balloons cross; the rival island is unreachable on foot and four raiders are dropped on the home shore every four minutes; two wolf dens prowl home. Staged chain: pray at the Reliquary, raise a Skyloft; that raises the eastern ward stack with three posted guards (shoot them off from a balloon, land, pray); that raises the far seer stack with four guards (same); burn both raiders' Watchtowers from the air; that sends a six warden revenge raid; grow to 90. Bot wins about 16800.",
   "id": "sky_road",
   "name": "The Sky Road",
   "order": 9,
-  "description": "Sea stacks stand far out from your island and only balloons reach them. Pray at the Reliquary, raise a Skyloft, hold two stacks, take the guarded far stack, burn the raiders' Watchtower from the air and grow to 80 followers.",
+  "description": "Sea stacks stand far out from your island and only balloons reach them. Pray at the Reliquary, raise a Skyloft, shoot the guards off the eastern and far stacks and pray at both, burn the raiders' two Watchtowers from the air, then beat back their revenge and grow to 90 followers.",
   "seed": 909,
   "map": {
     "generator": "flat",
@@ -42,29 +42,32 @@
     { "spawn": "settler", "tribe": 1, "near": [132, 86], "count": 12 },
     { "spawn": "tree", "near": [124, 70], "count": 8, "spacing": 1.2 },
     { "spawn": "watchtower", "tribe": 1, "at": [116, 72] },
+    { "spawn": "watchtower", "tribe": 1, "at": [118, 90] },
     { "spawn": "reliquary", "at": [74, 46], "site": { "tag": "sky_reliquary", "worshippers": 2, "prayerSeconds": 20, "uses": 2, "rewards": [{ "type": "unlockSpell", "spell": "hornets" }, { "type": "charges", "spell": "hornets", "n": 1 }, { "type": "message", "text": "The sky Reliquary teaches Hornets." }] }},
     { "spawn": "ley_stone", "at": [78, 112], "site": { "tag": "south_ley", "worshippers": 2, "rewards": [{ "type": "message", "text": "The southern stack pays mana while you hold it." }] }},
-    { "spawn": "ward_stone", "at": [96, 80], "site": { "tag": "east_ward", "worshippers": 2, "rewards": [{ "type": "message", "text": "The eastern stack guards the way to the rival island." }] }},
+    { "spawn": "ward_stone", "at": [96, 80], "site": { "tag": "east_ward", "worshippers": 2, "dormant": true, "rewards": [{ "type": "message", "text": "The eastern stack guards the way to the rival island." }] }},
     { "spawn": "seer_stone", "at": [110, 48], "site": { "tag": "far_seer", "worshippers": 2, "dormant": true, "rewards": [{ "type": "charges", "spell": "lightning", "n": 2 }, { "type": "message", "text": "The far stack sees the whole rival island." }] }}
   ],
   "objectives": [
     { "type": "worship", "site": "sky_reliquary", "text": "Float two firecallers to the northern stack and pray at the Reliquary" },
     { "type": "build", "building": "skyloft", "n": 1, "after": 0, "text": "Raise a Skyloft for more balloons" },
-    { "type": "hold", "n": 2, "seconds": 60, "after": 1, "text": "Pray at a second stack and hold two stacks at once for a minute" },
+    { "type": "worship", "site": "east_ward", "after": 1, "text": "Shoot the guards off the risen eastern stack from a balloon, then land two firecallers and pray at its ward stone" },
     { "type": "worship", "site": "far_seer", "after": 2, "text": "Shoot the guards off the far stack from a balloon, then pray at its seer stone" },
-    { "type": "destroy", "tribe": 1, "building": "watchtower", "after": 3, "text": "Float firecallers over the rival shore and burn the raiders' Watchtower" },
-    { "type": "followers", "n": 80, "after": 4, "text": "Grow to 80 followers" },
+    { "type": "destroy", "tribe": 1, "building": "watchtower", "after": 3, "text": "Float firecallers over the rival shore and burn both of the raiders' Watchtowers" },
+    { "type": "followers", "n": 90, "after": 4, "text": "Beat back the raiders' revenge and grow to 90 followers" },
     { "type": "clearDens", "n": 2, "text": "Clear both wolf dens on your island" }
   ],
   "lose": [
     { "type": "hearthLost" },
-    { "type": "timeLimit", "seconds": 1700 }
+    { "type": "timeLimit", "seconds": 1900 }
   ],
   "triggers": [
     { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Board two firecallers on a balloon and float them to the stacks. The rest must hold the line at home." }] },
     { "when": { "type": "time", "seconds": 240, "every": 240 }, "do": [{ "type": "spawn", "unit": "warden", "n": 4, "tribe": 1, "at": [48, 80], "stance": "aggressive" }, { "type": "message", "text": "Sky raiders land on your shore." }] },
     { "when": { "type": "worship", "site": "sky_reliquary" }, "do": [{ "type": "message", "text": "A Skyloft builds more balloons. Firecallers can shoot from them." }] },
-    { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "awaken", "site": "far_seer" }, { "type": "spawn", "unit": "warden", "n": 2, "tribe": 1, "at": [110, 48], "stance": "defensive" }, { "type": "reveal", "at": [110, 48], "r": 8 }, { "type": "message", "text": "A fourth stack rises by the rival island, and its guards are already on it." }] },
+    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "awaken", "site": "east_ward" }, { "type": "spawn", "unit": "warden", "n": 3, "tribe": 1, "at": [96, 80], "stance": "defensive" }, { "type": "message", "text": "The Skyloft stirs the eastern stack. It rises from the sea with rival guards already on it." }] },
+    { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "awaken", "site": "far_seer" }, { "type": "spawn", "unit": "warden", "n": 4, "tribe": 1, "at": [110, 48], "stance": "defensive" }, { "type": "reveal", "at": [110, 48], "r": 8 }, { "type": "message", "text": "A fourth stack rises by the rival island, and its guards are already on it." }] },
+    { "when": { "type": "objective", "index": 4 }, "do": [{ "type": "spawn", "unit": "warden", "n": 6, "tribe": 1, "at": [48, 80], "stance": "aggressive" }, { "type": "message", "text": "With their towers burned, the raiders land in force for revenge." }] },
     { "when": { "type": "time", "seconds": 1400 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
   ],
   "unlocks": { "buildings": ["skyloft"] }

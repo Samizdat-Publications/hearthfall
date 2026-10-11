@@ -1,9 +1,9 @@
 {
-  "$comment": "Campaign level 20 (stretch 3): a web of eleven capturable stones (ley, ward, seer) across a 256 continent with four lakes. Three rivals each start holding two stones near their Hearth; five neutral stones (two near the player, the centre ward on its hill, two lakeside seers) are contested as the rivals begin to pray. Staged: take two, hold five at once for six minutes, burn the eastern Hearth, burn the northern Hearth, then break all three tribes (the turtle south last).",
+  "$comment": "Campaign level 20 (stretch 3): a web of eleven capturable stones (ley, ward, seer) across a 256 continent with four lakes. Three rivals each start holding two stones near their Hearth; five neutral stones (two near the player, the centre ward on its hill, two lakeside seers) are contested as the rivals begin to pray. Staged: take two, burn the eastern Hearth (the south then posts twelve wardens at its towers and the north raids the heart ward), hold five at once for 150 s while the north and south pray stones away, pray the fallen tribes' stones over and hold eight for 90 s, then break the rest (the turtle south last). No destroy stage follows another, so no stage can be met before it opens.",
   "id": "ley_web",
   "name": "The Ley Web",
   "order": 20,
-  "description": "Eleven old stones are strung across this continent like knots in a net, and three rival tribes each keep two. Take your share, hold five at once for six minutes while the rivals pray against you, then burn the eastern and northern Hearths and break all three tribes.",
+  "description": "Eleven old stones are strung across this continent like knots in a net, and three rival tribes each keep two. Take your share, burn the eastern Hearth, hold five stones while the rivals pray against you, win the fallen tribes' stones until you hold eight, then break the north and the south.",
   "seed": 2020,
   "map": {
     "generator": "flat",
@@ -95,22 +95,25 @@
     { "spawn": "ley_stone", "tribe": 3, "at": [152, 190], "site": { "tag": "south_ley", "rewards": [{ "type": "message", "text": "A southern stone changes hands." }] } }
   ],
   "objectives": [
-    { "type": "hold", "n": 2, "seconds": 20, "text": "Take two stones and keep them" },
-    { "type": "hold", "n": 5, "seconds": 360, "after": 0, "text": "Hold five stones at once for six minutes" },
-    { "type": "destroy", "tribe": 2, "building": "hearth", "after": 1, "text": "March east along the ley lines and burn the eastern tribe's Hearth" },
-    { "type": "destroy", "tribe": 1, "building": "hearth", "after": 2, "text": "Burn the northern tribe's Hearth" },
-    { "type": "eliminateAll", "after": 3, "text": "Break all three rival tribes, the southern last" }
+    { "type": "hold", "n": 2, "seconds": 20, "text": "Pray at two stones near you and keep them" },
+    { "type": "destroy", "tribe": 2, "building": "hearth", "after": 0, "text": "March east along the ley lines and burn the eastern tribe's Hearth" },
+    { "type": "hold", "n": 5, "seconds": 150, "after": 1, "text": "Hold five stones at once for two and a half minutes while the north and south pray against you" },
+    { "type": "hold", "n": 8, "seconds": 90, "after": 2, "text": "Pray the fallen tribes' stones to your side and hold eight stones at once for ninety seconds" },
+    { "type": "eliminateAll", "after": 3, "text": "Break the northern and southern tribes, the southern behind its towers last" }
   ],
   "lose": [
     { "type": "hearthLost" },
-    { "type": "timeLimit", "seconds": 3000 }
+    { "type": "timeLimit", "seconds": 3300 }
   ],
   "triggers": [
     {
       "when": { "type": "time", "seconds": 1 },
       "do": [{ "type": "message", "text": "Pray at the stones near you. The rivals already hold six and will soon pray for the rest." }]
     },
-    { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "message", "text": "Two stones are yours. Hold five at once and feel the web pull taut." }] },
+    {
+      "when": { "type": "objective", "index": 0 },
+      "do": [{ "type": "message", "text": "Two stones are yours. Now march east along the ley lines and burn the eastern tribe's Hearth." }]
+    },
     {
       "when": { "type": "time", "seconds": 420, "every": 300 },
       "do": [{ "type": "raid", "tribe": 1, "to": [128, 128], "n": 5 }, { "type": "message", "text": "A northern war band marches on the heart ward." }]
@@ -121,16 +124,20 @@
     },
     {
       "when": { "type": "objective", "index": 1 },
-      "do": [{ "type": "message", "text": "Five stones held, and the web shows you the eastern tribe. Burn its Hearth first." }]
+      "do": [
+        { "type": "spawn", "unit": "warden", "n": 12, "tribe": 3, "at": [128, 200], "stance": "defensive" },
+        { "type": "raid", "tribe": 1, "to": [128, 128], "n": 8 },
+        { "type": "message", "text": "The east burns. The south posts wardens at its towers and the north marches on the heart ward. Hold five stones at once." }
+      ]
     },
     {
       "when": { "type": "objective", "index": 2 },
       "do": [
-        { "type": "raid", "tribe": 1, "to": [128, 128], "n": 8 },
-        { "type": "message", "text": "The east burns. The northern tribe comes for the heart ward: burn its Hearth next." }
+        { "type": "raid", "tribe": 3, "to": [68, 152], "n": 6 },
+        { "type": "message", "text": "Five stones held. The south marches on the western ley. Pray the fallen tribes' stones to your side until you hold eight." }
       ]
     },
-    { "when": { "type": "objective", "index": 3 }, "do": [{ "type": "message", "text": "Only the southern tribe holds out behind its towers. Break all three tribes." }] },
-    { "when": { "type": "time", "seconds": 2700 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+    { "when": { "type": "objective", "index": 3 }, "do": [{ "type": "message", "text": "The web is yours. Break every rival still standing, the south behind its towers last." }] },
+    { "when": { "type": "time", "seconds": 3000 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
   ]
 }

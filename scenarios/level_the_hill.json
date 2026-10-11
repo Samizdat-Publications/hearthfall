@@ -1,6 +1,6 @@
 {
   "id": "level_the_hill",
-  "description": "Campaign level 11 is completable under King of the Hill: wardens clear both wolf dens, a hard player AI wins the risen ward stones and the home ley, holds the hilltop four minutes in all, razes both rival Hearths and grows to 70.",
+  "description": "Campaign level 11 is completable under King of the Hill: wardens clear both wolf dens, a hard player AI wins the risen ward stones and holds all three stones, beats back the northern war band on the hilltop to win the hill, takes the waking Reliquary, then razes the northern and the eastern Hearths through their posted guards.",
   "tags": ["levels"],
   "level": "the_hill",
   "bots": [
@@ -10,11 +10,12 @@
     { "tick": 600, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [66, 90], "attack": true }},
     { "tick": 2400, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [94, 72], "attack": true }}
   ],
-  "runTicks": 21500,
+  "runTicks": 22500,
   "assert": [
-    { "at": 4000, "expr": "level.objectivesDone == 1 && site('hill_ward').by == 0 && site('foot_ward').by == 0" },
-    { "at": 7000, "expr": "level.objectivesDone == 3 && rules.winner == 0 && alive(1) && alive(2)" },
-    { "at": 15000, "expr": "level.objectivesDone == 5 && !alive(2) && !level.won" },
-    { "at": 21500, "expr": "level.won && level.objectivesDone == 6 && rules.winner == 0 && invariants() == 0" }
+    { "at": 3000, "expr": "level.objectivesDone == 1 && !level.won" },
+    { "at": 6500, "expr": "level.objectivesDone == 2 && site('hill_ward').by == 0 && site('foot_ward').by == 0 && rules.held(2) > 20 && rules.winner < 0" },
+    { "at": 8000, "expr": "level.objectivesDone == 4 && rules.winner == 0 && site('hill_reliquary').by == 0 && alive(1) && alive(2)" },
+    { "at": 14500, "expr": "level.objectivesDone == 5 && !alive(2) && alive(1) && !level.won" },
+    { "at": 22500, "expr": "level.won && level.objectivesDone == 6 && rules.winner == 0 && invariants() == 0" }
   ]
 }

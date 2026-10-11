@@ -1,6 +1,6 @@
 {
   "id": "level_waking_stones",
-  "description": "Campaign level 14 is completable: the Shaper wakes the shore stone, wardens clear both wolf dens, followers pray at the middle shrine, the opponent bot for the player trains through the guardians and takes the Reliquary, then takes the eastern ley on the middle island, holds three stones, breaks the eastern tribe and grows to 165 followers.",
+  "description": "Campaign level 14 is completable: the Shaper wakes the shore stone, wardens clear both wolf dens, followers pray at the middle shrine, the opponent bot for the player trains through the guardians and takes the Reliquary, takes the eastern ley and holds three stones while the eastern priests flip them, then breaks the eastern tribe through its new war band and posted guards.",
   "tags": [
     "levels"
   ],
@@ -25,19 +25,27 @@
       }
     }
   ],
-  "runTicks": 30000,
+  "runTicks": 26000,
   "assert": [
     {
+      "at": 3000,
+      "expr": "level.objectivesDone == 1 && site('shore_stone').by == 0 && !level.won"
+    },
+    {
       "at": 9500,
-      "expr": "site('north_reliquary').by == 0 && level.objectivesDone == 4 && !level.won"
+      "expr": "site('north_reliquary').by == 0 && level.objectivesDone == 4 && alive(1) && !level.won"
     },
     {
-      "at": 14000,
-      "expr": "!alive(1) && site('mid_ley').by == 0 && level.objectivesDone == 6 && !level.won"
+      "at": 10000,
+      "expr": "site('home_ley').by == 1 && level.objectivesDone == 4"
     },
     {
-      "at": 30000,
-      "expr": "level.won && site('north_reliquary').by == 0 && level.objectivesDone == 7 && invariants() == 0"
+      "at": 17000,
+      "expr": "level.objectivesDone == 5 && alive(1) && count(tribe1.wardens) >= 20 && !level.won"
+    },
+    {
+      "at": 26000,
+      "expr": "level.won && !alive(1) && site('north_reliquary').by == 0 && level.objectivesDone == 6 && invariants() == 0"
     }
   ]
 }

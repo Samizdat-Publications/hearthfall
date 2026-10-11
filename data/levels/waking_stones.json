@@ -1,9 +1,9 @@
 {
-  "$comment": "Campaign level 14 (hard pass): a prayer chain. The shore totem raises a ridge to the middle island and wakes its shrine; a wolf den guards the shrine and another haunts home; the shrine wakes the Reliquary, which rival guardians rise to defend, and the Reliquary wakes an eastern ley stone on the middle island. At minute 8 the rival raises its bridges and raids; from minute 12 its priests seek the stones, the shrine and the Reliquary (losing either site to them loses the level). Staged: wake the shore stone, clear two dens, pray at the shrine, take the Reliquary, then in parallel take and hold three stones for three minutes, grow to 165 followers and break the eastern tribe (towers, posted guards, a war band).",
+  "$comment": "Campaign level 14 (hard pass): a prayer chain. The shore totem raises a ridge to the middle island and wakes its shrine; a wolf den guards the shrine and another haunts home; the shrine wakes the Reliquary, which rival guardians rise to defend, and the Reliquary wakes an eastern ley stone on the middle island. At minute 6 the rival raises its bridges, raids, and its priests start to seek the stones, the shrine and the Reliquary (losing either site to them loses the level). Staged: wake the shore stone, clear two dens, pray at the shrine, take the Reliquary, take and hold three stones for three minutes while the priests try to pray them away, then break the eastern tribe, which sends a war band and digs in a ring of guards the moment the hold is done.",
   "id": "waking_stones",
   "name": "The Waking Stones",
   "order": 14,
-  "description": "Old stones sleep under these islands, and wolves guard two of them. Pray at one and the next wakes. Clear both dens, follow the chain to the Reliquary before the eastern priests do, take their ley on the middle island and hold three stones, grow to 165 followers and break the tribe in the east.",
+  "description": "Old stones sleep under these islands, and wolves guard two of them. Pray at one and the next wakes. Clear both dens, follow the chain to the Reliquary before the eastern priests do, take their ley on the middle island and hold three stones against their priests, then break the tribe in the east.",
   "seed": 1414,
   "map": {
     "generator": "flat",
@@ -57,8 +57,8 @@
     {
       "ai": "turtle",
       "difficulty": "hard",
-      "maxTroops": 22,
-      "worshipAfterSeconds": 720
+      "maxTroops": 30,
+      "worshipAfterSeconds": 360
     }
   ],
   "spells": [
@@ -317,7 +317,7 @@
         102,
         64
       ],
-      "count": 6,
+      "count": 10,
       "stance": "defensive"
     },
     {
@@ -418,18 +418,12 @@
       "n": 3,
       "seconds": 180,
       "after": 3,
-      "text": "Take the eastern ley on the middle island, then hold it and both home stones at once for three minutes"
-    },
-    {
-      "type": "followers",
-      "n": 165,
-      "after": 3,
-      "text": "Grow to 165 followers"
+      "text": "Take the eastern ley on the middle island, then hold it and both home stones at once for three minutes while their priests try to pray them away"
     },
     {
       "type": "eliminateAll",
-      "after": 3,
-      "text": "Break the tribe in the east"
+      "after": 4,
+      "text": "Break the tribe in the east before its new war band breaks you"
     }
   ],
   "lose": [
@@ -510,7 +504,19 @@
       "do": [
         {
           "type": "message",
-          "text": "Take the eastern ley on the middle island, grow, and bring the Quake to their Hearth."
+          "text": "Take the eastern ley on the middle island and hold all three stones for three minutes."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 240
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "The eastern tribe is gathering. Its war band and priests come within two minutes."
         }
       ]
     },
@@ -518,18 +524,6 @@
       "when": {
         "type": "time",
         "seconds": 360
-      },
-      "do": [
-        {
-          "type": "message",
-          "text": "The eastern tribe is gathering. Its war band comes within two minutes."
-        }
-      ]
-    },
-    {
-      "when": {
-        "type": "time",
-        "seconds": 480
       },
       "do": [
         {
@@ -577,7 +571,7 @@
     {
       "when": {
         "type": "time",
-        "seconds": 490
+        "seconds": 370
       },
       "do": [
         {
@@ -591,7 +585,7 @@
         },
         {
           "type": "message",
-          "text": "Their war band marches on your Hearth. From minute twelve their priests seek the stones, the shrine and the Reliquary."
+          "text": "Their war band marches on your Hearth, and their priests now seek the stones, the shrine and the Reliquary."
         }
       ]
     },
@@ -604,6 +598,60 @@
         {
           "type": "message",
           "text": "Five minutes remain."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 4
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 10,
+          "tribe": 1,
+          "at": [
+            106,
+            64
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            26,
+            64
+          ],
+          "n": 10
+        },
+        {
+          "type": "message",
+          "text": "The eastern tribe sends a fresh war band at your Hearth. Hold your ground."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 4
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 16,
+          "tribe": 1,
+          "at": [
+            104,
+            60
+          ],
+          "stance": "defensive"
+        },
+        {
+          "type": "message",
+          "text": "Their guards ring the eastern Hearth. Bring Wardens and spells to break it."
         }
       ]
     }

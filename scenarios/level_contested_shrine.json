@@ -1,6 +1,6 @@
 {
   "id": "level_contested_shrine",
-  "description": "Campaign level 2 is completable: a turtle opponent bot for the player claims the hill shrine and the pass shrine, then keeps the northern ley stone for 200 seconds; the posted wardens cut down the first rival worshippers and a Lightning on the one kneeling at the stone stops it praying the stone away.",
+  "description": "Campaign level 2 is completable: a turtle opponent bot for the player claims the hill shrine, which wakes the pass shrine; wins the race to it, which wakes the northern ley stone; prays the stone and keeps it for 210 seconds while a rival worshipper kneels there, struck down by a Lightning (bot wins about 7073; without the strike the stone flips at about 6944 and the hold restarts).",
   "tags": [
     "levels"
   ],
@@ -15,12 +15,40 @@
     }
   ],
   "commands": [
-    { "tick": 4800, "tribe": 0, "type": "cast", "args": { "spell": "lightning", "target": [46, 35.5] } }
+    {
+      "tick": 5500,
+      "tribe": 0,
+      "type": "cast",
+      "args": {
+        "spell": "lightning",
+        "target": [
+          46,
+          35.5
+        ]
+      }
+    }
   ],
-  "runTicks": 8500,
+  "runTicks": 9500,
   "assert": [
-    { "at": 3000, "expr": "level.objectivesDone == 2 && site('hill_shrine').by == 0 && site('pass_shrine').by == 0 && !level.won" },
-    { "at": 5500, "expr": "level.objectivesDone == 2 && site('north_ley').by == 0 && !level.won" },
-    { "at": 8500, "expr": "level.won && site('hill_shrine').by == 0 && site('pass_shrine').by == 0 && level.objectivesDone == 3 && events.count('levelWon') == 1 && invariants() == 0" }
+    {
+      "at": 1600,
+      "expr": "level.objectivesDone == 1 && site('hill_shrine').by == 0 && site('pass_shrine').by == -1 && !level.won"
+    },
+    {
+      "at": 2500,
+      "expr": "level.objectivesDone == 2 && site('pass_shrine').by == 0 && site('north_ley').by == -1 && !level.won"
+    },
+    {
+      "at": 5500,
+      "expr": "level.objectivesDone == 2 && site('north_ley').by == 0 && !level.won"
+    },
+    {
+      "at": 6800,
+      "expr": "level.objectivesDone == 2 && site('north_ley').by == 0 && !level.won"
+    },
+    {
+      "at": 9500,
+      "expr": "level.won && site('hill_shrine').by == 0 && site('pass_shrine').by == 0 && level.objectivesDone == 3 && events.count('levelWon') == 1 && invariants() == 0"
+    }
   ]
 }

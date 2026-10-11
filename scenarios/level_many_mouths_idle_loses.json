@@ -1,6 +1,6 @@
 {
   "id": "level_many_mouths_idle_loses",
-  "description": "Campaign level 6 has a real loss: an idle tribe never clears a den, never prays and loses to the raiders or the snows.",
+  "description": "Campaign level 6 has a real loss: an idle tribe never clears a den or prays; the rival takes the stones and the shrine and its raiders wipe the tribe out (about tick 9592), well before the snows.",
   "tags": [
     "levels"
   ],
