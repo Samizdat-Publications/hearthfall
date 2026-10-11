@@ -7,7 +7,7 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 - S4 DONE: stage-relative goals (0cb646a), raid pray and worship under threat (95b6a65), AI worship across water by boat or balloon (02d5a68), siteLost stage gate (b359244).
 - S4 DONE Leg 5 LAN play (BACKLOG 15): L5-A to L5-F plus the campaign together (7c0f1df). Internet play waits for Stewart (public relay, deploy).
 - S4 DONE BACKLOG 9: 25 levels (22 Cloud Isles, 23 Stolen Stones, 24 Ember Crown); campaign rerun workflow over all 25 (bd7fb5e), every level scenario green.
-- S4 Leg 6 "ready for people" (ROADMAP): L6-A LAN replays and L6-D playtest kit (46c4690), L6-B look follow-ups (d9a2209) DONE. Left: L6-C level engine gaps, then a campaign fix round, L6-E balance.
+- S4 Leg 6 "ready for people" (ROADMAP): L6-A LAN replays and L6-D playtest kit (46c4690), L6-B look follow-ups (d9a2209), L6-C level engine gaps (aec6dd9 flow field hang, 8b9c38d, 3991e46, c95fe13) DONE. Now: campaign fix round workflow wf_215155fe-3ad over 11 levels (critic follow-ups 1 to 10). Left: L6-E balance.
 - Stretch 2 (2026-10-10, 24 h) DONE: tag s2-done, full npm run qa PASS at 5e11f16. Run 1 done 2026-10-09T23:58Z: m0-done to m11-done tagged. Run started: 2026-10-08T21:25:00Z.
 - Screenshot mode: headless-shell + GPU args (RTX 5070 Ti Laptop). VisionQA provider ON (about $0.00003 per low shot).
 - Machine: often at 100 percent CPU (other projects' sims and benchmarks, leave them alone). Wall-clock timing is noisy, and bench readings of 6 to 7 ms while agents run scenarios are load, not regressions (idle: 3.7 ms).
@@ -15,14 +15,15 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 - Making-of page: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5 (version 33), rebuild with `npm run making-of -- page` and republish after every backlog item (README steps).
 
 ## Next 3 actions
-1. L6-C level engine gaps (ROADMAP): the level bot works `build` objectives, `raid` `fresh`, the AI leaves scripted raiders alone, waves leave a vehicle home, map paint `cone` and `ridge`, `tribes[].buildings`; a "break the war band" objective (kill N of a tribe within a stage). One scenario each; every level scenario green.
-2. Campaign fix round: the curve critic's follow-ups under Balance gaps (workflow `args.fixes`, `lastOrder` 25), then scenarios --tag levels.
-3. L6-E balance (equal probe jitter, triangle retune), full npm run qa, making-of page republish.
+1. Campaign fix round (running, wf_215155fe-3ad): review its diff, delete stray zz_probe files, scenarios --tag levels, qa:fast, commit; rerun the curve numbers into Balance gaps.
+2. L6-E balance (equal probe jitter, triangle retune; playtest-analyst passes), full npm run qa.
+3. Making-of republish, PROGRESS_LOG entry, then plan Leg 7 (BACKLOG top down) and start it.
 
 ## Blocked
 (none)
 
 ## Cuts and deferrals
+- L6-C deferred (S4, 2026-10-11): "an attack wave leaves a vehicle home for worship trips" and "destroyTarget off the home landmass" (both AI vehicle logistics; no level needs them after the fix round's data changes). `keepRaiders` ships off by default: on for every rival it reshaped Ember Crown, Ley Crown and Stolen Stones.
 - BACKLOG 20 (WebGPU renderer, P2) cut in stretch 2 (10/10/2026): the curved planet is a GLSL `onBeforeCompile` injection on every material (curve.ts) and the retro, terrain, weather and renderer passes are custom ShaderMaterials (5 files); three r186 WebGPURenderer supports neither, so the port is a TSL rewrite of the whole look, and its QA would be headed only. The WebGL2 path holds its budgets (bench:render median about 4 ms CPU at 2560x1440). Revisit only if a GPU bound shows up.
 - BACKLOG 5a (rigged clips, P1 but conditional: "only if close-zoom quality needs it"). Cut 10/09/2026: at the closest camera zoom with the retro pass (pixelScale 3) units are about 60 to 90 screen px tall and the procedural poses (walk, work, attack, shoot, cast, pray, panic, idle) read clearly in the combat anim_gallery shot, so the condition is not met; Meshy rigging would also spend asset budget for little visible gain. Revisit if a close-up or portrait camera ships (ADR-012 fallback stays valid: same instanceAnim attribute).
 
