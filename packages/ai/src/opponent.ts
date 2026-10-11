@@ -38,6 +38,12 @@ export interface OpponentState {
   focus?: [string, number];
   /** S4: level bot stone memory: [tag, held (1/0), losses, skip until tick] (absent in older saves) */
   stones?: [string, number, number, number][];
+  /** S4: [vehicle id, worship site tag] of vehicles carrying worshippers across water (absent in older saves) */
+  trips?: [number, string][];
+  /** S4: [balloon id, x, y] of the point a loaded balloon carries its group toward (absent in older saves) */
+  flights?: [number, number, number][];
+  /** S4: balloons someone else commands (a level script or a player), which the AI leaves alone (absent in older saves) */
+  foreign?: number[];
 }
 
 /**
@@ -85,6 +91,8 @@ export interface OpponentStats {
   /** BACKLOG 10: loaded boats sent to unload on an enemy shore */
   ferries: number;
   scoutedAtTick: number;
+  /** S4: loaded balloons sent to unload across water (absent in older saves) */
+  flights?: number;
   /** BACKLOG 67: waves with a member alive within shared.threatRadius of their target within WAVE_WATCH_MINUTES (effects, not intents; absent in older saves) */
   wavesArrived?: number;
 }
@@ -113,6 +121,9 @@ interface Census {
   /** BACKLOG 10: own boats, and whether a Boathouse stands or is planned */
   boats: number[];
   boathouse: boolean;
+  /** S4: own balloons, and whether a Skyloft stands or is planned */
+  balloons: number[];
+  skyloft: boolean;
 }
 
 type Action = { id: string; score: (c: Census) => number; act: (c: Census, out: Command[]) => void };
@@ -153,6 +164,17 @@ export class OpponentAI implements Controller {
   private watched: { ids: number[]; x: number; y: number; until: number }[] = [];
   /** BACKLOG 98: boat id to the contested site its wave was boarded for (sail() lands it there, not at a Hearth) */
   private goals = new Map<number, [number, number]>();
+  /** S4: vehicle id to the worship site its riders were boarded for (counted as worshippers on the way) */
+  private trips = new Map<number, string>();
+  /** S4: balloon id to the point its group was boarded for (fly() drops it on that landmass) */
+  private flights = new Map<number, [number, number]>();
+  /** S4: balloons seen busy under orders the AI never gave (a level script or a player): never used */
+  private foreign = new Set<number>();
+  /** S4: vehicles boarded this decision (a worship trip and a wave never share one) */
+  private boardedNow = new Set<number>();
+  /** S4: shared-sea answer cache, keyed by terrain version and the two landmasses (pure, not saved) */
+  private seaKey = "";
+  private seaOk = false;
   /** S4: per capturable stone (level bot only): held at the last decision, times lost, skipped until this tick */
   private stones = new Map<string, { held: boolean; losses: number; until: number }>();
   /** set once a wave found no walkable route: bridge spells join the prefs even if the personality lacks them */
@@ -261,7 +283,7 @@ export class OpponentAI implements Controller {
     if (!t) return;
     const E = c.w.ents;
     if (t.land !== t.home) {
-      this.ferry(c, out, t.x, t.y, t.home, true);
+      this.cross(c, out, t.x, t.y, t.home, true);
       return;
     }
     out.push(this.cmd(c.w, "move", { units: c.idle.map((i) => E.idOf(i)), to: [t.x, t.y], attack: true }));
@@ -304,7 +326,7 @@ export class OpponentAI implements Controller {
   /** Save game memory: scouted tribes, the scout and the stats (decisions also gate the one-time setup). */
   saveState(): OpponentState {
     const st = this.stats;
-    return { known: [...this.known], scout: this.scout, stats: { ...st, actions: { ...st.actions }, casts: { ...st.casts } }, ferried: [...this.ferried], goals: [...this.goals].map(([b, g]) => [b, g[0], g[1]]), waves: this.watched.map((v) => ({ ...v, ids: [...v.ids] })), ...(this.stones.size ? { stones: [...this.stones].map(([t, s]) => [t, s.held ? 1 : 0, s.losses, s.until] as [string, number, number, number]) } : {}), ...(this.focus ? { focus: [this.focus, this.focusUntil] as [string, number] } : {}) };
+    return { known: [...this.known], scout: this.scout, stats: { ...st, actions: { ...st.actions }, casts: { ...st.casts } }, ferried: [...this.ferried], goals: [...this.goals].map(([b, g]) => [b, g[0], g[1]]), waves: this.watched.map((v) => ({ ...v, ids: [...v.ids] })), ...(this.stones.size ? { stones: [...this.stones].map(([t, s]) => [t, s.held ? 1 : 0, s.losses, s.until] as [string, number, number, number]) } : {}), ...(this.trips.size ? { trips: [...this.trips] } : {}), ...(this.flights.size ? { flights: [...this.flights].map(([b, g]) => [b, g[0], g[1]] as [number, number, number]) } : {}), ...(this.foreign.size ? { foreign: [...this.foreign] } : {}), ...(this.focus ? { focus: [this.focus, this.focusUntil] as [string, number] } : {}) };
   }
 
   loadState(state: unknown): void {
@@ -315,6 +337,9 @@ export class OpponentAI implements Controller {
     this.goals = new Map((o.goals ?? []).map(([b, x, y]) => [b, [x, y]]));
     this.watched = (o.waves ?? []).map((v) => ({ ...v, ids: [...v.ids] }));
     this.stones = new Map((o.stones ?? []).map(([t, h, l, u]) => [t, { held: h === 1, losses: l, until: u }]));
+    this.trips = new Map(o.trips ?? []);
+    this.flights = new Map((o.flights ?? []).map(([b, x, y]) => [b, [x, y]]));
+    this.foreign = new Set(o.foreign ?? []);
     this.focus = o.focus?.[0] ?? null;
     this.focusUntil = o.focus?.[1] ?? -1;
     Object.assign(this.stats, { ...o.stats, actions: { ...o.stats.actions }, casts: { ...o.stats.casts } });
@@ -356,8 +381,11 @@ export class OpponentAI implements Controller {
     const c = this.census(w);
     if (!c) return [];
     const out = this.eco.decide(w);
+    this.boardedNow.clear();
+    this.tidy(c);
     this.landed(c, out);
     this.sail(c, out);
+    this.fly(c, out);
     // BACKLOG 6: the difficulty's resource multiplier goes through the sim as a command (hashed, replayable)
     if (tr.eco.incomeMult !== this.resourceMult) out.push({ tick: w.tick, tribe: this.tribe, type: "handicap", args: { mult: this.resourceMult } });
     this.stats.decisions++;
@@ -467,7 +495,7 @@ export class OpponentAI implements Controller {
     const units = w.cfg.pack.units.units;
     const bdefs = w.cfg.pack.buildings.buildings;
     const n = w.terrain.size;
-    const c: Census = { w, h, si: E.index(tr.shaper), minute: w.playTick / (60 * w.cfg.tickHz), pop: w.economy.followers(this.tribe), settlers: [], troops: new Map(), idle: [], shades: [], lodges: new Map(), towers: [], open: 0, threats: [], enemies: [], boats: [], boathouse: false };
+    const c: Census = { w, h, si: E.index(tr.shaper), minute: w.playTick / (60 * w.cfg.tickHz), pop: w.economy.followers(this.tribe), settlers: [], troops: new Map(), idle: [], shades: [], lodges: new Map(), towers: [], open: 0, threats: [], enemies: [], boats: [], boathouse: false, balloons: [], skyloft: false };
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i]) continue;
       if (E.tribe[i] === this.tribe) {
@@ -477,9 +505,11 @@ export class OpponentAI implements Controller {
           if (bdefs[E.type[i]].trains) c.lodges.set(id, [...(c.lodges.get(id) ?? []), i]);
           if (w.combat.garrisonOf(E.type[i]) > 0) c.towers.push(i);
           if (bdefs[E.type[i]].makes?.unit === "boat") c.boathouse = true;
+          if (bdefs[E.type[i]].makes?.unit === "balloon") c.skyloft = true;
         } else if (E.cat[i] === CAT.unit) {
           const def = units[E.type[i]];
           if (w.units.nav[E.type[i]] === NAV.water) c.boats.push(i);
+          else if (w.units.nav[E.type[i]] === NAV.air) c.balloons.push(i);
           if (E.type[i] === w.economy.typeSettler) c.settlers.push(i);
           else if (w.combat.isSaboteur(E.type[i])) c.shades.push(i);
           else if (def.trainedAt) {
@@ -616,15 +646,17 @@ export class OpponentAI implements Controller {
     if (ids.length) out.push(this.cmd(c.w, "move", { units: ids, to: [E.x[t], E.y[t]], attack: true }));
   }
 
-  /** nearest reachable worship site still giving, with how many own units already pray there; a site held by
-   * seen enemy troops (level guardians) only when no free site is left, flagged so troops clear it first */
-  private worshipTarget(c: Census): { tag: string; si: number; need: number; have: number; guarded: boolean } | null {
+  /** nearest reachable worship site still giving, with how many own units already pray there (or ride to it);
+   * a site held by seen enemy troops (level guardians) only when no free site is left, flagged so troops clear
+   * it first; S4: a free site on another landmass only when no home site is left and a boat, a balloon or
+   * settlers already there can serve it (`over`, with its landmass) */
+  private worshipTarget(c: Census): { tag: string; si: number; need: number; have: number; guarded: boolean; over: boolean; land: number } | null {
     const w = c.w;
     const E = w.ents;
     const n = w.terrain.size;
     const home = this.comp(w, E.x[c.h], E.y[c.h]);
     const kinds = w.cfg.pack.buildings.worship.kinds ?? [];
-    let best: { tag: string; si: number; need: number; have: number; guarded: boolean } | null = null;
+    let best: { tag: string; si: number; need: number; have: number; guarded: boolean; over: boolean; land: number } | null = null;
     let bd = Infinity;
     for (const s of w.worship.sites) {
       const si = E.index(s.ent);
@@ -634,18 +666,30 @@ export class OpponentAI implements Controller {
       if (kinds[s.kind]?.capturable && s.lastBy === this.tribe) continue;
       // S4: a stone the level bot keeps losing is left alone for a while
       if (kinds[s.kind]?.capturable && (this.stones.get(s.tag)?.until ?? -1) > w.tick) continue;
-      if (this.comp(w, E.x[si], E.y[si]) !== home) continue;
+      const land = this.comp(w, E.x[si], E.y[si]);
+      const over = land !== home;
+      // S4: a site across water needs a way over (troops clear guardians only on the home landmass for now)
+      if (over && (land < 0 || !this.overWater(c))) continue;
       // stretch 3: never walk worshippers into a site held by seen enemy troops (level guardians)
       const guarded = this.guarded(w, si);
+      if (over && (guarded || this.nearEnemyHearth(c, E.x[si], E.y[si]))) continue;
       let have = 0;
-      for (const i of c.settlers) if ((E.task[i] === TASK.toWorship || E.task[i] === TASK.worship) && E.index(E.target[i]) === si) have++;
+      for (const i of c.settlers) {
+        if ((E.task[i] === TASK.toWorship || E.task[i] === TASK.worship) && E.index(E.target[i]) === si) have++;
+        else if (this.trips.size) {
+          // S4: settlers boarding or riding a vehicle sent to this site are on their way
+          const v = E.task[i] === TASK.toBoard ? E.target[i] : E.inside[i] >= 0 ? E.idOf(E.inside[i]) : NO_ENTITY;
+          if (v !== NO_ENTITY && this.trips.get(v) === s.tag) have++;
+        }
+      }
       if (have >= s.need) continue;
       const dx = wrapDelta(E.x[si] - E.x[c.h], n);
       const dy = wrapDelta(E.y[si] - E.y[c.h], n);
-      const d = dx * dx + dy * dy + (guarded ? 1e9 : 0);
+      // any home site, even a guarded one, beats every site across the water
+      const d = dx * dx + dy * dy + (guarded ? 1e9 : 0) + (over ? 4e9 : 0);
       if (d < bd) {
         bd = d;
-        best = { tag: s.tag, si, need: s.need, have, guarded };
+        best = { tag: s.tag, si, need: s.need, have, guarded, over, land };
       }
     }
     return best;
@@ -813,7 +857,36 @@ export class OpponentAI implements Controller {
     const t = this.worshipTarget(c);
     if (t?.guarded) return c.idle.length >= 3 ? 0.75 : 0;
     // keep a working economy at home
-    return t && c.settlers.length >= t.need - t.have + (this.sh.worshipKeepSettlers ?? 4) ? 0.75 : 0;
+    return t && c.settlers.length >= t.need - t.have + (this.sh.worshipKeepSettlers ?? 4) ? (t.over ? (this.sh.worshipOverWater ?? 0.7) : 0.75) : 0;
+  }
+
+  /** S4: can worshippers reach another landmass: only with a vehicle already at hand (a boat, a balloon of our
+   * own, or a Skyloft that makes them). The tribe never raises a Boathouse or Skyloft just to pray, so tribes
+   * without vehicles play as before (shared.worshipOverWater 0 turns it off) */
+  private overWater(c: Census): boolean {
+    if ((this.sh.worshipOverWater ?? 0.7) <= 0) return false;
+    const E = c.w.ents;
+    return c.boats.length > 0 || c.skyloft || c.balloons.some((b) => !this.foreign.has(E.idOf(b)));
+  }
+
+  /** S4: an enemy Hearth stands within shared.worshipOverWaterClear cells: no unarmed landing there */
+  private nearEnemyHearth(c: Census, x: number, y: number): boolean {
+    const w = c.w;
+    const E = w.ents;
+    const n = w.terrain.size;
+    const r = this.sh.worshipOverWaterClear ?? 30;
+    for (const [, eh] of c.enemies) {
+      const dx = wrapDelta(E.x[eh] - x, n);
+      const dy = wrapDelta(E.y[eh] - y, n);
+      if (dx * dx + dy * dy <= r * r) return true;
+    }
+    return false;
+  }
+
+  /** a building this tribe may raise now (known, not locked, stone in reach when it needs some) */
+  private canMake(c: Census, id: string): boolean {
+    const b = c.w.cfg.buildingIndex.get(id);
+    return b !== undefined && !c.w.economy.buildingLock(this.tribe, b) && this.supplied(c, id);
   }
 
   private worship(c: Census, out: Command[]): void {
@@ -828,6 +901,10 @@ export class OpponentAI implements Controller {
       if (c.idle.length >= 3) out.push(this.cmd(c.w, "move", { units: c.idle.map((i) => E.idOf(i)), to, attack: true }));
       return;
     }
+    if (t.over) {
+      this.worshipOver(c, out, t);
+      return;
+    }
     const free = c.settlers
       .filter((i) => E.task[i] !== TASK.toWorship && E.task[i] !== TASK.worship && E.inside[i] < 0)
       .map((i) => {
@@ -839,6 +916,42 @@ export class OpponentAI implements Controller {
       .slice(0, t.need - t.have)
       .map(([, i]) => E.idOf(i));
     if (free.length) out.push(this.cmd(c.w, "worship", { units: free, site: t.tag }));
+  }
+
+  /**
+   * S4: a site on another landmass. Free settlers already standing there pray; otherwise the ones still needed
+   * (nearest the site first) board a boat whose goal is the site, so sail() lands them on the shore facing it,
+   * or, with no boat route, a balloon that fly() drops on that landmass.
+   */
+  private worshipOver(c: Census, out: Command[], t: { tag: string; si: number; need: number; have: number; land: number }): void {
+    const w = c.w;
+    const E = w.ents;
+    const n = w.terrain.size;
+    const sx = E.x[t.si];
+    const sy = E.y[t.si];
+    const want = t.need - t.have;
+    const free = (land: number) =>
+      c.settlers
+        .filter((i) => E.task[i] !== TASK.toWorship && E.task[i] !== TASK.worship && E.task[i] !== TASK.toBoard && E.inside[i] < 0 && this.comp(w, E.x[i], E.y[i]) === land)
+        .map((i) => {
+          const dx = wrapDelta(E.x[i] - sx, n);
+          const dy = wrapDelta(E.y[i] - sy, n);
+          return [dx * dx + dy * dy, i] as const;
+        })
+        .sort((a, b) => a[0] - b[0] || a[1] - b[1])
+        .slice(0, want)
+        .map(([, i]) => i);
+    const there = free(t.land);
+    if (there.length) {
+      out.push(this.cmd(w, "worship", { units: there.map((i) => E.idOf(i)), site: t.tag }));
+      return;
+    }
+    const home = this.comp(w, E.x[c.h], E.y[c.h]);
+    const group = free(home);
+    if (!group.length) return;
+    const via = this.crossing(c, sx, sy, t.land, home);
+    if (via === "boat") this.ferry(c, out, sx, sy, home, true, { units: group, min: want, site: t.tag });
+    else if (via === "balloon") this.airlift(c, out, sx, sy, group, want, t.tag);
   }
 
   private scoutScore(c: Census): number {
@@ -1127,7 +1240,7 @@ export class OpponentAI implements Controller {
     const target: [number, number] | undefined = goal >= 0 ? [E.tribe[goal], goal] : ranked.find(([, eh]) => this.comp(w, E.x[eh], E.y[eh]) === home);
     if (!target) {
       if (E.cat[ranked[0][1]] === CAT.unit) this.approach(c, out, ranked[0][1], home);
-      this.ferry(c, out, E.x[ranked[0][1]], E.y[ranked[0][1]], home, false);
+      this.cross(c, out, E.x[ranked[0][1]], E.y[ranked[0][1]], home, false);
       this.bridge(c, out, ranked[0][1]);
       return;
     }
@@ -1174,10 +1287,173 @@ export class OpponentAI implements Controller {
     return best;
   }
 
+  /** S4: a wave crossing water: by boat as before, unless no boat route exists and a balloon can fly it over */
+  private cross(c: Census, out: Command[], tx: number, ty: number, home: number, toSite: boolean): void {
+    const w = c.w;
+    const E = w.ents;
+    const land = this.comp(w, tx, ty);
+    if (land >= 0 && this.crossing(c, tx, ty, land, home) === "balloon") {
+      this.airlift(c, out, tx, ty, c.idle.filter((i) => this.comp(w, E.x[i], E.y[i]) === home), this.waveSize(), null);
+      return;
+    }
+    this.ferry(c, out, tx, ty, home, toSite);
+  }
+
+  /**
+   * S4: how a group on landmass `home` reaches (tx, ty) on landmass `land`: "boat" when a boat docked at (or able
+   * to sail to) our shore can reach the shore there, or, with no boat yet, a Boathouse stands or may be built and
+   * a sea touches both landmasses; else "balloon" when we fly one or may build a Skyloft; else null.
+   */
+  private crossing(c: Census, tx: number, ty: number, land: number, home: number): "boat" | "balloon" | null {
+    const w = c.w;
+    const E = w.ents;
+    if (c.boats.length) {
+      for (const b of c.boats) if (this.shore(c, tx, ty, land, b) && (this.docked(c, b, home) || this.shore(c, E.x[c.h], E.y[c.h], home, b))) return "boat";
+    } else if ((c.boathouse || this.canMake(c, "boathouse")) && this.seaBetween(c, home, land)) return "boat";
+    if (c.balloons.length || c.skyloft || this.canMake(c, "skyloft")) return "balloon";
+    return null;
+  }
+
+  /** boat b lies within boarding reach of landmass `home` */
+  private docked(c: Census, b: number, home: number): boolean {
+    const w = c.w;
+    const E = w.ents;
+    const n = w.terrain.size;
+    const pf = w.units.pf;
+    const dock = pf.nearestWalkable((((Math.round(E.x[b]) % n) + n) % n) + (((Math.round(E.y[b]) % n) + n) % n) * n, Math.ceil(w.vehicles.boardRadiusOf(b)));
+    return dock >= 0 && pf.comp[dock] === home;
+  }
+
+  /** S4: does one sea touch both landmasses (land within 2 cells of its water)? Cached per terrain version. */
+  private seaBetween(c: Census, a: number, b: number): boolean {
+    const w = c.w;
+    const key = `${w.terrain.version}:${a}:${b}`;
+    if (key === this.seaKey) return this.seaOk;
+    const n = w.terrain.size;
+    const land = w.units.pf;
+    const sea = w.units.pfs[NAV.water];
+    sea.refresh();
+    const ta = new Set<number>();
+    const tb = new Set<number>();
+    for (let v = 0; v < n * n; v++) {
+      const s = sea.comp[v];
+      if (!s) continue;
+      const x = v % n;
+      const y = (v - x) / n;
+      for (let dy = -2; dy <= 2; dy++) {
+        for (let dx = -2; dx <= 2; dx++) {
+          const l = land.comp[((x + dx + n) % n) + ((y + dy + n) % n) * n];
+          if (l === a) ta.add(s);
+          else if (l === b) tb.add(s);
+        }
+      }
+    }
+    let ok = false;
+    for (const s of ta) if (tb.has(s)) ok = true;
+    this.seaKey = key;
+    this.seaOk = ok;
+    return ok;
+  }
+
+  /**
+   * S4: balloons carry a group over anything. Without one the tribe raises a Skyloft once it may (not while it
+   * flies balloons it leaves alone); an empty idle balloon of our own takes up to its capacity once at least
+   * min(capacity, min) walkers wait; fly() then drops them on the target's landmass.
+   */
+  private airlift(c: Census, out: Command[], tx: number, ty: number, walkers: number[], min: number, site: string | null): void {
+    const w = c.w;
+    const E = w.ents;
+    if (!c.balloons.length) {
+      if (!c.skyloft && this.canMake(c, "skyloft")) this.build(c, out, "skyloft");
+      return;
+    }
+    for (const b of c.balloons) {
+      const id = E.idOf(b);
+      if (this.foreign.has(id) || this.boardedNow.has(id) || E.order[b] !== 0 || E.task[b] === TASK.unload || E.occupants[b] > 0) continue;
+      if (this.boarders(c, id) > 0) continue;
+      const seats = w.vehicles.capacityOf(b);
+      if (walkers.length < Math.min(seats, min)) continue;
+      this.ferried.set(id, w.tick);
+      this.flights.set(id, [tx, ty]);
+      if (site) this.trips.set(id, site);
+      else this.trips.delete(id);
+      this.boardedNow.add(id);
+      out.push(this.cmd(w, "board", { units: walkers.splice(0, seats).map((i) => E.idOf(i)), vehicle: id }));
+    }
+  }
+
+  /** S4: every decision, a loaded balloon of ours whose walkers have all boarded flies to the nearest walkable
+   * cell of its target's landmass toward home and unloads (landed() and worship take it from there) */
+  private fly(c: Census, out: Command[]): void {
+    if (!this.flights.size) return;
+    const w = c.w;
+    const E = w.ents;
+    for (const b of c.balloons) {
+      const id = E.idOf(b);
+      const goal = this.flights.get(id);
+      if (!goal || E.order[b] !== 0 || E.task[b] === TASK.unload || this.boarders(c, id) > 0) continue;
+      this.flights.delete(id);
+      // every boarder gave up: nothing to carry
+      if (E.occupants[b] === 0) continue;
+      out.push(this.cmd(w, "unload", { units: [id], to: this.landing(c, goal[0], goal[1], this.comp(w, goal[0], goal[1])) }));
+      this.stats.flights = (this.stats.flights ?? 0) + 1;
+    }
+  }
+
+  /** S4: where a balloon drops a group bound for (tx, ty): walk from there toward the Hearth while still on its
+   * landmass and keep one step inland of the last cell (the target itself when its landmass is unknown) */
+  private landing(c: Census, tx: number, ty: number, land: number): [number, number] {
+    const w = c.w;
+    const E = w.ents;
+    const n = w.terrain.size;
+    const dx = wrapDelta(E.x[c.h] - tx, n);
+    const dy = wrapDelta(E.y[c.h] - ty, n);
+    const d = Math.sqrt(dx * dx + dy * dy);
+    let px = tx;
+    let py = ty;
+    let lx = tx;
+    let ly = ty;
+    for (let k = 1; land >= 0 && k < d; k++) {
+      const x = tx + (dx * k) / d;
+      const y = ty + (dy * k) / d;
+      if (this.comp(w, x, y, 1) !== land) break;
+      px = lx;
+      py = ly;
+      lx = x;
+      ly = y;
+    }
+    return [((px % n) + n) % n, ((py % n) + n) % n];
+  }
+
+  /** own walkers on their way to board vehicle `id` */
+  private boarders(c: Census, id: number): number {
+    const E = c.w.ents;
+    let k = 0;
+    for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.task[i] === TASK.toBoard && E.target[i] === id) k++;
+    return k;
+  }
+
+  /** S4: forget trips and flights of lost or emptied vehicles, and mark balloons busy under orders we never gave */
+  private tidy(c: Census): void {
+    const w = c.w;
+    const E = w.ents;
+    for (const [id] of [...this.trips]) {
+      const v = E.index(id);
+      if (v < 0 || (E.occupants[v] === 0 && E.order[v] === 0 && E.task[v] !== TASK.unload && this.boarders(c, id) === 0)) this.trips.delete(id);
+    }
+    for (const [id] of [...this.flights]) if (E.index(id) < 0) this.flights.delete(id);
+    for (const b of c.balloons) {
+      const id = E.idOf(b);
+      if (this.foreign.has(id) || this.ferried.has(id)) continue;
+      if (E.occupants[b] > 0 || E.order[b] !== 0 || E.task[b] === TASK.unload || this.boarders(c, id) > 0) this.foreign.add(id);
+    }
+  }
+
   /** BACKLOG 10: no land route to the enemy, so boats carry the wave. Without a boat the tribe raises a
    * Boathouse once it may; an empty idle boat takes the idle troops on the home landmass; a loaded boat
-   * whose walkers have all boarded sails to the enemy shore and unloads (landed() sends them on). */
-  private ferry(c: Census, out: Command[], tx: number, ty: number, home: number, toSite: boolean): void {
+   * whose walkers have all boarded sails to the enemy shore and unloads (landed() sends them on).
+   * S4: with a `group` (worshippers) it carries those walkers instead, once min(seats, group.min) wait. */
+  private ferry(c: Census, out: Command[], tx: number, ty: number, home: number, toSite: boolean, group?: { units: number[]; min: number; site: string }): void {
     const w = c.w;
     const E = w.ents;
     if (!c.boats.length) {
@@ -1185,16 +1461,18 @@ export class OpponentAI implements Controller {
       if (!c.boathouse && bh !== undefined && !w.economy.buildingLock(this.tribe, bh)) this.build(c, out, "boathouse");
       return;
     }
-    const walkers = c.idle.filter((i) => this.comp(w, E.x[i], E.y[i]) === home);
+    const walkers = group ? group.units : c.idle.filter((i) => this.comp(w, E.x[i], E.y[i]) === home);
     for (const b of c.boats) {
       if (E.order[b] !== 0 || E.task[b] === TASK.unload) continue;
       const id = E.idOf(b);
+      // S4: a worship trip and a wave never share a boat within one decision
+      if (this.boardedNow.has(id) && (group || this.trips.has(id))) continue;
       let boarding = 0;
       for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.task[i] === TASK.toBoard && E.target[i] === id) boarding++;
       if (boarding > 0) continue;
       if (E.occupants[b] > 0) continue;
       const seats = w.vehicles.capacityOf(b);
-      if (walkers.length < Math.min(seats, this.waveSize())) continue;
+      if (walkers.length < Math.min(seats, group ? group.min : this.waveSize())) continue;
       // board only a boat docked at our shore (ai soak seed 1009: a boat on another sea drew walkers
       // that could never reach it, every decision); otherwise sail it to our shore when that sea is its own
       const pf = w.units.pf;
@@ -1214,6 +1492,9 @@ export class OpponentAI implements Controller {
       // BACKLOG 98: a wave boarded for a contested site sails there; one boarded to attack forgets an old site
       if (toSite) this.goals.set(id, [tx, ty]);
       else this.goals.delete(id);
+      if (group) this.trips.set(id, group.site);
+      else this.trips.delete(id);
+      this.boardedNow.add(id);
       out.push(this.cmd(w, "board", { units: walkers.splice(0, seats).map((i) => E.idOf(i)), vehicle: id }));
     }
   }

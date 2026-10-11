@@ -270,6 +270,15 @@
         "stoneGiveUpMinutes": {
           "type": "number",
           "minimum": 0
+        },
+        "worshipOverWater": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "worshipOverWaterClear": {
+          "type": "number",
+          "minimum": 0
         }
       },
       "required": [

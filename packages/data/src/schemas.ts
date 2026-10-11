@@ -1080,6 +1080,10 @@ export const AiSharedSchema = z.strictObject({
   /** S4: the level bot (tribe 0) leaves an enemy-held stone alone for stoneGiveUpMinutes after losing it this many times */
   stoneGiveUpLosses: z.number().int().min(1).optional(),
   stoneGiveUpMinutes: z.number().min(0).optional(),
+  /** S4: worship score for a free site on another landmass (no home site left), reached by a boat, balloon or Skyloft already at hand (0 never) */
+  worshipOverWater: z.number().min(0).max(1).optional(),
+  /** S4: worshippers never land for a site across water within this many cells of an enemy Hearth */
+  worshipOverWaterClear: z.number().min(0).optional(),
 });
 export type AiShared = z.infer<typeof AiSharedSchema>;
 export const AI_SHARED_DEFAULTS: AiShared = {
@@ -1100,6 +1104,8 @@ export const AI_SHARED_DEFAULTS: AiShared = {
   worshipUnderThreat: 0.4,
   stoneGiveUpLosses: 2,
   stoneGiveUpMinutes: 3,
+  worshipOverWater: 0.7,
+  worshipOverWaterClear: 30,
 };
 export const AiFileSchema = z.strictObject({
   ...comment,

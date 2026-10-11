@@ -1,0 +1,32 @@
+{
+  "id": "vehicle_ai_ferries_worshippers",
+  "description": "S4: an opponent whose only worship site, a shrine, stands on another island boards four settlers onto its boat, lands them on the shore facing the shrine (32 cells from the rival Hearth, outside worshipOverWaterClear) and prays there until the shrine is spent; nobody drowns.",
+  "tags": ["vehicles", "ai", "fast"],
+  "seed": 109,
+  "map": {
+    "generator": "flat",
+    "size": 64,
+    "tribes": 2,
+    "paint": [
+      { "shape": "rect", "at": [32, 32], "size": [12, 64], "aboveSea": -30 },
+      { "shape": "rect", "at": [0, 32], "size": [12, 64], "aboveSea": -30 }
+    ]
+  },
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [52, 8] },
+    { "spawn": "shaper", "tribe": 0, "at": [54, 10] },
+    { "spawn": "hearth", "tribe": 1, "at": [12, 32] },
+    { "spawn": "shaper", "tribe": 1, "at": [14, 36] },
+    { "spawn": "settler", "tribe": 1, "near": [16, 40], "count": 12 },
+    { "spawn": "tree", "near": [10, 46], "count": 8, "spacing": 1.2 },
+    { "spawn": "boat", "tribe": 1, "at": [28, 32] },
+    { "spawn": "shrine", "at": [48, 40], "site": { "tag": "isle", "rewards": [{ "type": "charges", "spell": "bolt", "n": 1 }] } }
+  ],
+  "bots": [{ "type": "opponent", "tribe": 1, "personality": "turtle", "difficulty": "normal" }],
+  "commands": [{ "tick": 0, "tribe": 0, "type": "setPriorities", "args": { "build": 0, "upgrade": 0, "breed": 0 } }],
+  "runTicks": 2400,
+  "assert": [
+    { "at": 2400, "expr": "events.count('boarded') >= 4 && events.count('unloaded') >= 1 && events.count('drowned') == 0" },
+    { "at": 2400, "expr": "site('isle').by == 1 && site('isle').usesLeft == 0 && invariants() == 0" }
+  ]
+}

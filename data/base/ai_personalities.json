@@ -18,7 +18,9 @@
     "worshipKeepSettlers": 4,
     "worshipUnderThreat": 0.4,
     "stoneGiveUpLosses": 2,
-    "stoneGiveUpMinutes": 3
+    "stoneGiveUpMinutes": 3,
+    "worshipOverWater": 0.7,
+    "worshipOverWaterClear": 30
   },
   "personalities": [
     {

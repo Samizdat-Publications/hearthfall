@@ -644,4 +644,101 @@ describe("OpponentAI (M7)", () => {
     expect(normal.ai.stats.actions.defend ?? 0).toBe(0);
     expect(run("brutal").ai.stats.actions.defend ?? 0).toBeGreaterThan(0);
   });
+
+  // S4: a level world (64 cells, sea at x 26 to 38 and around x 0) whose only worship site, a shrine, stands on
+  // the island east of the strait; the bot plays tribe 0 with 12 settlers on the home island
+  const islandLevel = (extra: LevelDef["setup"], buildings?: string[]) => {
+    const p = basePack();
+    const def: LevelDef = {
+      id: "isle_test", name: "Isle test", order: 99, description: "test", seed: 5,
+      map: { generator: "flat", size: 64, landAboveSea: 20, paint: [{ shape: "rect", at: [32, 32], size: [12, 64], aboveSea: -30 }, { shape: "rect", at: [0, 32], size: [12, 64], aboveSea: -30 }] },
+      tribes: [{}], spells: [], ...(buildings ? { buildings } : {}),
+      setup: [
+        { spawn: "hearth", tribe: 0, at: [16, 32] }, { spawn: "shaper", tribe: 0, at: [18, 34] },
+        { spawn: "settler", tribe: 0, near: [14, 38], count: 12 },
+        { spawn: "shrine", at: [48, 32], site: { tag: "isle", rewards: [] } },
+        ...extra,
+      ],
+      objectives: [{ type: "worship", site: "isle" }],
+    };
+    const w = createLevelWorld({ def }, p.files, p.hash);
+    w.step([]);
+    return w;
+  };
+  const comp = (w: World, x: number, y: number) => w.units.pf.comp[w.units.pf.nearestWalkable(w.terrain.idx(Math.round(x), Math.round(y)), 3)];
+  const calm: Personality = { ...bold, firstAttackMinute: 99, spellPrefs: [] };
+
+  it("S4: with no home site left the AI ferries worshippers by boat to a site on another island and they pray there", () => {
+    const w = islandLevel([{ spawn: "boat", tribe: 0, at: [30, 32] }]);
+    const E = w.ents;
+    const si = E.index(w.worship.find("isle")!.ent);
+    expect(comp(w, 16, 32)).not.toBe(comp(w, E.x[si], E.y[si]));
+    const ai = new OpponentAI({ tribe: 0, personality: calm, difficulty: "hard" });
+    w.controllers.push(ai);
+    let saved: ReturnType<OpponentAI["saveState"]> | null = null;
+    let done = false;
+    for (let t = 0; t < 4000 && !done; t++) {
+      w.step([]);
+      if (!saved && ai.saveState().trips?.length) saved = ai.saveState();
+      done = w.events.some((e) => e.type === "worshipComplete" && e.site === "isle");
+    }
+    expect(w.eventCounts.get("boarded") ?? 0).toBeGreaterThanOrEqual(4);
+    expect(ai.stats.ferries).toBeGreaterThan(0);
+    expect(done).toBe(true);
+    expect(w.eventCounts.get("drowned") ?? 0).toBe(0);
+    expect(w.invariants()).toEqual([]);
+    // the trip memory (worshippers on the way) survives a save
+    expect(saved?.trips?.[0]?.[1]).toBe("isle");
+    const copy = new OpponentAI({ tribe: 0, personality: calm, difficulty: "hard" });
+    copy.loadState(JSON.parse(JSON.stringify(saved)));
+    expect(copy.saveState()).toEqual(saved);
+  }, 60000);
+
+  it("S4: with no boat route the AI flies worshippers over by balloon, two at a time, but never raises a Skyloft just to pray", () => {
+    // no vehicle yet: a Skyloft could stand (18 followers, stone and wood in reach) but prayer alone never raises one
+    const bare = islandLevel([{ spawn: "rock", near: [10, 26], count: 2, spacing: 2 }, { spawn: "tree", near: [10, 44], count: 6, spacing: 1.2 }, { spawn: "settler", tribe: 0, near: [20, 26], count: 8 }], ["dwelling", "skyloft"]);
+    const plan = new OpponentAI({ tribe: 0, personality: calm, every: 1 }).decide(bare);
+    expect(plan.some((c) => c.type === "placePlan" && c.args.building === "skyloft")).toBe(false);
+    expect(plan.some((c) => c.type === "placePlan" && c.args.building === "boathouse")).toBe(false);
+    expect(plan.some((c) => c.type === "worship")).toBe(false);
+
+    const w = islandLevel([{ spawn: "balloon", tribe: 0, at: [20, 30] }], ["dwelling", "skyloft"]);
+    const ai = new OpponentAI({ tribe: 0, personality: calm, difficulty: "hard" });
+    w.controllers.push(ai);
+    const E = w.ents;
+    let most = 0;
+    let saved: ReturnType<OpponentAI["saveState"]> | null = null;
+    let done = false;
+    for (let t = 0; t < 8000 && !done; t++) {
+      w.step([]);
+      for (const ev of w.events) if (ev.type === "boarded") most = Math.max(most, E.occupants[E.index(ev.vehicle as number)]);
+      if (!saved && ai.saveState().flights?.length) saved = ai.saveState();
+      done = w.events.some((e) => e.type === "worshipComplete" && e.site === "isle");
+    }
+    expect(ai.stats.flights ?? 0).toBeGreaterThanOrEqual(2);
+    expect(most).toBe(2);
+    expect(done).toBe(true);
+    expect(w.eventCounts.get("drowned") ?? 0).toBe(0);
+    expect(w.invariants()).toEqual([]);
+    expect(saved?.flights?.length).toBe(1);
+    const copy = new OpponentAI({ tribe: 0, personality: calm, difficulty: "hard" });
+    copy.loadState(JSON.parse(JSON.stringify(saved)));
+    expect(copy.saveState()).toEqual(saved);
+  }, 60000);
+
+  it("S4: balloons someone else commands (a level script) are left alone", () => {
+    const w = islandLevel([{ spawn: "balloon", tribe: 0, at: [20, 30] }], ["dwelling", "skyloft"]);
+    const E = w.ents;
+    let b = -1;
+    for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.cat[i] === CAT.unit && w.vehicles.isVehicle(i)) b = i;
+    // the script sends the balloon off before the AI ever decides
+    w.step([{ tick: w.tick, tribe: 0, type: "move", args: { units: [E.idOf(b)], to: [24, 20] } }]);
+    const ai = new OpponentAI({ tribe: 0, personality: calm, every: 1 });
+    ai.decide(w);
+    for (let t = 0; t < 200; t++) w.step([]);
+    const out = ai.decide(w);
+    expect(out.some((c) => c.type === "board")).toBe(false);
+    expect(out.some((c) => c.type === "placePlan" && c.args.building === "skyloft")).toBe(false);
+    expect(ai.saveState().foreign).toEqual([E.idOf(b)]);
+  });
 });
