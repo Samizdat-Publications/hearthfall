@@ -284,6 +284,10 @@ export const BalanceSchema = z.strictObject({
       inputDelayTicks: z.number().int().min(1).max(20),
       hashEveryTicks: z.number().int().min(1),
       stallNoticeSeconds: pos,
+      /** L5-F: seconds the host waits for a dropped partner to rejoin (0: the AI takes over at once) */
+      rejoinWaitSeconds: z.number().min(0).optional(),
+      /** L5-F: rejoin attempts, one second apart, by a partner page that lost the relay */
+      reconnectTries: z.number().int().min(0).max(100).optional(),
     })
     .optional(),
   skirmishLey: z

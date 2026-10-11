@@ -11,11 +11,19 @@ export interface NetConfig {
   inputDelayTicks: number;
   hashEveryTicks: number;
   stallNoticeSeconds: number;
+  /** L5-F: how long the host waits for a dropped partner to rejoin before the AI takes their tribe */
+  rejoinWaitSeconds: number;
+  /** L5-F: how many times (one second apart) a dropped partner page tries to rejoin */
+  reconnectTries: number;
 }
 
-export const NET_DEFAULTS: NetConfig = { inputDelayTicks: 4, hashEveryTicks: 20, stallNoticeSeconds: 2 };
+export const NET_DEFAULTS: NetConfig = { inputDelayTicks: 4, hashEveryTicks: 20, stallNoticeSeconds: 2, rejoinWaitSeconds: 30, reconnectTries: 10 };
 
-export type NetState = "connecting" | "lobby" | "playing" | "closed";
+/** L5-F: snapshot text goes out in chunks well under the relay's 64 KB frame cap */
+export const SNAP_CHUNK = 32000;
+
+/** reconnecting: this page lost the relay mid-match and is rejoining; resyncing: rejoined, waiting for the host's snapshot */
+export type NetState = "connecting" | "lobby" | "playing" | "reconnecting" | "resyncing" | "closed";
 
 /** The relay URL next to the page (ws on http, wss on https). */
 export function relayUrl(loc: { protocol: string; host: string }): string {
@@ -60,14 +68,39 @@ export function parseStart(v: unknown): SkirmishParams | null {
   return p as SkirmishParams;
 }
 
+/** L5-F: what a page saves when a desync stops the match (the end screen offers it as a download) */
+export interface DesyncReport {
+  kind: "hearthfall-desync";
+  seat: number;
+  tick: number;
+  hashes: string[];
+  params: SkirmishParams | null;
+  /** the commands of the last ticks run, oldest first */
+  recent: Command[];
+}
+
+export function desyncReport(seat: number, d: { tick: number; hashes: string[] }, params: SkirmishParams | null, recent: readonly Command[]): DesyncReport {
+  return { kind: "hearthfall-desync", seat, tick: d.tick, hashes: [...d.hashes], params, recent: recent.map((c) => ({ ...c })) };
+}
+
+/** commands kept for a desync report */
+const RECENT = 400;
+
 export interface NetEvents {
   /** the lobby or match changed (the menus redraw) */
   changed(): void;
   /** the host pressed Start: build this world and play tribe `tribe` */
   started(params: SkirmishParams, tribe: number): void;
-  /** a seat left or the socket closed during a match */
+  /** a seat left or the socket closed during a match, and it is not coming back: the AI takes over */
   lost(why: "partnerLeft" | "closed"): void;
+  /** L5-F (host): a dropped seat is back; the encoded save of the world now, and its tick */
+  snapshot(): { text: string; tick: number };
+  /** L5-F (rejoining page): load this encoded save; its tick, or null when it cannot be loaded */
+  resume(text: string): number | null;
 }
+
+type Sock = SocketLike & { addEventListener(type: "open", fn: () => void): void };
+export type SocketFactory = () => Sock;
 
 export class NetPlay {
   state: NetState = "connecting";
@@ -76,47 +109,102 @@ export class NetPlay {
   params: SkirmishParams | null = null;
   /** seconds the match has been waiting on a partner's batch (the HUD shows it past stallNoticeSeconds) */
   stalled = 0;
-  readonly client: RelayClient;
+  /** L5-F (host): seats that dropped mid-match and may rejoin, and how long the first has been gone */
+  readonly away = new Set<number>();
+  awayFor = 0;
+  /** L5-F: rejoin attempts made since this page lost the relay */
+  tries = 0;
+  /** L5-F: resyncs this match went through (tests and the debug hook read it) */
+  resyncs = 0;
+  /** L5-F: the commands of the last ticks run (for a desync report) */
+  readonly recent: Command[] = [];
+  client: RelayClient;
   readonly cfg: NetConfig;
   private readonly ev: NetEvents;
+  private readonly reopen: SocketFactory | null;
   private role: "host" | "join" | null = null;
+  private opened = false;
+  private pendingCode = "";
+  /** this page's seat in the match (kept across a reconnect) */
+  private seat = -1;
+  private snap: { id: number; parts: (string | undefined)[]; got: number } | null = null;
+  private snapId = 0;
+  private retry: ReturnType<typeof setTimeout> | null = null;
+  /** seats that said they are leaving on purpose (no rejoin wait for them) */
+  private readonly byes = new Set<number>();
 
-  constructor(sock: SocketLike & { addEventListener(type: "open", fn: () => void): void }, cfg: NetConfig, ev: NetEvents) {
-    this.cfg = cfg;
+  constructor(sock: Sock, cfg: Partial<NetConfig>, ev: NetEvents, reopen: SocketFactory | null = null) {
+    this.cfg = { ...NET_DEFAULTS, ...cfg };
     this.ev = ev;
-    this.client = new RelayClient(sock, {
+    this.reopen = reopen;
+    this.client = this.wire(sock);
+  }
+
+  private wire(sock: Sock): RelayClient {
+    const client: RelayClient = new RelayClient(sock, {
       room: () => {
-        this.state = "lobby";
-        this.message = null;
+        if (this.client !== client) return;
+        if (this.state === "reconnecting") {
+          // back in the started match: wait for the host's snapshot
+          this.state = "resyncing";
+          this.message = null;
+        } else {
+          this.state = "lobby";
+          this.message = null;
+        }
         this.ev.changed();
       },
       joined: () => this.ev.changed(),
       start: (p) => this.begin(p),
-      left: () => {
-        if (this.state === "playing") this.ev.lost("partnerLeft");
+      left: (seat) => {
+        if (this.client !== client) return;
+        if (this.state === "playing") {
+          if (this.isHost && this.cfg.rejoinWaitSeconds > 0 && !this.byes.has(seat)) {
+            if (!this.away.size) this.awayFor = 0;
+            this.away.add(seat);
+          } else this.ev.lost("partnerLeft");
+        }
         this.ev.changed();
       },
+      back: (seat) => {
+        if (this.client !== client) return;
+        this.away.delete(seat);
+        if (this.state === "playing" && this.isHost) this.resync();
+        this.ev.changed();
+      },
+      ctl: (from, data) => {
+        if (this.client !== client) return;
+        if ((data as { k?: unknown } | null)?.k === "bye") this.byes.add(from);
+        else if (from === 0) this.onCtl(data);
+      },
       error: (why) => {
+        if (this.client !== client) return;
         this.message = why;
+        // a refused rejoin: drop this socket, the close handler tries again
+        if (this.state === "reconnecting") client.close();
         this.ev.changed();
       },
       closed: () => {
+        if (this.client !== client) return;
         const was = this.state;
+        const inMatch = was === "playing" || was === "reconnecting" || was === "resyncing";
+        if (inMatch && !this.isHost && this.reopen) return this.reconnect();
         this.state = "closed";
-        if (was === "playing") this.ev.lost("closed");
+        if (inMatch) this.ev.lost("closed");
         else if (!this.message) this.message = "The connection to the host closed.";
         this.ev.changed();
       },
     });
+    this.opened = false;
     sock.addEventListener("open", () => {
-      if (this.role === "host") this.client.host(2);
-      else if (this.role === "join" && this.pendingCode) this.client.join(this.pendingCode);
+      if (this.client !== client) return;
       this.opened = true;
+      if (this.state === "reconnecting") client.rejoin(this.pendingCode, this.seat);
+      else if (this.role === "host") client.host(2);
+      else if (this.role === "join" && this.pendingCode) client.join(this.pendingCode);
     });
+    return client;
   }
-
-  private opened = false;
-  private pendingCode = "";
 
   /** Open a room (the code shows when the relay answers). */
   host(): void {
@@ -131,7 +219,7 @@ export class NetPlay {
   }
 
   get isHost(): boolean {
-    return this.client.seat === 0;
+    return (this.seat >= 0 ? this.seat : this.client.seat) === 0;
   }
 
   /** The host starts once every seat is present. */
@@ -146,8 +234,36 @@ export class NetPlay {
   }
 
   leave(): void {
+    // a partner who quits on purpose says so, so the host does not wait for a rejoin
+    if (this.state === "playing" && !this.client.closed) this.client.sendCtl({ k: "bye" });
     this.state = "closed";
+    if (this.retry) clearTimeout(this.retry);
+    this.retry = null;
     this.client.close();
+  }
+
+  /** Run up to `max` agreed ticks (`run` steps the world); 0 while not playing. Keeps the recent commands. */
+  advance(max: number, run: (cmds: Command[]) => void, hashOf: () => string): number {
+    if (this.state !== "playing" || !this.ls) return 0;
+    return this.ls.advance(
+      max,
+      (cmds) => {
+        for (const c of cmds) this.recent.push(c);
+        if (this.recent.length > RECENT) this.recent.splice(0, this.recent.length - RECENT);
+        run(cmds);
+      },
+      hashOf,
+    );
+  }
+
+  /** Debug and e2e: drop this page's socket as if the network failed (a partner page then rejoins). */
+  dropSocket(): void {
+    this.client.close();
+  }
+
+  private makeLockstep(start: number): Lockstep {
+    const humans = this.params!.humans!;
+    return new Lockstep({ peers: humans.length, self: this.seat, delay: this.cfg.inputDelayTicks, hashEvery: this.cfg.hashEveryTicks, filter: seatFilter(humans), start }, this.client.transport());
   }
 
   private begin(raw: unknown): void {
@@ -157,12 +273,78 @@ export class NetPlay {
       this.ev.changed();
       return;
     }
-    const humans = p.humans!;
-    const seat = this.client.seat;
+    this.seat = this.client.seat;
+    this.pendingCode = this.client.code;
     this.params = p;
-    this.ls = new Lockstep({ peers: humans.length, self: seat, delay: this.cfg.inputDelayTicks, hashEvery: this.cfg.hashEveryTicks, filter: seatFilter(humans) }, this.client.transport());
+    this.ls = this.makeLockstep(0);
     this.state = "playing";
-    this.ev.started(p, humans[seat]);
+    this.ev.started(p, p.humans![this.seat]);
     this.ev.changed();
+  }
+
+  /** L5-F (host): send the others a snapshot of the world now and restart the lockstep at its tick. */
+  private resync(): void {
+    const old = this.ls;
+    const { text, tick } = this.ev.snapshot();
+    const id = ++this.snapId;
+    const n = Math.max(1, Math.ceil(text.length / SNAP_CHUNK));
+    for (let i = 0; i < n; i++) this.client.sendCtl({ k: "snap", id, i, n, tick, text: text.slice(i * SNAP_CHUNK, (i + 1) * SNAP_CHUNK) });
+    this.ls = this.makeLockstep(tick);
+    // orders this page sent for ticks not run yet go out again in the new stream
+    for (const c of old?.ownPending() ?? []) this.ls.local(c);
+    this.stalled = 0;
+    this.resyncs++;
+  }
+
+  /** L5-F (rejoining page): collect the host's snapshot chunks, load it, and restart the lockstep there. */
+  private onCtl(data: unknown): void {
+    const m = data as { k?: unknown; id?: unknown; i?: unknown; n?: unknown; text?: unknown } | null;
+    if (!m || m.k !== "snap" || typeof m.id !== "number" || typeof m.i !== "number" || typeof m.n !== "number" || typeof m.text !== "string") return;
+    if (!Number.isInteger(m.n) || !Number.isInteger(m.i) || m.n < 1 || m.n > 512 || m.i < 0 || m.i >= m.n) return;
+    if (this.state !== "resyncing" && this.state !== "playing") return;
+    if (!this.snap || this.snap.id !== m.id || this.snap.parts.length !== m.n) this.snap = { id: m.id, parts: new Array<string | undefined>(m.n), got: 0 };
+    if (this.snap.parts[m.i] === undefined) {
+      this.snap.parts[m.i] = m.text;
+      this.snap.got++;
+    }
+    if (this.snap.got < this.snap.parts.length) return;
+    const text = this.snap.parts.join("");
+    this.snap = null;
+    const tick = this.ev.resume(text);
+    if (tick === null) {
+      this.message = "The host's snapshot could not be loaded.";
+      this.state = "closed";
+      this.client.close();
+      this.ev.lost("closed");
+      this.ev.changed();
+      return;
+    }
+    this.ls = this.makeLockstep(tick);
+    this.state = "playing";
+    this.stalled = 0;
+    this.tries = 0;
+    this.resyncs++;
+    this.ev.changed();
+  }
+
+  /** L5-F (partner page): the relay dropped mid-match; try to take the seat back, one second apart. */
+  private reconnect(): void {
+    if (this.tries >= this.cfg.reconnectTries) {
+      this.state = "closed";
+      this.ev.lost("closed");
+      this.ev.changed();
+      return;
+    }
+    this.state = "reconnecting";
+    this.ev.changed();
+    this.retry = setTimeout(
+      () => {
+        this.retry = null;
+        if (this.state !== "reconnecting") return;
+        this.tries++;
+        this.client = this.wire(this.reopen!());
+      },
+      this.tries ? 1000 : 50,
+    );
   }
 }

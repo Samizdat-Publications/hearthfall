@@ -179,6 +179,19 @@ export class Relay {
       this.send(client, { op: "room", code: room.code, seat: at, seats: room.seats });
       return this.broadcast(room, { op: "joined", seat: at, present: this.present(room) });
     }
+    if (m.op === "rejoin") {
+      // L5-F: a seat that dropped out of a started match takes its place back (the host then sends a snapshot)
+      if (client.room) return this.send(client, { op: "error", why: "already in a room" });
+      const room = this.rooms.get(String(m.code ?? "").toUpperCase());
+      const seat = Number(m.seat);
+      if (!room || !room.started) return this.send(client, { op: "error", why: "no match to rejoin with that code" });
+      if (!Number.isInteger(seat) || seat < 1 || seat >= room.seats || room.members[seat]) return this.send(client, { op: "error", why: "that seat is not free" });
+      room.members[seat] = client;
+      client.room = room;
+      client.seat = seat;
+      this.send(client, { op: "room", code: room.code, seat, seats: room.seats, started: true, present: this.present(room) });
+      return this.broadcast(room, { op: "back", seat, present: this.present(room) }, client);
+    }
     if (!client.room) return this.send(client, { op: "error", why: "host or join a room first" });
     if (m.op === "start") {
       if (client.seat !== 0) return this.send(client, { op: "error", why: "only the host starts the match" });
@@ -186,6 +199,8 @@ export class Relay {
       return this.broadcast(client.room, { op: "start", params: m.params ?? null });
     }
     if (m.op === "msg") return this.broadcast(client.room, { op: "msg", from: client.seat, data: m.data }, client);
+    // L5-F: match control between pages (snapshot chunks), kept apart from the lockstep stream
+    if (m.op === "ctl") return this.broadcast(client.room, { op: "ctl", from: client.seat, data: m.data ?? null }, client);
     return this.send(client, { op: "error", why: `unknown op ${String(m.op)}` });
   }
 

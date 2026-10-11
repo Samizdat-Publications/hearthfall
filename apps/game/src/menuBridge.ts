@@ -147,6 +147,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
       end: game.ended
         ? {
             won: game.ended.won,
+            ...(game.ended.why === "desync" && game.desync ? { desync: true } : {}),
             ...(w.level
               ? {
                   title: game.ended.won ? "Level won" : "Level lost",
@@ -195,6 +196,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
               seats: game.net.client.seats || 2,
               canStart: game.net.canStart(),
               waiting: game.net.stalled >= game.net.cfg.stallNoticeSeconds,
+              away: game.net.away.size ? Math.max(0, game.net.cfg.rejoinWaitSeconds - game.net.awayFor) : 0,
               message: game.net.message,
             },
           }
@@ -378,6 +380,8 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
       }
       game.startNet(sp, mode);
     },
+    netGiveUp: () => game.netGiveUp(),
+    downloadDesync: () => game.downloadDesync(),
     leaveNet: () => {
       game.closeNet();
       game.go("main");

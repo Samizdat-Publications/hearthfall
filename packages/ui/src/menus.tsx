@@ -12,7 +12,7 @@ export type Screen = "none" | "main" | "campaign" | "setup" | "pause" | "setting
 
 /** Leg 5 (L5-C): the LAN lobby and match state */
 export interface NetView {
-  state: "idle" | "connecting" | "lobby" | "playing" | "closed";
+  state: "idle" | "connecting" | "lobby" | "playing" | "reconnecting" | "resyncing" | "closed";
   code: string;
   /** this page's seat (0 hosts), -1 before the relay answers */
   seat: number;
@@ -22,6 +22,8 @@ export interface NetView {
   canStart: boolean;
   /** a partner has been silent past the stall notice (the HUD and pause menu say so) */
   waiting: boolean;
+  /** L5-F (host): seconds left to wait for a dropped partner to rejoin (0: nobody away) */
+  away?: number;
   message: string | null;
 }
 
@@ -112,7 +114,7 @@ export interface MenuModel {
   setup: SetupView;
   settings: SettingsView;
   saves: { mode: "save" | "load"; slots: SlotView[]; message: string | null };
-  end: { won: boolean; title?: string; tag?: string; lines: { label: string; value: string }[]; next: boolean; achievements?: { name: string; description: string }[] } | null;
+  end: { won: boolean; title?: string; tag?: string; lines: { label: string; value: string }[]; next: boolean; achievements?: { name: string; description: string }[]; desync?: boolean } | null;
   /** BACKLOG 21: the records screen: career stats and every achievement (earned shows its date) */
   records?: { rows: { label: string; value: string }[]; achievements: { id: string; name: string; description: string; earned: string | null }[]; summary: string; message: string | null };
   campaign: { levels: LevelView[]; message: string | null };
@@ -163,6 +165,10 @@ export interface MenuActions {
   /** versus: head to head; coop: one team against the setup's AI rivals */
   startNet(mode: "versus" | "coop"): void;
   leaveNet(): void;
+  /** L5-F (host): stop waiting for a dropped partner; the AI plays their tribe */
+  netGiveUp(): void;
+  /** L5-F: download the desync report of the match that just stopped */
+  downloadDesync(): void;
 }
 
 export const menuModel = signal<MenuModel | null>(null);
@@ -608,6 +614,11 @@ function End({ m, act }: { m: MenuModel; act: MenuActions }) {
           </button>
         </div>
       ) : null}
+      {e.desync ? (
+        <button class="menu-small" data-ui="end-desync-report" onClick={() => act.downloadDesync()}>
+          {t("end.desyncReport")}
+        </button>
+      ) : null}
       <Btn ui="main-menu" onClick={() => act.quitToMenu()}>
         {m.editorTest ? t("menu.backToEditor") : t("end.mainMenu")}
       </Btn>
@@ -734,8 +745,34 @@ function HowTo({ act }: { act: MenuActions }) {
   );
 }
 
+/** L5-F: over the running match, while a partner stalls, dropped out, or this page is rejoining */
+function NetBanner({ n, act }: { n: NetView; act: MenuActions }) {
+  const text =
+    n.state === "reconnecting"
+      ? t("together.reconnecting")
+      : n.state === "resyncing"
+        ? t("together.resyncing")
+        : n.away
+          ? t("together.awayWait", { s: String(Math.ceil(n.away)) })
+          : n.waiting
+            ? t("together.waitingPartner")
+            : "";
+  if (!text) return null;
+  return (
+    <div class="net-banner" data-ui="net-banner">
+      <span>{text}</span>
+      {n.away ? (
+        <button class="menu-small" data-ui="net-give-up" onClick={() => act.netGiveUp()}>
+          {t("together.giveUp")}
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
 function Menus({ act }: { act: MenuActions }) {
   const m = menuModel.value;
+  if (m && m.screen === "none" && m.net) return <NetBanner n={m.net} act={act} />;
   if (!m || m.screen === "none") return null;
   return (
     <div class={"menu-backdrop" + (m.screen === "main" ? " title" : "")}>

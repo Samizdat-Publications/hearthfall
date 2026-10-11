@@ -7,7 +7,7 @@
 import { comboHint, leadInWarning, orderNote } from "./orderNotes.ts";
 import { FirstMatchTips, type TipView } from "./tips.ts";
 import type { SessionRole } from "./netGate.ts";
-import { NET_DEFAULTS, NetPlay, relayUrl } from "./netPlay.ts";
+import { NET_DEFAULTS, NetPlay, desyncReport, relayUrl, type DesyncReport } from "./netPlay.ts";
 import {
   validateUi,
   type UiFile,
@@ -51,7 +51,11 @@ import {
   LOG_TAIL,
   campaignParams,
   createSkirmish,
+  decodeSave,
+  encodeSave,
   humansOf,
+  makeSave,
+  restoreSave,
   type SaveGame,
   type SkirmishParams,
 } from "./session.ts";
@@ -335,6 +339,8 @@ export class Game {
   role: SessionRole = "host";
   /** Leg 5 (L5-C): the LAN lobby or match, null when playing alone */
   net: NetPlay | null = null;
+  /** L5-F: the report of the last LAN match a desync stopped (the end screen downloads it) */
+  desync: DesyncReport | null = null;
   paused: boolean;
   private queue: Command[] = [];
   private scenarioCmds: ((tick: number) => Command[]) | null = null;
@@ -665,8 +671,13 @@ export class Game {
   openNet(mode: "host" | "join", code = "", socket?: ConstructorParameters<typeof NetPlay>[0]): void {
     this.closeNet();
     const cfg = this.pack.files.balance.net ?? NET_DEFAULTS;
-    const sock = socket ?? new WebSocket(relayUrl(location));
-    const net = new NetPlay(sock, cfg, {
+    const open = () => new WebSocket(relayUrl(location));
+    const sock = socket ?? open();
+    this.desync = null;
+    const net = new NetPlay(
+      sock,
+      cfg,
+      {
       changed: () => this.onChange(),
       started: (p, tribe) => {
         this.role = tribe === 0 ? "host" : "peer";
@@ -674,7 +685,12 @@ export class Game {
         this.paused = false;
       },
       lost: (why) => this.netTakeover(why),
-    });
+      // L5-F: the host's world now, for a partner who rejoined (the match restarts from it on both pages)
+      snapshot: () => ({ text: encodeSave(makeSave(this.world, this.skirmish!, [], [], "")), tick: this.world.tick }),
+      resume: (text) => this.netResume(text),
+      },
+      socket ? null : open,
+    );
     this.net = net;
     if (mode === "host") net.host();
     else net.join(code);
@@ -701,7 +717,7 @@ export class Game {
    */
   private netTakeover(why: "partnerLeft" | "closed"): void {
     if (!this.net) return;
-    if (this.ended || !this.inGame || !this.skirmish) return this.netEnd(why);
+    if (!this.inGame || !this.skirmish) return this.netEnd(why);
     const sp = this.skirmish;
     for (const t of humansOf(sp)) {
       if (t === this.localTribe || !this.world.tribes[t]?.alive) continue;
@@ -712,6 +728,45 @@ export class Game {
     this.role = "host";
     this.notify("netTakeover", why === "partnerLeft" ? "Your partner left. The AI plays their tribe now; the match goes on." : "The connection to your partner was lost. The AI plays their tribe now; the match goes on.", "info");
     this.onChange();
+  }
+
+  /** L5-F (rejoining page): load the host's snapshot in place of this page's world; its tick, or null. */
+  private netResume(text: string): number | null {
+    let s: SaveGame;
+    let w: World;
+    try {
+      s = decodeSave(text);
+      w = restoreSave(this.pack, s);
+    } catch {
+      return null;
+    }
+    const tribe = this.localTribe;
+    const stats = this.stats;
+    const screen = this.screen;
+    this.adoptSave(w, s);
+    this.localTribe = tribe;
+    this.stats = stats;
+    this.replayStart = null;
+    this.paused = false;
+    if (screen === "pause") this.screen = "pause";
+    return w.tick;
+  }
+
+  /** L5-F (host): stop waiting for a dropped partner and let the AI play their tribe now. */
+  netGiveUp(): void {
+    if (this.net?.away.size) this.netTakeover("partnerLeft");
+  }
+
+  /** L5-F: save the desync report of the match that just stopped as a JSON file. */
+  downloadDesync(): void {
+    const r = this.desync;
+    if (!r) return;
+    const url = URL.createObjectURL(new Blob([JSON.stringify(r, null, 1)], { type: "application/json" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `hearthfall-desync-${r.tick}-seat${r.seat}.json`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
   /** A LAN match stopped for a network reason (the partner left, the socket closed, a desync). */
@@ -732,14 +787,24 @@ export class Game {
     const tickDt = 1 / this.world.cfg.tickHz;
     this.acc += dt;
     const want = Math.min(8, Math.floor(this.acc / tickDt));
-    const n = ls.advance(want, (cmds) => this.stepWith(cmds, cmds), () => this.world.hash().all);
+    // L5-F (host): a dropped partner gets rejoinWaitSeconds to come back, then the AI takes their tribe
+    if (net.away.size) {
+      net.awayFor += dt;
+      const left = Math.ceil(net.cfg.rejoinWaitSeconds - net.awayFor);
+      if (left <= 0) return this.netTakeover("partnerLeft");
+      if (left !== Math.ceil(net.cfg.rejoinWaitSeconds - net.awayFor + dt)) this.onChange();
+    }
+    const n = net.advance(want, (cmds) => this.stepWith(cmds, cmds), () => this.world.hash().all);
     this.acc -= n * tickDt;
     // a stalled partner must not build up a burst of ticks to run later
     if (this.acc > 4 * tickDt) this.acc = 4 * tickDt;
     const stalledBefore = net.stalled >= net.cfg.stallNoticeSeconds;
     net.stalled = n === 0 && want > 0 ? net.stalled + dt : 0;
     if (n || stalledBefore !== net.stalled >= net.cfg.stallNoticeSeconds) this.onChange();
-    if (ls.desync) this.netEnd("desync");
+    if (ls.desync) {
+      this.desync = desyncReport(net.client.seat, ls.desync, net.params, net.recent);
+      this.netEnd("desync");
+    }
   }
 
   /** The main menu over a still planet (no opponents, the sim does not run). */

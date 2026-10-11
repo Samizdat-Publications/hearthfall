@@ -4,12 +4,144 @@ import { describe, expect, it } from "vitest";
 import { loadBasePack } from "../../../tools/harness/datapack.mjs";
 import { makeBot } from "@hearthfall/ai";
 import { Relay } from "../../../tools/net/relay.mjs";
-import { coopParams, NET_DEFAULTS, NetPlay, parseStart, relayUrl, seatFilter, versusParams } from "../src/netPlay.ts";
-import { createSkirmish, humansOf, type SkirmishParams } from "../src/session.ts";
+import { coopParams, desyncReport, NET_DEFAULTS, NetPlay, parseStart, relayUrl, seatFilter, versusParams } from "../src/netPlay.ts";
+import { createSkirmish, decodeSave, encodeSave, humansOf, makeSave, restoreSave, type SkirmishParams } from "../src/session.ts";
+import type { World } from "@hearthfall/sim";
 
 const pack = loadBasePack().pack!;
 const SP: SkirmishParams = { seed: 23, level: "continents", size: 96, tribes: 3, ai: ["aggressive", "sneaky"], difficulty: "normal" };
 const tick = () => new Promise((r) => setTimeout(r, 1));
+
+/** A relay on a free port; close() ends every socket. */
+async function relayServer() {
+  const server = createServer((_q, r) => r.writeHead(404).end());
+  new Relay().attach(server);
+  const sockets = new Set<import("node:net").Socket>();
+  server.on("connection", (s) => {
+    sockets.add(s);
+    s.on("close", () => sockets.delete(s));
+  });
+  await new Promise<void>((r) => server.listen(0, "127.0.0.1", () => r()));
+  return {
+    url: `ws://127.0.0.1:${(server.address() as { port: number }).port}/net`,
+    close: () =>
+      new Promise<void>((r) => {
+        server.close(() => r());
+        for (const s of sockets) s.destroy();
+      }),
+  };
+}
+
+describe("L5-F: reconnect by snapshot", () => {
+  it("the partner's socket drops mid-match, it rejoins, loads the host's snapshot and both stay in step", async () => {
+    const relay = await relayServer();
+    const lost: string[] = [];
+    const pages: { n: NetPlay; w: World | null; tribe: number }[] = [];
+    const page = (k: number) => {
+      const self = { n: null as unknown as NetPlay, w: null as World | null, tribe: -1 };
+      self.n = new NetPlay(
+        new WebSocket(relay.url),
+        { ...NET_DEFAULTS, rejoinWaitSeconds: 30, reconnectTries: 5 },
+        {
+          changed: () => {},
+          started: (p, tribe) => {
+            self.w = createSkirmish(pack, p);
+            self.tribe = tribe;
+          },
+          lost: (why) => lost.push(`${k}:${why}`),
+          snapshot: () => ({ text: encodeSave(makeSave(self.w!, self.n.params!, [], [], "")), tick: self.w!.tick }),
+          resume: (text) => {
+            try {
+              self.w = restoreSave(pack, decodeSave(text));
+              return self.w.tick;
+            } catch {
+              return null;
+            }
+          },
+        },
+        () => new WebSocket(relay.url),
+      );
+      pages.push(self);
+      return self;
+    };
+    const host = page(0);
+    const peer = page(1);
+    try {
+      host.n.host();
+      for (let k = 0; k < 2000 && !host.n.client.code; k++) await tick();
+      peer.n.join(host.n.client.code);
+      for (let k = 0; k < 2000 && !host.n.canStart(); k++) await tick();
+      host.n.start({ ...SP, size: 128 });
+      for (let k = 0; k < 2000 && pages.some((p) => !p.w); k++) await tick();
+      const END = 900;
+      let dropped = false;
+      let hostOrderAt = -1;
+      for (let frame = 0; frame < 40000 && pages.some((s) => (s.n.ls?.tick ?? 0) < END || s.n.state !== "playing"); frame++) {
+        for (const s of pages) {
+          const ls = s.n.ls;
+          if (!ls || !s.w) continue;
+          if (s.n.state === "playing" && ls.tick % 25 === 0 && ls.tick < END) ls.local({ tribe: s.tribe, type: "move", args: { units: `tribe${s.tribe}.settlers`, to: [(ls.tick * 7) % 128, (ls.tick * 3) % 128] } });
+          if (s === peer && !dropped && ls.tick >= 300) {
+            dropped = true;
+            peer.n.dropSocket();
+          }
+          // the host gives an order while the partner is away: it must survive the resync
+          if (s === host && dropped && hostOrderAt < 0 && host.n.away.size) {
+            hostOrderAt = ls.tick;
+            ls.local({ tribe: 0, type: "move", args: { units: "tribe0.settlers", to: [5, 5] } });
+          }
+          if (ls.tick < END) s.n.advance(Math.min(5, END - ls.tick), (cmds) => s.w!.step(cmds), () => s.w!.hash().all);
+        }
+        await tick();
+      }
+      expect(dropped).toBe(true);
+      expect(hostOrderAt).toBeGreaterThan(0);
+      expect(lost).toEqual([]);
+      expect(host.n.resyncs).toBe(1);
+      expect(peer.n.resyncs).toBe(1);
+      expect(host.n.away.size).toBe(0);
+      for (const s of pages) {
+        expect(s.n.state).toBe("playing");
+        expect(s.n.ls!.desync).toBeNull();
+        expect(s.n.ls!.tick).toBe(END);
+      }
+      expect(host.w!.hash().all).toBe(peer.w!.hash().all);
+      // the host's order from the away time ran on both pages after the resync
+      expect(host.n.recent.some((c) => c.tribe === 0 && (c.args.to as number[])[0] === 5 && c.tick > hostOrderAt)).toBe(true);
+    } finally {
+      for (const s of pages) s.n.leave();
+      await relay.close();
+    }
+  }, 120000);
+
+  it("a partner page that cannot rejoin gives up after its tries, and a desync report keeps the last commands", async () => {
+    const relay = await relayServer();
+    const lost: string[] = [];
+    const ev = { changed: () => {}, started: () => {}, lost: (why: string) => lost.push(why), snapshot: () => ({ text: "", tick: 0 }), resume: () => null };
+    const host = new NetPlay(new WebSocket(relay.url), { reconnectTries: 0 }, ev);
+    const peer = new NetPlay(new WebSocket(relay.url), { reconnectTries: 0 }, ev, () => new WebSocket(relay.url));
+    try {
+      host.host();
+      for (let k = 0; k < 2000 && !host.client.code; k++) await tick();
+      peer.join(host.client.code);
+      for (let k = 0; k < 2000 && !host.canStart(); k++) await tick();
+      host.start(SP);
+      for (let k = 0; k < 2000 && peer.state !== "playing"; k++) await tick();
+      peer.dropSocket();
+      for (let k = 0; k < 2000 && !lost.includes("closed"); k++) await tick();
+      expect(lost).toContain("closed");
+      expect(peer.state).toBe("closed");
+      expect(host.away.size).toBe(1);
+    } finally {
+      host.leave();
+      peer.leave();
+      await relay.close();
+    }
+    const r = desyncReport(1, { tick: 40, hashes: ["a", "b"] }, SP, [{ tick: 39, tribe: 1, type: "stop", args: { units: [] } }]);
+    expect(r).toMatchObject({ kind: "hearthfall-desync", seat: 1, tick: 40, hashes: ["a", "b"] });
+    expect(r.recent).toHaveLength(1);
+  }, 60000);
+});
 
 describe("L5-C: LAN play helpers", () => {
   it("versusParams seats the humans in the first tribes and keeps the setup's rivals", () => {
@@ -97,6 +229,8 @@ describe("L5-C: LAN play helpers", () => {
         changed: () => {},
         started: (p, tribe) => started.push({ p, tribe }),
         lost: (why) => lost.push(why),
+        snapshot: () => ({ text: "", tick: 0 }),
+        resume: () => null,
       });
     const host = page();
     const peer = page();

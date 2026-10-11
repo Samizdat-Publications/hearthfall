@@ -1117,6 +1117,15 @@
         "stallNoticeSeconds": {
           "type": "number",
           "minimum": 0
+        },
+        "rejoinWaitSeconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "reconnectTries": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
         }
       },
       "required": [

@@ -161,7 +161,7 @@
     "kind": "wolf"
   },
   "teams": { "$comment": "Leg 5 teams (WorldInit.teams): allies never fight, win together, and with shareVision see what the team sees.", "shareVision": true },
-  "net": { "$comment": "Leg 5 LAN play: lockstep input delay (ticks), state hash compare interval (ticks), seconds before a stalled partner is shown.", "inputDelayTicks": 4, "hashEveryTicks": 20, "stallNoticeSeconds": 2 },
+  "net": { "$comment": "Leg 5 LAN play: lockstep input delay (ticks), state hash compare interval (ticks), seconds before a stalled partner is shown, seconds the host waits for a dropped partner to rejoin before the AI takes their tribe, rejoin attempts (one second apart) by a dropped partner page.", "inputDelayTicks": 4, "hashEveryTicks": 20, "stallNoticeSeconds": 2, "rejoinWaitSeconds": 30, "reconnectTries": 10 },
   "skirmishLey": {
     "$comment": "Stretch 3 living world: capturable stones scattered over skirmish maps (the match's leyStones count, at most one per cellsPerStone cells of map area), kinds taken in turn.",
     "cellsPerStone": 1800,

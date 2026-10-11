@@ -28,6 +28,37 @@ describe("lockstep core", () => {
     expect(a.ready()).toBe(true);
   });
 
+  it("L5-F: a lockstep restarted at a tick runs its first delay ticks alone and carries the old one's unsent orders", () => {
+    const { hub, peers } = pair();
+    const [a] = peers;
+    for (let k = 0; k < 2; k++) a.step();
+    a.local(cmd(0, "stop", { units: [1] }));
+    a.flush(); // the order rides the batch for tick 4
+    a.local(cmd(0, "stop", { units: [2] })); // still queued
+    expect(a.ownPending().map((c) => c.args.units)).toEqual([[1], [2]]);
+    // resync at tick 2 (a's next tick): a fresh pair starting there
+    const hub2 = new LoopbackHub({ seed: 3, minLatency: 0, maxLatency: 2, reorder: true });
+    const [a2, b2] = [0, 1].map((self) => new Lockstep({ peers: 2, self, delay: 2, hashEvery: 10, start: a.tick }, hub2.connect(self)));
+    for (const c of a.ownPending()) a2.local(c);
+    expect(a2.tick).toBe(2);
+    a2.flush();
+    expect(a2.step()).toEqual([]);
+    expect(a2.step()).toEqual([]);
+    expect(a2.waitingOn()).toEqual([1]);
+    const got: Command[][] = [];
+    for (let frame = 0; frame < 20; frame++) {
+      hub2.pump(1);
+      a2.advance(4, (c) => got.push(c), () => "h");
+      b2.advance(4, () => {}, () => "h");
+    }
+    expect(got[0].map((c) => [c.tick, c.args.units])).toEqual([
+      [4, [1]],
+      [4, [2]],
+    ]);
+    expect(a2.desync).toBeNull();
+    void hub;
+  });
+
   it("both seats get the same commands on the same tick, seat order first", () => {
     const { hub, peers } = pair();
     const [a, b] = peers;

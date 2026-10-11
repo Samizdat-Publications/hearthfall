@@ -24,6 +24,8 @@ export interface LockstepOptions {
   delay: number;
   /** report and compare the state hash every this many ticks (0: never) */
   hashEvery: number;
+  /** L5-F: the first tick this lockstep runs (a resync after a reconnect starts at the snapshot's tick; default 0) */
+  start?: number;
   /** ingress rule for a command in `peer`'s batch: why it is dropped, or null to keep it. Every peer runs the same rule, so drops stay in lockstep. */
   filter?: (c: Command, peer: number) => string | null;
 }
@@ -54,8 +56,9 @@ export class Lockstep {
     this.transport = transport;
     if (opts.delay < 1) throw new Error("lockstep delay must be at least 1 tick");
     if (opts.self < 0 || opts.self >= opts.peers) throw new Error(`seat ${opts.self} outside 0..${opts.peers - 1}`);
-    // ticks 0 .. delay-1 run with no commands from anyone
-    this.sentUpTo = opts.delay - 1;
+    // ticks start .. start+delay-1 run with no commands from anyone
+    this.tick = opts.start ?? 0;
+    this.sentUpTo = this.tick + opts.delay - 1;
     transport.onMessage((m) => this.receive(m));
   }
 
@@ -78,10 +81,21 @@ export class Lockstep {
 
   /** Seats whose batch for the next tick has not arrived (empty: the tick can run). */
   waitingOn(): number[] {
-    if (this.tick < this.opts.delay || this.desync) return this.desync ? [-1] : [];
+    if (this.tick < (this.opts.start ?? 0) + this.opts.delay || this.desync) return this.desync ? [-1] : [];
     const row = this.batches.get(this.tick);
     const out: number[] = [];
     for (let p = 0; p < this.opts.peers; p++) if (!row || !row[p]) out.push(p);
+    return out;
+  }
+
+  /**
+   * L5-F: this peer's own commands not run yet (sent for later ticks, or still queued), in order. A resync
+   * hands them to the next lockstep so no order is lost when the match restarts from a snapshot.
+   */
+  ownPending(): Omit<Command, "tick">[] {
+    const out: Omit<Command, "tick">[] = [];
+    for (let t = this.tick; t <= this.sentUpTo; t++) for (const c of this.batches.get(t)?.[this.opts.self] ?? []) out.push({ tribe: c.tribe, type: c.type, args: c.args });
+    for (const c of this.outbox) out.push(c);
     return out;
   }
 

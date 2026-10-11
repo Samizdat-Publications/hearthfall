@@ -110,6 +110,50 @@ describe("LAN relay", () => {
     }
   });
 
+  it("L5-F: a dropped seat rejoins a started match, the others hear it, and ctl messages fan out", async () => {
+    const s = await listen();
+    const a = client(s.url);
+    const b = client(s.url);
+    const clients = [a, b];
+    try {
+      await Promise.all([a.opened, b.opened]);
+      a.send({ op: "host", seats: 2 });
+      const { code } = await a.next("room");
+      b.send({ op: "join", code });
+      await b.next("room");
+      // no rejoin before the start, and not into an occupied seat
+      const early = client(s.url);
+      clients.push(early);
+      await early.opened;
+      early.send({ op: "rejoin", code, seat: 1 });
+      expect((await early.next("error")).why).toMatch(/no match/);
+      a.send({ op: "start", params: {} });
+      await b.next("start");
+      const squat = client(s.url);
+      clients.push(squat);
+      await squat.opened;
+      squat.send({ op: "rejoin", code, seat: 1 });
+      expect((await squat.next("error")).why).toMatch(/not free/);
+      squat.send({ op: "rejoin", code, seat: 0 });
+      // seat 0 (the host) is never taken by a rejoin
+      expect((await squat.next("error")).why).toMatch(/not free/);
+      b.ws.close();
+      expect((await a.next("left")).seat).toBe(1);
+      const b2 = client(s.url);
+      clients.push(b2);
+      await b2.opened;
+      b2.send({ op: "rejoin", code: code.toLowerCase(), seat: 1 });
+      expect(await b2.next("room")).toMatchObject({ seat: 1, started: true, present: [0, 1] });
+      expect(await a.next("back")).toMatchObject({ seat: 1, present: [0, 1] });
+      a.send({ op: "ctl", data: { k: "snap", i: 0 } });
+      expect(await b2.next("ctl")).toEqual({ op: "ctl", from: 0, data: { k: "snap", i: 0 } });
+      expect(a.inbox.filter((m) => m.op === "ctl")).toEqual([]);
+    } finally {
+      for (const c of clients) c.ws.close();
+      await s.close();
+    }
+  });
+
   it("refuses unknown codes, bad seat counts and non-relay upgrade paths, and drops empty rooms", async () => {
     const s = await listen();
     const a = client(s.url);

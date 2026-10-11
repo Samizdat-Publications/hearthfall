@@ -16,6 +16,10 @@ export interface RelayEvents {
   joined?(present: number[]): void;
   start?(params: unknown): void;
   left?(seat: number): void;
+  /** L5-F: a seat that dropped came back (rejoin) */
+  back?(seat: number): void;
+  /** L5-F: a match control message from another seat (snapshot chunks) */
+  ctl?(from: number, data: unknown): void;
   error?(why: string): void;
   closed?(): void;
 }
@@ -53,6 +57,16 @@ export class RelayClient {
     this.sock.send(JSON.stringify({ op: "join", code: code.trim().toUpperCase() }));
   }
 
+  /** L5-F: take a seat back in a started match after the socket dropped */
+  rejoin(code: string, seat: number): void {
+    this.sock.send(JSON.stringify({ op: "rejoin", code: code.trim().toUpperCase(), seat }));
+  }
+
+  /** L5-F: send a match control message to the other seats */
+  sendCtl(data: unknown): void {
+    this.sock.send(JSON.stringify({ op: "ctl", data }));
+  }
+
   start(params: unknown): void {
     this.sock.send(JSON.stringify({ op: "start", params }));
   }
@@ -86,7 +100,8 @@ export class RelayClient {
         this.code = String(m.code);
         this.seat = Number(m.seat);
         this.seats = Number(m.seats);
-        this.present = [this.seat];
+        this.present = Array.isArray(m.present) ? (m.present as number[]) : [this.seat];
+        if (m.started === true) this.started = true;
         this.on.room?.(this.code, this.seat, this.seats);
         break;
       case "joined":
@@ -100,6 +115,14 @@ export class RelayClient {
       case "left":
         this.present = this.present.filter((s) => s !== m.seat);
         this.on.left?.(Number(m.seat));
+        break;
+      case "back":
+        this.present = Array.isArray(m.present) ? (m.present as number[]) : this.present;
+        this.on.back?.(Number(m.seat));
+        break;
+      case "ctl":
+        if (typeof m.from === "number") this.on.ctl?.(m.from, m.data);
+        else this.dropped++;
         break;
       case "error":
         this.on.error?.(String(m.why));

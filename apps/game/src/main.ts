@@ -363,10 +363,14 @@ if (debugApiAllowed(__DEBUG_API__, !!game.params.debug, game.role)) {
     /** Leg 5: the LAN lobby and lockstep state (null outside a LAN session) */
     /** Leg 5: each tribe's team, and the tribes a bot controls (an AI takeover adds the leaver's tribe) */
     teams: () => ({ teams: game.world.tribes.map((t) => game.world.teamOf[t.index]), bots: game.world.controllers.filter((c) => c.botSpec).map((c) => c.tribe) }),
+    /** L5-F: drop this page's relay socket as if the network failed */
+    netDrop: () => game.net?.dropSocket(),
+    netGiveUp: () => game.netGiveUp(),
+    desyncReport: () => game.desync,
     net: () => {
       const n = game.net;
       if (!n) return null;
-      return { state: n.state, seat: n.client.seat, code: n.client.code, tick: n.ls?.tick ?? -1, worldTick: game.world.tick, desync: !!n.ls?.desync, refused: n.ls?.refused.length ?? 0, faults: n.ls?.faults.length ?? 0, localTribe: game.localTribe, role: game.role, ended: game.ended?.why ?? null };
+      return { state: n.state, seat: n.client.seat, code: n.client.code, tick: n.ls?.tick ?? -1, worldTick: game.world.tick, desync: !!n.ls?.desync, refused: n.ls?.refused.length ?? 0, faults: n.ls?.faults.length ?? 0, localTribe: game.localTribe, role: game.role, ended: game.ended?.why ?? null, away: n.away.size, resyncs: n.resyncs, tries: n.tries, hash: game.world.hash().all };
     },
     lastLoad: () => game.lastLoad,
     /** Run a scenario-style definition headless in this page (cross-engine determinism check). */

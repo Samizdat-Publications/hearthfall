@@ -586,11 +586,20 @@ async function lanFlow(browser, url, mode) {
     await until(a.page, () => window.__game.net().tick >= 300, null, 60000);
     await until(b.page, () => window.__game.net().tick >= 300, null, 60000);
     const [ma, mb] = [await net(a.page), await net(b.page)];
-    if (ma.desync || mb.desync) problem(`desync: ${JSON.stringify([ma, mb])}`);
+    if (ma.desync || mb.desync || ma.hash === undefined) problem(`desync: ${JSON.stringify([ma, mb])}`);
     if (ma.refused !== 1 || mb.refused !== 1) problem(`the forged order was refused ${ma.refused} and ${mb.refused} times, expected once on each page`);
     if (ma.faults || mb.faults) problem(`lockstep faults: ${ma.faults} and ${mb.faults}`);
     await b.page.screenshot({ path: `${DIR}lan-${mode}-partner-play.png` });
     res.screens.push({ name: `lan-${mode}-partner-play` });
+    // L5-F gate: the partner's socket dies; it rejoins, loads the host's snapshot, and both play on in step
+    await b.page.evaluate(() => window.__game.netDrop());
+    await until(a.page, () => window.__game.net()?.resyncs === 1, null, 30000);
+    await until(b.page, () => window.__game.net()?.resyncs === 1 && window.__game.net().state === "playing", null, 30000);
+    const r0 = (await net(a.page)).tick;
+    await until(a.page, (t) => window.__game.net().tick >= t + 200, r0, 60000);
+    await until(b.page, (t) => window.__game.net().tick >= t + 200, r0, 60000);
+    const [ra, rb] = [await net(a.page), await net(b.page)];
+    if (ra.desync || rb.desync || ra.away || rb.tries) problem(`after the rejoin: ${JSON.stringify([ra, rb])}`);
     // one side quits (the host in versus, the partner in co-op): the other plays on with the AI in that seat
     const [quits, stays] = mode === "coop" ? [b, a] : [a, b];
     await quits.page.keyboard.press("Escape");
