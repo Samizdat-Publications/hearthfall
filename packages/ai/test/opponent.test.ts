@@ -243,6 +243,19 @@ describe("OpponentAI (M7)", () => {
     expect(prayed).toBeGreaterThan(0);
   });
 
+  it("S3: idle troops clear a wolf den near home, with no worship site in sight", () => {
+    const w = world({ generator: "flat", size: 64, tribes: 2 });
+    w.spawnBuilding("hearth", 0, 8, 32);
+    w.spawnBuilding("hearth", 1, 50, 32);
+    w.spawnUnit("shaper", 0, 8, 36);
+    w.spawnUnit("shaper", 1, 52, 34);
+    for (let k = 0; k < 6; k++) w.spawnUnit("warden", 1, 44 + (k % 3), 30 + Math.floor(k / 3));
+    w.beasts.addDen("wolf", 32, 22, 3);
+    w.controllers.push(makeBot({ type: "opponent", tribe: 1, personality: "turtle", offset: 0 }));
+    for (let t = 0; t < 4000 && !w.beasts.dens[0].cleared; t++) w.step([]);
+    expect(w.beasts.dens[0].cleared).toBe(true);
+  });
+
   it("S3: a grown village plans a Spirit Well, and a Mending Hut once it fields troops", () => {
     const plans = (troops: number) => {
       const w = world({ generator: "flat", size: 64, tribes: 2 });

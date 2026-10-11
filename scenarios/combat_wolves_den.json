@@ -1,0 +1,23 @@
+{
+  "id": "combat_wolves_den",
+  "description": "Stretch 3: a wolf pack bites settlers that stray near its den; five Wardens attack-move in and clear the den for good.",
+  "tags": ["fast", "combat"],
+  "seed": 71,
+  "map": { "generator": "flat", "size": 64, "tribes": 1 },
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [8, 8] },
+    { "spawn": "shaper", "tribe": 0, "at": [10, 10] },
+    { "spawn": "settler", "tribe": 0, "near": [27, 30], "count": 3 },
+    { "spawn": "warden", "tribe": 0, "near": [18, 30], "count": 5 },
+    { "spawn": "wolf", "tribe": -1, "at": [31, 31], "count": 3 }
+  ],
+  "commands": [
+    { "tick": 0, "tribe": 0, "type": "setPriorities", "args": { "build": 0, "upgrade": 0, "breed": 0 } },
+    { "tick": 60, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [31, 31], "attack": true } }
+  ],
+  "runTicks": 1600,
+  "assert": [
+    { "at": 60, "expr": "events.count('beastBite') > 0 && events.count('beastHowl') > 0" },
+    { "at": 1600, "expr": "events.count('denCleared') == 1 && count(tribe0.wardens) >= 3 && invariants() == 0" }
+  ]
+}

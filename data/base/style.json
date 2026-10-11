@@ -100,7 +100,7 @@
     },
     "verticalScale": 2,
     "water": { "shallowDepth": 26, "foamWidth": 6, "foamRing": 14 },
-    "unitScale": { "shaper": 1.2 },
+    "unitScale": { "shaper": 1.2, "wolf": 0.7 },
     "mapFrame": { "mask": "#1b2633", "grid": "#f2e6c8", "gridOpacity": 0.14, "gridCells": 16 },
     "vfxColors": {
       "$comment": "BACKLOG 95: effect colors by spell (every spell in spells.json has one; vfx.test checks), own-unit status halos, fireball fire, and the rest. The impact shapes stay code in render/src/vfx.ts.",

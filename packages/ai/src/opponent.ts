@@ -187,6 +187,8 @@ export class OpponentAI implements Controller {
       { id: "sabotage", score: (c) => this.sabotageScore(c), act: (c, out) => this.sabotage(c, out) },
       // BACKLOG 13: only scored under a hold or hill victory variant, so other worlds draw the same noise
       { id: "contest", score: (c) => this.contestScore(c), act: (c, out) => this.contest(c, out) },
+      // stretch 3: only scored while a wolf den lives, so worlds without dens draw the same noise as before
+      { id: "hunt", score: (c) => (this.homeDen(c) ? 0.55 : 0), act: (c, out) => this.hunt(c, out) },
     ];
   }
 
@@ -357,7 +359,7 @@ export class OpponentAI implements Controller {
     this.watchWaves(w);
     // every decision: spells unlocked mid-match (worship sites) start charging too
     this.setup(w, out);
-    const acts = this.actions.filter((a) => (a.id !== "worship" || w.worship.sites.length > 0) && (a.id !== "contest" || this.contested(w).length > 0) && (a.id !== "buildSupport" || w.cfg.buildingIndex.has("spirit_well") || w.cfg.buildingIndex.has("mending_hut")) && (this.p.shades || !SHADE_ACTIONS.has(a.id)));
+    const acts = this.actions.filter((a) => (a.id !== "worship" || w.worship.sites.length > 0) && (a.id !== "contest" || this.contested(w).length > 0) && (a.id !== "hunt" || w.beasts.dens.some((d) => !d.cleared)) && (a.id !== "buildSupport" || w.cfg.buildingIndex.has("spirit_well") || w.cfg.buildingIndex.has("mending_hut")) && (this.p.shades || !SHADE_ACTIONS.has(a.id)));
     const boost = this.focus !== null && w.tick < this.focusUntil ? (this.sh.focusBoost ?? 0.6) : 0;
     const scored = acts.map((a, k) => ({ a, k, s: a.score(c) + (w.rng.float("ai") - 0.5) * 2 * this.noise + (a.id === this.focus ? boost : 0) }));
     scored.sort((x, y) => y.s - x.s || x.k - y.k);
@@ -638,6 +640,33 @@ export class OpponentAI implements Controller {
       }
     }
     return best;
+  }
+
+  /** stretch 3: the nearest living wolf den within 30 cells of the Hearth, when idle troops could clear it */
+  private homeDen(c: Census): { x: number; y: number } | null {
+    if (c.threats.length || c.idle.length < 3) return null;
+    const E = c.w.ents;
+    const n = c.w.terrain.size;
+    let best: { x: number; y: number } | null = null;
+    let bestD = 900;
+    for (const d of c.w.beasts.dens) {
+      if (d.cleared || !d.members.length) continue;
+      const dx = wrapDelta(d.x - E.x[c.h], n);
+      const dy = wrapDelta(d.y - E.y[c.h], n);
+      if (dx * dx + dy * dy < bestD) {
+        bestD = dx * dx + dy * dy;
+        best = d;
+      }
+    }
+    return best;
+  }
+
+  /** idle troops attack-move on a den by home (wolves bite settlers and worshippers) */
+  private hunt(c: Census, out: Command[]): void {
+    const d = this.homeDen(c);
+    if (!d) return;
+    out.push(this.cmd(c.w, "move", { units: c.idle.map((i) => c.w.ents.idOf(i)), to: [d.x, d.y], attack: true }));
+    c.idle.length = 0;
   }
 
   /** stretch 3: a living wolf den within its pack's reach of the site (dens are known landmarks, like sites) */

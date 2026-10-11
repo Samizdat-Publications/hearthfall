@@ -64,7 +64,7 @@
     { "type": "clearDens", "n": 1, "text": "Train wardens and clear the wolf den on the shrine hill" },
     { "type": "worship", "site": "hill_shrine", "after": 0, "text": "Send four followers to pray at the hill shrine" },
     { "type": "clearDens", "after": 1, "text": "Clear the remaining wolf dens" },
-    { "type": "hold", "n": 1, "kind": "ley_stone", "seconds": 120, "after": 2, "text": "Pray at the southern ley stone and hold it for two minutes" },
+    { "type": "hold", "n": 1, "kind": "ley_stone", "seconds": 180, "after": 2, "text": "Pray at the southern ley stone and hold it for three minutes" },
     { "type": "followers", "n": 50, "after": 3, "text": "Grow to 50 followers" },
     { "type": "eliminateAll", "after": 4, "text": "March east and break the raiders for good" }
   ],

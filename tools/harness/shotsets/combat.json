@@ -236,6 +236,38 @@
    },
    "expectVfx": 1,
    "$comment": "BACKLOG 8: 150 percent asked on a 1280x720 window: the HUD steps down until no panel overlaps (DOM checks)"
+  },
+  {
+   "id": "wolves",
+   "params": {
+    "scenario": "combat_wolves_den",
+    "camera": "default",
+    "reveal": "1"
+   },
+   "steps": [
+    {
+     "setCamera": {
+      "x": 28,
+      "z": 30,
+      "zoom": 0.12,
+      "yaw": 0.7
+     }
+    },
+    {
+     "eval": "window.__hit = false; for (let k = 0; k < 900 && !window.__hit; k++) { __game.step(1); const s = __game.getSummary(); window.__hit = s.tick >= 140 && s.lastEvents.some((e) => e.type === 'beastBite' && e.tick >= s.tick - 1); }"
+    },
+    {
+     "assert": "window.__hit === true"
+    }
+   ],
+   "kind": "world",
+   "coverage": {
+    "green": [
+     0.02,
+     0.99
+    ]
+   },
+   "expectVfx": 1
   }
  ]
 }

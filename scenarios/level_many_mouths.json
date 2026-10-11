@@ -65,12 +65,25 @@
       }
     },
     {
-      "tick": 10000,
+      "tick": 8700,
       "tribe": 0,
       "type": "worship",
       "args": {
         "units": "tribe0.settlers",
         "site": "south_ley"
+      }
+    },
+    {
+      "tick": 9000,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.wardens",
+        "to": [
+          86,
+          112
+        ],
+        "attack": true
       }
     }
   ],
