@@ -2161,6 +2161,7 @@ export class Game {
         trees: w.count((i) => E.cat[i] === CAT.tree),
         wild: w.count((i) => E.cat[i] === CAT.unit && E.tribe[i] === -1),
         entities: E.count,
+        dens: w.beasts.dens.filter((d) => !d.cleared).length,
       },
       terrainVersion: w.terrain.version,
       sites: w.worship.sites.map((s) => {

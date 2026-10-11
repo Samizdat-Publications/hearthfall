@@ -168,6 +168,9 @@ export class BeastSystem {
     if (!cfg || count <= 0) return;
     const n = w.terrain.size;
     const max = Math.min(count, Math.floor((n * n) / cfg.cellsPerDen));
+    // small maps have no ground 26 cells from every Hearth: distances shrink to a fifth of the map
+    const fromHearth = Math.min(cfg.minHearthDistance, n * 0.2);
+    const spacing = Math.min(cfg.minSpacing, n * 0.2);
     const far = (p: { x: number; y: number }, q: { x: number; y: number }, d: number) => {
       const dx = wrapDelta(p.x - q.x, n);
       const dy = wrapDelta(p.y - q.y, n);
@@ -186,8 +189,8 @@ export class BeastSystem {
       const fy = (0.75 + m * 0.5698402909980532) % 1;
       const p = { x: Math.floor(fx * n), y: Math.floor(fy * n) };
       if (!w.worship.dryRing(p.x, p.y)) continue;
-      if (!hearths.every((h) => far(p, h, cfg.minHearthDistance))) continue;
-      if (!placed.every((q) => far(p, q, cfg.minSpacing)) || !sites.every((q) => far(p, q, 8))) continue;
+      if (!hearths.every((h) => far(p, h, fromHearth))) continue;
+      if (!placed.every((q) => far(p, q, spacing)) || !sites.every((q) => far(p, q, 8))) continue;
       placed.push(p);
     }
     for (const p of placed) this.addDen(cfg.kind, p.x, p.y, cfg.packSize);

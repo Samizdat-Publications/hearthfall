@@ -169,7 +169,9 @@ function objectivesFor(game: Game, next: { name: string; followers: number; open
     else out.push({ text: left ? `Defeat the rival tribes: ${left} of ${rivals.length} left` : "Every rival tribe has fallen", done: left === 0 });
     out.push({ text: w.ents.index(me.hearth) >= 0 ? "Keep your Hearth standing" : "Your Hearth has fallen: protect your Shaper", done: false });
   }
-  if (next) out.push({ text: `Reach ${next.followers} followers for ${next.name} (${next.opens.join(", ")})`, done: false, part: "next-unlock" });
+  // a long unlock list names the first three and counts the rest, so the panel stays clear of the build column
+  const opens = next && next.opens.length > 4 ? `${next.opens.slice(0, 3).join(", ")} and ${next.opens.length - 3} more` : next?.opens.join(", ");
+  if (next) out.push({ text: `Reach ${next.followers} followers for ${next.name} (${opens})`, done: false, part: "next-unlock" });
   return out;
 }
 

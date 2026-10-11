@@ -380,25 +380,6 @@ function Hud({ act }: { act: HudActions }) {
           <SpellButton key={s.id} s={s} act={act} />
         ))}
       </div>
-      <div data-hud="build" class="hud-panel hud-build">
-        {m.buildable.map((bd) => (
-          <button key={bd.id} class={"build-btn" + (m.placing === bd.id ? " active" : "") + (bd.locked ? " locked" : "")} disabled={bd.locked !== null} onClick={() => (m.placing === bd.id ? act.cancel() : act.startPlacing(bd.id))} title={`${bd.name}: ${costText(bd)}${bd.key ? ` (${bd.key})` : ""}${bd.locked ? `, locked: ${bd.locked}` : ""}`}>
-            {bd.icon ? <img class="build-icon" src={bd.icon} alt="" /> : null}
-            {bd.name} {bd.key ? <span class="hotkey">{bd.key}</span> : null}
-            <span class="build-cost" data-cost>
-              {bd.wood}
-              <i class="res-wood" />
-              {bd.stone > 0 ? (
-                <>
-                  {" "}
-                  {bd.stone}
-                  <i class="res-stone" />
-                </>
-              ) : null}
-            </span>
-          </button>
-        ))}
-      </div>
       <div data-hud="title" class="hud-panel hud-title">
         <span class="hud-name">{m.title}</span>
         <span class="hud-sub">
@@ -407,17 +388,39 @@ function Hud({ act }: { act: HudActions }) {
         </span>
       </div>
       <Minimap m={m} act={act} />
-      {m.objectives.length ? (
-        <div data-hud="objectives" class="hud-panel hud-objectives">
-          <span class="obj-head">Objectives</span>
-          {m.objectives.map((o) => (
-            <span key={o.part ?? o.text} class={"obj" + (o.done ? " done" : "")} data-hud-part={o.part}>
-              {o.done ? "\u2713 " : "\u25c7 "}
-              {o.text}
-            </span>
+      {/* the right column stacks the objectives over the build list, so a long objectives panel pushes the list down */}
+      <div class="hud-right">
+        {m.objectives.length ? (
+          <div data-hud="objectives" class="hud-panel hud-objectives">
+            <span class="obj-head">Objectives</span>
+            {m.objectives.map((o) => (
+              <span key={o.part ?? o.text} class={"obj" + (o.done ? " done" : "")} data-hud-part={o.part}>
+                {o.done ? "\u2713 " : "\u25c7 "}
+                {o.text}
+              </span>
+            ))}
+          </div>
+        ) : null}
+        <div data-hud="build" class="hud-panel hud-build">
+          {m.buildable.map((bd) => (
+            <button key={bd.id} class={"build-btn" + (m.placing === bd.id ? " active" : "") + (bd.locked ? " locked" : "")} disabled={bd.locked !== null} onClick={() => (m.placing === bd.id ? act.cancel() : act.startPlacing(bd.id))} title={`${bd.name}: ${costText(bd)}${bd.key ? ` (${bd.key})` : ""}${bd.locked ? `, locked: ${bd.locked}` : ""}`}>
+              {bd.icon ? <img class="build-icon" src={bd.icon} alt="" /> : null}
+              {bd.name} {bd.key ? <span class="hotkey">{bd.key}</span> : null}
+              <span class="build-cost" data-cost>
+                {bd.wood}
+                <i class="res-wood" />
+                {bd.stone > 0 ? (
+                  <>
+                    {" "}
+                    {bd.stone}
+                    <i class="res-stone" />
+                  </>
+                ) : null}
+              </span>
+            </button>
           ))}
         </div>
-      ) : null}
+      </div>
       {m.notes.length ? (
         <div data-hud="notes" class="hud-panel hud-notes">
           {m.notes.map((n) => (

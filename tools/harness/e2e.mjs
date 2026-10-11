@@ -152,6 +152,9 @@ async function flow(browser, url, vp) {
     await page.selectOption('[data-ui="setup-victory"]', "king_of_hill");
     // stretch 2: a tribe trait from the setup reaches the sim (the rivals carry their personality traits)
     await page.selectOption('[data-ui="setup-trait"]', "devout");
+    // stretch 3: ley stones and wolf dens from the setup reach the sim
+    await page.selectOption('[data-ui="setup-ley"]', "3");
+    await page.selectOption('[data-ui="setup-wolves"]', "2");
     const vicText = await page.textContent('[data-ui="setup-victory-text"]');
     if (!/4 minutes/.test(vicText ?? "")) problem(`victory hint for King of the Hill: ${vicText}`);
     await check("setup");
@@ -161,6 +164,8 @@ async function flow(browser, url, vp) {
     if (rules?.id !== "king_of_hill" || rules.winner !== -1) problem(`skirmish rules ${JSON.stringify(rules)}`);
     const traits = await page.evaluate(() => window.__game.getSummary().traits);
     if (traits?.[0] !== "devout" || traits.length !== 3) problem(`skirmish traits ${JSON.stringify(traits)}`);
+    const living = await page.evaluate(() => ({ sites: window.__game.getSummary().sites.length, dens: window.__game.getSummary().counts.dens }));
+    if (living.sites < 1 || living.dens < 1) problem(`skirmish ley stones and wolf dens ${JSON.stringify(living)}`);
     const tribes = await page.evaluate(() => window.__game.getSummary().tribes.length);
     if (tribes !== 3) problem(`skirmish has ${tribes} tribes, expected 3`);
     await page.evaluate(() => window.__game.step(200));

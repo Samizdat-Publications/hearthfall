@@ -119,5 +119,8 @@ describe("wolf dens", () => {
         const n = s.terrain.size;
         expect(Math.hypot(Math.min(dx, n - dx), Math.min(dy, n - dy))).toBeGreaterThanOrEqual(min - 1);
       }
+    // a small three-tribe map still gets a den (distances shrink to a fifth of the map)
+    const small = new World({ ...base, seed: 1, map: { generator: "continents", size: 96, tribes: 3 }, wolfDens: 2 });
+    expect(small.beasts.dens.length).toBeGreaterThanOrEqual(1);
   });
 });

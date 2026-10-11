@@ -45,7 +45,9 @@ body.debug-overlap-hud .hud-overlap { display: block; }
 .waste { font-size: 11px; color: #fff; background: #c8312e; padding: 0 5px; align-self: flex-start; }
 .hud-spellbar { left: 50%; top: 10px; transform: translateX(-50%); display: flex; flex-wrap: wrap; justify-content: center; max-width: 440px; gap: 4px; padding: 4px 8px; pointer-events: auto; }
 /* BACKLOG 1: more than 8 spells (worship site unlocks) wrap into a second row of 8 under the first */
-.hud-build { right: 12px; top: 136px; display: flex; flex-direction: column; gap: 6px; padding: 6px; pointer-events: auto; }
+.hud-right { position: absolute; right: 12px; top: 10px; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; pointer-events: none; }
+.hud-right > .hud-panel { position: relative; top: auto; right: auto; }
+.hud-build { display: flex; flex-direction: column; gap: 6px; padding: 6px; pointer-events: auto; }
 .build-btn { border: 2px solid #8a8378; background: #5a3d26; color: #f4e6c8; border-radius: 0; padding: 6px 8px; font: 600 12px system-ui; cursor: pointer; min-width: 84px; text-align: left; }
 .hud-minimap { right: 12px; bottom: 12px; width: 156px; padding: 6px; display: flex; flex-direction: column; gap: 4px; pointer-events: auto; }
 .mm-pop { display: flex; align-items: baseline; gap: 4px; font-size: 16px; color: #8dff9a; }
@@ -76,7 +78,7 @@ body.debug-overlap-hud .hud-overlap { display: block; }
 .unit-icon { width: 16px; height: 16px; margin: -3px 3px -4px -3px; vertical-align: middle; image-rendering: pixelated; }
 .unit-chip { position: relative; font-size: 11px; background: #2b1d13; border: 1px solid #8a8378; padding: 1px 6px 3px; }
 .unit-hp { position: absolute; left: 0; bottom: 0; height: 2px; background: #8dbf5a; }
-.hud-objectives { right: 12px; top: 10px; width: 236px; display: flex; flex-direction: column; gap: 2px; padding: 5px 10px; white-space: normal; }
+.hud-objectives { width: 236px; display: flex; flex-direction: column; gap: 2px; padding: 5px 10px; white-space: normal; }
 .obj-head { font-size: 12px; color: #ffd27a; letter-spacing: 0.5px; }
 .obj { font-size: 11px; line-height: 1.3; }
 .obj.done { opacity: 0.6; text-decoration: line-through; }
