@@ -240,6 +240,9 @@ export function validateLevel(raw: unknown, pack: PackFiles, file = "level"): { 
     if (s.spawn === "hearth" && s.tribe !== undefined && s.tribe >= 0) hearths.add(s.tribe);
   });
   lv.tribes.forEach((_, k) => hearths.has(k) || bad("setup", `tribe ${k} has no hearth`));
+  // S4 L6-C: per-tribe building lists and painted ridges
+  lv.tribes.forEach((t, k) => t.buildings?.forEach((b) => buildings.has(b) || bad(`tribes.${k}.buildings`, `unknown building ${b}`)));
+  lv.map.paint?.forEach((p, k) => p.shape === "ridge" && !p.to && bad(`map.paint.${k}`, "a ridge needs to"));
   // prayer chains: every awaken names a dormant site, and every dormant site can be woken
   const dormant = new Set(lv.setup.flatMap((s) => (s.site?.dormant && s.site.tag ? [s.site.tag] : [])));
   lv.setup.forEach((s, k) => s.site?.dormant && !s.site.tag && bad(`setup.${k}.site`, "a dormant site needs a tag"));

@@ -1550,11 +1550,15 @@ export const LevelSchema = z.strictObject({
     landAboveSea: z.number().optional(),
     paint: z
       .array(
+        /** S4 L6-C: `cone` rises from the land around it to aboveSea at its center over r (a peak);
+         * `ridge` is a band `width` wide from `at` to `to` (a spine of hills, or a trench below sea) */
         z.strictObject({
-          shape: z.enum(["disc", "rect"]),
+          shape: z.enum(["disc", "rect", "cone", "ridge"]),
           at: point,
           r: pos.optional(),
           size: point.optional(),
+          to: point.optional(),
+          width: pos.optional(),
           aboveSea: z.number(),
           falloff: z.number().min(0).optional(),
         }),
@@ -1567,7 +1571,8 @@ export const LevelSchema = z.strictObject({
     /** worshipAfterSeconds (BACKLOG 88): the AI sends no worshippers before this much play time */
     /** maxPopulation (S4): the tribe's population cap never rises above this (dwellings still breed up to it) */
     /** keepRaiders (S4 L6-C): this rival's AI leaves its troops kneeling at a stone (a scripted pray raid) alone instead of drafting them into waves */
-    .array(z.strictObject({ ai: id.optional(), difficulty: id.optional(), maxTroops: z.number().int().min(0).optional(), maxPopulation: z.number().int().min(1).optional(), worshipAfterSeconds: z.number().min(0).optional(), keepRaiders: z.boolean().optional() }))
+    /** buildings (S4 L6-C): what this tribe may build, in place of the level's `buildings` list */
+    .array(z.strictObject({ ai: id.optional(), difficulty: id.optional(), maxTroops: z.number().int().min(0).optional(), maxPopulation: z.number().int().min(1).optional(), worshipAfterSeconds: z.number().min(0).optional(), keepRaiders: z.boolean().optional(), buildings: z.array(id).optional() }))
     .min(1)
     .max(4),
   /** spells unlocked at the start for every tribe (campaign unlocks are added for the player) */

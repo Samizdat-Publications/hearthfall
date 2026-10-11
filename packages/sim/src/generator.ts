@@ -23,17 +23,69 @@ export interface MapSpec {
   fog?: boolean;
 }
 
-/** A disc (r) or rectangle (size) set to sea + aboveSea, blended into its surroundings over `falloff` cells. */
+/**
+ * A disc (r), rectangle (size) or ridge (a band `width` wide from at to `to`) set to sea + aboveSea, blended
+ * into its surroundings over `falloff` cells; a cone (S4 L6-C) blends from its rim to the target at its center.
+ */
 export interface PaintSpec {
-  shape: "disc" | "rect";
+  shape: "disc" | "rect" | "cone" | "ridge";
   at: [number, number];
   r?: number;
   size?: [number, number];
+  to?: [number, number];
+  width?: number;
   aboveSea: number;
   falloff?: number;
 }
 
+/** S4 L6-C: a cone peaks at its center and meets the land at r */
+function paintCone(t: Terrain, sea: number, p: PaintSpec): void {
+  const n = t.size;
+  const r = p.r ?? 4;
+  const target = sea + p.aboveSea;
+  const reach = Math.ceil(r) + 1;
+  for (let dy = -reach; dy <= reach; dy++) {
+    for (let dx = -reach; dx <= reach; dx++) {
+      const x = Math.round(p.at[0]) + dx;
+      const y = Math.round(p.at[1]) + dy;
+      const ox = x - p.at[0];
+      const oy = y - p.at[1];
+      const d = Math.sqrt(ox * ox + oy * oy);
+      if (d >= r) continue;
+      const i = t.idx(wrap(x, n), wrap(y, n));
+      t.heights[i] = Math.round(t.heights[i] + (target - t.heights[i]) * (1 - d / r));
+    }
+  }
+}
+
+/** S4 L6-C: a ridge is every cell within width/2 of the segment at..to (no wrap across the seam within it) */
+function paintRidge(t: Terrain, sea: number, p: PaintSpec): void {
+  const n = t.size;
+  const fall = p.falloff ?? 3;
+  const target = sea + p.aboveSea;
+  const half = (p.width ?? 3) / 2;
+  const [ax, ay] = p.at;
+  const [bx, by] = p.to ?? p.at;
+  const sx = bx - ax;
+  const sy = by - ay;
+  const len2 = sx * sx + sy * sy;
+  const pad = Math.ceil(half + fall) + 1;
+  for (let y = Math.floor(Math.min(ay, by)) - pad; y <= Math.ceil(Math.max(ay, by)) + pad; y++) {
+    for (let x = Math.floor(Math.min(ax, bx)) - pad; x <= Math.ceil(Math.max(ax, bx)) + pad; x++) {
+      const k = len2 > 0 ? Math.max(0, Math.min(1, ((x - ax) * sx + (y - ay) * sy) / len2)) : 0;
+      const ox = x - (ax + sx * k);
+      const oy = y - (ay + sy * k);
+      const out = Math.sqrt(ox * ox + oy * oy) - half;
+      const i = t.idx(wrap(x, n), wrap(y, n));
+      if (out <= 0) t.heights[i] = target;
+      else if (out < fall) t.heights[i] = Math.round(t.heights[i] + (target - t.heights[i]) * (1 - out / fall));
+    }
+  }
+}
+
 function paintShape(t: Terrain, sea: number, p: PaintSpec): void {
+  if (p.shape === "cone") return paintCone(t, sea, p);
+  if (p.shape === "ridge") return paintRidge(t, sea, p);
   const n = t.size;
   const fall = p.falloff ?? 3;
   const target = sea + p.aboveSea;

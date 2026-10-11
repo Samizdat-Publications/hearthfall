@@ -60,6 +60,13 @@ export class LevelRuntime {
   readonly staged: boolean;
   /** building types every tribe may build in this level (null: all) */
   readonly allowed: Set<number> | null;
+  /** S4 L6-C: per tribe, its own `buildings` list in place of `allowed` (undefined: the level's) */
+  private readonly tribeAllowed: (Set<number> | undefined)[];
+
+  /** building types `tribe` may build in this level (null: all) */
+  allowedFor(tribe: number): Set<number> | null {
+    return this.tribeAllowed[tribe] ?? this.allowed;
+  }
   private w: World;
 
   /** S4: the level's cap on a tribe's people (followers), or -1 for none */
@@ -94,7 +101,9 @@ export class LevelRuntime {
     this.openedAt = def.objectives.map(() => -1);
     this.base = def.objectives.map(() => 0);
     this.staged = def.objectives.some((o) => ("fromStage" in o && o.fromStage === true) || o.type === "kill");
-    this.allowed = def.buildings ? new Set(def.buildings.map((b) => w.cfg.buildingIndex.get(b)!).filter((b) => b !== undefined)) : null;
+    const set = (ids: readonly string[]) => new Set(ids.map((b) => w.cfg.buildingIndex.get(b)!).filter((b) => b !== undefined));
+    this.allowed = def.buildings ? set(def.buildings) : null;
+    this.tribeAllowed = def.tribes.map((t) => (t.buildings ? set(t.buildings) : undefined));
   }
 
   private siteBy(tag: string): number {

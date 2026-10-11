@@ -172,4 +172,37 @@ describe("S4 L6-C level engine gaps", () => {
     expect(ok({ objectives: [{ type: "kill", n: 1, tribe: 4 }] })).toBe(false);
     expect(ok({ objectives: [{ type: "kill", n: 1, unit: "warden" }] })).toBe(true);
   });
+  it("map paint: a cone peaks at its center and meets the land at r; a ridge cuts a band from at to to", () => {
+    const def = base({
+      map: {
+        generator: "flat", size: 64, landAboveSea: 20,
+        paint: [
+          { shape: "cone", at: [32, 20], r: 10, aboveSea: 60 },
+          { shape: "ridge", at: [8, 48], to: [56, 48], width: 4, aboveSea: -20, falloff: 2 },
+        ],
+      },
+    });
+    const w = make(def);
+    const h = (x: number, y: number) => w.terrain.heights[w.terrain.idx(x, y)] - w.cfg.sea;
+    expect(h(32, 20)).toBe(60);
+    expect(h(37, 20)).toBe(40);
+    expect(h(43, 20)).toBe(20);
+    // a trench across the map, solid land beyond its width and falloff
+    for (const x of [8, 30, 56]) expect(h(x, 48)).toBe(-20);
+    expect(h(30, 51)).toBeGreaterThan(-20);
+    expect(h(30, 53)).toBe(20);
+    expect(h(60, 48)).toBe(20);
+  });
+
+  it("tribes[].buildings replaces the level's building list for that tribe", () => {
+    const def = base({ buildings: ["dwelling", "watchtower"], tribes: [{ buildings: ["dwelling"] }, { ai: "turtle" }] });
+    const w = make(def);
+    const tower = w.cfg.buildingIndex.get("watchtower")!;
+    const lodge = w.cfg.buildingIndex.get("warden_lodge")!;
+    expect(w.economy.buildingLock(0, tower)).toBe("not available in this level");
+    expect(w.economy.buildingLock(1, tower)).not.toBe("not available in this level");
+    expect(w.economy.buildingLock(1, lodge)).toBe("not available in this level");
+    const p = basePack();
+    expect(validateLevel({ ...def, tribes: [{ buildings: ["castle"] }, { ai: "turtle" }] }, p.files).level).toBeUndefined();
+  });
 });
