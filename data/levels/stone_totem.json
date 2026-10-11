@@ -1,45 +1,77 @@
 {
-  "$comment": "Teaching level 5: totems and building unlocks. Only the Shaper's prayer counts at a totem; this one grants the Warden Lodge for the rest of the campaign.",
+  "$comment": "Teaching level 5 (overhaul): totems and terrain shaping. The totem on the northern islet (reached with Raise Land) restores the Warden Lodge and lifts a permanent causeway across the 36 cell strait to the rival island; raiders cross it too. Build a lodge, burn their watchtowers, break the tribe.",
   "id": "stone_totem",
   "name": "The Stone Totem",
   "order": 5,
-  "description": "Your people forgot how to build a Warden Lodge, but the stone totem in the north remembers. Lead your Shaper there, raise a lodge, and hold out for seven minutes.",
+  "description": "Your people forgot how to build a Warden Lodge, but the totem on the northern islet remembers. Raise Land to reach it with your Shaper; it lifts a causeway the rival will use too. Hold the ley stone in the strait, burn their towers and break the tribe.",
   "seed": 505,
   "map": {
     "generator": "flat",
-    "size": 96,
+    "size": 128,
     "landAboveSea": -30,
     "paint": [
-      { "shape": "disc", "at": [26, 52], "r": 17, "aboveSea": 40, "falloff": 4 },
-      { "shape": "disc", "at": [30, 26], "r": 7, "aboveSea": 46, "falloff": 4 },
-      { "shape": "disc", "at": [72, 52], "r": 15, "aboveSea": 40, "falloff": 4 },
-      { "shape": "rect", "at": [49, 52], "size": [16, 6], "aboveSea": 36 }
+      { "shape": "disc", "at": [28, 64], "r": 18, "aboveSea": 40, "falloff": 4 },
+      { "shape": "disc", "at": [34, 30], "r": 7, "aboveSea": 46, "falloff": 4 },
+      { "shape": "disc", "at": [100, 64], "r": 18, "aboveSea": 40, "falloff": 4 },
+      { "shape": "disc", "at": [64, 64], "r": 6, "aboveSea": 40, "falloff": 3 }
     ]
   },
-  "tribes": [{}, { "ai": "aggressive", "difficulty": "easy", "maxTroops": 6 }],
+  "tribes": [{}, { "ai": "aggressive", "difficulty": "normal", "maxTroops": 12 }],
   "spells": ["bolt", "raise_land"],
   "buildings": ["dwelling", "watchtower"],
   "setup": [
-    { "spawn": "hearth", "tribe": 0, "at": [22, 54] },
-    { "spawn": "shaper", "tribe": 0, "at": [25, 50] },
-    { "spawn": "settler", "tribe": 0, "near": [22, 60], "count": 12 },
-    { "spawn": "hearth", "tribe": 1, "at": [76, 52] },
-    { "spawn": "shaper", "tribe": 1, "at": [72, 50] },
-    { "spawn": "settler", "tribe": 1, "near": [76, 58], "count": 10 },
-    { "spawn": "tree", "near": [14, 46], "count": 12, "spacing": 1.2 },
-    { "spawn": "tree", "near": [80, 44], "count": 10, "spacing": 1.2 },
-    { "spawn": "rock", "near": [16, 64], "count": 3, "spacing": 2 },
-    { "spawn": "totem", "at": [30, 26], "site": { "tag": "north_totem", "rewards": [{ "type": "unlockBuilding", "building": "warden_lodge" }, { "type": "message", "text": "The totem remembers: you can build a Warden Lodge." }] } }
+    { "spawn": "hearth", "tribe": 0, "at": [22, 64] },
+    { "spawn": "shaper", "tribe": 0, "at": [26, 58] },
+    { "spawn": "settler", "tribe": 0, "near": [22, 70], "count": 14 },
+    { "spawn": "hearth", "tribe": 1, "at": [108, 64] },
+    { "spawn": "shaper", "tribe": 1, "at": [104, 60] },
+    { "spawn": "settler", "tribe": 1, "near": [108, 70], "count": 10 },
+    { "spawn": "warden", "tribe": 1, "near": [92, 64], "count": 4 },
+    { "spawn": "warden", "tribe": 1, "near": [90, 64], "count": 4, "stance": "defensive" },
+    { "spawn": "warden_lodge", "tribe": 1, "at": [100, 56] },
+    { "spawn": "watchtower", "tribe": 1, "at": [88, 58] },
+    { "spawn": "watchtower", "tribe": 1, "at": [88, 70] },
+    { "spawn": "tree", "near": [14, 52], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [16, 78], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [34, 74], "count": 8, "spacing": 1.2 },
+    { "spawn": "rock", "near": [16, 66], "count": 4, "spacing": 2 },
+    { "spawn": "tree", "near": [112, 50], "count": 10, "spacing": 1.2 },
+    { "spawn": "tree", "near": [112, 80], "count": 8, "spacing": 1.2 },
+    { "spawn": "rock", "near": [98, 76], "count": 3, "spacing": 2 },
+    { "spawn": "tree", "near": [32, 28], "count": 4, "spacing": 1.2 },
+    { "spawn": "tree", "near": [62, 60], "count": 3, "spacing": 1.2 },
+    { "spawn": "ley_stone", "at": [64, 66], "site": { "tag": "mid_ley", "rewards": [{ "type": "message", "text": "The ley stone on the middle islet is yours. It pays mana while you hold it, and the rival will come to pray it away." }] } },
+    { "spawn": "watchtower", "tribe": 1, "at": [92, 60] },
+    { "spawn": "watchtower", "tribe": 1, "at": [92, 68] },
+    {
+      "spawn": "totem",
+      "at": [34, 30],
+      "site": {
+        "tag": "north_totem",
+        "rewards": [
+          { "type": "unlockBuilding", "building": "warden_lodge" },
+          { "type": "shape", "shape": "line", "at": [44, 64], "to": [84, 64], "width": 4, "aboveSea": 12, "falloff": 2, "seconds": 25 },
+          { "type": "reveal", "at": [92, 64], "r": 16 },
+          { "type": "message", "text": "The totem remembers the Warden Lodge, and a causeway rises from the sea toward the rival island. It will carry their raiders too." }
+        ]
+      }
+    }
   ],
   "objectives": [
-    { "type": "worship", "site": "north_totem", "text": "Lead your Shaper to the northern totem within ten minutes" },
-    { "type": "survive", "seconds": 420, "text": "Hold out for seven minutes" }
+    { "type": "worship", "site": "north_totem", "text": "Raise Land to the northern islet and have your Shaper pray at the totem" },
+    { "type": "build", "building": "warden_lodge", "n": 1, "after": 0, "text": "Raise a Warden Lodge and train wardens" },
+    { "type": "hold", "n": 1, "kind": "ley_stone", "seconds": 180, "after": 1, "text": "Cross the causeway, pray at the ley stone on the middle islet and hold it for three minutes" },
+    { "type": "destroy", "tribe": 1, "building": "watchtower", "after": 2, "text": "Burn all four of their Watchtowers" },
+    { "type": "eliminateAll", "after": 3, "text": "Break the rival tribe" }
   ],
-  "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 600 }],
+  "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 1200 }],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Only your Shaper can pray at a totem. Walk it north and order it to worship." }] },
-    { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "message", "text": "Build a Warden Lodge and train wardens before the raiders cross." }] },
-    { "when": { "type": "time", "seconds": 240 }, "do": [{ "type": "raid", "tribe": 1, "to": [22, 54] }, { "type": "message", "text": "Raiders are crossing the causeway!" }] }
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "charges", "spell": "raise_land", "n": 2 }, { "type": "message", "text": "Only your Shaper can pray at a totem. Walk her to the northern shore and Raise Land toward the islet." }] },
+    { "when": { "type": "area", "at": [34, 30], "r": 6, "unit": "shaper" }, "do": [{ "type": "message", "text": "Order the Shaper to worship the totem." }] },
+    { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "message", "text": "Build a Warden Lodge and train wardens before the raiders cross the causeway." }] },
+    { "when": { "type": "time", "seconds": 300 }, "do": [{ "type": "raid", "tribe": 1, "to": [22, 64] }, { "type": "message", "text": "Raiders are crossing the causeway!" }] },
+    { "when": { "type": "time", "seconds": 540, "every": 240 }, "do": [{ "type": "raid", "tribe": 1, "to": [22, 64], "n": 12 }, { "type": "message", "text": "Another band marches over the causeway." }] },
+    { "when": { "type": "time", "seconds": 900 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
   ],
   "unlocks": { "buildings": ["warden_lodge"] }
 }

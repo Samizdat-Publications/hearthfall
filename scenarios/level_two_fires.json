@@ -1,6 +1,6 @@
 {
   "id": "level_two_fires",
-  "description": "Campaign level 7 is completable: an aggressive player scouts through the fog and defeats both rival tribes.",
+  "description": "Campaign level 7 is completable: an aggressive hard bot prays at the seer stone, burns the northern Hearth, holds all three ley stones against the southern tribe for 150 s and breaks both rivals under fog.",
   "tags": [
     "fast",
     "levels"
@@ -15,11 +15,15 @@
       "offset": 2
     }
   ],
-  "runTicks": 12000,
+  "runTicks": 31000,
   "assert": [
     {
       "at": 12000,
-      "expr": "level.won && !alive(1) && !alive(2) && alive(0) && invariants() == 0"
+      "expr": "!level.won && alive(0)"
+    },
+    {
+      "at": 31000,
+      "expr": "level.won && !alive(1) && !alive(2) && alive(0) && level.objectivesDone == 4 && invariants() == 0"
     }
   ]
 }

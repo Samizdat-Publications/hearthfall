@@ -1,0 +1,10 @@
+{
+  "id": "level_narrow_water_idle_loses",
+  "description": "Campaign level 1 has a real time limit: an idle player never builds, grows or prays and runs out of the fifteen minutes.",
+  "tags": ["fast", "levels"],
+  "level": "narrow_water",
+  "runTicks": 18100,
+  "assert": [
+    { "at": 18100, "expr": "level.lost && !level.won && site('far_shrine').by != 0 && events.count('levelLost') == 1" }
+  ]
+}

@@ -1,8 +1,7 @@
 {
   "id": "level_stone_totem",
-  "description": "Campaign level 5 is completable: the Shaper prays at the northern totem (only its prayer counts), the Warden Lodge opens, and a defensive player holds out for seven minutes.",
+  "description": "Campaign level 5 is completable: the Shaper raises a ridge to the northern islet and prays at the totem (the Warden Lodge opens and a causeway rises), a lodge goes up, and an aggressive opponent bot crosses, holds the middle ley stone, burns the rival towers and breaks the tribe.",
   "tags": [
-    "fast",
     "levels"
   ],
   "level": "stone_totem",
@@ -10,27 +9,67 @@
     {
       "type": "opponent",
       "tribe": 0,
-      "personality": "turtle",
+      "personality": "aggressive",
       "difficulty": "normal",
       "offset": 1
     }
   ],
   "commands": [
     {
-      "tick": 40,
+      "tick": 2,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.shapers",
+        "to": [
+          29.5,
+          47.5
+        ]
+      }
+    },
+    {
+      "tick": 400,
+      "tribe": 0,
+      "type": "cast",
+      "args": {
+        "spell": "raise_land",
+        "target": [
+          31,
+          40.5
+        ]
+      }
+    },
+    {
+      "tick": 700,
       "tribe": 0,
       "type": "worship",
       "args": {
         "units": "tribe0.shapers",
         "site": "north_totem"
       }
+    },
+    {
+      "tick": 2200,
+      "tribe": 0,
+      "type": "placePlan",
+      "args": {
+        "building": "warden_lodge",
+        "at": [
+          32,
+          68
+        ]
+      }
     }
   ],
-  "runTicks": 8800,
+  "runTicks": 14000,
   "assert": [
     {
-      "at": 8800,
-      "expr": "level.won && site('north_totem').by == 0 && level.objectivesDone == 2 && alive(0) && invariants() == 0"
+      "at": 2000,
+      "expr": "level.objectivesDone >= 1 && !level.won"
+    },
+    {
+      "at": 14000,
+      "expr": "level.won && site('north_totem').by == 0 && level.objectivesDone == 5 && alive(0) && !alive(1) && invariants() == 0"
     }
   ]
 }

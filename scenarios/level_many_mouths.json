@@ -1,8 +1,7 @@
 {
   "id": "level_many_mouths",
-  "description": "Campaign level 6 is completable: a growing player reaches 40 followers well before the 15 minute winter while a sneaky rival raids.",
+  "description": "Campaign level 6 is completable: wardens clear the three wolf dens (the hill shrine is prayed once its pack is gone), followers hold the southern ley stone, the tribe grows to 50 and the raiders are broken.",
   "tags": [
-    "fast",
     "levels"
   ],
   "level": "many_mouths",
@@ -12,14 +11,78 @@
       "tribe": 0,
       "personality": "turtle",
       "difficulty": "normal",
-      "offset": 1
+      "offset": 1,
+      "worshipAfterSeconds": 99999
     }
   ],
-  "runTicks": 9600,
+  "commands": [
+    {
+      "tick": 4000,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.wardens",
+        "to": [
+          58,
+          46
+        ],
+        "attack": true
+      }
+    },
+    {
+      "tick": 5400,
+      "tribe": 0,
+      "type": "worship",
+      "args": {
+        "units": "tribe0.settlers",
+        "site": "hill_shrine"
+      }
+    },
+    {
+      "tick": 6800,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.wardens",
+        "to": [
+          86,
+          118
+        ],
+        "attack": true
+      }
+    },
+    {
+      "tick": 8400,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.wardens",
+        "to": [
+          98,
+          50
+        ],
+        "attack": true
+      }
+    },
+    {
+      "tick": 10000,
+      "tribe": 0,
+      "type": "worship",
+      "args": {
+        "units": "tribe0.settlers",
+        "site": "south_ley"
+      }
+    }
+  ],
+  "runTicks": 17000,
   "assert": [
     {
-      "at": 9600,
-      "expr": "level.won && invariants() == 0"
+      "at": 3000,
+      "expr": "!level.won && alive(0)"
+    },
+    {
+      "at": 17000,
+      "expr": "level.won && !alive(1) && alive(0) && level.objectivesDone == 6 && invariants() == 0"
     }
   ]
 }

@@ -1,17 +1,19 @@
 {
   "id": "level_narrow_water",
-  "description": "Campaign level 1 is completable: the Shaper raises a ridge across the strait and three followers pray at the far shrine.",
+  "description": "Campaign level 1 is completable in four steps: the Shaper walks to the shore, two dwellings go up and the tribe breeds to 14, the dormant shrine wakes, and after a Raise Land ridge three followers pray.",
   "tags": ["fast", "levels"],
   "level": "narrow_water",
   "commands": [
-    { "tick": 2, "tribe": 0, "type": "move", "args": { "units": "tribe0.shapers", "to": [29, 32] } },
-    { "tick": 260, "tribe": 0, "type": "cast", "args": { "spell": "raise_land", "target": [38, 32] } },
-    { "tick": 420, "tribe": 0, "type": "worship", "args": { "units": "tribe0.settlers", "site": "far_shrine" } }
+    { "tick": 2, "tribe": 0, "type": "move", "args": { "units": "tribe0.shapers", "to": [28, 32] } },
+    { "tick": 3, "tribe": 0, "type": "placePlan", "args": { "building": "dwelling", "at": [14, 39] } },
+    { "tick": 4, "tribe": 0, "type": "placePlan", "args": { "building": "dwelling", "at": [21, 25] } },
+    { "tick": 300, "tribe": 0, "type": "cast", "args": { "spell": "raise_land", "target": [38, 32] } },
+    { "tick": 4250, "tribe": 0, "type": "worship", "args": { "units": "tribe0.settlers", "site": "far_shrine" } }
   ],
-  "runTicks": 2400,
+  "runTicks": 7000,
   "assert": [
     { "at": 20, "expr": "charges(0, 'raise_land') == 2 && !level.won" },
-    { "at": 420, "expr": "terrain.minHeightAlong([29,32],[38,32]) >= sea" },
-    { "at": 2400, "expr": "level.won && site('far_shrine').by == 0 && charges(0, 'bolt') == 2 && events.count('levelWon') == 1 && invariants() == 0" }
+    { "at": 400, "expr": "terrain.minHeightAlong([29,32],[38,32]) >= sea && level.objectivesDone >= 1 && !level.won" },
+    { "at": 7000, "expr": "level.won && site('far_shrine').by == 0 && charges(0, 'bolt') == 2 && level.objectivesDone == 4 && events.count('levelWon') == 1 && invariants() == 0" }
   ]
 }

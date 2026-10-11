@@ -1,13 +1,24 @@
 {
   "id": "level_contested_shrine",
-  "description": "Campaign level 2 is completable at a human pace: the followers are only sent after a minute and still claim the hill shrine before the rival tribe.",
-  "tags": ["fast", "levels"],
-  "level": "contested_shrine",
-  "commands": [
-    { "tick": 1200, "tribe": 0, "type": "worship", "args": { "units": "tribe0.settlers", "site": "hill_shrine" } }
+  "description": "Campaign level 2 is completable: a turtle opponent bot for the player claims the hill shrine, wins the race to the pass shrine against the rival tribe, and holds the northern ley stone for two minutes.",
+  "tags": [
+    "levels"
   ],
-  "runTicks": 2400,
+  "level": "contested_shrine",
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "turtle",
+      "difficulty": "normal",
+      "offset": 1
+    }
+  ],
+  "runTicks": 9000,
   "assert": [
-    { "at": 2400, "expr": "level.won && site('hill_shrine').by == 0 && !level.lost && invariants() == 0" }
+    {
+      "at": 9000,
+      "expr": "level.won && site('hill_shrine').by == 0 && site('pass_shrine').by == 0 && level.objectivesDone == 3 && invariants() == 0"
+    }
   ]
 }

@@ -1,40 +1,66 @@
 {
-  "$comment": "Teaching level 4: Reliquaries. A Reliquary can be prayed at more than once; its first prayer teaches a spell the campaign keeps (BACKLOG 9 learned carry).",
+  "$comment": "Teaching level 4 (overhaul): reliquaries and growth. Pray at the Reliquary (it teaches Whirlwind, remembers the Spirit Well and answers three times), raise eight dwellings, build a Spirit Well and grow to 56 followers within twenty five minutes.",
   "id": "old_reliquary",
   "name": "The Old Reliquary",
   "order": 4,
-  "description": "An old Reliquary stands on the hill. Pray there to learn Whirlwind, pray again for more charges, and grow your tribe to 24 followers before the season turns.",
+  "description": "An old Reliquary stands on the hill. Pray there to learn Whirlwind and to remember the Spirit Well, raise eight dwellings, build a well and grow your tribe to 56 followers before the season turns.",
   "seed": 404,
   "map": {
     "generator": "flat",
-    "size": 96,
+    "size": 128,
     "landAboveSea": 30,
     "paint": [
-      { "shape": "disc", "at": [58, 48], "r": 6, "aboveSea": 44, "falloff": 6 },
-      { "shape": "disc", "at": [48, 16], "r": 10, "aboveSea": -30, "falloff": 4 },
-      { "shape": "disc", "at": [48, 80], "r": 10, "aboveSea": -30, "falloff": 4 }
+      { "shape": "disc", "at": [76, 64], "r": 7, "aboveSea": 44, "falloff": 7 },
+      { "shape": "disc", "at": [64, 18], "r": 12, "aboveSea": -30, "falloff": 4 },
+      { "shape": "disc", "at": [64, 110], "r": 12, "aboveSea": -30, "falloff": 4 },
+      { "shape": "disc", "at": [112, 36], "r": 9, "aboveSea": -30, "falloff": 4 }
     ]
   },
   "tribes": [{}],
   "spells": ["bolt", "raise_land"],
   "buildings": ["dwelling", "watchtower"],
   "setup": [
-    { "spawn": "hearth", "tribe": 0, "at": [26, 48] },
-    { "spawn": "shaper", "tribe": 0, "at": [29, 46] },
-    { "spawn": "settler", "tribe": 0, "near": [29, 51], "count": 10 },
-    { "spawn": "tree", "near": [18, 38], "count": 12, "spacing": 1.2 },
-    { "spawn": "tree", "near": [36, 60], "count": 10, "spacing": 1.2 },
-    { "spawn": "rock", "near": [20, 58], "count": 3, "spacing": 2 },
-    { "spawn": "reliquary", "at": [58, 48], "site": { "tag": "old_reliquary", "worshippers": 4, "prayerSeconds": 30, "uses": 3, "rewards": [{ "type": "unlockSpell", "spell": "whirlwind" }, { "type": "charges", "spell": "whirlwind", "n": 1 }, { "type": "message", "text": "The Reliquary teaches Whirlwind. It can answer twice more." }] } }
+    { "spawn": "hearth", "tribe": 0, "at": [30, 64] },
+    { "spawn": "shaper", "tribe": 0, "at": [34, 62] },
+    { "spawn": "settler", "tribe": 0, "near": [34, 68], "count": 12 },
+    { "spawn": "tree", "near": [22, 52], "count": 14, "spacing": 1.2 },
+    { "spawn": "tree", "near": [40, 78], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [24, 80], "count": 10, "spacing": 1.2 },
+    { "spawn": "tree", "near": [44, 50], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [22, 72], "count": 4, "spacing": 2 },
+    { "spawn": "rock", "near": [44, 70], "count": 3, "spacing": 2 },
+    { "spawn": "tree", "near": [96, 84], "count": 10, "spacing": 1.2 },
+    {
+      "spawn": "reliquary",
+      "at": [76, 64],
+      "site": {
+        "tag": "old_reliquary",
+        "worshippers": 4,
+        "prayerSeconds": 30,
+        "uses": 3,
+        "rewards": [
+          { "type": "unlockSpell", "spell": "whirlwind" },
+          { "type": "charges", "spell": "whirlwind", "n": 1 },
+          { "type": "unlockBuilding", "building": "spirit_well" },
+          { "type": "message", "text": "The Reliquary teaches Whirlwind and your people remember the Spirit Well. It can answer twice more." }
+        ]
+      }
+    }
   ],
   "objectives": [
     { "type": "worship", "site": "old_reliquary", "text": "Pray at the Reliquary on the hill" },
-    { "type": "followers", "n": 24, "text": "Grow to 24 followers" }
+    { "type": "build", "building": "dwelling", "n": 8, "after": 0, "text": "Raise eight dwellings" },
+    { "type": "build", "building": "spirit_well", "n": 1, "after": 1, "text": "Build a Spirit Well (the Reliquary remembered how)" },
+    { "type": "followers", "n": 56, "after": 2, "text": "Grow to 56 followers" }
   ],
-  "lose": [{ "type": "timeLimit", "seconds": 900 }],
+  "lose": [{ "type": "timeLimit", "seconds": 1500 }],
   "triggers": [
     { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Send four followers to pray at the Reliquary. Build dwellings so your tribe grows." }] },
-    { "when": { "type": "worship", "site": "old_reliquary" }, "do": [{ "type": "spell", "spell": "ward", "at": [58, 48] }, { "type": "message", "text": "A ward settles over the hill." }] },
-    { "when": { "type": "time", "seconds": 600 }, "do": [{ "type": "message", "text": "Five minutes of the season remain." }] }
-  ]
+    { "when": { "type": "worship", "site": "old_reliquary" }, "do": [{ "type": "spell", "spell": "ward", "at": [76, 64] }, { "type": "message", "text": "A ward settles over the hill." }] },
+    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "message", "text": "Now plan a Spirit Well near the Hearth. It adds mana income." }] },
+    { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "message", "text": "Upgrade your dwellings so they hold more and breed on. The Reliquary prayed again gives more Whirlwinds." }] },
+    { "when": { "type": "followers", "n": 24 }, "do": [{ "type": "message", "text": "Two dozen followers. Keep breeding up; the winter is long." }] },
+    { "when": { "type": "time", "seconds": 1200 }, "do": [{ "type": "message", "text": "Five minutes of the season remain." }] }
+  ],
+  "unlocks": { "spells": ["whirlwind"] }
 }

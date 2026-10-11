@@ -1,15 +1,10 @@
 {
   "id": "level_stone_totem_idle_loses",
-  "description": "Campaign level 5 has a real loss: a player who never brings the Shaper to the totem loses at ten minutes even though the Hearth survives.",
-  "tags": [
-    "levels"
-  ],
+  "description": "Campaign level 5 has a real loss: a player who never brings the Shaper to the totem is never given the causeway or the lodge and loses on the Hearth or the clock.",
+  "tags": ["levels"],
   "level": "stone_totem",
-  "runTicks": 12020,
+  "runTicks": 24100,
   "assert": [
-    {
-      "at": 12020,
-      "expr": "level.lost && !level.won && site('north_totem').by == -1 && invariants() == 0"
-    }
+    { "at": 24100, "expr": "level.lost && !level.won && site('north_totem').by == -1 && invariants() == 0" }
   ]
 }

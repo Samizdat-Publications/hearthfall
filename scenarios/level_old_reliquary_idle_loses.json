@@ -1,19 +1,11 @@
 {
   "id": "level_old_reliquary_idle_loses",
-  "description": "Campaign level 4 has a real loss: a player who never prays loses when the season ends at 15 minutes.",
-  "tags": [
-    "levels"
-  ],
+  "description": "Campaign level 4 has a real loss: a player who never prays loses when the season ends at 25 minutes.",
+  "tags": ["levels"],
   "level": "old_reliquary",
-  "runTicks": 18020,
+  "runTicks": 30020,
   "assert": [
-    {
-      "at": 17000,
-      "expr": "!level.won && !level.lost"
-    },
-    {
-      "at": 18020,
-      "expr": "level.lost && !level.won && invariants() == 0"
-    }
+    { "at": 29000, "expr": "!level.won && !level.lost" },
+    { "at": 30020, "expr": "level.lost && !level.won && invariants() == 0" }
   ]
 }

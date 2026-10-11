@@ -1,38 +1,53 @@
 {
-  "$comment": "Teaching level 2: worship races. A rival tribe wants the same shrine; whoever finishes the prayer first takes its gift.",
+  "$comment": "Teaching level 2 (overhaul): worship races on a 128 map. The hill shrine is a safe warm-up; the ridge shrine in the pass is a real race against the rival, who starts walking at minute 3; then a ley stone must be held for two minutes while the rival's worshippers try to pray it away.",
   "id": "contested_shrine",
   "name": "The Contested Shrine",
   "order": 2,
-  "description": "A shrine stands on the hill between you and a rival tribe. Four worshippers pray at full speed; each one missing halves it. Claim it before they do.",
+  "description": "Two shrines and a ley stone lie between you and a rival tribe. Take the hill shrine, win the race to the shrine in the pass, then hold the ley stone against their worshippers. Four praying followers work at full speed; each one missing halves it.",
   "seed": 202,
   "map": {
     "generator": "flat",
-    "size": 96,
+    "size": 128,
     "landAboveSea": 30,
     "paint": [
-      { "shape": "disc", "at": [34, 48], "r": 5, "aboveSea": 46, "falloff": 6 },
-      { "shape": "disc", "at": [48, 20], "r": 9, "aboveSea": -30, "falloff": 4 },
-      { "shape": "disc", "at": [48, 78], "r": 9, "aboveSea": -30, "falloff": 4 }
+      { "shape": "disc", "at": [44, 64], "r": 5, "aboveSea": 46, "falloff": 6 },
+      { "shape": "disc", "at": [64, 22], "r": 16, "aboveSea": -30, "falloff": 4 },
+      { "shape": "disc", "at": [64, 106], "r": 16, "aboveSea": -30, "falloff": 4 },
+      { "shape": "disc", "at": [96, 64], "r": 5, "aboveSea": 44, "falloff": 6 }
     ]
   },
-  "tribes": [{}, { "ai": "turtle", "difficulty": "easy", "worshipAfterSeconds": 90 }],
+  "tribes": [{}, { "ai": "turtle", "difficulty": "easy", "worshipAfterSeconds": 120, "maxTroops": 4 }],
   "spells": ["bolt", "raise_land"],
   "buildings": ["dwelling", "watchtower"],
   "setup": [
-    { "spawn": "hearth", "tribe": 0, "at": [22, 48] },
-    { "spawn": "shaper", "tribe": 0, "at": [25, 46] },
-    { "spawn": "settler", "tribe": 0, "near": [25, 51], "count": 8 },
-    { "spawn": "hearth", "tribe": 1, "at": [78, 48] },
-    { "spawn": "shaper", "tribe": 1, "at": [75, 46] },
-    { "spawn": "settler", "tribe": 1, "near": [75, 51], "count": 6 },
-    { "spawn": "tree", "near": [16, 38], "count": 10, "spacing": 1.2 },
-    { "spawn": "tree", "near": [84, 58], "count": 10, "spacing": 1.2 },
-    { "spawn": "shrine", "at": [34, 48], "site": { "tag": "hill_shrine", "worshippers": 4, "prayerSeconds": 45, "rewards": [{ "type": "unlockSpell", "spell": "lightning" }, { "type": "charges", "spell": "lightning", "n": 1 }, { "type": "message", "text": "Lightning is yours." }] } }
+    { "spawn": "hearth", "tribe": 0, "at": [22, 64] },
+    { "spawn": "shaper", "tribe": 0, "at": [25, 62] },
+    { "spawn": "settler", "tribe": 0, "near": [25, 67], "count": 10 },
+    { "spawn": "hearth", "tribe": 1, "at": [106, 64] },
+    { "spawn": "shaper", "tribe": 1, "at": [103, 62] },
+    { "spawn": "settler", "tribe": 1, "near": [103, 67], "count": 8 },
+    { "spawn": "tree", "near": [16, 52], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [30, 78], "count": 10, "spacing": 1.2 },
+    { "spawn": "tree", "near": [112, 76], "count": 10, "spacing": 1.2 },
+    { "spawn": "tree", "near": [100, 50], "count": 8, "spacing": 1.2 },
+    { "spawn": "rock", "near": [18, 74], "count": 3, "spacing": 2 },
+    { "spawn": "rock", "near": [108, 52], "count": 3, "spacing": 2 },
+    { "spawn": "shrine", "at": [44, 64], "site": { "tag": "hill_shrine", "worshippers": 4, "prayerSeconds": 45, "rewards": [{ "type": "unlockSpell", "spell": "lightning" }, { "type": "charges", "spell": "lightning", "n": 1 }, { "type": "message", "text": "Lightning is yours. The shrine in the pass is next: the rival is already stirring." }] } },
+    { "spawn": "shrine", "at": [66, 64], "site": { "tag": "pass_shrine", "worshippers": 4, "prayerSeconds": 30, "rewards": [{ "type": "charges", "spell": "lightning", "n": 2 }, { "type": "charges", "spell": "bolt", "n": 3 }, { "type": "message", "text": "The pass shrine is yours: two more Lightnings and three Bolts. Now hold the ley stone." }] } },
+    { "spawn": "watchtower", "tribe": 0, "at": [52, 38] },
+    { "spawn": "ley_stone", "at": [48, 34], "site": { "tag": "north_ley", "rewards": [{ "type": "message", "text": "The ley stone is yours and pays mana while you hold it. Their worshippers will try to pray it away." }] } }
   ],
-  "objectives": [{ "type": "worship", "site": "hill_shrine", "text": "Claim the hill shrine before the rival tribe" }],
-  "lose": [{ "type": "siteLost", "site": "hill_shrine" }],
+  "objectives": [
+    { "type": "worship", "site": "hill_shrine", "text": "Claim the hill shrine with four followers" },
+    { "type": "worship", "site": "pass_shrine", "after": 0, "text": "Win the race to the shrine in the pass before the rival tribe" },
+    { "type": "hold", "n": 1, "kind": "ley_stone", "seconds": 120, "after": 1, "text": "Pray at the northern ley stone and hold it for two minutes" }
+  ],
+  "lose": [{ "type": "siteLost", "site": "pass_shrine" }, { "type": "siteLost", "site": "hill_shrine" }, { "type": "timeLimit", "seconds": 1200 }, { "type": "hearthLost" }],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Select four followers and order them to worship the hill shrine." }] }
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Select four followers and order them to worship the hill shrine." }] },
+    { "when": { "type": "time", "seconds": 120 }, "do": [{ "type": "message", "text": "The rival tribe has set out to pray at the stones!" }] },
+    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "message", "text": "Garrison the Watchtower beside the ley stone: worshippers who walk into its range are shot down." }] },
+    { "when": { "type": "time", "seconds": 900 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
   ],
   "unlocks": { "spells": ["lightning"] }
 }

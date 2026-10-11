@@ -1,9 +1,9 @@
 {
-  "$comment": "Teaching level 1: Raise Land. The shrine sits on an islet across a strait; the Shaper must lift a ridge to reach it.",
+  "$comment": "Teaching level 1 (overhaul): a gentle tutorial in four steps. Walk the Shaper to the shore, raise two dwellings, grow to 14 followers (the dormant islet shrine wakes), then Raise Land across the strait and pray.",
   "id": "narrow_water",
   "name": "The Narrow Water",
   "order": 1,
-  "description": "A shrine waits on the islet across the strait. Walk your Shaper to the shore and Raise Land toward it, then send three followers to pray.",
+  "description": "A shrine sleeps on the islet across the strait. Walk your Shaper to the shore, build two dwellings and grow the tribe to fourteen. Then the shrine wakes: Raise Land toward it and send three followers to pray.",
   "seed": 101,
   "map": {
     "generator": "flat",
@@ -21,16 +21,35 @@
     { "spawn": "hearth", "tribe": 0, "at": [14, 32] },
     { "spawn": "shaper", "tribe": 0, "at": [17, 30] },
     { "spawn": "settler", "tribe": 0, "near": [17, 35], "count": 6 },
-    { "spawn": "tree", "near": [12, 24], "count": 8, "spacing": 1.2 },
-    { "spawn": "tree", "near": [22, 40], "count": 6, "spacing": 1.2 },
-    { "spawn": "shrine", "at": [46, 32], "site": { "tag": "far_shrine", "worshippers": 3, "rewards": [{ "type": "charges", "spell": "bolt", "n": 2 }, { "type": "message", "text": "The shrine answers: two Bolts are yours to cast." }] } }
+    { "spawn": "tree", "near": [12, 24], "count": 10, "spacing": 1.2 },
+    { "spawn": "tree", "near": [22, 40], "count": 8, "spacing": 1.2 },
+    { "spawn": "tree", "near": [24, 28], "count": 6, "spacing": 1.2 },
+    { "spawn": "tree", "near": [44, 28], "count": 4, "spacing": 1.2 },
+    {
+      "spawn": "shrine",
+      "at": [46, 32],
+      "site": {
+        "tag": "far_shrine",
+        "dormant": true,
+        "worshippers": 3,
+        "rewards": [{ "type": "charges", "spell": "bolt", "n": 2 }, { "type": "message", "text": "The shrine answers: two Bolts are yours to cast." }]
+      }
+    }
   ],
-  "objectives": [{ "type": "worship", "site": "far_shrine", "text": "Pray at the shrine across the strait within ten minutes" }],
-  "lose": [{ "type": "timeLimit", "seconds": 600 }],
+  "objectives": [
+    { "type": "reach", "at": [28, 32], "r": 4, "text": "Walk your Shaper to the eastern shore of the island" },
+    { "type": "build", "building": "dwelling", "n": 2, "after": 0, "text": "Raise two dwellings so the tribe can breed (D places a plan)" },
+    { "type": "followers", "n": 14, "after": 1, "text": "Grow the tribe to 14 followers" },
+    { "type": "worship", "site": "far_shrine", "after": 2, "text": "Raise Land across the strait and send three followers to the shrine" }
+  ],
+  "lose": [{ "type": "timeLimit", "seconds": 900 }],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "charges", "spell": "raise_land", "n": 2 }, { "type": "message", "text": "Walk the Shaper to the eastern shore and Raise Land toward the islet." }] },
-    { "when": { "type": "time", "seconds": 150 }, "do": [{ "type": "message", "text": "Strait still open? Raise Land recharges from your mana; cast it from the very edge of the shore." }] },
-    { "when": { "type": "time", "seconds": 420 }, "do": [{ "type": "message", "text": "The tide turns at ten minutes. If you are stuck, restart the level from the pause menu." }] }
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "charges", "spell": "raise_land", "n": 2 }, { "type": "message", "text": "Walk the Shaper to the eastern shore of the island." }] },
+    { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "message", "text": "Now plan two dwellings near the Hearth. Settlers chop wood and build them." }] },
+    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "message", "text": "Dwellings breed new followers. Keep them stocked with wood and wait for the tribe to grow." }] },
+    { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "awaken", "site": "far_shrine" }, { "type": "reveal", "at": [46, 32], "r": 10 }, { "type": "message", "text": "The shrine across the strait is waking. Raise Land from the shore, then send three followers." }] },
+    { "when": { "type": "time", "seconds": 420 }, "do": [{ "type": "message", "text": "Strait still open? Raise Land recharges from your mana; cast it from the very edge of the shore." }] },
+    { "when": { "type": "time", "seconds": 720 }, "do": [{ "type": "message", "text": "Three minutes remain. If you are stuck, restart the level from the pause menu." }] }
   ],
   "unlocks": { "spells": ["raise_land"] }
 }

@@ -1,12 +1,75 @@
 {
   "id": "level_hold_the_line",
-  "description": "Campaign level 3 is completable: a defensive opponent AI plays the player and keeps the Hearth standing against both war bands for five minutes.",
-  "tags": ["fast", "levels"],
+  "description": "Campaign level 3 is completable: an aggressive opponent bot for the player raises towers, holds the isthmus against the war bands, then burns the rival Warden Lodge and Hearth.",
+  "tags": [
+    "levels"
+  ],
   "level": "hold_the_line",
-  "bots": [{ "type": "opponent", "tribe": 0, "personality": "turtle", "difficulty": "normal", "offset": 1 }],
-  "runTicks": 6000,
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "turtle",
+      "difficulty": "normal",
+      "offset": 1
+    }
+  ],
+  "commands": [
+    {
+      "tick": 1,
+      "tribe": 0,
+      "type": "setRally",
+      "args": {
+        "building": "tribe0.warden_lodges",
+        "at": [
+          40,
+          64
+        ]
+      }
+    },
+    {
+      "tick": 2,
+      "tribe": 0,
+      "type": "train",
+      "args": {
+        "building": "tribe0.warden_lodges",
+        "count": 5
+      }
+    },
+    {
+      "tick": 4,
+      "tribe": 0,
+      "type": "placePlan",
+      "args": {
+        "building": "watchtower",
+        "at": [
+          44,
+          66
+        ]
+      }
+    },
+    {
+      "tick": 5,
+      "tribe": 0,
+      "type": "placePlan",
+      "args": {
+        "building": "watchtower",
+        "at": [
+          38,
+          56
+        ]
+      }
+    }
+  ],
+  "runTicks": 16000,
   "assert": [
-    { "at": 3600, "expr": "events.count('triggerFired') == 4 && events.count('raid') == 2 && !level.won" },
-    { "at": 6000, "expr": "level.won && alive(0) && invariants() == 0" }
+    {
+      "at": 3000,
+      "expr": "alive(0) && !level.won"
+    },
+    {
+      "at": 16000,
+      "expr": "level.won && alive(0) && level.objectivesDone == 4 && invariants() == 0"
+    }
   ]
 }
