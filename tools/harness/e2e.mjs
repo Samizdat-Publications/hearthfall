@@ -539,6 +539,74 @@ async function flow(browser, url, vp) {
   return res;
 }
 
+/**
+ * Leg 5 (L5-C gate): two pages on one relay. The host opens a room from Play together, the partner joins
+ * with the code, the host starts, both play the same world in lockstep (orders from each side, a forged
+ * order refused on both), and when the host quits the partner's match ends with "partner left".
+ */
+async function lanFlow(browser, url) {
+  const res = { viewport: "lan", ok: true, screens: [], problems: [] };
+  const problem = (s) => {
+    res.ok = false;
+    res.problems.push(s);
+  };
+  const a = await openGame(browser, url + "?menu=1", { width: 1280, height: 720 });
+  const b = await openGame(browser, url + "?menu=1", { width: 1280, height: 720 });
+  const net = (p) => p.evaluate(() => window.__game.net());
+  const until = (p, fn, arg, ms = 20000) => p.waitForFunction(fn, arg, { timeout: ms });
+  try {
+    await a.page.click('[data-ui="together"]');
+    await b.page.click('[data-ui="together"]');
+    await a.page.click('[data-ui="net-host"]');
+    await until(a.page, () => window.__game.net()?.code);
+    const code = (await net(a.page)).code;
+    const shown = await a.page.textContent('[data-ui="net-code-shown"]');
+    if (!shown?.includes(code)) problem(`host page shows "${shown}", room code ${code}`);
+    await a.page.screenshot({ path: `${DIR}lan-host-lobby.png` });
+    res.screens.push({ name: "lan-host-lobby" });
+    // a bad code is caught on the page; then the real code joins
+    await b.page.fill('[data-ui="net-code"]', "x1");
+    await b.page.click('[data-ui="net-join"]');
+    if (!(await b.page.textContent('[data-ui="net-message"]'))?.includes("four letter")) problem("a bad room code shows no note");
+    await b.page.fill('[data-ui="net-code"]', code.toLowerCase());
+    await b.page.click('[data-ui="net-join"]');
+    await until(a.page, () => !document.querySelector('[data-ui="net-start"]')?.disabled);
+    await a.page.click('[data-ui="net-start"]');
+    await until(a.page, () => window.__game.screen() === "none" && window.__game.net()?.state === "playing");
+    await until(b.page, () => window.__game.screen() === "none" && window.__game.net()?.state === "playing");
+    const [na, nb] = [await net(a.page), await net(b.page)];
+    if (na.localTribe !== 0 || nb.localTribe !== 1 || nb.role !== "peer") problem(`seats: host ${JSON.stringify(na)}, partner ${JSON.stringify(nb)}`);
+    // each side orders its own settlers; the partner also forges an order for the host's tribe
+    await a.page.evaluate(() => window.__game.command({ type: "move", args: { units: "tribe0.settlers", to: [10, 10] } }));
+    await b.page.evaluate(() => window.__game.command({ type: "move", args: { units: "tribe1.settlers", to: [20, 20] } }));
+    await b.page.evaluate(() => window.__game.command({ tribe: 0, type: "move", args: { units: "tribe0.settlers", to: [1, 1] } }));
+    await until(a.page, () => window.__game.net().tick >= 300, null, 60000);
+    await until(b.page, () => window.__game.net().tick >= 300, null, 60000);
+    const [ma, mb] = [await net(a.page), await net(b.page)];
+    if (ma.desync || mb.desync) problem(`desync: ${JSON.stringify([ma, mb])}`);
+    if (ma.refused !== 1 || mb.refused !== 1) problem(`the forged order was refused ${ma.refused} and ${mb.refused} times, expected once on each page`);
+    if (ma.faults || mb.faults) problem(`lockstep faults: ${ma.faults} and ${mb.faults}`);
+    await b.page.screenshot({ path: `${DIR}lan-partner-play.png` });
+    res.screens.push({ name: "lan-partner-play" });
+    // the host quits: the partner's match ends with partner left
+    await a.page.keyboard.press("Escape");
+    await until(a.page, () => window.__game.screen() === "pause");
+    if (!(await a.page.$('[data-ui="pause-net"]'))) problem("the pause menu in a LAN match has no note that the match keeps running");
+    await a.page.click('[data-ui="quit"]');
+    await until(b.page, () => window.__game.screen() === "end");
+    const end = await net(b.page);
+    if (end.ended !== "partnerLeft") problem(`partner page ended with ${end.ended}`);
+    await b.page.screenshot({ path: `${DIR}lan-partner-left.png` });
+    res.screens.push({ name: "lan-partner-left" });
+  } catch (e) {
+    problem(`lan flow: ${String(e.message).split("\n")[0]}`);
+  }
+  for (const [who, p] of [["host", a], ["partner", b]]) for (const e of p.consoleErrors) problem(`${who} console: ${e}`);
+  await a.page.close();
+  await b.page.close();
+  return res;
+}
+
 export default async function e2eCmd(out) {
   mkdirSync(DIR, { recursive: true });
   await viteBuild("test");
@@ -549,6 +617,7 @@ export default async function e2eCmd(out) {
     browser = await launch(shotMode());
     for (const vp of VIEWPORTS) results.push(await flow(browser, preview.url, vp));
     results.push(await bootFailure(browser, preview.url));
+    results.push(await lanFlow(browser, preview.url));
   } finally {
     if (browser) await browser.close();
     await preview.close();

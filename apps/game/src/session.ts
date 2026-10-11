@@ -32,11 +32,18 @@ export interface SkirmishParams {
   wolfDens?: number;
   /** stretch 2: the player's balance.traits id; the AI tribes then carry their personality's trait (absent: no traits) */
   trait?: string;
+  /** Leg 5 (L5-C): tribes played by people over LAN play, one per seat in seat order (absent: [0], the local player only) */
+  humans?: number[];
   /** M9: set when this session is a campaign level (the other fields then mirror the level) */
   campaign?: { def: LevelDef; carry: CampaignCarry };
 }
 
 export const LOCAL_TRIBE = 0;
+
+/** Leg 5: the tribes people play (the rest get opponents); [0] outside LAN play. */
+export function humansOf(p: Pick<SkirmishParams, "humans">): number[] {
+  return p.humans?.length ? p.humans : [LOCAL_TRIBE];
+}
 
 /** Session params for a campaign level and the unlocks earned in the levels before it. */
 export function campaignParams(def: LevelDef, carry: CampaignCarry): SkirmishParams {
@@ -59,10 +66,12 @@ export function skirmishInit(pack: ValidatedPack, p: SkirmishParams): WorldInit 
 /** stretch 2: trait per tribe index: the player's pick, then each AI tribe's personality trait (none for economy bots). */
 export function skirmishTraits(pack: ValidatedPack, p: SkirmishParams): (string | null)[] {
   const out: (string | null)[] = [];
+  const humans = humansOf(p);
+  let k = 0;
   for (let t = 0; t < p.tribes; t++) {
-    if (t === LOCAL_TRIBE) out.push(p.trait ?? null);
+    if (humans.includes(t)) out.push(p.trait ?? null);
     else {
-      const id = p.ai[(t - 1) % Math.max(1, p.ai.length)];
+      const id = p.ai[k++ % Math.max(1, p.ai.length)];
       out.push(pack.files.ai.personalities.find((x) => x.id === id)?.trait ?? null);
     }
   }
@@ -75,7 +84,7 @@ export function createSkirmish(pack: ValidatedPack, p: SkirmishParams, bots?: Bo
   if (p.campaign) w = createLevelWorld({ def: p.campaign.def, carry: p.campaign.carry }, pack.files, pack.hash, makeBot);
   else {
     w = new World(skirmishInit(pack, p));
-    for (const c of opponentsFor(w.tribes.length, LOCAL_TRIBE, p)) w.controllers.push(c);
+    for (const c of opponentsFor(w.tribes.length, humansOf(p), p)) w.controllers.push(c);
   }
   if (bots) attachBots(w, bots);
   return w;
@@ -140,7 +149,7 @@ export function restoreSave(pack: ValidatedPack, s: SaveGame): World {
   if (s.version !== SAVE_VERSION) throw new Error(`save version ${s.version} is not supported`);
   if (s.packHash !== pack.hash) throw new Error("save was made with different game data");
   const w = World.restore(skirmishInit(pack, s.params), s.snapshot);
-  const cs = s.bots ? s.bots.map((b) => makeBot(b)) : s.params.campaign ? levelOpponents(s.params.campaign.def) : opponentsFor(w.tribes.length, LOCAL_TRIBE, s.params);
+  const cs = s.bots ? s.bots.map((b) => makeBot(b)) : s.params.campaign ? levelOpponents(s.params.campaign.def) : opponentsFor(w.tribes.length, humansOf(s.params), s.params);
   for (const c of cs) {
     const st = s.controllers.find((x) => x.tribe === c.tribe);
     if (st && c.loadState) c.loadState(st.state);

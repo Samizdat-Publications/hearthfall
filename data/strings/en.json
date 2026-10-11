@@ -108,5 +108,20 @@
   "setup.seed": "Seed",
   "setup.size": "Size",
   "setup.start": "Start",
-  "setup.victory": "Victory"
+  "setup.victory": "Victory",
+  "menu.together": "Play together (LAN)",
+  "together.help": "Both computers open the game from the host computer, served with npm run serve -- --lan. One hosts and reads out the room code; the other types it and joins.",
+  "together.host": "Host a match",
+  "together.codeLabel": "Room code",
+  "together.join": "Join",
+  "together.connecting": "Connecting to the host...",
+  "together.roomCode": "Room code: {code}",
+  "together.waiting": "Waiting for your partner to join...",
+  "together.partnerHere": "Your partner is here.",
+  "together.hostNote": "The match uses your Skirmish setup. Your partner plays the first rival tribe; any other tribes keep their AI.",
+  "together.start": "Start the match",
+  "together.joined": "Joined room {code}. Waiting for the host to start the match.",
+  "together.leave": "Leave",
+  "together.noPause": "A LAN match keeps running while this menu is open.",
+  "together.waitingPartner": "Waiting for your partner's game to catch up..."
 }

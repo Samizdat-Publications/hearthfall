@@ -32,6 +32,10 @@ const RULES_WHY: Record<string, [string, string]> = {
   kingOfHill: ["You held the hill.", "A rival tribe held the hill."],
   lastStand: ["Your tribe was the largest when time ran out.", "A rival tribe was larger when time ran out."],
   eliminated: ["", "Your tribe is no more."],
+  // Leg 5: LAN matches that stop for a network reason
+  partnerLeft: ["Your partner left the match.", "Your partner left the match."],
+  closed: ["", "The connection to the other computer was lost."],
+  desync: ["", "The two games drifted apart (a desync), so the match stopped."],
 };
 
 /** generator limit: TRIBE_COLORS has four entries */
@@ -59,6 +63,8 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
   const ai = game.pack.files.ai;
   const vic = game.pack.files.balance.victory;
   const setup: SetupState = { map: sk.maps[0], size: sk.defaultSize, seed: 1, opponents: [...sk.defaultOpponents], difficulty: sk.defaultDifficulty, victory: vic?.default ?? "", forge: "off", ley: game.pack.files.balance.skirmishLey ? "6" : "0", wolves: game.pack.files.balance.beasts ? "4" : "0", weather: "clear", trait: "", error: null };
+  /** a Together screen note shown before any socket opens (a bad room code) */
+  let netNote: string | null = null;
   const saves = { mode: "load" as "save" | "load", message: null as string | null };
   let settingsMsg: string | null = null;
   /** BACKLOG 19: why the last replay file or stored replay could not be watched */
@@ -167,7 +173,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
         message: game.persistent ? null : "Browser storage is unavailable: campaign progress lasts until this tab closes.",
       },
       titleArt,
-      canSave: game.inGame && game.skirmish !== null && !game.ended,
+      canSave: game.inGame && game.skirmish !== null && !game.ended && !game.net,
       editorTest: game.editorTest,
       records:
         game.screen === "records"
@@ -179,6 +185,22 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
             }
           : undefined,
       replay: { last: game.screen === "main" && game.hasStoredReplay(), ended: game.lastReplay !== null && game.ended !== null, message: replayMsg },
+      ...(game.net
+        ? {
+            net: {
+              state: game.net.state,
+              code: game.net.client.code,
+              seat: game.net.client.seat,
+              present: game.net.client.present.length,
+              seats: game.net.client.seats || 2,
+              canStart: game.net.canStart(),
+              waiting: game.net.stalled >= game.net.cfg.stallNoticeSeconds,
+              message: game.net.message,
+            },
+          }
+        : game.screen === "together"
+          ? { net: { state: "idle" as const, code: "", seat: -1, present: 0, seats: 2, canStart: false, waiting: false, message: netNote } }
+          : {}),
     };
   };
 
@@ -186,18 +208,24 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
     menuModel.value = model();
   };
 
-  const start = () => {
+  /** The skirmish setup as session params, or null (with setup.error) when it is not valid. */
+  const setupParams = (): SkirmishParams | null => {
     const seed = Math.floor(Number(setup.seed));
     if (!Number.isFinite(seed) || seed < 1) {
       setup.error = "Seed must be a whole number of 1 or more.";
-      return refresh();
+      return null;
     }
     if (!setup.opponents.length) {
       setup.error = "Add at least one opponent.";
-      return refresh();
+      return null;
     }
     setup.error = null;
-    const sp: SkirmishParams = { seed, level: setup.map, size: setup.size, tribes: 1 + setup.opponents.length, ai: [...setup.opponents], difficulty: setup.difficulty, ...(setup.victory ? { rules: setup.victory } : {}), ...(setup.forge === "on" ? { forge: true } : {}), ...(Number(setup.ley) > 0 ? { leyStones: Number(setup.ley) } : {}), ...(Number(setup.wolves) > 0 ? { wolfDens: Number(setup.wolves) } : {}), ...(setup.weather === "rain" ? { weather: "rain" as const } : {}), ...(setup.trait ? { trait: setup.trait } : {}) };
+    return { seed, level: setup.map, size: setup.size, tribes: 1 + setup.opponents.length, ai: [...setup.opponents], difficulty: setup.difficulty, ...(setup.victory ? { rules: setup.victory } : {}), ...(setup.forge === "on" ? { forge: true } : {}), ...(Number(setup.ley) > 0 ? { leyStones: Number(setup.ley) } : {}), ...(Number(setup.wolves) > 0 ? { wolfDens: Number(setup.wolves) } : {}), ...(setup.weather === "rain" ? { weather: "rain" as const } : {}), ...(setup.trait ? { trait: setup.trait } : {}) };
+  };
+
+  const start = () => {
+    const sp = setupParams();
+    if (!sp) return refresh();
     try {
       game.startSkirmish(sp);
     } catch (e) {
@@ -329,6 +357,30 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
         replayMsg = `Could not open the replay: ${(e as Error).message}.`;
         refresh();
       }
+    },
+    hostNet: () => {
+      netNote = null;
+      game.openNet("host");
+    },
+    joinNet: (code) => {
+      if (!/^[a-z]{4}$/i.test(code.trim())) {
+        netNote = "Type the four letter room code the host reads out.";
+        return refresh();
+      }
+      netNote = null;
+      game.openNet("join", code.trim());
+    },
+    startNet: () => {
+      const sp = setupParams();
+      if (!sp) {
+        if (game.net) game.net.message = `Fix the Skirmish setup first: ${setup.error}`;
+        return refresh();
+      }
+      game.startNet(sp);
+    },
+    leaveNet: () => {
+      game.closeNet();
+      game.go("main");
     },
     playLevel: (id) => game.playLevel(id),
     nextLevel: () => {

@@ -160,6 +160,7 @@
     "packSize": 3,
     "kind": "wolf"
   },
+  "net": { "$comment": "Leg 5 LAN play: lockstep input delay (ticks), state hash compare interval (ticks), seconds before a stalled partner is shown.", "inputDelayTicks": 4, "hashEveryTicks": 20, "stallNoticeSeconds": 2 },
   "skirmishLey": {
     "$comment": "Stretch 3 living world: capturable stones scattered over skirmish maps (the match's leyStones count, at most one per cellsPerStone cells of map area), kinds taken in turn.",
     "cellsPerStone": 1800,

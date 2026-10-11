@@ -7,13 +7,14 @@ import type { Controller } from "@hearthfall/sim";
 /** Default opponents cycle through the three personalities. */
 export const DEFAULT_AI = ["aggressive", "sneaky", "turtle"];
 
-/** Controllers for every tribe but the local one: OpponentAI personalities (M7), the economy bot, or none. */
-export function opponentsFor(tribes: number, local: number, p: { ai: string[]; difficulty: string }): Controller[] {
+/** Controllers for every tribe people do not play (`humans`, Leg 5; a number is the one local tribe): OpponentAI personalities (M7), the economy bot, or none. */
+export function opponentsFor(tribes: number, humans: number | readonly number[], p: { ai: string[]; difficulty: string }): Controller[] {
   const out: Controller[] = [];
   const list = p.ai.length ? p.ai : DEFAULT_AI;
+  const people = typeof humans === "number" ? [humans] : humans;
   let k = 0;
   for (let t = 0; t < tribes; t++) {
-    if (t === local) continue;
+    if (people.includes(t)) continue;
     const kind = list[k++ % list.length];
     if (kind === "none") continue;
     out.push(kind === "economy" ? makeBot({ type: "economy", tribe: t, offset: t }) : makeBot({ type: "opponent", tribe: t, personality: kind, difficulty: p.difficulty, offset: t }));

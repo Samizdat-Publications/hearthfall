@@ -272,6 +272,18 @@ export const BalanceSchema = z.strictObject({
    * them (WorldInit.leyStones). One stone per cellsPerStone of map area at most, on dry land at least
    * minHearthDistance from every Hearth and minSpacing apart; kinds are taken in turn.
    */
+  /**
+   * Leg 5 (LAN play, packages/net): lockstep input delay in ticks, the state hash compare interval in ticks,
+   * and how long a stalled partner may hold the match before the HUD says so. Read by the app, not the sim.
+   */
+  net: z
+    .strictObject({
+      ...comment,
+      inputDelayTicks: z.number().int().min(1).max(20),
+      hashEveryTicks: z.number().int().min(1),
+      stallNoticeSeconds: pos,
+    })
+    .optional(),
   skirmishLey: z
     .strictObject({
       ...comment,

@@ -7,6 +7,7 @@
 import { comboHint, leadInWarning, orderNote } from "./orderNotes.ts";
 import { FirstMatchTips, type TipView } from "./tips.ts";
 import type { SessionRole } from "./netGate.ts";
+import { NET_DEFAULTS, NetPlay, relayUrl } from "./netPlay.ts";
 import {
   validateUi,
   type UiFile,
@@ -329,8 +330,10 @@ export class Game {
   world!: World;
   readonly renderer: ThreeRenderer;
   params: GameParams;
-  /** BACKLOG 46: every session hosts until network play exists; a peer gets no debug hook */
-  readonly role: SessionRole = "host";
+  /** BACKLOG 46: "peer" on the page that joined a LAN match (Leg 5); the lockstep filter drops a peer's god-mode commands */
+  role: SessionRole = "host";
+  /** Leg 5 (L5-C): the LAN lobby or match, null when playing alone */
+  net: NetPlay | null = null;
   paused: boolean;
   private queue: Command[] = [];
   private scenarioCmds: ((tick: number) => Command[]) | null = null;
@@ -345,7 +348,8 @@ export class Game {
   attackMode = false;
   /** box select rectangle in screen pixels while dragging (for the HUD overlay) */
   box: { x0: number; y0: number; x1: number; y1: number } | null = null;
-  readonly localTribe = 0;
+  /** the tribe this page plays: 0, or the seat's tribe in a LAN match (Leg 5) */
+  localTribe = 0;
   /** building id being placed (ghost follows the cursor), and why the current spot is blocked */
   placing: string | null = null;
   /** BACKLOG 11: the Forge brush in hand and why it cannot land under the cursor ("" when it can) */
@@ -596,8 +600,8 @@ export class Game {
     this.applyQuality(); // BACKLOG 14b: the match weather
     this.renderer.viewTribe = this.localTribe;
     this.renderer.revealFog = this.params.reveal;
-    const home = this.world.tribes[0]
-      ? this.world.ents.index(this.world.tribes[0].hearth)
+    const home = this.world.tribes[this.localTribe]
+      ? this.world.ents.index(this.world.tribes[this.localTribe].hearth)
       : -1;
     const size = this.world.terrain.size;
     this.renderer.setCamera({
@@ -609,8 +613,11 @@ export class Game {
 
   // ---------------------------------------------------------------- game flow (M8)
   /** A new skirmish from the setup screen (or Play again): the params replace the URL ones. */
-  startSkirmish(sp: SkirmishParams): void {
+  startSkirmish(sp: SkirmishParams, tribe = 0): void {
     const prev = this.params;
+    const prevTribe = this.localTribe;
+    // Leg 5: a LAN seat plays its own tribe (set before load so the fog and camera follow it)
+    this.localTribe = tribe;
     this.params = {
       ...this.params,
       seed: sp.seed,
@@ -628,6 +635,7 @@ export class Game {
     } catch (e) {
       // the generator can fail for a seed and size (the menu shows it); keep the current world and params
       this.params = prev;
+      this.localTribe = prevTribe;
       throw e;
     }
     this.tips = this.settings.tips && !sp.campaign && this.ui.tips?.length ? new FirstMatchTips(this.ui.tips) : null;
@@ -651,8 +659,72 @@ export class Game {
     return c ? (nextLevel(this.levels, c.def.id)?.id ?? null) : null;
   }
 
+  // ---------------------------------------------------------------- Leg 5: LAN play
+  /** Open the LAN lobby: host a room, or join one with `code`. The relay sits next to the page (npm run serve). */
+  openNet(mode: "host" | "join", code = "", socket?: ConstructorParameters<typeof NetPlay>[0]): void {
+    this.closeNet();
+    const cfg = this.pack.files.balance.net ?? NET_DEFAULTS;
+    const sock = socket ?? new WebSocket(relayUrl(location));
+    const net = new NetPlay(sock, cfg, {
+      changed: () => this.onChange(),
+      started: (p, tribe) => {
+        this.role = tribe === 0 ? "host" : "peer";
+        this.startSkirmish(p, tribe);
+        this.paused = false;
+      },
+      lost: (why) => this.netEnd(why),
+    });
+    this.net = net;
+    if (mode === "host") net.host();
+    else net.join(code);
+    this.onChange();
+  }
+
+  /** Leave the LAN lobby or match (the partner sees "left"). */
+  closeNet(): void {
+    if (!this.net) return;
+    this.net.leave();
+    this.net = null;
+    this.role = "host";
+  }
+
+  /** The host's Start: the current skirmish setup, with the partner in the first rival seat. */
+  startNet(sp: SkirmishParams): void {
+    this.net?.start(sp);
+  }
+
+  /** A LAN match stopped for a network reason (the partner left, the socket closed, a desync). */
+  private netEnd(why: "partnerLeft" | "closed" | "desync"): void {
+    if (this.ended || !this.inGame) return;
+    this.ended = { won: why === "partnerLeft", why };
+    this.keepReplay();
+    this.cancelModes();
+    this.screen = "end";
+    this.backStack = [];
+    this.onChange();
+  }
+
+  /** Run the LAN match for one frame: as many agreed ticks as the clock allows (none while a partner stalls). */
+  private netFrame(dt: number): void {
+    const net = this.net!;
+    const ls = net.ls!;
+    const tickDt = 1 / this.world.cfg.tickHz;
+    this.acc += dt;
+    const want = Math.min(8, Math.floor(this.acc / tickDt));
+    const n = ls.advance(want, (cmds) => this.stepWith(cmds, cmds), () => this.world.hash().all);
+    this.acc -= n * tickDt;
+    // a stalled partner must not build up a burst of ticks to run later
+    if (this.acc > 4 * tickDt) this.acc = 4 * tickDt;
+    const stalledBefore = net.stalled >= net.cfg.stallNoticeSeconds;
+    net.stalled = n === 0 && want > 0 ? net.stalled + dt : 0;
+    if (n || stalledBefore !== net.stalled >= net.cfg.stallNoticeSeconds) this.onChange();
+    if (ls.desync) this.netEnd("desync");
+  }
+
   /** The main menu over a still planet (no opponents, the sim does not run). */
   showMainMenu(): void {
+    this.closeNet();
+    this.localTribe = 0;
     this.editor = null;
     this.editorTest = false;
     const sk = this.ui.skirmish;
@@ -992,9 +1064,14 @@ export class Game {
   /** Queue a command from the local player (applied on the next tick). A replay takes no orders. */
   command(c: Partial<Command> & { type: string }): void {
     if (this.replay) return;
+    // Leg 5: in a LAN match every order rides the lockstep (it lands on every page on the same tick)
+    if (this.net?.ls) {
+      if (!this.ended) this.net.ls.local({ tribe: c.tribe ?? this.localTribe, type: c.type, args: c.args ?? {} });
+      return;
+    }
     this.queue.push({
       tick: this.world.tick,
-      tribe: c.tribe ?? 0,
+      tribe: c.tribe ?? this.localTribe,
       type: c.type,
       args: c.args ?? {},
     });
@@ -1008,11 +1085,16 @@ export class Game {
       ...local,
     ];
     this.queue = [];
+    this.stepWith(cmds, local);
+  }
+
+  /** One tick with `cmds`; `logged` are the people's commands kept for the replay (in a LAN match: every seat's). */
+  private stepWith(cmds: Command[], logged: Command[]): void {
     this.world.step(cmds);
-    if (this.skirmish && local.length) {
-      this.log.push(...local);
+    if (this.skirmish && logged.length) {
+      this.log.push(...logged);
       if (this.log.length > 2 * LOG_TAIL) this.log = this.log.slice(-LOG_TAIL);
-      this.replayLog.push(...local);
+      this.replayLog.push(...logged);
     }
     for (const e of this.world.events) {
       this.events.push(e);
@@ -1420,6 +1502,9 @@ export class Game {
     if (this.replay && this.replay.seekTo >= 0) {
       this.replaySeekSome(20);
       this.onChange();
+    } else if (this.net?.ls && this.inGame && !this.ended && !this.editor) {
+      // Leg 5: a LAN match never pauses (menus open over a running match)
+      this.netFrame(dt);
     } else if (!this.paused && this.screen === "none" && !this.editor) {
       this.acc += dt;
       const speed = this.replay ? this.replay.speed : 1;

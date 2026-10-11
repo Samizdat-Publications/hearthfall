@@ -26,10 +26,12 @@ export async function build(out, mode) {
   }
 }
 
-/** Start `vite preview` in-process on the test build; returns {url, close}. */
+/** Start `vite preview` in-process on the test build, with the LAN relay at /net (Leg 5); returns {url, close}. */
 export async function startPreview(port = 5181) {
   const { preview } = await import("vite");
+  const { Relay } = await import("../net/relay.mjs");
   const server = await preview({ configFile: CONFIG, mode: "test", root: ROOT + "apps/game", logLevel: "error", preview: { host: "127.0.0.1", port, strictPort: true }, build: { outDir: "dist-test" } });
+  new Relay().attach(server.httpServer);
   const url = `http://127.0.0.1:${port}/`;
   return {
     url,

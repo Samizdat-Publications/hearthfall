@@ -360,6 +360,12 @@ if (debugApiAllowed(__DEBUG_API__, !!game.params.debug, game.role)) {
     controls: () => ({ groups: game.groups.map((g) => g.length), bookmarks: game.bookmarks.filter(Boolean).length, geometries: game.renderer.gl.info.memory.geometries }),
     /** BACKLOG 76: the full state hash of the running world */
     hash: () => game.world.hash().all,
+    /** Leg 5: the LAN lobby and lockstep state (null outside a LAN session) */
+    net: () => {
+      const n = game.net;
+      if (!n) return null;
+      return { state: n.state, seat: n.client.seat, code: n.client.code, tick: n.ls?.tick ?? -1, worldTick: game.world.tick, desync: !!n.ls?.desync, refused: n.ls?.refused.length ?? 0, faults: n.ls?.faults.length ?? 0, localTribe: game.localTribe, role: game.role, ended: game.ended?.why ?? null };
+    },
     lastLoad: () => game.lastLoad,
     /** Run a scenario-style definition headless in this page (cross-engine determinism check). */
     runDef: (def: ScenarioDef & { levelDef?: unknown; carry?: CampaignCarry }, rawPack: Record<string, unknown>, every = 100) => {

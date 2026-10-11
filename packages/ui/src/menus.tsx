@@ -5,9 +5,25 @@
 // route map since BACKLOG 9 (pick a node, then Play on its card).
 import { Fragment, render } from "preact";
 import { signal } from "@preact/signals";
+import { useRef } from "preact/hooks";
 import { t } from "./i18n.ts";
 
-export type Screen = "none" | "main" | "campaign" | "setup" | "pause" | "settings" | "saves" | "end" | "records" | "howto";
+export type Screen = "none" | "main" | "campaign" | "setup" | "pause" | "settings" | "saves" | "end" | "records" | "howto" | "together";
+
+/** Leg 5 (L5-C): the LAN lobby and match state */
+export interface NetView {
+  state: "idle" | "connecting" | "lobby" | "playing" | "closed";
+  code: string;
+  /** this page's seat (0 hosts), -1 before the relay answers */
+  seat: number;
+  /** seats present and seats in the room */
+  present: number;
+  seats: number;
+  canStart: boolean;
+  /** a partner has been silent past the stall notice (the HUD and pause menu say so) */
+  waiting: boolean;
+  message: string | null;
+}
 
 export interface Choice {
   value: string;
@@ -110,6 +126,8 @@ export interface MenuModel {
   replay?: { last: boolean; ended: boolean; message: string | null };
   /** BACKLOG 18: the active mods ("Name version", load order), empty without mods */
   mods?: string[];
+  /** Leg 5: LAN play (absent outside the lobby and LAN matches) */
+  net?: NetView;
 }
 
 export type SetupPatch = Partial<Pick<SetupView, "map" | "size" | "seed" | "opponents" | "difficulty" | "victory" | "forge" | "ley" | "wolves" | "weather" | "trait">>;
@@ -139,6 +157,11 @@ export interface MenuActions {
   downloadReplay(): void;
   /** the text of a replay file the player picked */
   openReplayFile(text: string): void;
+  /** Leg 5: LAN lobby: host a room, join one by code, start (host), leave */
+  hostNet(): void;
+  joinNet(code: string): void;
+  startNet(): void;
+  leaveNet(): void;
 }
 
 export const menuModel = signal<MenuModel | null>(null);
@@ -212,6 +235,9 @@ function Main({ act, art, m }: { act: MenuActions; art?: string; m: MenuModel })
       </Btn>
       <Btn ui="skirmish" onClick={() => act.go("setup")}>
         {t("menu.skirmish")}
+      </Btn>
+      <Btn ui="together" onClick={() => act.go("together")}>
+        {t("menu.together")}
       </Btn>
       <Btn ui="howto" onClick={() => act.go("howto")}>
         {t("menu.howto")}
@@ -412,10 +438,15 @@ function Pause({ m, act }: { m: MenuModel; act: MenuActions }) {
       <Btn ui="resume" primary onClick={() => act.resume()}>
         {t("pause.resume")}
       </Btn>
+      {m.net?.state === "playing" ? (
+        <p class="menu-note" data-ui="pause-net">
+          {m.net.waiting ? t("together.waitingPartner") : t("together.noPause")}
+        </p>
+      ) : null}
       <Btn ui="save" disabled={!m.canSave} onClick={() => act.openSaves("save")}>
         {t("pause.saveGame")}
       </Btn>
-      <Btn ui="load" onClick={() => act.openSaves("load")}>
+      <Btn ui="load" disabled={m.net?.state === "playing"} onClick={() => act.openSaves("load")}>
         {t("menu.loadGame")}
       </Btn>
       <Btn ui="settings" onClick={() => act.go("settings")}>
@@ -561,9 +592,11 @@ function End({ m, act }: { m: MenuModel; act: MenuActions }) {
           {t("end.nextLevel")}
         </Btn>
       ) : null}
-      <Btn ui="play-again" primary={!e.next} onClick={() => act.playAgain()}>
-        {e.won ? t("end.playAgain") : t("end.tryAgain")}
-      </Btn>
+      {m.net ? null : (
+        <Btn ui="play-again" primary={!e.next} onClick={() => act.playAgain()}>
+          {e.won ? t("end.playAgain") : t("end.tryAgain")}
+        </Btn>
+      )}
       {m.replay?.ended ? (
         <div class="menu-row replay-row">
           <button class="menu-small" data-ui="end-replay" onClick={() => act.watchReplay("ended")}>
@@ -576,6 +609,58 @@ function End({ m, act }: { m: MenuModel; act: MenuActions }) {
       ) : null}
       <Btn ui="main-menu" onClick={() => act.quitToMenu()}>
         {m.editorTest ? t("menu.backToEditor") : t("end.mainMenu")}
+      </Btn>
+    </div>
+  );
+}
+
+/** Leg 5 (L5-C): Play together over LAN: host a room or join one by its code. */
+function Together({ m, act }: { m: MenuModel; act: MenuActions }) {
+  const n = m.net ?? { state: "idle", code: "", seat: -1, present: 0, seats: 2, canStart: false, waiting: false, message: null };
+  const code = useRef<HTMLInputElement>(null);
+  return (
+    <div data-hud="menu-together" class="menu-panel menu-main">
+      <h2 class="menu-head">{t("menu.together")}</h2>
+      {n.state === "idle" || n.state === "closed" ? (
+        <Fragment>
+          <p class="menu-note">{t("together.help")}</p>
+          <Btn ui="net-host" primary onClick={() => act.hostNet()}>
+            {t("together.host")}
+          </Btn>
+          <span class="menu-row">
+            <input ref={code} class="menu-input" data-ui="net-code" maxLength={4} placeholder={t("together.codeLabel")} />
+            <button class="menu-small" data-ui="net-join" onClick={() => act.joinNet(code.current?.value ?? "")}>
+              {t("together.join")}
+            </button>
+          </span>
+        </Fragment>
+      ) : n.state === "connecting" || n.seat < 0 ? (
+        <p class="menu-note" data-ui="net-status">{t("together.connecting")}</p>
+      ) : n.seat === 0 ? (
+        <Fragment>
+          <p class="menu-tag" data-ui="net-code-shown">
+            {t("together.roomCode", { code: n.code })}
+          </p>
+          <p class="menu-note" data-ui="net-status">
+            {n.present >= n.seats ? t("together.partnerHere") : t("together.waiting")}
+          </p>
+          <p class="menu-note">{t("together.hostNote")}</p>
+          <Btn ui="net-start" primary disabled={!n.canStart} onClick={() => act.startNet()}>
+            {t("together.start")}
+          </Btn>
+        </Fragment>
+      ) : (
+        <p class="menu-note" data-ui="net-status">
+          {t("together.joined", { code: n.code })}
+        </p>
+      )}
+      {n.message ? (
+        <p class="menu-note" data-ui="net-message">
+          {n.message}
+        </p>
+      ) : null}
+      <Btn ui="net-leave" onClick={() => act.leaveNet()}>
+        {t("together.leave")}
       </Btn>
     </div>
   );
@@ -659,6 +744,7 @@ function Menus({ act }: { act: MenuActions }) {
       {m.screen === "end" ? <End m={m} act={act} /> : null}
       {m.screen === "records" ? <Records m={m} act={act} /> : null}
       {m.screen === "howto" ? <HowTo act={act} /> : null}
+      {m.screen === "together" ? <Together m={m} act={act} /> : null}
     </div>
   );
 }
