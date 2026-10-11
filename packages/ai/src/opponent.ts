@@ -640,11 +640,26 @@ export class OpponentAI implements Controller {
     return best;
   }
 
+  /** stretch 3: a living wolf den within its pack's reach of the site (dens are known landmarks, like sites) */
+  private guardDen(w: World, si: number): { x: number; y: number } | null {
+    const E = w.ents;
+    const n = w.terrain.size;
+    for (const d of w.beasts.dens) {
+      if (d.cleared || !d.members.length) continue;
+      const dx = wrapDelta(d.x - E.x[si], n);
+      const dy = wrapDelta(d.y - E.y[si], n);
+      if (dx * dx + dy * dy < 256) return d;
+    }
+    return null;
+  }
+
   private guarded(w: World, si: number): boolean {
     const E = w.ents;
     const units = w.cfg.pack.units.units;
+    if (this.guardDen(w, si)) return true;
     for (let j = 0; j < E.hi; j++) {
-      if (!E.alive[j] || E.cat[j] !== CAT.unit || E.tribe[j] === this.tribe || E.tribe[j] < 0 || E.inside[j] >= 0) continue;
+      if (!E.alive[j] || E.cat[j] !== CAT.unit || E.tribe[j] === this.tribe || E.inside[j] >= 0) continue;
+      if (E.tribe[j] < 0) continue;
       if (units[E.type[j]].trainedAt && this.dist2(w, j, si) < 64 && this.sees(w, j)) return true;
     }
     return false;
@@ -665,7 +680,9 @@ export class OpponentAI implements Controller {
     const n = c.w.terrain.size;
     if (t.guarded) {
       // clear the guardians with idle troops; worshippers follow once the site is free
-      if (c.idle.length >= 3) out.push(this.cmd(c.w, "move", { units: c.idle.map((i) => E.idOf(i)), to: [E.x[t.si], E.y[t.si]], attack: true }));
+      const den = this.guardDen(c.w, t.si);
+      const to = den ? [den.x, den.y] : [E.x[t.si], E.y[t.si]];
+      if (c.idle.length >= 3) out.push(this.cmd(c.w, "move", { units: c.idle.map((i) => E.idOf(i)), to, attack: true }));
       return;
     }
     const free = c.settlers

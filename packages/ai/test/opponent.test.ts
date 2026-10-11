@@ -214,6 +214,35 @@ describe("OpponentAI (M7)", () => {
     expect(prayed).toBeGreaterThan(0);
   });
 
+  it("S3: a wolf den by a site is cleared by troops before any worshipper goes", () => {
+    const w = world({ generator: "flat", size: 64, tribes: 2 });
+    w.spawnBuilding("hearth", 0, 8, 32);
+    w.spawnBuilding("hearth", 1, 50, 32);
+    w.spawnUnit("shaper", 0, 8, 36);
+    w.spawnUnit("shaper", 1, 52, 34);
+    for (let k = 0; k < 14; k++) w.spawnUnit("settler", 1, 46 + (k % 7), 36 + Math.floor(k / 7));
+    for (let k = 0; k < 6; k++) w.spawnUnit("warden", 1, 44 + (k % 3), 30 + Math.floor(k / 3));
+    w.worship.addSite("shrine", 36, 32, { tag: "s", worshippers: 4, prayerSeconds: 45, rewards: [] });
+    w.beasts.addDen("wolf", 34, 33, 3);
+    const E = w.ents;
+    for (let t = 0; t < 5; t++) w.step([]);
+    w.controllers.push(makeBot({ type: "opponent", tribe: 1, personality: "turtle", offset: 0, worshipAfterSeconds: 0 }));
+    let prayedWithWolves = false;
+    let prayed = -1;
+    for (let t = 0; t < 5000 && prayed < 0; t++) {
+      w.step([]);
+      const wolves = w.beasts.dens[0].members.length > 0 && !w.beasts.dens[0].cleared;
+      for (let i = 0; i < E.hi; i++)
+        if (E.alive[i] && E.tribe[i] === 1 && (E.task[i] === TASK.toWorship || E.task[i] === TASK.worship)) {
+          if (wolves) prayedWithWolves = true;
+          prayed = w.tick;
+        }
+    }
+    expect(prayedWithWolves).toBe(false);
+    expect(w.beasts.dens[0].cleared).toBe(true);
+    expect(prayed).toBeGreaterThan(0);
+  });
+
   it("S3: a grown village plans a Spirit Well, and a Mending Hut once it fields troops", () => {
     const plans = (troops: number) => {
       const w = world({ generator: "flat", size: 64, tribes: 2 });
