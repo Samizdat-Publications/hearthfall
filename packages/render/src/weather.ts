@@ -16,6 +16,8 @@ export interface LightingPreset {
   hearthGlow: number;
   /** planet rim haze and fog color */
   rim: string;
+  /** S4: space backdrop horizon color under this preset (absent: the style's space horizon) */
+  skyHorizon?: string;
 }
 
 export interface RainLook {
@@ -27,6 +29,13 @@ export interface RainLook {
   dim: number;
   /** rim haze and fog color while raining */
   rim: string;
+  /** S4: streak lean along x and z per unit of streak height (absent: 0.17, 0.07) */
+  slant?: [number, number];
+}
+
+/** S4 (14c): the sky backdrop's horizon color under a lighting look (the preset's, else the base). Pure. */
+export function skyHorizonFor(look: Pick<LightingPreset, "skyHorizon">, base: string): string {
+  return look.skyHorizon ?? base;
 }
 
 export interface LightingLook extends LightingPreset {
@@ -86,18 +95,19 @@ export class RainLayer {
     this.mat = new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
-      uniforms: { uTime: { value: 0 }, uSpeed: { value: 30 }, uHeight: { value: height }, uColor: { value: new THREE.Color("#bcd4ec") } },
+      uniforms: { uTime: { value: 0 }, uSpeed: { value: 30 }, uHeight: { value: height }, uColor: { value: new THREE.Color("#bcd4ec") }, uSlant: { value: new THREE.Vector2(0.17, 0.07) } },
       vertexShader: /* glsl */ `
         attribute float aTip;
         uniform float uTime;
         uniform float uSpeed;
         uniform float uHeight;
+        uniform vec2 uSlant;
         varying float vTip;
         void main() {
           vec3 p = position;
           p.y = mod(p.y - uTime * uSpeed, uHeight);
           // a short streak slanted with the wind
-          p += aTip * vec3(0.12, 0.7, 0.05);
+          p += aTip * 0.7 * vec3(uSlant.x, 1.0, uSlant.y);
           vTip = aTip;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
         }`,
@@ -120,6 +130,13 @@ export class RainLayer {
     this.mesh.geometry.setDrawRange(0, Math.min(look.drops, this.mesh.geometry.getAttribute("aTip").count / 2) * 2);
     this.mat.uniforms.uSpeed.value = look.speed;
     this.mat.uniforms.uColor.value.set(look.color);
+    this.mat.uniforms.uSlant.value.set(...(look.slant ?? [0.17, 0.07]));
+  }
+
+  /** S4: the streak lean in use (tests) */
+  get slant(): [number, number] {
+    const v = this.mat.uniforms.uSlant.value as THREE.Vector2;
+    return [v.x, v.y];
   }
 
   get count(): number {

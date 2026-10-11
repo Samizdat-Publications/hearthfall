@@ -363,6 +363,8 @@ export const StyleSchema = z
           sunDir: z.tuple([z.number(), z.number().positive(), z.number()]),
           hearthGlow: z.number().min(0),
           rim: hex,
+          /** S4 (14c): the space backdrop's horizon color under this preset (absent: render.space.horizon) */
+          skyHorizon: hex.optional(),
         }),
       )
       .optional(),
@@ -376,6 +378,8 @@ export const StyleSchema = z
           speed: pos,
           dim: z.number().min(0.1).max(1),
           rim: hex,
+          /** S4 (14c): streak lean per unit of streak height along x and z (absent: 0.17 and 0.07) */
+          slant: z.tuple([z.number().min(-1).max(1), z.number().min(-1).max(1)]).optional(),
         }),
       })
       .optional(),
@@ -499,6 +503,9 @@ export const StyleSchema = z
             shallowDepth: z.number().positive(),
             foamWidth: z.number().positive(),
             foamRing: z.number().min(0),
+            /** S4 (14c): offshore ring cycles per second (absent 0.12) and its width as a share of foamWidth (absent 0.35) */
+            ringDrift: z.number().min(0).optional(),
+            ringWidth: z.number().positive().optional(),
           })
           .optional(),
         /** look v2 (BACKLOG 0a): draw scale of the building models, so villages read as villages next to the

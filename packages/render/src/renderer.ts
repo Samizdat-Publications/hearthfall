@@ -8,6 +8,7 @@ import { applyCamera, CAMERA_PRESETS, cameraRig, type CameraRig, type CameraStat
 import { bendMaterial, makeBendUniforms, type BendUniforms } from "./curve.ts";
 import {
   RainLayer,
+  skyHorizonFor,
   resolveLighting,
   waterTint,
   type LightingLook,
@@ -16,6 +17,7 @@ import {
   CHUNK,
   chunksTouched,
   fillDepth,
+  fillDepthRects,
   makeWaterMaterial,
   TerrainChunk,
   type TerrainPalette,
@@ -98,6 +100,8 @@ export class ThreeRenderer implements Renderer {
   private readonly terrainMat: THREE.MeshLambertMaterial;
   private readonly waterMat: THREE.ShaderMaterial;
   private readonly sky: THREE.Mesh;
+  /** S4: the backdrop horizon color with no preset override */
+  private readonly skyBase: string;
   private readonly sun: THREE.DirectionalLight;
   /** BACKLOG 14: lighting preset and weather in force (null without style lightingPresets) */
   private readonly hemi: THREE.HemisphereLight;
@@ -319,6 +323,7 @@ export class ThreeRenderer implements Renderer {
     this.sky = space
       ? makeSpaceSky(space.top, space.horizon, space.stars)
       : makeSky(L.skyTop, L.skyHorizon);
+    this.skyBase = space ? space.horizon : L.skyHorizon;
     this.gl.setClearColor(pal.water ?? "#2f7fb8", 1);
     this.scene.add(this.sky);
     this.setLighting("default", "clear");
@@ -346,6 +351,9 @@ export class ThreeRenderer implements Renderer {
     this.hemi.intensity = this.baseAmbient * look.ambient;
     (this.scene.fog as THREE.Fog).color.set(look.rim);
     if (st.render?.space) this.bend.uHorizon.value.set(look.rim);
+    // S4 (14c): the backdrop horizon follows the preset (evening warms it), else the style's space horizon
+    const skyU = (this.sky.material as THREE.ShaderMaterial).uniforms;
+    if (skyU?.uHorizon) skyU.uHorizon.value.set(skyHorizonFor(look, this.skyBase));
     this.rain.set(look.rain);
     waterTint(
       look,
@@ -542,11 +550,12 @@ export class ThreeRenderer implements Renderer {
     };
   }
 
-  /** look v3: re-upload the per-cell water depth texture after any terrain change */
-  private syncDepth(): void {
+  /** look v3: re-upload the per-cell water depth texture after any terrain change (S4: only the dirty rects' cells are refilled when given) */
+  private syncDepth(rects?: readonly { x: number; y: number; w: number; h: number }[]): void {
     const t = this.world!.terrain;
     const n = t.size;
     if (!this.depthTex || this.depthTex.image.width !== n) {
+      rects = undefined;
       this.depthTex?.dispose();
       this.depthTex = new THREE.DataTexture(
         new Float32Array(n * n),
@@ -564,7 +573,8 @@ export class ThreeRenderer implements Renderer {
       this.waterMat.uniforms.uDepthTex.value = this.depthTex;
       this.waterMat.uniforms.uDepthSize.value = n;
     }
-    fillDepth(t, this.depthTex.image.data as Float32Array);
+    if (rects) fillDepthRects(t, this.depthTex.image.data as Float32Array, rects);
+    else fillDepth(t, this.depthTex.image.data as Float32Array);
     this.depthTex.needsUpdate = true;
   }
 
@@ -614,7 +624,7 @@ export class ThreeRenderer implements Renderer {
     }
     const touched = chunksTouched(rects, t.size);
     for (const i of touched) this.chunks[i].build(t, this.palette);
-    this.syncDepth();
+    this.syncDepth(rects);
     this.cursor = t.version;
     this.stats.remeshTotal += touched.size;
     this.stats.lastRemesh = touched.size;

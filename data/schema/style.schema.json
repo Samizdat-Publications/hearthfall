@@ -103,6 +103,10 @@
           "rim": {
             "type": "string",
             "pattern": "^#[0-9A-Fa-f]{6}$"
+          },
+          "skyHorizon": {
+            "type": "string",
+            "pattern": "^#[0-9A-Fa-f]{6}$"
           }
         },
         "required": [
@@ -147,6 +151,24 @@
             "rim": {
               "type": "string",
               "pattern": "^#[0-9A-Fa-f]{6}$"
+            },
+            "slant": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "number",
+                  "minimum": -1,
+                  "maximum": 1
+                },
+                {
+                  "type": "number",
+                  "minimum": -1,
+                  "maximum": 1
+                }
+              ],
+              "items": false,
+              "minItems": 2,
+              "maxItems": 2
             }
           },
           "required": [
@@ -644,6 +666,14 @@
             "foamRing": {
               "type": "number",
               "minimum": 0
+            },
+            "ringDrift": {
+              "type": "number",
+              "minimum": 0
+            },
+            "ringWidth": {
+              "type": "number",
+              "exclusiveMinimum": 0
             }
           },
           "required": [

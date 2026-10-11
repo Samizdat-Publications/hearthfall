@@ -2,7 +2,7 @@
 import { describe, expect, it } from "vitest";
 import { basePack } from "../../sim/test/helpers.ts";
 import * as THREE from "three";
-import { RainLayer, resolveLighting, waterTint } from "../src/weather.ts";
+import { RainLayer, resolveLighting, skyHorizonFor, waterTint } from "../src/weather.ts";
 
 describe("lighting presets and weather", () => {
   const style = basePack().files.style;
@@ -37,11 +37,22 @@ describe("lighting presets and weather", () => {
     expect(wet.g).toBeLessThan(0.8);
   });
 
+  it("S4: the evening preset warms the space horizon; presets without one keep the base", () => {
+    expect(skyHorizonFor(presets.evening, "#0f1d3d")).toBe(presets.evening.skyHorizon);
+    expect(presets.evening.skyHorizon).toBeDefined();
+    expect(skyHorizonFor(presets.golden, "#0f1d3d")).toBe("#0f1d3d");
+  });
+
   it("rain layer shows the configured drop count and hides when clear", () => {
     const r = new RainLayer(1000);
     r.set({ ...rain, drops: 400 });
     expect(r.count).toBe(400);
     expect(r.mesh.geometry.drawRange.count).toBe(800);
+    // S4: the streak lean comes from style.json, with the old lean as the fallback
+    expect(r.slant[0]).toBeCloseTo(rain.slant?.[0] ?? 0.17);
+    r.set({ ...rain, slant: [0.3, -0.1] });
+    expect(r.slant[0]).toBeCloseTo(0.3);
+    expect(r.slant[1]).toBeCloseTo(-0.1);
     r.set(null);
     expect(r.count).toBe(0);
   });

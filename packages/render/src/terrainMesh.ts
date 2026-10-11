@@ -234,6 +234,9 @@ export interface WaterLook {
   foamWidth: number;
   /** depth of the second, fainter foam ring that pulses offshore (0 turns it off) */
   foamRing: number;
+  /** S4: ring cycles per second (absent 0.12) and its width as a share of foamWidth (absent 0.35) */
+  ringDrift?: number;
+  ringWidth?: number;
 }
 
 export const WATER_LOOK_V2: WaterLook = { shallowDepth: 30, foamWidth: 10, foamRing: 0 };
@@ -246,6 +249,28 @@ export function fillDepth(t: Terrain, out: Float32Array): Float32Array {
   const n = t.size;
   for (let z = 0; z < n; z++) for (let x = 0; x < n; x++) out[z * n + x] = t.sea - t.get(x, z);
   return out;
+}
+
+/**
+ * S4 (14c): refill only the cells the dirty rects cover (wrapped, edges inclusive like chunksTouched);
+ * returns how many cells were written. A rect as wide or tall as the map refills whole rows or columns.
+ */
+export function fillDepthRects(t: Terrain, out: Float32Array, rects: readonly { x: number; y: number; w: number; h: number }[]): number {
+  const n = t.size;
+  let written = 0;
+  for (const r of rects) {
+    const h = Math.min(n, r.h + 1);
+    const w = Math.min(n, r.w + 1);
+    for (let dy = 0; dy < h; dy++) {
+      const z = (((r.y + dy) % n) + n) % n;
+      for (let dx = 0; dx < w; dx++) {
+        const x = (((r.x + dx) % n) + n) % n;
+        out[z * n + x] = t.sea - t.get(x, z);
+        written++;
+      }
+    }
+  }
+  return written;
 }
 
 /** Water: depth-tinted shallows, shoreline foam and (look v2) world-anchored drifting foam strokes. */
@@ -264,6 +289,7 @@ export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: {
         uDepthTex: { value: new THREE.DataTexture(new Float32Array([0, 0, 0, 0]), 2, 2, THREE.RedFormat, THREE.FloatType) },
         uDepthSize: { value: 0 },
         uLook: { value: new THREE.Vector3(look.shallowDepth, look.foamWidth, look.foamRing) },
+        uRing: { value: new THREE.Vector2(look.ringDrift ?? 0.12, look.ringWidth ?? 0.35) },
         uLight: { value: new THREE.Color(1, 1, 1) },
       },
     ]),
@@ -295,6 +321,7 @@ export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: {
       uniform sampler2D uDepthTex;
       uniform float uDepthSize;
       uniform vec3 uLook;
+      uniform vec2 uRing;
       uniform vec3 uLight;
       varying float vDepth;
       float wh(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
@@ -330,8 +357,8 @@ export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: {
         float foam = (1.0 - smoothstep(0.0, uLook.y, dep + wob * uLook.y)) * (0.75 + 0.25 * sin(uTime * 2.2 + dep * 0.9));
         if (uLook.z > 0.0) {
           // a fainter foam ring offshore that drifts out and fades, like a painted wave line
-          float ph = fract(uTime * 0.12);
-          float ring = 1.0 - smoothstep(0.0, uLook.y * 0.35, abs(dep - uLook.z * (0.6 + 0.8 * ph) + wob * uLook.y));
+          float ph = fract(uTime * uRing.x);
+          float ring = 1.0 - smoothstep(0.0, uLook.y * uRing.y, abs(dep - uLook.z * (0.6 + 0.8 * ph) + wob * uLook.y));
           foam = max(foam, ring * 0.55 * (1.0 - ph));
         }
         col = mix(col, uFoam, clamp(foam, 0.0, 1.0) * 0.9);

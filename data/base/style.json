@@ -42,11 +42,11 @@
   "lightingPresets": {
     "day": { "keyColor": "#fff3e2", "keyIntensity": 2.1, "hemiSky": "#6f9bd6", "ambient": 0.92, "sunDir": [0.3, 1, 0.2], "hearthGlow": 0.5, "rim": "#78bdf0" },
     "golden": { "keyColor": "#ffc98f", "keyIntensity": 2, "hemiSky": "#3d5f96", "ambient": 1, "sunDir": [0.4, 0.8, 0.25], "hearthGlow": 1, "rim": "#5fa8e0" },
-    "evening": { "keyColor": "#ff8f66", "keyIntensity": 1.3, "hemiSky": "#33427e", "ambient": 0.75, "sunDir": [0.9, 0.32, 0.15], "hearthGlow": 1.9, "rim": "#b27a98" }
+    "evening": { "keyColor": "#ff8f66", "keyIntensity": 1.3, "hemiSky": "#33427e", "ambient": 0.75, "sunDir": [0.9, 0.32, 0.15], "hearthGlow": 1.9, "rim": "#b27a98", "skyHorizon": "#3a2440" }
   },
   "lightingDefault": "golden",
   "weather": {
-    "rain": { "drops": 2200, "color": "#c4d6ea", "speed": 28, "dim": 0.62, "rim": "#8396ad" }
+    "rain": { "drops": 2200, "color": "#c4d6ea", "speed": 28, "dim": 0.62, "rim": "#8396ad", "slant": [0.17, 0.07] }
   },
   "direction": {
     "primaryRef": "making-of/a1 retro-candidate-1 (Stewart's pick)",
@@ -99,7 +99,7 @@
       "fog": { "nearMul": 1.1, "farMul": 2.6, "farAdd": 40, "farQuad": 400 }
     },
     "verticalScale": 2,
-    "water": { "shallowDepth": 26, "foamWidth": 6, "foamRing": 14 },
+    "water": { "shallowDepth": 26, "foamWidth": 6, "foamRing": 14, "ringDrift": 0.12, "ringWidth": 0.35 },
     "unitScale": { "shaper": 1.2, "wolf": 0.7 },
     "mapFrame": { "mask": "#1b2633", "grid": "#f2e6c8", "gridOpacity": 0.14, "gridCells": 16 },
     "vfxColors": {
