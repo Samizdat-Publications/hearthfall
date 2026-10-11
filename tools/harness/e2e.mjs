@@ -540,12 +540,13 @@ async function flow(browser, url, vp) {
 }
 
 /**
- * Leg 5 (L5-C gate): two pages on one relay. The host opens a room from Play together, the partner joins
- * with the code, the host starts, both play the same world in lockstep (orders from each side, a forged
- * order refused on both), and when the host quits the partner's match ends with "partner left".
+ * Leg 5 (L5-C and L5-E gates): two pages on one relay. The host opens a room from Play together, the partner
+ * joins with the code, the host starts (head to head, or together against the AI), both play the same world
+ * in lockstep (orders from each side, a forged order refused on both), and when one side quits the other's
+ * match goes on with the AI playing the partner's tribe (L5-F).
  */
-async function lanFlow(browser, url) {
-  const res = { viewport: "lan", ok: true, screens: [], problems: [] };
+async function lanFlow(browser, url, mode) {
+  const res = { viewport: `lan-${mode}`, ok: true, screens: [], problems: [] };
   const problem = (s) => {
     res.ok = false;
     res.problems.push(s);
@@ -571,11 +572,13 @@ async function lanFlow(browser, url) {
     await b.page.fill('[data-ui="net-code"]', code.toLowerCase());
     await b.page.click('[data-ui="net-join"]');
     await until(a.page, () => !document.querySelector('[data-ui="net-start"]')?.disabled);
-    await a.page.click('[data-ui="net-start"]');
+    await a.page.click(mode === "coop" ? '[data-ui="net-start-coop"]' : '[data-ui="net-start"]');
     await until(a.page, () => window.__game.screen() === "none" && window.__game.net()?.state === "playing");
     await until(b.page, () => window.__game.screen() === "none" && window.__game.net()?.state === "playing");
     const [na, nb] = [await net(a.page), await net(b.page)];
     if (na.localTribe !== 0 || nb.localTribe !== 1 || nb.role !== "peer") problem(`seats: host ${JSON.stringify(na)}, partner ${JSON.stringify(nb)}`);
+    const { teams } = await b.page.evaluate(() => window.__game.teams());
+    if (mode === "coop" ? teams[0] !== teams[1] || teams.slice(2).some((t) => t === teams[0]) || teams.length < 3 : new Set(teams).size !== teams.length) problem(`${mode} teams: ${JSON.stringify(teams)}`);
     // each side orders its own settlers; the partner also forges an order for the host's tribe
     await a.page.evaluate(() => window.__game.command({ type: "move", args: { units: "tribe0.settlers", to: [10, 10] } }));
     await b.page.evaluate(() => window.__game.command({ type: "move", args: { units: "tribe1.settlers", to: [20, 20] } }));
@@ -586,18 +589,21 @@ async function lanFlow(browser, url) {
     if (ma.desync || mb.desync) problem(`desync: ${JSON.stringify([ma, mb])}`);
     if (ma.refused !== 1 || mb.refused !== 1) problem(`the forged order was refused ${ma.refused} and ${mb.refused} times, expected once on each page`);
     if (ma.faults || mb.faults) problem(`lockstep faults: ${ma.faults} and ${mb.faults}`);
-    await b.page.screenshot({ path: `${DIR}lan-partner-play.png` });
-    res.screens.push({ name: "lan-partner-play" });
-    // the host quits: the partner's match ends with partner left
-    await a.page.keyboard.press("Escape");
-    await until(a.page, () => window.__game.screen() === "pause");
-    if (!(await a.page.$('[data-ui="pause-net"]'))) problem("the pause menu in a LAN match has no note that the match keeps running");
-    await a.page.click('[data-ui="quit"]');
-    await until(b.page, () => window.__game.screen() === "end");
-    const end = await net(b.page);
-    if (end.ended !== "partnerLeft") problem(`partner page ended with ${end.ended}`);
-    await b.page.screenshot({ path: `${DIR}lan-partner-left.png` });
-    res.screens.push({ name: "lan-partner-left" });
+    await b.page.screenshot({ path: `${DIR}lan-${mode}-partner-play.png` });
+    res.screens.push({ name: `lan-${mode}-partner-play` });
+    // one side quits (the host in versus, the partner in co-op): the other plays on with the AI in that seat
+    const [quits, stays] = mode === "coop" ? [b, a] : [a, b];
+    await quits.page.keyboard.press("Escape");
+    await until(quits.page, () => window.__game.screen() === "pause");
+    if (!(await quits.page.$('[data-ui="pause-net"]'))) problem("the pause menu in a LAN match has no note that the match keeps running");
+    await quits.page.click('[data-ui="quit"]');
+    await until(stays.page, () => window.__game.net() === null);
+    const t0 = await stays.page.evaluate(() => window.__game.getState(["tick"]).tick);
+    await until(stays.page, (t) => window.__game.getState(["tick"]).tick > t + 40 && window.__game.screen() === "none", t0);
+    const { bots } = await stays.page.evaluate(() => window.__game.teams());
+    if (!bots.includes(mode === "coop" ? 1 : 0)) problem(`no AI took over the leaver's tribe: bots ${JSON.stringify(bots)}`);
+    await stays.page.screenshot({ path: `${DIR}lan-${mode}-partner-left.png` });
+    res.screens.push({ name: `lan-${mode}-partner-left` });
   } catch (e) {
     problem(`lan flow: ${String(e.message).split("\n")[0]}`);
   }
@@ -617,7 +623,8 @@ export default async function e2eCmd(out) {
     browser = await launch(shotMode());
     for (const vp of VIEWPORTS) results.push(await flow(browser, preview.url, vp));
     results.push(await bootFailure(browser, preview.url));
-    results.push(await lanFlow(browser, preview.url));
+    results.push(await lanFlow(browser, preview.url, "versus"));
+    results.push(await lanFlow(browser, preview.url, "coop"));
   } finally {
     if (browser) await browser.close();
     await preview.close();

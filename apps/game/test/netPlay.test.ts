@@ -2,8 +2,9 @@
 import { createServer } from "node:http";
 import { describe, expect, it } from "vitest";
 import { loadBasePack } from "../../../tools/harness/datapack.mjs";
+import { makeBot } from "@hearthfall/ai";
 import { Relay } from "../../../tools/net/relay.mjs";
-import { NET_DEFAULTS, NetPlay, parseStart, relayUrl, seatFilter, versusParams } from "../src/netPlay.ts";
+import { coopParams, NET_DEFAULTS, NetPlay, parseStart, relayUrl, seatFilter, versusParams } from "../src/netPlay.ts";
 import { createSkirmish, humansOf, type SkirmishParams } from "../src/session.ts";
 
 const pack = loadBasePack().pack!;
@@ -36,6 +37,43 @@ describe("L5-C: LAN play helpers", () => {
     expect(parseStart({ ...versusParams(SP, 2), seed: "x" })).toBeNull();
     expect(parseStart({ ...versusParams(SP, 2), humans: [0, "1"] })).toBeNull();
   });
+
+  it("coopParams puts the seats on one team against every AI rival of the setup", () => {
+    const c = coopParams(SP, 2);
+    expect(c.tribes).toBe(4);
+    expect(c.humans).toEqual([0, 1]);
+    expect(c.teams).toEqual([0, 0, 1, 1]);
+    expect(coopParams({ ...SP, tribes: 2, ai: ["aggressive"] }, 2).teams).toEqual([0, 0, 1]);
+    expect(parseStart(c)).not.toBeNull();
+    expect(parseStart({ ...c, teams: [0, 0, 1] })).toBeNull();
+  });
+
+  it("L5-E soak: two bot partners on one team against two AI tribes; allies never hurt each other and a team wins", () => {
+    const p = coopParams({ ...SP, seed: 31, size: 128, rules: "conquest", ai: ["aggressive", "turtle"] }, 2);
+    const w = createSkirmish(pack, p);
+    expect(w.controllers.map((c) => c.tribe).sort()).toEqual([2, 3]);
+    // the partners are bots in the human seats (as a test stand in for two people)
+    for (const t of p.humans!) w.controllers.push(makeBot({ type: "opponent", tribe: t, personality: "sneaky", difficulty: "hard", offset: t }));
+    let friendly = 0;
+    let hostile = 0;
+    const damage = w.damage.bind(w);
+    w.damage = ((i: number, amount: number, by: number, ...rest: unknown[]) => {
+      const tr = w.ents.tribe[i];
+      if (by >= 0 && tr >= 0 && by !== tr) {
+        if (w.allied(by, tr)) friendly++;
+        else hostile++;
+      }
+      return (damage as (...a: unknown[]) => unknown)(i, amount, by, ...rest);
+    }) as typeof w.damage;
+    const end = 45 * 60 * w.cfg.tickHz;
+    while (w.tick < end && w.rules!.winner < 0) w.step([]);
+    expect(friendly).toBe(0);
+    expect(hostile).toBeGreaterThan(0);
+    expect(w.invariants()).toEqual([]);
+    expect(w.rules!.winner).toBeGreaterThanOrEqual(0);
+    const team = w.teamOf[w.rules!.winner];
+    for (const t of w.tribes) if (w.teamOf[t.index] !== team) expect(t.alive).toBe(false);
+  }, 300000);
 
   it("relayUrl sits next to the page", () => {
     expect(relayUrl({ protocol: "http:", host: "192.168.1.5:4173" })).toBe("ws://192.168.1.5:4173/net");

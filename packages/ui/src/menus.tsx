@@ -160,7 +160,8 @@ export interface MenuActions {
   /** Leg 5: LAN lobby: host a room, join one by code, start (host), leave */
   hostNet(): void;
   joinNet(code: string): void;
-  startNet(): void;
+  /** versus: head to head; coop: one team against the setup's AI rivals */
+  startNet(mode: "versus" | "coop"): void;
   leaveNet(): void;
 }
 
@@ -645,8 +646,11 @@ function Together({ m, act }: { m: MenuModel; act: MenuActions }) {
             {n.present >= n.seats ? t("together.partnerHere") : t("together.waiting")}
           </p>
           <p class="menu-note">{t("together.hostNote")}</p>
-          <Btn ui="net-start" primary disabled={!n.canStart} onClick={() => act.startNet()}>
+          <Btn ui="net-start" primary disabled={!n.canStart} onClick={() => act.startNet("versus")}>
             {t("together.start")}
+          </Btn>
+          <Btn ui="net-start-coop" disabled={!n.canStart} onClick={() => act.startNet("coop")}>
+            {t("together.startCoop")}
           </Btn>
         </Fragment>
       ) : (

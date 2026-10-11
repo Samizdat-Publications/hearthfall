@@ -173,7 +173,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
         message: game.persistent ? null : "Browser storage is unavailable: campaign progress lasts until this tab closes.",
       },
       titleArt,
-      canSave: game.inGame && game.skirmish !== null && !game.ended && !game.net,
+      canSave: game.inGame && game.skirmish !== null && !game.ended && !game.net && (game.skirmish.humans?.length ?? 0) <= 1,
       editorTest: game.editorTest,
       records:
         game.screen === "records"
@@ -370,13 +370,13 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
       netNote = null;
       game.openNet("join", code.trim());
     },
-    startNet: () => {
+    startNet: (mode) => {
       const sp = setupParams();
       if (!sp) {
         if (game.net) game.net.message = `Fix the Skirmish setup first: ${setup.error}`;
         return refresh();
       }
-      game.startNet(sp);
+      game.startNet(sp, mode);
     },
     leaveNet: () => {
       game.closeNet();

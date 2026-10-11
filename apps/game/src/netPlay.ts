@@ -32,6 +32,16 @@ export function versusParams(sp: SkirmishParams, seats: number): SkirmishParams 
 }
 
 /**
+ * Leg 5 (L5-E): together against the AI. The seats share team 0 and play the first tribes; every AI rival of
+ * the setup joins, all on team 1, so the match has seats + rivals tribes.
+ */
+export function coopParams(sp: SkirmishParams, seats: number): SkirmishParams {
+  const rivals = Math.max(1, sp.tribes - 1);
+  const tribes = seats + rivals;
+  return { ...sp, tribes, humans: Array.from({ length: seats }, (_, k) => k), teams: Array.from({ length: tribes }, (_, t) => (t < seats ? 0 : 1)), campaign: undefined };
+}
+
+/**
  * The ingress rule every seat applies to every batch: the host (seat 0) may also send god-mode (tribe -1)
  * commands (debug tools); any seat may command only its own tribe (BACKLOG 46).
  */
@@ -46,6 +56,7 @@ export function parseStart(v: unknown): SkirmishParams | null {
   const int = (x: unknown) => typeof x === "number" && Number.isInteger(x);
   if (!int(p.seed) || !int(p.size) || !int(p.tribes) || typeof p.level !== "string" || typeof p.difficulty !== "string" || !Array.isArray(p.ai)) return null;
   if (!Array.isArray(p.humans) || !p.humans.every(int)) return null;
+  if (p.teams !== undefined && (!Array.isArray(p.teams) || p.teams.length !== p.tribes || !p.teams.every(int))) return null;
   return p as SkirmishParams;
 }
 
@@ -128,9 +139,10 @@ export class NetPlay {
     return this.isHost && this.state === "lobby" && this.client.present.length >= this.client.seats;
   }
 
-  start(sp: SkirmishParams): void {
+  /** The host's Start: head to head (versus) or one team against the setup's AI rivals (coop). */
+  start(sp: SkirmishParams, mode: "versus" | "coop" = "versus"): void {
     if (!this.canStart()) return;
-    this.client.start(versusParams(sp, this.client.seats));
+    this.client.start(mode === "coop" ? coopParams(sp, this.client.seats) : versusParams(sp, this.client.seats));
   }
 
   leave(): void {

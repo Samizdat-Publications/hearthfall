@@ -252,12 +252,12 @@ export class OpponentAI implements Controller {
     const home = this.comp(w, E.x[c.h], E.y[c.h]);
     let best: { x: number; y: number; behind: boolean; land: number; home: number } | null = null;
     let bd = Infinity;
-    const lead = Math.max(0, ...r.held.filter((_, t) => t !== this.tribe));
+    const lead = Math.max(0, ...r.held.filter((_, t) => !w.allied(t, this.tribe)));
     for (const s of this.contested(w)) {
       const land = this.comp(w, s.x, s.y);
       if (land < 0) continue;
       const p = r.presence(s.x, s.y);
-      const ours = p[this.tribe] > 0 && p.every((k, t) => t === this.tribe || k === 0);
+      const ours = p[this.tribe] > 0 && p.every((k, t) => w.allied(t, this.tribe) || k === 0);
       if (ours) continue;
       const dx = wrapDelta(s.x - E.x[c.h], n);
       const dy = wrapDelta(s.y - E.y[c.h], n);
@@ -441,7 +441,7 @@ export class OpponentAI implements Controller {
     let base = 0;
     let best = Infinity;
     for (const t of w.tribes) {
-      const o = t.index === this.tribe || !t.alive ? -1 : E.index(t.hearth);
+      const o = w.allied(t.index, this.tribe) || !t.alive ? -1 : E.index(t.hearth);
       if (o < 0) continue;
       const dx = wrapDelta(E.x[o] - hx, n);
       const dy = wrapDelta(E.y[o] - hy, n);
@@ -518,7 +518,7 @@ export class OpponentAI implements Controller {
             if (E.inside[i] < 0 && E.mode[i] === 0 && E.order[i] === 0 && E.atk[i] === NO_ENTITY && E.stance[i] !== STANCE.defensive && i !== E.index(this.scout) && !this.posted(w, i)) c.idle.push(i);
           }
         }
-      } else if (E.tribe[i] >= 0 && E.cat[i] === CAT.unit && E.veil[i] === 0 && !w.combat.disguised(i) && w.tribes[E.tribe[i]]?.alive && this.sees(w, i)) {
+      } else if (w.hostile(E.tribe[i], this.tribe) && E.cat[i] === CAT.unit && E.veil[i] === 0 && !w.combat.disguised(i) && w.tribes[E.tribe[i]]?.alive && this.sees(w, i)) {
         // veiled enemies, disguised Shades and units in the fog are invisible to the AI as they are to a player
         const def = units[E.type[i]];
         if (!def.trainedAt && !def.isCaster) continue;
@@ -529,7 +529,7 @@ export class OpponentAI implements Controller {
     }
     const ds: [number, number, number][] = [];
     for (const t of w.tribes) {
-      if (t.index === this.tribe || !t.alive) continue;
+      if (w.allied(t.index, this.tribe) || !t.alive) continue;
       let eh = E.index(t.hearth);
       if (eh < 0) {
         // the Hearth fell but the tribe lives on while its Shaper does: hunt her (BACKLOG 7, ai-idle
@@ -663,7 +663,7 @@ export class OpponentAI implements Controller {
       // totems are level scripting for the player's Shaper
       if (si < 0 || s.usesLeft <= 0 || s.dormant || kinds[s.kind]?.shaperOnly) continue;
       // stretch 3: a ley stone this tribe already holds has nothing to pray for
-      if (kinds[s.kind]?.capturable && s.lastBy === this.tribe) continue;
+      if (kinds[s.kind]?.capturable && w.allied(s.lastBy, this.tribe)) continue;
       // S4: a stone the level bot keeps losing is left alone for a while
       if (kinds[s.kind]?.capturable && (this.stones.get(s.tag)?.until ?? -1) > w.tick) continue;
       const land = this.comp(w, E.x[si], E.y[si]);
@@ -1168,7 +1168,7 @@ export class OpponentAI implements Controller {
     for (let j = 0; j < E.hi; j++) {
       if (!E.alive[j] || E.cat[j] !== CAT.building || E.state[j] !== BSTATE.done || E.burn[j] > 0) continue;
       const tj = E.tribe[j];
-      if (tj < 0 || tj === this.tribe || !this.known.has(tj) || !w.tribes[tj]?.alive || w.tribes[tj].hearth === E.idOf(j) || detB.has(E.type[j]) || !this.seenB(w, j)) continue;
+      if (!w.hostile(tj, this.tribe) || !this.known.has(tj) || !w.tribes[tj]?.alive || w.tribes[tj].hearth === E.idOf(j) || detB.has(E.type[j]) || !this.seenB(w, j)) continue;
       if (guards.some((g) => E.tribe[g] === tj && this.dist2(w, g, j) < r * r)) continue;
       if (this.comp(w, E.x[j], E.y[j]) !== home) continue;
       const dx = wrapDelta(E.x[j] - E.x[i], n);
@@ -1581,7 +1581,7 @@ export class OpponentAI implements Controller {
       const site = this.contested(w).find((s) => {
         if (this.comp(w, s.x, s.y) !== k) return false;
         const p = r!.presence(s.x, s.y);
-        return !(p[this.tribe] > 0 && p.every((n, t) => t === this.tribe || n === 0));
+        return !(p[this.tribe] > 0 && p.every((n, t) => w.allied(t, this.tribe) || n === 0));
       });
       const target = site ? null : c.enemies.find(([, eh]) => this.comp(w, E.x[eh], E.y[eh]) === k);
       if (!target && !site) continue;
@@ -1713,7 +1713,7 @@ export class OpponentAI implements Controller {
           if (tribe !== this.tribe || E.cat[i] !== CAT.unit || !w.cfg.pack.units.units[E.type[i]].trainedAt) continue;
           ok = kind === "ownFighting" ? E.atk[i] !== NO_ENTITY && (heals ? E.hp[i] < 0.7 * w.cfg.pack.units.units[E.type[i]].hp : E.ward[i] === 0) : E.order[i] !== 0 && E.atk[i] === NO_ENTITY && E.veil[i] === 0;
         } else if (kind === "wild") ok = E.cat[i] === CAT.unit && E.type[i] === w.economy.typeWild;
-        else if (tribe >= 0 && tribe !== this.tribe && w.tribes[tribe]?.alive) ok = kind === "buildings" ? E.cat[i] === CAT.building && E.state[i] === BSTATE.done && this.seenB(w, i) : E.cat[i] === CAT.unit && E.veil[i] === 0 && !w.combat.disguised(i) && this.sees(w, i);
+        else if (w.hostile(tribe, this.tribe) && w.tribes[tribe]?.alive) ok = kind === "buildings" ? E.cat[i] === CAT.building && E.state[i] === BSTATE.done && this.seenB(w, i) : E.cat[i] === CAT.unit && E.veil[i] === 0 && !w.combat.disguised(i) && this.sees(w, i);
         if (!ok) continue;
         const dx = wrapDelta(E.x[i] - E.x[c.si], n);
         const dy = wrapDelta(E.y[i] - E.y[c.si], n);

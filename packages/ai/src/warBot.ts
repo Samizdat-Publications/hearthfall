@@ -126,7 +126,7 @@ export class WarBot implements Controller {
       let best = -1;
       let bestD = Infinity;
       for (const t of w.tribes) {
-        if (t.index === this.tribe || !t.alive) continue;
+        if (w.allied(t.index, this.tribe) || !t.alive) continue;
         const eh = E.index(t.hearth);
         if (eh < 0 || home < 0 || comp(E.x[eh], E.y[eh]) !== home) continue;
         const dx = wrapDelta(E.x[eh] - E.x[h], n);

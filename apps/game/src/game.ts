@@ -51,6 +51,7 @@ import {
   LOG_TAIL,
   campaignParams,
   createSkirmish,
+  humansOf,
   type SaveGame,
   type SkirmishParams,
 } from "./session.ts";
@@ -672,7 +673,7 @@ export class Game {
         this.startSkirmish(p, tribe);
         this.paused = false;
       },
-      lost: (why) => this.netEnd(why),
+      lost: (why) => this.netTakeover(why),
     });
     this.net = net;
     if (mode === "host") net.host();
@@ -689,8 +690,28 @@ export class Game {
   }
 
   /** The host's Start: the current skirmish setup, with the partner in the first rival seat. */
-  startNet(sp: SkirmishParams): void {
-    this.net?.start(sp);
+  startNet(sp: SkirmishParams, mode: "versus" | "coop" = "versus"): void {
+    this.net?.start(sp, mode);
+  }
+
+  /**
+   * L5-F: the partner left (or this page lost the relay) mid-match: the match goes on here alone, an opponent
+   * AI takes over every other people's tribe still standing, and the lockstep is dropped (nobody else steps
+   * this world any more, so the AI may use the world rng). Saving stays off for this match.
+   */
+  private netTakeover(why: "partnerLeft" | "closed"): void {
+    if (!this.net) return;
+    if (this.ended || !this.inGame || !this.skirmish) return this.netEnd(why);
+    const sp = this.skirmish;
+    for (const t of humansOf(sp)) {
+      if (t === this.localTribe || !this.world.tribes[t]?.alive) continue;
+      this.world.controllers.push(makeBot({ type: "opponent", tribe: t, personality: sp.ai.find((a) => a !== "none" && a !== "economy") ?? "aggressive", difficulty: sp.difficulty, offset: t }));
+    }
+    this.net.leave();
+    this.net = null;
+    this.role = "host";
+    this.notify("netTakeover", why === "partnerLeft" ? "Your partner left. The AI plays their tribe now; the match goes on." : "The connection to your partner was lost. The AI plays their tribe now; the match goes on.", "info");
+    this.onChange();
   }
 
   /** A LAN match stopped for a network reason (the partner left, the socket closed, a desync). */
@@ -1506,8 +1527,9 @@ export class Game {
     if (this.replay && this.replay.seekTo >= 0) {
       this.replaySeekSome(20);
       this.onChange();
-    } else if (this.net?.ls && this.inGame && !this.ended && !this.editor) {
-      // Leg 5: a LAN match never pauses (menus open over a running match)
+    } else if (this.net?.ls && this.inGame && !this.editor) {
+      // Leg 5: a LAN match never pauses (menus open over a running match), and a page whose match has ended
+      // keeps sending its (empty) batches so the partner's match runs on
       this.netFrame(dt);
     } else if (!this.paused && this.screen === "none" && !this.editor) {
       this.acc += dt;

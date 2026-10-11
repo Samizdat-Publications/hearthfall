@@ -361,6 +361,8 @@ if (debugApiAllowed(__DEBUG_API__, !!game.params.debug, game.role)) {
     /** BACKLOG 76: the full state hash of the running world */
     hash: () => game.world.hash().all,
     /** Leg 5: the LAN lobby and lockstep state (null outside a LAN session) */
+    /** Leg 5: each tribe's team, and the tribes a bot controls (an AI takeover adds the leaver's tribe) */
+    teams: () => ({ teams: game.world.tribes.map((t) => game.world.teamOf[t.index]), bots: game.world.controllers.filter((c) => c.botSpec).map((c) => c.tribe) }),
     net: () => {
       const n = game.net;
       if (!n) return null;
