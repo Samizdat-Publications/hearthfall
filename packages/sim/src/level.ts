@@ -210,6 +210,8 @@ export class LevelRuntime {
       if (l.type === "timeLimit" && w.playTick + 1 >= Math.round(l.seconds * w.cfg.tickHz)) return "timeLimit";
       if (l.type === "hearthLost" && w.ents.index(w.tribes[PLAYER].hearth) < 0) return "hearthLost";
       if (l.type === "siteLost") {
+        // S4: gated to a stretch of the level (after one objective, until another)
+        if ((l.after !== undefined && this.done[l.after] !== 1) || (l.before !== undefined && this.done[l.before] === 1)) continue;
         const by = this.siteBy(l.site);
         if (by >= 0 && by !== PLAYER) return "siteLost";
       }

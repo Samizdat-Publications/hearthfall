@@ -265,7 +265,11 @@ export function validateLevel(raw: unknown, pack: PackFiles, file = "level"): { 
     }
     if ("fromStage" in o && o.fromStage && o.after === undefined) bad(path, "fromStage needs after");
   });
-  lv.lose?.forEach((o, k) => o.type === "siteLost" && !tags.has(o.site) && bad(`lose.${k}`, `no site tagged ${o.site}`));
+  lv.lose?.forEach((o, k) => {
+    if (o.type !== "siteLost") return;
+    if (!tags.has(o.site)) bad(`lose.${k}`, `no site tagged ${o.site}`);
+    for (const g of [o.after, o.before]) if (g !== undefined && g >= lv.objectives.length) bad(`lose.${k}`, `names no objective (${g})`);
+  });
   lv.triggers?.forEach((t, k) => {
     if (t.when.type === "worship" && !tags.has(t.when.site)) bad(`triggers.${k}.when`, `no site tagged ${t.when.site}`);
     if (t.when.type === "objective" && t.when.index >= lv.objectives.length) bad(`triggers.${k}.when`, `no objective ${t.when.index}`);

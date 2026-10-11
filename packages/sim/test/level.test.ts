@@ -130,6 +130,21 @@ describe("campaign levels", () => {
     expect(w.eventCounts.get("levelLost") ?? 0).toBe(0);
   });
 
+  it("S4: siteLost counts only after its `after` objective and until its `before` objective", () => {
+    const steal = (lose: LevelDef["lose"], followers: number) => {
+      const w = make(level({ objectives: [{ type: "worship", site: "near" }, { type: "followers", n: followers }], lose }));
+      w.run(3);
+      w.worship.find("near")!.lastBy = 1;
+      w.run(2);
+      return w.level!.outcome;
+    };
+    expect(steal([{ type: "siteLost", site: "near" }], 999)).toBe(OUTCOME.lost);
+    expect(steal([{ type: "siteLost", site: "near", after: 1 }], 999)).toBe(OUTCOME.none);
+    expect(steal([{ type: "siteLost", site: "near", after: 1 }], 1)).toBe(OUTCOME.lost);
+    expect(steal([{ type: "siteLost", site: "near", before: 1 }], 1)).toBe(OUTCOME.none);
+    expect(() => level({ lose: [{ type: "siteLost", site: "near", before: 5 }] })).toThrow(/names no objective/);
+  });
+
   it("a time limit loses the level", () => {
     const w = make(level({ lose: [{ type: "timeLimit", seconds: 3 }] }));
     w.run(3 * w.cfg.tickHz + 5);

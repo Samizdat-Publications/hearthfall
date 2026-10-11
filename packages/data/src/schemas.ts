@@ -1476,8 +1476,8 @@ export const LoseSchema = z.discriminatedUnion("type", [
   /** the player's tribe is eliminated (always on) */
   z.strictObject({ type: z.literal("eliminated") }),
   z.strictObject({ type: z.literal("timeLimit"), seconds: pos }),
-  /** a rival completes this site first */
-  z.strictObject({ type: z.literal("siteLost"), site: id }),
+  /** a rival completes this site first; S4: only once objective `after` is done, and only until objective `before` is done */
+  z.strictObject({ type: z.literal("siteLost"), site: id, after: z.number().int().min(0).optional(), before: z.number().int().min(0).optional() }),
   /** the player's Hearth is destroyed (the tribe may live on through its Shaper) */
   z.strictObject({ type: z.literal("hearthLost") }),
 ]);
