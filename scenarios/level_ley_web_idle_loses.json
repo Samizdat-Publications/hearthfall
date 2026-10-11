@@ -3,8 +3,8 @@
   "description": "Campaign level 20 has a real loss: an idle player holds no four stones and loses to the rivals or the clock.",
   "tags": ["levels"],
   "level": "ley_web",
-  "runTicks": 48100,
+  "runTicks": 60100,
   "assert": [
-    { "at": 48100, "expr": "level.lost && invariants() == 0" }
+    { "at": 60100, "expr": "level.lost && invariants() == 0" }
   ]
 }

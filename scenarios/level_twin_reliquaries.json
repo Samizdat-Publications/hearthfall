@@ -1,15 +1,22 @@
 {
   "id": "level_twin_reliquaries",
-  "description": "Campaign level 10 is completable under Hold the Reliquaries: wardens clear both wolf dens and the posted guards while a hard player AI takes the ward stones and holds both Reliquaries.",
+  "description": "Campaign level 10 is completable under Hold the Reliquaries: a hard player AI takes and holds both ward stones, wardens clear both wolf dens and sweep the posted guards, the AI wins the risen lake seer stone, breaks the rival and grows to 65.",
   "tags": ["levels"],
   "level": "twin_reliquaries",
-  "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 2 }],
-  "commands": [
-    { "tick": 600, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [96, 40], "attack": true } },
-    { "tick": 3000, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [96, 120], "attack": true } }
+  "bots": [
+    { "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 2 }
   ],
-  "runTicks": 18000,
+  "commands": [
+    { "tick": 600, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [96, 40], "attack": true }},
+    { "tick": 3000, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [96, 120], "attack": true }},
+    { "tick": 4000, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [80, 42], "attack": true }},
+    { "tick": 5400, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [80, 118], "attack": true }}
+  ],
+  "runTicks": 21000,
   "assert": [
-    { "at": 18000, "expr": "level.won && level.objectivesDone == 4 && rules.winner == 0 && invariants() == 0" }
+    { "at": 3000, "expr": "level.objectivesDone == 1 && site('north_ward').by == 0 && site('south_ward').by == 0" },
+    { "at": 7000, "expr": "level.objectivesDone == 3 && site('lake_seer').by == 0 && rules.winner == -1" },
+    { "at": 15000, "expr": "level.objectivesDone == 4 && rules.winner == 0 && !level.won" },
+    { "at": 21000, "expr": "level.won && level.objectivesDone == 5 && rules.winner == 0 && invariants() == 0" }
   ]
 }

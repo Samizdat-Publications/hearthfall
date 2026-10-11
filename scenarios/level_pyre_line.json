@@ -1,11 +1,13 @@
 {
   "id": "level_pyre_line",
-  "description": "Campaign level 19 is completable: the opponent bot for the player douses the ridge pyres, prays at the valley shrine and the far beacon, crosses the land bridge and razes the plateau towers.",
+  "description": "Campaign level 19 is completable: the opponent bot for the player douses the ridge pyres, prays at the valley shrine and the far beacon, crosses the land bridge, holds the bridgehead ward under the plateau towers, crosses to the beacon isle and breaks all three tribes.",
   "tags": ["levels"],
   "level": "pyre_line",
   "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 1 }],
-  "runTicks": 26200,
+  "runTicks": 28000,
   "assert": [
-    { "at": 26200, "expr": "level.won && !alive(1) && !alive(2) && alive(0) && level.objectivesDone == 6 && invariants() == 0" }
+    { "at": 11000, "expr": "level.objectivesDone >= 2 && alive(2) && alive(3)" },
+    { "at": 19000, "expr": "level.objectivesDone >= 4 && alive(3)" },
+    { "at": 28000, "expr": "level.won && !alive(1) && !alive(2) && !alive(3) && alive(0) && level.objectivesDone == 5 && invariants() == 0" }
   ]
 }

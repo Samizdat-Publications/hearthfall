@@ -3,8 +3,8 @@
   "description": "Campaign level 17 has a real loss: an idle player runs out of time (or is overrun) in the delta.",
   "tags": ["levels"],
   "level": "drowned_fords",
-  "runTicks": 40000,
+  "runTicks": 56100,
   "assert": [
-    { "at": 40000, "expr": "level.lost && invariants() == 0" }
+    { "at": 56100, "expr": "level.lost && invariants() == 0" }
   ]
 }

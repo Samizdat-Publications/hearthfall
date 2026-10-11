@@ -1,5 +1,5 @@
 {
-  "$comment": "Teaching level 5 (overhaul): totems and terrain shaping. The totem on the northern islet (reached with Raise Land) restores the Warden Lodge and lifts a permanent causeway across the 36 cell strait to the rival island; raiders cross it too. Build a lodge, burn their watchtowers, break the tribe.",
+  "$comment": "Teaching level 5 (overhaul, paced): totems and terrain shaping. The totem on the northern islet (reached with Raise Land) restores the Warden Lodge and lifts a permanent causeway across the 36 cell strait to the rival island; raiders cross it too. Build a lodge, then hold the contested middle ley stone while the four causeway towers burn (parallel stages), then break a tribe whose Hearth keeps four posted guards. Bot wins about 11500.",
   "id": "stone_totem",
   "name": "The Stone Totem",
   "order": 5,
@@ -29,6 +29,7 @@
     { "spawn": "warden", "tribe": 1, "near": [92, 64], "count": 4 },
     { "spawn": "warden", "tribe": 1, "near": [90, 64], "count": 4, "stance": "defensive" },
     { "spawn": "warden_lodge", "tribe": 1, "at": [100, 56] },
+    { "spawn": "warden", "tribe": 1, "near": [110, 60], "count": 4, "stance": "defensive" },
     { "spawn": "watchtower", "tribe": 1, "at": [88, 58] },
     { "spawn": "watchtower", "tribe": 1, "at": [88, 70] },
     { "spawn": "tree", "near": [14, 52], "count": 12, "spacing": 1.2 },
@@ -61,8 +62,8 @@
     { "type": "worship", "site": "north_totem", "text": "Raise Land to the northern islet and have your Shaper pray at the totem" },
     { "type": "build", "building": "warden_lodge", "n": 1, "after": 0, "text": "Raise a Warden Lodge and train wardens" },
     { "type": "hold", "n": 1, "kind": "ley_stone", "seconds": 180, "after": 1, "text": "Cross the causeway, pray at the ley stone on the middle islet and hold it for three minutes" },
-    { "type": "destroy", "tribe": 1, "building": "watchtower", "after": 2, "text": "Burn all four of their Watchtowers" },
-    { "type": "eliminateAll", "after": 3, "text": "Break the rival tribe" }
+    { "type": "destroy", "tribe": 1, "building": "watchtower", "after": 1, "text": "Burn all four Watchtowers at the far end of the causeway" },
+    { "type": "eliminateAll", "after": 2, "text": "Once the ley stone is yours, break the rival tribe" }
   ],
   "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 1200 }],
   "triggers": [

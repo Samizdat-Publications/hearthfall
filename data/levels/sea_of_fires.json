@@ -1,9 +1,9 @@
 {
-  "$comment": "Level 13 (hard pass), the finale: three 192-map islands, a Forge, boats and balloons, two normal rivals with towers. Wolf dens haunt the home island, three stones to hold, 80 followers, then both rival Hearths must fall and both tribes break. Staged.",
+  "$comment": "Level 13 (hard pass): three 192-map islands, a Forge, boats and balloons, two normal rivals with towers and war bands that cross at minutes 8 and 15. Wolf dens haunt the home island and three home stones (ley, ward, seer) pay off for whoever holds them. Staged: clear both dens, raise a Spirit Well, then in parallel grow to 100 followers and raze the eastern Hearth, then break both tribes. The old 90 second home-stone hold was dropped: no rival can reach those stones, so it was only waiting.",
   "id": "sea_of_fires",
   "name": "Sea of Fires",
   "order": 13,
-  "description": "Three tribes on three islands. Shape your shore in the Forge, clear the wolves from your hills, hold three stones for a minute and a half, grow to 80 followers, then ferry armies over and raze both rival Hearths within 35 minutes.",
+  "description": "Three tribes on three islands. Shape your shore in the Forge, clear the wolves from your hills and raise a Spirit Well, grow to 100 followers, then ferry armies over, raze the eastern Hearth and break both tribes within 40 minutes.",
   "seed": 1313,
   "map": {
     "generator": "flat",
@@ -52,20 +52,19 @@
   ],
   "objectives": [
     { "type": "clearDens", "n": 2, "text": "Clear both wolf dens on your island" },
-    { "type": "hold", "n": 3, "seconds": 90, "after": 0, "text": "Hold three stones at once for a minute and a half" },
-    { "type": "followers", "n": 80, "after": 0, "text": "Grow to 80 followers" },
-    { "type": "destroy", "tribe": 1, "building": "hearth", "after": 2, "text": "Ferry over and raze the eastern Hearth" },
-    { "type": "destroy", "tribe": 2, "building": "hearth", "after": 3, "text": "Raze the southern Hearth" },
-    { "type": "eliminateAll", "after": 4, "text": "Break both island tribes" }
+    { "type": "build", "building": "spirit_well", "n": 1, "after": 0, "text": "Raise a Spirit Well to feed your Shaper (hold the home stones for more mana)" },
+    { "type": "followers", "n": 100, "after": 1, "text": "Grow to 100 followers" },
+    { "type": "destroy", "tribe": 1, "building": "hearth", "after": 1, "text": "Ferry over and raze the eastern Hearth" },
+    { "type": "eliminateAll", "after": 3, "text": "Break both island tribes: the southern village and whatever the east has left" }
   ],
   "lose": [
     { "type": "hearthLost" },
-    { "type": "timeLimit", "seconds": 2100 }
+    { "type": "timeLimit", "seconds": 2400 }
   ],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Clear the wolves, hold your stones, then ferry wardens in your boat or float firecallers over their villages." }] },
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Clear the wolves, pray at your stones, then ferry wardens in your boat or float firecallers over their villages." }] },
     { "when": { "type": "time", "seconds": 480 }, "do": [{ "type": "raid", "tribe": 1, "to": [36, 56], "n": 5 }, { "type": "message", "text": "The eastern war band is crossing the sea." }] },
     { "when": { "type": "time", "seconds": 900 }, "do": [{ "type": "raid", "tribe": 2, "to": [36, 56], "n": 5 }, { "type": "message", "text": "The southern war band is crossing the sea." }] },
-    { "when": { "type": "time", "seconds": 1800 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+    { "when": { "type": "time", "seconds": 2100 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
   ]
 }

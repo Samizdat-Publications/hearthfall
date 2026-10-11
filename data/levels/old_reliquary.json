@@ -1,9 +1,9 @@
 {
-  "$comment": "Teaching level 4 (overhaul): reliquaries and growth. Pray at the Reliquary (it teaches Whirlwind, remembers the Spirit Well and answers three times), raise eight dwellings, build a Spirit Well and grow to 56 followers within twenty five minutes.",
+  "$comment": "Teaching level 4 (overhaul, paced S3): reliquaries and growth. Pray at the Reliquary (it teaches Whirlwind, remembers the Spirit Well and answers three times), build the Spirit Well it remembered, raise six dwellings and grow to 44 followers within twenty five minutes. The well comes before the dwellings so it is a real step, not one already met.",
   "id": "old_reliquary",
   "name": "The Old Reliquary",
   "order": 4,
-  "description": "An old Reliquary stands on the hill. Pray there to learn Whirlwind and to remember the Spirit Well, raise eight dwellings, build a well and grow your tribe to 56 followers before the season turns.",
+  "description": "An old Reliquary stands on the hill. Pray there to learn Whirlwind and to remember the Spirit Well, build the well, raise six dwellings and grow your tribe to 44 followers before the season turns.",
   "seed": 404,
   "map": {
     "generator": "flat",
@@ -49,15 +49,16 @@
   ],
   "objectives": [
     { "type": "worship", "site": "old_reliquary", "text": "Pray at the Reliquary on the hill" },
-    { "type": "build", "building": "dwelling", "n": 8, "after": 0, "text": "Raise eight dwellings" },
-    { "type": "build", "building": "spirit_well", "n": 1, "after": 1, "text": "Build a Spirit Well (the Reliquary remembered how)" },
-    { "type": "followers", "n": 56, "after": 2, "text": "Grow to 56 followers" }
+    { "type": "build", "building": "spirit_well", "n": 1, "after": 0, "text": "Build a Spirit Well (the Reliquary remembered how)" },
+    { "type": "build", "building": "dwelling", "n": 6, "after": 1, "text": "Raise six dwellings" },
+    { "type": "followers", "n": 44, "after": 2, "text": "Grow to 44 followers: upgrade dwellings so they hold more" }
   ],
   "lose": [{ "type": "timeLimit", "seconds": 1500 }],
   "triggers": [
     { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Send four followers to pray at the Reliquary. Build dwellings so your tribe grows." }] },
     { "when": { "type": "worship", "site": "old_reliquary" }, "do": [{ "type": "spell", "spell": "ward", "at": [76, 64] }, { "type": "message", "text": "A ward settles over the hill." }] },
-    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "message", "text": "Now plan a Spirit Well near the Hearth. It adds mana income." }] },
+    { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "message", "text": "Now plan a Spirit Well near the Hearth. It adds mana income." }] },
+    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "message", "text": "The well flows. Raise six dwellings so the tribe can grow." }] },
     { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "message", "text": "Upgrade your dwellings so they hold more and breed on. The Reliquary prayed again gives more Whirlwinds." }] },
     { "when": { "type": "followers", "n": 24 }, "do": [{ "type": "message", "text": "Two dozen followers. Keep breeding up; the winter is long." }] },
     { "when": { "type": "time", "seconds": 1200 }, "do": [{ "type": "message", "text": "Five minutes of the season remain." }] }

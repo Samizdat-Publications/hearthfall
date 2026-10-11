@@ -5,10 +5,10 @@
     "levels"
   ],
   "level": "sea_of_fires",
-  "runTicks": 45000,
+  "runTicks": 51000,
   "assert": [
     {
-      "at": 45000,
+      "at": 51000,
       "expr": "level.lost && alive(0) && invariants() == 0"
     }
   ]

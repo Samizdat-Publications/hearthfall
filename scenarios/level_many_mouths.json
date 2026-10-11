@@ -1,6 +1,6 @@
 {
   "id": "level_many_mouths",
-  "description": "Campaign level 6 is completable: wardens clear the three wolf dens (the hill shrine is prayed once its pack is gone), followers hold the southern ley stone, the tribe grows to 50 and the raiders are broken.",
+  "description": "Campaign level 6 is completable: wardens clear the three wolf dens in stages (the hill shrine is prayed once its pack is gone), then followers hold the southern ley stone while raider bands march on it, the tribe grows to 50 and the raiders are broken (bot wins about 13500).",
   "tags": [
     "levels"
   ],
@@ -91,7 +91,15 @@
   "assert": [
     {
       "at": 3000,
-      "expr": "!level.won && alive(0)"
+      "expr": "!level.won && alive(0) && level.objectivesDone == 0"
+    },
+    {
+      "at": 7000,
+      "expr": "level.objectivesDone == 2 && !level.won"
+    },
+    {
+      "at": 12000,
+      "expr": "level.objectivesDone == 4 && !level.won"
     },
     {
       "at": 17000,

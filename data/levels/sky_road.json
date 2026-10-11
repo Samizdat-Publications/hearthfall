@@ -1,9 +1,9 @@
 {
-  "$comment": "Level 9 (hard pass): balloons. Three sea stacks (a Reliquary, a ley stone, a ward stone) float over open water that only balloons cross; the rival island is unreachable but its war band is dropped on the home shore every four minutes; wolves prowl home. Pray at the stacks, raise a Skyloft, clear two dens, hold two stones 90 s, grow to 45.",
+  "$comment": "Level 9 (pacing pass): balloons. Sea stacks (a Reliquary, a ley stone, a ward stone) float over open water that only balloons cross; the rival island is unreachable but four raiders are dropped on the home shore every four minutes; two wolf dens prowl home. Staged chain: pray at the Reliquary, raise a Skyloft, hold two stacks for a minute; that wakes a guarded seer stack by the rival island (prayer chain): shoot its guards from a balloon and pray there, burn the raiders' shore Watchtower from the air, then grow to 80.",
   "id": "sky_road",
   "name": "The Sky Road",
   "order": 9,
-  "description": "Three sea stacks stand far out from your island and only balloons reach them. Float firecallers to the Reliquary, raise a Skyloft, clear two wolf dens, hold two stacks at once for a minute and a half and grow to 45 followers while sky raiders land on your shore.",
+  "description": "Sea stacks stand far out from your island and only balloons reach them. Pray at the Reliquary, raise a Skyloft, hold two stacks, take the guarded far stack, burn the raiders' Watchtower from the air and grow to 80 followers.",
   "seed": 909,
   "map": {
     "generator": "flat",
@@ -14,7 +14,8 @@
       { "shape": "disc", "at": [130, 80], "r": 16, "aboveSea": 30, "falloff": 5 },
       { "shape": "disc", "at": [74, 46], "r": 4, "aboveSea": 60, "falloff": 2 },
       { "shape": "disc", "at": [78, 112], "r": 4, "aboveSea": 60, "falloff": 2 },
-      { "shape": "disc", "at": [96, 80], "r": 4, "aboveSea": 60, "falloff": 2 }
+      { "shape": "disc", "at": [96, 80], "r": 4, "aboveSea": 60, "falloff": 2 },
+      { "shape": "disc", "at": [110, 48], "r": 4, "aboveSea": 60, "falloff": 2 }
     ]
   },
   "tribes": [
@@ -34,32 +35,37 @@
     { "spawn": "tree", "near": [18, 66], "count": 12, "spacing": 1.2 },
     { "spawn": "tree", "near": [20, 98], "count": 10, "spacing": 1.2 },
     { "spawn": "rock", "near": [34, 96], "count": 4, "spacing": 2 },
-    { "spawn": "wolf", "tribe": -1, "at": [44, 60], "count": 4 },
-    { "spawn": "wolf", "tribe": -1, "at": [46, 102], "count": 4 },
+    { "spawn": "wolf", "tribe": -1, "at": [40, 64], "count": 4 },
+    { "spawn": "wolf", "tribe": -1, "at": [40, 96], "count": 4 },
     { "spawn": "hearth", "tribe": 1, "at": [130, 80] },
     { "spawn": "shaper", "tribe": 1, "at": [127, 77] },
     { "spawn": "settler", "tribe": 1, "near": [132, 86], "count": 12 },
     { "spawn": "tree", "near": [124, 70], "count": 8, "spacing": 1.2 },
+    { "spawn": "watchtower", "tribe": 1, "at": [116, 72] },
     { "spawn": "reliquary", "at": [74, 46], "site": { "tag": "sky_reliquary", "worshippers": 2, "prayerSeconds": 20, "uses": 2, "rewards": [{ "type": "unlockSpell", "spell": "hornets" }, { "type": "charges", "spell": "hornets", "n": 1 }, { "type": "message", "text": "The sky Reliquary teaches Hornets." }] }},
     { "spawn": "ley_stone", "at": [78, 112], "site": { "tag": "south_ley", "worshippers": 2, "rewards": [{ "type": "message", "text": "The southern stack pays mana while you hold it." }] }},
-    { "spawn": "ward_stone", "at": [96, 80], "site": { "tag": "east_ward", "worshippers": 2, "rewards": [{ "type": "message", "text": "The eastern stack guards the way to the rival island." }] }}
+    { "spawn": "ward_stone", "at": [96, 80], "site": { "tag": "east_ward", "worshippers": 2, "rewards": [{ "type": "message", "text": "The eastern stack guards the way to the rival island." }] }},
+    { "spawn": "seer_stone", "at": [110, 48], "site": { "tag": "far_seer", "worshippers": 2, "dormant": true, "rewards": [{ "type": "charges", "spell": "lightning", "n": 2 }, { "type": "message", "text": "The far stack sees the whole rival island." }] }}
   ],
   "objectives": [
-    { "type": "worship", "site": "sky_reliquary", "text": "Pray at the Reliquary on the northern stack" },
-    { "type": "build", "building": "skyloft", "n": 1, "text": "Raise a Skyloft for more balloons" },
-    { "type": "clearDens", "n": 2, "text": "Clear both wolf dens" },
-    { "type": "hold", "n": 2, "seconds": 90, "after": 0, "text": "Hold two stacks at once for a minute and a half" },
-    { "type": "followers", "n": 45, "after": 1, "text": "Grow to 45 followers" }
+    { "type": "worship", "site": "sky_reliquary", "text": "Float two firecallers to the northern stack and pray at the Reliquary" },
+    { "type": "build", "building": "skyloft", "n": 1, "after": 0, "text": "Raise a Skyloft for more balloons" },
+    { "type": "hold", "n": 2, "seconds": 60, "after": 1, "text": "Pray at a second stack and hold two stacks at once for a minute" },
+    { "type": "worship", "site": "far_seer", "after": 2, "text": "Shoot the guards off the far stack from a balloon, then pray at its seer stone" },
+    { "type": "destroy", "tribe": 1, "building": "watchtower", "after": 3, "text": "Float firecallers over the rival shore and burn the raiders' Watchtower" },
+    { "type": "followers", "n": 80, "after": 4, "text": "Grow to 80 followers" },
+    { "type": "clearDens", "n": 2, "text": "Clear both wolf dens on your island" }
   ],
   "lose": [
     { "type": "hearthLost" },
-    { "type": "timeLimit", "seconds": 1500 }
+    { "type": "timeLimit", "seconds": 1700 }
   ],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Board two firecallers on a balloon and float them to the stacks. Three of you must hold the line at home." }] },
-    { "when": { "type": "time", "seconds": 240, "every": 240 }, "do": [{ "type": "spawn", "unit": "warden", "n": 3, "tribe": 1, "at": [48, 80], "stance": "aggressive" }, { "type": "message", "text": "Sky raiders land on your shore." }] },
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Board two firecallers on a balloon and float them to the stacks. The rest must hold the line at home." }] },
+    { "when": { "type": "time", "seconds": 240, "every": 240 }, "do": [{ "type": "spawn", "unit": "warden", "n": 4, "tribe": 1, "at": [48, 80], "stance": "aggressive" }, { "type": "message", "text": "Sky raiders land on your shore." }] },
     { "when": { "type": "worship", "site": "sky_reliquary" }, "do": [{ "type": "message", "text": "A Skyloft builds more balloons. Firecallers can shoot from them." }] },
-    { "when": { "type": "time", "seconds": 1200 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+    { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "awaken", "site": "far_seer" }, { "type": "spawn", "unit": "warden", "n": 2, "tribe": 1, "at": [110, 48], "stance": "defensive" }, { "type": "reveal", "at": [110, 48], "r": 8 }, { "type": "message", "text": "A fourth stack rises by the rival island, and its guards are already on it." }] },
+    { "when": { "type": "time", "seconds": 1400 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
   ],
   "unlocks": { "buildings": ["skyloft"] }
 }

@@ -5,10 +5,10 @@
     "levels"
   ],
   "level": "two_fires",
-  "runTicks": 16000,
+  "runTicks": 18000,
   "assert": [
     {
-      "at": 16000,
+      "at": 18000,
       "expr": "level.lost && !alive(0) && invariants() == 0"
     }
   ]

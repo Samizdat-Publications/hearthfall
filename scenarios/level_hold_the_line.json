@@ -1,6 +1,6 @@
 {
   "id": "level_hold_the_line",
-  "description": "Campaign level 3 is completable: an aggressive opponent bot for the player raises towers, holds the isthmus against the war bands, then burns the rival Warden Lodge and Hearth.",
+  "description": "Campaign level 3 is completable: an aggressive opponent bot for the player raises the towers, breaks the war bands for 150 seconds once they stand, then crosses the isthmus and burns the rival Warden Lodge and Hearth.",
   "tags": [
     "levels"
   ],
@@ -9,7 +9,7 @@
     {
       "type": "opponent",
       "tribe": 0,
-      "personality": "turtle",
+      "personality": "aggressive",
       "difficulty": "normal",
       "offset": 1
     }
@@ -61,15 +61,23 @@
       }
     }
   ],
-  "runTicks": 16000,
+  "runTicks": 12000,
   "assert": [
     {
-      "at": 3000,
-      "expr": "alive(0) && !level.won"
+      "at": 1000,
+      "expr": "level.objectivesDone == 0 && !level.won"
     },
     {
-      "at": 16000,
-      "expr": "level.won && alive(0) && level.objectivesDone == 4 && invariants() == 0"
+      "at": 3000,
+      "expr": "alive(0) && level.objectivesDone == 1 && !level.won"
+    },
+    {
+      "at": 6000,
+      "expr": "alive(0) && level.objectivesDone == 2 && count(tribe1.warden_lodges) >= 1 && !level.won"
+    },
+    {
+      "at": 12000,
+      "expr": "level.won && alive(0) && level.objectivesDone == 4 && events.count('levelWon') == 1 && invariants() == 0"
     }
   ]
 }

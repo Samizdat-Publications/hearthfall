@@ -1,9 +1,9 @@
 {
-  "$comment": "Campaign level 21 (stretch 3): a bay ringed by islands. A shore totem raises a causeway to Reed Isle, its shrine raises two more to the wolf islands, the Shaper must cross tidal flats to Tidecaller's Rock, and the rock lifts permanent causeways to both rival islands. Tides drown the flats for 40 of every 120 seconds. Ward stone at the bay mouth.",
+  "$comment": "Campaign level 21 (stretch 3): a bay ringed by islands. A shore totem raises a causeway to Reed Isle, its shrine raises two more to the wolf islands, the Shaper crosses tidal flats to Tidecaller's Rock, which wakes a tide shrine; at 130 followers the rock lifts causeways to the two small rival islands (turtle north, sneaky south) and both raid it. Breaking them raises a dry road past the flats and a causeway to the altar at the bay mouth. Tides drown the flats for 40 of every 120 seconds.",
   "id": "tidecallers_bay",
   "name": "Tidecaller's Bay",
   "order": 21,
-  "description": "A great bay ringed by islands, and the water keeps its own hours. Wake the shore totem, pray at Reed Isle, clear the wolves from the outer islands, cross the tidal flats to Tidecaller's Rock, hold it, then break both island tribes.",
+  "description": "A great bay ringed by islands, and the water keeps its own hours. Wake the shore totem, pray at Reed Isle, clear the wolf islands, cross the flats to pray on Tidecaller's Rock, grow strong and hold the rock, break both island tribes, then wake the Tidecaller's altar.",
   "seed": 2121,
   "beastPrey": "player",
   "map": {
@@ -80,7 +80,7 @@
           204,
           58
         ],
-        "r": 28,
+        "r": 22,
         "aboveSea": 40,
         "falloff": 5
       },
@@ -90,7 +90,7 @@
           204,
           198
         ],
-        "r": 28,
+        "r": 22,
         "aboveSea": 40,
         "falloff": 5
       },
@@ -109,9 +109,9 @@
   "tribes": [
     {},
     {
-      "ai": "aggressive",
+      "ai": "turtle",
       "difficulty": "hard",
-      "maxTroops": 16
+      "maxTroops": 14
     },
     {
       "ai": "sneaky",
@@ -257,8 +257,8 @@
     {
       "spawn": "rock",
       "near": [
-        196,
-        78
+        198,
+        70
       ],
       "count": 3,
       "spacing": 2
@@ -326,8 +326,8 @@
     {
       "spawn": "rock",
       "near": [
-        196,
-        178
+        198,
+        186
       ],
       "count": 3,
       "spacing": 2
@@ -418,7 +418,8 @@
             "type": "message",
             "text": "The shore totem lifts a causeway to Reed Isle, and a shrine stirs there."
           }
-        ]
+        ],
+        "prayerSeconds": 25
       }
     },
     {
@@ -488,6 +489,65 @@
           {
             "type": "message",
             "text": "The shrine raises ridges north and south and grants two Lightnings. Wolves hold both outer islands."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "shrine",
+      "at": [
+        146,
+        124
+      ],
+      "site": {
+        "tag": "tide_shrine",
+        "dormant": true,
+        "worshippers": 6,
+        "prayerSeconds": 45,
+        "rewards": [
+          {
+            "type": "charges",
+            "spell": "lightning",
+            "n": 1
+          },
+          {
+            "type": "reveal",
+            "at": [
+              204,
+              58
+            ],
+            "r": 24
+          },
+          {
+            "type": "reveal",
+            "at": [
+              204,
+              198
+            ],
+            "r": 24
+          },
+          {
+            "type": "message",
+            "text": "The tide shrine shows you both island tribes. The rock will raise causeways to them once your people are many."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "reliquary",
+      "at": [
+        235,
+        125
+      ],
+      "site": {
+        "tag": "tidecaller_altar",
+        "dormant": true,
+        "worshippers": 8,
+        "prayerSeconds": 90,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The Tidecaller's altar answers. The bay and its tides are yours."
           }
         ]
       }
@@ -576,29 +636,34 @@
       "text": "Cross the tidal flats and stand your Shaper on Tidecaller's Rock"
     },
     {
-      "type": "survive",
-      "seconds": 150,
-      "fromStage": true,
+      "type": "worship",
+      "site": "tide_shrine",
       "after": 3,
-      "text": "Hold the rock while the rivals come for it"
-    },
-    {
-      "type": "hold",
-      "n": 2,
-      "seconds": 240,
-      "after": 4,
-      "text": "Hold two stones at once for four minutes: the rock seer, the Reed ley or the bay-mouth ward"
+      "text": "Bring six followers across the flats at low water to pray at the tide shrine on the rock"
     },
     {
       "type": "followers",
-      "n": 175,
+      "n": 130,
+      "after": 4,
+      "text": "Grow the tribe to 130 followers; the rock answers only a people that large"
+    },
+    {
+      "type": "survive",
+      "seconds": 150,
+      "fromStage": true,
       "after": 5,
-      "text": "Grow the tribe to 175 followers"
+      "text": "Hold the rock while both rivals march on it across the new causeways"
     },
     {
       "type": "eliminateAll",
       "after": 6,
-      "text": "Cross the new causeways and break both island tribes"
+      "text": "Cross the causeways and break both island tribes"
+    },
+    {
+      "type": "worship",
+      "site": "tidecaller_altar",
+      "after": 7,
+      "text": "Cross the new eastern causeway and pray at the Tidecaller's altar at the bay mouth with eight followers"
     }
   ],
   "lose": [
@@ -607,7 +672,7 @@
     },
     {
       "type": "timeLimit",
-      "seconds": 2400
+      "seconds": 3300
     }
   ],
   "triggers": [
@@ -736,6 +801,34 @@
       },
       "do": [
         {
+          "type": "awaken",
+          "site": "tide_shrine"
+        },
+        {
+          "type": "message",
+          "text": "A shrine rises from the rock. Bring six followers across the flats at low water to pray there."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 4
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Grow your tribe to 130. When it is that large the rock will call up causeways to both rivals."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 5
+      },
+      "do": [
+        {
           "type": "shape",
           "shape": "line",
           "at": [
@@ -743,8 +836,8 @@
             122
           ],
           "to": [
-            180,
-            80
+            188,
+            72
           ],
           "width": 3,
           "aboveSea": 10,
@@ -759,8 +852,8 @@
             134
           ],
           "to": [
-            180,
-            176
+            188,
+            184
           ],
           "width": 3,
           "aboveSea": 10,
@@ -794,19 +887,89 @@
     {
       "when": {
         "type": "objective",
-        "index": 4
+        "index": 6
       },
       "do": [
         {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 10,
+          "at": [
+            142,
+            124
+          ]
+        },
+        {
+          "type": "charges",
+          "spell": "lightning",
+          "n": 3
+        },
+        {
           "type": "message",
-          "text": "The rock holds. Grow your tribe, then take the causeways and break both rivals."
+          "text": "The rock holds, and the bay folk rise with you: wardens wade ashore at the rock. Cross the causeways and break both island tribes."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 7
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "line",
+          "at": [
+            98,
+            137
+          ],
+          "to": [
+            140,
+            136
+          ],
+          "width": 3,
+          "aboveSea": 10,
+          "falloff": 2,
+          "seconds": 20
+        },
+        {
+          "type": "shape",
+          "shape": "line",
+          "at": [
+            151,
+            128
+          ],
+          "to": [
+            225,
+            128
+          ],
+          "width": 3,
+          "aboveSea": 10,
+          "falloff": 2,
+          "seconds": 25
+        },
+        {
+          "type": "awaken",
+          "site": "tidecaller_altar"
+        },
+        {
+          "type": "reveal",
+          "at": [
+            232,
+            128
+          ],
+          "r": 14
+        },
+        {
+          "type": "message",
+          "text": "Both tribes are broken. A dry road rises past the flats and a causeway runs to the bay mouth, where the Tidecaller's altar wakes."
         }
       ]
     },
     {
       "when": {
         "type": "time",
-        "seconds": 1800
+        "seconds": 2700
       },
       "do": [
         {

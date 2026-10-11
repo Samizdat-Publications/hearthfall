@@ -1,6 +1,6 @@
 {
   "id": "level_stone_totem",
-  "description": "Campaign level 5 is completable: the Shaper raises a ridge to the northern islet and prays at the totem (the Warden Lodge opens and a causeway rises), a lodge goes up, and an aggressive opponent bot crosses, holds the middle ley stone, burns the rival towers and breaks the tribe.",
+  "description": "Campaign level 5 is completable: the Shaper raises a ridge to the northern islet and prays at the totem (the Warden Lodge opens and a causeway rises), a lodge goes up, and an aggressive opponent bot crosses, holds the contested middle ley stone while it burns the four causeway towers, then breaks the guarded rival Hearth (bot wins about 11500).",
   "tags": [
     "levels"
   ],
@@ -65,7 +65,15 @@
   "assert": [
     {
       "at": 2000,
-      "expr": "level.objectivesDone >= 1 && !level.won"
+      "expr": "level.objectivesDone == 2 && !level.won"
+    },
+    {
+      "at": 6000,
+      "expr": "level.objectivesDone == 2 && !level.won && alive(1)"
+    },
+    {
+      "at": 10000,
+      "expr": "level.objectivesDone == 4 && !level.won && alive(1)"
     },
     {
       "at": 14000,

@@ -1,6 +1,6 @@
 {
   "id": "level_contested_shrine",
-  "description": "Campaign level 2 is completable: a turtle opponent bot for the player claims the hill shrine, wins the race to the pass shrine against the rival tribe, and holds the northern ley stone for two minutes.",
+  "description": "Campaign level 2 is completable: a turtle opponent bot for the player claims the hill shrine and the pass shrine, then keeps the northern ley stone for 200 seconds; the posted wardens cut down the first rival worshippers and a Lightning on the one kneeling at the stone stops it praying the stone away.",
   "tags": [
     "levels"
   ],
@@ -14,11 +14,13 @@
       "offset": 1
     }
   ],
-  "runTicks": 9000,
+  "commands": [
+    { "tick": 4800, "tribe": 0, "type": "cast", "args": { "spell": "lightning", "target": [46, 35.5] } }
+  ],
+  "runTicks": 8500,
   "assert": [
-    {
-      "at": 9000,
-      "expr": "level.won && site('hill_shrine').by == 0 && site('pass_shrine').by == 0 && level.objectivesDone == 3 && invariants() == 0"
-    }
+    { "at": 3000, "expr": "level.objectivesDone == 2 && site('hill_shrine').by == 0 && site('pass_shrine').by == 0 && !level.won" },
+    { "at": 5500, "expr": "level.objectivesDone == 2 && site('north_ley').by == 0 && !level.won" },
+    { "at": 8500, "expr": "level.won && site('hill_shrine').by == 0 && site('pass_shrine').by == 0 && level.objectivesDone == 3 && events.count('levelWon') == 1 && invariants() == 0" }
   ]
 }

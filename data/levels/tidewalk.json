@@ -1,9 +1,9 @@
 {
-  "$comment": "Campaign level 15 (stretch 3): a tide. Two sand flats between the west island, a middle islet and the east island sink and rise on repeating triggers; the shore totem raises a permanent causeway (two line shapes) to the rival island.",
+  "$comment": "Campaign level 15 (stretch 3, hard pass): a tide. Two sand flats between the west island, a middle islet and the east island sink and rise on repeating triggers. Staged: clear the wolf pack on the islet at low water, take the islet ley, wake the shore totem (a causeway that never sinks), hold the islet ley and the home ward while the eastern war band crosses and the rival priests pray the stone away, then raze the three eastern watchtowers behind their posted guards.",
   "id": "tidewalk",
   "name": "Tidewalk",
   "order": 15,
-  "description": "The sand flats between these islands drown and drain by turns. Cross at low water, or wake the shore totem and raise a causeway that never sinks. Then break the tribe in the east.",
+  "description": "The sand flats between these islands drown and drain by turns. Cross at low water to clear the wolves and take the islet stone, wake the shore totem for a causeway that never sinks, hold two stones against the east, then march over and raze the eastern watchtowers.",
   "seed": 1515,
   "map": {
     "generator": "flat",
@@ -17,7 +17,7 @@
       { "shape": "rect", "at": [83, 64], "size": [20, 8], "aboveSea": 5, "falloff": 2 }
     ]
   },
-  "tribes": [{}, { "ai": "turtle", "difficulty": "normal", "maxTroops": 8 }],
+  "tribes": [{}, { "ai": "turtle", "difficulty": "hard", "maxTroops": 23, "worshipAfterSeconds": 300 }],
   "spells": ["bolt", "raise_land", "hornets"],
   "buildings": ["dwelling", "watchtower", "warden_lodge"],
   "setup": [
@@ -29,16 +29,30 @@
     { "spawn": "rock", "near": [30, 56], "count": 3, "spacing": 2 },
     { "spawn": "hearth", "tribe": 1, "at": [108, 62] },
     { "spawn": "shaper", "tribe": 1, "at": [102, 62] },
-    { "spawn": "settler", "tribe": 1, "near": [108, 70], "count": 10 },
+    { "spawn": "settler", "tribe": 1, "near": [108, 70], "count": 12 },
+    { "spawn": "warden", "tribe": 1, "near": [100, 64], "count": 4 },
+    { "spawn": "warden", "tribe": 1, "near": [106, 64], "count": 6, "stance": "defensive" },
+    { "spawn": "watchtower", "tribe": 1, "at": [96, 58] },
+    { "spawn": "watchtower", "tribe": 1, "at": [98, 72] },
+    { "spawn": "watchtower", "tribe": 1, "at": [114, 66] },
     { "spawn": "tree", "near": [112, 52], "count": 10, "spacing": 1.2 },
-    { "spawn": "rock", "near": [98, 74], "count": 3, "spacing": 2 },
+    { "spawn": "rock", "near": [98, 76], "count": 3, "spacing": 2 },
     { "spawn": "tree", "near": [62, 60], "count": 4, "spacing": 1.2 },
+    { "spawn": "wolf", "tribe": -1, "at": [60, 70], "count": 3 },
     {
       "spawn": "ley_stone",
       "at": [64, 66],
       "site": {
         "tag": "islet_stone",
         "rewards": [{ "type": "message", "text": "The islet stone is yours: it draws mana while you hold it." }]
+      }
+    },
+    {
+      "spawn": "ward_stone",
+      "at": [16, 74],
+      "site": {
+        "tag": "home_ward",
+        "rewards": [{ "type": "message", "text": "The home ward guards your southern shore." }]
       }
     },
     {
@@ -56,12 +70,15 @@
     }
   ],
   "objectives": [
-    { "type": "worship", "site": "tide_totem", "text": "Wake the shore totem (only your Shaper can pray there)" },
-    { "type": "eliminateAll", "after": 0, "text": "Cross to the eastern island and break the tribe" }
+    { "type": "clearDens", "text": "Cross the flats at low water and clear the wolf pack on the middle islet" },
+    { "type": "worship", "site": "islet_stone", "after": 0, "text": "Pray at the ley stone on the islet" },
+    { "type": "worship", "site": "tide_totem", "after": 1, "text": "Wake the shore totem (only your Shaper can pray there)" },
+    { "type": "hold", "n": 2, "seconds": 240, "after": 2, "text": "Hold the islet ley and the home ward at once for four minutes" },
+    { "type": "destroy", "tribe": 1, "building": "watchtower", "after": 3, "text": "March along the causeway and raze every eastern watchtower (or break the tribe)" }
   ],
-  "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 1200 }],
+  "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 2600 }],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Pray at the totem on the southern shore, or cross the flats while the tide is out." }] },
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Raise a Warden Lodge and cross the flats while the tide is out: wolves hold the islet." }] },
     { "when": { "type": "time", "seconds": 80, "every": 120 }, "do": [{ "type": "message", "text": "The tide is turning. The flats will go under in ten seconds." }] },
     { "when": { "type": "time", "seconds": 90, "every": 120 }, "do": [
       { "type": "shape", "shape": "rect", "at": [45, 64], "size": [14, 8], "aboveSea": -8, "falloff": 2, "seconds": 8 },
@@ -72,7 +89,16 @@
       { "type": "shape", "shape": "rect", "at": [45, 64], "size": [14, 8], "aboveSea": 5, "falloff": 2, "seconds": 8 },
       { "type": "shape", "shape": "rect", "at": [83, 64], "size": [14, 8], "aboveSea": 5, "falloff": 2, "seconds": 8 }
     ] },
-    { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "message", "text": "Raise a Warden Lodge and march along the causeway before the water takes the flats." }] },
-    { "when": { "type": "time", "seconds": 900 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+    { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "message", "text": "The pack is gone. Send three followers to pray at the islet stone." }] },
+    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "message", "text": "Now walk your Shaper to the totem on the southern shore and wake the causeway." }] },
+    { "when": { "type": "objective", "index": 2 }, "do": [
+      { "type": "raid", "tribe": 1, "to": [64, 66], "n": 8 },
+      { "type": "message", "text": "The east has seen the causeway rise. Its war band comes for the islet stone: hold it and your home ward." }
+    ] },
+    { "when": { "type": "time", "seconds": 1200 }, "do": [
+      { "type": "raid", "tribe": 1, "to": [20, 62], "n": 8 },
+      { "type": "message", "text": "The eastern war band wades across at low water toward your Hearth." }
+    ] },
+    { "when": { "type": "time", "seconds": 2300 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
   ]
 }

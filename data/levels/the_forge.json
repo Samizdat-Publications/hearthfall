@@ -1,9 +1,9 @@
 {
-  "$comment": "Level 12 (hard pass): Forge mode on a 160 map. After the Forge the turtle rival (normal, 14 troops, towers, posted guards) sits behind its moat. Wolf dens haunt the central plain, stones pay and guard. Staged: clear two dens, hold two stones 90 s, grow to 60 followers, then raze the rival Hearth and break the tribe.",
+  "$comment": "Level 12 (pacing pass): Forge mode on a 160 map. After the Forge the turtle rival (normal, 14 troops, towers, posted guards) sits behind its moat. Wolf dens haunt the central plain; clearing them raises the middle ward (prayer chain), holding all three stones raises a seer stone on the north hill that the digger can reach as easily. Staged: clear two dens, hold three stones 60 s, win the hill seer stone, raze the rival Hearth, then grow to 70.",
   "id": "the_forge",
   "name": "The Forge",
   "order": 12,
-  "description": "Before the battle, both tribes reshape the land around their Hearths. Raise walls or dig a moat, then press Ready. Clear two wolf dens, hold two stones for a minute and a half, grow to 70 followers, then cross the careful digger's moat, raze its Hearth and break the tribe.",
+  "description": "Before the battle, both tribes reshape the land around their Hearths. Raise walls or dig a moat, then press Ready. Clear two wolf dens, hold three stones, win the hill seer stone, cross the careful digger's moat and raze its Hearth, then grow to 70 followers.",
   "seed": 1212,
   "map": {
     "generator": "flat",
@@ -38,21 +38,24 @@
     { "spawn": "wolf", "tribe": -1, "at": [64, 104], "count": 4 },
     { "spawn": "ley_stone", "at": [46, 62], "site": { "tag": "home_ley", "rewards": [{ "type": "message", "text": "The home ley pays mana while you hold it." }] }},
     { "spawn": "ward_stone", "at": [46, 98], "site": { "tag": "home_ward", "rewards": [{ "type": "message", "text": "The home ward guards your southern flank." }] }},
-    { "spawn": "ward_stone", "at": [80, 80], "site": { "tag": "mid_ward", "rewards": [{ "type": "message", "text": "The middle ward commands the road to the moat." }] }}
+    { "spawn": "ward_stone", "at": [80, 80], "site": { "tag": "mid_ward", "rewards": [{ "type": "message", "text": "The middle ward commands the road to the moat." }], "dormant": true }},
+    { "spawn": "seer_stone", "at": [80, 36], "site": { "tag": "north_seer", "dormant": true, "rewards": [{ "type": "charges", "spell": "lightning", "n": 2 }, { "type": "message", "text": "The hill seer stone looks over the digger's moat." }] }}
   ],
   "objectives": [
     { "type": "clearDens", "n": 2, "text": "Clear both wolf dens" },
-    { "type": "hold", "n": 2, "seconds": 90, "after": 0, "text": "Hold two stones at once for a minute and a half" },
-    { "type": "followers", "n": 70, "after": 0, "text": "Grow to 70 followers" },
+    { "type": "hold", "n": 3, "seconds": 60, "after": 0, "text": "Pray at the risen middle ward and hold all three stones at once for a minute" },
+    { "type": "worship", "site": "north_seer", "after": 1, "text": "Win the seer stone risen on the north hill" },
     { "type": "destroy", "tribe": 1, "building": "hearth", "after": 2, "text": "Cross the moat and raze the digger's Hearth" },
-    { "type": "eliminateAll", "after": 3, "text": "Break the digger tribe" }
+    { "type": "followers", "n": 70, "after": 3, "text": "Grow to 70 followers" }
   ],
   "lose": [
     { "type": "hearthLost" },
-    { "type": "timeLimit", "seconds": 1800 }
+    { "type": "timeLimit", "seconds": 2100 }
   ],
   "triggers": [
     { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "The Forge is over. Flatten or Raise Land can bridge a moat. Wolves hold the central plain." }] },
-    { "when": { "type": "time", "seconds": 600 }, "do": [{ "type": "raid", "tribe": 1, "to": [32, 80], "n": 5 }, { "type": "message", "text": "The digger sends a war band across the plain." }] }
+    { "when": { "type": "time", "seconds": 600 }, "do": [{ "type": "raid", "tribe": 1, "to": [32, 80], "n": 5 }, { "type": "message", "text": "The digger sends a war band across the plain." }] },
+    { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "awaken", "site": "mid_ward" }, { "type": "message", "text": "With the wolves gone, the middle ward rises on the plain. The digger wants it too." }] },
+    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "awaken", "site": "north_seer" }, { "type": "reveal", "at": [80, 36], "r": 8 }, { "type": "message", "text": "A seer stone rises on the north hill, as near the digger as it is to you." }] }
   ]
 }

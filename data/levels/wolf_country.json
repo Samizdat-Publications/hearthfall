@@ -1,9 +1,9 @@
 {
-  "$comment": "Campaign level 18 (stretch 3): highland valleys full of wolf dens that hunt only the player (beastPrey player) while two rivals grow beyond a gorge. Clear the north valley, then the south; pray at the gorge shrine to raise a land bridge; raze the sneaky tribe's signal pyre, which watches the northern pass; then break both tribes.",
+  "$comment": "Campaign level 18 (stretch 3): highland valleys full of wolf dens that hunt only the player (beastPrey player) while two rivals grow beyond a gorge. Clear the north valley, then the south; pray at the gorge shrine to raise a land bridge; clear the two packs on the eastern slopes; raze the sneaky tribe's signal pyre, which watches the northern pass; then break both tribes.",
   "id": "wolf_country",
   "name": "Wolf Country",
   "order": 18,
-  "description": "Highland valleys crawl with wolves that hunt only you, while two tribes beyond the gorge grow unbothered. Clear the northern valley and the southern, pray at the gorge shrine to raise a land bridge, raze the pyre that watches the pass, and break both tribes.",
+  "description": "Highland valleys crawl with wolves that hunt only you, while two tribes beyond the gorge grow unbothered. Clear both valleys, pray at the gorge shrine to raise a land bridge, clear the eastern slopes, raze the pyre that watches the pass, and break both tribes.",
   "seed": 1818,
   "beastPrey": "player",
   "map": {
@@ -53,16 +53,16 @@
     { "spawn": "watchtower", "tribe": 2, "at": [128, 124] },
     { "spawn": "tree", "near": [156, 150], "count": 12, "spacing": 1.2 },
     { "spawn": "rock", "near": [136, 150], "count": 3, "spacing": 2 },
-    { "spawn": "wolf", "tribe": -1, "at": [38, 40], "count": 4 },
-    { "spawn": "wolf", "tribe": -1, "at": [62, 48], "count": 3 },
-    { "spawn": "wolf", "tribe": -1, "at": [42, 66], "count": 3 },
-    { "spawn": "wolf", "tribe": -1, "at": [30, 56], "count": 4 },
-    { "spawn": "wolf", "tribe": -1, "at": [30, 134], "count": 4 },
-    { "spawn": "wolf", "tribe": -1, "at": [38, 152], "count": 4 },
-    { "spawn": "wolf", "tribe": -1, "at": [62, 144], "count": 3 },
-    { "spawn": "wolf", "tribe": -1, "at": [42, 126], "count": 3 },
-    { "spawn": "wolf", "tribe": -1, "at": [118, 72], "count": 3 },
-    { "spawn": "wolf", "tribe": -1, "at": [118, 120], "count": 3 },
+    { "spawn": "wolf", "tribe": -1, "at": [38, 40], "count": 5 },
+    { "spawn": "wolf", "tribe": -1, "at": [62, 48], "count": 4 },
+    { "spawn": "wolf", "tribe": -1, "at": [42, 66], "count": 4 },
+    { "spawn": "wolf", "tribe": -1, "at": [30, 56], "count": 5 },
+    { "spawn": "wolf", "tribe": -1, "at": [30, 134], "count": 5 },
+    { "spawn": "wolf", "tribe": -1, "at": [38, 152], "count": 5 },
+    { "spawn": "wolf", "tribe": -1, "at": [62, 144], "count": 4 },
+    { "spawn": "wolf", "tribe": -1, "at": [42, 126], "count": 4 },
+    { "spawn": "wolf", "tribe": -1, "at": [118, 72], "count": 4 },
+    { "spawn": "wolf", "tribe": -1, "at": [118, 120], "count": 4 },
     { "spawn": "tree", "near": [52, 36], "count": 6, "spacing": 1.2 },
     { "spawn": "tree", "near": [50, 154], "count": 6, "spacing": 1.2 },
     {
@@ -81,29 +81,52 @@
         ]
       }
     },
-    {
-      "spawn": "ley_stone",
-      "at": [64, 70],
-      "site": { "tag": "valley_ley", "rewards": [{ "type": "message", "text": "The valley ley pays mana while you hold it." }] }
-    }
+    { "spawn": "ley_stone", "at": [64, 70], "site": { "tag": "valley_ley", "rewards": [{ "type": "message", "text": "The valley ley pays mana while you hold it." }] } }
   ],
   "objectives": [
     { "type": "clearDens", "at": [48, 52], "r": 28, "text": "Train wardens and clear every wolf den in the northern valley" },
     { "type": "clearDens", "at": [48, 140], "r": 28, "after": 0, "text": "Now clear the southern valley" },
     { "type": "worship", "site": "gorge_shrine", "after": 1, "text": "Send four followers to pray at the gorge shrine and raise a land bridge" },
-    { "type": "followers", "n": 190, "after": 2, "text": "Cross the bridge only with a great host: grow to 190 followers" },
-    { "type": "destroy", "tribe": 1, "building": "signal_pyre", "after": 3, "text": "Cross the bridge and raze the signal pyre that watches the northern pass" },
-    { "type": "destroy", "tribe": 2, "building": "hearth", "after": 4, "text": "March on the southern tribe and raze its Hearth" },
-    { "type": "eliminateAll", "after": 5, "text": "Break both highland tribes" }
+    { "type": "clearDens", "at": [118, 96], "r": 30, "after": 2, "text": "Cross the bridge and clear the two wolf dens on the eastern slopes" },
+    { "type": "destroy", "tribe": 1, "building": "signal_pyre", "after": 3, "text": "Raze the signal pyre that watches the northern pass" },
+    { "type": "eliminateAll", "after": 4, "text": "Break both highland tribes" }
   ],
-  "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 2100 }],
+  "lose": [
+    { "type": "hearthLost" },
+    { "type": "timeLimit", "seconds": 2400 }
+  ],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "The wolves hunt only you. Raise a Warden Lodge, train wardens, and clear the valleys one at a time." }] },
+    {
+      "when": { "type": "time", "seconds": 1 },
+      "do": [{ "type": "message", "text": "The wolves hunt only you. Raise a Warden Lodge, train wardens, and clear the valleys one at a time." }]
+    },
     { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "message", "text": "The northern valley is quiet. The southern packs are still hunting." }] },
-    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "awaken", "site": "gorge_shrine" }, { "type": "message", "text": "Both valleys are clear. A shrine rises at the gorge: pray there to raise a bridge to the east." }] },
-    { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "message", "text": "The bridge stands. Gather a great host before you cross: the east has grown for a long time." }] },
-    { "when": { "type": "objective", "index": 3 }, "do": [{ "type": "message", "text": "The host is ready. A pyre at the northern pass has watched you all along: bring it down." }] },
-    { "when": { "type": "time", "seconds": 780, "every": 360 }, "do": [{ "type": "raid", "tribe": 1, "to": [44, 96], "n": 5 }, { "type": "message", "text": "The sneaky tribe sends a band through the northern pass." }] },
-    { "when": { "type": "time", "seconds": 1800 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+    {
+      "when": { "type": "objective", "index": 1 },
+      "do": [
+        { "type": "awaken", "site": "gorge_shrine" },
+        { "type": "message", "text": "Both valleys are clear. A shrine rises at the gorge: pray there to raise a bridge to the east." }
+      ]
+    },
+    {
+      "when": { "type": "objective", "index": 2 },
+      "do": [
+        { "type": "reveal", "at": [118, 96], "r": 30 },
+        { "type": "message", "text": "The bridge stands. Two packs den on the eastern slopes, hunting only you: clear them before you march on the tribes." }
+      ]
+    },
+    {
+      "when": { "type": "objective", "index": 3 },
+      "do": [
+        { "type": "raid", "tribe": 1, "to": [118, 96], "n": 8 },
+        { "type": "message", "text": "The slopes are quiet, and the sneaky tribe marches on you. The pyre at the northern pass has watched you all along: bring it down." }
+      ]
+    },
+    { "when": { "type": "objective", "index": 4 }, "do": [{ "type": "message", "text": "The pyre is dark. Break both highland tribes." }] },
+    {
+      "when": { "type": "time", "seconds": 780, "every": 360 },
+      "do": [{ "type": "raid", "tribe": 1, "to": [44, 96], "n": 5 }, { "type": "message", "text": "The sneaky tribe sends a band through the northern pass." }]
+    },
+    { "when": { "type": "time", "seconds": 2100 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
   ]
 }

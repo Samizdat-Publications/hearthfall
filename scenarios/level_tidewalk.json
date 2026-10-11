@@ -1,14 +1,32 @@
 {
   "id": "level_tidewalk",
-  "description": "Campaign level 15 is completable: the Shaper wakes the shore totem, the causeway rises, and the opponent bot for the player crosses it and breaks the eastern tribe while the flats flood and drain.",
-  "tags": ["levels"],
-  "level": "tidewalk",
-  "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "normal", "offset": 1 }],
-  "commands": [
-    { "tick": 40, "tribe": 0, "type": "worship", "args": { "units": "tribe0.shapers", "site": "tide_totem" } }
+  "description": "Campaign level 15 is completable: the opponent bot for the player clears the islet wolves at low water, takes the islet ley, wakes the shore totem with its Shaper, holds the islet ley and the home ward against the eastern war band and priests, then razes the eastern watchtowers.",
+  "tags": [
+    "levels"
   ],
-  "runTicks": 22000,
+  "level": "tidewalk",
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "aggressive",
+      "difficulty": "normal",
+      "offset": 1
+    }
+  ],
+  "runTicks": 30000,
   "assert": [
-    { "at": 22000, "expr": "level.won && !alive(1) && alive(0) && level.objectivesDone == 2 && invariants() == 0" }
+    {
+      "at": 8000,
+      "expr": "level.objectivesDone >= 2 && level.objectivesDone <= 3 && !level.won"
+    },
+    {
+      "at": 12000,
+      "expr": "site('tide_totem').by == 0 && !level.won"
+    },
+    {
+      "at": 30000,
+      "expr": "level.won && alive(0) && level.objectivesDone == 5 && invariants() == 0"
+    }
   ]
 }

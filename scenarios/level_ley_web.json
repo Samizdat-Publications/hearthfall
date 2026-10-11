@@ -1,11 +1,13 @@
 {
   "id": "level_ley_web",
-  "description": "Campaign level 20 is completable: the opponent bot for the player prays at the neutral stones, holds five stones for six minutes against three contesting rivals, grows and breaks all three tribes.",
+  "description": "Campaign level 20 is completable: the opponent bot for the player prays at the neutral stones, holds five stones for six minutes against three rivals, burns the eastern and northern Hearths and breaks all three tribes.",
   "tags": ["levels"],
   "level": "ley_web",
   "bots": [{ "type": "opponent", "tribe": 0, "personality": "turtle", "difficulty": "hard", "offset": 1 }],
-  "runTicks": 28200,
+  "runTicks": 31000,
   "assert": [
-    { "at": 28200, "expr": "level.won && !alive(1) && !alive(2) && !alive(3) && alive(0) && level.objectivesDone == 4 && invariants() == 0" }
+    { "at": 10000, "expr": "level.objectivesDone >= 2 && alive(1) && alive(2) && alive(3)" },
+    { "at": 24000, "expr": "level.objectivesDone >= 4 && alive(3)" },
+    { "at": 31000, "expr": "level.won && !alive(1) && !alive(2) && !alive(3) && alive(0) && level.objectivesDone == 5 && invariants() == 0" }
   ]
 }

@@ -1,11 +1,28 @@
 {
   "id": "level_ley_crown",
-  "description": "Campaign level 16 is completable: the opponent bot for the player takes stones, holds the crown ward and the western ley, and breaks the eastern tribe.",
-  "tags": ["levels"],
+  "description": "Campaign level 16 is completable: the hard opponent bot for the player takes the western ley, clears both wolf packs, takes the crown ward once it wakes, holds all three ward stones against the sneaky rival, then razes the eastern watchtowers.",
+  "tags": [
+    "levels"
+  ],
   "level": "ley_crown",
-  "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "normal", "offset": 1 }],
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "aggressive",
+      "difficulty": "hard",
+      "offset": 1
+    }
+  ],
   "runTicks": 30000,
   "assert": [
-    { "at": 30000, "expr": "level.won && !alive(1) && alive(0) && level.objectivesDone == 3 && invariants() == 0" }
+    {
+      "at": 5000,
+      "expr": "site('crown_ward').by == 0 && level.objectivesDone == 3 && !level.won"
+    },
+    {
+      "at": 30000,
+      "expr": "level.won && alive(0) && level.objectivesDone == 5 && invariants() == 0"
+    }
   ]
 }

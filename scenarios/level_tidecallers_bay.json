@@ -1,6 +1,6 @@
 {
   "id": "level_tidecallers_bay",
-  "description": "Campaign level 21 is completable: the Shaper wakes the shore totem, followers pray at Reed Isle, wardens clear both wolf islands, the Shaper crosses the tidal flats to Tidecaller's Rock, holds it, and the opponent bot for the player breaks both island tribes.",
+  "description": "Campaign level 21 is completable: the Shaper wakes the shore totem, followers pray at Reed Isle, wardens clear both wolf islands, the Shaper crosses the tidal flats to Tidecaller's Rock, followers pray at its tide shrine, the tribe grows to 130, holds the rock against the raids, the opponent bot for the player breaks both island tribes and prays at the Tidecaller's altar (bot wins near tick 28700).",
   "tags": [
     "levels"
   ],
@@ -14,11 +14,19 @@
       "offset": 1
     }
   ],
-  "runTicks": 25500,
+  "runTicks": 34000,
   "assert": [
     {
-      "at": 25500,
-      "expr": "level.won && !alive(1) && !alive(2) && alive(0) && level.objectivesDone == 8 && invariants() == 0"
+      "at": 12000,
+      "expr": "level.objectivesDone >= 4 && alive(1) && alive(2)"
+    },
+    {
+      "at": 26000,
+      "expr": "level.objectivesDone >= 8 && !alive(1) && !alive(2)"
+    },
+    {
+      "at": 34000,
+      "expr": "level.won && !alive(1) && !alive(2) && alive(0) && level.objectivesDone == 9 && site('tidecaller_altar').by == 0 && invariants() == 0"
     }
   ]
 }

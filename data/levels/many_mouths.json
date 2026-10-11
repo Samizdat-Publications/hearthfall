@@ -1,5 +1,5 @@
 {
-  "$comment": "Teaching level 6 (overhaul): wolves and clearing dens. Three wolf dens guard the hill shrine (six settlers), a ley stone and a ward stone on a 160 map; wardens must clear them, then the ley stone is held against a sneaky rival and the tribe grows to 50 and the raiders are broken.",
+  "$comment": "Teaching level 6 (overhaul, paced): wolves and clearing dens. Three wolf dens guard the hill shrine (eight settlers), a ley stone and a ward stone on a 160 map; wardens must clear them in stages, then three parallel goals: hold the ley stone while raider bands march on it, grow to 50 and break the raiders. Bot wins about 13500.",
   "id": "many_mouths",
   "name": "The Winter Pack",
   "order": 6,
@@ -64,15 +64,17 @@
     { "type": "clearDens", "n": 1, "text": "Train wardens and clear the wolf den on the shrine hill" },
     { "type": "worship", "site": "hill_shrine", "after": 0, "text": "Send four followers to pray at the hill shrine" },
     { "type": "clearDens", "after": 1, "text": "Clear the remaining wolf dens" },
-    { "type": "hold", "n": 1, "kind": "ley_stone", "seconds": 180, "after": 2, "text": "Pray at the southern ley stone and hold it for three minutes" },
-    { "type": "followers", "n": 50, "after": 3, "text": "Grow to 50 followers" },
-    { "type": "eliminateAll", "after": 4, "text": "March east and break the raiders for good" }
+    { "type": "hold", "n": 1, "kind": "ley_stone", "seconds": 180, "after": 2, "text": "Pray at the southern ley stone and hold it for three minutes while raiders try to take it" },
+    { "type": "followers", "n": 50, "after": 2, "text": "Grow to 50 followers" },
+    { "type": "eliminateAll", "after": 2, "text": "March east and break the raiders for good" }
   ],
   "lose": [{ "type": "timeLimit", "seconds": 1500 }, { "type": "hearthLost" }],
   "triggers": [
     { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Wolves bite anything that comes near their dens. Raise a Warden Lodge and train wardens; they fight wolves on sight." }] },
     { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "message", "text": "The shrine hill is clear. Send four followers to pray." }] },
     { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "message", "text": "The packs are broken. The raiders from the east will come for the ley stone." }] },
+    { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "raid", "tribe": 1, "to": [86, 114] }] },
+    { "when": { "type": "time", "seconds": 600, "every": 240 }, "do": [{ "type": "raid", "tribe": 1, "to": [86, 114], "n": 4 }, { "type": "message", "text": "Raiders are marching on the southern ley stone." }] },
     { "when": { "type": "time", "seconds": 420, "every": 300 }, "do": [{ "type": "raid", "tribe": 1, "to": [28, 80], "n": 4 }, { "type": "message", "text": "Raiders are crossing the plain." }] },
     { "when": { "type": "time", "seconds": 1200 }, "do": [{ "type": "message", "text": "Five minutes until the snows close in." }] }
   ]

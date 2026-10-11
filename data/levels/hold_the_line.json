@@ -1,9 +1,9 @@
 {
-  "$comment": "Teaching level 3 (overhaul): defense, then a counter-stroke. Two war bands cross a 40 cell isthmus; the player raises towers, trains wardens and holds for five and a half minutes, then marches across to burn the rival lodge and Hearth.",
+  "$comment": "Teaching level 3 (overhaul, paced S3): defense, then a counter-stroke. War bands cross a 40 cell isthmus at 60 s, when the player's third tower stands, and at 170 s; the player holds for 150 s from the towers (fromStage, so the bands land inside it), then marches across to burn the rival lodge and Hearth. Only wardens: no chanters or firecallers on either side.",
   "id": "hold_the_line",
   "name": "Hold the Line",
   "order": 3,
-  "description": "War drums sound across the isthmus. Raise two more towers, train wardens and break two war bands. When the drums fall silent, march over the isthmus and burn their Warden Lodge and Hearth before the winter ends.",
+  "description": "War drums sound across the isthmus. Raise two more towers, train wardens and break their war bands. When the drums fall silent, march over the isthmus and burn their Warden Lodge and Hearth before the winter ends.",
   "seed": 303,
   "map": {
     "generator": "flat",
@@ -18,6 +18,7 @@
   },
   "tribes": [{}, { "ai": "aggressive", "difficulty": "easy", "maxTroops": 8 }],
   "spells": ["bolt", "raise_land"],
+  "buildings": ["dwelling", "watchtower", "warden_lodge"],
   "setup": [
     { "spawn": "hearth", "tribe": 0, "at": [20, 64] },
     { "spawn": "shaper", "tribe": 0, "at": [24, 62] },
@@ -41,7 +42,7 @@
   ],
   "objectives": [
     { "type": "build", "building": "watchtower", "n": 3, "text": "Raise two more Watchtowers on the shore of the isthmus" },
-    { "type": "survive", "seconds": 330, "after": 0, "text": "Hold out for five and a half minutes" },
+    { "type": "survive", "seconds": 150, "fromStage": true, "after": 0, "text": "Break the war bands: keep them from your Hearth for two and a half minutes" },
     { "type": "destroy", "tribe": 1, "building": "warden_lodge", "after": 1, "text": "Cross the isthmus and burn their Warden Lodge" },
     { "type": "destroy", "tribe": 1, "building": "hearth", "after": 2, "text": "Burn their Hearth" }
   ],
@@ -50,8 +51,8 @@
     { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Raise two more Watchtowers by the isthmus, garrison them, train wardens and keep the war band from your Hearth." }] },
     { "when": { "type": "time", "seconds": 60 }, "do": [{ "type": "raid", "tribe": 1, "to": [20, 64] }, { "type": "message", "text": "The first war band is crossing the isthmus!" }] },
     { "when": { "type": "time", "seconds": 140 }, "do": [{ "type": "spawn", "unit": "warden", "n": 6, "at": [44, 64] }, { "type": "message", "text": "Allies have come down from the hills." }] },
-    { "when": { "type": "time", "seconds": 170 }, "do": [{ "type": "spawn", "unit": "warden", "n": 5, "tribe": 1, "at": [86, 64] }, { "type": "raid", "tribe": 1, "to": [20, 64] }, { "type": "message", "text": "A second wave is coming." }] },
-    { "when": { "type": "time", "seconds": 300 }, "do": [{ "type": "raid", "tribe": 1, "to": [20, 64], "n": 12 }, { "type": "message", "text": "Their last band forms up on the far shore." }] },
+    { "when": { "type": "time", "seconds": 170 }, "do": [{ "type": "spawn", "unit": "warden", "n": 5, "tribe": 1, "at": [86, 64] }, { "type": "raid", "tribe": 1, "to": [20, 64] }, { "type": "message", "text": "Another war band is coming." }] },
+    { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "raid", "tribe": 1, "to": [20, 64], "n": 12 }, { "type": "message", "text": "Your towers stand and the drums answer: a war band forms up on the far shore. Hold the line." }] },
     { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "message", "text": "The drums have fallen silent. Gather your wardens and carry the fight across the isthmus." }] },
     { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "message", "text": "Their lodge burns. Only the Hearth is left." }] },
     { "when": { "type": "time", "seconds": 1200 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }

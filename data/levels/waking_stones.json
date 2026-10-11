@@ -1,9 +1,9 @@
 {
-  "$comment": "Campaign level 14 (hard pass): a prayer chain. The shore totem raises a ridge to the middle island and wakes its shrine; a wolf den guards the shrine and another haunts home; the shrine wakes the Reliquary, which rival guardians rise to defend. Staged: wake the shore stone, clear two dens, pray at the shrine, take the Reliquary, hold two home stones 90 s, grow to 70 followers, then break the eastern tribe (towers, guards, a war band).",
+  "$comment": "Campaign level 14 (hard pass): a prayer chain. The shore totem raises a ridge to the middle island and wakes its shrine; a wolf den guards the shrine and another haunts home; the shrine wakes the Reliquary, which rival guardians rise to defend, and the Reliquary wakes an eastern ley stone on the middle island. At minute 8 the rival raises its bridges and raids; from minute 12 its priests seek the stones, the shrine and the Reliquary (losing either site to them loses the level). Staged: wake the shore stone, clear two dens, pray at the shrine, take the Reliquary, then in parallel take and hold three stones for three minutes, grow to 165 followers and break the eastern tribe (towers, posted guards, a war band).",
   "id": "waking_stones",
   "name": "The Waking Stones",
   "order": 14,
-  "description": "Old stones sleep under these islands, and wolves guard two of them. Pray at one and the next wakes. Clear both dens, follow the chain to the Reliquary in the north, hold two stones at home for a minute and a half, grow to 70 followers, hold out until the 29th minute and break the tribe in the east.",
+  "description": "Old stones sleep under these islands, and wolves guard two of them. Pray at one and the next wakes. Clear both dens, follow the chain to the Reliquary before the eastern priests do, take their ley on the middle island and hold three stones, grow to 165 followers and break the tribe in the east.",
   "seed": 1414,
   "map": {
     "generator": "flat",
@@ -58,7 +58,7 @@
       "ai": "turtle",
       "difficulty": "hard",
       "maxTroops": 22,
-      "worshipAfterSeconds": 1800
+      "worshipAfterSeconds": 720
     }
   ],
   "spells": [
@@ -209,7 +209,8 @@
             "type": "message",
             "text": "The shore stone lifts a ridge to the middle island, and something stirs there."
           }
-        ]
+        ],
+        "prayerSeconds": 30
       }
     },
     {
@@ -266,6 +267,10 @@
         "dormant": true,
         "rewards": [
           {
+            "type": "awaken",
+            "site": "mid_ley"
+          },
+          {
             "type": "unlockSpell",
             "spell": "quake"
           },
@@ -275,7 +280,7 @@
           },
           {
             "type": "message",
-            "text": "The Reliquary teaches Quake, and your people remember the Fire Lodge."
+            "text": "The Reliquary teaches Quake and the Fire Lodge, and wakes an eastern ley stone on the middle island."
           }
         ]
       }
@@ -304,6 +309,16 @@
         94,
         72
       ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        102,
+        64
+      ],
+      "count": 6,
+      "stance": "defensive"
     },
     {
       "spawn": "wolf",
@@ -354,6 +369,24 @@
           }
         ]
       }
+    },
+    {
+      "spawn": "ley_stone",
+      "tribe": 1,
+      "at": [
+        56,
+        62
+      ],
+      "site": {
+        "tag": "mid_ley",
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The middle ley is yours: it pays mana while you hold it."
+          }
+        ]
+      }
     }
   ],
   "objectives": [
@@ -382,20 +415,20 @@
     },
     {
       "type": "hold",
-      "n": 2,
+      "n": 3,
       "seconds": 180,
       "after": 3,
-      "text": "Hold two home stones at once for three minutes"
+      "text": "Take the eastern ley on the middle island, then hold it and both home stones at once for three minutes"
     },
     {
       "type": "followers",
-      "n": 150,
+      "n": 165,
       "after": 3,
-      "text": "Grow to 150 followers"
+      "text": "Grow to 165 followers"
     },
     {
       "type": "eliminateAll",
-      "after": 5,
+      "after": 3,
       "text": "Break the tribe in the east"
     }
   ],
@@ -405,11 +438,15 @@
     },
     {
       "type": "siteLost",
+      "site": "mid_shrine"
+    },
+    {
+      "type": "siteLost",
       "site": "north_reliquary"
     },
     {
       "type": "timeLimit",
-      "seconds": 2400
+      "seconds": 2600
     }
   ],
   "triggers": [
@@ -473,26 +510,26 @@
       "do": [
         {
           "type": "message",
-          "text": "Raise Land toward the eastern island and bring the Quake to their Hearth."
+          "text": "Take the eastern ley on the middle island, grow, and bring the Quake to their Hearth."
         }
       ]
     },
     {
       "when": {
         "type": "time",
-        "seconds": 1080
+        "seconds": 360
       },
       "do": [
         {
           "type": "message",
-          "text": "The eastern tribe is gathering. Its war band comes soon."
+          "text": "The eastern tribe is gathering. Its war band comes within two minutes."
         }
       ]
     },
     {
       "when": {
         "type": "time",
-        "seconds": 1200
+        "seconds": 480
       },
       "do": [
         {
@@ -540,7 +577,7 @@
     {
       "when": {
         "type": "time",
-        "seconds": 1210
+        "seconds": 490
       },
       "do": [
         {
@@ -554,7 +591,19 @@
         },
         {
           "type": "message",
-          "text": "Their war band marches on your Hearth. Their priests will seek the Reliquary within ten minutes."
+          "text": "Their war band marches on your Hearth. From minute twelve their priests seek the stones, the shrine and the Reliquary."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 2300
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Five minutes remain."
         }
       ]
     }

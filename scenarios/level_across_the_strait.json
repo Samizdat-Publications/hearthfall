@@ -1,18 +1,77 @@
 {
   "id": "level_across_the_strait",
-  "description": "Campaign level 8 is completable: wardens clear the wolf dens on the home island, a hard player AI builds a Boathouse, holds three stones, ferries waves across the strait, razes the rival Hearth and breaks the tribe.",
-  "tags": ["levels"],
+  "description": "Campaign level 8 is completable: wardens clear the three wolf dens on the home island, a hard player AI builds a Boathouse, prays at the waking seer stone and holds all three home stones while the rival lands, ferries waves across the strait, razes the rival Hearth and breaks the tribe while growing to 90 (bot wins about 16500).",
+  "tags": [
+    "levels"
+  ],
   "level": "across_the_strait",
   "bots": [
-    { "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 2 }
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "aggressive",
+      "difficulty": "hard",
+      "offset": 2
+    }
   ],
   "commands": [
-    { "tick": 1500, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [56, 58], "attack": true }},
-    { "tick": 3000, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [58, 102], "attack": true }},
-    { "tick": 4500, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [66, 80], "attack": true }}
+    {
+      "tick": 1500,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.wardens",
+        "to": [
+          56,
+          58
+        ],
+        "attack": true
+      }
+    },
+    {
+      "tick": 3000,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.wardens",
+        "to": [
+          58,
+          102
+        ],
+        "attack": true
+      }
+    },
+    {
+      "tick": 4500,
+      "tribe": 0,
+      "type": "move",
+      "args": {
+        "units": "tribe0.wardens",
+        "to": [
+          66,
+          80
+        ],
+        "attack": true
+      }
+    }
   ],
   "runTicks": 20000,
   "assert": [
-    { "at": 20000, "expr": "level.won && !alive(1) && alive(0) && events.count('boarded') > 0 && level.objectivesDone == 6 && invariants() == 0" }
+    {
+      "at": 4000,
+      "expr": "level.objectivesDone == 0 && !level.won"
+    },
+    {
+      "at": 9000,
+      "expr": "level.objectivesDone == 2 && !level.won && site('home_seer').by == 0"
+    },
+    {
+      "at": 12000,
+      "expr": "level.objectivesDone == 3 && !level.won && alive(1)"
+    },
+    {
+      "at": 20000,
+      "expr": "level.won && !alive(1) && alive(0) && events.count('boarded') > 0 && level.objectivesDone == 6 && invariants() == 0"
+    }
   ]
 }

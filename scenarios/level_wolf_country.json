@@ -1,19 +1,9 @@
 {
   "id": "level_wolf_country",
-  "description": "Campaign level 18 is completable: wardens clear the wolf dens of both valleys, followers pray at the gorge shrine to raise a land bridge, the opponent bot for the player razes the signal pyre and breaks both highland tribes.",
-  "tags": [
-    "levels"
-  ],
+  "description": "Campaign level 18 is completable: wardens clear the wolf dens of both valleys, followers pray at the gorge shrine to raise a land bridge, the opponent bot for the player clears the eastern slopes, razes the signal pyre and breaks both highland tribes.",
+  "tags": ["levels"],
   "level": "wolf_country",
-  "bots": [
-    {
-      "type": "opponent",
-      "tribe": 0,
-      "personality": "aggressive",
-      "difficulty": "hard",
-      "offset": 1
-    }
-  ],
+  "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 1 }],
   "commands": [
     {
       "tick": 2400,
@@ -120,11 +110,10 @@
       }
     }
   ],
-  "runTicks": 25000,
+  "runTicks": 24000,
   "assert": [
-    {
-      "at": 25000,
-      "expr": "level.won && !alive(1) && !alive(2) && alive(0) && level.objectivesDone == 7 && invariants() == 0"
-    }
+    { "at": 10000, "expr": "level.objectivesDone >= 2 && alive(1) && alive(2)" },
+    { "at": 13000, "expr": "level.objectivesDone >= 4 && alive(2)" },
+    { "at": 24000, "expr": "level.won && !alive(1) && !alive(2) && alive(0) && level.objectivesDone == 6 && invariants() == 0" }
   ]
 }

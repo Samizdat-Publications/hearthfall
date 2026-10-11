@@ -1,6 +1,6 @@
 {
   "id": "level_sky_road",
-  "description": "Campaign level 9 is completable: firecallers float to the northern, southern and eastern stacks in two balloons and pray, wardens clear both wolf dens, a Skyloft goes up and an opponent bot defends the shore against raiders and grows the tribe.",
+  "description": "Campaign level 9 is completable: firecallers float to the stacks in two balloons and pray, a Skyloft goes up, two stacks are held, the balloon firecallers shoot the guards off the risen far stack, pray at its seer stone and burn the raiders' Watchtower from the air, and an opponent bot defends the shore and grows the tribe.",
   "tags": ["levels"],
   "level": "sky_road",
   "bots": [
@@ -11,18 +11,27 @@
     { "tick": 1, "tribe": 0, "type": "board", "args": { "units": [16, 17], "vehicle": 25 }},
     { "tick": 60, "tribe": 0, "type": "unload", "args": { "units": [24], "to": [74, 47] }},
     { "tick": 60, "tribe": 0, "type": "unload", "args": { "units": [25], "to": [78, 111] }},
-    { "tick": 2200, "tribe": 0, "type": "placePlan", "args": { "building": "skyloft", "at": [38, 70] }},
     { "tick": 1500, "tribe": 0, "type": "worship", "args": { "units": [14, 15], "site": "sky_reliquary" } },
     { "tick": 1500, "tribe": 0, "type": "worship", "args": { "units": [16, 17], "site": "south_ley" } },
-    { "tick": 1600, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [44, 60], "attack": true }},
+    { "tick": 1600, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [40, 64], "attack": true }},
     { "tick": 2100, "tribe": 0, "type": "move", "args": { "units": [24], "to": [44, 80] }},
-    { "tick": 3200, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [46, 102], "attack": true }},
+    { "tick": 2200, "tribe": 0, "type": "placePlan", "args": { "building": "skyloft", "at": [38, 70] }},
+    { "tick": 3200, "tribe": 0, "type": "move", "args": { "units": "tribe0.wardens", "to": [40, 96], "attack": true }},
     { "tick": 4200, "tribe": 0, "type": "board", "args": { "units": [18, 19], "vehicle": 24 }},
     { "tick": 4400, "tribe": 0, "type": "unload", "args": { "units": [24], "to": [96, 81] }},
-    { "tick": 6000, "tribe": 0, "type": "worship", "args": { "units": [18, 19], "site": "east_ward" } }
+    { "tick": 6000, "tribe": 0, "type": "worship", "args": { "units": [18, 19], "site": "east_ward" } },
+    { "tick": 8000, "tribe": 0, "type": "board", "args": { "units": [18, 19], "vehicle": 24 }},
+    { "tick": 8100, "tribe": 0, "type": "move", "args": { "units": [24], "to": [108, 52] }},
+    { "tick": 9800, "tribe": 0, "type": "unload", "args": { "units": [24], "to": [110, 49] }},
+    { "tick": 10400, "tribe": 0, "type": "worship", "args": { "units": [18, 19], "site": "far_seer" } },
+    { "tick": 11000, "tribe": 0, "type": "board", "args": { "units": [18, 19], "vehicle": 24 }},
+    { "tick": 11100, "tribe": 0, "type": "move", "args": { "units": [24], "to": [112, 66], "attack": true }},
+    { "tick": 12000, "tribe": 0, "type": "move", "args": { "units": [24], "to": [100, 80] }}
   ],
-  "runTicks": 12000,
+  "runTicks": 17000,
   "assert": [
-    { "at": 12000, "expr": "level.won && alive(0) && events.count('unloaded') >= 3 && invariants() == 0" }
+    { "at": 9000, "expr": "level.objectivesDone == 4 && site('east_ward').by == 0 && site('south_ley').by == 0 && site('far_seer').by == -1" },
+    { "at": 12500, "expr": "level.objectivesDone == 6 && site('far_seer').by == 0 && !level.won" },
+    { "at": 17000, "expr": "level.won && level.objectivesDone == 7 && alive(0) && events.count('unloaded') >= 4 && invariants() == 0" }
   ]
 }

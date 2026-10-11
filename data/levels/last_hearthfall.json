@@ -1,9 +1,9 @@
 {
-  "$comment": "Campaign level 22 (stretch 3), the finale: a centre island, three rival isles (north sneaky, east aggressive, south brutal turtle) joined to it by tidal flats. A shore totem raises the home causeway, a shrine wakes the Last Hearth reliquary (volcano), two stones start in rival hands, two wolf dens, towers to raze, then every tribe falls.",
+  "$comment": "Campaign level 22 (stretch 3), the finale: a centre island, three rival isles (north sneaky, east aggressive, south hard turtle) joined to it by tidal flats. A shore totem raises the home causeway, the ember shrine wakes three stones in rival hands, two wolf dens guard the centre, clearing them wakes the Last Hearth (volcano) and its southern guardians, lighting it brings three war bands, the southern towers fall to an assault (freed wardens join), then every tribe falls.",
   "id": "last_hearthfall",
   "name": "The Last Hearthfall",
   "order": 22,
-  "description": "Four tribes, one old fire. Wake the shore totem, pray at the ember shrine, clear the wolves from the centre, take the Last Hearth from its guardians, pry the stones from rival hands, raze the southern towers and break all three tribes.",
+  "description": "Four tribes, one old fire. Wake the shore totem, pray at the ember shrine, pry two stones from rival hands, clear the wolves from the centre, take the Last Hearth from its guardians, raze the southern towers and break all three tribes.",
   "seed": 2222,
   "beastPrey": "player",
   "map": {
@@ -493,7 +493,8 @@
             "type": "message",
             "text": "The totem lifts a causeway to the centre isle. A shrine stirs there, and the tide is no friend to anyone."
           }
-        ]
+        ],
+        "prayerSeconds": 25
       }
     },
     {
@@ -508,13 +509,21 @@
         "worshippers": 4,
         "rewards": [
           {
-            "type": "awaken",
-            "site": "last_hearth"
-          },
-          {
             "type": "charges",
             "spell": "lightning",
             "n": 2
+          },
+          {
+            "type": "awaken",
+            "site": "north_ley"
+          },
+          {
+            "type": "awaken",
+            "site": "east_ward"
+          },
+          {
+            "type": "awaken",
+            "site": "south_seer"
           },
           {
             "type": "reveal",
@@ -525,19 +534,8 @@
             "r": 24
           },
           {
-            "type": "spawn",
-            "unit": "warden",
-            "n": 4,
-            "tribe": 3,
-            "at": [
-              128,
-              118
-            ],
-            "stance": "defensive"
-          },
-          {
             "type": "message",
-            "text": "The ember shrine wakes the Last Hearth and grants two Lightnings. The south sends guardians to hold it."
+            "text": "The ember shrine grants two Lightnings and wakes three stones on the centre isle, all in rival hands."
           }
         ]
       }
@@ -583,7 +581,8 @@
             "type": "message",
             "text": "The northern ley is yours. It pays mana until a rival prays it back."
           }
-        ]
+        ],
+        "dormant": true
       }
     },
     {
@@ -600,7 +599,8 @@
             "type": "message",
             "text": "The eastern ward now strikes for you."
           }
-        ]
+        ],
+        "dormant": true
       }
     },
     {
@@ -617,7 +617,8 @@
             "type": "message",
             "text": "The southern seer shows you the south."
           }
-        ]
+        ],
+        "dormant": true
       }
     }
   ],
@@ -634,22 +635,22 @@
       "text": "Send four followers to the ember shrine on the centre isle"
     },
     {
-      "type": "clearDens",
+      "type": "hold",
+      "n": 2,
+      "seconds": 60,
       "after": 1,
+      "text": "Pray two of the woken stones away from the rivals and hold both at once for a minute; wolves prowl near them"
+    },
+    {
+      "type": "clearDens",
+      "after": 2,
       "text": "Clear the wolf dens on the centre isle"
     },
     {
       "type": "worship",
       "site": "last_hearth",
-      "after": 2,
-      "text": "Take the Last Hearth from its guardians with six followers"
-    },
-    {
-      "type": "hold",
-      "n": 2,
-      "seconds": 150,
       "after": 3,
-      "text": "Pry two stones from rival hands and hold both for two and a half minutes"
+      "text": "Take the Last Hearth from its guardians with six followers"
     },
     {
       "type": "destroy",
@@ -670,7 +671,7 @@
     },
     {
       "type": "timeLimit",
-      "seconds": 2700
+      "seconds": 4200
     }
   ],
   "triggers": [
@@ -828,7 +829,7 @@
       "do": [
         {
           "type": "message",
-          "text": "Two packs hold the centre isle. Raise a Warden Lodge and clear both dens before the Last Hearth can be prayed."
+          "text": "Three stones on the centre isle answer to the rivals. Pray two of them away and hold both; mind the wolves."
         }
       ]
     },
@@ -840,7 +841,7 @@
       "do": [
         {
           "type": "message",
-          "text": "The packs are broken. Train wardens, cut down the guardians and pray at the Last Hearth with six."
+          "text": "The stones are yours. Two packs still hold the centre isle: raise a Warden Lodge and clear both dens."
         }
       ]
     },
@@ -848,6 +849,33 @@
       "when": {
         "type": "objective",
         "index": 3
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "last_hearth"
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 3,
+          "at": [
+            128,
+            118
+          ],
+          "stance": "defensive"
+        },
+        {
+          "type": "message",
+          "text": "The packs are broken and the Last Hearth wakes, but the south sends guardians to hold it. Cut them down and pray there with six."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 4
       },
       "do": [
         {
@@ -886,31 +914,33 @@
     {
       "when": {
         "type": "objective",
-        "index": 4
-      },
-      "do": [
-        {
-          "type": "message",
-          "text": "The stones are yours. The south still stands: cross the flats at low water and burn its towers."
-        }
-      ]
-    },
-    {
-      "when": {
-        "type": "objective",
         "index": 5
       },
       "do": [
         {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 20,
+          "at": [
+            128,
+            140
+          ]
+        },
+        {
+          "type": "charges",
+          "spell": "lightning",
+          "n": 3
+        },
+        {
           "type": "message",
-          "text": "The southern towers fall. Only the hearths remain."
+          "text": "The southern towers fall and freed southern folk take up arms for you. Now break all three tribes."
         }
       ]
     },
     {
       "when": {
         "type": "time",
-        "seconds": 2100
+        "seconds": 3600
       },
       "do": [
         {

@@ -1,9 +1,9 @@
 {
-  "$comment": "Teaching level 2 (overhaul): worship races on a 128 map. The hill shrine is a safe warm-up; the ridge shrine in the pass is a real race against the rival, who starts walking at minute 3; then a ley stone must be held for two minutes while the rival's worshippers try to pray it away.",
+  "$comment": "Teaching level 2 (overhaul, paced S3): worship races on a 128 map. The hill shrine (90 s prayer) is a safe warm-up; the shrine in the pass (30 s) races the rival, whose worshippers set out at minute 2; then the ley stone must be kept 200 s while those worshippers try to pray it away. Three posted wardens guard it, but a lone worshipper still flips it in about 80 s unless the player strikes it down (Lightning, Bolt or the Watchtower).",
   "id": "contested_shrine",
   "name": "The Contested Shrine",
   "order": 2,
-  "description": "Two shrines and a ley stone lie between you and a rival tribe. Take the hill shrine, win the race to the shrine in the pass, then hold the ley stone against their worshippers. Four praying followers work at full speed; each one missing halves it.",
+  "description": "Two shrines and a ley stone lie between you and a rival tribe. Take the hill shrine, win the race to the shrine in the pass, then keep the ley stone while their worshippers try to pray it away: strike them down. Four praying followers work at full speed.",
   "seed": 202,
   "map": {
     "generator": "flat",
@@ -32,21 +32,22 @@
     { "spawn": "tree", "near": [100, 50], "count": 8, "spacing": 1.2 },
     { "spawn": "rock", "near": [18, 74], "count": 3, "spacing": 2 },
     { "spawn": "rock", "near": [108, 52], "count": 3, "spacing": 2 },
-    { "spawn": "shrine", "at": [44, 64], "site": { "tag": "hill_shrine", "worshippers": 4, "prayerSeconds": 45, "rewards": [{ "type": "unlockSpell", "spell": "lightning" }, { "type": "charges", "spell": "lightning", "n": 1 }, { "type": "message", "text": "Lightning is yours. The shrine in the pass is next: the rival is already stirring." }] } },
+    { "spawn": "shrine", "at": [44, 64], "site": { "tag": "hill_shrine", "worshippers": 4, "prayerSeconds": 90, "rewards": [{ "type": "unlockSpell", "spell": "lightning" }, { "type": "charges", "spell": "lightning", "n": 1 }, { "type": "message", "text": "Lightning is yours. The shrine in the pass is next: the rival is already stirring." }] } },
     { "spawn": "shrine", "at": [66, 64], "site": { "tag": "pass_shrine", "worshippers": 4, "prayerSeconds": 30, "rewards": [{ "type": "charges", "spell": "lightning", "n": 2 }, { "type": "charges", "spell": "bolt", "n": 3 }, { "type": "message", "text": "The pass shrine is yours: two more Lightnings and three Bolts. Now hold the ley stone." }] } },
     { "spawn": "watchtower", "tribe": 0, "at": [52, 38] },
-    { "spawn": "ley_stone", "at": [48, 34], "site": { "tag": "north_ley", "rewards": [{ "type": "message", "text": "The ley stone is yours and pays mana while you hold it. Their worshippers will try to pray it away." }] } }
+    { "spawn": "ley_stone", "at": [48, 34], "site": { "tag": "north_ley", "rewards": [{ "type": "message", "text": "The ley stone is yours and pays mana while you hold it. Their worshippers will try to pray it away." }] } },
+    { "spawn": "warden", "tribe": 0, "near": [50, 37], "count": 3, "stance": "defensive" }
   ],
   "objectives": [
     { "type": "worship", "site": "hill_shrine", "text": "Claim the hill shrine with four followers" },
     { "type": "worship", "site": "pass_shrine", "after": 0, "text": "Win the race to the shrine in the pass before the rival tribe" },
-    { "type": "hold", "n": 1, "kind": "ley_stone", "seconds": 120, "after": 1, "text": "Pray at the northern ley stone and hold it for two minutes" }
+    { "type": "hold", "n": 1, "kind": "ley_stone", "seconds": 200, "after": 1, "text": "Keep the northern ley stone for 200 seconds: strike down rival worshippers who kneel at it" }
   ],
   "lose": [{ "type": "siteLost", "site": "pass_shrine" }, { "type": "siteLost", "site": "hill_shrine" }, { "type": "timeLimit", "seconds": 1200 }, { "type": "hearthLost" }],
   "triggers": [
     { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Select four followers and order them to worship the hill shrine." }] },
     { "when": { "type": "time", "seconds": 120 }, "do": [{ "type": "message", "text": "The rival tribe has set out to pray at the stones!" }] },
-    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "message", "text": "Garrison the Watchtower beside the ley stone: worshippers who walk into its range are shot down." }] },
+    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "message", "text": "Three wardens guard the ley stone. Garrison the Watchtower and cast Lightning on any rival worshipper who kneels there." }] },
     { "when": { "type": "time", "seconds": 900 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
   ],
   "unlocks": { "spells": ["lightning"] }

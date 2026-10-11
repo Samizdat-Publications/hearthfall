@@ -1,9 +1,9 @@
 {
-  "$comment": "Level 11 (hard pass): King of the Hill. Three tribes on a 160 map around one hilltop Reliquary. Wolf dens haunt the foot of the hill, ward stones on its slopes strike whoever holds the other side. Staged: clear both dens, hold two stones 90 s, then keep more people on the hilltop than any rival for four minutes in all (or break both rivals).",
+  "$comment": "Level 11 (pacing pass): King of the Hill. Three tribes on a 160 map around one hilltop Reliquary (it must stay the first site). Wolf dens haunt the foot of the hill; clearing them raises two ward stones on the slopes (prayer chain) that both rivals want. Staged: clear both dens, hold all three stones 60 s, keep more people on the hilltop than any rival for four minutes in all, raze the northern Hearth, then the eastern Hearth, then grow to 70. The northern rival is hard.",
   "id": "the_hill",
   "name": "The Hill",
   "order": 11,
-  "description": "Three tribes share one hill, wolves haunt its foot and ward stones guard its slopes. Clear both wolf dens, hold two stones at once for a minute and a half, then keep more people on the hilltop Reliquary than any rival for four minutes in all and grow to 45 followers.",
+  "description": "Three tribes share one hill and wolves haunt its foot. Clear the dens, win and hold the three stones, keep more people on the hilltop than any rival for four minutes in all, raze both rival Hearths and grow to 70 followers.",
   "seed": 1111,
   "map": {
     "generator": "flat",
@@ -17,7 +17,7 @@
   "tribes": [
     {},
     { "ai": "aggressive", "difficulty": "hard", "maxTroops": 14 },
-    { "ai": "sneaky", "difficulty": "normal", "maxTroops": 16 }
+    { "ai": "sneaky", "difficulty": "hard", "maxTroops": 16 }
   ],
   "rules": "king_of_hill",
   "spells": ["bolt", "raise_land", "lightning", "whirlwind"],
@@ -41,21 +41,24 @@
     { "spawn": "rock", "near": [24, 132], "count": 4, "spacing": 2 },
     { "spawn": "wolf", "tribe": -1, "at": [94, 72], "count": 4 },
     { "spawn": "wolf", "tribe": -1, "at": [66, 90], "count": 4 },
-    { "spawn": "ward_stone", "at": [72, 72], "site": { "tag": "hill_ward", "rewards": [{ "type": "message", "text": "The hill ward strikes whoever stands near the top." }] }},
-    { "spawn": "ward_stone", "at": [88, 88], "site": { "tag": "foot_ward", "rewards": [{ "type": "message", "text": "The foot ward watches the southern road." }] }},
+    { "spawn": "ward_stone", "at": [72, 72], "site": { "tag": "hill_ward", "rewards": [{ "type": "message", "text": "The hill ward strikes whoever stands near the top." }], "dormant": true }},
+    { "spawn": "ward_stone", "at": [88, 88], "site": { "tag": "foot_ward", "rewards": [{ "type": "message", "text": "The foot ward watches the southern road." }], "dormant": true }},
     { "spawn": "ley_stone", "at": [48, 104], "site": { "tag": "home_ley", "rewards": [{ "type": "message", "text": "The home ley pays mana while you hold it." }] }}
   ],
   "objectives": [
     { "type": "clearDens", "n": 2, "text": "Clear both wolf dens at the foot of the hill" },
-    { "type": "hold", "n": 2, "seconds": 90, "after": 0, "text": "Hold two stones at once for a minute and a half" },
-    { "type": "followers", "n": 45, "after": 1, "text": "Grow to 45 followers to claim the valley" },
-    { "type": "victory", "after": 2 }
+    { "type": "hold", "n": 3, "seconds": 60, "after": 0, "text": "Pray at both risen ward stones and hold all three stones at once for a minute" },
+    { "type": "victory", "after": 1, "text": "Keep more people on the hilltop than any rival for four minutes in all" },
+    { "type": "destroy", "tribe": 2, "building": "hearth", "after": 2, "text": "Raze the northern tribe's Hearth" },
+    { "type": "destroy", "tribe": 1, "building": "hearth", "after": 3, "text": "Raze the eastern tribe's Hearth" },
+    { "type": "followers", "n": 70, "after": 4, "text": "Grow to 70 followers to claim the valley" }
   ],
   "lose": [
     { "type": "hearthLost" },
-    { "type": "timeLimit", "seconds": 1800 }
+    { "type": "timeLimit", "seconds": 2000 }
   ],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Two rivals want the hill. Clear the wolves, take the stones, then put more people on top than anyone else." }] }
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Two rivals want the hill. Clear the wolves, win the stones, put more people on top than anyone else, then break both rivals." }] },
+    { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "awaken", "site": "hill_ward" }, { "type": "awaken", "site": "foot_ward" }, { "type": "message", "text": "With the wolves gone, two ward stones rise on the slopes. Both rivals want them." }] }
   ]
 }

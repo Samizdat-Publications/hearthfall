@@ -1,10 +1,15 @@
 {
   "id": "level_sky_road_idle_loses",
   "description": "Campaign level 9 has a real loss: nobody floats to the sea stack, so the season ends.",
-  "tags": ["levels"],
+  "tags": [
+    "levels"
+  ],
   "level": "sky_road",
-  "runTicks": 30100,
+  "runTicks": 34100,
   "assert": [
-    { "at": 30100, "expr": "level.lost && site('sky_reliquary').by == -1 && invariants() == 0" }
+    {
+      "at": 34100,
+      "expr": "level.lost && site('sky_reliquary').by == -1 && invariants() == 0"
+    }
   ]
 }

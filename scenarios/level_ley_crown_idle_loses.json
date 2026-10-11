@@ -1,10 +1,15 @@
 {
   "id": "level_ley_crown_idle_loses",
   "description": "Campaign level 16 has a real loss: an idle player holds no stone and runs out of time.",
-  "tags": ["levels"],
+  "tags": [
+    "levels"
+  ],
   "level": "ley_crown",
-  "runTicks": 30100,
+  "runTicks": 54100,
   "assert": [
-    { "at": 30100, "expr": "level.lost && alive(1) && invariants() == 0" }
+    {
+      "at": 54100,
+      "expr": "level.lost && alive(1) && invariants() == 0"
+    }
   ]
 }

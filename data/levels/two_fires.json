@@ -1,9 +1,9 @@
 {
-  "$comment": "Teaching level 7 (overhaul): a full rival under fog on a 160 map. A seer stone shows the two fires; the player burns the northern Hearth, holds all three ley stones for 150 s against the southern rival who prays them away, then breaks both tribes.",
+  "$comment": "Teaching level 7 (overhaul, paced): two rivals under fog on a 160 map. A seer stone shows the two fires; the player burns the smaller northern Hearth, then holds two of the three ley stones for 90 s while the southern rival prays them away, alongside breaking both tribes. Bot wins about 13000; the old hold of all three stones was only met after the south fell.",
   "id": "two_fires",
   "name": "Two Fires",
   "order": 7,
-  "description": "Smoke rises from two fires beyond the hills, and you cannot see their villages. Pray at the seer stone, burn the northern Hearth, then hold all three ley stones against the south tribe and defeat them both.",
+  "description": "Smoke rises from two fires beyond the hills, and you cannot see their villages. Pray at the seer stone, burn the northern Hearth, then hold two ley stones at once against the south tribe and defeat them both.",
   "seed": 707,
   "map": {
     "generator": "flat",
@@ -19,7 +19,7 @@
   },
   "tribes": [
     {},
-    { "ai": "turtle", "difficulty": "normal", "maxTroops": 8, "worshipAfterSeconds": 180 },
+    { "ai": "turtle", "difficulty": "normal", "maxTroops": 4, "worshipAfterSeconds": 180 },
     { "ai": "aggressive", "difficulty": "normal", "maxTroops": 8, "worshipAfterSeconds": 240 }
   ],
   "spells": ["bolt", "raise_land", "lightning"],
@@ -30,7 +30,7 @@
     { "spawn": "warden", "tribe": 0, "near": [36, 80], "count": 4 },
     { "spawn": "hearth", "tribe": 1, "at": [130, 32] },
     { "spawn": "shaper", "tribe": 1, "at": [126, 35] },
-    { "spawn": "settler", "tribe": 1, "near": [130, 38], "count": 12 },
+    { "spawn": "settler", "tribe": 1, "near": [130, 38], "count": 8 },
     { "spawn": "hearth", "tribe": 2, "at": [130, 128] },
     { "spawn": "shaper", "tribe": 2, "at": [126, 125] },
     { "spawn": "settler", "tribe": 2, "near": [130, 122], "count": 12 },
@@ -63,15 +63,15 @@
   "objectives": [
     { "type": "worship", "site": "hill_seer", "text": "Pray at the seer stone on the hill to find the two fires" },
     { "type": "destroy", "tribe": 1, "building": "hearth", "after": 0, "text": "Take the northern fire first: burn the Hearth of the northern tribe" },
-    { "type": "hold", "n": 3, "kind": "ley_stone", "seconds": 150, "after": 1, "text": "Hold all three ley stones at once for two and a half minutes" },
-    { "type": "eliminateAll", "after": 2, "text": "Defeat both rival tribes" }
+    { "type": "hold", "n": 2, "kind": "ley_stone", "seconds": 90, "after": 1, "text": "Hold two of the three ley stones at once for a minute and a half" },
+    { "type": "eliminateAll", "after": 1, "text": "Defeat both rival tribes" }
   ],
-  "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 2100 }],
+  "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 1500 }],
   "triggers": [
     { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Fog hides the rival villages. Pray at the seer stone on the hill east of your Hearth." }] },
     { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "message", "text": "Ley stones pay mana to whoever prayed last. Take them, and burn the northern Hearth." }] },
-    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "message", "text": "The northern fire is out. Now hold all three ley stones while the south tribe tries to pray them away." }] },
+    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "message", "text": "The northern fire is out. Hold two ley stones while the south tribe tries to pray them away, and break both tribes." }] },
     { "when": { "type": "time", "seconds": 480, "every": 300 }, "do": [{ "type": "raid", "tribe": 2, "to": [26, 80], "n": 8 }, { "type": "message", "text": "The southern tribe sends a war band." }] },
-    { "when": { "type": "time", "seconds": 1800 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+    { "when": { "type": "time", "seconds": 1200 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
   ]
 }

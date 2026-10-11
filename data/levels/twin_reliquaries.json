@@ -1,9 +1,9 @@
 {
-  "$comment": "Level 10 (hard pass): Hold the Reliquaries. Both Reliquaries are posted with rival guards and haunted by wolf dens; ward stones on the hills let you keep them. Staged: clear both dens, hold both ward stones 60 s, then keep people at both Reliquaries with no rival beside them for two minutes. Normal aggressive rival, reinforced every four minutes. Last stage: 60 followers.",
+  "$comment": "Level 10 (pacing pass): Hold the Reliquaries. Both Reliquaries are posted with rival guards and haunted by wolf dens; ward stones on the hills let you keep them. Staged chain: hold both ward stones 60 s, clear both dens, which raises a seer stone on the rival shore of the lake (prayer chain) to win, then keep both Reliquaries two minutes (or break the rival) and grow to 65. Normal aggressive rival, reinforced every four minutes.",
   "id": "twin_reliquaries",
   "name": "The Twin Reliquaries",
   "order": 10,
-  "description": "Two Reliquaries stand between you and a rival tribe, each posted with rival guards and haunted by wolves. Clear both dens, hold both ward stones on the hills for a minute, then keep people at both Reliquaries with no rival beside them for two minutes, and grow to 60 followers.",
+  "description": "Two Reliquaries stand between you and a rival tribe, each posted with rival guards and haunted by wolves. Hold both ward stones, clear both dens, win the seer stone across the lake, keep both Reliquaries for two minutes and grow to 65 followers.",
   "seed": 1010,
   "map": {
     "generator": "flat",
@@ -39,20 +39,23 @@
     { "spawn": "reliquary", "at": [80, 44], "site": { "tag": "north_reliquary", "worshippers": 3, "prayerSeconds": 30, "uses": 1, "rewards": [{ "type": "charges", "spell": "lightning", "n": 2 }] }},
     { "spawn": "reliquary", "at": [80, 116], "site": { "tag": "south_reliquary", "worshippers": 3, "prayerSeconds": 30, "uses": 1, "rewards": [{ "type": "charges", "spell": "bolt", "n": 3 }] }},
     { "spawn": "ward_stone", "at": [72, 54], "site": { "tag": "north_ward", "rewards": [{ "type": "message", "text": "The north ward guards the hill against the rival." }] }},
-    { "spawn": "ward_stone", "at": [72, 106], "site": { "tag": "south_ward", "rewards": [{ "type": "message", "text": "The south ward guards the hill against the rival." }] }}
+    { "spawn": "ward_stone", "at": [72, 106], "site": { "tag": "south_ward", "rewards": [{ "type": "message", "text": "The south ward guards the hill against the rival." }] }},
+    { "spawn": "seer_stone", "at": [106, 80], "site": { "tag": "lake_seer", "dormant": true, "rewards": [{ "type": "charges", "spell": "lightning", "n": 1 }, { "type": "message", "text": "The lake seer stone shows the rival valley." }] }}
   ],
   "objectives": [
-    { "type": "clearDens", "n": 2, "text": "Clear both wolf dens by the Reliquaries" },
-    { "type": "hold", "n": 2, "seconds": 60, "after": 0, "text": "Hold both ward stones for a minute" },
-    { "type": "followers", "n": 60, "after": 1, "text": "Grow to 60 followers to hold the valley" },
-    { "type": "victory", "after": 2 }
+    { "type": "hold", "n": 2, "seconds": 60, "text": "Pray at both ward stones on the hills and hold them for a minute" },
+    { "type": "clearDens", "n": 2, "after": 0, "text": "Clear both wolf dens by the Reliquaries" },
+    { "type": "worship", "site": "lake_seer", "after": 1, "text": "Win the seer stone on the rival shore of the lake" },
+    { "type": "victory", "after": 2, "text": "Keep people at both Reliquaries with no rival beside them for two minutes" },
+    { "type": "followers", "n": 65, "after": 3, "text": "Grow to 65 followers to hold the valley" }
   ],
   "lose": [
     { "type": "hearthLost" },
-    { "type": "timeLimit", "seconds": 1800 }
+    { "type": "timeLimit", "seconds": 1900 }
   ],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Guards stand at both Reliquaries and wolves haunt the hills. Clear them, take the ward stones, then keep people at both Reliquaries." }] },
-    { "when": { "type": "time", "seconds": 240, "every": 240 }, "do": [{ "type": "spawn", "unit": "warden", "n": 4, "tribe": 1, "at": [108, 80], "stance": "aggressive" }, { "type": "message", "text": "Rival reinforcements march on the valley." }] }
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Guards stand at both Reliquaries and wolves haunt the hills. Take the ward stones, clear the wolves, then keep people at both Reliquaries." }] },
+    { "when": { "type": "time", "seconds": 240, "every": 240 }, "do": [{ "type": "spawn", "unit": "warden", "n": 4, "tribe": 1, "at": [108, 80], "stance": "aggressive" }, { "type": "message", "text": "Rival reinforcements march on the valley." }] },
+    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "awaken", "site": "lake_seer" }, { "type": "reveal", "at": [106, 80], "r": 8 }, { "type": "message", "text": "With the wolves gone, a seer stone rises on the rival shore of the lake." }] }
   ]
 }

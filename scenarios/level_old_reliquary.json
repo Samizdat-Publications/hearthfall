@@ -1,6 +1,6 @@
 {
   "id": "level_old_reliquary",
-  "description": "Campaign level 4 is completable: four followers pray at the Reliquary (it teaches Whirlwind, unlocks the Spirit Well and answers three times), a turtle bot raises eight dwellings, a scripted Spirit Well goes up and the tribe grows to 56 followers.",
+  "description": "Campaign level 4 is completable: four followers pray at the Reliquary (it teaches Whirlwind, unlocks the Spirit Well and answers three times), a scripted Spirit Well goes up as soon as it is remembered, a turtle bot raises six dwellings and the tribe grows to 44 followers.",
   "tags": [
     "levels"
   ],
@@ -25,7 +25,7 @@
       }
     },
     {
-      "tick": 3000,
+      "tick": 1700,
       "tribe": 0,
       "type": "placePlan",
       "args": {
@@ -37,11 +37,23 @@
       }
     }
   ],
-  "runTicks": 14000,
+  "runTicks": 12000,
   "assert": [
     {
-      "at": 14000,
-      "expr": "level.won && site('old_reliquary').by == 0 && events.count('triggerFired') >= 3 && events.count('levelWon') == 1 && level.objectivesDone == 4 && invariants() == 0"
+      "at": 1700,
+      "expr": "level.objectivesDone == 1 && site('old_reliquary').by == 0 && !level.won"
+    },
+    {
+      "at": 2400,
+      "expr": "level.objectivesDone == 1 && count(tribe0.spirit_wells) == 1 && !level.won"
+    },
+    {
+      "at": 5000,
+      "expr": "level.objectivesDone == 3 && !level.won"
+    },
+    {
+      "at": 12000,
+      "expr": "level.won && site('old_reliquary').by == 0 && events.count('triggerFired') >= 4 && events.count('levelWon') == 1 && level.objectivesDone == 4 && invariants() == 0"
     }
   ]
 }
