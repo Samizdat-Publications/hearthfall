@@ -19,9 +19,9 @@ Stretch 3 started: 2026-10-10T21:45:00Z (Stewart, after about 40 min of play: de
 - Making-of page: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5 (version 29), rebuild with `npm run making-of -- page` and republish after every backlog item (README steps).
 
 ## Next 3 actions
-1. Engine gaps above, smallest first: survive relative to its stage, per-tribe seeding for hold and clearDens, AI attacks non-Hearth buildings (then destroy objectives on Shrines and Pyres), beasts ignore or flee rival villages by option.
-2. Campaign levels 17 to 22 on 192 and 256 maps with 3 to 4 tribes, wolves, tides and stone networks; a Sonnet agent drafts each level, the main session reviews and brackets the bot win tick with a temporary probe scenario (delete it after).
-3. Campaign-wide playtest and balance pass with the ready-made workflow tools/workflows/campaign-playtest.js (one tuner and one skeptic per pair of levels, then a curve critic; usage in its header). Run it only if Stewart asked for a workflow or ultracode in this session (his kickoff line); otherwise do the pass by hand with probe scenarios. Then npm run test:scenarios, qa:fast, full npm run qa, tag s3-done. Add making-of shots of the new levels as you go (S3 has only 4 images; the S3 chapter is last on the page).
+1. Finish S3: review the fix round (workflow wf_de2529bb-e0c, 10 levels the skeptics flagged), npm run test:scenarios and qa:fast, commit; making-of shots of levels 17 to 22; full npm run qa until PASS; tag s3-done; republish the making-of page.
+2. Engine gaps from the campaign playtest (7 tuners hit the first): stage-relative objectives (a fromStage option on hold, worship, destroy, eliminateAll and clearDens, so a goal met before its stage opens does not complete the tick it opens); a per-stage clock for victory rules (King of the Hill, holdSites); a per-tribe population cap (tribes[].maxPopulation) so late rivals neither collapse nor snowball to 200 and stalemate.
+3. Contested holds: a raid variant whose troops pray at a named stone, and soften the opponent's worship score 0 while threatened; opponent and player bot worship across water and fly balloons (sky_road is fully scripted); the player bot stops praying at enemy-held stones it cannot keep. Then rerun tools/workflows/campaign-playtest.js on the whole campaign.
 
 ## Blocked
 (none)
