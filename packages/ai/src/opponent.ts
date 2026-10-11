@@ -373,6 +373,7 @@ export class OpponentAI implements Controller {
         this.stats.actions[a.id] = (this.stats.actions[a.id] ?? 0) + 1;
       }
     }
+    this.reachGoal(c, out);
     return out.map((x) => ({ ...x, tick: w.tick, tribe: this.tribe }));
   }
 
@@ -658,7 +659,81 @@ export class OpponentAI implements Controller {
         best = d;
       }
     }
+    // far goal dens wait for a full wave, so the hunt never strips the village bare
+    return best ?? (c.idle.length >= this.waveSize() ? this.goalDen(c) : null);
+  }
+
+  /** stretch 3: in a level, the bot playing tribe 0 also hunts the nearest den an open clearDens objective counts, on its landmass */
+  private goalDen(c: Census): { x: number; y: number } | null {
+    const w = c.w;
+    const lv = w.level;
+    if (!lv || this.tribe !== 0) return null;
+    const E = w.ents;
+    const n = w.terrain.size;
+    const home = this.comp(w, E.x[c.h], E.y[c.h]);
+    let best: { x: number; y: number } | null = null;
+    let bestD = Infinity;
+    lv.def.objectives.forEach((o, k) => {
+      if (o.type !== "clearDens" || lv.done[k] || !lv.open(k)) return;
+      for (const d of w.beasts.dens) {
+        if (d.cleared || !d.members.length) continue;
+        if (o.at && o.r !== undefined) {
+          const ax = wrapDelta(d.x - o.at[0], n);
+          const ay = wrapDelta(d.y - o.at[1], n);
+          if (ax * ax + ay * ay > o.r * o.r) continue;
+        }
+        if (this.comp(w, d.x, d.y) !== home) continue;
+        const dx = wrapDelta(d.x - E.x[c.h], n);
+        const dy = wrapDelta(d.y - E.y[c.h], n);
+        if (dx * dx + dy * dy < bestD) {
+          bestD = dx * dx + dy * dy;
+          best = d;
+        }
+      }
+    });
     return best;
+  }
+
+  /** stretch 3: in a level, the bot playing tribe 0 sends its Shaper to pray at an open Shaper-only worship objective, else walks it (or an idle troop for a unit goal) to an open reach objective */
+  private reachGoal(c: Census, out: Command[]): void {
+    const w = c.w;
+    const lv = w.level;
+    if (!lv || this.tribe !== 0) return;
+    const E = w.ents;
+    const n = w.terrain.size;
+    // a totem only the Shaper can pray at (an open worship objective) comes first
+    const kinds = w.cfg.pack.buildings.worship.kinds ?? [];
+    for (let j = 0; j < lv.def.objectives.length; j++) {
+      const o = lv.def.objectives[j];
+      if (o.type !== "worship" || lv.done[j] || !lv.open(j) || c.si < 0 || w.tribes[this.tribe].casting || w.tribes[this.tribe].pending) continue;
+      const s = w.worship.find(o.site);
+      const si = s ? E.index(s.ent) : -1;
+      if (!s || si < 0 || s.dormant || !kinds[s.kind]?.shaperOnly || s.lastBy === this.tribe) continue;
+      if ((E.task[c.si] === TASK.toWorship || E.task[c.si] === TASK.worship) && E.index(E.target[c.si]) === si) return;
+      out.push(this.cmd(w, "worship", { units: [E.idOf(c.si)], site: s.tag }));
+      return;
+    }
+    const k = lv.def.objectives.findIndex((o, j) => o.type === "reach" && !lv.done[j] && lv.open(j));
+    if (k < 0) return;
+    const o = lv.def.objectives[k];
+    if (o.type !== "reach") return;
+    const unit = o.unit ?? "shaper";
+    let i = -1;
+    if (unit === "shaper") {
+      if (c.si < 0 || w.tribes[this.tribe].casting || w.tribes[this.tribe].pending) return;
+      i = c.si;
+    } else {
+      const type = w.cfg.unitIndex.get(unit);
+      i = c.idle.find((j) => E.type[j] === type) ?? -1;
+    }
+    if (i < 0) return;
+    const dx = wrapDelta(o.at[0] - E.x[i], n);
+    const dy = wrapDelta(o.at[1] - E.y[i], n);
+    if (dx * dx + dy * dy <= o.r * o.r * 0.25) return;
+    // drop earlier orders to this unit this decision, so the goal wins over follow-the-wave or bridge moves
+    const id = E.idOf(i);
+    for (let j = out.length - 1; j >= 0; j--) if (out[j].type === "move" && (out[j].args.units as number[]).length === 1 && (out[j].args.units as number[])[0] === id) out.splice(j, 1);
+    out.push(this.cmd(w, "move", { units: [id], to: [o.at[0], o.at[1]] }));
   }
 
   /** idle troops attack-move on a den by home (wolves bite settlers and worshippers) */

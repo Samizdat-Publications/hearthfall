@@ -383,6 +383,33 @@ describe("OpponentAI (M7)", () => {
     expect((next!.args.to as number[])[0]).toBeCloseTo(w.ents.x[w.ents.index(w.tribes[1].hearth)], 0);
   });
 
+  it("in a level, the bot playing tribe 0 hunts far dens of an open clearDens objective and walks its Shaper to a reach goal (stretch 3)", () => {
+    const p = basePack();
+    const def: LevelDef = {
+      id: "goal_test", name: "Goal test", order: 99, description: "test", seed: 4,
+      map: { generator: "flat", size: 128, landAboveSea: 20 },
+      tribes: [{}], spells: [],
+      setup: [
+        { spawn: "hearth", tribe: 0, at: [12, 64] }, { spawn: "shaper", tribe: 0, at: [14, 66] },
+        { spawn: "wolf", tribe: -1, at: [80, 64], count: 1 },
+      ],
+      objectives: [{ type: "clearDens", at: [80, 64], r: 6 }, { type: "reach", at: [100, 30], r: 3, after: 0 }],
+    };
+    const w = createLevelWorld({ def }, p.files, p.hash);
+    for (let k = 0; k < 12; k++) w.spawnUnit("warden", 0, 16 + (k % 6), 58 + Math.floor(k / 6) * 2);
+    w.step([]);
+    const ai = new OpponentAI({ tribe: 0, personality: { ...bold, firstAttackMinute: 99 }, every: 1 });
+    const hunt = ai.decide(w).find((c) => c.type === "move" && c.args.attack);
+    expect(hunt?.args.to).toEqual([80, 64]);
+    // the den falls: the reach stage opens and the Shaper heads for it
+    for (const id of w.beasts.dens[0].members) w.damage(w.ents.index(id), 1e6, 0, true);
+    for (let k = 0; k < 3; k++) w.step([]);
+    expect(w.level!.done[0]).toBe(1);
+    const shaper = w.tribes[0].shaper;
+    const go = ai.decide(w).filter((c) => c.type === "move" && (c.args.units as number[]).includes(shaper));
+    expect(go.map((c) => c.args.to)).toEqual([[100, 30]]);
+  });
+
   it("a hunted Shaper stranded out of reach on foot is struck down with a Shaper-killing spell (regression, ai-idle soak seed 1003)", () => {
     const w = world({ generator: "flat", size: 64, tribes: 2 });
     w.spawnBuilding("hearth", 0, 12, 32);

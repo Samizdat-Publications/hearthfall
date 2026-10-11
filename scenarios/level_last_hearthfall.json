@@ -14,47 +14,10 @@
       "offset": 1
     }
   ],
-  "commands": [
-    {
-      "tick": 40,
-      "tribe": 0,
-      "type": "worship",
-      "args": {
-        "units": "tribe0.shapers",
-        "site": "shore_totem"
-      }
-    },
-    {
-      "tick": 2800,
-      "tribe": 0,
-      "type": "move",
-      "args": {
-        "units": "tribe0.wardens",
-        "to": [
-          112,
-          100
-        ],
-        "attack": true
-      }
-    },
-    {
-      "tick": 5500,
-      "tribe": 0,
-      "type": "move",
-      "args": {
-        "units": "tribe0.wardens",
-        "to": [
-          146,
-          158
-        ],
-        "attack": true
-      }
-    }
-  ],
-  "runTicks": 34100,
+  "runTicks": 42500,
   "assert": [
     {
-      "at": 34100,
+      "at": 42500,
       "expr": "level.won && !alive(1) && !alive(2) && !alive(3) && alive(0) && level.objectivesDone == 7 && invariants() == 0"
     }
   ]
