@@ -77,7 +77,8 @@ export class RulesRuntime {
     if (this.winner >= 0) return;
     const w = this.w;
     if (!this.spots) {
-      this.spots = w.worship.sites.map((s) => {
+      // stretch 3: capturable ley stones are not victory sites
+      this.spots = w.worship.sites.filter((s) => !w.worship.capturable(s.kind)).map((s) => {
         const i = w.ents.index(s.ent);
         return { x: w.ents.x[i], y: w.ents.y[i] };
       });

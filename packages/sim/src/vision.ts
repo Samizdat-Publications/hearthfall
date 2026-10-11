@@ -108,7 +108,6 @@ export class VisionSystem {
     if (!this.on || (!force && this.w.tick % this.every !== 0)) return;
     const w = this.w;
     const E = w.ents;
-    const g = this.gw;
     for (const v of this.visible) v.fill(0);
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i]) continue;
@@ -120,24 +119,32 @@ export class VisionSystem {
         r = this.sightUnit[E.type[i]];
       } else if (E.cat[i] === CAT.building) r = this.sightBuilding[E.type[i]];
       else continue;
-      // a disc of radius r map cells, in grid cells (cell centers within r + half a cell)
-      const rc = r / this.cell + 0.5;
-      const R = Math.ceil(rc);
-      const cx = Math.floor(E.x[i] / this.cell);
-      const cy = Math.floor(E.y[i] / this.cell);
-      const vis = this.visible[t];
-      const exp = this.explored[t];
-      for (let dy = -R; dy <= R; dy++) {
-        const y = (((cy + dy) % g) + g) % g;
-        for (let dx = -R; dx <= R; dx++) {
-          if (dx * dx + dy * dy > rc * rc) continue;
-          const k = y * g + ((((cx + dx) % g) + g) % g);
-          vis[k] = 1;
-          exp[k] = 1;
-        }
+      this.stamp(t, E.x[i], E.y[i], r);
+    }
+    // stretch 3: held sight stones (living world)
+    for (const s of w.living.sightSources()) this.stamp(s.tribe, s.x, s.y, s.r);
+    this.version++;
+  }
+
+  /** a disc of radius r map cells, in grid cells (cell centers within r + half a cell): visible and explored */
+  private stamp(t: number, x: number, y: number, r: number): void {
+    if (t < 0 || t >= this.visible.length) return;
+    const g = this.gw;
+    const rc = r / this.cell + 0.5;
+    const R = Math.ceil(rc);
+    const cx = Math.floor(x / this.cell);
+    const cy = Math.floor(y / this.cell);
+    const vis = this.visible[t];
+    const exp = this.explored[t];
+    for (let dy = -R; dy <= R; dy++) {
+      const yy = (((cy + dy) % g) + g) % g;
+      for (let dx = -R; dx <= R; dx++) {
+        if (dx * dx + dy * dy > rc * rc) continue;
+        const k = yy * g + ((((cx + dx) % g) + g) % g);
+        vis[k] = 1;
+        exp[k] = 1;
       }
     }
-    this.version++;
   }
 
   /** share of the map `tribe` has explored, 0 to 1 (summaries and tests) */

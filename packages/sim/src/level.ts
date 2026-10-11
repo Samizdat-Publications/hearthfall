@@ -153,13 +153,15 @@ export class LevelRuntime {
         if (o.type === "reach" && !this.done[k] && this.open(k)) w.emit("beacon", { x: o.at[0], y: o.at[1], r: o.r });
       });
     (this.def.triggers ?? []).forEach((t, k) => {
-      if (this.fired[k]) return;
+      // stretch 3: a repeating time trigger counts its firings in `fired`
+      const repeat = t.when.type === "time" && t.when.every !== undefined;
+      if (this.fired[k] && !repeat) return;
       let tribe = PLAYER;
       let x = 0;
       let y = 0;
       const when = t.when;
       if (when.type === "time") {
-        if (w.playTick + 1 < Math.round(when.seconds * w.cfg.tickHz)) return;
+        if (w.playTick + 1 < Math.round((when.seconds + this.fired[k] * (when.every ?? 0)) * w.cfg.tickHz)) return;
       } else if (when.type === "objective") {
         if (!this.done[when.index]) return;
       } else if (when.type === "followers") {
@@ -190,7 +192,7 @@ export class LevelRuntime {
           y = w.terrain.size / 2;
         }
       }
-      this.fired[k] = 1;
+      this.fired[k] = repeat ? this.fired[k] + 1 : 1;
       w.emit("triggerFired", { index: k });
       for (const r of t.do) applyReward(w, tribe, r, x, y);
     });

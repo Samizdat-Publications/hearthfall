@@ -985,6 +985,8 @@ export class EconomySystem {
       const m = defs[E.type[i]].manaPerMin;
       if (m !== undefined && E.tribe[i] >= 0 && E.tribe[i] < rates.length) rates[E.tribe[i]] += m;
     }
+    // stretch 3: held mana stones (living world)
+    w.living.addManaRates(rates);
     for (const tr of w.tribes) {
       const rate = rates[tr.index] * tr.eco.incomeMult * (w.traitMods[tr.index]?.income ?? 1);
       tr.eco.incomePerMin = tr.alive ? rate : 0;

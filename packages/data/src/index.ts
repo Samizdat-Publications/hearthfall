@@ -142,6 +142,10 @@ function crossCheck(p: PackFiles): PackIssue[] {
       if (r.type === "raid" || (r.type === "spawn" && r.tribe !== undefined) || ("at" in r && r.at)) issues.push({ file: "balance.json", path: `${at}.rewards.${j}`, message: `skirmish site rewards cannot name a tribe or a point` });
     });
   });
+  p.balance.skirmishLey?.kinds.forEach((k, j) => {
+    need("balance.json", `skirmishLey.kinds.${j}`, kinds, k, "worship kind");
+    if (!p.buildings.worship.kinds?.find((x) => x.id === k)?.capturable) issues.push({ file: "balance.json", path: `skirmishLey.kinds.${j}`, message: `${k} is not a capturable kind` });
+  });
   const b = p.balance.terrain.bands;
   const order = [p.balance.terrain.seaLevel, b.shore, b.lowland, b.grass, b.highland, b.rock, b.peak];
   for (let i = 1; i < order.length; i++) if (order[i] <= order[i - 1]) issues.push({ file: "balance.json", path: "terrain.bands", message: "bands must rise strictly above sea level" });
@@ -207,6 +211,11 @@ export function validateLevel(raw: unknown, pack: PackFiles, file = "level"): { 
     if (r.type === "spawn" && r.tribe !== undefined && r.tribe >= lv.tribes.length) bad(path, `no tribe ${r.tribe}`);
     if (r.type === "raid" && r.tribe >= lv.tribes.length) bad(path, `no tribe ${r.tribe}`);
     if (r.type === "awaken") awakens.push({ site: r.site, path });
+    if (r.type === "shape") {
+      if (r.shape === "disc" && r.r === undefined) bad(path, "a disc shape needs r");
+      if (r.shape === "rect" && !r.size) bad(path, "a rect shape needs size");
+      if (r.shape === "line" && (!r.to || r.width === undefined)) bad(path, "a line shape needs to and width");
+    }
   };
   const awakens: { site: string; path: string }[] = [];
   const tags = new Set<string>();

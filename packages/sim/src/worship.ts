@@ -3,7 +3,7 @@
 // prayerSeconds, each missing worshipper multiplies the speed by missingWorshipperSpeedFactor, and
 // progress decays while a tribe has nobody praying. The first tribe to finish gets the site's rewards
 // (the same reward vocabulary level triggers use); a site that runs out of uses sinks or stays spent.
-import type { Reward, SiteSpec } from "@hearthfall/data";
+import type { Aura, Reward, SiteSpec } from "@hearthfall/data";
 import { registerCommand } from "./commands.ts";
 import { secondsToTicks } from "./config.ts";
 import { cos, sin } from "./dmath.ts";
@@ -33,6 +33,8 @@ export interface Site {
   lastBy: number;
   /** prayer chains: asleep until an awaken reward wakes it (absent in older saves: awake) */
   dormant?: boolean;
+  /** stretch 3: this site's own aura (else its kind's) */
+  aura?: Aura;
 }
 
 export interface WorshipState {
@@ -59,6 +61,25 @@ export class WorshipSystem {
     return this.kinds().findIndex((k) => k.id === id);
   }
 
+  /** stretch 3: a capturable kind is never used up; whoever prayed last holds it */
+  capturable(kind: number): boolean {
+    return this.kinds()[kind]?.capturable === true;
+  }
+
+  kindAura(kind: number): Aura | undefined {
+    return this.kinds()[kind]?.aura;
+  }
+
+  /** stretch 3: some site runs an aura (living world step 9b has work) */
+  get hasAuras(): boolean {
+    return this.sites.some((s) => s.aura !== undefined || this.kindAura(s.kind) !== undefined);
+  }
+
+  /** stretch 3: the site and its prayer ring would stand on dry walkable land at (x, y) */
+  dryRing(x: number, y: number): boolean {
+    return this.dryCellNear(x, y, 0, () => true) !== null;
+  }
+
   radius(): number {
     return this.w.cfg.pack.buildings.worship.radius ?? 3;
   }
@@ -83,6 +104,7 @@ export class WorshipSystem {
       progress: w.tribes.map(() => 0),
       lastBy: -1,
       ...(spec.dormant ? { dormant: true } : {}),
+      ...(spec.aura ? { aura: { ...spec.aura } } : {}),
     });
     return id;
   }
@@ -231,9 +253,11 @@ export class WorshipSystem {
     this.sites.forEach((s, k) => {
       if (s.usesLeft <= 0 || s.dormant || E.index(s.ent) < 0) return;
       const shaperOnly = this.kinds()[s.kind].shaperOnly === true;
+      const cap = this.capturable(s.kind);
       let winner = -1;
       for (let t = 0; t < T; t++) {
-        const c = shaperOnly ? (shapers[k][t] ? s.need : 0) : counts[k][t];
+        // stretch 3: the holder of a capturable site has nothing to pray for
+        const c = cap && t === s.lastBy ? 0 : shaperOnly ? (shapers[k][t] ? s.need : 0) : counts[k][t];
         if (c <= 0) {
           s.progress[t] = Math.max(0, s.progress[t] - decay * s.prayTicks);
           continue;
@@ -253,11 +277,14 @@ export class WorshipSystem {
     const si = E.index(s.ent);
     const x = E.x[si];
     const y = E.y[si];
-    s.usesLeft--;
+    const cap = this.capturable(s.kind);
+    const from = s.lastBy;
+    if (!cap) s.usesLeft--;
     s.lastBy = tribe;
     s.progress.fill(0);
     const kind = this.kinds()[s.kind];
     w.emit("worshipComplete", { tribe, site: s.tag, kind: kind.id, x, y, usesLeft: s.usesLeft });
+    if (cap) w.emit("siteCaptured", { tribe, from, site: s.tag, kind: kind.id, x, y });
     for (const r of s.rewards) applyReward(w, tribe, r, x, y);
     // everyone praying here (any tribe) stands down
     for (let i = 0; i < E.hi; i++) {
@@ -381,6 +408,9 @@ export function applyReward(w: World, tribe: number, r: Reward, x: number, y: nu
       w.emit("revealed", { tribe, x: px, y: py, r: r.r });
       return;
     }
+    case "shape":
+      w.living.startShape(r, x, y);
+      return;
     case "message":
       w.emit("levelMessage", { tribe, text: r.text });
       return;
@@ -397,6 +427,7 @@ registerCommand("worship", {
     if (!s || w.ents.index(s.ent) < 0) return "no such worship site";
     if (s.usesLeft <= 0) return "this site has nothing left to give";
     if (s.dormant) return "this site is asleep: pray elsewhere to wake it";
+    if (w.worship.capturable(s.kind) && s.lastBy === c.tribe) return "your tribe already holds this stone";
     return null;
   },
   apply(w, c) {

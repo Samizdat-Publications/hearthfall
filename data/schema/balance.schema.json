@@ -1083,6 +1083,41 @@
       ],
       "additionalProperties": false
     },
+    "skirmishLey": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "cellsPerStone": {
+          "type": "number",
+          "minimum": 0
+        },
+        "minSpacing": {
+          "type": "number",
+          "minimum": 0
+        },
+        "minHearthDistance": {
+          "type": "number",
+          "minimum": 0
+        },
+        "kinds": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          }
+        }
+      },
+      "required": [
+        "cellsPerStone",
+        "minSpacing",
+        "minHearthDistance",
+        "kinds"
+      ],
+      "additionalProperties": false
+    },
     "skirmishWorship": {
       "type": "object",
       "properties": {
@@ -1378,6 +1413,94 @@
                       "required": [
                         "type",
                         "r"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "shape"
+                        },
+                        "shape": {
+                          "type": "string",
+                          "enum": [
+                            "disc",
+                            "rect",
+                            "line"
+                          ]
+                        },
+                        "at": {
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "number"
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 2,
+                          "maxItems": 2
+                        },
+                        "r": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "size": {
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "number"
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 2,
+                          "maxItems": 2
+                        },
+                        "to": {
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "number"
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 2,
+                          "maxItems": 2
+                        },
+                        "width": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "aboveSea": {
+                          "type": "number",
+                          "minimum": -60,
+                          "maximum": 120
+                        },
+                        "falloff": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 16
+                        },
+                        "seconds": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 600
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "shape",
+                        "aboveSea"
                       ],
                       "additionalProperties": false
                     },

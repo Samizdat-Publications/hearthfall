@@ -20,6 +20,7 @@ import { RulesRuntime, type RulesSaved } from "./rules.ts";
 import { FORGE_COMMANDS, ForgeRuntime, type ForgeSaved } from "./forge.ts";
 import { VisionSystem, type VisionState } from "./vision.ts";
 import { VehicleSystem } from "./vehicles.ts";
+import { LivingSystem, type LivingState } from "./living.ts";
 
 /** Deterministic in-sim decision maker (AI opponent or test bot); emits Commands at its cadence. */
 /** BACKLOG 50: the plain JSON a controller was built from (packages/ai makeBot), recorded in saves and replays */
@@ -80,6 +81,8 @@ export interface WorldInit {
   weather?: "clear" | "rain";
   /** stretch 2: balance.traits id per tribe index (null or absent: none); absent in older replays */
   traits?: (string | null)[];
+  /** stretch 3 (living world): capturable ley stones scattered on a skirmish map (balance.skirmishLey); absent or 0: none, older replays */
+  leyStones?: number;
 }
 
 /** Multipliers a tribe trait applies (balance.traits); NO_TRAIT for a tribe without one. */
@@ -155,6 +158,8 @@ export interface WorldSnapshot {
   /** BACKLOG 3: present only with fog of war on */
   vision?: VisionState;
   level?: LevelSaved;
+  /** stretch 3: land jobs in progress (absent when none) */
+  living?: LivingState;
   rules?: RulesSaved;
   forge?: ForgeSaved;
   /** BACKLOG 35: the init this world was built from (no pack files); absent in older saves */
@@ -182,6 +187,8 @@ export class World {
   /** BACKLOG 10: boats and balloons (ADR-016) */
   vehicles: VehicleSystem;
   worship: WorshipSystem;
+  /** stretch 3: land jobs (shape rewards) and site auras */
+  living: LivingSystem;
   /** BACKLOG 3: fog of war (per tribe explored and visible grids) */
   vision: VisionSystem;
   /** null outside campaign levels */
@@ -224,6 +231,7 @@ export class World {
     this.economy = new EconomySystem(this);
     this.combat = new CombatSystem(this);
     this.worship = new WorshipSystem(this);
+    this.living = new LivingSystem(this);
     this.level = init.level ? new LevelRuntime(this, init.level.def) : null;
     this.vision = new VisionSystem(this, init.map.fog);
     const tribeCount = init.map.tribes ?? gen.hearths.length;
@@ -239,6 +247,7 @@ export class World {
       for (const r of gen.rocks) this.spawnRock(r.x, r.y);
       // skirmish only: a level places its own sites
       if (!init.level) this.worship.placeSkirmishSites(gen.hearths);
+      if (!init.level && init.leyStones) this.living.placeLeyStones(gen.hearths, init.leyStones);
     }
     this.vision.update(true);
   }
@@ -419,6 +428,8 @@ export class World {
     this.economy.update();
     // 9. worship, victory rules, then level triggers, objectives and outcome (a level with rules reads this tick's winner; rewards may queue terrain ops: applied in the same tick so snapshots stay legal)
     this.worship.update();
+    // 9b. stretch 3: land jobs and site auras
+    this.living.update();
     this.rules?.update();
     this.level?.update();
     this.flushTerrain();
@@ -601,6 +612,7 @@ export class World {
     // stretch 2: hashed only when some tribe has a trait, so worlds without traits keep their hashes
     if (this.traitMods.some((m) => m !== NO_TRAIT)) for (const m of this.traitMods) mf.u32(7007).f64(m.income).f64(m.speed).f64(m.breed).f64(m.armor);
     this.vision.hashInto(mf);
+    this.living.hashInto(mf);
     const meta = mf.hex();
     const all = new Fnv().u32(parseInt(terrain, 16)).u32(parseInt(entities, 16)).u32(parseInt(rng, 16)).u32(parseInt(meta, 16)).hex();
     return { all, terrain, entities, rng, meta };
@@ -631,6 +643,7 @@ export class World {
       ...(this.units.flowKeys().length ? { flowKeys: this.units.flowKeys() } : {}),
       ...(this.worship.sites.length || this.worship.granted.some((g) => g.length) ? { worship: this.worship.save() } : {}),
       ...(this.level ? { level: this.level.save() } : {}),
+      ...(this.living.save() ? { living: this.living.save()! } : {}),
       ...(this.rules ? { rules: this.rules.save() } : {}),
       ...(this.forge ? { forge: this.forge.save() } : {}),
       ...(this.vision.on ? { vision: this.vision.save() } : {}),
@@ -670,6 +683,7 @@ export class World {
     if (snap.flowKeys) w.units.loadFlows(snap.flowKeys);
     if (snap.worship) w.worship.load(snap.worship);
     if (snap.level && w.level) w.level.load(snap.level);
+    if (snap.living) w.living.load(snap.living);
     if (snap.rules && w.rules) w.rules.load(snap.rules);
     if (snap.forge && w.forge) w.forge.load(snap.forge);
     if (snap.vision && w.vision.on) w.vision.load(snap.vision);

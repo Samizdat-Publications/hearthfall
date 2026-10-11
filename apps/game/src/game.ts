@@ -1348,6 +1348,15 @@ export class Game {
             "bad",
           );
         break;
+      case "siteCaptured": {
+        const what = String(e.kind).replace(/_/g, " ");
+        if (e.tribe === me) this.notify(`cap${e.site}`, `Your tribe holds the ${what}.`, "good");
+        else if (e.from === me) this.notify(`cap${e.site}`, `A rival prayed your ${what} away.`, "bad");
+        break;
+      }
+      case "landShape":
+        this.notify("landShape", Number(e.aboveSea) > 0 ? "Land is rising from the water." : "Water is rising over the land. Move off the low ground.", Number(e.aboveSea) > 0 ? "info" : "bad", 8);
+        break;
       case "siteAwakened":
         this.notify(`aw${e.site}`, "A sleeping stone has woken. It can be worshipped now.", "good");
         break;

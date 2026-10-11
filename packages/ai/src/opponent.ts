@@ -621,6 +621,8 @@ export class OpponentAI implements Controller {
       const si = E.index(s.ent);
       // totems are level scripting for the player's Shaper
       if (si < 0 || s.usesLeft <= 0 || s.dormant || kinds[s.kind]?.shaperOnly) continue;
+      // stretch 3: a ley stone this tribe already holds has nothing to pray for
+      if (kinds[s.kind]?.capturable && s.lastBy === this.tribe) continue;
       if (this.comp(w, E.x[si], E.y[si]) !== home) continue;
       // stretch 3: never walk worshippers into a site held by seen enemy troops (level guardians)
       const guarded = this.guarded(w, si);

@@ -259,7 +259,7 @@ def main() -> int:
         if args.cls and a["class"] != args.cls:
             continue
         post = a["steps"]["post"]
-        if a["class"] in ("sfx", "music") or post["status"] != "done" or not post.get("output_path"):
+        if a["class"] in ("sfx", "music", "voice", "vfx", "icons") or post["status"] != "done" or not post.get("output_path"):
             continue
         q = qa_asset(a)
         n += 1

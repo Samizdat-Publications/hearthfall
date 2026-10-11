@@ -1,13 +1,13 @@
 {
   "schema": 1,
-  "generated": "2026-10-11T02:31:56Z",
+  "generated": "2026-10-11T03:40:16Z",
   "format": "ogg vorbis, 44.1 kHz",
   "loudness_targets_lufs": {
     "sfx": -18.0,
     "music": -16.0,
     "voice": -18.0
   },
-  "count": 46,
+  "count": 50,
   "entries": {
     "music.battle": {
       "file": "assets/audio/music.battle.ogg",
@@ -260,6 +260,17 @@
       "prompt": "an angry buzzing swarm of hornets",
       "event": "hornets"
     },
+    "sfx.ley_capture": {
+      "file": "assets/audio/sfx.ley_capture.ogg",
+      "kind": "sfx",
+      "duration_s": 1.76,
+      "lufs": -18.0,
+      "true_peak_db": -3.9,
+      "bytes": 34971,
+      "sha256": "e0ba4522612c2b50b4d35426513c647983654fa1db4e1939cd627e9dc012cda3",
+      "prompt": "a low resonant stone chime, a deep rounded bell-like ring on rock fading into a soft hum",
+      "event": "ley_capture"
+    },
     "sfx.lightning_cast": {
       "file": "assets/audio/sfx.lightning_cast.ogg",
       "kind": "sfx",
@@ -347,6 +358,17 @@
       "sha256": "d3adfc4f71109e7911ba7d8d8f90d8014010193a980b0d7a13dc3d89d7a61ad2",
       "prompt": "a warm gentle rising chime and soft choir shimmer, a healing blessing with a bright sparkle at the end",
       "event": "sanctuary_cast"
+    },
+    "sfx.tide_rumble": {
+      "file": "assets/audio/sfx.tide_rumble.ogg",
+      "kind": "sfx",
+      "duration_s": 2.0,
+      "lufs": -17.9,
+      "true_peak_db": -6.8,
+      "bytes": 38835,
+      "sha256": "8b4e86220d530207b0392d37c080ac8618a2373c80ef896c60f4460b22f9df6b",
+      "prompt": "a deep rolling rumble of water surging and grinding earth, a heavy low flood tide",
+      "event": "tide_rumble"
     },
     "sfx.trained": {
       "file": "assets/audio/sfx.trained.ogg",
@@ -436,6 +458,17 @@
       "prompt": "a bright protective ring tone, a resonant bowl chime with a soft magical hum",
       "event": "ward_cast"
     },
+    "sfx.ward_strike": {
+      "file": "assets/audio/sfx.ward_strike.ogg",
+      "kind": "sfx",
+      "duration_s": 1.2,
+      "lufs": -18.8,
+      "true_peak_db": -2.7,
+      "bytes": 23861,
+      "sha256": "afd482a5b9009e267f7f9881762d9e05257f54d83f894b89e338d3eb3238edad",
+      "prompt": "a crackling stone zap, a sharp magical lightning snap off a rock with a short gritty sizzle",
+      "event": "ward_strike"
+    },
     "sfx.whirlwind_cast": {
       "file": "assets/audio/sfx.whirlwind_cast.ogg",
       "kind": "sfx",
@@ -446,6 +479,17 @@
       "sha256": "f327a2eeb7d17f042e16c90e1227f5c47a24c4b3e55abe99bb18f6e3012abcda",
       "prompt": "a swirling rushing wind that spins up fast with a howling whistle",
       "event": "whirlwind_cast"
+    },
+    "sfx.wolf_howl": {
+      "file": "assets/audio/sfx.wolf_howl.ogg",
+      "kind": "sfx",
+      "duration_s": 2.0,
+      "lufs": -18.0,
+      "true_peak_db": -11.8,
+      "bytes": 35615,
+      "sha256": "532784ef61065db3c14a40c4830cead40424aa77a3b065d71c7fb94bb7b9cb7a",
+      "prompt": "a single lone wolf howl, rising and falling, outdoors",
+      "event": "wolf_howl"
     },
     "sfx.wood_delivered": {
       "file": "assets/audio/sfx.wood_delivered.ogg",

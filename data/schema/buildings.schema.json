@@ -339,6 +339,43 @@
               },
               "shaperOnly": {
                 "type": "boolean"
+              },
+              "capturable": {
+                "type": "boolean"
+              },
+              "aura": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "mana",
+                      "strike",
+                      "heal",
+                      "sight"
+                    ]
+                  },
+                  "amount": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "r": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 32
+                  },
+                  "every": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "type",
+                  "amount",
+                  "r",
+                  "every"
+                ],
+                "additionalProperties": false
               }
             },
             "required": [

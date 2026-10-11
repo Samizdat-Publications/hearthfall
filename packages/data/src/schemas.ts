@@ -267,6 +267,20 @@ export const BalanceSchema = z.strictObject({
    * and at that point's opposite on the wrapped planet; sites take the list entries in turn. Optional so
    * frozen packs keep their hash.
    */
+  /**
+   * Stretch 3 (living world): capturable ley stones scattered over skirmish maps when the match asks for
+   * them (WorldInit.leyStones). One stone per cellsPerStone of map area at most, on dry land at least
+   * minHearthDistance from every Hearth and minSpacing apart; kinds are taken in turn.
+   */
+  skirmishLey: z
+    .strictObject({
+      ...comment,
+      cellsPerStone: pos,
+      minSpacing: pos,
+      minHearthDistance: pos,
+      kinds: z.array(id).min(1),
+    })
+    .optional(),
   skirmishWorship: z
     .strictObject({
       ...comment,
@@ -432,6 +446,19 @@ export const StyleSchema = z
             flowerColors: z.array(z.string().regex(/^#[0-9a-fA-F]{6}$/)).max(8),
           })
           .refine((g) => g.highBand > g.shoreBand, "highBand must be above shoreBand")
+          .optional(),
+        /** Stretch 3: landscape decor from the prop models (render decor.ts); omitted = code defaults */
+        decor: z
+          .strictObject({
+            enabled: z.boolean(),
+            radius: z.number().min(4).max(96),
+            maxZoom: z.number().min(0).max(1),
+            density: z.number().min(0).max(0.5),
+            maxSlope: pos,
+            kinds: z
+              .array(z.strictObject({ id: z.string().min(1), weight: z.number().min(0), low: z.number().min(0).max(1), high: z.number().min(0).max(1), size: pos }))
+              .max(16),
+          })
           .optional(),
         /** BACKLOG 41: the camera rig against zoom z (0 close, 1 globe): distance = base + quad z^2 + linear z,
          * pitch = base + linear z (radians), bend = base + quad z^2, fog from distance * nearMul to
@@ -740,6 +767,10 @@ export const BuildingsFileSchema = z.strictObject({
           sinks: z.boolean(),
           /** only the Shaper's prayer counts (and it counts as all worshippers) */
           shaperOnly: z.boolean().optional(),
+          /** stretch 3 (living world): never used up; whoever prayed last holds it until a rival prays it away */
+          capturable: z.boolean().optional(),
+          /** stretch 3: what the site does for its holder while held (a site can override) */
+          aura: z.lazy(() => AuraSchema).optional(),
         }),
       )
       .optional(),
@@ -1239,7 +1270,7 @@ export type UiFile = z.infer<typeof UiFileSchema>;
 
 /** Skirmish setup used when there is no data/ui.json skirmish block (kept for tools and tests). */
 export const SKIRMISH_DEFAULTS = {
-  mapSizes: [96, 128, 192],
+  mapSizes: [96, 128, 192, 256],
   defaultSize: 128,
   maps: ["continents", "islands"],
   maxOpponents: 3,
@@ -1285,6 +1316,23 @@ export const RewardSchema = z.discriminatedUnion("type", [
   z.strictObject({ type: z.literal("awaken"), site: id }),
   /** lift the fog over a disc (the site by default) for the rewarded tribe: shows where a chain leads */
   z.strictObject({ type: z.literal("reveal"), at: point.optional(), r: z.number().min(1).max(64) }),
+  /**
+   * stretch 3 (living world): reshape land over `seconds` (instant when 0 or absent): a disc (r), rect
+   * (size) or line (at to `to`, `width` wide) moves toward sea + aboveSea, blended over `falloff` cells.
+   * Tides, rising causeways, sinking fords; whoever stands on land that goes under drowns.
+   */
+  z.strictObject({
+    type: z.literal("shape"),
+    shape: z.enum(["disc", "rect", "line"]),
+    at: point.optional(),
+    r: pos.optional(),
+    size: point.optional(),
+    to: point.optional(),
+    width: pos.optional(),
+    aboveSea: z.number().min(-60).max(120),
+    falloff: z.number().min(0).max(16).optional(),
+    seconds: z.number().min(0).max(600).optional(),
+  }),
   /** a message for the player (HUD notification) */
   z.strictObject({
     type: z.literal("message"),
@@ -1292,6 +1340,19 @@ export const RewardSchema = z.discriminatedUnion("type", [
   }),
 ]);
 export type Reward = z.infer<typeof RewardSchema>;
+
+/**
+ * Stretch 3 (living world): what a held capturable site does for its holder every `every` seconds:
+ * mana (amount is mana per minute, added to income), strike (damage to the nearest enemy unit within r),
+ * heal (each own unit within r), sight (reveals r around the site).
+ */
+export const AuraSchema = z.strictObject({
+  type: z.enum(["mana", "strike", "heal", "sight"]),
+  amount: z.number().min(0),
+  r: z.number().min(0).max(32),
+  every: pos,
+});
+export type Aura = z.infer<typeof AuraSchema>;
 
 /** One worship object on a map. Unset fields come from its kind in buildings.json worship.kinds. */
 export const SiteSpecSchema = z.strictObject({
@@ -1301,6 +1362,8 @@ export const SiteSpecSchema = z.strictObject({
   uses: z.number().int().min(1).optional(),
   /** prayer chains: asleep (sunk, cannot be worshipped) until an awaken reward names it */
   dormant: z.boolean().optional(),
+  /** stretch 3: replaces the kind's aura */
+  aura: AuraSchema.optional(),
   rewards: z.array(RewardSchema),
 });
 export type SiteSpec = z.infer<typeof SiteSpecSchema>;
@@ -1350,7 +1413,8 @@ export type LoseCondition = z.infer<typeof LoseSchema>;
 
 export const TriggerSchema = z.strictObject({
   when: z.discriminatedUnion("type", [
-    z.strictObject({ type: z.literal("time"), seconds: pos }),
+    /** stretch 3: with `every` the trigger fires again every that many seconds (tides, eruptions) */
+    z.strictObject({ type: z.literal("time"), seconds: pos, every: pos.optional() }),
     z.strictObject({ type: z.literal("worship"), site: id }),
     z.strictObject({
       type: z.literal("objective"),

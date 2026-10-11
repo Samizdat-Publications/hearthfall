@@ -27,6 +27,9 @@ export interface SetupView {
   /** BACKLOG 11: Forge phase choices (off, on; empty for packs without balance.forge) and the choice */
   forges: Choice[];
   forge: string;
+  /** stretch 3 (living world): ley stone choices (count as the value; empty for packs without balance.skirmishLey) and the choice */
+  leys: Choice[];
+  ley: string;
   /** BACKLOG 14b: weather choices (clear, rain; empty for packs without balance.weather) and the choice */
   weathers: Choice[];
   weather: string;
@@ -106,7 +109,7 @@ export interface MenuModel {
   mods?: string[];
 }
 
-export type SetupPatch = Partial<Pick<SetupView, "map" | "size" | "seed" | "opponents" | "difficulty" | "victory" | "forge" | "weather" | "trait">>;
+export type SetupPatch = Partial<Pick<SetupView, "map" | "size" | "seed" | "opponents" | "difficulty" | "victory" | "forge" | "ley" | "weather" | "trait">>;
 export type SettingsPatch = Partial<Pick<SettingsView, "quality" | "master" | "music" | "sfx" | "palette" | "miniature" | "lighting" | "weather">> & { uiScale?: number; subtitles?: boolean; tips?: boolean };
 
 export interface MenuActions {
@@ -264,6 +267,15 @@ function Setup({ s, act }: { s: SetupView; act: MenuActions }) {
             <span class="menu-row menu-victory">
               <Select ui="setup-forge" value={s.forge} options={s.forges} onChange={(v) => act.setSetup({ forge: v })} />
               <span class="menu-hint">{t("setup.forgeHint")}</span>
+            </span>
+          </Fragment>
+        ) : null}
+        {s.leys.length ? (
+          <Fragment>
+            <label class="menu-label">{t("setup.ley")}</label>
+            <span class="menu-row menu-victory">
+              <Select ui="setup-ley" value={s.ley} options={s.leys} onChange={(v) => act.setSetup({ ley: v })} />
+              <span class="menu-hint">{t("setup.leyHint")}</span>
             </span>
           </Fragment>
         ) : null}

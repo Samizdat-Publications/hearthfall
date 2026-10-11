@@ -241,3 +241,27 @@ Two example mods ship: `swift_wardens`, a list patch, and `rainy_season`, an obj
 - `ui.json` is not moddable yet (mods patch `data/base/` only). Fallback: move the block back into balance and bump the hash.
 
 Fallback: if deep merging of list entries proves surprising, switch list entries back to the shallow `mergeById` behavior and record it here.
+
+## ADR-023: Living world data shape (10/10/2026)
+
+**Context.** Stretch 3 needs land that moves on a schedule (tides, rising causeways, sinking fords) and capturable sites that work for whoever holds them, without breaking the replays, golden hashes or render and path invalidation that earlier milestones rely on.
+
+**Decision.** The data shape grows in these optional fields:
+- `Reward` gains `shape` (`disc`, `rect` or `line`, with `aboveSea`, `falloff` and `seconds`).
+- Worship kinds gain `capturable` and `aura` (`{type: mana | strike | heal | sight, amount, r, every}`). A site spec may override the kind's `aura`.
+- Level time triggers gain `every` (a repeat period in seconds).
+- `balance` gains an optional `skirmishLey` block (`cellsPerStone`, `minSpacing`, `minHearthDistance`, `kinds`).
+- `WorldInit` gains an optional `leyStones` count.
+
+A shape reward starts a land job: a box of target heights stepped toward its goal every 0.5 s through a new terrain op `toward`, applied in the terrain flush so the drowning check runs. Auras run on tick modulo, with no saved timer.
+
+**Rationale.**
+- Localized, gradual terrain jobs rather than a global sea level change. A global change would dirty the whole map and invalidate every path, while a job only touches its box, so the dirty-rect render and incremental path repair (BACKLOG 47) keep working.
+- Aura cadence is stateless (`(tick + site index) % every`), so held stones add nothing to saved state.
+- Stone placement uses a golden-ratio lattice with no rng, so the rng streams and old replays stay intact.
+
+**Consequences.**
+- Idle living systems add nothing to the hash or the snapshot. The tag `0x11f1` and the job list appear only while a job runs, so older replays and goldens keep their hashes.
+- Saves taken mid-job carry the job list.
+
+Fallback: setting `leyStones` to 0 disables stone placement (the setup menu's "none"). Leaving `skirmishLey` out of `balance` also disables it, and the menu hides the choice.

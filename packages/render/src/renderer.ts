@@ -21,6 +21,7 @@ import {
   type TerrainPalette,
 } from "./terrainMesh.ts";
 import { TreeLayer } from "./props.ts";
+import { DecorLayer } from "./decor.ts";
 import { GroundDetailLayer } from "./groundDetail.ts";
 import { UnitLayer } from "./unitsLayer.ts";
 import { BuildingLayer } from "./buildingsLayer.ts";
@@ -106,6 +107,7 @@ export class ThreeRenderer implements Renderer {
   private trees: TreeLayer;
   /** BACKLOG 39: grass tufts, flowers and pebbles near the focus (null when style.json turns it off) */
   private groundDetail: GroundDetailLayer | null = null;
+  private decor: DecorLayer | null = null;
   private models: Map<string, ModelParts> | null = null;
   private modelReport: ModelLoadReport | null = null;
   private modelsPending = false;
@@ -511,6 +513,12 @@ export class ThreeRenderer implements Renderer {
         this.styleRender?.trees,
       );
       for (const m of this.trees.meshes) this.scene.add(m);
+      if (this.styleRender?.decor?.enabled ?? true) {
+        if (this.decor) for (const m of this.decor.meshes) this.scene.remove(m);
+        this.decor?.dispose();
+        this.decor = new DecorLayer(this.propMat, this.models, this.styleRender?.decor);
+        for (const m of this.decor.meshes) this.scene.add(m);
+      }
       if (this.world) this.buildLayers(this.world);
     } finally {
       this.modelsPending = false;
@@ -524,6 +532,7 @@ export class ThreeRenderer implements Renderer {
       ...(this.units?.modelIds ?? []),
       ...(this.buildings?.modelIds ?? []),
       ...(this.worship?.modelIds ?? []),
+      ...(this.decor?.modelIds ?? []),
     ];
     return {
       pending: this.modelsPending,
@@ -699,6 +708,7 @@ export class ThreeRenderer implements Renderer {
       this.syncFog(w);
       this.trees.update(w, fx, fz, this.palette.heightScale);
       this.groundDetail?.update(w, fx, fz, this.palette.heightScale, this.cam.zoom, this.cam.map);
+      this.decor?.update(w, fx, fz, this.palette.heightScale, this.cam.zoom, this.cam.map);
       this.buildings?.update(
         w,
         fx,

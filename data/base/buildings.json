@@ -182,6 +182,36 @@
         "uses": 1,
         "sinks": false,
         "shaperOnly": true
+      },
+      {
+        "$comment": "stretch 3 living world: a capturable ley stone; whoever prayed last holds it and draws its mana until a rival prays it away",
+        "id": "ley_stone",
+        "worshippers": 3,
+        "prayerSeconds": 20,
+        "uses": 1,
+        "sinks": false,
+        "capturable": true,
+        "aura": { "type": "mana", "amount": 150, "r": 0, "every": 1 }
+      },
+      {
+        "$comment": "stretch 3 living world: a capturable ward stone; it strikes the nearest enemy within r for its holder",
+        "id": "ward_stone",
+        "worshippers": 3,
+        "prayerSeconds": 24,
+        "uses": 1,
+        "sinks": false,
+        "capturable": true,
+        "aura": { "type": "strike", "amount": 220, "r": 8, "every": 3 }
+      },
+      {
+        "$comment": "stretch 3 living world: a capturable seer stone; its holder sees everything within r",
+        "id": "seer_stone",
+        "worshippers": 2,
+        "prayerSeconds": 15,
+        "uses": 1,
+        "sinks": false,
+        "capturable": true,
+        "aura": { "type": "sight", "amount": 0, "r": 18, "every": 1 }
       }
     ]
   }

@@ -60,7 +60,9 @@ export type TerrainOpSpec =
   | { op: "noiseScar"; x: number; y: number; r: number; depth: number; seed: number }
   | { op: "lowerTowardSea"; x: number; y: number; r: number; amount: number }
   | { op: "scar"; x: number; y: number; r: number; seconds: number }
-  | { op: "flattenRect"; x: number; y: number; w: number; h: number; target: number; step: number };
+  | { op: "flattenRect"; x: number; y: number; w: number; h: number; target: number; step: number }
+  /** stretch 3 (living world): cells of the box at (x0, y0) move 1/steps of the way to their targets (x, y, r: center and reach) */
+  | { op: "toward"; x: number; y: number; r: number; x0: number; y0: number; w: number; h: number; target: readonly number[]; steps: number };
 
 export class Terrain {
   readonly size: number;
@@ -415,7 +417,24 @@ export class Terrain {
       case "flattenRect":
         this.flattenRect(o.x, o.y, o.w, o.h, o.target, o.step);
         return;
+      case "toward":
+        return this.toward(o.x0, o.y0, o.w, o.h, o.target, o.steps);
     }
+  }
+
+  /** Box cells (row major, w by h from x0, y0) move 1/steps of the way to target; -1 targets are left alone. */
+  toward(x0: number, y0: number, w: number, h: number, target: readonly number[], steps: number): void {
+    const s = Math.max(1, steps);
+    for (let j = 0; j < h; j++) {
+      for (let i = 0; i < w; i++) {
+        const t = target[j * w + i];
+        if (t < 0) continue;
+        const k = this.idx(x0 + i, y0 + j);
+        const v = this.heights[k];
+        this.put(k, s === 1 ? t : v + Math.round((t - v) / s));
+      }
+    }
+    this.mark(x0 - 1, y0 - 1, x0 + w, y0 + h);
   }
 
   /**

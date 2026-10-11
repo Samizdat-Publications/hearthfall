@@ -84,6 +84,13 @@
     "terrainBands": { "snowStart": 445, "snowFull": 495, "strataSand": 0.55, "snowBright": 1.55 },
     "trees": { "clumpLow": 0.75, "clumpHigh": 0.08, "bandLow": 0.12, "bandHigh": 0.4, "modelShare": 0.15, "hueJitter": 0.12, "sizeBase": 0.8, "sizeJitter": 0.5, "sizeAtNoWood": 0.6, "woodFull": 4 },
     "groundDetail": { "enabled": true, "radius": 22, "maxZoom": 0.3, "tufts": 1.1, "flowers": 0.25, "pebbles": 0.5, "shoreBand": 0.04, "highBand": 0.55, "maxSlope": 3, "flowerColors": ["#f2e6c8", "#e8c33a", "#d86a8a", "#b07cff"] },
+    "decor": { "enabled": true, "radius": 44, "maxZoom": 0.62, "density": 0.022, "maxSlope": 4, "kinds": [
+      { "id": "prop.bush_a", "weight": 6, "low": 0.03, "high": 0.6, "size": 0.9 },
+      { "id": "prop.log_a", "weight": 2, "low": 0.05, "high": 0.55, "size": 1.3 },
+      { "id": "prop.mushroom_ring", "weight": 1.5, "low": 0.04, "high": 0.4, "size": 1.2 },
+      { "id": "prop.ruin_a", "weight": 0.5, "low": 0.08, "high": 0.8, "size": 2.4 },
+      { "id": "prop.standing_stone", "weight": 0.8, "low": 0.2, "high": 1, "size": 1.1 }
+    ] },
     "camera": {
       "$comment": "BACKLOG 41: rig curves against zoom z (0 close, 1 globe): distance = base + quad z^2 + linear z; pitch = base + linear z (radians); bend = base + quad z^2; fog near = distance * nearMul, far = distance * farMul + farAdd + farQuad z^2.",
       "distance": { "base": 11, "linear": 20, "quad": 120 },
@@ -146,6 +153,9 @@
       "tribeEliminated": { "cue": "sfx.eliminated", "maxPerTick": 1, "global": true },
       "spellCast": { "cue": "sfx.{spell}_cast", "maxPerTick": 2 },
       "buildingDone": { "cue": "sfx.building_done", "maxPerTick": 1 },
+      "auraStrike": { "cue": "sfx.ward_strike", "maxPerTick": 2 },
+      "siteCaptured": { "cue": "sfx.ley_capture", "maxPerTick": 1 },
+      "landShape": { "cue": "sfx.tide_rumble", "maxPerTick": 1 },
       "born": { "cue": "sfx.born", "maxPerTick": 1 },
       "woodDelivered": { "cue": "sfx.wood_delivered", "maxPerTick": 1 },
       "charged": { "cue": "sfx.charged", "maxPerTick": 1 },

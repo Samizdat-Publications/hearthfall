@@ -26,6 +26,8 @@ export interface SkirmishParams {
   forge?: boolean;
   /** BACKLOG 14b: play in rain (absent in older saves: clear) */
   weather?: "rain";
+  /** stretch 3: capturable ley stones on the map (absent in older saves: none) */
+  leyStones?: number;
   /** stretch 2: the player's balance.traits id; the AI tribes then carry their personality's trait (absent: no traits) */
   trait?: string;
   /** M9: set when this session is a campaign level (the other fields then mirror the level) */
@@ -49,7 +51,7 @@ export function campaignParams(def: LevelDef, carry: CampaignCarry): SkirmishPar
 
 export function skirmishInit(pack: ValidatedPack, p: SkirmishParams): WorldInit {
   if (p.campaign) return levelWorldInit({ def: p.campaign.def, carry: p.campaign.carry }, pack.files, pack.hash);
-  return { pack: pack.files, packHash: pack.hash, seed: p.seed, map: { generator: p.level, size: p.size, tribes: p.tribes }, ...(p.rules ? { rules: p.rules } : {}), ...(p.forge ? { forge: true } : {}), ...(p.weather === "rain" ? { weather: "rain" as const } : {}), ...(p.trait ? { traits: skirmishTraits(pack, p) } : {}) };
+  return { pack: pack.files, packHash: pack.hash, seed: p.seed, map: { generator: p.level, size: p.size, tribes: p.tribes }, ...(p.rules ? { rules: p.rules } : {}), ...(p.forge ? { forge: true } : {}), ...(p.weather === "rain" ? { weather: "rain" as const } : {}), ...(p.trait ? { traits: skirmishTraits(pack, p) } : {}), ...(p.leyStones ? { leyStones: p.leyStones } : {}) };
 }
 
 /** stretch 2: trait per tribe index: the player's pick, then each AI tribe's personality trait (none for economy bots). */

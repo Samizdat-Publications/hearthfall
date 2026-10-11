@@ -3083,7 +3083,7 @@
         },
         "bytes": 33860,
         "materials": 1,
-        "palette_delta": 1e-05,
+        "palette_delta": 0.00196,
         "palette_within": 1.0,
         "boundary_edges": 14,
         "nonmanifold_edges": 6,
@@ -3249,7 +3249,7 @@
         },
         "bytes": 31792,
         "materials": 1,
-        "palette_delta": 1e-05,
+        "palette_delta": 0.00062,
         "palette_within": 1.0,
         "boundary_edges": 0,
         "nonmanifold_edges": 0,
@@ -3413,7 +3413,7 @@
         },
         "bytes": 37272,
         "materials": 1,
-        "palette_delta": 1e-05,
+        "palette_delta": 0.00307,
         "palette_within": 1.0,
         "boundary_edges": 9,
         "nonmanifold_edges": 3,
@@ -17531,6 +17531,2256 @@
       "request_hash": null,
       "approved": false,
       "qa": {}
+    },
+    {
+      "id": "building.ley_stone",
+      "class": "buildings",
+      "prompt": "a ring of three tall mossy standing stones (menhirs) with faint carved spiral grooves, arranged in a circle around a shallow round pool of softly glowing pale green and gold water set in a low stone rim, and in the middle of the pool a single large faceted royal blue crystal standing upright (the only blue in the image), warm golden light on the pool",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1800,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "stone",
+        "textured": true,
+        "footprint": 2.4,
+        "tribe_color": "azure"
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-11T03:30:35Z",
+          "finished": "2026-10-11T03:31:03Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.ley_stone/concept.jpg",
+          "sha256": "59f873964d67a7557723c227475a939a7a4cd3e5add7c428f2519ccd32f19982",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 384891,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "6c6e09648f182e6ce0a84b12346b90018c4545a62b42be2cbe16fd78964bad74"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a12903-e5d8-72f4-a207-54d3c3b2ab60",
+          "started": "2026-10-11T03:31:03Z",
+          "finished": "2026-10-11T03:33:05Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.ley_stone/model.glb",
+          "sha256": "681434ba7e66022477a4b31e8dc45f066fa2793691e548a517fc0388b9440a39",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "bytes": 1858740,
+            "progress": 100
+          },
+          "request_hash": "4edd16271abb4cb14c41d2646959899932ac549b84385c4582c69cfd6567aa7e"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-11T03:33:10Z",
+          "finished": "2026-10-11T03:33:14Z",
+          "cost": null,
+          "output_path": "assets/models/building.ley_stone.glb",
+          "sha256": "895046bc79c43da9e47674e32dcf8b385604d9d6f6cc2c91098444c9a01af87e",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1662,
+            "tris_out": 1660,
+            "decimated": false,
+            "scale": 2.4,
+            "bounds_min": [
+              -1.2,
+              -1.2,
+              0.0
+            ],
+            "bounds_max": [
+              1.2,
+              1.2,
+              1.5524
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "cloth",
+              "forest",
+              "moss",
+              "rock",
+              "rockDark",
+              "sand",
+              "scar",
+              "skin1",
+              "skin2",
+              "skin3",
+              "snow",
+              "stone",
+              "thatch",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "sand": 28,
+              "moss": 25,
+              "forest": 338,
+              "rock": 130,
+              "rockDark": 374,
+              "snow": 17,
+              "wood": 222,
+              "woodDark": 426,
+              "thatch": 6,
+              "stone": 13,
+              "skin1": 2,
+              "skin2": 6,
+              "skin3": 44,
+              "cloth": 4,
+              "azure": 24,
+              "scar": 1
+            },
+            "tribe_faces": 24,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.209,
+              0.495
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "af5bf4791984032e0a2be841f0c173603c61cf12a3c2785260828064a7555e8b"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-11T03:34:59Z",
+          "cost": null,
+          "output_path": "assets/icons/building.ley_stone.png",
+          "sha256": "1196103f7fa8874f46474243de69427e4bfbafbaa91e8357b618ca7639058755",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 1660,
+        "verts": 4980,
+        "bounds": {
+          "min": [
+            -1.2,
+            0.0,
+            -1.2
+          ],
+          "max": [
+            1.2,
+            1.5524,
+            1.2
+          ],
+          "size": [
+            2.4,
+            1.5524,
+            2.4
+          ]
+        },
+        "bytes": 210508,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 24,
+        "tribe_height_range": [
+          0.209,
+          0.495
+        ],
+        "boundary_edges": 6,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "building.ward_stone",
+      "class": "buildings",
+      "prompt": "a tall slender carved stone obelisk (standing guardian stone) on a small round stepped stone base, grey stone with mossy patches and chiseled rune-like bands and angular patterns, crowned on top with one large faceted bright royal blue crystal that glows (the only blue in the image)",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1400,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "stone",
+        "textured": true,
+        "height": 3.0,
+        "tribe_color": "azure"
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-11T03:31:05Z",
+          "finished": "2026-10-11T03:31:19Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.ward_stone/concept.jpg",
+          "sha256": "994565bcda43f95bf0b2ca76afa28d668d97b53656325dcf1db546a1befadd03",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 290625,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "e9a7694dde687fa3b36f907e52316a47e3240578a64ed92ae5810ab164e78451"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a12904-24a3-74ec-8060-3d12024705d6",
+          "started": "2026-10-11T03:31:19Z",
+          "finished": "2026-10-11T03:33:07Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.ward_stone/model.glb",
+          "sha256": "38d28b2e8ea34cbc038272e2b8f0bae471a1821161a490cb8472d0adbd5d77e9",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "bytes": 2034436,
+            "progress": 100
+          },
+          "request_hash": "2d59c30575ad3d40bf47cec6bb5efbcf8f48a84ae6b56ea4df969fc255389a09"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-11T03:33:14Z",
+          "finished": "2026-10-11T03:33:18Z",
+          "cost": null,
+          "output_path": "assets/models/building.ward_stone.glb",
+          "sha256": "1280a4b98e74608cf04661fbd9673cd5ba08dc803409f08b7f5d2f59c4328795",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1444,
+            "tris_out": 1444,
+            "decimated": false,
+            "scale": 3.0,
+            "bounds_min": [
+              -0.7331,
+              -0.734,
+              0.0
+            ],
+            "bounds_max": [
+              0.7331,
+              0.734,
+              3.0
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "forest",
+              "lightning",
+              "magic",
+              "rock",
+              "rockDark",
+              "scar",
+              "stone",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "forest": 36,
+              "rock": 173,
+              "rockDark": 620,
+              "wood": 4,
+              "woodDark": 559,
+              "stone": 2,
+              "azure": 41,
+              "lightning": 2,
+              "magic": 3,
+              "scar": 4
+            },
+            "tribe_faces": 41,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.838,
+              0.983
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "48b1341d2cad7ce46b6b00d2e861e5574d830aeee921a61eb69692a441597c29"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-11T03:34:59Z",
+          "cost": null,
+          "output_path": "assets/icons/building.ward_stone.png",
+          "sha256": "787efa7908804fa394c77c7273091d2ca7dfe78d1cba27f2aca87c14b1259efa",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 1444,
+        "verts": 4332,
+        "bounds": {
+          "min": [
+            -0.7331,
+            0.0,
+            -0.734
+          ],
+          "max": [
+            0.7331,
+            3.0,
+            0.734
+          ],
+          "size": [
+            1.4663,
+            3.0,
+            1.4681
+          ]
+        },
+        "bytes": 183276,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 41,
+        "tribe_height_range": [
+          0.838,
+          0.983
+        ],
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "unit.wolf",
+      "class": "units",
+      "prompt": "a wild grey wolf standing on all four legs in a calm alert side-on pose, head level and slightly raised, ears up, bushy tail hanging low, thick grey and dark grey fur with a pale cream chest and muzzle, chunky stylized animal, natural grey and brown tones only, no blue, no red",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1400,
+        "budget_class": "unit",
+        "scheme": "sample",
+        "default_color": "rock",
+        "textured": true,
+        "height": 0.6,
+        "no_pose": true
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-11T03:31:21Z",
+          "finished": "2026-10-11T03:31:36Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/unit.wolf/concept.jpg",
+          "sha256": "ee409c331bb43d9bd6a0a672c402b902699f84b0f2e5bdb889b457348e5d50c2",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 326673,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "30c84abef936be9f50b334a88b10e1cac28629b19e8b2f3e42400d7dc95ae0c7"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a12904-6728-72ab-a495-4830f8057b4a",
+          "started": "2026-10-11T03:31:36Z",
+          "finished": "2026-10-11T03:33:09Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/unit.wolf/model.glb",
+          "sha256": "6a1d50adbff260036ace4d32a783055be2495c1a744fde831b3f4d27db70efad",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "bytes": 2345308,
+            "progress": 100
+          },
+          "request_hash": "93fa49416f2d0503532bc2ede3fe6ce34bc14ed558d6b5198edda16275c572a8"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-11T03:33:18Z",
+          "finished": "2026-10-11T03:33:21Z",
+          "cost": null,
+          "output_path": "assets/models/unit.wolf.glb",
+          "sha256": "87104f7a18ae453105ac8de1f5b38363aaabc5b002d84166c2d8b73afe0dcb86",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1540,
+            "tris_out": 1540,
+            "decimated": false,
+            "scale": 0.96559,
+            "bounds_min": [
+              -0.1281,
+              -0.4828,
+              0.0
+            ],
+            "bounds_max": [
+              0.1281,
+              0.4828,
+              0.6
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "cloth",
+              "rock",
+              "rockDark",
+              "scar",
+              "skin1",
+              "stone",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "rock": 138,
+              "rockDark": 382,
+              "wood": 7,
+              "woodDark": 18,
+              "stone": 261,
+              "skin1": 95,
+              "cloth": 101,
+              "scar": 538
+            },
+            "tribe_faces": 0,
+            "tribe_names": [],
+            "tribe_height_range": null,
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "408952391047f0985a6a1fb725047f393d91812533f6ec2a7af10552f2f12c18"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-11T03:34:59Z",
+          "cost": null,
+          "output_path": "assets/icons/unit.wolf.png",
+          "sha256": "0b4b618f32e334a96fd054cdbc4599c3450bc8c8c34d792eb983a6f4febd4916",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 1540,
+        "verts": 4620,
+        "bounds": {
+          "min": [
+            -0.1281,
+            0.0,
+            -0.4828
+          ],
+          "max": [
+            0.1281,
+            0.6,
+            0.4828
+          ],
+          "size": [
+            0.2561,
+            0.6,
+            0.9656
+          ]
+        },
+        "bytes": 195396,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "prop.ruin_a",
+      "class": "props",
+      "prompt": "a broken ancient stone arch ruin: two weathered grey stone pillars with a cracked half-fallen lintel across the top, a short crumbled wall fragment at the side, moss and small grass tufts on the stones, a few fallen blocks at the base",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 700,
+        "budget_class": "prop",
+        "scheme": "sample",
+        "default_color": "rock",
+        "textured": true,
+        "height": 2.2
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-11T03:31:38Z",
+          "finished": "2026-10-11T03:31:56Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/prop.ruin_a/concept.jpg",
+          "sha256": "54d1c6bf31556a34f617109e65f89283324ac892e30246578dfadb6b7dcd57d0",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 444693,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "ff0bc136850cdb07cc7f0a63c342bce104d8304ba3dbd38267c2378e7446ee82"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a12904-b4f9-7110-bbee-c2fa40a657f7",
+          "started": "2026-10-11T03:31:56Z",
+          "finished": "2026-10-11T03:33:43Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/prop.ruin_a/model.glb",
+          "sha256": "3a332820874ea9754d67c85d534165dad162e8501a2b81f1cf6c8b1ce4fb9fd6",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "progress": 100,
+            "bytes": 1884380
+          },
+          "request_hash": "77a353a17a3d4a61666575f952a4be870c6b4a528e5da39e124996b8efde330c"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-11T03:33:45Z",
+          "finished": "2026-10-11T03:33:49Z",
+          "cost": null,
+          "output_path": "assets/models/prop.ruin_a.glb",
+          "sha256": "48ea63ac66cdcf8842d64ae7a5042df5028bd9a59927e56efa7fbfbdec596c16",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 591,
+            "tris_out": 589,
+            "decimated": false,
+            "scale": 2.20862,
+            "bounds_min": [
+              -1.0728,
+              -0.8018,
+              0.0
+            ],
+            "bounds_max": [
+              1.0728,
+              0.8018,
+              2.2
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "cliff",
+              "cliffDark",
+              "forest",
+              "moss",
+              "rock",
+              "rockDark",
+              "skin3",
+              "stone",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "moss": 8,
+              "forest": 129,
+              "rock": 275,
+              "rockDark": 125,
+              "wood": 12,
+              "woodDark": 1,
+              "stone": 8,
+              "skin3": 5,
+              "cliff": 15,
+              "cliffDark": 11
+            },
+            "tribe_faces": 0,
+            "tribe_names": [],
+            "tribe_height_range": null,
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "4ca639a7705c48b5ce373031263c21aa5a5aefe6cb429f7a6df3d67497be308c"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-11T03:34:59Z",
+          "cost": null,
+          "output_path": "assets/icons/prop.ruin_a.png",
+          "sha256": "fc1868b29998782af535bb0a414e3179e89805208307bc1c3490d2b86504469c",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 589,
+        "verts": 1765,
+        "bounds": {
+          "min": [
+            -1.0728,
+            0.0,
+            -0.8018
+          ],
+          "max": [
+            1.0728,
+            2.2,
+            0.8018
+          ],
+          "size": [
+            2.1456,
+            2.2,
+            1.6037
+          ]
+        },
+        "bytes": 75480,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "boundary_edges": 9,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "prop.standing_stone",
+      "class": "props",
+      "prompt": "a single weathered grey standing stone (menhir), tall and slightly leaning, rough chipped facets, moss on one side and a few faint carved grooves, set on a small mound of earth and grass",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 450,
+        "budget_class": "prop",
+        "scheme": "sample",
+        "default_color": "rock",
+        "textured": true,
+        "height": 1.8
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-11T03:31:58Z",
+          "finished": "2026-10-11T03:32:11Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/prop.standing_stone/concept.jpg",
+          "sha256": "82a8f03a2e702f72a2e4937ab0a617363654ae395bae99c62b4e10606cf6312c",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 255809,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "438685cd651fb9dd916a13f33c4a500d875906227ff12f04a032b4b8c68366fb"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a12904-ee86-7587-9926-41092c4a52a8",
+          "started": "2026-10-11T03:32:11Z",
+          "finished": "2026-10-11T03:33:58Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/prop.standing_stone/model.glb",
+          "sha256": "deaaf02e740dcb416a94f0575e4837c3201bca621b0eb398375e61f9e971dc8f",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "progress": 100,
+            "bytes": 1495968
+          },
+          "request_hash": "8f9fcde15d86756e68140565b38756e90364ecc4a3cad7087eeaf6b574b4f09e"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-11T03:34:00Z",
+          "finished": "2026-10-11T03:34:03Z",
+          "cost": null,
+          "output_path": "assets/models/prop.standing_stone.glb",
+          "sha256": "d6908c3fe9685a02c0abed69b41333b84bd986ebab7ab2b6def1de751609bc10",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 373,
+            "tris_out": 354,
+            "decimated": false,
+            "scale": 1.80477,
+            "bounds_min": [
+              -0.8345,
+              -0.841,
+              0.0
+            ],
+            "bounds_max": [
+              0.8345,
+              0.841,
+              1.8
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "cliff",
+              "forest",
+              "rock",
+              "rockDark",
+              "wood"
+            ],
+            "palette_faces": {
+              "forest": 109,
+              "rock": 190,
+              "rockDark": 17,
+              "wood": 7,
+              "cliff": 31
+            },
+            "tribe_faces": 0,
+            "tribe_names": [],
+            "tribe_height_range": null,
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "58e46632f30c42643a8c71b2fba9fbcbbaa13fd3b49c2aac4b347ddce7ece093"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-11T03:34:59Z",
+          "cost": null,
+          "output_path": "assets/icons/prop.standing_stone.png",
+          "sha256": "407f629db9c310ef0fb52229cd698f6343797ef8a61295179479280f10535139",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 354,
+        "verts": 1062,
+        "bounds": {
+          "min": [
+            -0.8345,
+            0.0,
+            -0.841
+          ],
+          "max": [
+            0.8345,
+            1.8,
+            0.841
+          ],
+          "size": [
+            1.6691,
+            1.8,
+            1.682
+          ]
+        },
+        "bytes": 45944,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "boundary_edges": 76,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "prop.bush_a",
+      "class": "props",
+      "prompt": "a round dense leafy green shrub bush with a scatter of small pink and white flowers, a small mound of earth at the base",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 500,
+        "budget_class": "prop",
+        "scheme": "sample",
+        "default_color": "rock",
+        "textured": true,
+        "height": 0.8
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-11T03:32:12Z",
+          "finished": "2026-10-11T03:32:27Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/prop.bush_a/concept.jpg",
+          "sha256": "e7fc999f4219949a60a954ea505645110964b962e84e6d6d78d943647a2f17c9",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 477586,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "aae10c79a034f90cf9c3763df07a112608324402de4d0d81a794bb25094e00f1"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a12906-01bd-738e-a9ba-d01bdb0202c0",
+          "started": "2026-10-11T03:33:21Z",
+          "finished": "2026-10-11T03:34:47Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/prop.bush_a/model.glb",
+          "sha256": "4e8bfda42eee8bd352565e94d901d6d8bac78d86214f355bd4a19883a12e5ad0",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "progress": 100,
+            "bytes": 1642456
+          },
+          "request_hash": "06f2eea27e77196e9803cf067b6e1b168c0252bcd7358312626b059a3903c5c0"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-11T03:34:47Z",
+          "finished": "2026-10-11T03:34:51Z",
+          "cost": null,
+          "output_path": "assets/models/prop.bush_a.glb",
+          "sha256": "9cc145c6c2e412b077e64a8d6388146749cef68f0aa5859940befe28681bbe47",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 369,
+            "tris_out": 354,
+            "decimated": false,
+            "scale": 0.95394,
+            "bounds_min": [
+              -0.4759,
+              -0.4671,
+              0.0
+            ],
+            "bounds_max": [
+              0.4759,
+              0.4671,
+              0.8
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "cliff",
+              "cliffDark",
+              "forest",
+              "rockDark",
+              "scar",
+              "skin3",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "forest": 107,
+              "rockDark": 121,
+              "wood": 8,
+              "woodDark": 90,
+              "skin3": 9,
+              "scar": 10,
+              "cliff": 1,
+              "cliffDark": 8
+            },
+            "tribe_faces": 0,
+            "tribe_names": [],
+            "tribe_height_range": null,
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "1a6d531166e54e8c393821758d511642df4e62b0285ee7e3e83591173b99d105"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-11T03:34:59Z",
+          "cost": null,
+          "output_path": "assets/icons/prop.bush_a.png",
+          "sha256": "87fdea8d8c113ed454e80a685bce35240c9315751ca412cb7ec4f07a978988c9",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 354,
+        "verts": 1061,
+        "bounds": {
+          "min": [
+            -0.4759,
+            0.0,
+            -0.4671
+          ],
+          "max": [
+            0.4759,
+            0.8,
+            0.4671
+          ],
+          "size": [
+            0.9519,
+            0.8,
+            0.9342
+          ]
+        },
+        "bytes": 45908,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "boundary_edges": 76,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "prop.log_a",
+      "class": "props",
+      "prompt": "a fallen mossy tree log lying on the ground, thick brown bark with green moss patches along the top, a few small bracket mushrooms, one broken branch stub, cut end showing pale rings",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 450,
+        "budget_class": "prop",
+        "scheme": "sample",
+        "default_color": "rock",
+        "textured": true,
+        "height": 0.5
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-11T03:32:27Z",
+          "finished": "2026-10-11T03:32:40Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/prop.log_a/concept.jpg",
+          "sha256": "0f63b6b3158f6665bfc796f153972b9f5f0319e76b82425a9f948965be60e991",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 355830,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "87a31cc6fba3641cfb8c0005dc04956b04d1abd8c8087c20da422022c97e6d93"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a12906-07df-77be-befd-ae33f43c6e05",
+          "started": "2026-10-11T03:33:23Z",
+          "finished": "2026-10-11T03:34:33Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/prop.log_a/model.glb",
+          "sha256": "3c94af96d005af5b29b12d8bf6d44bc4cdc94f6502e93fe27455fa7b98262c74",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "progress": 100,
+            "bytes": 1788928
+          },
+          "request_hash": "af665510075346ab42dbe7ff2315833554029414d452beb64d6b08d6e70dd438"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-11T03:34:34Z",
+          "finished": "2026-10-11T03:34:38Z",
+          "cost": null,
+          "output_path": "assets/models/prop.log_a.glb",
+          "sha256": "443026a02a5a6559ef8542656438931267a69bd1a2a7c1307cac0d4bafb1406b",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 386,
+            "tris_out": 384,
+            "decimated": false,
+            "scale": 1.21278,
+            "bounds_min": [
+              -0.6064,
+              -0.4885,
+              0.0
+            ],
+            "bounds_max": [
+              0.6064,
+              0.4885,
+              0.5
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "cliff",
+              "cliffDark",
+              "forest",
+              "rockDark",
+              "sand",
+              "scar",
+              "skin1",
+              "skin2",
+              "skin3",
+              "snow",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "sand": 23,
+              "forest": 70,
+              "rockDark": 69,
+              "snow": 3,
+              "wood": 13,
+              "woodDark": 15,
+              "skin1": 21,
+              "skin2": 2,
+              "skin3": 9,
+              "scar": 153,
+              "cliff": 3,
+              "cliffDark": 3
+            },
+            "tribe_faces": 0,
+            "tribe_names": [],
+            "tribe_height_range": null,
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "05d12f7ca42c5df7a4815d9315b7bde0bd8db93761a1bb70d20b7cf9b5f98e15"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-11T03:34:59Z",
+          "cost": null,
+          "output_path": "assets/icons/prop.log_a.png",
+          "sha256": "1d2729aafe744869a5d1d8040b9dc716cf87105f49cd0d25cfa540308f5b5e3b",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 384,
+        "verts": 1149,
+        "bounds": {
+          "min": [
+            -0.6064,
+            0.0,
+            -0.4885
+          ],
+          "max": [
+            0.6064,
+            0.5,
+            0.4885
+          ],
+          "size": [
+            1.2128,
+            0.5,
+            0.9769
+          ]
+        },
+        "bytes": 49596,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "boundary_edges": 6,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "prop.mushroom_ring",
+      "class": "props",
+      "prompt": "a small fairy ring of five big mushrooms of different sizes with rounded red and cream spotted caps and pale thick stems, on a low round patch of grass, chunky and cute",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 600,
+        "budget_class": "prop",
+        "scheme": "sample",
+        "default_color": "rock",
+        "textured": true,
+        "height": 0.7
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-11T03:32:40Z",
+          "finished": "2026-10-11T03:32:54Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/prop.mushroom_ring/concept.jpg",
+          "sha256": "b84a8b32815753dc9eb639bbbc92e45308903408c7742d37adccb6d1993fec01",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 331562,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "3a9c5824adb2362782b88df93ecf7cbb96ed884da25a57338807e120ab3b8f64"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a12906-0d14-7429-bfaf-f65dff5ec8ff",
+          "started": "2026-10-11T03:33:24Z",
+          "finished": "2026-10-11T03:34:41Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/prop.mushroom_ring/model.glb",
+          "sha256": "bb0fb8b9f68e3206754194abf2e84a4842f1ce8a142ff8f75bf28b7592752503",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "progress": 100,
+            "bytes": 1992572
+          },
+          "request_hash": "7b5266673a8cc686a1c246da19e3f90f927a3ce356f71ff6fb3392df964b701c"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-11T03:34:41Z",
+          "finished": "2026-10-11T03:34:45Z",
+          "cost": null,
+          "output_path": "assets/models/prop.mushroom_ring.glb",
+          "sha256": "9f83cfc2e97b6ddb25d740c495d22698f3d08b04602e0acf3e7c0fe5837df257",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 512,
+            "tris_out": 494,
+            "decimated": false,
+            "scale": 0.98693,
+            "bounds_min": [
+              -0.4935,
+              -0.4935,
+              0.0
+            ],
+            "bounds_max": [
+              0.4935,
+              0.4935,
+              0.7
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "cliff",
+              "cliffDark",
+              "crimson",
+              "fire",
+              "forest",
+              "meadow",
+              "moss",
+              "rock",
+              "sand",
+              "scar",
+              "skin1",
+              "skin2",
+              "thatch"
+            ],
+            "palette_faces": {
+              "sand": 112,
+              "meadow": 3,
+              "moss": 7,
+              "forest": 89,
+              "rock": 2,
+              "thatch": 7,
+              "skin1": 9,
+              "skin2": 13,
+              "crimson": 189,
+              "fire": 2,
+              "scar": 40,
+              "cliff": 3,
+              "cliffDark": 18
+            },
+            "tribe_faces": 189,
+            "tribe_names": [
+              "crimson"
+            ],
+            "tribe_height_range": [
+              0.396,
+              0.991
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "e8a6964c49ee6ec0f07b0023a0f02042c336b9d558a881585c5b5efb30562510"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-11T03:34:59Z",
+          "cost": null,
+          "output_path": "assets/icons/prop.mushroom_ring.png",
+          "sha256": "8794596ea640f7c6e094b6ee52c686bbbc293232e24fba8b3729a92dc065b630",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 494,
+        "verts": 1481,
+        "bounds": {
+          "min": [
+            -0.4935,
+            0.0,
+            -0.4935
+          ],
+          "max": [
+            0.4935,
+            0.7,
+            0.4935
+          ],
+          "size": [
+            0.9869,
+            0.7,
+            0.9869
+          ]
+        },
+        "bytes": 63552,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "boundary_edges": 54,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "sfx.ward_strike",
+      "class": "sfx",
+      "prompt": "a crackling stone zap, a sharp magical lightning snap off a rock with a short gritty sizzle",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.2,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-11T03:32:54Z",
+          "finished": "2026-10-11T03:32:56Z",
+          "cost": {
+            "usd": 0.0024,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.ward_strike/sfx.ward_strike.mp3",
+          "sha256": "a61a0121655440dbe4b1fc3af05c46f4faf98b65cfa6c45bc31bfdcaa2af64c7",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 20106,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "7"
+            }
+          },
+          "request_hash": "091ba4c6c2cf2722d3c6bb0a6a52dd69761cab3a788edd60c9690217874b47a2"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-11T03:32:56Z",
+          "finished": "2026-10-11T03:32:57Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.ward_strike.ogg",
+          "sha256": "afd482a5b9009e267f7f9881762d9e05257f54d83f894b89e338d3eb3238edad",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 23861,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "220e97aea11020013344bef30ed1d3bf943cade887d45a46b4f5114bbd09e70a"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.ley_capture",
+      "class": "sfx",
+      "prompt": "a low resonant stone chime, a deep rounded bell-like ring on rock fading into a soft hum",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 1.8,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-11T03:32:57Z",
+          "finished": "2026-10-11T03:32:59Z",
+          "cost": {
+            "usd": 0.0036000000000000003,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.ley_capture/sfx.ley_capture.mp3",
+          "sha256": "62b6086a37d49c39f5bf62e2d9a0922c022de93c019a4ef1180681637d3f5db5",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 29301,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "10"
+            }
+          },
+          "request_hash": "233da0e9bbdbebbdefe217083c4f70223c012737fda1ec3952f0e6c368acb58d"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-11T03:32:59Z",
+          "finished": "2026-10-11T03:32:59Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.ley_capture.ogg",
+          "sha256": "e0ba4522612c2b50b4d35426513c647983654fa1db4e1939cd627e9dc012cda3",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 34971,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "61b3683c0651c2a1b40a70188aa7a2de62db24d1454b009f54dd6de97a5313b3"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.wolf_howl",
+      "class": "sfx",
+      "prompt": "a single lone wolf howl, rising and falling, outdoors",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 2.0,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-11T03:32:59Z",
+          "finished": "2026-10-11T03:33:01Z",
+          "cost": {
+            "usd": 0.004,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.wolf_howl/sfx.wolf_howl.mp3",
+          "sha256": "2dc7245d9b0423e6aee9e39d0c291a0c9994e51d429dd3ff7f99e40e860a753c",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 33062,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "11"
+            }
+          },
+          "request_hash": "eac706767e77eaf5af667be89ba3034f054f96517ee80326485cf03300435232"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-11T03:33:01Z",
+          "finished": "2026-10-11T03:33:02Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.wolf_howl.ogg",
+          "sha256": "532784ef61065db3c14a40c4830cead40424aa77a3b065d71c7fb94bb7b9cb7a",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 35615,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "ba768790300b100016649f217701e77dc95af948eda1e8a5a4b635b2029b692e"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "sfx.tide_rumble",
+      "class": "sfx",
+      "prompt": "a deep rolling rumble of water surging and grinding earth, a heavy low flood tide",
+      "refs": [],
+      "provider": "elevenlabs",
+      "params": {
+        "duration_seconds": 2.0,
+        "prompt_influence": 0.45,
+        "output_format": "mp3_44100_128",
+        "loop": false
+      },
+      "steps": {
+        "concept": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "thumb": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "model": {
+          "status": "done",
+          "provider": "elevenlabs",
+          "remote_id": null,
+          "started": "2026-10-11T03:33:02Z",
+          "finished": "2026-10-11T03:33:03Z",
+          "cost": {
+            "usd": 0.004,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/elevenlabs/sfx.tide_rumble/sfx.tide_rumble.mp3",
+          "sha256": "92bdd4b65e828503809c25d148500808e052295fcd89706e5781f14e411be37d",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 33062,
+            "content_type": "audio/mpeg",
+            "headers": {
+              "character-cost": "11"
+            }
+          },
+          "request_hash": "76c1110b023a25a09cee6c90ac532a2d62c3fc9f230046c2f064ed7e26f5194f"
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-11T03:33:03Z",
+          "finished": "2026-10-11T03:33:04Z",
+          "cost": null,
+          "output_path": "assets/audio/sfx.tide_rumble.ogg",
+          "sha256": "8b4e86220d530207b0392d37c080ac8618a2373c80ef896c60f4460b22f9df6b",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "bytes": 38835,
+            "loudness_target_lufs": -18.0,
+            "ffmpeg": "ok",
+            "loop_crossfade_s": null
+          },
+          "request_hash": "ca4a78b66cc2f87ace7656051cea537dce20ce17a26f14b99a219d2caa27fd53"
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {}
+    },
+    {
+      "id": "building.seer_stone",
+      "class": "buildings",
+      "prompt": "a weathered grey stone pillar on a mossy stepped round base, topped with a big round hollow carved stone disc (a lens-like eye ring) mounted upright facing outward, the disc's inner circle filled with one large bright royal blue glowing lens (the only blue in the image), the disc taking up a large part of the top of the pillar, carved eye-like grooves around the rim",
+      "refs": [
+        "tools/assets/raw/gemini/concept.ref_04/concept.jpg"
+      ],
+      "provider": "meshy",
+      "params": {
+        "aspect_ratio": "1:1",
+        "image_size": "1K",
+        "route": "image",
+        "target_polycount": 1400,
+        "budget_class": "building",
+        "scheme": "sample",
+        "default_color": "stone",
+        "textured": true,
+        "height": 3.0,
+        "tribe_color": "azure"
+      },
+      "steps": {
+        "concept": {
+          "status": "done",
+          "provider": "gemini",
+          "remote_id": null,
+          "started": "2026-10-11T03:39:10Z",
+          "finished": "2026-10-11T03:39:26Z",
+          "cost": {
+            "usd": 0.0336,
+            "source": "computed"
+          },
+          "output_path": "tools/assets/raw/gemini/building.seer_stone/concept.jpg",
+          "sha256": "bca513c549981da96f46bd882af956faf1b436e7340d3c36c43f270341fd0cf5",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "endpoint": "generateContent",
+            "mime": "image/jpeg",
+            "bytes": 322532,
+            "fallback_reason": "interactions HTTP 400: {\"error\":{\"message\":\"The value 'image/png' is not supported for 'response_format.mime_type'. Supported values: 'image/jpeg'.\",\"code\":\"invalid_request\"}}",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "request_hash": "2a66d364cb25f9dd87e29ff36bfa6f5b01ce3ad773d68f53542692318f1340c5"
+        },
+        "model": {
+          "status": "done",
+          "provider": "meshy",
+          "remote_id": "01a1290b-9138-7424-b1b3-a51d298f7208",
+          "started": "2026-10-11T03:39:26Z",
+          "finished": "2026-10-11T03:39:51Z",
+          "cost": {
+            "credits": 15.0,
+            "usd": 0.3,
+            "source": "consumed_credits"
+          },
+          "output_path": "tools/assets/raw/meshy/building.seer_stone/model.glb",
+          "sha256": "74db61dc037498b5608a00b1f89e6898b4c96bdf1468d4793d917837ce6d1188",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "route": "image",
+            "kind": "image",
+            "progress": 100,
+            "bytes": 2400492
+          },
+          "request_hash": "dea0f2f6314c9056967d3066a3b9db0c2ea325d5a5d8214e082e451486fd2962"
+        },
+        "rig": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "animate": {
+          "status": "skipped",
+          "provider": null,
+          "remote_id": null,
+          "started": null,
+          "finished": null,
+          "cost": null,
+          "output_path": null,
+          "sha256": null,
+          "attempts": 0,
+          "error": null
+        },
+        "post": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": "2026-10-11T03:39:51Z",
+          "finished": "2026-10-11T03:39:54Z",
+          "cost": null,
+          "output_path": "assets/models/building.seer_stone.glb",
+          "sha256": "4f83d5ae5c2ef8023d94e381a260ea1253d733fd7c9558dfe7540c70d57addfb",
+          "attempts": 1,
+          "error": null,
+          "meta": {
+            "tris_in": 1441,
+            "tris_out": 1441,
+            "decimated": false,
+            "scale": 3.0,
+            "bounds_min": [
+              -0.9892,
+              -1.0078,
+              0.0
+            ],
+            "bounds_max": [
+              0.9892,
+              1.0078,
+              3.0
+            ],
+            "scheme": "sample",
+            "palette_used": [
+              "azure",
+              "forest",
+              "rock",
+              "rockDark",
+              "skin2",
+              "skin3",
+              "stone",
+              "wood",
+              "woodDark"
+            ],
+            "palette_faces": {
+              "forest": 177,
+              "rock": 358,
+              "rockDark": 361,
+              "wood": 178,
+              "woodDark": 4,
+              "stone": 225,
+              "skin2": 33,
+              "skin3": 15,
+              "azure": 90
+            },
+            "tribe_faces": 90,
+            "tribe_names": [
+              "azure"
+            ],
+            "tribe_height_range": [
+              0.601,
+              0.858
+            ],
+            "warnings": [],
+            "blender": "5.1.2"
+          },
+          "request_hash": "fe0418029fd5650e5b68bce153f6588099b409cb2a6767c3a5457f5dce596e81"
+        },
+        "thumb": {
+          "status": "done",
+          "provider": "local",
+          "remote_id": null,
+          "started": null,
+          "finished": "2026-10-11T03:39:59Z",
+          "cost": null,
+          "output_path": "assets/icons/building.seer_stone.png",
+          "sha256": "013609da67890b50aff38e2295b24a0efd2b51aacb28fde05b2854d6bac6b2a7",
+          "attempts": 1,
+          "error": null
+        }
+      },
+      "style_version": 1,
+      "request_hash": null,
+      "approved": false,
+      "qa": {
+        "tris": 1441,
+        "verts": 4323,
+        "bounds": {
+          "min": [
+            -0.9892,
+            0.0,
+            -1.0078
+          ],
+          "max": [
+            0.9892,
+            3.0,
+            1.0078
+          ],
+          "size": [
+            1.9785,
+            3.0,
+            2.0155
+          ]
+        },
+        "bytes": 182900,
+        "materials": 1,
+        "palette_delta": 1e-05,
+        "palette_within": 1.0,
+        "tribe_faces": 90,
+        "tribe_height_range": [
+          0.601,
+          0.858
+        ],
+        "boundary_edges": 51,
+        "nonmanifold_edges": 0,
+        "warnings": []
+      }
     }
   ]
 }

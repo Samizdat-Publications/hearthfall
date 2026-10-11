@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generated": "2026-10-11T02:31:57Z",
+  "generated": "2026-10-11T03:40:16Z",
   "sizes": [
     128,
     256
   ],
-  "count": 46,
+  "count": 50,
   "entries": {
     "icon.building.boathouse": {
       "file_256": "assets/icons/icon.building.boathouse.png",
@@ -56,6 +56,13 @@
       "source": "blender thumbnail, grey background keyed to transparent",
       "model": "building.hearth"
     },
+    "icon.building.ley_stone": {
+      "file_256": "assets/icons/icon.building.ley_stone.png",
+      "file_128": "assets/icons/icon.building.ley_stone_128.png",
+      "kind": "building",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "building.ley_stone"
+    },
     "icon.building.mending_hut": {
       "file_256": "assets/icons/icon.building.mending_hut.png",
       "file_128": "assets/icons/icon.building.mending_hut_128.png",
@@ -69,6 +76,13 @@
       "kind": "building",
       "source": "blender thumbnail, grey background keyed to transparent",
       "model": "building.reliquary"
+    },
+    "icon.building.seer_stone": {
+      "file_256": "assets/icons/icon.building.seer_stone.png",
+      "file_128": "assets/icons/icon.building.seer_stone_128.png",
+      "kind": "building",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "building.seer_stone"
     },
     "icon.building.shade_den": {
       "file_256": "assets/icons/icon.building.shade_den.png",
@@ -111,6 +125,13 @@
       "kind": "building",
       "source": "blender thumbnail, grey background keyed to transparent",
       "model": "building.totem"
+    },
+    "icon.building.ward_stone": {
+      "file_256": "assets/icons/icon.building.ward_stone.png",
+      "file_128": "assets/icons/icon.building.ward_stone_128.png",
+      "kind": "building",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "building.ward_stone"
     },
     "icon.building.warden_lodge": {
       "file_256": "assets/icons/icon.building.warden_lodge.png",
@@ -328,6 +349,13 @@
       "kind": "unit",
       "source": "blender thumbnail, grey background keyed to transparent",
       "model": "unit.wild_person"
+    },
+    "icon.unit.wolf": {
+      "file_256": "assets/icons/icon.unit.wolf.png",
+      "file_128": "assets/icons/icon.unit.wolf_128.png",
+      "kind": "unit",
+      "source": "blender thumbnail, grey background keyed to transparent",
+      "model": "unit.wolf"
     }
   }
 }

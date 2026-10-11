@@ -134,3 +134,4 @@
 - 2026-10-10T18:07 set levels (5 shots): help panel lists P pause and F photo; veil shows the Veil then Lightning combo tip
 - 2026-10-10T18:35 set menus (9 shots): settings: First match tips row; replay_bar: help line lists P pause and F photo
 - 2026-10-10T18:42 set menus (9 shots): main menu: How to play button, flatter title art under 800 px tall so the pseudo-locale replay row fits
+- 2026-10-11T03:47 set look (13 shots): S3 living world: landscape decor layer (bushes, logs, mushroom rings, ruins, standing stones), S3 content and vision changes since S2

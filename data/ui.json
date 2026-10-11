@@ -2,7 +2,7 @@
   "$comment": "BACKLOG 78 (ADR-022): app-only UI data, outside the sim pack hash like achievements.json, so editing it never invalidates saves or replays. Validated against the pack by the data guard (npm run check).",
   "skirmish": {
     "$comment": "M8 skirmish setup screen: offered map sizes and generators, opponent count limit and defaults (personality ids from ai_personalities.json, or economy).",
-    "mapSizes": [96, 128, 192],
+    "mapSizes": [96, 128, 192, 256],
     "defaultSize": 128,
     "maps": ["continents", "islands"],
     "maxOpponents": 3,

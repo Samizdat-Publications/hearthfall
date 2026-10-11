@@ -274,6 +274,38 @@ export class VfxLayer {
         const gold = new THREE.Color("#f2c75c");
         this.fx.push({ kind: "ring", x, z: y, y: ground(x, y) + 0.16, t0: now, dur: e.type === "beacon" ? 1.8 : 2.4, size: r, color: gold });
         if (e.type !== "beacon") this.fx.push({ kind: "flash", x, z: y, y: ground(x, y) + 0.4, t0: now, dur: 0.8, size: 1.4, color: gold });
+      } else if (e.type === "auraStrike" && Number.isFinite(x)) {
+        // stretch 3 living world: a ward stone's bolt from its crown to the nearest enemy
+        const tx = Number(e.tx);
+        const ty = Number(e.ty);
+        const bolt = new THREE.Color(this.colors.spells.lightning ?? "#bfe8ff");
+        this.fx.push({ kind: "flash", x, z: y, y: ground(x, y) + 3.2, t0: now, dur: 0.35, size: 0.9, color: bolt });
+        if (Number.isFinite(tx)) {
+          this.fx.push({ kind: "beam", x: tx, z: ty, y: ground(tx, ty), t0: now, dur: 0.3, size: 10, color: bolt });
+          this.fx.push({ kind: "flash", x: tx, z: ty, y: ground(tx, ty) + 0.4, t0: now, dur: 0.4, size: 0.8, color: bolt });
+        }
+      } else if (e.type === "siteCaptured" && Number.isFinite(x)) {
+        const col = new THREE.Color("#f2c75c");
+        this.fx.push({ kind: "ring", x, z: y, y: ground(x, y) + 0.16, t0: now, dur: 1.6, size: 4, color: col });
+        this.fx.push({ kind: "flash", x, z: y, y: ground(x, y) + 1.2, t0: now, dur: 0.9, size: 1.6, color: col });
+      } else if (e.type === "auraHeal" && Number.isFinite(x)) {
+        this.fx.push({ kind: "ring", x, z: y, y: ground(x, y) + 0.14, t0: now, dur: 1.2, size: Number(e.r) || 4, color: new THREE.Color("#8fe39a") });
+      } else if (e.type === "landShape" && Number.isFinite(x)) {
+        // stretch 3: the ground stirs where a tide, causeway or sinking ford begins (dust rising, foam sinking)
+        const r = Number(e.r) || 4;
+        const up = Number(e.aboveSea) > 0;
+        const col = new THREE.Color(up ? "#b89a72" : "#d9eef2");
+        const sec = Math.max(1, Number(e.seconds) || 1);
+        this.fx.push({ kind: "ring", x, z: y, y: ground(x, y) + 0.2, t0: now, dur: Math.min(4, sec), size: r, color: col });
+        for (let k = 0; k < 10; k++) {
+          const h = this.hash(k * 5 + this.seq);
+          const a = h * Math.PI * 2;
+          const d = r * 0.8 * Math.sqrt(this.hash(k * 13 + this.seq));
+          const cx = x + Math.cos(a) * d;
+          const cz = y + Math.sin(a) * d;
+          this.fx.push({ kind: "spark", x: cx, z: cz, y: ground(cx, cz) + 0.2, t0: now + (k / 10) * Math.min(3, sec), dur: 1.0, size: 0.22, color: col });
+        }
+        this.seq += 31;
       } else if (e.type === "terrainLeadIn" && Number.isFinite(x)) {
         // BACKLOG 36: cracks open and dust kicks up across the area until the land moves
         const sec = Number(e.seconds) || 1;
