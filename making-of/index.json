@@ -1240,6 +1240,26 @@
       "when": "2026-10-11T18:37:47.595Z",
       "source": "external:hutA.png",
       "bytes": 195574
+    },
+    {
+      "file": "s4/20261011-1957_lan-lobby.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "Play together: the host's lobby shows the four letter room code the other computer types in",
+      "highlight": false,
+      "when": "2026-10-11T19:57:21.920Z",
+      "source": "external:lan-host-lobby.png",
+      "bytes": 500237
+    },
+    {
+      "file": "s4/20261011-1957_lan-coop.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "Two computers, one team: the partner's view of a co-op match against the AI, both pages in lockstep",
+      "highlight": true,
+      "when": "2026-10-11T19:57:22.594Z",
+      "source": "external:lan-coop-partner-play.png",
+      "bytes": 639895
     }
   ]
 }

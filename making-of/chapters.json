@@ -86,6 +86,12 @@
       "title": "The campaign deepens",
       "tags": ["S3"],
       "blurb": "After Stewart played the first levels: prayer chains that wake the next stone, guarded Reliquaries, scripted raids over raised land, and a new wave of buildings and spells."
+    },
+    {
+      "id": "together",
+      "title": "Playing together",
+      "tags": ["S4"],
+      "blurb": "Two computers on one home network share a match: room codes, versus, co-op and the campaign side by side, rejoining after a dropout, and replays that verify on both pages. The campaign grows to 25 levels, and the miniature look gets golden thatch and white snow."
     }
   ]
 }

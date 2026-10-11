@@ -12,7 +12,7 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 - Screenshot mode: headless-shell + GPU args (RTX 5070 Ti Laptop). VisionQA provider ON (about $0.00003 per low shot).
 - Machine: often at 100 percent CPU (other projects' sims and benchmarks, leave them alone). Wall-clock timing is noisy, and bench readings of 6 to 7 ms while agents run scenarios are load, not regressions (idle: 3.7 ms).
 - Keys: Meshy, ElevenLabs, Gemini, OpenAI present; Tripo, PixelLab missing.
-- Making-of page: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5 (version 32), rebuild with `npm run making-of -- page` and republish after every backlog item (README steps).
+- Making-of page: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5 (version 33), rebuild with `npm run making-of -- page` and republish after every backlog item (README steps).
 
 ## Next 3 actions
 1. L6-C level engine gaps (ROADMAP): the level bot works `build` objectives, `raid` `fresh`, the AI leaves scripted raiders alone, waves leave a vehicle home, map paint `cone` and `ridge`, `tribes[].buildings`; a "break the war band" objective (kill N of a tribe within a stage). One scenario each; every level scenario green.
