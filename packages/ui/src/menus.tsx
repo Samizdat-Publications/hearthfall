@@ -22,6 +22,8 @@ export interface NetView {
   canStart: boolean;
   /** a partner has been silent past the stall notice (the HUD and pause menu say so) */
   waiting: boolean;
+  /** Leg 5 (host): the name of the campaign level "Play the campaign together" starts */
+  campaignLevel?: string;
   /** L5-F (host): seconds left to wait for a dropped partner to rejoin (0: nobody away) */
   away?: number;
   message: string | null;
@@ -163,7 +165,7 @@ export interface MenuActions {
   hostNet(): void;
   joinNet(code: string): void;
   /** versus: head to head; coop: one team against the setup's AI rivals */
-  startNet(mode: "versus" | "coop"): void;
+  startNet(mode: "versus" | "coop" | "campaign"): void;
   leaveNet(): void;
   /** L5-F (host): stop waiting for a dropped partner; the AI plays their tribe */
   netGiveUp(): void;
@@ -663,6 +665,11 @@ function Together({ m, act }: { m: MenuModel; act: MenuActions }) {
           <Btn ui="net-start-coop" disabled={!n.canStart} onClick={() => act.startNet("coop")}>
             {t("together.startCoop")}
           </Btn>
+          {n.campaignLevel ? (
+            <Btn ui="net-start-campaign" disabled={!n.canStart} onClick={() => act.startNet("campaign")}>
+              {t("together.startCampaign", { level: n.campaignLevel })}
+            </Btn>
+          ) : null}
         </Fragment>
       ) : (
         <p class="menu-note" data-ui="net-status">

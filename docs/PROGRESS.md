@@ -4,9 +4,10 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 
 ## Now
 Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and backlog autonomously for 24 h, workflows for the full playtest, then plan the next leg and start it). Commit prefix S4. Stretch 3 done: tag s3-done at 146a467 (summary in PROGRESS_LOG).
-- S4 DONE (0cb646a): stage-relative goals: `fromStage` on worship, destroy, eliminateAll, clearDens and victory (rules clocks start when the stage opens); level tribes[].maxPopulation.
-- S4 DONE (95b6a65): raid `pray` (war band prays at a stone), AI worships far sites under threat (shared.worshipUnderThreat 0.4), the level bot leaves a stone it lost twice alone for 3 min. Two Fires bot win moved to about 17500 (limit 30000, under 2x: the campaign rerun fixes it).
-- S4 IN PROGRESS: AI worship across water (ferry settlers) and balloons (agent).
+- S4 DONE: stage-relative goals (0cb646a), raid pray and worship under threat (95b6a65), AI worship across water by boat or balloon (02d5a68).
+- S4 DONE Leg 5 LAN play (BACKLOG 15) L5-A to L5-F: lockstep core (c8996a9), relay (0ec8f69), versus (6f92f99), teams in the sim (3300a5f), co-op and AI takeover (05c76ea), rejoin by snapshot, rejoin wait, desync report (b4f8203). Left in the leg: campaign co-op.
+- S4 DONE BACKLOG 9 level 22 The Cloud Isles (8f816ec). Levels 23 Stolen Stones and 24 Ember Crown: agents running. The Last Hearthfall is order 25.
+- Engine gaps from the Cloud Isles agent: the bot ignores build objectives, the rival AI may reassign praying raiders, raid picks troops by entity index, attack waves take every balloon, siteLost is not stage gated.
 - Stretch 2 (2026-10-10, 24 h) DONE: tag s2-done, full npm run qa PASS at 5e11f16. Run 1 done 2026-10-09T23:58Z: m0-done to m11-done tagged. Run started: 2026-10-08T21:25:00Z.
 - Screenshot mode: headless-shell + GPU args (RTX 5070 Ti Laptop). VisionQA provider ON (about $0.00003 per low shot).
 - Machine: often at 100 percent CPU (other projects' sims and benchmarks, leave them alone). Wall-clock timing is noisy, and bench readings of 6 to 7 ms while agents run scenarios are load, not regressions (idle: 3.7 ms).
@@ -14,9 +15,9 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 - Making-of page: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5 (version 32), rebuild with `npm run making-of -- page` and republish after every backlog item (README steps).
 
 ## Next 3 actions
-1. (agent running) AI worship across water by boat and balloons; review, qa:fast, levels layer, commit.
-2. Campaign rerun with tools/workflows/campaign-playtest.js on all 22 levels using fromStage, maxPopulation and raid pray: fix the ramp inversions (L13 to L14, L17 to L18 to L19), Two Fires limit under 2x the win, and the skeptic leftovers under Balance gaps.
-3. BACKLOG 9 finish: levels 23 to 25 (finale arc toward the 25 target), then write the next-leg plan (LAN co-op over a local WebSocket relay is the lead candidate) and start it.
+1. (agents running) Levels 23 Stolen Stones and 24 Ember Crown: review, scenarios --tag levels, qa:fast, commit.
+2. Campaign rerun with tools/workflows/campaign-playtest.js on all 25 levels: fix the ramp inversions (L13 to L14, L17 to L19), Two Fires limit under 2x the win, the skeptic leftovers under Balance gaps, and the engine gaps above where cheap.
+3. Leg 5 rest: campaign co-op (both players on tribe 0's team); then full npm run qa, making-of page, and plan the next leg.
 
 ## Blocked
 (none)

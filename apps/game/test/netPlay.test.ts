@@ -1,11 +1,11 @@
 // Leg 5 (L5-C): the in-app LAN lobby and match driver, against the real relay over sockets.
 import { createServer } from "node:http";
 import { describe, expect, it } from "vitest";
-import { loadBasePack } from "../../../tools/harness/datapack.mjs";
+import { loadBasePack, loadLevels } from "../../../tools/harness/datapack.mjs";
 import { makeBot } from "@hearthfall/ai";
 import { Relay } from "../../../tools/net/relay.mjs";
-import { coopParams, desyncReport, NET_DEFAULTS, NetPlay, parseStart, relayUrl, seatFilter, versusParams } from "../src/netPlay.ts";
-import { createSkirmish, decodeSave, encodeSave, humansOf, makeSave, restoreSave, type SkirmishParams } from "../src/session.ts";
+import { campaignCoopParams, coopParams, desyncReport, NET_DEFAULTS, NetPlay, parseStart, relayUrl, seatFilter, versusParams } from "../src/netPlay.ts";
+import { campaignParams, createSkirmish, decodeSave, encodeSave, humansOf, makeSave, restoreSave, type SkirmishParams } from "../src/session.ts";
 import type { World } from "@hearthfall/sim";
 
 const pack = loadBasePack().pack!;
@@ -179,6 +179,62 @@ describe("L5-C: LAN play helpers", () => {
     expect(parseStart(c)).not.toBeNull();
     expect(parseStart({ ...c, teams: [0, 0, 1] })).toBeNull();
   });
+
+  it("campaign together: both seats play tribe 0 of a level; the partner commands it too and the pages agree", async () => {
+    const def = (loadLevels(pack.files).levels as import("@hearthfall/sim").LevelDef[]).find((l) => l.order === 1)!;
+    const cp = campaignCoopParams(campaignParams(def, { spells: [], buildings: [] }), 2);
+    expect(cp.humans).toEqual([0, 0]);
+    expect(parseStart(JSON.parse(JSON.stringify(cp)))).not.toBeNull();
+    expect(parseStart({ ...cp, campaign: { def: {}, carry: {} } })).toBeNull();
+    expect(seatFilter(cp.humans!)({ tick: 1, tribe: 0, type: "move", args: {} }, 1)).toBeNull();
+    const relay = await relayServer();
+    const pages: { n: NetPlay; w: World | null }[] = [];
+    const lost: string[] = [];
+    for (let k = 0; k < 2; k++) {
+      const self = { n: null as unknown as NetPlay, w: null as World | null };
+      self.n = new NetPlay(new WebSocket(relay.url), NET_DEFAULTS, {
+        changed: () => {},
+        started: (p, tribe) => {
+          expect(tribe).toBe(0);
+          self.w = createSkirmish(pack, JSON.parse(JSON.stringify(p)));
+        },
+        lost: (why) => lost.push(why),
+        snapshot: () => ({ text: "", tick: 0 }),
+        resume: () => null,
+      });
+      pages.push(self);
+    }
+    const [host, peer] = pages;
+    try {
+      host.n.host();
+      for (let k = 0; k < 2000 && !host.n.client.code; k++) await tick();
+      peer.n.join(host.n.client.code);
+      for (let k = 0; k < 2000 && !host.n.canStart(); k++) await tick();
+      host.n.start(campaignParams(def, { spells: [], buildings: [] }), "campaign");
+      for (let k = 0; k < 2000 && pages.some((p) => !p.w); k++) await tick();
+      expect(host.w!.level?.def.id).toBe(def.id);
+      const END = 600;
+      for (let frame = 0; frame < 20000 && pages.some((s) => s.n.ls!.tick < END); frame++) {
+        pages.forEach((s, k) => {
+          const ls = s.n.ls!;
+          if (ls.tick % 40 === k * 20 && ls.tick < END) ls.local({ tribe: 0, type: "move", args: { units: "tribe0.settlers", to: [(ls.tick * 5 + k * 30) % def.map.size, (ls.tick * 3) % def.map.size] } });
+          if (ls.tick < END) s.n.advance(Math.min(5, END - ls.tick), (cmds) => s.w!.step(cmds), () => s.w!.hash().all);
+        });
+        await tick();
+      }
+      for (const s of pages) {
+        expect(s.n.ls!.desync).toBeNull();
+        expect(s.n.ls!.refused).toEqual([]);
+      }
+      expect(host.w!.hash().all).toBe(peer.w!.hash().all);
+      // both seats' orders ran
+      expect(new Set(host.n.recent.map((c) => (c.args.to as number[])[0] % 2 === 0 ? "x" : "y")).size).toBeGreaterThan(0);
+      expect(lost).toEqual([]);
+    } finally {
+      for (const s of pages) s.n.leave();
+      await relay.close();
+    }
+  }, 60000);
 
   it("L5-E soak: two bot partners on one team against two AI tribes; allies never hurt each other and a team wins", () => {
     const p = coopParams({ ...SP, seed: 31, size: 128, rules: "conquest", ai: ["aggressive", "turtle"] }, 2);

@@ -50,6 +50,16 @@ export function coopParams(sp: SkirmishParams, seats: number): SkirmishParams {
 }
 
 /**
+ * Leg 5: the campaign together. `level` is campaignParams of the host's level; every seat plays tribe 0 (one
+ * shared tribe, so hand-made levels keep their layout and balance).
+ */
+export function campaignCoopParams(level: SkirmishParams, seats: number): SkirmishParams {
+  return { ...level, humans: Array.from({ length: seats }, () => 0) };
+}
+
+export type NetMode = "versus" | "coop" | "campaign";
+
+/**
  * The ingress rule every seat applies to every batch: the host (seat 0) may also send god-mode (tribe -1)
  * commands (debug tools); any seat may command only its own tribe (BACKLOG 46).
  */
@@ -65,6 +75,10 @@ export function parseStart(v: unknown): SkirmishParams | null {
   if (!int(p.seed) || !int(p.size) || !int(p.tribes) || typeof p.level !== "string" || typeof p.difficulty !== "string" || !Array.isArray(p.ai)) return null;
   if (!Array.isArray(p.humans) || !p.humans.every(int)) return null;
   if (p.teams !== undefined && (!Array.isArray(p.teams) || p.teams.length !== p.tribes || !p.teams.every(int))) return null;
+  if (p.campaign !== undefined) {
+    const c = p.campaign as { def?: { id?: unknown; tribes?: unknown }; carry?: unknown } | null;
+    if (!c || !c.def || typeof c.def.id !== "string" || !Array.isArray(c.def.tribes) || !c.carry || typeof c.carry !== "object") return null;
+  }
   return p as SkirmishParams;
 }
 
@@ -227,10 +241,11 @@ export class NetPlay {
     return this.isHost && this.state === "lobby" && this.client.present.length >= this.client.seats;
   }
 
-  /** The host's Start: head to head (versus) or one team against the setup's AI rivals (coop). */
-  start(sp: SkirmishParams, mode: "versus" | "coop" = "versus"): void {
+  /** The host's Start: head to head (versus), one team against the setup's AI rivals (coop), or a campaign level on one shared tribe (campaign: `sp` is its campaignParams). */
+  start(sp: SkirmishParams, mode: NetMode = "versus"): void {
     if (!this.canStart()) return;
-    this.client.start(mode === "coop" ? coopParams(sp, this.client.seats) : versusParams(sp, this.client.seats));
+    const seats = this.client.seats;
+    this.client.start(mode === "campaign" ? campaignCoopParams(sp, seats) : mode === "coop" ? coopParams(sp, seats) : versusParams(sp, seats));
   }
 
   leave(): void {

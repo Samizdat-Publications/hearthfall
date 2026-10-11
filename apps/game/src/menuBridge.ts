@@ -165,7 +165,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
               { label: "Foes defeated", value: String(game.stats.kills) },
               { label: "Units lost", value: String(game.stats.lost) },
             ],
-            next: game.ended.won && game.nextLevelId() !== null,
+            next: game.ended.won && game.nextLevelId() !== null && !game.net,
             achievements: game.newAchievements.map((a) => ({ name: a.name, description: a.description })),
           }
         : null,
@@ -196,6 +196,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
               seats: game.net.client.seats || 2,
               canStart: game.net.canStart(),
               waiting: game.net.stalled >= game.net.cfg.stallNoticeSeconds,
+              campaignLevel: game.levels.find((l) => l.id === game.campaignNextId())?.name,
               away: game.net.away.size ? Math.max(0, game.net.cfg.rejoinWaitSeconds - game.net.awayFor) : 0,
               message: game.net.message,
             },
@@ -373,6 +374,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
       game.openNet("join", code.trim());
     },
     startNet: (mode) => {
+      if (mode === "campaign") return game.startNet(null, "campaign");
       const sp = setupParams();
       if (!sp) {
         if (game.net) game.net.message = `Fix the Skirmish setup first: ${setup.error}`;

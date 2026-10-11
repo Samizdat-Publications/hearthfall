@@ -122,6 +122,7 @@
   "together.hostNote": "The match uses your Skirmish setup. Against each other: your partner plays the first rival tribe and any other tribes keep their AI. Together: you two are one team against every AI rival in the setup.",
   "together.start": "Play against each other",
   "together.startCoop": "Play together against the AI",
+  "together.startCampaign": "Play the campaign together: {level}",
   "together.joined": "Joined room {code}. Waiting for the host to start the match.",
   "together.leave": "Leave",
   "together.noPause": "A LAN match keeps running while this menu is open.",

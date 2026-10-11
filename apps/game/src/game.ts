@@ -7,7 +7,7 @@
 import { comboHint, leadInWarning, orderNote } from "./orderNotes.ts";
 import { FirstMatchTips, type TipView } from "./tips.ts";
 import type { SessionRole } from "./netGate.ts";
-import { NET_DEFAULTS, NetPlay, desyncReport, relayUrl, type DesyncReport } from "./netPlay.ts";
+import { NET_DEFAULTS, NetPlay, desyncReport, relayUrl, type DesyncReport, type NetMode } from "./netPlay.ts";
 import {
   validateUi,
   type UiFile,
@@ -706,8 +706,16 @@ export class Game {
   }
 
   /** The host's Start: the current skirmish setup, with the partner in the first rival seat. */
-  startNet(sp: SkirmishParams, mode: "versus" | "coop" = "versus"): void {
-    this.net?.start(sp, mode);
+  startNet(sp: SkirmishParams | null, mode: NetMode = "versus"): void {
+    if (mode !== "campaign") return sp ? this.net?.start(sp, mode) : undefined;
+    const def = this.levels.find((l) => l.id === this.campaignNextId());
+    if (def) this.net?.start(campaignParams(def, campaignCarry(this.levels, this.campaignWon, def.id, this.campaignLearned)), "campaign");
+  }
+
+  /** Leg 5: the level the campaign together starts: the first open level not won yet (the last one when all are won). */
+  campaignNextId(): string | null {
+    const list = ordered(this.levels);
+    return (list.find((l) => !this.campaignWon.includes(l.id) && levelOpen(this.levels, this.campaignWon, l.id)) ?? list[list.length - 1])?.id ?? null;
   }
 
   /**
