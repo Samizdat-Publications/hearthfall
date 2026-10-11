@@ -1110,6 +1110,26 @@
       "when": "2026-10-11T02:32:56.285Z",
       "source": "external:s3_content_pack_sheet.png",
       "bytes": 277651
+    },
+    {
+      "file": "s3/20261011-0359_living-assets.png",
+      "milestone": "S3",
+      "kind": "asset-sheet",
+      "caption": "Living world assets: ley, ward and seer stones, the wolf, and landscape decor (ruin, standing stone, bush, log, mushroom ring)",
+      "highlight": false,
+      "when": "2026-10-11T03:59:55.955Z",
+      "source": "external:s3_living_sheet.png",
+      "bytes": 359118
+    },
+    {
+      "file": "s3/20261011-0359_decor-close.png",
+      "milestone": "S3",
+      "kind": "screenshot",
+      "caption": "Decor layer: bushes, logs and a mossy ruin scattered around the Hearth, hidden near buildings and trees",
+      "highlight": false,
+      "when": "2026-10-11T03:59:57.300Z",
+      "source": "external:close_off.png",
+      "bytes": 196983
     }
   ]
 }
