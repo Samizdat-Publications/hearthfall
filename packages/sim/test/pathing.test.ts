@@ -61,6 +61,19 @@ describe("pathfinder", () => {
     expect(f[t.idx(10, 10)]).toBe(0);
     expect(f[t.idx(12, 10)]).toBeLessThan(f[t.idx(14, 10)]);
   });
+  it("S4 L6-C regression: a flow field over fractional slope costs pops each cell a bounded number of times", () => {
+    // a rising causeway leaves many cells with fractional step costs; comparing a float64 candidate with the
+    // float32 stored distance re-pushed cells whose distance rounded up, a cascade that took minutes per field
+    const N = 128;
+    const t = flatTerrain(N, 160);
+    // columns one height unit apart: every cell has slope 1, so every step costs 1.025 (not exact in float32)
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) t.heights[t.idx(x, y)] = 160 + (x % 2);
+    const pf = new Pathfinder(t);
+    const f = pf.flowField(t.idx(3, 3));
+    expect(f[t.idx(3, 3)]).toBe(0);
+    expect(Number.isFinite(f[t.idx(90, 70)])).toBe(true);
+    expect(pf.flowPops).toBeLessThanOrEqual(2 * N * N);
+  });
 });
 
 describe("spatial hash", () => {

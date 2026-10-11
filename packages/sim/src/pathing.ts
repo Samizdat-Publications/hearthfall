@@ -120,6 +120,8 @@ export class Pathfinder {
   private repairGen = 0;
   /** refresh counters for tests and the bench: full rebuilds, local repairs, repairs that needed a merge scan */
   readonly refreshStats = { full: 0, local: 0, merges: 0 };
+  /** heap pops of the last flow field (tests) */
+  flowPops = 0;
 
   readonly t: Terrain;
 
@@ -611,8 +613,10 @@ export class Pathfinder {
     heap.clear();
     dist[goal] = 0;
     heap.push(0, goal);
+    this.flowPops = 0;
     while (heap.size > 0) {
       const cur = heap.pop();
+      this.flowPops++;
       const d = dist[cur];
       const cx = cur % n;
       const cy = (cur - cx) / n;
@@ -622,7 +626,9 @@ export class Pathfinder {
         const j = nx + ny * n;
         if (!this.walk[j]) continue;
         if (k >= 4 && (!this.walk[((cx + DX[k] + n) % n) + cy * n] || !this.walk[cx + ((cy + DY[k] + n) % n) * n])) continue;
-        const nd = d + (k >= 4 ? SQRT2 : 1) * this.cost[cur];
+        // S4 L6-C: compare in float32 like the stored distances; a float64 candidate against a value that
+        // rounded up re-pushed the cell on every stale pop, a cascade of tens of millions of pops
+        const nd = Math.fround(d + (k >= 4 ? SQRT2 : 1) * this.cost[cur]);
         if (nd < dist[j]) {
           dist[j] = nd;
           heap.push(nd, j);
