@@ -1118,6 +1118,53 @@
       ],
       "additionalProperties": false
     },
+    "beasts": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "respawnSeconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "roamRadius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "cellsPerDen": {
+          "type": "number",
+          "minimum": 0
+        },
+        "minSpacing": {
+          "type": "number",
+          "minimum": 0
+        },
+        "minHearthDistance": {
+          "type": "number",
+          "minimum": 0
+        },
+        "packSize": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "kind": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        }
+      },
+      "required": [
+        "respawnSeconds",
+        "roamRadius",
+        "cellsPerDen",
+        "minSpacing",
+        "minHearthDistance",
+        "packSize",
+        "kind"
+      ],
+      "additionalProperties": false
+    },
     "skirmishWorship": {
       "type": "object",
       "properties": {

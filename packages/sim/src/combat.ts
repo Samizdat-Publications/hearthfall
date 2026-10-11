@@ -195,7 +195,9 @@ export class CombatSystem {
       if (c !== CAT.building || tj < 0 || tj === E.tribe[i] || !w.tribes[tj]?.alive) return false;
       return w.tribes[tj].hearth !== E.idOf(j) && E.burn[j] === 0;
     }
-    if (tj < 0 || tj === E.tribe[i] || !w.tribes[tj]?.alive) return false;
+    // stretch 3: wild beasts are fair game for every fighter but a Chanter
+    if (tj < 0) return c === CAT.unit && w.beasts.isBeast(E.type[j]) && E.inside[j] < 0 && this.kind[E.type[i]] !== KIND.chanter && E.tribe[i] >= 0;
+    if (tj === E.tribe[i] || !w.tribes[tj]?.alive) return false;
     if (c === CAT.unit && (E.veil[j] > 0 || this.disguised(j))) return false;
     if (this.kind[E.type[i]] === KIND.chanter) return c === CAT.unit && E.inside[j] < 0 && this.convertible[E.type[j]];
     // melee cannot reach a boat or a balloon (BACKLOG 10); missiles and spells can
@@ -258,7 +260,7 @@ export class CombatSystem {
         for (let j = H.head[b]; j !== -1; j = H.next[j]) {
           // cheap rejections first (friends and out of range), the full check last
           const tj = E.tribe[j];
-          if (tj < 0 || tj === tr) continue;
+          if (tj === tr || (tj < 0 && !w.beasts.isBeast(E.type[j]))) continue;
           const dx = wrapDelta(E.x[j] - x, n);
           const dy = wrapDelta(E.y[j] - y, n);
           const dd = dx * dx + dy * dy;
@@ -298,7 +300,9 @@ export class CombatSystem {
     const c = H.cols;
     const C = (c + 3) >> 2;
     const T = w.tribes.length;
-    if (this.tribeGrid.length !== C * C * T) this.tribeGrid = new Int32Array(C * C * T);
+    // one slot per tribe plus one for wild beasts (stretch 3)
+    const slots = T + 1;
+    if (this.tribeGrid.length !== C * C * slots) this.tribeGrid = new Int32Array(C * C * slots);
     else this.tribeGrid.fill(0);
     this.gridC = C;
     for (let b = 0; b < c * c; b++) {
@@ -306,6 +310,7 @@ export class CombatSystem {
       for (let j = H.head[b]; j !== -1; j = H.next[j]) {
         const t = E.tribe[j];
         if (t >= 0 && t < T) this.tribeGrid[t * C * C + cell]++;
+        else if (t < 0 && E.cat[j] === CAT.unit && w.beasts.isBeast(E.type[j])) this.tribeGrid[T * C * C + cell]++;
       }
     }
   }
@@ -325,7 +330,7 @@ export class CombatSystem {
         const cx = ((((bx + ox) % c) + c) % c) >> 2;
         if (cx === lastX) continue;
         lastX = cx;
-        for (let t = 0; t < T; t++) if (t !== tr && this.tribeGrid[t * C * C + cx + cy * C] > 0) return true;
+        for (let t = 0; t <= T; t++) if (t !== tr && this.tribeGrid[t * C * C + cx + cy * C] > 0) return true;
       }
     }
     return false;

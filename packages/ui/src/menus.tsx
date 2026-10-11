@@ -30,6 +30,9 @@ export interface SetupView {
   /** stretch 3 (living world): ley stone choices (count as the value; empty for packs without balance.skirmishLey) and the choice */
   leys: Choice[];
   ley: string;
+  /** stretch 3: wolf den choices (count as the value; empty for packs without balance.beasts) and the choice */
+  wolfChoices: Choice[];
+  wolves: string;
   /** BACKLOG 14b: weather choices (clear, rain; empty for packs without balance.weather) and the choice */
   weathers: Choice[];
   weather: string;
@@ -109,7 +112,7 @@ export interface MenuModel {
   mods?: string[];
 }
 
-export type SetupPatch = Partial<Pick<SetupView, "map" | "size" | "seed" | "opponents" | "difficulty" | "victory" | "forge" | "ley" | "weather" | "trait">>;
+export type SetupPatch = Partial<Pick<SetupView, "map" | "size" | "seed" | "opponents" | "difficulty" | "victory" | "forge" | "ley" | "wolves" | "weather" | "trait">>;
 export type SettingsPatch = Partial<Pick<SettingsView, "quality" | "master" | "music" | "sfx" | "palette" | "miniature" | "lighting" | "weather">> & { uiScale?: number; subtitles?: boolean; tips?: boolean };
 
 export interface MenuActions {
@@ -276,6 +279,15 @@ function Setup({ s, act }: { s: SetupView; act: MenuActions }) {
             <span class="menu-row menu-victory">
               <Select ui="setup-ley" value={s.ley} options={s.leys} onChange={(v) => act.setSetup({ ley: v })} />
               <span class="menu-hint">{t("setup.leyHint")}</span>
+            </span>
+          </Fragment>
+        ) : null}
+        {s.wolfChoices.length ? (
+          <Fragment>
+            <label class="menu-label">{t("setup.wolves")}</label>
+            <span class="menu-row menu-victory">
+              <Select ui="setup-wolves" value={s.wolves} options={s.wolfChoices} onChange={(v) => act.setSetup({ wolves: v })} />
+              <span class="menu-hint">{t("setup.wolvesHint")}</span>
             </span>
           </Fragment>
         ) : null}

@@ -281,6 +281,25 @@ export const BalanceSchema = z.strictObject({
       kinds: z.array(id).min(1),
     })
     .optional(),
+  /**
+   * Stretch 3 (living world): wild beast dens. A den holds a pack of beast units (tribe -1) that attack any
+   * tribe's unit within the beast's aggroRadius while it stays within leashRadius of the den; a den with a
+   * living member regrows a lost one every respawnSeconds, a den whose last member dies is cleared for good.
+   * Skirmish maps get dens when the match asks for them (WorldInit.wolfDens), placed like ley stones.
+   */
+  beasts: z
+    .strictObject({
+      ...comment,
+      respawnSeconds: pos,
+      /** idle members roam this far from the den */
+      roamRadius: pos,
+      cellsPerDen: pos,
+      minSpacing: pos,
+      minHearthDistance: pos,
+      packSize: z.number().int().min(1).max(8),
+      kind: id,
+    })
+    .optional(),
   skirmishWorship: z
     .strictObject({
       ...comment,
@@ -643,6 +662,8 @@ export const UnitSchema = z.strictObject({
   /** default combat stance (M6): aggressive acquires and chases, defensive fights in reach, passive never auto-fights */
   stance: z.enum(["aggressive", "defensive", "passive"]),
   wanders: z.boolean().optional(),
+  /** stretch 3: a wild beast (tribe -1, balance.beasts): bites tribe units within aggroRadius while within leashRadius of its den; tribes fight back */
+  beast: z.strictObject({ aggroRadius: pos, leashRadius: pos, biteSeconds: pos }).optional(),
   /** BACKLOG 10 (ADR-016): a vehicle carries other units; nav water sails, air floats over everything */
   vehicle: z
     .strictObject({

@@ -270,6 +270,29 @@
           "wanders": {
             "type": "boolean"
           },
+          "beast": {
+            "type": "object",
+            "properties": {
+              "aggroRadius": {
+                "type": "number",
+                "minimum": 0
+              },
+              "leashRadius": {
+                "type": "number",
+                "minimum": 0
+              },
+              "biteSeconds": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "aggroRadius",
+              "leashRadius",
+              "biteSeconds"
+            ],
+            "additionalProperties": false
+          },
           "vehicle": {
             "type": "object",
             "properties": {

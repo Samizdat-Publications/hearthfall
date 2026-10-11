@@ -60,6 +60,12 @@ export function applySetup(w: World, setup: readonly SetupEntry[]): void {
     const base = s.near ?? s.at;
     if (!base) throw new Error(`setup entry for ${s.spawn} needs at or near`);
     const spacing = s.spacing ?? 0.7;
+    // stretch 3: a wild beast spawns as a den of `count` (it regrows lost members)
+    const ut = w.cfg.unitIndex.get(s.spawn);
+    if (ut !== undefined && tribe < 0 && w.cfg.pack.units.units[ut].beast) {
+      w.beasts.addDen(s.spawn, base[0], base[1], count);
+      continue;
+    }
     for (let k = 0; k < count; k++) {
       let x = base[0];
       let y = base[1];

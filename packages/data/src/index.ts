@@ -142,6 +142,10 @@ function crossCheck(p: PackFiles): PackIssue[] {
       if (r.type === "raid" || (r.type === "spawn" && r.tribe !== undefined) || ("at" in r && r.at)) issues.push({ file: "balance.json", path: `${at}.rewards.${j}`, message: `skirmish site rewards cannot name a tribe or a point` });
     });
   });
+  if (p.balance.beasts) {
+    const b = p.units.units.find((u) => u.id === p.balance.beasts!.kind);
+    if (!b?.beast || !b.melee) issues.push({ file: "balance.json", path: "beasts.kind", message: `${p.balance.beasts.kind} is not a beast unit with melee` });
+  }
   p.balance.skirmishLey?.kinds.forEach((k, j) => {
     need("balance.json", `skirmishLey.kinds.${j}`, kinds, k, "worship kind");
     if (!p.buildings.worship.kinds?.find((x) => x.id === k)?.capturable) issues.push({ file: "balance.json", path: `skirmishLey.kinds.${j}`, message: `${k} is not a capturable kind` });

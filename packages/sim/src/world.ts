@@ -20,6 +20,7 @@ import { RulesRuntime, type RulesSaved } from "./rules.ts";
 import { FORGE_COMMANDS, ForgeRuntime, type ForgeSaved } from "./forge.ts";
 import { VisionSystem, type VisionState } from "./vision.ts";
 import { VehicleSystem } from "./vehicles.ts";
+import { BeastSystem, type BeastState } from "./beasts.ts";
 import { LivingSystem, type LivingState } from "./living.ts";
 
 /** Deterministic in-sim decision maker (AI opponent or test bot); emits Commands at its cadence. */
@@ -83,6 +84,8 @@ export interface WorldInit {
   traits?: (string | null)[];
   /** stretch 3 (living world): capturable ley stones scattered on a skirmish map (balance.skirmishLey); absent or 0: none, older replays */
   leyStones?: number;
+  /** stretch 3 (living world): wolf dens scattered on a skirmish map (balance.beasts); absent or 0: none, older replays */
+  wolfDens?: number;
 }
 
 /** Multipliers a tribe trait applies (balance.traits); NO_TRAIT for a tribe without one. */
@@ -160,6 +163,8 @@ export interface WorldSnapshot {
   level?: LevelSaved;
   /** stretch 3: land jobs in progress (absent when none) */
   living?: LivingState;
+  /** stretch 3: beast dens (absent when none) */
+  beasts?: BeastState;
   rules?: RulesSaved;
   forge?: ForgeSaved;
   /** BACKLOG 35: the init this world was built from (no pack files); absent in older saves */
@@ -189,6 +194,8 @@ export class World {
   worship: WorshipSystem;
   /** stretch 3: land jobs (shape rewards) and site auras */
   living: LivingSystem;
+  /** stretch 3: wild beast dens */
+  beasts: BeastSystem;
   /** BACKLOG 3: fog of war (per tribe explored and visible grids) */
   vision: VisionSystem;
   /** null outside campaign levels */
@@ -232,6 +239,7 @@ export class World {
     this.combat = new CombatSystem(this);
     this.worship = new WorshipSystem(this);
     this.living = new LivingSystem(this);
+    this.beasts = new BeastSystem(this);
     this.level = init.level ? new LevelRuntime(this, init.level.def) : null;
     this.vision = new VisionSystem(this, init.map.fog);
     const tribeCount = init.map.tribes ?? gen.hearths.length;
@@ -248,6 +256,7 @@ export class World {
       // skirmish only: a level places its own sites
       if (!init.level) this.worship.placeSkirmishSites(gen.hearths);
       if (!init.level && init.leyStones) this.living.placeLeyStones(gen.hearths, init.leyStones);
+      if (!init.level && init.wolfDens) this.beasts.placeDens(gen.hearths, init.wolfDens);
     }
     this.vision.update(true);
   }
@@ -430,6 +439,8 @@ export class World {
     this.worship.update();
     // 9b. stretch 3: land jobs and site auras
     this.living.update();
+    // 9c. stretch 3: wild beasts
+    this.beasts.update();
     this.rules?.update();
     this.level?.update();
     this.flushTerrain();
@@ -613,6 +624,7 @@ export class World {
     if (this.traitMods.some((m) => m !== NO_TRAIT)) for (const m of this.traitMods) mf.u32(7007).f64(m.income).f64(m.speed).f64(m.breed).f64(m.armor);
     this.vision.hashInto(mf);
     this.living.hashInto(mf);
+    this.beasts.hashInto(mf);
     const meta = mf.hex();
     const all = new Fnv().u32(parseInt(terrain, 16)).u32(parseInt(entities, 16)).u32(parseInt(rng, 16)).u32(parseInt(meta, 16)).hex();
     return { all, terrain, entities, rng, meta };
@@ -644,6 +656,7 @@ export class World {
       ...(this.worship.sites.length || this.worship.granted.some((g) => g.length) ? { worship: this.worship.save() } : {}),
       ...(this.level ? { level: this.level.save() } : {}),
       ...(this.living.save() ? { living: this.living.save()! } : {}),
+      ...(this.beasts.save() ? { beasts: this.beasts.save()! } : {}),
       ...(this.rules ? { rules: this.rules.save() } : {}),
       ...(this.forge ? { forge: this.forge.save() } : {}),
       ...(this.vision.on ? { vision: this.vision.save() } : {}),
@@ -676,6 +689,8 @@ export class World {
     e.freeList = snap.ents.freeList.slice();
     w.tribes = snap.tribes.map((t) => ({ ...t, eco: cloneEco(t.eco), casting: t.casting ? { ...t.casting } : null, pending: t.pending ? { ...t.pending } : null }));
     w.eventCounts = new Map(snap.eventCounts);
+    // every slot a unit could use is null like a live world's after its first order (combat.chase tests === null)
+    for (let i = 0; i < w.ents.hi; i++) w.units.paths[i] = null;
     for (const [i, p] of snap.paths) w.units.paths[i] = p.slice();
     w.units.queue = snap.pathQueue.slice();
     w.units.lastVersion = snap.unitsTerrainVersion;
@@ -684,6 +699,7 @@ export class World {
     if (snap.worship) w.worship.load(snap.worship);
     if (snap.level && w.level) w.level.load(snap.level);
     if (snap.living) w.living.load(snap.living);
+    if (snap.beasts) w.beasts.load(snap.beasts);
     if (snap.rules && w.rules) w.rules.load(snap.rules);
     if (snap.forge && w.forge) w.forge.load(snap.forge);
     if (snap.vision && w.vision.on) w.vision.load(snap.vision);

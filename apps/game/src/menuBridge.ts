@@ -47,6 +47,7 @@ interface SetupState {
   /** BACKLOG 11: "on" starts the match with a Forge phase */
   forge: string;
   ley: string;
+  wolves: string;
   weather: string;
   /** stretch 2: the player's trait id, "" for none */
   trait: string;
@@ -57,7 +58,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
   const sk = game.ui.skirmish;
   const ai = game.pack.files.ai;
   const vic = game.pack.files.balance.victory;
-  const setup: SetupState = { map: sk.maps[0], size: sk.defaultSize, seed: 1, opponents: [...sk.defaultOpponents], difficulty: sk.defaultDifficulty, victory: vic?.default ?? "", forge: "off", ley: game.pack.files.balance.skirmishLey ? "6" : "0", weather: "clear", trait: "", error: null };
+  const setup: SetupState = { map: sk.maps[0], size: sk.defaultSize, seed: 1, opponents: [...sk.defaultOpponents], difficulty: sk.defaultDifficulty, victory: vic?.default ?? "", forge: "off", ley: game.pack.files.balance.skirmishLey ? "6" : "0", wolves: game.pack.files.balance.beasts ? "4" : "0", weather: "clear", trait: "", error: null };
   const saves = { mode: "load" as "save" | "load", message: null as string | null };
   let settingsMsg: string | null = null;
   /** BACKLOG 19: why the last replay file or stored replay could not be watched */
@@ -96,6 +97,8 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
         // stretch 3: capturable ley stones (living world)
         leys: game.pack.files.balance.skirmishLey ? [{ value: "0", label: t("setup.leyNone") }, { value: "3", label: t("setup.leyFew") }, { value: "6", label: t("setup.leySome") }, { value: "12", label: t("setup.leyMany") }] : [],
         ley: setup.ley,
+        wolfChoices: game.pack.files.balance.beasts ? [{ value: "0", label: t("setup.wolvesNone") }, { value: "2", label: t("setup.wolvesFew") }, { value: "4", label: t("setup.wolvesSome") }, { value: "8", label: t("setup.wolvesMany") }] : [],
+        wolves: setup.wolves,
         // BACKLOG 14b: rain slows every unit (balance.weather.rain)
         weathers: game.pack.files.balance.weather ? [{ value: "clear", label: t("setup.weatherClear") }, { value: "rain", label: t("setup.weatherRain", { pct: Math.round((1 - game.pack.files.balance.weather.rain.speedMult) * 100) }) }] : [],
         weather: setup.weather,
@@ -194,7 +197,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
       return refresh();
     }
     setup.error = null;
-    const sp: SkirmishParams = { seed, level: setup.map, size: setup.size, tribes: 1 + setup.opponents.length, ai: [...setup.opponents], difficulty: setup.difficulty, ...(setup.victory ? { rules: setup.victory } : {}), ...(setup.forge === "on" ? { forge: true } : {}), ...(Number(setup.ley) > 0 ? { leyStones: Number(setup.ley) } : {}), ...(setup.weather === "rain" ? { weather: "rain" as const } : {}), ...(setup.trait ? { trait: setup.trait } : {}) };
+    const sp: SkirmishParams = { seed, level: setup.map, size: setup.size, tribes: 1 + setup.opponents.length, ai: [...setup.opponents], difficulty: setup.difficulty, ...(setup.victory ? { rules: setup.victory } : {}), ...(setup.forge === "on" ? { forge: true } : {}), ...(Number(setup.ley) > 0 ? { leyStones: Number(setup.ley) } : {}), ...(Number(setup.wolves) > 0 ? { wolfDens: Number(setup.wolves) } : {}), ...(setup.weather === "rain" ? { weather: "rain" as const } : {}), ...(setup.trait ? { trait: setup.trait } : {}) };
     try {
       game.startSkirmish(sp);
     } catch (e) {

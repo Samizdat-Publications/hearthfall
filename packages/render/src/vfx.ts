@@ -288,6 +288,11 @@ export class VfxLayer {
         const col = new THREE.Color("#f2c75c");
         this.fx.push({ kind: "ring", x, z: y, y: ground(x, y) + 0.16, t0: now, dur: 1.6, size: 4, color: col });
         this.fx.push({ kind: "flash", x, z: y, y: ground(x, y) + 1.2, t0: now, dur: 0.9, size: 1.6, color: col });
+      } else if (e.type === "beastBite" && Number.isFinite(Number(e.tx))) {
+        // stretch 3: a wolf's bite, a small red flash on the prey
+        const tx = Number(e.tx);
+        const ty = Number(e.ty);
+        this.fx.push({ kind: "flash", x: tx, z: ty, y: ground(tx, ty) + 0.5, t0: now, dur: 0.25, size: 0.45, color: new THREE.Color("#d8463a") });
       } else if (e.type === "auraHeal" && Number.isFinite(x)) {
         this.fx.push({ kind: "ring", x, z: y, y: ground(x, y) + 0.14, t0: now, dur: 1.2, size: Number(e.r) || 4, color: new THREE.Color("#8fe39a") });
       } else if (e.type === "landShape" && Number.isFinite(x)) {

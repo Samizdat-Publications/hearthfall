@@ -156,6 +156,7 @@
       "auraStrike": { "cue": "sfx.ward_strike", "maxPerTick": 2 },
       "siteCaptured": { "cue": "sfx.ley_capture", "maxPerTick": 1 },
       "landShape": { "cue": "sfx.tide_rumble", "maxPerTick": 1 },
+      "beastHowl": { "cue": "sfx.wolf_howl", "maxPerTick": 1 },
       "born": { "cue": "sfx.born", "maxPerTick": 1 },
       "woodDelivered": { "cue": "sfx.wood_delivered", "maxPerTick": 1 },
       "charged": { "cue": "sfx.charged", "maxPerTick": 1 },

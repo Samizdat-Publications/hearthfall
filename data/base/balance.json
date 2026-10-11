@@ -150,6 +150,16 @@
     "smoothStrength": 0.6,
     "maxOps": 120
   },
+  "beasts": {
+    "$comment": "Stretch 3 living world: wolf dens. A den with a living wolf regrows a lost one every respawnSeconds; a den whose last wolf dies is cleared for good. Skirmish dens (the match's wolfDens count, at most one per cellsPerDen cells) keep minHearthDistance from every Hearth.",
+    "respawnSeconds": 75,
+    "roamRadius": 3,
+    "cellsPerDen": 2400,
+    "minSpacing": 22,
+    "minHearthDistance": 26,
+    "packSize": 3,
+    "kind": "wolf"
+  },
   "skirmishLey": {
     "$comment": "Stretch 3 living world: capturable stones scattered over skirmish maps (the match's leyStones count, at most one per cellsPerStone cells of map area), kinds taken in turn.",
     "cellsPerStone": 1800,

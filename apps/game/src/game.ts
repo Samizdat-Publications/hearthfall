@@ -1357,6 +1357,12 @@ export class Game {
       case "landShape":
         this.notify("landShape", Number(e.aboveSea) > 0 ? "Land is rising from the water." : "Water is rising over the land. Move off the low ground.", Number(e.aboveSea) > 0 ? "info" : "bad", 8);
         break;
+      case "beastHowl":
+        this.notify("beastHowl", "Wolves are hunting near their den. Send warriors, or keep your people away.", "bad", 20);
+        break;
+      case "denCleared":
+        this.notify(`den${e.den}`, "A wolf den is cleared. The land around it is safe.", "good");
+        break;
       case "siteAwakened":
         this.notify(`aw${e.site}`, "A sleeping stone has woken. It can be worshipped now.", "good");
         break;

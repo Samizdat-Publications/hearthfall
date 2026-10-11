@@ -78,6 +78,7 @@ Dependency direction is strict: `sim` depends only on `data`. `ai` depends on `s
   9. worship, triggers, objectives, win/loss
 
   9b. living world (stretch 3, `living.ts`): land jobs step (shape rewards walk terrain toward their targets every 0.5 s through the `toward` terrain op, applied in the flush so the drowning check runs), then held capturable site auras; idle when no job or aura exists
+  9c. wild beasts (stretch 3, `beasts.ts`): dens regrow lost members, beasts hunt, bite or walk home; idle when no den exists
 
   10. a last drowning pass (a unit that stepped out of a sunken building this tick drowns now, so no tick ends with one in deep water), events flush, hash checkpoint if `tick % hashEvery == 0`. Births, training graduations and the Shaper respawn wait while their building's door is under deep water.
 - **Commands:** `{tick, tribe, type, args}` plain JSON. Every player action, AI action and bot action is a Command. Replays, bots, multiplayer lockstep and save games all reuse this format.
@@ -127,6 +128,8 @@ Stretch 2 tribe traits: `WorldInit.traits` (a `balance.traits` id or null per tr
 - **Skirmish stones:** `WorldInit.leyStones` (not for level worlds) places up to that many on dry walkable land with a golden-ratio lattice, no rng: at least `minHearthDistance` from every Hearth and `minSpacing` from each other, at most one per `cellsPerStone` cells of map (`balance.skirmishLey`, kinds taken in turn). Count 0 places none.
 - **Hash and snapshot:** `hashInto` returns at once while no job exists (tag `0x11f1` and the jobs follow only when some do), so worlds without jobs keep their replays and golden hashes. `save` and `load` carry the jobs only.
 - **Time triggers** take an optional `every` (repeat period in seconds, the basis of tides) in `level.ts`.
+- **Wild beasts** (`beasts.ts`, `world.beasts`, step 9c): a den holds a pack of beast units (units.json `beast`, tribe -1). Each beast scans every 0.5 s for the nearest tribe unit within `aggroRadius` that is also within `leashRadius` of the den, steers to it and bites every `biteSeconds` for `melee.dps * biteSeconds`; with no prey it walks home and roams within `roamRadius`. A den with a living member regrows one lost member every `respawnSeconds`; when the last dies the den is cleared for good (`denCleared`). Combat treats beasts as valid targets for every fighter but a Chanter (an extra beast slot in the tribe grid keeps the bucket pre-check honest). Level setup turns a beast entry with tribe -1 into a den of `count`; `WorldInit.wolfDens` scatters skirmish dens on the shifted ley lattice (`balance.beasts`). Dens hash under tag `0xbea5` and save only when some exist.
+- **Restore:** `World.restore` sets every unit path slot below `ents.hi` to null before loading saved paths, matching a live world (combat's chase tests `paths[i] === null`; a restored `undefined` slot used to change chase steering after a snapshot).
 
 ## 4. Data packs (`data/`, `packages/data`)
 

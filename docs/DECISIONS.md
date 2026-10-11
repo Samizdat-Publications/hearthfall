@@ -265,3 +265,5 @@ A shape reward starts a land job: a box of target heights stepped toward its goa
 - Saves taken mid-job carry the job list.
 
 Fallback: setting `leyStones` to 0 disables stone placement (the setup menu's "none"). Leaving `skirmishLey` out of `balance` also disables it, and the menu hides the choice.
+
+Addendum (wolves, 10/10/2026): units gain an optional `beast` block (`aggroRadius`, `leashRadius`, `biteSeconds`), `balance` gains an optional `beasts` block (`respawnSeconds`, `roamRadius`, `cellsPerDen`, `minSpacing`, `minHearthDistance`, `packSize`, `kind`) and `WorldInit` an optional `wolfDens` count. Beasts stay tribe -1 rather than a new "wild tribe" index, so victory rules, AI, UI and every per-tribe array are untouched; combat learns one exception (beasts are valid targets). The wolf unit is appended last in units.json so existing unit type indices, and with them old replays, keep their meaning. Fallback: `wolfDens` 0 or no `beasts` block.

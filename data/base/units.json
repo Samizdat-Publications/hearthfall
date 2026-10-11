@@ -184,6 +184,26 @@
         10
       ],
       "stance": "passive"
+    },
+    {
+      "$comment": "Stretch 3 living world: a wild wolf (tribe -1) living in a den (balance.json beasts). Bites any tribe's unit that comes within aggroRadius while it stays within leashRadius of its den. Faster than people: you cannot simply walk past a den.",
+      "id": "wolf",
+      "hp": 750,
+      "speed": 1.9,
+      "manaPerMin": {
+        "idle": 0
+      },
+      "melee": {
+        "dps": 120,
+        "range": 0.9
+      },
+      "beast": {
+        "aggroRadius": 6,
+        "leashRadius": 11,
+        "biteSeconds": 1
+      },
+      "convertible": false,
+      "stance": "passive"
     }
   ],
   "rules": {
