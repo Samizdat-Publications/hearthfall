@@ -91,10 +91,19 @@ function levelObjectives(game: Game): ObjectiveView[] {
   const lv = w.level!;
   const hz = w.cfg.tickHz;
   const left = (sec: number) => clock(Math.max(0, sec - w.playTick / hz));
-  const out: ObjectiveView[] = lv.def.objectives.map((o, k) => {
+  const out: ObjectiveView[] = [];
+  lv.def.objectives.forEach((o, k) => {
+    // stretch 3: a staged objective appears once the one it follows is done
+    if (!lv.open(k)) return;
     const done = lv.done[k] === 1;
     const auto =
-      o.type === "eliminateAll"
+      o.type === "destroy"
+        ? `Destroy every ${words(o.building)} of tribe ${o.tribe + 1}`
+        : o.type === "build"
+          ? `Build ${o.n} ${words(o.building)}${o.n === 1 ? "" : "s"}`
+          : o.type === "reach"
+            ? `Lead your ${words(o.unit ?? "shaper")} to the marked place`
+            : o.type === "eliminateAll"
         ? "Defeat every rival tribe"
         : o.type === "worship"
           ? `Worship at the ${words(o.site)}`
@@ -106,7 +115,7 @@ function levelObjectives(game: Game): ObjectiveView[] {
     // BACKLOG 89: live prayer progress and follower count after authored objective text; BACKLOG 13 the rules progress
     const rl = o.type === "victory" && o.text ? victoryLine(w, game.localTribe) : null;
     const live = done ? "" : o.type === "worship" ? prayerNote(w, o.site, game.localTribe) : o.type === "followers" && o.text ? ` (${w.economy.followers(game.localTribe)})` : rl ? `: ${rl}` : "";
-    return { text: (o.text ?? auto) + live, done, part: `objective-${k}` };
+    out.push({ text: (o.text ?? auto) + live, done, part: `objective-${k}` });
   });
   (lv.def.lose ?? []).forEach((l, k) => {
     if (l.type === "timeLimit") out.push({ text: `Time left: ${left(l.seconds)}`, done: false, part: `lose-${k}` });

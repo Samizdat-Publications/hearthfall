@@ -4,7 +4,10 @@
 // sim state (hashed and snapshotted), so a replay of a level proves the same win or loss.
 import type { LevelDef, PackFiles } from "@hearthfall/data";
 import { registerCommand } from "./commands.ts";
+import { BSTATE } from "./economy.ts";
+import { CAT } from "./entities.ts";
 import type { Fnv } from "./hash.ts";
+import { wrapDelta } from "./terrain.ts";
 import type { MapSpec } from "./generator.ts";
 import { applySetup, type BotFactory } from "./scenario.ts";
 import { applyReward } from "./worship.ts";
@@ -78,7 +81,44 @@ export class LevelRuntime {
         return w.economy.followers(PLAYER) >= o.n;
       case "victory":
         return w.rules?.winner === PLAYER;
+      case "destroy":
+        return this.countBuildings(o.tribe, o.building, false) === 0;
+      case "build":
+        return this.countBuildings(PLAYER, o.building, true) >= o.n;
+      case "reach":
+        return this.unitNear(o.at[0], o.at[1], o.r, o.unit ?? "shaper");
     }
+  }
+
+  /** buildings of type `id` that `tribe` owns (only finished ones when `done`) */
+  private countBuildings(tribe: number, id: string, done: boolean): number {
+    const w = this.w;
+    const E = w.ents;
+    const type = w.cfg.buildingIndex.get(id);
+    let n = 0;
+    for (let i = 0; i < E.hi; i++) if (E.alive[i] && E.cat[i] === CAT.building && E.tribe[i] === tribe && E.type[i] === type && (!done || E.state[i] === BSTATE.done)) n++;
+    return n;
+  }
+
+  /** does one of the player's units (of type `unit`, any when undefined) stand within r of (x, y)? */
+  private unitNear(x: number, y: number, r: number, unit: string | undefined): boolean {
+    const w = this.w;
+    const E = w.ents;
+    const n = w.terrain.size;
+    const type = unit === undefined ? -1 : (w.cfg.unitIndex.get(unit) ?? -2);
+    for (let i = 0; i < E.hi; i++) {
+      if (!E.alive[i] || E.cat[i] !== CAT.unit || E.tribe[i] !== PLAYER || E.inside[i] >= 0 || (type !== -1 && E.type[i] !== type)) continue;
+      const dx = wrapDelta(E.x[i] - x, n);
+      const dy = wrapDelta(E.y[i] - y, n);
+      if (dx * dx + dy * dy <= r * r) return true;
+    }
+    return false;
+  }
+
+  /** a staged objective is open once the objective it follows is done */
+  open(k: number): boolean {
+    const after = this.def.objectives[k].after;
+    return after === undefined || this.done[after] === 1;
   }
 
   private lost(): string | null {
@@ -102,11 +142,16 @@ export class LevelRuntime {
     if (this.outcome !== OUTCOME.none) return;
     const w = this.w;
     this.def.objectives.forEach((o, k) => {
-      if (!this.done[k] && this.objectiveMet(k)) {
+      if (!this.done[k] && this.open(k) && this.objectiveMet(k)) {
         this.done[k] = 1;
         w.emit("objectiveComplete", { index: k, kind: o.type });
       }
     });
+    // stretch 3: every 2 s a beacon event marks open reach objectives (render only reads it)
+    if (w.tick % (2 * w.cfg.tickHz) === 0)
+      this.def.objectives.forEach((o, k) => {
+        if (o.type === "reach" && !this.done[k] && this.open(k)) w.emit("beacon", { x: o.at[0], y: o.at[1], r: o.r });
+      });
     (this.def.triggers ?? []).forEach((t, k) => {
       if (this.fired[k]) return;
       let tribe = PLAYER;
@@ -117,6 +162,12 @@ export class LevelRuntime {
         if (w.playTick + 1 < Math.round(when.seconds * w.cfg.tickHz)) return;
       } else if (when.type === "objective") {
         if (!this.done[when.index]) return;
+      } else if (when.type === "followers") {
+        if (w.economy.followers(PLAYER) < when.n) return;
+      } else if (when.type === "area") {
+        if (!this.unitNear(when.at[0], when.at[1], when.r, when.unit)) return;
+        x = when.at[0];
+        y = when.at[1];
       } else {
         const s = w.worship.find(when.site);
         if (!s || s.lastBy < 0) return;
@@ -128,7 +179,7 @@ export class LevelRuntime {
         }
       }
       // anchor for rewards without `at`: the site, else the player's Hearth, else the Shaper, else the map center
-      if (when.type !== "worship") {
+      if (when.type !== "worship" && when.type !== "area") {
         let h = w.ents.index(w.tribes[PLAYER].hearth);
         if (h < 0) h = w.ents.index(w.tribes[PLAYER].shaper);
         if (h >= 0) {

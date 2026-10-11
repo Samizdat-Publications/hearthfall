@@ -268,6 +268,12 @@ export class VfxLayer {
             color: red,
           });
         }
+      } else if ((e.type === "beacon" || e.type === "siteAwakened" || e.type === "revealed") && Number.isFinite(x)) {
+        // stretch 3: a pulsing gold ring where a reach objective or area trigger waits, a burst where a chain site wakes
+        const r = Number(e.r) || (e.type === "siteAwakened" ? 3.5 : 2);
+        const gold = new THREE.Color("#f2c75c");
+        this.fx.push({ kind: "ring", x, z: y, y: ground(x, y) + 0.16, t0: now, dur: e.type === "beacon" ? 1.8 : 2.4, size: r, color: gold });
+        if (e.type !== "beacon") this.fx.push({ kind: "flash", x, z: y, y: ground(x, y) + 0.4, t0: now, dur: 0.8, size: 1.4, color: gold });
       } else if (e.type === "terrainLeadIn" && Number.isFinite(x)) {
         // BACKLOG 36: cracks open and dust kicks up across the area until the land moves
         const sec = Number(e.seconds) || 1;

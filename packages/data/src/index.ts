@@ -230,11 +230,20 @@ export function validateLevel(raw: unknown, pack: PackFiles, file = "level"): { 
   // prayer chains: every awaken names a dormant site, and every dormant site can be woken
   const dormant = new Set(lv.setup.flatMap((s) => (s.site?.dormant && s.site.tag ? [s.site.tag] : [])));
   lv.setup.forEach((s, k) => s.site?.dormant && !s.site.tag && bad(`setup.${k}.site`, "a dormant site needs a tag"));
-  lv.objectives.forEach((o, k) => o.type === "worship" && !tags.has(o.site) && bad(`objectives.${k}`, `no site tagged ${o.site}`));
+  lv.objectives.forEach((o, k) => {
+    const path = `objectives.${k}`;
+    if (o.type === "worship" && !tags.has(o.site)) bad(path, `no site tagged ${o.site}`);
+    if (o.after !== undefined && (o.after >= lv.objectives.length || o.after === k)) bad(path, `after names no other objective (${o.after})`);
+    if ((o.type === "destroy" || o.type === "build") && !buildings.has(o.building)) bad(path, `unknown building ${o.building}`);
+    if (o.type === "destroy" && o.tribe >= lv.tribes.length) bad(path, `no tribe ${o.tribe}`);
+    if (o.type === "destroy" && !lv.setup.some((s) => s.spawn === o.building && s.tribe === o.tribe)) bad(path, `tribe ${o.tribe} starts with no ${o.building}`);
+    if (o.type === "reach" && o.unit && !units.has(o.unit)) bad(path, `unknown unit ${o.unit}`);
+  });
   lv.lose?.forEach((o, k) => o.type === "siteLost" && !tags.has(o.site) && bad(`lose.${k}`, `no site tagged ${o.site}`));
   lv.triggers?.forEach((t, k) => {
     if (t.when.type === "worship" && !tags.has(t.when.site)) bad(`triggers.${k}.when`, `no site tagged ${t.when.site}`);
     if (t.when.type === "objective" && t.when.index >= lv.objectives.length) bad(`triggers.${k}.when`, `no objective ${t.when.index}`);
+    if (t.when.type === "area" && t.when.unit && !units.has(t.when.unit)) bad(`triggers.${k}.when`, `unknown unit ${t.when.unit}`);
     t.do.forEach((r, j) => reward(r, `triggers.${k}.do.${j}`));
   });
   awakens.forEach((a) => dormant.has(a.site) || bad(a.path, `no dormant site tagged ${a.site}`));

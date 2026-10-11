@@ -1302,31 +1302,22 @@ const LevelSetup = z.strictObject({
   site: SiteSpecSchema.optional(),
 });
 
+/** stretch 3: a staged objective stays hidden and unchecked until objective `after` is done */
+const stage = { text: z.string().optional(), after: z.number().int().min(0).optional() };
+
 export const ObjectiveSchema = z.discriminatedUnion("type", [
-  z.strictObject({
-    type: z.literal("eliminateAll"),
-    text: z.string().optional(),
-  }),
-  z.strictObject({
-    type: z.literal("worship"),
-    site: id,
-    text: z.string().optional(),
-  }),
-  z.strictObject({
-    type: z.literal("survive"),
-    seconds: pos,
-    text: z.string().optional(),
-  }),
-  z.strictObject({
-    type: z.literal("followers"),
-    n: z.number().int().min(1),
-    text: z.string().optional(),
-  }),
+  z.strictObject({ type: z.literal("eliminateAll"), ...stage }),
+  z.strictObject({ type: z.literal("worship"), site: id, ...stage }),
+  z.strictObject({ type: z.literal("survive"), seconds: pos, ...stage }),
+  z.strictObject({ type: z.literal("followers"), n: z.number().int().min(1), ...stage }),
   /** BACKLOG 13 in the campaign: win the level's victory rules (`rules`); a rival winning them loses the level */
-  z.strictObject({
-    type: z.literal("victory"),
-    text: z.string().optional(),
-  }),
+  z.strictObject({ type: z.literal("victory"), ...stage }),
+  /** stretch 3: `tribe` has no `building` left (any state), e.g. raze a rival's Watchtowers */
+  z.strictObject({ type: z.literal("destroy"), tribe: z.number().int().min(1), building: id, ...stage }),
+  /** stretch 3: one of the player's `unit` (default the Shaper) stands within `r` of `at` */
+  z.strictObject({ type: z.literal("reach"), at: point, r: pos, unit: id.optional(), ...stage }),
+  /** stretch 3: the player owns `n` finished `building` */
+  z.strictObject({ type: z.literal("build"), building: id, n: z.number().int().min(1), ...stage }),
 ]);
 export type Objective = z.infer<typeof ObjectiveSchema>;
 
@@ -1349,6 +1340,10 @@ export const TriggerSchema = z.strictObject({
       type: z.literal("objective"),
       index: z.number().int().min(0),
     }),
+    /** stretch 3: one of the player's `unit` (any unit when absent) enters the disc; rewards anchor at `at` */
+    z.strictObject({ type: z.literal("area"), at: point, r: pos, unit: id.optional() }),
+    /** stretch 3: the player reaches `n` followers */
+    z.strictObject({ type: z.literal("followers"), n: z.number().int().min(1) }),
   ]),
   /** actions use the reward vocabulary; the receiving tribe is the player (0) unless the trigger is a worship by another tribe */
   do: z.array(RewardSchema).min(1),

@@ -170,6 +170,49 @@ describe("campaign levels", () => {
     expect(msgs).toContain("tribe 0 is the player");
   });
 
+  it("stretch 3: reach, staged build and destroy objectives; area and followers triggers; beacons mark the reach target", () => {
+    const base = level();
+    const p = basePack();
+    const idle = (spec: { tribe: number }) => ({ tribe: spec.tribe, every: 30, offset: 0, decide: () => [] });
+    const def = level({
+      tribes: [{}, { ai: "turtle" }],
+      buildings: undefined,
+      setup: [...base.setup, { spawn: "hearth", tribe: 1, at: [44, 32] }, { spawn: "shaper", tribe: 1, at: [46, 32] }, { spawn: "watchtower", tribe: 1, at: [50, 32] }],
+      objectives: [
+        { type: "reach", at: [30, 26], r: 2 },
+        { type: "build", building: "dwelling", n: 1, after: 0 },
+        { type: "destroy", tribe: 1, building: "watchtower" },
+      ],
+      triggers: [
+        { when: { type: "area", at: [30, 26], r: 2, unit: "shaper" }, do: [{ type: "message", text: "area" }] },
+        { when: { type: "followers", n: 99 }, do: [{ type: "message", text: "never" }] },
+      ],
+    });
+    const w = createLevelWorld({ def }, p.files, p.hash, idle);
+    w.spawnBuilding("dwelling", 0, 12, 38);
+    w.run(5);
+    const lv = w.level!;
+    // the staged build objective is closed (unchecked) while the reach is open; a beacon marks the target
+    expect(lv.done).toEqual([0, 0, 0]);
+    expect(lv.open(1)).toBe(false);
+    expect(w.eventCounts.get("beacon") ?? 0).toBeGreaterThan(0);
+    expect(w.eventCounts.get("triggerFired") ?? 0).toBe(0);
+    const sh = w.ents.index(w.tribes[0].shaper);
+    w.ents.x[sh] = 30;
+    w.ents.y[sh] = 26.5;
+    w.step();
+    expect(lv.done).toEqual([1, 1, 0]);
+    expect(w.events).toContainEqual(expect.objectContaining({ type: "levelMessage", text: "area" }));
+    for (let i = 0; i < w.ents.hi; i++) if (w.ents.alive[i] && w.ents.tribe[i] === 1 && w.ents.type[i] === w.cfg.buildingIndex.get("watchtower") && w.ents.cat[i] === 2) w.kill(i, "destroyed");
+    w.step();
+    expect(lv.done).toEqual([1, 1, 1]);
+    expect(lv.outcome).toBe(OUTCOME.won);
+    expect(validateLevel({ ...def, objectives: [{ type: "destroy", tribe: 1, building: "fire_lodge" }, { type: "reach", at: [1, 1], r: 1, after: 1 }] }, p.files).issues.map((i) => i.message)).toEqual([
+      "tribe 1 starts with no fire_lodge",
+      "after names no other objective (1)",
+    ]);
+  });
+
   it("validateLevel checks prayer chains: awaken names a dormant site and every dormant site can wake", () => {
     const base = level();
     const site = (tag: string, dormant: boolean, rewards: object[]) => ({ spawn: "shrine", at: [20, 32], site: { tag, dormant, rewards } });

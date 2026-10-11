@@ -5,6 +5,8 @@ Read this first after any restart or context compaction. Keep "Now" under 25 lin
 ## Now
 Stretch 3 started: 2026-10-10T21:45:00Z (Stewart after playing levels 1 to 3: "legitimately good"; wants levels far more complex as the campaign ramps: more buildings, resources, spells, objectives, plus the handoff items). Quota is tight (62 percent used, resets Thursday): Haiku for QA digging and docs, Sonnet for soaks and level drafts, main session for sim code. No run sentinel or STATUS line this stretch.
 - S3 DONE: prayer chains (ed566ba): dormant sites, awaken and reveal rewards, validation, sunk render.
+- S3 DONE: level primitives: objectives destroy, reach (gold beacon ring), build, and staged objectives (`after`, hidden until open); triggers area and followers; site woke and reveal bursts.
+- S3 closed: counter tuning at equal numbers (analyst, 7 probe runs): 10 v 10 is a deterministic cliff (100 to 0 percent per pair), so equal numbers cannot sit at 65 to 80 by data without breaking the 6 v 10 probes, which already meet the band. Equal 100 percent accepted (see Balance gaps).
 - S3 DONE: AI uses the unused spells: spell value counts traps, sinking land, storms and building damage, building targets value the whole village; prefs gain call, volcano, erode, mire. ai soak 16 x 20: call 51, mire 4, volcano 1, erode 1 (were 0); wins aggressive 2, sneaky 4, turtle 4, unfinished 6.
 Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when STOP exists). Plan: BACKLOG 14a look v3, polish, balance, rules and victory variants, campaign, boats and Skyloft, Forge, map editor (CLAUDE.md "Stretch 2").
 - S2 backlog S items DONE (qa:fast green each; scenarios after sim edits; e2e after 79, 35, 50, 78; goldens unchanged): 79 end screen stats survive a load, 44 treeVersion on chop test, 72 flow progress kept away from edits, 35 self-contained saves (`World.fromSnapshot`, origin check), 50 controller specs in saves and replays, 61 chanter reach inset data, 69 AI shared tuning data, 30 formula strings retired, 31 terrainOp nested union, 78 data/ui.json outside the pack hash (ADR-022, base pack hash changed once). Then 34 terrain and generator literals (terrain.json gen and ops), 66 opponent_skirmish golden, 67 soak AI effect metrics, 68 AI bridge scenario, 59 chase give-up soak gate, 88 level worship delay, 95 vfx colors in style.json (38 superseded), 41 camera rig and tree size in style.json render.
@@ -30,9 +32,9 @@ Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when
 - Making-of archive: making-of/ via `npm run making-of -- add`; storyboard in making-of/README.md. Making-of page (Stewart's request): https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5, rebuild with `npm run making-of -- page` and republish to that URL after every backlog item (README steps).
 
 ## Next 3 actions
-1. Handoff: counter tuning at equal numbers toward 75 percent (playtest-analyst, data only).
-2. Level primitives for complex levels: objectives destroy (tagged building), reach (area), and multi-site worship; triggers on area entered, site awakened, followers; guarded sites (wild or neutral camps).
-3. Campaign build-out: complexity pass on levels 6 to 13, then levels 14 to 25 built on chains, multi-stage objectives and 3 to 4 tribes; new buildings, a resource and new spells as the curve needs them (assets via asset-producer within budget).
+1. Content for the ramp: new buildings, a second resource and new spells (design pass in DESIGN, data first, sim primitives with tests, assets via asset-producer within the $30 budget, about $18 left).
+2. Campaign levels 14 to 25 built on prayer chains, staged objectives (after), destroy, reach, build, area triggers and 3 to 4 tribes; Sonnet drafts JSON, main session reviews; each level gets a scripted or bot win scenario.
+3. Complexity pass on levels 6 to 13 with the new primitives (guarded sites: rival or wild units placed at a site in setup).
 
 ## Blocked
 (none)
@@ -42,6 +44,7 @@ Stretch 2 started: 2026-10-10T00:25:00Z (24 h, ends 2026-10-11T00:25:00Z or when
 - BACKLOG 5a (rigged clips, P1 but conditional: "only if close-zoom quality needs it"). Cut 10/09/2026: at the closest camera zoom with the retro pass (pixelScale 3) units are about 60 to 90 screen px tall and the procedural poses (walk, work, attack, shoot, cast, pray, panic, idle) read clearly in the combat anim_gallery shot, so the condition is not met; Meshy rigging would also spend asset budget for little visible gain. Revisit if a close-up or portrait camera ships (ADR-012 fallback stays valid: same instanceAnim attribute).
 
 ## Balance gaps
+- Stretch 3 (2026-10-10): equal-number counters stay 100 percent by design decision: the 10 v 10 probe has no formation jitter, so each pair is deterministic; real games mix armies and the outnumbered probes (70, 60, 80) carry the counter feel. Revisit only with jitter in the equal probe (tools/harness/soak.mjs, triangle-probe.mjs) and a full retune.
 (soft gate numbers that missed their targets, with the milestone)
 - M7 ai soak (12 seeds x 40 min, normal): wins sneaky 8, aggressive 2, turtle 2, unfinished 0, median 13.4 min (ok). Sneaky takes 8 of 12 wins (its pair win rates are over the 70 percent cap); 2 analyst passes plus garrison and training code did not fix it (BACKLOG 64, 71).
 - M6/M7 counter triangle: 100 percent every pair (target band 65 to 80); probes: Firecaller 6 v Chanter 10 and Chanter 6 v Warden 10 still win 100 percent, mixed mirror 40 to 50 percent (BACKLOG 65).
