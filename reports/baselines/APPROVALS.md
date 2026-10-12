@@ -147,3 +147,7 @@
 - 2026-10-11T21:20 set look (13 shots): L7-D map detail v2: new settle and shore props, reeds recolored, denser village
 - 2026-10-12T02:10 set menus (11 shots): S4 L7-F UI v2: carved stone panels, bundled Marcellus SC and Alegreya Sans fonts, interface size slider with fit to screen; L7-D map props
 - 2026-10-12T02:10 set smoke (14 shots): S4 L7-F UI v2: carved stone panels, bundled Marcellus SC and Alegreya Sans fonts, fit to screen interface scale; L7-D map props
+- 2026-10-12T02:23 set look (13 shots): S4 L7-F UI v2: stone HUD panels and bundled fonts change every frame's HUD; scenes unchanged, DOM layout passes
+- 2026-10-12T02:23 set spells (9 shots): S4 L7-F UI v2: stone HUD panels and bundled fonts change every frame's HUD; scenes unchanged, DOM layout passes
+- 2026-10-12T02:24 set combat (8 shots): S4 L7-F UI v2: stone HUD panels and bundled fonts change every frame's HUD; scenes unchanged, DOM layout passes
+- 2026-10-12T02:24 set spells2 (9 shots): S4 L7-F UI v2: stone HUD panels and bundled fonts change every frame's HUD; scenes unchanged, DOM layout passes

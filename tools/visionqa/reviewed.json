@@ -30,6 +30,12 @@
       "id": "units_select_move",
       "reason": "no panel overlap; a settler stands behind the build panel at the right edge, which is normal world occlusion",
       "at": "2026-10-10"
+    },
+    "165c6bb699d978998eb215e14a0783e52bd29149de8e52ee0ef89f27eadf5569": {
+      "set": "menus",
+      "id": "replay_bar",
+      "reason": "UI v2: the replay bar sits close under the spellbar but nothing overlaps; the DOM layout check passes",
+      "at": "2026-10-12"
     }
   }
 }
