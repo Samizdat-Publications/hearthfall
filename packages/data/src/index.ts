@@ -139,7 +139,7 @@ function crossCheck(p: PackFiles): PackIssue[] {
       else if (r.type === "unlockBuilding") need("balance.json", `${at}.rewards.${j}`, buildings, r.building, "building");
       else if (r.type === "spawn") need("balance.json", `${at}.rewards.${j}`, units, r.unit, "unit");
       // a skirmish map has no fixed tribes or points to name
-      if (r.type === "raid" || (r.type === "spawn" && r.tribe !== undefined) || ("at" in r && r.at)) issues.push({ file: "balance.json", path: `${at}.rewards.${j}`, message: `skirmish site rewards cannot name a tribe or a point` });
+      if (r.type === "raid" || ((r.type === "spawn" || r.type === "spell") && r.tribe !== undefined) || ("at" in r && r.at)) issues.push({ file: "balance.json", path: `${at}.rewards.${j}`, message: `skirmish site rewards cannot name a tribe or a point` });
     });
   });
   if (p.balance.beasts) {
@@ -218,7 +218,7 @@ export function validateLevel(raw: unknown, pack: PackFiles, file = "level"): { 
     if ((r.type === "charges" || r.type === "unlockSpell" || r.type === "spell") && !spells.has(r.spell)) bad(path, `unknown spell ${r.spell}`);
     if (r.type === "unlockBuilding" && !buildings.has(r.building)) bad(path, `unknown building ${r.building}`);
     if (r.type === "spawn" && !units.has(r.unit)) bad(path, `unknown unit ${r.unit}`);
-    if (r.type === "spawn" && r.tribe !== undefined && r.tribe >= lv.tribes.length) bad(path, `no tribe ${r.tribe}`);
+    if ((r.type === "spawn" || r.type === "spell") && r.tribe !== undefined && r.tribe >= lv.tribes.length) bad(path, `no tribe ${r.tribe}`);
     if (r.type === "raid" && r.tribe >= lv.tribes.length) bad(path, `no tribe ${r.tribe}`);
     if (r.type === "awaken") awakens.push({ site: r.site, path });
     if (r.type === "shape") {

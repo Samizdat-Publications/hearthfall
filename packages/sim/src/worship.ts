@@ -363,8 +363,9 @@ export function applyReward(w: World, tribe: number, r: Reward, x: number, y: nu
       // cast from the site (or `from`) toward `at` (a totem raising a bridge), or on the site itself
       const [px, py] = r.at ?? [x, y];
       const [cx, cy] = r.from ?? [x, y];
-      applyEffects({ w, tribe, spell: r.spell, x: px, y: py, casterX: cx, casterY: cy }, w.cfg.pack.spells.spells[s].effects);
-      w.emit("spellCast", { tribe, spell: r.spell, x: px, y: py, cx, cy, by: "site" });
+      const caster = r.tribe ?? tribe;
+      applyEffects({ w, tribe: caster, spell: r.spell, x: px, y: py, casterX: cx, casterY: cy }, w.cfg.pack.spells.spells[s].effects);
+      w.emit("spellCast", { tribe: caster, spell: r.spell, x: px, y: py, cx, cy, by: "site" });
       return;
     }
     case "spawn": {

@@ -18,7 +18,7 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 
 ## Next 3 actions
 1. L7-E gap 5 (bot builds a requested Boathouse at once): one line in opponent.ts buildGoal, but it needs a campaign-playtest fix round over across_the_strait, salt_marsh, sunken_road, pilgrim_stones (ROADMAP L7-E as built). Wait for quota.
-2. L7-E gap 7 (neutral spell rewards, cast as no tribe) and the aggressive personality retune (ai soak).
+2. L7-E aggressive personality retune (ai soak, data only). Gap 7 DONE (spell reward `tribe`, -1 neutral).
 3. Pause at about 84 percent weekly usage (77 percent at 04:30Z): commit, PROGRESS, STATUS line.
 
 ## Blocked

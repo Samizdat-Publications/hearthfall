@@ -1391,7 +1391,8 @@ export const RewardSchema = z.discriminatedUnion("type", [
   /** permanent building unlock, ignoring follower tiers and level limits */
   z.strictObject({ type: z.literal("unlockBuilding"), building: id }),
   /** a spell's effects at a point (the site when `at` is absent), cast by nobody from `from` (the site by default): totem land bridges, scripted raids */
-  z.strictObject({ type: z.literal("spell"), spell: id, at: point.optional(), from: point.optional() }),
+  /** S4 L7-E: `tribe` casts it as that tribe instead of the rewarded one; -1 is a neutral hazard that spares only wild units */
+  z.strictObject({ type: z.literal("spell"), spell: id, at: point.optional(), from: point.optional(), tribe: z.number().int().min(-1).optional() }),
   /** units for the rewarded tribe (or `tribe`, -1 for wild people) near a point (the site by default) */
   z.strictObject({
     type: z.literal("spawn"),

@@ -200,6 +200,20 @@ describe("S4 L6-C level engine gaps", () => {
     expect(den.cleared).toBe(false);
   });
 
+  it("S4 L7-E: a spell reward with tribe -1 is a neutral hazard that strikes the player's own units", () => {
+    const hits = (tribe: number | undefined) => {
+      const spell = { type: "spell" as const, spell: "lightning", at: [60, 60] as [number, number], ...(tribe === undefined ? {} : { tribe }) };
+      const w = make(base({ triggers: [{ when: { type: "time", seconds: 1 }, do: [spell] }] }));
+      const id = w.spawnUnit("warden", 0, 60, 60);
+      const hp0 = w.ents.hp[w.ents.index(id)];
+      for (let k = 0; k < 2 * w.cfg.tickHz; k++) w.step();
+      const i = w.ents.index(id);
+      return i < 0 ? hp0 : hp0 - w.ents.hp[i];
+    };
+    expect(hits(undefined)).toBe(0);
+    expect(hits(-1)).toBeGreaterThan(0);
+  });
+
   it("validateLevel checks until and fresh raids", () => {
     const p = basePack();
     const ok = (over: object) => validateLevel({ ...base({}), ...over }, p.files).level !== undefined;
