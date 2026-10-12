@@ -1,0 +1,103 @@
+{
+  "$comment": "Campaign level 26 (S4 L7-C, chapter 3 opener): a tall volcanic cone in the middle of a green island. The player lands at the southern foot, an aggressive rival holds the north shore. Staged: climb past the wolf den on the slope and pray at the summit altar (a Reliquary: it teaches Volcano, gives one charge of it and the Watchtower craft, so towers cannot be raised before the summit); raise two Watchtowers (two flat terraces on the slope are marked with cairns); cut down ten northern raiders (a war band comes over the mountain when the towers stand, and fresh bands every two minutes until the kill stage ends); then burn the northern Hearth (a destroy, not eliminateAll); six hill clan wardens join the player when the kill stage ends. The rival is capped at 8 troops and 30 people. The rival only prays for the altar late (worshipAfterSeconds), so an idle player loses the altar (siteLost) or the clock. Every three minutes the east vent erupts (a firerain spell cast by the level; level spells spare the player's tribe, so it only scorches rivals and beasts there). Bot (offset 1) wins about 14780; offsets 0 and 3 win near 12420 and 17590 of the 30000 limit.",
+  "id": "ash_peak",
+  "name": "The Ash Peak",
+  "order": 26,
+  "description": "A sleeping volcano rises from the middle of a green island, and a war tribe holds its northern shore. Climb to the summit altar to learn the Volcano, raise watchtowers on the slope, break the raiders who come over the mountain and burn their Hearth.",
+  "seed": 2626,
+  "map": {
+    "generator": "flat",
+    "size": 128,
+    "landAboveSea": -30,
+    "paint": [
+      { "shape": "disc", "at": [64, 64], "r": 52, "aboveSea": 30, "falloff": 6 },
+      { "shape": "cone", "at": [64, 62], "r": 30, "aboveSea": 330 },
+      { "shape": "disc", "at": [64, 62], "r": 3, "aboveSea": 300, "falloff": 2 },
+      { "shape": "disc", "at": [52, 78], "r": 3.5, "aboveSea": 130, "falloff": 2 },
+      { "shape": "disc", "at": [76, 78], "r": 3.5, "aboveSea": 130, "falloff": 2 },
+      { "shape": "disc", "at": [86, 54], "r": 3, "aboveSea": 90, "falloff": 2 }
+    ]
+  },
+  "tribes": [
+    {},
+    { "ai": "aggressive", "difficulty": "normal", "maxTroops": 8, "maxPopulation": 30, "worshipAfterSeconds": 420, "buildings": ["dwelling", "warden_lodge", "fire_lodge", "watchtower"] }
+  ],
+  "spells": ["bolt", "hornets", "lightning"],
+  "buildings": ["dwelling", "warden_lodge", "fire_lodge"],
+  "props": [
+    { "model": "prop.cairn", "at": [61, 64] },
+    { "model": "prop.cairn", "at": [67, 64] },
+    { "model": "prop.standing_stone", "at": [64, 59], "rot": 0.4 },
+    { "model": "prop.cairn", "at": [49, 76] },
+    { "model": "prop.cairn", "at": [79, 76] },
+    { "model": "prop.ruin_a", "at": [64, 86], "rot": 1.2 },
+    { "model": "prop.standing_stone", "at": [62, 92] },
+    { "model": "prop.standing_stone", "at": [66, 92] },
+    { "model": "prop.haystack", "at": [56, 110] },
+    { "model": "prop.fence", "at": [70, 112], "rot": 1.57 },
+    { "model": "prop.woodpile", "at": [58, 104] }
+  ],
+  "setup": [
+    { "spawn": "reliquary", "at": [64, 62], "site": { "tag": "ash_altar", "worshippers": 4, "prayerSeconds": 40, "uses": 1, "rewards": [{ "type": "unlockSpell", "spell": "volcano" }, { "type": "charges", "spell": "volcano", "n": 1 }, { "type": "unlockBuilding", "building": "watchtower" }] } },
+    { "spawn": "hearth", "tribe": 0, "at": [64, 108] },
+    { "spawn": "shaper", "tribe": 0, "at": [64, 102] },
+    { "spawn": "settler", "tribe": 0, "near": [58, 110], "count": 12 },
+    { "spawn": "warden", "tribe": 0, "near": [64, 98], "count": 6 },
+    { "spawn": "warden_lodge", "tribe": 0, "at": [72, 104] },
+    { "spawn": "hearth", "tribe": 1, "at": [64, 20] },
+    { "spawn": "shaper", "tribe": 1, "at": [64, 25] },
+    { "spawn": "settler", "tribe": 1, "near": [70, 18], "count": 12 },
+    { "spawn": "warden", "tribe": 1, "near": [64, 30], "count": 6 },
+    { "spawn": "warden", "tribe": 1, "near": [60, 22], "count": 4, "stance": "defensive" },
+    { "spawn": "warden_lodge", "tribe": 1, "at": [54, 24] },
+    { "spawn": "fire_lodge", "tribe": 1, "at": [74, 24] },
+    { "spawn": "watchtower", "tribe": 1, "at": [64, 30] },
+    { "spawn": "wolf", "tribe": -1, "at": [72, 70], "count": 3 },
+    { "spawn": "tree", "near": [48, 104], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [80, 108], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [74, 112], "count": 3, "spacing": 2 },
+    { "spawn": "tree", "near": [48, 22], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [82, 16], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [56, 16], "count": 3, "spacing": 2 },
+    { "spawn": "tree", "near": [30, 64], "count": 10, "spacing": 1.4 },
+    { "spawn": "tree", "near": [98, 70], "count": 10, "spacing": 1.4 }
+  ],
+  "objectives": [
+    { "type": "worship", "site": "ash_altar", "text": "Climb the Ash Peak and pray at the summit altar with four followers" },
+    { "type": "build", "building": "watchtower", "n": 2, "after": 0, "text": "Raise two Watchtowers on the slope to watch the mountain paths" },
+    { "type": "kill", "n": 10, "tribe": 1, "after": 1, "text": "Cut down ten of the northern raiders who come over the mountain" },
+    { "type": "destroy", "tribe": 1, "building": "hearth", "after": 2, "text": "March around the peak and burn the northern Hearth" }
+  ],
+  "lose": [
+    { "type": "hearthLost" },
+    { "type": "siteLost", "site": "ash_altar" },
+    { "type": "timeLimit", "seconds": 1500 }
+  ],
+  "triggers": [
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "The Ash Peak smokes above your landing. Take wardens up the slope, past the wolves, and kneel at the summit altar before the north does." }] },
+    { "when": { "type": "objective", "index": 0 }, "do": [
+      { "type": "reveal", "at": [64, 40], "r": 22 },
+      { "type": "message", "text": "The altar teaches you the Volcano and the craft of the Watchtower. From the top you see the northern war camp." }
+    ] },
+    { "when": { "type": "objective", "index": 1 }, "do": [
+      { "type": "spawn", "unit": "warden", "n": 6, "tribe": 1, "at": [64, 36] },
+      { "type": "spawn", "unit": "firecaller", "n": 2, "tribe": 1, "at": [62, 34] },
+      { "type": "raid", "tribe": 1, "to": [64, 100], "fresh": true },
+      { "type": "message", "text": "Your towers stand just in time: a war band is coming over the mountain. Meet it on the slope." }
+    ] },
+    { "when": { "type": "time", "seconds": 300, "every": 120 }, "until": 2, "do": [
+      { "type": "spawn", "unit": "warden", "n": 3, "tribe": 1, "at": [52, 36] },
+      { "type": "raid", "tribe": 1, "to": [64, 100], "fresh": true },
+      { "type": "message", "text": "Northern raiders start down the western path." }
+    ] },
+    { "when": { "type": "time", "seconds": 240, "every": 180 }, "do": [
+      { "type": "spell", "spell": "firerain", "at": [86, 54] },
+      { "type": "message", "text": "The Ash Peak rumbles and rains fire on its eastern vent." }
+    ] },
+    { "when": { "type": "objective", "index": 2 }, "do": [
+      { "type": "spawn", "unit": "warden", "n": 6, "at": [60, 96] },
+      { "type": "message", "text": "The raids break and hill clans come down to join you. The north is spent: go around the peak and burn its Hearth." }
+    ] },
+    { "when": { "type": "time", "seconds": 1200 }, "do": [{ "type": "message", "text": "Five minutes remain before the ash buries the island." }] }
+  ]
+}

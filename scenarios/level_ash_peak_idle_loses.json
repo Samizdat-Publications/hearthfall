@@ -1,0 +1,11 @@
+{
+  "id": "level_ash_peak_idle_loses",
+  "description": "Campaign level 26 is not won by doing nothing: an idle player never climbs the peak, so the northern tribe prays at the summit altar first once its worshippers set out after minute 7 (siteLost, near tick 10190).",
+  "tags": ["levels"],
+  "level": "ash_peak",
+  "runTicks": 12000,
+  "assert": [
+    { "at": 8000, "expr": "!level.lost && !level.won && level.objectivesDone == 0" },
+    { "at": 12000, "expr": "level.lost && !level.won && level.objectivesDone == 0 && site('ash_altar').by == 1 && events.count('levelLost') == 1 && invariants() == 0" }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "level_ash_peak",
+  "description": "Campaign level 26 is completable: the opponent bot for the player climbs past the slope wolves and prays at the summit altar (Volcano and the Watchtower craft), raises two Watchtowers, cuts down ten northern raiders from the war band that comes over the mountain, then marches around the peak and burns the northern Hearth (bot wins near tick 14780).",
+  "tags": ["levels"],
+  "level": "ash_peak",
+  "bots": [
+    { "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "normal", "offset": 1 }
+  ],
+  "runTicks": 19000,
+  "assert": [
+    { "at": 1000, "expr": "level.objectivesDone == 0 && site('ash_altar').by < 0 && !level.won" },
+    { "at": 2500, "expr": "level.objectivesDone == 1 && site('ash_altar').by == 0 && charges(0, 'volcano') >= 1" },
+    { "at": 4500, "expr": "level.objectivesDone == 2 && count(tribe0.watchtowers) >= 2 && !level.won" },
+    { "at": 6000, "expr": "level.objectivesDone == 2 && alive(1)" },
+    { "at": 8000, "expr": "level.objectivesDone == 3 && alive(1) && !level.won" },
+    { "at": 19000, "expr": "level.won && alive(0) && level.objectivesDone == 4 && events.count('levelWon') == 1 && invariants() == 0" }
+  ]
+}

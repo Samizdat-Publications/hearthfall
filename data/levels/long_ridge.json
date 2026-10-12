@@ -1,0 +1,92 @@
+{
+  "$comment": "Campaign level 27 (S4 L7-C, chapter 3): a long steep ridge (two painted ridge segments) splits the island east to west; the only gap is a narrow pass in the middle where a ward stone stands, held by the northern rival at the start, so it strikes the player's units that come near. The western tip of the ridge ends in a short strait: Raise Land bridges it for a second way north. Staged: raise two more Warden Lodges (build up), pray the ward stone away and hold it for two and a half minutes while fresh northern bands (spawn plus fresh raid, bounded by until) come to pray it back or march through the pass, cut down ten northern wardens (the posted wall of wardens that answers the hold, and any band), then break through and burn both northern Warden Lodges (destroy, not eliminateAll). Four ridge herders join the player when the hold is done; the wall is six posted wardens. The rival cannot raise new lodges (its own buildings list). Bot (offset 1) wins about 17330; offsets 0, 2, 3 win near 12380, 19200 and 17960 of the 34000 limit; an idle player loses its Hearth to the bands near tick 12420.",
+  "id": "long_ridge",
+  "name": "The Long Ridge",
+  "order": 27,
+  "description": "A long ridge splits the island and the only road north runs through a narrow pass where the north keeps a ward stone. Build up, take the stone and hold the pass against their war bands, cut down their wardens and burn their lodges.",
+  "seed": 2727,
+  "map": {
+    "generator": "flat",
+    "size": 128,
+    "landAboveSea": -30,
+    "paint": [
+      { "shape": "rect", "at": [64, 64], "size": [112, 108], "aboveSea": 30, "falloff": 6 },
+      { "shape": "rect", "at": [7, 64], "size": [12, 10], "aboveSea": -20, "falloff": 2 },
+      { "shape": "ridge", "at": [11, 64], "to": [54, 64], "width": 6, "aboveSea": 190, "falloff": 3 },
+      { "shape": "ridge", "at": [74, 64], "to": [121, 64], "width": 6, "aboveSea": 190, "falloff": 3 }
+    ]
+  },
+  "tribes": [
+    {},
+    { "ai": "turtle", "difficulty": "normal", "maxTroops": 10, "maxPopulation": 30, "buildings": ["dwelling", "watchtower"] }
+  ],
+  "spells": ["bolt", "lightning", "raise_land"],
+  "buildings": ["dwelling", "warden_lodge", "fire_lodge", "watchtower"],
+  "props": [
+    { "model": "prop.standing_stone", "at": [59, 70] },
+    { "model": "prop.standing_stone", "at": [69, 70] },
+    { "model": "prop.standing_stone", "at": [59, 58] },
+    { "model": "prop.standing_stone", "at": [69, 58] },
+    { "model": "prop.cairn", "at": [62, 76] },
+    { "model": "prop.ruin_a", "at": [58, 84], "rot": 0.6 },
+    { "model": "prop.cairn", "at": [66, 90] },
+    { "model": "prop.cairn", "at": [8, 74] },
+    { "model": "prop.haystack", "at": [52, 112] },
+    { "model": "prop.fence", "at": [48, 108], "rot": 1.57 },
+    { "model": "prop.cart", "at": [76, 112], "rot": 0.3 }
+  ],
+  "setup": [
+    { "spawn": "ward_stone", "tribe": 1, "at": [64, 64], "site": { "tag": "pass_ward", "rewards": [{ "type": "message", "text": "The pass stone is yours: it strikes at any northerner who comes through." }] } },
+    { "spawn": "hearth", "tribe": 0, "at": [64, 106] },
+    { "spawn": "shaper", "tribe": 0, "at": [64, 100] },
+    { "spawn": "settler", "tribe": 0, "near": [56, 108], "count": 18 },
+    { "spawn": "warden", "tribe": 0, "near": [64, 92], "count": 8 },
+    { "spawn": "warden_lodge", "tribe": 0, "at": [74, 102] },
+    { "spawn": "hearth", "tribe": 1, "at": [64, 20] },
+    { "spawn": "shaper", "tribe": 1, "at": [64, 25] },
+    { "spawn": "settler", "tribe": 1, "near": [70, 16], "count": 12 },
+    { "spawn": "warden", "tribe": 1, "near": [64, 34], "count": 6 },
+    { "spawn": "warden", "tribe": 1, "near": [60, 22], "count": 4, "stance": "defensive" },
+    { "spawn": "warden_lodge", "tribe": 1, "at": [46, 28] },
+    { "spawn": "warden_lodge", "tribe": 1, "at": [82, 28] },
+    { "spawn": "watchtower", "tribe": 1, "at": [58, 44] },
+    { "spawn": "tree", "near": [44, 100], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [86, 108], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [80, 96], "count": 3, "spacing": 2 },
+    { "spawn": "tree", "near": [34, 20], "count": 12, "spacing": 1.2 },
+    { "spawn": "tree", "near": [94, 18], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [52, 16], "count": 3, "spacing": 2 },
+    { "spawn": "tree", "near": [24, 84], "count": 10, "spacing": 1.4 },
+    { "spawn": "tree", "near": [102, 82], "count": 10, "spacing": 1.4 }
+  ],
+  "objectives": [
+    { "type": "build", "building": "warden_lodge", "n": 3, "text": "Build up: raise two more Warden Lodges and train wardens for the pass" },
+    { "type": "hold", "n": 1, "kind": "ward_stone", "seconds": 150, "after": 0, "text": "Pray the ward stone in the pass away from the north, then hold it for two and a half minutes" },
+    { "type": "kill", "n": 10, "tribe": 1, "unit": "warden", "after": 1, "text": "Cut down ten northern wardens beyond the pass" },
+    { "type": "destroy", "tribe": 1, "building": "warden_lodge", "after": 2, "text": "Break through the pass and burn both northern Warden Lodges" }
+  ],
+  "lose": [
+    { "type": "hearthLost" },
+    { "type": "timeLimit", "seconds": 1700 }
+  ],
+  "triggers": [
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "The ridge is too steep to climb and the north holds the stone in its only pass. Build up first. The western tip ends in a strait that Raise Land could bridge." }] },
+    { "when": { "type": "objective", "index": 0 }, "do": [
+      { "type": "spawn", "unit": "warden", "n": 4, "tribe": 1, "at": [64, 44] },
+      { "type": "raid", "tribe": 1, "to": [64, 96], "fresh": true, "pray": "pass_ward" },
+      { "type": "message", "text": "Your lodges stand. Take the pass stone: three followers must pray at it while it strikes at them." }
+    ] },
+    { "when": { "type": "time", "seconds": 300, "every": 90 }, "until": 1, "do": [
+      { "type": "spawn", "unit": "warden", "n": 4, "tribe": 1, "at": [64, 42] },
+      { "type": "raid", "tribe": 1, "to": [64, 96], "fresh": true, "pray": "pass_ward" },
+      { "type": "message", "text": "A northern war band comes down to the pass." }
+    ] },
+    { "when": { "type": "objective", "index": 1 }, "do": [
+      { "type": "spawn", "unit": "warden", "n": 6, "tribe": 1, "at": [64, 44], "stance": "defensive" },
+      { "type": "spawn", "unit": "warden", "n": 4, "at": [64, 78] },
+      { "type": "message", "text": "The pass is yours and ridge herders come to fight beside you. The north plants a wall of wardens beyond it: cut them down." }
+    ] },
+    { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "message", "text": "Their wardens are broken. Burn both lodges, west and east of their Hearth." }] },
+    { "when": { "type": "time", "seconds": 1400 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "level_long_ridge",
+  "description": "Campaign level 27 is completable: the opponent bot for the player raises two more Warden Lodges, prays the pass ward stone away from the north and holds it for two and a half minutes against the fresh northern bands, cuts down ten northern wardens from the wall planted beyond the pass, then breaks through and burns both northern Warden Lodges (bot wins near tick 17330).",
+  "tags": ["levels"],
+  "level": "long_ridge",
+  "bots": [
+    { "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "normal", "offset": 1 }
+  ],
+  "runTicks": 21000,
+  "assert": [
+    { "at": 1500, "expr": "level.objectivesDone == 0 && !level.won" },
+    { "at": 3500, "expr": "level.objectivesDone == 1 && count(tribe0.warden_lodges) >= 3" },
+    { "at": 6500, "expr": "level.objectivesDone == 1 && alive(1)" },
+    { "at": 8500, "expr": "level.objectivesDone == 2 && site('pass_ward').by == 0 && alive(1)" },
+    { "at": 12500, "expr": "level.objectivesDone == 3 && count(tribe1.warden_lodges) >= 1 && !level.won" },
+    { "at": 21000, "expr": "level.won && alive(0) && level.objectivesDone == 4 && count(tribe1.warden_lodges) == 0 && events.count('levelWon') == 1 && invariants() == 0" }
+  ]
+}

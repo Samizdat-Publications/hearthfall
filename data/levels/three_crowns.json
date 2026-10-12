@@ -1,0 +1,140 @@
+{
+  "$comment": "Campaign level 31 (S4 L7-B, chapter 3): the counter triangle. Three rival crowns sit on islands off the northwest, northeast and southeast coasts of one round continent, a crown stone on the hill at its heart. Each rival builds only one lodge (tribes[].buildings), so each fields one troop type: the Ember Crown firecallers, the Choir Crown chanters, the Iron Crown wardens. Their villages lie across the straits (no boats in this level, so none can fall early and lock a stage); their war bands land on the near shore and march on the player's Hearth (spawn plus fresh raid, repeating until that rival's stage is done). Stages: cut down twelve firecallers (start with wardens), twelve chanters (firecallers join and the Fire Lodge opens), twelve wardens (chanters join and the Chant House opens), then take the crown stone (dormant until then, posted Iron Crown wardens) and hold it for two minutes while all three crowns land to pray it back (and fight each other on the hill). Ends on the hold, not eliminateAll. Rival maxPopulation 20.",
+  "id": "three_crowns",
+  "name": "Three Crowns",
+  "order": 31,
+  "description": "Three crowns rule the islands around this land, and each fights in its own way: fire, song or iron. Break each crown's war bands with the troops that beat them, then take the crown stone on the hill at the heart of the land and keep it.",
+  "seed": 3131,
+  "map": {
+    "generator": "flat",
+    "size": 192,
+    "landAboveSea": -30,
+    "paint": [
+      { "shape": "disc", "at": [96, 96], "r": 58, "aboveSea": 34, "falloff": 6 },
+      { "shape": "cone", "at": [96, 96], "r": 20, "aboveSea": 62, "falloff": 2 },
+      { "shape": "disc", "at": [30, 30], "r": 15, "aboveSea": 32, "falloff": 4 },
+      { "shape": "disc", "at": [162, 30], "r": 15, "aboveSea": 32, "falloff": 4 },
+      { "shape": "disc", "at": [162, 162], "r": 15, "aboveSea": 32, "falloff": 4 }
+    ]
+  },
+  "tribes": [
+    {},
+    { "ai": "turtle", "difficulty": "normal", "maxTroops": 6, "maxPopulation": 20, "worshipAfterSeconds": 3000, "keepRaiders": true, "buildings": ["dwelling", "fire_lodge"] },
+    { "ai": "turtle", "difficulty": "normal", "maxTroops": 6, "maxPopulation": 20, "worshipAfterSeconds": 3000, "keepRaiders": true, "buildings": ["dwelling", "chant_house"] },
+    { "ai": "turtle", "difficulty": "normal", "maxTroops": 6, "maxPopulation": 20, "worshipAfterSeconds": 3000, "keepRaiders": true, "buildings": ["dwelling", "warden_lodge"] }
+  ],
+  "spells": ["bolt", "call", "hornets"],
+  "buildings": ["dwelling", "watchtower", "warden_lodge"],
+  "setup": [
+    { "spawn": "hearth", "tribe": 0, "at": [62, 130] },
+    { "spawn": "shaper", "tribe": 0, "at": [66, 127] },
+    { "spawn": "settler", "tribe": 0, "near": [58, 138], "count": 12 },
+    { "spawn": "warden", "tribe": 0, "near": [70, 122], "count": 4 },
+    { "spawn": "warden_lodge", "tribe": 0, "at": [52, 122] },
+    { "spawn": "watchtower", "tribe": 0, "at": [72, 116] },
+    { "spawn": "tree", "near": [48, 140], "count": 14, "spacing": 1.2 },
+    { "spawn": "tree", "near": [78, 146], "count": 10, "spacing": 1.2 },
+    { "spawn": "rock", "near": [50, 112], "count": 4, "spacing": 2 },
+    { "spawn": "wild", "tribe": -1, "near": [98, 140], "count": 5 },
+    { "spawn": "wild", "tribe": -1, "near": [48, 92], "count": 5 },
+
+    { "spawn": "hearth", "tribe": 1, "at": [28, 28] },
+    { "spawn": "shaper", "tribe": 1, "at": [32, 31] },
+    { "spawn": "settler", "tribe": 1, "near": [24, 34], "count": 8 },
+    { "spawn": "fire_lodge", "tribe": 1, "at": [36, 24] },
+    { "spawn": "firecaller", "tribe": 1, "near": [36, 34], "count": 3, "stance": "defensive" },
+    { "spawn": "tree", "near": [22, 24], "count": 6, "spacing": 1.3 },
+
+    { "spawn": "hearth", "tribe": 2, "at": [164, 28] },
+    { "spawn": "shaper", "tribe": 2, "at": [160, 31] },
+    { "spawn": "settler", "tribe": 2, "near": [168, 34], "count": 8 },
+    { "spawn": "chant_house", "tribe": 2, "at": [156, 24] },
+    { "spawn": "chanter", "tribe": 2, "near": [156, 34], "count": 3, "stance": "defensive" },
+    { "spawn": "tree", "near": [170, 24], "count": 6, "spacing": 1.3 },
+
+    { "spawn": "hearth", "tribe": 3, "at": [164, 164] },
+    { "spawn": "shaper", "tribe": 3, "at": [160, 161] },
+    { "spawn": "settler", "tribe": 3, "near": [168, 158], "count": 8 },
+    { "spawn": "warden_lodge", "tribe": 3, "at": [156, 168] },
+    { "spawn": "warden", "tribe": 3, "near": [156, 158], "count": 3, "stance": "defensive" },
+    { "spawn": "tree", "near": [170, 168], "count": 6, "spacing": 1.3 },
+
+    { "spawn": "ward_stone", "at": [96, 96], "site": { "tag": "crown_stone", "worshippers": 4, "prayerSeconds": 30, "dormant": true, "rewards": [{ "type": "message", "text": "The crown stone is yours. Keep it: its strike guards the hill while you hold it." }] } },
+    { "spawn": "tree", "near": [80, 70], "count": 10, "spacing": 1.3 },
+    { "spawn": "tree", "near": [124, 104], "count": 10, "spacing": 1.3 },
+    { "spawn": "rock", "near": [110, 120], "count": 3, "spacing": 2 }
+  ],
+  "props": [
+    { "model": "prop.standing_stone", "at": [90, 90], "rot": 0.2 },
+    { "model": "prop.standing_stone", "at": [103, 91], "rot": 1.4 },
+    { "model": "prop.standing_stone", "at": [96, 104], "rot": 2.6 },
+    { "model": "prop.cairn", "at": [62, 64] },
+    { "model": "prop.cairn", "at": [130, 64] },
+    { "model": "prop.cairn", "at": [130, 128] },
+    { "model": "prop.haystack", "at": [56, 140] },
+    { "model": "prop.fence", "at": [66, 142], "rot": 0.3 },
+    { "model": "prop.woodpile", "at": [54, 130] },
+    { "model": "prop.flowers", "at": [86, 132] }
+  ],
+  "objectives": [
+    { "type": "kill", "n": 12, "tribe": 1, "unit": "firecaller", "text": "The Ember Crown lands in the northwest: cut down twelve of its firecallers (wardens beat firecallers)" },
+    { "type": "kill", "n": 12, "tribe": 2, "unit": "chanter", "after": 0, "text": "The Choir Crown lands in the northeast: cut down twelve of its chanters (firecallers beat chanters)" },
+    { "type": "kill", "n": 12, "tribe": 3, "unit": "warden", "after": 1, "text": "The Iron Crown lands in the southeast: cut down twelve of its wardens (chanters beat wardens)" },
+    { "type": "hold", "n": 1, "kind": "ward_stone", "seconds": 120, "after": 2, "text": "Take the crown stone on the central hill with four followers and hold it for two minutes" }
+  ],
+  "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 2700 }],
+  "triggers": [
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Three crowns rule the islands around you. Each fights one way only. Meet each with the troops that beat it." }] },
+    { "when": { "type": "time", "seconds": 40, "every": 60 }, "until": 0, "do": [
+      { "type": "spawn", "unit": "firecaller", "n": 3, "tribe": 1, "at": [60, 60] },
+      { "type": "raid", "tribe": 1, "to": [62, 130], "fresh": true }
+    ] },
+    { "when": { "type": "time", "seconds": 35 }, "do": [{ "type": "message", "text": "Ember Crown firecallers land on the northwest shore. Your wardens beat them: meet them in the open." }] },
+    { "when": { "type": "objective", "index": 0 }, "do": [
+      { "type": "unlockBuilding", "building": "fire_lodge" },
+      { "type": "spawn", "unit": "firecaller", "n": 4, "at": [68, 124] },
+      { "type": "spawn", "unit": "chanter", "n": 4, "tribe": 2, "at": [132, 60] },
+      { "type": "raid", "tribe": 2, "to": [62, 130], "fresh": true },
+      { "type": "message", "text": "The Ember Crown falls back. Four firecallers join you and the Fire Lodge opens: Choir Crown chanters land in the northeast." }
+    ] },
+    { "when": { "type": "time", "seconds": 380, "every": 60 }, "until": 1, "do": [
+      { "type": "spawn", "unit": "chanter", "n": 3, "tribe": 2, "at": [132, 60] },
+      { "type": "raid", "tribe": 2, "to": [62, 130], "fresh": true }
+    ] },
+    { "when": { "type": "objective", "index": 1 }, "do": [
+      { "type": "unlockBuilding", "building": "chant_house" },
+      { "type": "spawn", "unit": "chanter", "n": 4, "at": [68, 124] },
+      { "type": "spawn", "unit": "warden", "n": 4, "tribe": 3, "at": [132, 132] },
+      { "type": "raid", "tribe": 3, "to": [62, 130], "fresh": true },
+      { "type": "message", "text": "The Choir Crown is silent. Four chanters join you and the Chant House opens: Iron Crown wardens land in the southeast." }
+    ] },
+    { "when": { "type": "time", "seconds": 720, "every": 60 }, "until": 2, "do": [
+      { "type": "spawn", "unit": "warden", "n": 3, "tribe": 3, "at": [132, 132] },
+      { "type": "raid", "tribe": 3, "to": [62, 130], "fresh": true }
+    ] },
+    { "when": { "type": "objective", "index": 2 }, "do": [
+      { "type": "awaken", "site": "crown_stone" },
+      { "type": "spawn", "unit": "warden", "n": 6, "tribe": 3, "at": [96, 100], "stance": "defensive" },
+      { "type": "reveal", "at": [96, 96], "r": 24 },
+      { "type": "message", "text": "All three crowns are broken in the field. The crown stone rises on the hill, guarded by Iron Crown wardens: take it with four followers and hold it." }
+    ] },
+    { "when": { "type": "worship", "site": "crown_stone" }, "do": [
+      { "type": "spawn", "unit": "firecaller", "n": 2, "tribe": 1, "at": [60, 60] },
+      { "type": "raid", "tribe": 1, "to": [96, 96], "pray": "crown_stone", "fresh": true },
+      { "type": "spawn", "unit": "chanter", "n": 2, "tribe": 2, "at": [132, 60] },
+      { "type": "raid", "tribe": 2, "to": [96, 96], "pray": "crown_stone", "fresh": true },
+      { "type": "spawn", "unit": "warden", "n": 2, "tribe": 3, "at": [132, 132] },
+      { "type": "raid", "tribe": 3, "to": [96, 96], "pray": "crown_stone", "fresh": true },
+      { "type": "message", "text": "All three crowns land to pray the stone back, and they hate each other as much as you. Hold the hill." }
+    ] },
+    { "when": { "type": "time", "seconds": 1080, "every": 45 }, "until": 3, "do": [
+      { "type": "spawn", "unit": "firecaller", "n": 1, "tribe": 1, "at": [60, 60] },
+      { "type": "raid", "tribe": 1, "to": [96, 96], "pray": "crown_stone", "fresh": true },
+      { "type": "spawn", "unit": "chanter", "n": 1, "tribe": 2, "at": [132, 60] },
+      { "type": "raid", "tribe": 2, "to": [96, 96], "pray": "crown_stone", "fresh": true },
+      { "type": "spawn", "unit": "warden", "n": 1, "tribe": 3, "at": [132, 132] },
+      { "type": "raid", "tribe": 3, "to": [96, 96], "pray": "crown_stone", "fresh": true }
+    ] },
+    { "when": { "type": "time", "seconds": 2400 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+  ]
+}

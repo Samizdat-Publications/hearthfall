@@ -1,0 +1,15 @@
+{
+  "id": "level_three_crowns",
+  "description": "Campaign level 31 is completable: the hard opponent bot for the player cuts down twelve Ember Crown firecallers with its wardens, twelve Choir Crown chanters once firecallers join, twelve Iron Crown wardens once chanters join, then takes the woken crown stone from its posted wardens and holds it for two minutes while all three crowns land to pray it back (bot wins about 25800; offsets 0 to 5 and normal win 23400 to 31300).",
+  "tags": ["levels"],
+  "level": "three_crowns",
+  "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 1 }],
+  "runTicks": 28000,
+  "assert": [
+    { "at": 4000, "expr": "alive(0) && level.objectivesDone == 0 && alive(1) && !level.won" },
+    { "at": 8000, "expr": "level.objectivesDone == 1 && alive(2) && !level.won" },
+    { "at": 15000, "expr": "level.objectivesDone == 2 && alive(3) && !level.won" },
+    { "at": 22000, "expr": "level.objectivesDone == 3 && !level.won" },
+    { "at": 28000, "expr": "level.won && alive(0) && level.objectivesDone == 4 && site('crown_stone').by == 0 && alive(1) && alive(2) && alive(3) && events.count('levelWon') == 1 && invariants() == 0" }
+  ]
+}

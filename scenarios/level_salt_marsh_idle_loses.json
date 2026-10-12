@@ -1,0 +1,10 @@
+{
+  "id": "level_salt_marsh_idle_loses",
+  "description": "Campaign level 29 has a real loss: an idle player never crosses the marsh, the boat people's waves land on the home isle, and time runs out.",
+  "tags": ["levels"],
+  "level": "salt_marsh",
+  "runTicks": 48100,
+  "assert": [
+    { "at": 48100, "expr": "level.lost && !level.won && invariants() == 0" }
+  ]
+}

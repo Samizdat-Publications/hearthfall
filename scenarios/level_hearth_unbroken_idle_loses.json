@@ -1,0 +1,11 @@
+{
+  "id": "level_hearth_unbroken_idle_loses",
+  "description": "The Hearth Unbroken (level 35) has a real loss: an idle player never takes the Heart Stone, the three rivals outlast them and the time limit runs out (or the Hearth falls first).",
+  "tags": ["levels"],
+  "level": "hearth_unbroken",
+  "runTicks": 80100,
+  "assert": [
+    { "at": 20000, "expr": "!level.won && level.objectivesDone == 0" },
+    { "at": 80100, "expr": "level.lost && !level.won && level.objectivesDone == 0 && alive(2) && alive(3) && invariants() == 0" }
+  ]
+}

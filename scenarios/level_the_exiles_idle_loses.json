@@ -1,0 +1,10 @@
+{
+  "id": "level_the_exiles_idle_loses",
+  "description": "Campaign level 30 is not won by doing nothing: an idle band never marches, the pursuers cut it down on the beach and gather at the gate, the Hearth never rises, and the level ends lost.",
+  "tags": ["levels"],
+  "level": "the_exiles",
+  "runTicks": 48100,
+  "assert": [
+    { "at": 48100, "expr": "level.lost && !level.won && level.objectivesDone == 0 && events.count('levelLost') == 1" }
+  ]
+}

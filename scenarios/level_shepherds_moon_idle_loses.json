@@ -1,0 +1,10 @@
+{
+  "id": "level_shepherds_moon_idle_loses",
+  "description": "Campaign level 28 has a real loss: an idle player never grows, never clears the woods and runs out of time in the hills.",
+  "tags": ["levels"],
+  "level": "shepherds_moon",
+  "runTicks": 42100,
+  "assert": [
+    { "at": 42100, "expr": "level.lost && !level.won && invariants() == 0" }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "level_sunken_road_idle_loses",
+  "description": "The Sunken Road with an idle player: nobody prays the Reliquary, the rival boat raid that lands at 480 s marches through the village and burns the Hearth, and the level is lost.",
+  "tags": [
+    "levels"
+  ],
+  "level": "sunken_road",
+  "runTicks": 14000,
+  "assert": [
+    {
+      "at": 9000,
+      "expr": "!level.lost && level.objectivesDone == 0"
+    },
+    {
+      "at": 14000,
+      "expr": "level.lost && !level.won && level.objectivesDone == 0 && invariants() == 0"
+    }
+  ]
+}

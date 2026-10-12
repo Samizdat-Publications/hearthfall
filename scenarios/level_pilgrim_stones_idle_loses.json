@@ -1,0 +1,11 @@
+{
+  "id": "level_pilgrim_stones_idle_loses",
+  "description": "The Pilgrim Stones (level 34) with an idle player: the rival boat lands three wardens on the Tern Stone isle at 420 s and they pray it away before any Boathouse stands, so the level is lost (siteLost before stage 1).",
+  "tags": ["levels"],
+  "level": "pilgrim_stones",
+  "runTicks": 12000,
+  "assert": [
+    { "at": 8000, "expr": "!level.lost && !level.won && level.objectivesDone == 0" },
+    { "at": 12000, "expr": "level.lost && !level.won && level.objectivesDone == 0 && site('tern_stone').by == 1 && invariants() == 0" }
+  ]
+}

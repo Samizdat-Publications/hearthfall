@@ -1,0 +1,795 @@
+{
+  "$comment": "Campaign level 28 (S4 chapter 3, The Far Shores): a quiet green hill country. Wild herders wander the hills (Call brings them in), three wolf dens fill the eastern woods and hunt only the player (beastPrey player), and a weak turtle tribe sits on an isle far to the south east (maxTroops 6, maxPopulation 36; no Boathouse or Skyloft in this level, so neither side can cross to the other and the level bot cannot wipe the rival early: it did by tick 13000 when the rival stood on the mainland, and the night hunters stopped with it). Staged: grow to 30 followers (from 13); clear the three dens of the eastern woods (fromStage clearDens in an area); from minute 6 the moon rises and the far tribe sends two fresh hunters at the Hearth every 45 s until the night ends, and clearing the woods brings three more: survive three minutes from then (survive fromStage; the repeating spawn is bounded by until on it; the engine cannot spawn hunting wolves from a trigger, so the night hunters are rival wardens); dawn sends two new herds of wild herders, grow by 20 more (followers fromStage); then the moon stone wakes on the moon hill to the north east behind a wolf den, the far tribe sends four fresh wardens to stand on the hill (an attack raid, not a pray raid: the level bot cannot strike rival worshippers kneeling at a reliquary, so a pray race stalled it), and six followers pray there (worship fromStage) to finish. Bot win about 19250 (stages at about 5750, 8250, 12000, 16250), time limit 2100 s.",
+  "id": "shepherds_moon",
+  "name": "Shepherd's Moon",
+  "order": 28,
+  "description": "Green hills, wild herders and wolves in the eastern woods. Call the herders to your fire, clear the woods, outlast the moon night, then climb the moon hill past the far tribe's warriors and pray at the moon stone.",
+  "seed": 2828,
+  "beastPrey": "player",
+  "map": {
+    "generator": "flat",
+    "size": 192,
+    "landAboveSea": 18,
+    "paint": [
+      {
+        "shape": "cone",
+        "at": [
+          62,
+          58
+        ],
+        "r": 18,
+        "aboveSea": 70,
+        "falloff": 4
+      },
+      {
+        "shape": "cone",
+        "at": [
+          66,
+          142
+        ],
+        "r": 20,
+        "aboveSea": 80,
+        "falloff": 4
+      },
+      {
+        "shape": "cone",
+        "at": [
+          92,
+          104
+        ],
+        "r": 12,
+        "aboveSea": 52,
+        "falloff": 4
+      },
+      {
+        "shape": "cone",
+        "at": [
+          20,
+          150
+        ],
+        "r": 14,
+        "aboveSea": 60,
+        "falloff": 4
+      },
+      {
+        "shape": "cone",
+        "at": [
+          112,
+          38
+        ],
+        "r": 22,
+        "aboveSea": 150,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          112,
+          38
+        ],
+        "r": 4,
+        "aboveSea": 146,
+        "falloff": 2
+      },
+      {
+        "shape": "cone",
+        "at": [
+          176,
+          60
+        ],
+        "r": 18,
+        "aboveSea": 90,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          24,
+          60
+        ],
+        "r": 7,
+        "aboveSea": -20,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          160,
+          168
+        ],
+        "r": 34,
+        "aboveSea": -26,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          160,
+          168
+        ],
+        "r": 17,
+        "aboveSea": 26,
+        "falloff": 4
+      },
+      {
+        "shape": "cone",
+        "at": [
+          168,
+          176
+        ],
+        "r": 8,
+        "aboveSea": 60,
+        "falloff": 3
+      }
+    ]
+  },
+  "tribes": [
+    {},
+    {
+      "ai": "turtle",
+      "difficulty": "normal",
+      "maxTroops": 6,
+      "maxPopulation": 36,
+      "worshipAfterSeconds": 1500
+    }
+  ],
+  "spells": [
+    "call",
+    "bolt",
+    "hornets",
+    "lightning"
+  ],
+  "buildings": [
+    "dwelling",
+    "watchtower",
+    "warden_lodge"
+  ],
+  "props": [
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        107,
+        34
+      ],
+      "rot": 0.3
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        117,
+        34
+      ],
+      "rot": 1.2
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        112,
+        44
+      ],
+      "rot": 2.1
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        106,
+        41
+      ],
+      "rot": 2.9
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        118,
+        41
+      ],
+      "rot": 0.8
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        100,
+        52
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        90,
+        62
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        80,
+        72
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        28,
+        104
+      ],
+      "rot": 0
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        30,
+        106
+      ],
+      "rot": 0
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        32,
+        108
+      ],
+      "rot": 1.57
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        26,
+        100
+      ]
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        24,
+        92
+      ]
+    },
+    {
+      "model": "prop.cart",
+      "at": [
+        44,
+        104
+      ],
+      "rot": 0.6
+    },
+    {
+      "model": "prop.log_a",
+      "at": [
+        126,
+        82
+      ],
+      "rot": 0.4
+    },
+    {
+      "model": "prop.mushroom_ring",
+      "at": [
+        136,
+        116
+      ]
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        150,
+        98
+      ],
+      "rot": 0.2
+    }
+  ],
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        34,
+        96
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        42,
+        94
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        32,
+        104
+      ],
+      "count": 10
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        44,
+        98
+      ],
+      "count": 2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        22,
+        82
+      ],
+      "count": 14,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        24,
+        116
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        46,
+        110
+      ],
+      "count": 4,
+      "spacing": 2
+    },
+    {
+      "spawn": "wild",
+      "tribe": -1,
+      "near": [
+        58,
+        70
+      ],
+      "count": 4,
+      "spacing": 1.5
+    },
+    {
+      "spawn": "wild",
+      "tribe": -1,
+      "near": [
+        62,
+        126
+      ],
+      "count": 4,
+      "spacing": 1.5
+    },
+    {
+      "spawn": "wild",
+      "tribe": -1,
+      "near": [
+        80,
+        96
+      ],
+      "count": 3,
+      "spacing": 1.5
+    },
+    {
+      "spawn": "wild",
+      "tribe": -1,
+      "near": [
+        38,
+        64
+      ],
+      "count": 3,
+      "spacing": 1.5
+    },
+    {
+      "spawn": "wild",
+      "tribe": -1,
+      "near": [
+        40,
+        130
+      ],
+      "count": 3,
+      "spacing": 1.5
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        132,
+        96
+      ],
+      "count": 30,
+      "spacing": 1.6
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        124,
+        112
+      ],
+      "count": 12,
+      "spacing": 1.4
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        142,
+        84
+      ],
+      "count": 12,
+      "spacing": 1.4
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        124,
+        90
+      ],
+      "count": 3
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        140,
+        108
+      ],
+      "count": 3
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        146,
+        88
+      ],
+      "count": 3
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        104,
+        50
+      ],
+      "count": 3
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        100,
+        48
+      ],
+      "count": 6,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "reliquary",
+      "at": [
+        112,
+        38
+      ],
+      "site": {
+        "tag": "moon_stone",
+        "dormant": true,
+        "worshippers": 6,
+        "prayerSeconds": 50,
+        "rewards": [
+          {
+            "type": "reveal",
+            "at": [
+              96,
+              96
+            ],
+            "r": 60
+          },
+          {
+            "type": "message",
+            "text": "The moon stone answers your people. The hill country and its herds are yours."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        160,
+        168
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        154,
+        164
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        164,
+        174
+      ],
+      "count": 10
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        152,
+        160
+      ],
+      "count": 3
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        148,
+        160
+      ]
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        172,
+        180
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        168,
+        160
+      ],
+      "count": 3,
+      "spacing": 2
+    }
+  ],
+  "objectives": [
+    {
+      "type": "followers",
+      "n": 30,
+      "text": "Grow to 30 followers: cast Call on the wild herders in the hills and build dwellings to house them"
+    },
+    {
+      "type": "clearDens",
+      "at": [
+        134,
+        98
+      ],
+      "r": 24,
+      "fromStage": true,
+      "after": 0,
+      "text": "Raise a Warden Lodge, train wardens and clear the three wolf dens in the eastern woods"
+    },
+    {
+      "type": "survive",
+      "seconds": 180,
+      "fromStage": true,
+      "after": 1,
+      "text": "The moon night: keep your Hearth standing for three minutes while the far tribe's hunters come for it"
+    },
+    {
+      "type": "followers",
+      "n": 20,
+      "fromStage": true,
+      "after": 2,
+      "text": "Dawn brings a new herd over the hills: grow by 20 more followers"
+    },
+    {
+      "type": "worship",
+      "site": "moon_stone",
+      "fromStage": true,
+      "after": 3,
+      "text": "Climb the moon hill to the north east, drive off its wolves and the far tribe's warriors, and pray at the moon stone with six followers"
+    }
+  ],
+  "lose": [
+    {
+      "type": "hearthLost"
+    },
+    {
+      "type": "timeLimit",
+      "seconds": 2100
+    }
+  ],
+  "triggers": [
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "A quiet country of hills and herders. Cast Call on the wild herders nearby and build dwellings for them."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 0
+      },
+      "do": [
+        {
+          "type": "reveal",
+          "at": [
+            134,
+            98
+          ],
+          "r": 24
+        },
+        {
+          "type": "message",
+          "text": "Your herds grow, but wolves den in the eastern woods and hunt only your people. Clear all three dens."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 1,
+          "at": [
+            120,
+            128
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            34,
+            96
+          ],
+          "n": 3,
+          "fresh": true
+        },
+        {
+          "type": "message",
+          "text": "The woods are quiet and the moon is up. The far tribe's hunters come down the hills for your Hearth. Hold until dawn."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 360
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "The moon is rising. Hunters from the far tribe come down the south eastern hills for your Hearth, two at a time."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 360,
+        "every": 45
+      },
+      "until": 2,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 2,
+          "tribe": 1,
+          "at": [
+            118,
+            132
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            34,
+            96
+          ],
+          "n": 2,
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 2
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "wild",
+          "n": 5,
+          "tribe": -1,
+          "at": [
+            84,
+            66
+          ]
+        },
+        {
+          "type": "spawn",
+          "unit": "wild",
+          "n": 5,
+          "tribe": -1,
+          "at": [
+            74,
+            120
+          ]
+        },
+        {
+          "type": "message",
+          "text": "Dawn. Two new herds wander the hills to the east. Call them in and grow by 20 more."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 3
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "moon_stone"
+        },
+        {
+          "type": "reveal",
+          "at": [
+            112,
+            38
+          ],
+          "r": 18
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            140,
+            70
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            106,
+            46
+          ],
+          "n": 4,
+          "fresh": true
+        },
+        {
+          "type": "message",
+          "text": "The moon stone rises on the hill to the north east, past a wolf den, and the far tribe sends warriors to claim the hill. Drive them off and pray there."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1800
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Five minutes remain."
+        }
+      ]
+    }
+  ]
+}

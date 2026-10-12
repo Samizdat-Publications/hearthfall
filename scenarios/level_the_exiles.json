@@ -1,0 +1,21 @@
+{
+  "id": "level_the_exiles",
+  "description": "Campaign level 30 is completable: the hard opponent bot for the player sends its settlers home at the start, marches the Shaper to the gate stones ahead of the pursuers (the sunk Hearth rises), gains fourteen followers, cuts down twenty four pursuers as their raids come up the road, then breaks the keepers at the Oath Stone and prays there (bot wins about 21000).",
+  "tags": ["levels"],
+  "level": "the_exiles",
+  "bots": [
+    { "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 1 }
+  ],
+  "commands": [
+    { "tick": 1, "tribe": 0, "type": "move", "args": { "units": "tribe0.settlers", "to": [152, 64] } }
+  ],
+  "runTicks": 26000,
+  "assert": [
+    { "at": 1000, "expr": "alive(0) && level.objectivesDone == 0 && !level.won" },
+    { "at": 3000, "expr": "alive(0) && level.objectivesDone == 1 && !level.won" },
+    { "at": 9000, "expr": "level.objectivesDone == 1 && alive(1)" },
+    { "at": 13000, "expr": "level.objectivesDone == 2 && alive(1) && !level.won" },
+    { "at": 17000, "expr": "level.objectivesDone == 2 && alive(1) && !level.won" },
+    { "at": 26000, "expr": "level.won && alive(0) && level.objectivesDone == 4 && site('oath_stone').by == 0 && events.count('levelWon') == 1 && invariants() == 0" }
+  ]
+}

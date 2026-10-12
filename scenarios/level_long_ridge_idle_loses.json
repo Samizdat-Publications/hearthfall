@@ -1,0 +1,11 @@
+{
+  "id": "level_long_ridge_idle_loses",
+  "description": "Campaign level 27 is not won by doing nothing: an idle player never raises the lodges or takes the pass, and the northern bands that keep coming through the pass burn its Hearth (hearthLost, near tick 12420).",
+  "tags": ["levels"],
+  "level": "long_ridge",
+  "runTicks": 14000,
+  "assert": [
+    { "at": 8000, "expr": "!level.lost && !level.won && level.objectivesDone == 0" },
+    { "at": 14000, "expr": "level.lost && !level.won && level.objectivesDone == 0 && site('pass_ward').by == 1 && events.count('levelLost') == 1 && invariants() == 0" }
+  ]
+}

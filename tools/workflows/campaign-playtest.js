@@ -31,6 +31,8 @@ const batches = []
 for (let i = 0; i < levels.length; i += perAgent) batches.push(levels.slice(i, i + perAgent))
 log(`${total} levels in ${batches.length} batches of up to ${perAgent}`)
 
+// args.targets = {<levelid>: tick} overrides the single ramp (S4 L7-C: chapter 3 has its own ramp, 14000 to 36000)
+const targets = (args && args.targets) || {}
 const target = (order) => Math.round(5000 + ((order - 1) / Math.max(1, lastOrder - 1)) * 29000)
 
 const RULES = `
@@ -48,7 +50,7 @@ How to measure the bot win timeline for a level: copy scenarios/level_<id>.json 
 
 const PACING = (l) => `
 Pacing targets for level ${l.id} (campaign order ${l.order} of ${lastOrder}):
-- Bot win tick near ${target(l.order)} (band plus or minus 25 percent). The campaign ramps roughly linearly from about 5000 at level 1 to about 34000 at the last level. Stewart found the old levels far too easy, so when in doubt err long, but never by padding.
+- Bot win tick near ${targets[l.id] || target(l.order)} (band plus or minus 25 percent). ${targets[l.id] ? 'This level is in chapter 3, which has its own ramp from about 14000 at level 26 to about 36000 at level 35; each level should finish later than the one before it.' : 'The campaign ramps roughly linearly from about 5000 at level 1 to about 34000 at the last level.'} Stewart found the old levels far too easy, so when in doubt err long, but never by padding.
 - The time limit is at least 2x the bot win tick (a human plays slower than the bot) and the idle scenario still loses.
 - No padding: no stage that is only waiting (an absolute survive or a hold the bot finishes without contest). Each stage asks for a decision or an action and takes the bot at least about 600 ticks, except a level 1 to 3 tutorial step.
 - Levels from order 8 up should use at least 4 staged objectives (after) and at least two of: stones (ley, ward, seer), wolves, prayer chains, holds, triggers, tides or causeways, a third tribe. Thin late levels (few objectives) must gain stages.

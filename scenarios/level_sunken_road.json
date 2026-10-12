@@ -1,0 +1,40 @@
+{
+  "id": "level_sunken_road",
+  "description": "The Sunken Road (level 32) won by the hard opponent bot as the player: prays the Reliquary past the wolf dens, raises a Boathouse, ferries worshippers to the drowned shrine over the first trench, prays the road stone away and holds it through rival boat raids, then climbs the risen road and burns both rival Watchtowers (bot wins near tick 26100).",
+  "tags": [
+    "levels"
+  ],
+  "level": "sunken_road",
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "aggressive",
+      "difficulty": "hard",
+      "offset": 1
+    }
+  ],
+  "runTicks": 30000,
+  "assert": [
+    {
+      "at": 5000,
+      "expr": "level.objectivesDone == 1 && site('road_reliquary').by == 0 && !level.lost"
+    },
+    {
+      "at": 10500,
+      "expr": "level.objectivesDone == 2 && site('drowned_shrine').by != 0 && !level.lost"
+    },
+    {
+      "at": 17500,
+      "expr": "level.objectivesDone == 3 && site('drowned_shrine').by == 0 && site('road_ley').by == 0 && !level.lost"
+    },
+    {
+      "at": 24000,
+      "expr": "level.objectivesDone == 4 && alive(1) && count(tribe1.watchtowers) >= 1 && !level.won && !level.lost"
+    },
+    {
+      "at": 30000,
+      "expr": "level.won && level.objectivesDone == 5 && count(tribe1.watchtowers) == 0 && alive(0) && invariants() == 0"
+    }
+  ]
+}

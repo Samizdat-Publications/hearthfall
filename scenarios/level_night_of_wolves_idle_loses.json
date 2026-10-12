@@ -1,0 +1,19 @@
+{
+  "id": "level_night_of_wolves_idle_loses",
+  "description": "Night of Wolves with an idle player: the near dens stand, the rival boat raid that lands at 540 s marches on the clearing, and the tribe falls.",
+  "tags": [
+    "levels"
+  ],
+  "level": "night_of_wolves",
+  "runTicks": 13000,
+  "assert": [
+    {
+      "at": 9000,
+      "expr": "!level.lost && level.objectivesDone == 0"
+    },
+    {
+      "at": 13000,
+      "expr": "level.lost && !level.won && level.objectivesDone == 0 && invariants() == 0"
+    }
+  ]
+}

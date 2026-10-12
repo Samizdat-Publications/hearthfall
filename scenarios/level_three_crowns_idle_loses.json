@@ -1,0 +1,11 @@
+{
+  "id": "level_three_crowns_idle_loses",
+  "description": "Campaign level 31 cannot be won idle: with no one at the helm the Ember Crown firecallers burn the Hearth within the first minutes and the level is lost.",
+  "tags": ["levels"],
+  "level": "three_crowns",
+  "bots": [],
+  "runTicks": 6000,
+  "assert": [
+    { "at": 6000, "expr": "level.lost && !level.won && level.objectivesDone == 0 && events.count('levelLost') == 1" }
+  ]
+}

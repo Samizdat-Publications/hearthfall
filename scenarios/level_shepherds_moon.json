@@ -1,0 +1,18 @@
+{
+  "id": "level_shepherds_moon",
+  "description": "Campaign level 28 is completable: the opponent bot for the player calls in wild herders and grows to 30, clears the three eastern wood dens, outlasts the moon night against the far tribe's hunters, grows by 20 more from the dawn herds and prays at the moon stone past its wolf den and the far tribe's warriors (bot wins near tick 19250; stages at about 5750, 8250, 12000 and 16250). The far tribe's isle stays out of reach, so it lives to the end.",
+  "tags": ["levels"],
+  "level": "shepherds_moon",
+  "bots": [
+    { "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 1 }
+  ],
+  "runTicks": 26000,
+  "assert": [
+    { "at": 4000, "expr": "level.objectivesDone == 0 && site('moon_stone').by == -1" },
+    { "at": 7000, "expr": "level.objectivesDone == 1 && !level.won" },
+    { "at": 10500, "expr": "level.objectivesDone == 2 && !level.won && alive(1)" },
+    { "at": 14500, "expr": "level.objectivesDone == 3 && !level.won && site('moon_stone').by == -1" },
+    { "at": 18000, "expr": "level.objectivesDone == 4 && !level.won" },
+    { "at": 26000, "expr": "level.won && level.objectivesDone == 5 && site('moon_stone').by == 0 && alive(0) && alive(1) && invariants() == 0" }
+  ]
+}

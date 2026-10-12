@@ -1,0 +1,706 @@
+{
+  "$comment": "Campaign level 30 (S4 L7-B, chapter 3): a march home. The player lands on the western beach with only the Shaper, five wardens and five settlers; the old Hearth stands empty on the northeastern plateau, sunk in a pit of black water (so a Shaper who falls on the road cannot respawn and skip the march), a long winding road away. Any unit reaching the gate stones raises it. Pursuers (tribe 1, whose camp is on an island to the south, so they can never be wiped out early) land behind the band every 60 s and chase it to the gate (spawn plus fresh raid, until the reach stage), and a band from the Oath Stone cuts the road at the ford. Stages: bring the Shaper to the gate (reach), gain fourteen followers (fromStage), cut down twenty four pursuers (kill, tribe 1; raids every 75 s from minute 10 until done), then pray at the Oath Stone (dormant until then, held by tribe 1, posted guards plus eight keepers). Not eliminateAll. Bot (hard, offsets 0 to 5, normal) wins 20900 to 22400.",
+  "id": "the_exiles",
+  "name": "The Exiles",
+  "order": 30,
+  "description": "Driven from the west, your band has one place left: the old Hearth across the island, sunk in black water until its people come home. Lead the Shaper home with a war band on your heels, fill the village again, break the pursuers and take their stone.",
+  "seed": 3030,
+  "map": {
+    "generator": "flat",
+    "size": 192,
+    "landAboveSea": -30,
+    "paint": [
+      {
+        "shape": "disc",
+        "at": [
+          26,
+          150
+        ],
+        "r": 14,
+        "aboveSea": 30,
+        "falloff": 4
+      },
+      {
+        "shape": "ridge",
+        "at": [
+          26,
+          150
+        ],
+        "to": [
+          70,
+          110
+        ],
+        "width": 14,
+        "aboveSea": 30,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          70,
+          110
+        ],
+        "r": 13,
+        "aboveSea": 32,
+        "falloff": 4
+      },
+      {
+        "shape": "ridge",
+        "at": [
+          70,
+          110
+        ],
+        "to": [
+          118,
+          124
+        ],
+        "width": 12,
+        "aboveSea": 30,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          118,
+          124
+        ],
+        "r": 11,
+        "aboveSea": 28,
+        "falloff": 4
+      },
+      {
+        "shape": "ridge",
+        "at": [
+          118,
+          124
+        ],
+        "to": [
+          150,
+          70
+        ],
+        "width": 14,
+        "aboveSea": 32,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          156,
+          54
+        ],
+        "r": 24,
+        "aboveSea": 40,
+        "falloff": 6
+      },
+      {
+        "shape": "disc",
+        "at": [
+          158,
+          50
+        ],
+        "r": 9,
+        "aboveSea": -20,
+        "falloff": 2
+      },
+      {
+        "shape": "disc",
+        "at": [
+          96,
+          170
+        ],
+        "r": 13,
+        "aboveSea": 34,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          144,
+          112
+        ],
+        "r": 8,
+        "aboveSea": 34,
+        "falloff": 4
+      }
+    ]
+  },
+  "tribes": [
+    {},
+    {
+      "ai": "turtle",
+      "difficulty": "normal",
+      "maxTroops": 10,
+      "maxPopulation": 36,
+      "worshipAfterSeconds": 3000
+    }
+  ],
+  "spells": [
+    "bolt",
+    "call",
+    "ward"
+  ],
+  "buildings": [
+    "dwelling",
+    "watchtower",
+    "warden_lodge"
+  ],
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        158,
+        50
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 0,
+      "at": [
+        150,
+        62
+      ]
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 0,
+      "at": [
+        172,
+        38
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        166,
+        60
+      ],
+      "count": 3,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        24,
+        152
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        30,
+        146
+      ],
+      "count": 5
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        22,
+        156
+      ],
+      "count": 5
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        96,
+        172
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        100,
+        168
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        90,
+        176
+      ],
+      "count": 10
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 1,
+      "at": [
+        104,
+        176
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        136,
+        104
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        92,
+        164
+      ],
+      "count": 6
+    },
+    {
+      "spawn": "ward_stone",
+      "at": [
+        144,
+        112
+      ],
+      "tribe": 1,
+      "site": {
+        "tag": "oath_stone",
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The Oath Stone is yours. Its strike now guards your road home."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        146,
+        116
+      ],
+      "count": 6,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "wild",
+      "tribe": -1,
+      "near": [
+        138,
+        40
+      ],
+      "count": 6
+    },
+    {
+      "spawn": "wild",
+      "tribe": -1,
+      "near": [
+        174,
+        68
+      ],
+      "count": 6
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        146,
+        36
+      ],
+      "count": 14,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        172,
+        44
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        164,
+        66
+      ],
+      "count": 4,
+      "spacing": 2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        68,
+        102
+      ],
+      "count": 8,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        88,
+        178
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        18,
+        144
+      ],
+      "count": 6,
+      "spacing": 1.3
+    }
+  ],
+  "props": [
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        150,
+        46
+      ],
+      "rot": 0.4
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        164,
+        58
+      ],
+      "rot": 1.2
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        166,
+        54
+      ]
+    },
+    {
+      "model": "prop.cart",
+      "at": [
+        28,
+        158
+      ],
+      "rot": 2.1
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        70,
+        116
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        116,
+        118
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        138,
+        88
+      ]
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        140,
+        108
+      ],
+      "rot": 0.3
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        150,
+        114
+      ],
+      "rot": 1.9
+    }
+  ],
+  "objectives": [
+    {
+      "type": "reach",
+      "at": [
+        150,
+        66
+      ],
+      "r": 8,
+      "text": "Lead your band home: bring the Shaper to the gate stones below the old Hearth"
+    },
+    {
+      "type": "followers",
+      "n": 14,
+      "fromStage": true,
+      "after": 0,
+      "text": "Fill the village again: gain fourteen more followers (raise dwellings, call in the wild folk)"
+    },
+    {
+      "type": "kill",
+      "n": 24,
+      "tribe": 1,
+      "after": 1,
+      "text": "The pursuers come for your Hearth: cut down twenty four of their warriors"
+    },
+    {
+      "type": "worship",
+      "site": "oath_stone",
+      "after": 2,
+      "text": "Break the guards at the Oath Stone south of the road and pray there with three followers"
+    }
+  ],
+  "lose": [
+    {
+      "type": "hearthLost"
+    },
+    {
+      "type": "timeLimit",
+      "seconds": 2400
+    }
+  ],
+  "triggers": [
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "A war band is on your heels. March everyone east along the road to the old Hearth. If the Shaper falls, she returns only once the Hearth has risen."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 30,
+        "every": 60
+      },
+      "until": 0,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 2,
+          "tribe": 1,
+          "at": [
+            16,
+            156
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            150,
+            66
+          ],
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 25
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Pursuers land on the beach behind you. More will follow until you are home."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "area",
+        "at": [
+          112,
+          120
+        ],
+        "r": 10
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 2,
+          "tribe": 1,
+          "at": [
+            138,
+            110
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            118,
+            124
+          ],
+          "fresh": true
+        },
+        {
+          "type": "message",
+          "text": "A band comes down from the Oath Stone to cut the road at the ford. Push through."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "area",
+        "at": [
+          150,
+          66
+        ],
+        "r": 10
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "disc",
+          "at": [
+            158,
+            50
+          ],
+          "r": 9,
+          "aboveSea": 40,
+          "falloff": 3,
+          "seconds": 6
+        },
+        {
+          "type": "message",
+          "text": "Your people are home, and the old Hearth rises out of the black water to meet them."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 0
+      },
+      "do": [
+        {
+          "type": "reveal",
+          "at": [
+            156,
+            54
+          ],
+          "r": 26
+        },
+        {
+          "type": "message",
+          "text": "Home, and the Hearth is cold. Raise dwellings and call the wild folk from the hills before the pursuers regroup."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            140,
+            96
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            150,
+            66
+          ],
+          "fresh": true
+        },
+        {
+          "type": "message",
+          "text": "The pursuers march on your Hearth. Meet them on the road and cut them down."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 2
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "oath_stone"
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 8,
+          "tribe": 1,
+          "at": [
+            144,
+            116
+          ],
+          "stance": "defensive"
+        },
+        {
+          "type": "message",
+          "text": "Their war bands are broken. The Oath Stone rises south of the road and its keepers close ranks: break them and pray there."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 600,
+        "every": 75
+      },
+      "until": 2,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            140,
+            104
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            150,
+            66
+          ],
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 2100
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Five minutes remain."
+        }
+      ]
+    }
+  ]
+}

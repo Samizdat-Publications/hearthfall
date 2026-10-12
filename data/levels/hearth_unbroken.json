@@ -1,0 +1,1058 @@
+{
+  "$comment": "Campaign level 35, the chapter 3 finale (S4 L7-C). One wide continent shared by four tribes: the player south west, the western tribe (turtle, easy, the first target) north west, the north eastern tribe (aggressive, hard, fortified) and the south eastern tribe (sneaky, hard) behind a high ridge on the player's eastern flank and a sea channel to its north, so it cannot be reached (or reach anyone) until the summit is prayed. A volcano cone fills the centre with the summit Reliquary on its flat top. Ley, ward and seer stones sit at the mountain's feet in rival hands, with wolf dens between. Staged: pray the Heart Stone (the only ley stone) away from the western tribe and hold it three minutes while its wardens come to pray it back; burn the western Hearth; kill fourteen north eastern troops (the stage sends a war band at the village, and fresh bands come every two minutes from 900 s until it is done); pray the summit Reliquary with six followers for Volcano (no rival troops are posted there: the level bot cannot clear guards of a tribe that is already gone); the summit lifts a bridge over the channel and the last tribes march; then break every tribe. Rivals pray on their own only from 3600 s, so the single use summit cannot be stolen. Idle player: the time limit runs out. Bot win near tick 33750.",
+  "id": "hearth_unbroken",
+  "name": "The Hearth Unbroken",
+  "order": 35,
+  "description": "Three rival tribes share the great continent around the fire mountain. Take and hold the Heart Stone, burn the western Hearth, break the north eastern war bands, climb to the summit for the mountain's fire, then end every rival tribe.",
+  "seed": 3535,
+  "map": {
+    "generator": "flat",
+    "size": 256,
+    "landAboveSea": -30,
+    "paint": [
+      {
+        "shape": "rect",
+        "at": [
+          128,
+          128
+        ],
+        "size": [
+          236,
+          236
+        ],
+        "aboveSea": 30,
+        "falloff": 6
+      },
+      {
+        "shape": "cone",
+        "at": [
+          128,
+          128
+        ],
+        "r": 30,
+        "aboveSea": 180
+      },
+      {
+        "shape": "disc",
+        "at": [
+          128,
+          128
+        ],
+        "r": 3,
+        "aboveSea": 165,
+        "falloff": 2
+      },
+      {
+        "shape": "ridge",
+        "at": [
+          156,
+          166
+        ],
+        "to": [
+          250,
+          166
+        ],
+        "width": 8,
+        "aboveSea": -20,
+        "falloff": 2
+      },
+      {
+        "shape": "ridge",
+        "at": [
+          152,
+          160
+        ],
+        "to": [
+          152,
+          250
+        ],
+        "width": 6,
+        "aboveSea": 150,
+        "falloff": 3
+      }
+    ]
+  },
+  "tribes": [
+    {},
+    {
+      "ai": "turtle",
+      "difficulty": "easy",
+      "maxTroops": 6,
+      "maxPopulation": 44,
+      "worshipAfterSeconds": 3600,
+      "keepRaiders": true,
+      "buildings": [
+        "dwelling",
+        "warden_lodge",
+        "watchtower",
+        "mending_hut"
+      ]
+    },
+    {
+      "ai": "aggressive",
+      "difficulty": "hard",
+      "maxTroops": 12,
+      "maxPopulation": 48,
+      "worshipAfterSeconds": 3600
+    },
+    {
+      "ai": "sneaky",
+      "difficulty": "hard",
+      "maxTroops": 14,
+      "maxPopulation": 52,
+      "worshipAfterSeconds": 3600
+    }
+  ],
+  "spells": [
+    "bolt",
+    "hornets",
+    "lightning",
+    "raise_land",
+    "whirlwind"
+  ],
+  "buildings": [
+    "dwelling",
+    "watchtower",
+    "warden_lodge",
+    "mending_hut"
+  ],
+  "beastPrey": "all",
+  "props": [
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        124,
+        124
+      ],
+      "rot": 0.3
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        132,
+        132
+      ],
+      "rot": 2.2
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        97,
+        159
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        103,
+        153
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        125,
+        81
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        173,
+        131
+      ]
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        146,
+        166
+      ],
+      "rot": 0.8
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        92,
+        98
+      ],
+      "rot": 2.4
+    },
+    {
+      "model": "prop.mushroom_ring",
+      "at": [
+        82,
+        126
+      ]
+    },
+    {
+      "model": "prop.mushroom_ring",
+      "at": [
+        178,
+        94
+      ]
+    },
+    {
+      "model": "prop.log_a",
+      "at": [
+        70,
+        180
+      ],
+      "rot": 1.1
+    },
+    {
+      "model": "prop.bush_a",
+      "at": [
+        64,
+        196
+      ]
+    },
+    {
+      "model": "prop.fern",
+      "at": [
+        58,
+        228
+      ]
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        30,
+        222
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        26,
+        226
+      ],
+      "rot": 0.2
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        34,
+        230
+      ],
+      "rot": 1.6
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        52,
+        220
+      ]
+    },
+    {
+      "model": "prop.cart",
+      "at": [
+        48,
+        202
+      ],
+      "rot": 0.7
+    },
+    {
+      "model": "prop.flowers",
+      "at": [
+        36,
+        200
+      ]
+    },
+    {
+      "model": "prop.pots",
+      "at": [
+        44,
+        226
+      ]
+    }
+  ],
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        40,
+        214
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        50,
+        208
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        36,
+        206
+      ],
+      "count": 24
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        58,
+        204
+      ],
+      "count": 10
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 0,
+      "at": [
+        54,
+        222
+      ]
+    },
+    {
+      "spawn": "dwelling",
+      "tribe": 0,
+      "at": [
+        28,
+        204
+      ]
+    },
+    {
+      "spawn": "dwelling",
+      "tribe": 0,
+      "at": [
+        30,
+        224
+      ]
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        24,
+        196
+      ],
+      "count": 14,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        28,
+        236
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        62,
+        234
+      ],
+      "count": 4,
+      "spacing": 2
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        42,
+        50
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        50,
+        56
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        34,
+        44
+      ],
+      "count": 14
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        52,
+        66
+      ],
+      "count": 4,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        60,
+        52
+      ],
+      "count": 2
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        40,
+        70
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        62,
+        62
+      ]
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 1,
+      "at": [
+        30,
+        60
+      ]
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        24,
+        30
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        56,
+        30
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 2,
+      "at": [
+        214,
+        44
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 2,
+      "at": [
+        206,
+        50
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 2,
+      "near": [
+        222,
+        38
+      ],
+      "count": 14
+    },
+    {
+      "spawn": "warden",
+      "tribe": 2,
+      "near": [
+        200,
+        60
+      ],
+      "count": 6
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        196,
+        46
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        212,
+        64
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 2,
+      "near": [
+        214,
+        56
+      ],
+      "count": 10,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        228,
+        60
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        196,
+        30
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        200,
+        70
+      ]
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 2,
+      "at": [
+        230,
+        40
+      ]
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        230,
+        26
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        232,
+        58
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 3,
+      "at": [
+        214,
+        214
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 3,
+      "at": [
+        206,
+        206
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 3,
+      "near": [
+        222,
+        220
+      ],
+      "count": 14
+    },
+    {
+      "spawn": "warden",
+      "tribe": 3,
+      "near": [
+        196,
+        200
+      ],
+      "count": 12,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 3,
+      "at": [
+        194,
+        214
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 3,
+      "at": [
+        210,
+        194
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 3,
+      "at": [
+        194,
+        230
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 3,
+      "at": [
+        230,
+        194
+      ]
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 3,
+      "at": [
+        226,
+        226
+      ]
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        230,
+        232
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        230,
+        198
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        90,
+        186
+      ],
+      "count": 8,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        86,
+        92
+      ],
+      "count": 8,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        172,
+        76
+      ],
+      "count": 8,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        80,
+        130
+      ],
+      "count": 3
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        176,
+        100
+      ],
+      "count": 3
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        120,
+        196
+      ],
+      "count": 3
+    },
+    {
+      "spawn": "ley_stone",
+      "at": [
+        100,
+        156
+      ],
+      "tribe": 1,
+      "site": {
+        "tag": "heart_stone",
+        "worshippers": 4,
+        "prayerSeconds": 40,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The Heart Stone is yours and pays you mana. Keep it."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "ward_stone",
+      "at": [
+        128,
+        84
+      ],
+      "tribe": 2,
+      "site": {
+        "tag": "north_ward",
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The northern ward stone now strikes for you."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "seer_stone",
+      "at": [
+        172,
+        128
+      ],
+      "tribe": 3,
+      "site": {
+        "tag": "east_seer",
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The eastern seer stone shows you the far side of the mountain."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "reliquary",
+      "at": [
+        128,
+        128
+      ],
+      "site": {
+        "tag": "summit_hearth",
+        "dormant": true,
+        "worshippers": 6,
+        "prayerSeconds": 150,
+        "uses": 1,
+        "rewards": [
+          {
+            "type": "unlockSpell",
+            "spell": "volcano"
+          },
+          {
+            "type": "charges",
+            "spell": "volcano",
+            "n": 2
+          },
+          {
+            "type": "message",
+            "text": "The summit answers. Volcano is yours, with two charges ready. Now end this war."
+          }
+        ]
+      }
+    }
+  ],
+  "objectives": [
+    {
+      "type": "hold",
+      "n": 1,
+      "kind": "ley_stone",
+      "seconds": 180,
+      "text": "Pray the Heart Stone at the foot of the mountain away from the western tribe and hold it for three minutes"
+    },
+    {
+      "type": "destroy",
+      "tribe": 1,
+      "building": "hearth",
+      "after": 0,
+      "text": "March north and burn the western tribe's Hearth"
+    },
+    {
+      "type": "kill",
+      "n": 14,
+      "tribe": 2,
+      "after": 1,
+      "text": "Break the north eastern war bands: kill fourteen of their troops"
+    },
+    {
+      "type": "worship",
+      "site": "summit_hearth",
+      "after": 2,
+      "text": "Climb the fire mountain and pray at the summit Reliquary with six followers"
+    },
+    {
+      "type": "eliminateAll",
+      "after": 3,
+      "text": "Break every rival tribe"
+    }
+  ],
+  "lose": [
+    {
+      "type": "hearthLost"
+    },
+    {
+      "type": "timeLimit",
+      "seconds": 4000
+    }
+  ],
+  "triggers": [
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Three tribes share this land with you. First take the Heart Stone below the mountain from the western tribe, and hold it."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 300,
+        "every": 240
+      },
+      "until": 0,
+      "do": [
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            100,
+            156
+          ],
+          "n": 4,
+          "pray": "heart_stone"
+        },
+        {
+          "type": "message",
+          "text": "Western wardens come to kneel at the Heart Stone."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 0
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "at": [
+            96,
+            160
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            100,
+            156
+          ],
+          "n": 6
+        },
+        {
+          "type": "message",
+          "text": "The Heart Stone holds and its keepers join you. The western tribe sends its war band: go north and burn their Hearth."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 10,
+          "tribe": 2,
+          "at": [
+            120,
+            176
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            40,
+            214
+          ],
+          "fresh": true
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            100,
+            156
+          ],
+          "n": 6
+        },
+        {
+          "type": "message",
+          "text": "The western Hearth is ash. North eastern war bands come round the mountain for your village. Break them."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 900,
+        "every": 120
+      },
+      "until": 2,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 2,
+          "at": [
+            120,
+            176
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            40,
+            214
+          ],
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 2
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "summit_hearth"
+        },
+        {
+          "type": "reveal",
+          "at": [
+            128,
+            128
+          ],
+          "r": 16
+        },
+        {
+          "type": "charges",
+          "spell": "lightning",
+          "n": 2
+        },
+        {
+          "type": "message",
+          "text": "The north east is broken and the mountain stirs. Climb to the summit and pray at its Reliquary with six followers."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 3
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "line",
+          "at": [
+            190,
+            154
+          ],
+          "to": [
+            190,
+            178
+          ],
+          "width": 4,
+          "aboveSea": 8,
+          "falloff": 2,
+          "seconds": 40
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 8,
+          "at": [
+            110,
+            150
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 3,
+          "to": [
+            150,
+            150
+          ],
+          "n": 8
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            40,
+            214
+          ],
+          "n": 6
+        },
+        {
+          "type": "message",
+          "text": "The mountain answers with fire and lifts a bridge over the southern channel. The last tribes march: hold your Hearth, then end them all."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 3700
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Five minutes remain."
+        }
+      ]
+    }
+  ]
+}

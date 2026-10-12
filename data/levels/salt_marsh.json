@@ -1,0 +1,886 @@
+{
+  "$comment": "Campaign level 29 (S4 chapter 3, The Far Shores): low marsh isles on a shallow sea. The home isle (west) reaches the middle isle by an old causeway that drowns at high tide; tidal flats join the middle isle to the north and south isles at low water; a deep channel parts them all from the boat people's isle (east). Tides: high water until 40 s, then every 120 s the causeway and flats rise (40 s) and go under (100 s) over 8 s, with a message 10 s before each. The rival (aggressive, hard, maxTroops 14, maxPopulation 40) may build only dwellings, a warden lodge and Boathouses (tribes[].buildings), starts with two Boathouses by its western shore, two boats and six posted wardens at its boatyard, and ferries its waves by water. Staged: walk a warden along the causeway to its head at low tide (reach); raise a Boathouse (build), which wakes three dormant marsh stones (middle seer, north ley, south ward) and lands three raiders on the north isle; from minute 8 boat raiders land two at a time on the north and south isles every 100 s to pray the stones away (spawned on the isle shore: a raid reward cannot board boats) until the hold is done; hold stones on two isles at once for three minutes (hold n 2); that raises a dry road beside the causeway above every tide (the bot only sends waves at buildings on its own landmass, and with the tidal causeway alone it broke the rival by its Hearth instead) and a sandbar to the boatyard; burn both rival Boathouses (destroy, not eliminateAll; the rival still stands at the bot win). Mire breaks the landings. Bot win about 22900 (stages at about 1500, 6750 and 20500), time limit 2400 s.",
+  "id": "salt_marsh",
+  "name": "The Salt Marsh",
+  "order": 29,
+  "description": "Low isles in a shallow sea, and the tide owns the roads between them. Cross the old causeway at low water, raise a Boathouse, hold stones on two isles against the boat people's landings, then sail over and burn their Boathouses.",
+  "seed": 2929,
+  "map": {
+    "generator": "flat",
+    "size": 192,
+    "landAboveSea": -24,
+    "paint": [
+      {
+        "shape": "disc",
+        "at": [
+          34,
+          96
+        ],
+        "r": 24,
+        "aboveSea": 14,
+        "falloff": 5
+      },
+      {
+        "shape": "disc",
+        "at": [
+          98,
+          96
+        ],
+        "r": 12,
+        "aboveSea": 12,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          98,
+          50
+        ],
+        "r": 12,
+        "aboveSea": 12,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          98,
+          142
+        ],
+        "r": 12,
+        "aboveSea": 12,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          160,
+          96
+        ],
+        "r": 24,
+        "aboveSea": 14,
+        "falloff": 5
+      },
+      {
+        "shape": "disc",
+        "at": [
+          24,
+          84
+        ],
+        "r": 8,
+        "aboveSea": 26,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          166,
+          108
+        ],
+        "r": 8,
+        "aboveSea": 26,
+        "falloff": 4
+      },
+      {
+        "shape": "rect",
+        "at": [
+          72,
+          96
+        ],
+        "size": [
+          30,
+          5
+        ],
+        "aboveSea": -8,
+        "falloff": 2
+      },
+      {
+        "shape": "rect",
+        "at": [
+          98,
+          73
+        ],
+        "size": [
+          6,
+          24
+        ],
+        "aboveSea": -8,
+        "falloff": 2
+      },
+      {
+        "shape": "rect",
+        "at": [
+          98,
+          119
+        ],
+        "size": [
+          6,
+          24
+        ],
+        "aboveSea": -8,
+        "falloff": 2
+      }
+    ]
+  },
+  "tribes": [
+    {},
+    {
+      "ai": "aggressive",
+      "difficulty": "hard",
+      "maxTroops": 14,
+      "maxPopulation": 40,
+      "worshipAfterSeconds": 900,
+      "buildings": [
+        "dwelling",
+        "warden_lodge",
+        "boathouse"
+      ]
+    }
+  ],
+  "spells": [
+    "bolt",
+    "mire",
+    "lightning"
+  ],
+  "buildings": [
+    "dwelling",
+    "watchtower",
+    "warden_lodge",
+    "boathouse"
+  ],
+  "props": [
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        60,
+        92
+      ],
+      "rot": 0.2
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        86,
+        92
+      ],
+      "rot": 0.4
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        86,
+        100
+      ],
+      "rot": 2.6
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        90,
+        96
+      ]
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        104,
+        102
+      ],
+      "rot": 1.1
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        94,
+        66
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        102,
+        70
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        94,
+        124
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        102,
+        116
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        56,
+        100
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        94,
+        44
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        102,
+        148
+      ]
+    },
+    {
+      "model": "prop.cart",
+      "at": [
+        40,
+        108
+      ],
+      "rot": 0.7
+    },
+    {
+      "model": "prop.pots",
+      "at": [
+        150,
+        100
+      ]
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        156,
+        84
+      ]
+    }
+  ],
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        28,
+        96
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        36,
+        94
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        28,
+        104
+      ],
+      "count": 14
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        40,
+        98
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        18,
+        110
+      ],
+      "count": 14,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        30,
+        76
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        44,
+        110
+      ],
+      "count": 4,
+      "spacing": 2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        102,
+        92
+      ],
+      "count": 6,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        104,
+        46
+      ],
+      "count": 5,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        92,
+        146
+      ],
+      "count": 5,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "seer_stone",
+      "at": [
+        100,
+        98
+      ],
+      "site": {
+        "tag": "causeway_seer",
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The causeway seer watches the middle of the marsh."
+          }
+        ],
+        "dormant": true
+      }
+    },
+    {
+      "spawn": "ley_stone",
+      "at": [
+        98,
+        50
+      ],
+      "site": {
+        "tag": "north_ley",
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The north isle ley pays mana while you hold it."
+          }
+        ],
+        "dormant": true
+      }
+    },
+    {
+      "spawn": "ward_stone",
+      "at": [
+        98,
+        142
+      ],
+      "site": {
+        "tag": "south_ward",
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The south isle ward strikes at raiders who come ashore."
+          }
+        ],
+        "dormant": true
+      }
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        170,
+        96
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        164,
+        92
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        172,
+        86
+      ],
+      "count": 12
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        150,
+        96
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 1,
+      "at": [
+        158,
+        104
+      ]
+    },
+    {
+      "spawn": "boathouse",
+      "tribe": 1,
+      "at": [
+        139,
+        90
+      ]
+    },
+    {
+      "spawn": "boathouse",
+      "tribe": 1,
+      "at": [
+        139,
+        102
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        142,
+        96
+      ],
+      "count": 6,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "boat",
+      "tribe": 1,
+      "at": [
+        130,
+        90
+      ]
+    },
+    {
+      "spawn": "boat",
+      "tribe": 1,
+      "at": [
+        130,
+        102
+      ]
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        176,
+        110
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        170,
+        80
+      ],
+      "count": 3,
+      "spacing": 2
+    }
+  ],
+  "objectives": [
+    {
+      "type": "reach",
+      "at": [
+        88,
+        96
+      ],
+      "r": 4,
+      "unit": "warden",
+      "text": "Wait for low tide, then walk a warden along the old causeway to its head on the middle isle"
+    },
+    {
+      "type": "build",
+      "building": "boathouse",
+      "n": 1,
+      "after": 0,
+      "text": "Raise a Boathouse on your shore: boats cross at any tide"
+    },
+    {
+      "type": "hold",
+      "n": 2,
+      "seconds": 180,
+      "after": 1,
+      "text": "Pray at stones on two different isles and hold both at once for three minutes while the boat people land raiders"
+    },
+    {
+      "type": "destroy",
+      "tribe": 1,
+      "building": "boathouse",
+      "after": 2,
+      "text": "Cross the new sandbar or sail the deep channel, and burn every Boathouse of the boat people"
+    }
+  ],
+  "lose": [
+    {
+      "type": "hearthLost"
+    },
+    {
+      "type": "timeLimit",
+      "seconds": 2400
+    }
+  ],
+  "triggers": [
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "High water covers the old causeway. When the tide goes out, send a warden along it to the middle isle."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 30,
+        "every": 120
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "The tide is going out. The causeway and the flats rise in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 40,
+        "every": 120
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            72,
+            96
+          ],
+          "size": [
+            30,
+            5
+          ],
+          "aboveSea": 5,
+          "falloff": 2,
+          "seconds": 8
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            98,
+            73
+          ],
+          "size": [
+            6,
+            24
+          ],
+          "aboveSea": 5,
+          "falloff": 2,
+          "seconds": 8
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            98,
+            119
+          ],
+          "size": [
+            6,
+            24
+          ],
+          "aboveSea": 5,
+          "falloff": 2,
+          "seconds": 8
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 90,
+        "every": 120
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "The tide is turning. The causeway and the flats go under in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 100,
+        "every": 120
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            72,
+            96
+          ],
+          "size": [
+            30,
+            5
+          ],
+          "aboveSea": -8,
+          "falloff": 2,
+          "seconds": 8
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            98,
+            73
+          ],
+          "size": [
+            6,
+            24
+          ],
+          "aboveSea": -8,
+          "falloff": 2,
+          "seconds": 8
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            98,
+            119
+          ],
+          "size": [
+            6,
+            24
+          ],
+          "aboveSea": -8,
+          "falloff": 2,
+          "seconds": 8
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 0
+      },
+      "do": [
+        {
+          "type": "reveal",
+          "at": [
+            98,
+            96
+          ],
+          "r": 50
+        },
+        {
+          "type": "message",
+          "text": "From the causeway head you see the whole marsh, and the boat people's sails beyond the deep channel. Raise a Boathouse."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 1
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "causeway_seer"
+        },
+        {
+          "type": "awaken",
+          "site": "north_ley"
+        },
+        {
+          "type": "awaken",
+          "site": "south_ward"
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 1,
+          "at": [
+            106,
+            52
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            98,
+            50
+          ],
+          "n": 3,
+          "pray": "north_ley",
+          "fresh": true
+        },
+        {
+          "type": "message",
+          "text": "The marsh stones rise from the reeds on three isles, and a rival boat lands raiders on the north isle. Take stones on two isles and hold both for three minutes."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 480,
+        "every": 100
+      },
+      "until": 2,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 2,
+          "tribe": 1,
+          "at": [
+            106,
+            140
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            98,
+            142
+          ],
+          "n": 2,
+          "pray": "south_ward",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 530,
+        "every": 100
+      },
+      "until": 2,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 2,
+          "tribe": 1,
+          "at": [
+            106,
+            52
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            98,
+            50
+          ],
+          "n": 2,
+          "pray": "north_ley",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 2
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "line",
+          "at": [
+            108,
+            96
+          ],
+          "to": [
+            138,
+            96
+          ],
+          "width": 4,
+          "aboveSea": 6,
+          "falloff": 2,
+          "seconds": 30
+        },
+        {
+          "type": "shape",
+          "shape": "line",
+          "at": [
+            54,
+            103
+          ],
+          "to": [
+            91,
+            103
+          ],
+          "width": 4,
+          "aboveSea": 6,
+          "falloff": 2,
+          "seconds": 30
+        },
+        {
+          "type": "reveal",
+          "at": [
+            140,
+            96
+          ],
+          "r": 18
+        },
+        {
+          "type": "message",
+          "text": "The stones answer: a dry road rises beside the old causeway, above every tide, and a sandbar reaches the boat people's shore. Burn their Boathouses."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 2100
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Five minutes remain."
+        }
+      ]
+    }
+  ]
+}

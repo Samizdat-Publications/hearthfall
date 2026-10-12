@@ -1,0 +1,984 @@
+{
+  "$comment": "Campaign level 34 (S4 L7-C, chapter 3): a boat pilgrim chain on open sea. Home isle west, rival isle east, the high summit isle between them on the line of a sunken pilgrim road, and four small pilgrim isles to the north. Staged: raise a Boathouse; pray at the Tern, Gull and Heron Stones in order by boat. Each stone wakes the next, and its trigger lands that stone's guardians: unarmed rival pilgrims camped on its isle (settlers, so the level bot, which cannot clear armed guards on another landmass, can still out-pray them). Behind the player a rival boat lands a war band that kneels to pray the stone just taken away (raid pray, keepRaiders on). The Heron Stone lifts a reef path from the home coast to the Storm Stone (the level bot sends its boats with attack waves late in a game, so the fourth stone is reached on foot). The Storm Stone lifts the pilgrim road: the player marches past the summit guardians and burns the rival Boathouse in its fortified harbor (the rival may not rebuild one). Then the summit Reliquary wakes, a twelve warden rival band comes over the road to pray it away, and six followers pray there for four minutes to finish. The rival AI sails its own pilgrims only from 1200 s. At 420 s a rival boat lands wardens on the Tern Stone: an idle player loses it (siteLost before stage 1). Bot win near tick 27600.",
+  "id": "pilgrim_stones",
+  "name": "The Pilgrim Stones",
+  "order": 34,
+  "description": "Four pilgrim stones wake one by one across a chain of isles, and a rival tribe races you to each by boat. Sail from stone to stone, burn the rival Boathouse when the old road rises, then climb the summit and pray at its Reliquary.",
+  "seed": 3434,
+  "map": {
+    "generator": "flat",
+    "size": 256,
+    "landAboveSea": -30,
+    "paint": [
+      {
+        "shape": "disc",
+        "at": [
+          48,
+          186
+        ],
+        "r": 30,
+        "aboveSea": 30,
+        "falloff": 5
+      },
+      {
+        "shape": "disc",
+        "at": [
+          208,
+          186
+        ],
+        "r": 28,
+        "aboveSea": 30,
+        "falloff": 5
+      },
+      {
+        "shape": "disc",
+        "at": [
+          128,
+          186
+        ],
+        "r": 13,
+        "aboveSea": 30,
+        "falloff": 4
+      },
+      {
+        "shape": "cone",
+        "at": [
+          128,
+          186
+        ],
+        "r": 12,
+        "aboveSea": 96,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          92,
+          140
+        ],
+        "r": 7,
+        "aboveSea": 34,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          100,
+          84
+        ],
+        "r": 7,
+        "aboveSea": 38,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          156,
+          84
+        ],
+        "r": 7,
+        "aboveSea": 42,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          166,
+          140
+        ],
+        "r": 7,
+        "aboveSea": 46,
+        "falloff": 3
+      }
+    ]
+  },
+  "tribes": [
+    {},
+    {
+      "ai": "sneaky",
+      "difficulty": "hard",
+      "maxTroops": 14,
+      "maxPopulation": 48,
+      "worshipAfterSeconds": 1200,
+      "keepRaiders": true,
+      "buildings": [
+        "dwelling",
+        "warden_lodge",
+        "watchtower"
+      ]
+    }
+  ],
+  "spells": [
+    "bolt",
+    "lightning",
+    "hornets"
+  ],
+  "buildings": [
+    "dwelling",
+    "watchtower",
+    "warden_lodge",
+    "boathouse",
+    "skyloft",
+    "mending_hut"
+  ],
+  "props": [
+    {
+      "model": "prop.cairn",
+      "at": [
+        89,
+        138
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        95,
+        143
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        97,
+        82
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        103,
+        87
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        153,
+        82
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        159,
+        87
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        163,
+        138
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        169,
+        143
+      ]
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        124,
+        182
+      ],
+      "rot": 0.4
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        132,
+        190
+      ],
+      "rot": 1.9
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        132,
+        182
+      ],
+      "rot": 2.8
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        78,
+        187
+      ],
+      "rot": 1.57
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        180,
+        185
+      ],
+      "rot": 1.57
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        30,
+        176
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        28,
+        180
+      ],
+      "rot": 0.2
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        32,
+        172
+      ],
+      "rot": 1.6
+    }
+  ],
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        38,
+        186
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        44,
+        182
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        34,
+        192
+      ],
+      "count": 16
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        56,
+        188
+      ],
+      "count": 6
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 0,
+      "at": [
+        46,
+        198
+      ]
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        28,
+        168
+      ],
+      "count": 14,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        30,
+        204
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        52,
+        206
+      ],
+      "count": 4,
+      "spacing": 2
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        218,
+        186
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        214,
+        182
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        222,
+        192
+      ],
+      "count": 14
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        212,
+        176
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        216,
+        186
+      ],
+      "count": 12,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        188,
+        178
+      ],
+      "count": 10,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "boathouse",
+      "tribe": 1,
+      "at": [
+        185,
+        174
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        180,
+        168
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        191,
+        172
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        192,
+        184
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        212,
+        196
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        210,
+        178
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        226,
+        180
+      ]
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 1,
+      "at": [
+        224,
+        194
+      ]
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        222,
+        170
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        226,
+        202
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        128,
+        186
+      ],
+      "count": 6,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "seer_stone",
+      "at": [
+        92,
+        140
+      ],
+      "site": {
+        "tag": "tern_stone",
+        "worshippers": 3,
+        "prayerSeconds": 60,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The Tern Stone is yours and watches the sea around its isle."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "ward_stone",
+      "at": [
+        100,
+        84
+      ],
+      "site": {
+        "tag": "gull_stone",
+        "worshippers": 4,
+        "prayerSeconds": 75,
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The Gull Stone is yours: its light strikes rivals who land beside it."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "seer_stone",
+      "at": [
+        156,
+        84
+      ],
+      "site": {
+        "tag": "heron_stone",
+        "worshippers": 4,
+        "prayerSeconds": 90,
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The Heron Stone is yours and watches the rival's northern sea."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "ley_stone",
+      "at": [
+        166,
+        140
+      ],
+      "site": {
+        "tag": "storm_ley",
+        "worshippers": 5,
+        "prayerSeconds": 90,
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The Storm Stone is yours and pays you mana while you hold it."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "reliquary",
+      "at": [
+        128,
+        186
+      ],
+      "site": {
+        "tag": "pilgrim_crown",
+        "worshippers": 6,
+        "prayerSeconds": 240,
+        "uses": 1,
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "charges",
+            "spell": "lightning",
+            "n": 2
+          },
+          {
+            "type": "message",
+            "text": "The summit Reliquary answers your pilgrims. The isles are yours."
+          }
+        ]
+      }
+    }
+  ],
+  "objectives": [
+    {
+      "type": "build",
+      "building": "boathouse",
+      "n": 1,
+      "text": "Raise a Boathouse on your shore: the pilgrim isles lie across open water"
+    },
+    {
+      "type": "worship",
+      "site": "tern_stone",
+      "after": 0,
+      "text": "Sail three followers to the Tern Stone and pray there before the rival's pilgrims land"
+    },
+    {
+      "type": "worship",
+      "site": "gull_stone",
+      "after": 1,
+      "text": "Pray at the Gull Stone to the north with four followers; drive off or out-pray the rival pilgrims camped there"
+    },
+    {
+      "type": "worship",
+      "site": "heron_stone",
+      "after": 2,
+      "text": "Pray at the Heron Stone to the north east with four followers"
+    },
+    {
+      "type": "worship",
+      "site": "storm_ley",
+      "after": 3,
+      "text": "Walk the risen reef path to the Storm Stone and pray there with five followers"
+    },
+    {
+      "type": "destroy",
+      "tribe": 1,
+      "building": "boathouse",
+      "after": 4,
+      "text": "March over the risen pilgrim road, past the summit guards, and burn the rival Boathouse in its harbor"
+    },
+    {
+      "type": "worship",
+      "site": "pilgrim_crown",
+      "fromStage": true,
+      "after": 5,
+      "text": "Climb the summit and pray at its Reliquary with six followers before the rival band prays it away"
+    }
+  ],
+  "lose": [
+    {
+      "type": "hearthLost"
+    },
+    {
+      "type": "siteLost",
+      "site": "tern_stone",
+      "before": 1
+    },
+    {
+      "type": "siteLost",
+      "site": "pilgrim_crown",
+      "after": 5
+    },
+    {
+      "type": "timeLimit",
+      "seconds": 3600
+    }
+  ],
+  "triggers": [
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Raise a Boathouse and sail to the Tern Stone. If the rival's pilgrims kneel there first, the isles are theirs."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 0
+      },
+      "do": [
+        {
+          "type": "reveal",
+          "at": [
+            92,
+            140
+          ],
+          "r": 9
+        },
+        {
+          "type": "message",
+          "text": "Your Boathouse stands. The Tern Stone waits on its isle to the north east."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 400
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "A rival boat is making for the Tern Stone."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 420
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 1,
+          "at": [
+            96,
+            136
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            92,
+            140
+          ],
+          "fresh": true,
+          "pray": "tern_stone"
+        },
+        {
+          "type": "message",
+          "text": "Rival pilgrims land on the Tern Stone isle and kneel to pray it away."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 1
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "gull_stone"
+        },
+        {
+          "type": "reveal",
+          "at": [
+            100,
+            84
+          ],
+          "r": 9
+        },
+        {
+          "type": "spawn",
+          "unit": "settler",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            104,
+            80
+          ]
+        },
+        {
+          "type": "message",
+          "text": "The Tern Stone wakes the Gull Stone to the north, but rival pilgrims already camp on its isle, waiting to kneel."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 2
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "heron_stone"
+        },
+        {
+          "type": "reveal",
+          "at": [
+            156,
+            84
+          ],
+          "r": 9
+        },
+        {
+          "type": "spawn",
+          "unit": "settler",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            160,
+            80
+          ]
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 1,
+          "at": [
+            103,
+            81
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            100,
+            84
+          ],
+          "fresh": true,
+          "pray": "gull_stone"
+        },
+        {
+          "type": "message",
+          "text": "The Gull Stone wakes the Heron Stone, where more rival pilgrims camp. Behind you a rival boat lands wardens to pray the Gull Stone away."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 3
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "line",
+          "at": [
+            74,
+            182
+          ],
+          "to": [
+            161,
+            143
+          ],
+          "width": 2,
+          "aboveSea": 6,
+          "falloff": 2,
+          "seconds": 60
+        },
+        {
+          "type": "awaken",
+          "site": "storm_ley"
+        },
+        {
+          "type": "reveal",
+          "at": [
+            166,
+            140
+          ],
+          "r": 9
+        },
+        {
+          "type": "spawn",
+          "unit": "settler",
+          "n": 5,
+          "tribe": 1,
+          "at": [
+            170,
+            136
+          ]
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 1,
+          "at": [
+            159,
+            81
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            156,
+            84
+          ],
+          "fresh": true,
+          "pray": "heron_stone"
+        },
+        {
+          "type": "message",
+          "text": "The Heron Stone lifts a reef path from your coast to the Storm Stone. Rival pilgrims wait there, and rival wardens kneel at the Heron Stone."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 4
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "line",
+          "at": [
+            76,
+            186
+          ],
+          "to": [
+            118,
+            186
+          ],
+          "width": 3,
+          "aboveSea": 8,
+          "falloff": 2,
+          "seconds": 180
+        },
+        {
+          "type": "shape",
+          "shape": "line",
+          "at": [
+            138,
+            186
+          ],
+          "to": [
+            182,
+            186
+          ],
+          "width": 3,
+          "aboveSea": 8,
+          "falloff": 2,
+          "seconds": 180
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            169,
+            137
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            166,
+            140
+          ],
+          "fresh": true,
+          "pray": "storm_ley"
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "at": [
+            62,
+            186
+          ]
+        },
+        {
+          "type": "message",
+          "text": "The four stones lift the old pilgrim road out of the sea, over the summit isle to the rival shore. Burn their Boathouse so no more pilgrims sail."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 5
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "pilgrim_crown"
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 12,
+          "tribe": 1,
+          "at": [
+            168,
+            186
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            128,
+            186
+          ],
+          "fresh": true,
+          "pray": "pilgrim_crown"
+        },
+        {
+          "type": "message",
+          "text": "The Boathouse burns and the summit Reliquary wakes. A rival band comes over the road to pray it away: beat it to the top."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 3300
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Five minutes remain."
+        }
+      ]
+    }
+  ]
+}

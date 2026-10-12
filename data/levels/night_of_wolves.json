@@ -1,0 +1,908 @@
+{
+  "$comment": "Campaign level 33 (chapter 3). A forest clearing ringed by eleven wolf dens (beastPrey all, so rival raiders are bitten too); the rival lives on a sheer crag across the northern strait that no boat lands on, so it is never conquered and every rival attack is a scripted boat landing on the north shore. Stages: clear the four near dens (a raid on the Hearth at 540 s punishes an idle start), pray both rival ley stones away and keep both 300 s while raids pray them back by turns, clear every den left, kill 14 of the landed war band, then win King of the Hill at the Moon Reliquary (counted from that stage; rival bands march on it every 60 s). Wolves come back by den regrowth, not trigger spawns (a spawned wolf joins no den). Bot wins near tick 30560.",
+  "id": "night_of_wolves",
+  "name": "Night of Wolves",
+  "order": 33,
+  "description": "A dark forest, and wolf dens on every side of your clearing. Clear the near dens, take both ley stones and keep them through the long night while rival boats land from the north, clear the far dens, break the rival war band, then hold the Moon Reliquary.",
+  "seed": 3308,
+  "map": {
+    "generator": "flat",
+    "size": 192,
+    "landAboveSea": -30,
+    "paint": [
+      {
+        "shape": "disc",
+        "at": [
+          96,
+          116
+        ],
+        "r": 70,
+        "aboveSea": 34,
+        "falloff": 6
+      },
+      {
+        "shape": "rect",
+        "at": [
+          96,
+          14
+        ],
+        "size": [
+          64,
+          20
+        ],
+        "aboveSea": 180,
+        "falloff": 9
+      },
+      {
+        "shape": "cone",
+        "at": [
+          62,
+          150
+        ],
+        "r": 9,
+        "aboveSea": 64
+      },
+      {
+        "shape": "cone",
+        "at": [
+          140,
+          70
+        ],
+        "r": 8,
+        "aboveSea": 62
+      },
+      {
+        "shape": "disc",
+        "at": [
+          96,
+          102
+        ],
+        "r": 5,
+        "aboveSea": 40,
+        "falloff": 3
+      }
+    ]
+  },
+  "tribes": [
+    {},
+    {
+      "ai": "sneaky",
+      "difficulty": "normal",
+      "maxTroops": 12,
+      "maxPopulation": 40,
+      "worshipAfterSeconds": 3600,
+      "buildings": [
+        "dwelling",
+        "warden_lodge"
+      ]
+    }
+  ],
+  "spells": [
+    "bolt"
+  ],
+  "buildings": [
+    "dwelling",
+    "watchtower",
+    "warden_lodge",
+    "fire_lodge",
+    "mending_hut"
+  ],
+  "rules": "king_of_hill",
+  "beastPrey": "all",
+  "props": [
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        93,
+        99
+      ]
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        99,
+        99
+      ]
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        93,
+        105
+      ]
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        99,
+        105
+      ]
+    },
+    {
+      "model": "prop.mushroom_ring",
+      "at": [
+        70,
+        128
+      ]
+    },
+    {
+      "model": "prop.mushroom_ring",
+      "at": [
+        124,
+        150
+      ]
+    },
+    {
+      "model": "prop.log_a",
+      "at": [
+        88,
+        132
+      ],
+      "rot": 0.5
+    },
+    {
+      "model": "prop.log_a",
+      "at": [
+        104,
+        116
+      ],
+      "rot": 2.2
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        60,
+        100
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        132,
+        100
+      ]
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        96,
+        60
+      ],
+      "rot": 0.3
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        90,
+        130
+      ],
+      "rot": 1.57
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        102,
+        132
+      ]
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        96,
+        20
+      ],
+      "rot": 1.1
+    }
+  ],
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        96,
+        124
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        100,
+        120
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        96,
+        130
+      ],
+      "count": 16
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        92,
+        118
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "reliquary",
+      "at": [
+        96,
+        102
+      ],
+      "site": {
+        "tag": "moon_reliquary",
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The Moon Reliquary wakes."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        72,
+        128
+      ],
+      "count": 10,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        120,
+        128
+      ],
+      "count": 10,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        96,
+        150
+      ],
+      "count": 12,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        66,
+        90
+      ],
+      "count": 14,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        126,
+        90
+      ],
+      "count": 14,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        50,
+        130
+      ],
+      "count": 14,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        142,
+        130
+      ],
+      "count": 14,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        96,
+        76
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        80,
+        166
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        116,
+        166
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        40,
+        96
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        152,
+        96
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        100,
+        112
+      ],
+      "count": 4,
+      "spacing": 2
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        76,
+        112
+      ],
+      "count": 3
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        116,
+        112
+      ],
+      "count": 3
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        84,
+        142
+      ],
+      "count": 3
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        108,
+        142
+      ],
+      "count": 3
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        78,
+        76
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        114,
+        76
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        40,
+        116
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        152,
+        116
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        60,
+        138
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        132,
+        138
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        96,
+        164
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "ley_stone",
+      "tribe": 1,
+      "at": [
+        56,
+        96
+      ],
+      "site": {
+        "tag": "west_ley",
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The west stone is yours."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "ley_stone",
+      "tribe": 1,
+      "at": [
+        136,
+        96
+      ],
+      "site": {
+        "tag": "east_ley",
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The east stone is yours."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        58,
+        93
+      ],
+      "count": 3,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        134,
+        93
+      ],
+      "count": 3,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        96,
+        12
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        100,
+        16
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        86,
+        14
+      ],
+      "count": 14
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 1,
+      "at": [
+        110,
+        10
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        96,
+        20
+      ],
+      "count": 4,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        76,
+        10
+      ],
+      "count": 10,
+      "spacing": 1.2
+    }
+  ],
+  "objectives": [
+    {
+      "type": "clearDens",
+      "at": [
+        96,
+        124
+      ],
+      "r": 26,
+      "text": "Clear the four wolf dens closest to your clearing"
+    },
+    {
+      "type": "hold",
+      "n": 2,
+      "kind": "ley_stone",
+      "seconds": 300,
+      "after": 0,
+      "text": "Pray both ley stones away from the rival and keep the two at once for five minutes through the night"
+    },
+    {
+      "type": "clearDens",
+      "at": [
+        96,
+        124
+      ],
+      "r": 64,
+      "after": 1,
+      "text": "Clear every wolf den left in the forest"
+    },
+    {
+      "type": "kill",
+      "n": 14,
+      "tribe": 1,
+      "after": 2,
+      "text": "Cut down 14 of the rival's people when their war band lands"
+    },
+    {
+      "type": "victory",
+      "fromStage": true,
+      "after": 3,
+      "text": "Keep more of your people than the rival at the Moon Reliquary for four minutes in all"
+    }
+  ],
+  "lose": [
+    {
+      "type": "hearthLost"
+    },
+    {
+      "type": "timeLimit",
+      "seconds": 3300
+    }
+  ],
+  "triggers": [
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Darkness settles over the forest. Wolves den all around the clearing and hunt anyone they find, the rival too. Clear the near dens first."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 540
+      },
+      "until": 0,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 8,
+          "tribe": 1,
+          "at": [
+            96,
+            52
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            96,
+            124
+          ],
+          "n": 8,
+          "fresh": true
+        },
+        {
+          "type": "message",
+          "text": "Rival boats land on the north shore and march on your Hearth while the wolves keep you penned in."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 0
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "west_ley"
+        },
+        {
+          "type": "awaken",
+          "site": "east_ley"
+        },
+        {
+          "type": "reveal",
+          "at": [
+            56,
+            96
+          ],
+          "r": 10
+        },
+        {
+          "type": "reveal",
+          "at": [
+            136,
+            96
+          ],
+          "r": 10
+        },
+        {
+          "type": "message",
+          "text": "The near dens are quiet and both ley stones wake in rival hands. Pray them away and keep both through the night."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 240,
+        "every": 120
+      },
+      "until": 1,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 1,
+          "at": [
+            96,
+            52
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            56,
+            96
+          ],
+          "n": 3,
+          "pray": "west_ley",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 300,
+        "every": 120
+      },
+      "until": 1,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 1,
+          "at": [
+            96,
+            52
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            136,
+            96
+          ],
+          "n": 3,
+          "pray": "east_ley",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 1
+      },
+      "do": [
+        {
+          "type": "reveal",
+          "at": [
+            96,
+            116
+          ],
+          "r": 60
+        },
+        {
+          "type": "message",
+          "text": "Dawn is near and the stones are yours. Clear every wolf den left in the forest."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 2
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 12,
+          "tribe": 1,
+          "at": [
+            96,
+            52
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            96,
+            124
+          ],
+          "n": 12,
+          "fresh": true
+        },
+        {
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            96,
+            52
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            96,
+            124
+          ],
+          "n": 4,
+          "fresh": true
+        },
+        {
+          "type": "message",
+          "text": "The forest is quiet, and the rival war band lands on the north shore. Cut it down."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 3
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "moon_reliquary"
+        },
+        {
+          "type": "reveal",
+          "at": [
+            96,
+            102
+          ],
+          "r": 10
+        },
+        {
+          "type": "message",
+          "text": "The Moon Reliquary on the knoll wakes. Keep more of your people there than the rival for four minutes in all."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1200,
+        "every": 60
+      },
+      "until": 4,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            96,
+            52
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            96,
+            102
+          ],
+          "n": 4,
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 3000
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Five minutes remain before dawn."
+        }
+      ]
+    }
+  ]
+}
