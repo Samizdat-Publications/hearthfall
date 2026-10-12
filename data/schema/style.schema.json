@@ -972,6 +972,352 @@
             "contrast"
           ],
           "additionalProperties": false
+        },
+        "healthBars": {
+          "type": "object",
+          "properties": {
+            "$comment": {
+              "type": "string"
+            },
+            "unitWidth": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 4
+            },
+            "buildingWidth": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 8
+            },
+            "height": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 1
+            },
+            "border": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 0.5
+            },
+            "lift": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 3
+            },
+            "refDistance": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "minScale": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 4
+            },
+            "maxScale": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 8
+            },
+            "maxZoom": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "back": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            },
+            "buildings": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        "hover": {
+          "type": "object",
+          "properties": {
+            "$comment": {
+              "type": "string"
+            },
+            "own": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            },
+            "ally": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            },
+            "neutral": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            },
+            "enemy": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "unitRadius": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 3
+            },
+            "pickPx": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 64
+            }
+          },
+          "additionalProperties": false
+        },
+        "ambient": {
+          "type": "object",
+          "properties": {
+            "$comment": {
+              "type": "string"
+            },
+            "maxZoom": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "smoke": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "puffs": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 12
+                },
+                "period": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "rise": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "drift": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "wind": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "number"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "size": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 2
+                },
+                "grow": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "color": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                },
+                "opacity": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "sources": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "max": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 4096
+                }
+              },
+              "additionalProperties": false
+            },
+            "birds": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "spacing": {
+                  "type": "number",
+                  "minimum": 4,
+                  "maximum": 128
+                },
+                "forestTrees": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "forestReach": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 32
+                },
+                "shoreBand": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "perFlock": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 16
+                },
+                "radius": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 32
+                },
+                "height": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "speed": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "size": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 4
+                },
+                "flap": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "color": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                },
+                "max": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 2048
+                }
+              },
+              "additionalProperties": false
+            },
+            "fireflies": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "presets": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "perHearth": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 64
+                },
+                "perDwelling": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 16
+                },
+                "radius": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 16
+                },
+                "size": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 1
+                },
+                "blink": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "color": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                },
+                "max": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 4096
+                }
+              },
+              "additionalProperties": false
+            },
+            "dust": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "perUnit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 6
+                },
+                "period": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "radius": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 128
+                },
+                "dryAbove": {
+                  "type": "number"
+                },
+                "size": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 1
+                },
+                "trail": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "color": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                },
+                "opacity": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "max": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 4096
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
         }
       },
       "required": [

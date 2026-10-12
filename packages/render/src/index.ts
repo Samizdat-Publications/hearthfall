@@ -6,3 +6,5 @@ export { CHUNK } from "./terrainMesh.ts";
 export { resolveTilt, tiltUniforms, type TiltOrder, type TiltShiftOptions } from "./retro.ts";
 export { aliasModels } from "./models.ts";
 export { resolveLighting, type LightingLook, type LightingPreset, type RainLook } from "./weather.ts";
+export { HEALTH_BAR_MODES, type HealthBarMode, type Relation } from "./overlays.ts";
+export { AMBIENT_DEFAULTS, resolveAmbient, type AmbientLook } from "./ambient.ts";

@@ -137,8 +137,8 @@
     {
       "model": "prop.cairn",
       "at": [
-        97,
-        159
+        95,
+        152
       ]
     },
     {
@@ -203,8 +203,8 @@
     {
       "model": "prop.bush_a",
       "at": [
-        64,
-        196
+        68,
+        190
       ]
     },
     {
@@ -217,8 +217,8 @@
     {
       "model": "prop.haystack",
       "at": [
-        30,
-        222
+        16,
+        216
       ]
     },
     {
@@ -232,16 +232,16 @@
     {
       "model": "prop.fence",
       "at": [
-        34,
-        230
+        20,
+        232
       ],
       "rot": 1.6
     },
     {
       "model": "prop.woodpile",
       "at": [
-        52,
-        220
+        30,
+        240
       ]
     },
     {
@@ -265,6 +265,90 @@
         44,
         226
       ]
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        124,
+        132
+      ],
+      "rot": 1.1
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        132,
+        124
+      ],
+      "rot": 2.9
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        186,
+        22
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        240,
+        50
+      ],
+      "rot": 1.57
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        238,
+        30
+      ]
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        18,
+        44
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        20,
+        50
+      ],
+      "rot": 1.57
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        240,
+        212
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        238,
+        220
+      ],
+      "rot": 0.3
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        132,
+        80
+      ],
+      "rot": 0.6
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        176,
+        124
+      ],
+      "rot": 2.2
     }
   ],
   "setup": [

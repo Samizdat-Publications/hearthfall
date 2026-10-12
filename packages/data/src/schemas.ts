@@ -602,6 +602,103 @@ export const StyleSchema = z
             contrast: z.number().min(0.5).max(2),
           })
           .optional(),
+        /** render polish: health bars over damaged units and buildings (render overlays.ts HealthBarLook); any key left out keeps its default */
+        healthBars: z
+          .strictObject({
+            ...comment,
+            unitWidth: z.number().positive().max(4).optional(),
+            buildingWidth: z.number().positive().max(8).optional(),
+            height: z.number().positive().max(1).optional(),
+            border: z.number().min(0).max(0.5).optional(),
+            lift: z.number().min(0).max(3).optional(),
+            refDistance: z.number().positive().optional(),
+            minScale: z.number().positive().max(4).optional(),
+            maxScale: z.number().positive().max(8).optional(),
+            maxZoom: z.number().min(0).max(1).optional(),
+            back: hex.optional(),
+            buildings: z.boolean().optional(),
+          })
+          .optional(),
+        /** render polish: the hover ring under the entity at the cursor, colored by relation (render overlays.ts HoverLook) */
+        hover: z
+          .strictObject({
+            ...comment,
+            own: hex.optional(),
+            ally: hex.optional(),
+            neutral: hex.optional(),
+            enemy: hex.optional(),
+            opacity: z.number().min(0).max(1).optional(),
+            unitRadius: z.number().positive().max(3).optional(),
+            pickPx: z.number().positive().max(64).optional(),
+          })
+          .optional(),
+        /** render polish: ambient life (render ambient.ts AmbientLook), one block per effect; any key left out keeps its default */
+        ambient: z
+          .strictObject({
+            ...comment,
+            maxZoom: z.number().min(0).max(1).optional(),
+            smoke: z
+              .strictObject({
+                enabled: z.boolean().optional(),
+                puffs: z.number().int().min(1).max(12).optional(),
+                period: z.number().positive().optional(),
+                rise: pos.optional(),
+                drift: pos.optional(),
+                wind: z.tuple([z.number(), z.number()]).optional(),
+                size: z.number().positive().max(2).optional(),
+                grow: pos.optional(),
+                color: hex.optional(),
+                opacity: z.number().min(0).max(1).optional(),
+                sources: z.array(z.string().min(1)).optional(),
+                max: z.number().int().min(0).max(4096).optional(),
+              })
+              .optional(),
+            birds: z
+              .strictObject({
+                enabled: z.boolean().optional(),
+                spacing: z.number().min(4).max(128).optional(),
+                forestTrees: z.number().int().min(1).optional(),
+                forestReach: z.number().positive().max(32).optional(),
+                shoreBand: pos.optional(),
+                perFlock: z.number().int().min(1).max(16).optional(),
+                radius: z.number().positive().max(32).optional(),
+                height: pos.optional(),
+                speed: pos.optional(),
+                size: z.number().positive().max(4).optional(),
+                flap: pos.optional(),
+                color: hex.optional(),
+                max: z.number().int().min(0).max(2048).optional(),
+              })
+              .optional(),
+            fireflies: z
+              .strictObject({
+                enabled: z.boolean().optional(),
+                presets: z.array(z.string().min(1)).optional(),
+                perHearth: z.number().int().min(0).max(64).optional(),
+                perDwelling: z.number().int().min(0).max(16).optional(),
+                radius: z.number().positive().max(16).optional(),
+                size: z.number().positive().max(1).optional(),
+                blink: pos.optional(),
+                color: hex.optional(),
+                max: z.number().int().min(0).max(4096).optional(),
+              })
+              .optional(),
+            dust: z
+              .strictObject({
+                enabled: z.boolean().optional(),
+                perUnit: z.number().int().min(1).max(6).optional(),
+                period: z.number().positive().optional(),
+                radius: z.number().positive().max(128).optional(),
+                dryAbove: z.number().optional(),
+                size: z.number().positive().max(1).optional(),
+                trail: pos.optional(),
+                color: hex.optional(),
+                opacity: z.number().min(0).max(1).optional(),
+                max: z.number().int().min(0).max(4096).optional(),
+              })
+              .optional(),
+          })
+          .optional(),
       })
       .optional(),
     /** sim event type to audio cue (packages/audio AudioHooks); cues without an asset play as silent stubs */
@@ -1371,7 +1468,15 @@ export const UiFileSchema = z.strictObject({
     sameTypeRadius: pos,
     /** BACKLOG 4: a control group key pressed twice within this many milliseconds centers the camera */
     groupJumpMs: pos,
+    /** QoL: edge scrolling pans when the pointer is within this many pixels of the window edge */
+    edgeScrollPx: z.number().int().min(1).max(64).optional(),
+    /** QoL: edge scrolling pan speed (the arrow keys pan at 18) */
+    edgeScrollSpeed: pos.optional(),
   }),
+  /** QoL: single player game speed choices (multiples of real time) and the most fixed sim steps one frame may run */
+  speed: z.strictObject({ ...comment, choices: z.array(z.number().min(0.25).max(8)).min(1), maxStepsPerFrame: z.number().int().min(1).max(64) }).optional(),
+  /** QoL 2: under attack alerts: one note per place every `seconds` (a place is `radius` cells), minimap pings last `pingSeconds`; idle troops within `idleGroupRadius` cells form one group */
+  alerts: z.strictObject({ ...comment, seconds: pos, radius: pos, pingSeconds: pos, idleGroupRadius: pos }).optional(),
   /** render scale per graphics quality setting (high, medium, low) */
   qualityScale: z.strictObject({ high: z.number().min(0.25).max(2), medium: z.number().min(0.25).max(2), low: z.number().min(0.25).max(2) }),
 });

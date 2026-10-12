@@ -22,6 +22,8 @@ export interface SpellView {
   eta: string;
   /** M10: icon URL (the two-letter glyph shows without one) */
   icon?: string;
+  /** QoL 2: the full tooltip (name, hotkey, what it does, cost and charges); a short built-in one without it */
+  tip?: string;
 }
 
 /** M6 troop panel: what the selection can be told to do. */
@@ -49,6 +51,8 @@ export interface NoteView {
   id: number;
   text: string;
   kind: "good" | "bad" | "info";
+  /** QoL 2: the note has a place: clicking it looks there; this is its tooltip */
+  jump?: string;
 }
 
 export interface ObjectiveView {
@@ -107,6 +111,12 @@ export interface HudModel {
   undoSec?: number;
   /** BACKLOG 11: the Forge phase (absent or null outside it) */
   forge?: ForgeView | null;
+  /** QoL: single player game speed ("2x") and whether it can go down or up; absent or null where speed does not apply (LAN play) */
+  speed?: { label: string; canDown: boolean; canUp: boolean } | null;
+  /** QoL 2: idle troops count ("3 idle") and its tooltip; absent or null when no troops stand idle */
+  idle?: { n: number; label: string; title: string } | null;
+  /** QoL 2: why the armed spell cannot land where the pointer is ("out of range: ..."), "" when it can */
+  targetHint?: string;
 }
 
 /** BACKLOG 11: the Forge panel: time and strokes left, the brush in hand, whether this tribe is ready */
@@ -177,6 +187,26 @@ export interface HudActions {
   forgeReady(): void;
   /** click the Shaper portrait: select the Shaper and center the camera on her */
   selectShaper(): void;
+  /** QoL: one game speed step slower (-1) or faster (1) */
+  speedStep?(dir: 1 | -1): void;
+  /** QoL 2: click a note that has a place: look there */
+  noteJump?(id: number): void;
+  /** QoL 2: select the next idle troop group and look at it */
+  idleTroops?(): void;
+}
+
+/** QoL 2: the idle troops chip (in the troop panel, or on its own where the troop panel would be). */
+function IdleChip({ idle, act, alone }: { idle: { n: number; label: string; title: string }; act: HudActions; alone: boolean }) {
+  return (
+    <button data-ui="idle-troops" class={"prio idle-chip" + (alone ? " alone" : "")} title={idle.title} onClick={() => act.idleTroops?.()}>
+      {idle.label}
+    </button>
+  );
+}
+
+/** QoL 2: the selection line while a spell is armed, with why it cannot land here when it cannot. */
+export function targetingLine(spell: string, counts: { enemies: number; own: number } | null | undefined, hint: string | undefined): string {
+  return `Casting ${spell.replace(/_/g, " ")}: left click a target, right click or Esc to cancel${hint ? ` | ${hint}` : counts ? ` | ${areaLine(counts)}` : ""}`;
 }
 
 /** Small stance glyphs: crossed blades, a shield, an open palm. */
@@ -194,11 +224,16 @@ export function StanceIcon({ s }: { s: (typeof STANCES)[number] }) {
   );
 }
 
-function Troops({ t, act, pointing }: { t: TroopView; act: HudActions; pointing: string | null }) {
+function Troops({ t, act, pointing, idle }: { t: TroopView; act: HudActions; pointing: string | null; idle?: { n: number; label: string; title: string } | null }) {
   if (t.kind === "none") return null;
   return (
     <div data-hud="troops" class="hud-panel hud-troops">
-      {t.label ? <span class="troops-label">{t.label}</span> : null}
+      {t.label || idle ? (
+        <span class="troops-head">
+          {t.label ? <span class="troops-label">{t.label}</span> : <span />}
+          {idle ? <IdleChip idle={idle} act={act} alone={false} /> : null}
+        </span>
+      ) : null}
       {t.units.length ? (
         <div class="troops-units">
           {t.units.map((u) => (
@@ -269,7 +304,7 @@ function SpellButton({ s, act }: { s: SpellView; act: HudActions }) {
   const ring = 2 * Math.PI * 17;
   const full = s.charges >= s.max;
   return (
-    <button class={"spell" + (s.auto ? " auto" : "") + (full ? " full" : "")} title={`${s.name}: ${s.cost} mana, ${s.charges}/${s.max} charges. Click to cast, right click to toggle auto-charge.`} onClick={() => act.target(s.id)} onContextMenu={(e) => { e.preventDefault(); act.toggleAuto(s.id); }} data-tier={s.tier}>
+    <button class={"spell" + (s.auto ? " auto" : "") + (full ? " full" : "")} data-spell={s.id} title={s.tip ?? `${s.name}: ${s.cost} mana, ${s.charges}/${s.max} charges. Click to cast, right click to toggle auto-charge.`} onClick={() => act.target(s.id)} onContextMenu={(e) => { e.preventDefault(); act.toggleAuto(s.id); }} data-tier={s.tier}>
       <svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true">
         <circle cx="22" cy="22" r="17" class="ring-bg" />
         <circle cx="22" cy="22" r="17" class="ring" style={{ strokeDasharray: `${ring * (full ? 1 : s.progress)} ${ring}` }} transform="rotate(-90 22 22)" />
@@ -390,6 +425,19 @@ function Hud({ act }: { act: HudActions }) {
           {m.mapLine} | tick {m.tick}
           {m.paused ? " | paused" : ""}
         </span>
+        {m.speed ? (
+          <span data-ui="speed" class="hud-speed" title="Game speed (- and = keys)">
+            <button class="prio speed-btn" data-ui="speed-down" disabled={!m.speed.canDown} onClick={() => act.speedStep?.(-1)} aria-label="Slower game">
+              -
+            </button>
+            <span class="speed-value" data-ui="speed-value">
+              {m.speed.label}
+            </span>
+            <button class="prio speed-btn" data-ui="speed-up" disabled={!m.speed.canUp} onClick={() => act.speedStep?.(1)} aria-label="Faster game">
+              +
+            </button>
+          </span>
+        ) : null}
       </div>
       <Minimap m={m} act={act} />
       {/* the right column stacks the objectives over the build list, so a long objectives panel pushes the list down */}
@@ -427,14 +475,25 @@ function Hud({ act }: { act: HudActions }) {
       </div>
       {m.notes.length ? (
         <div data-hud="notes" class="hud-panel hud-notes">
-          {m.notes.map((n) => (
-            <span key={n.id} class={"note " + n.kind}>
-              {n.text}
-            </span>
-          ))}
+          {m.notes.map((n) =>
+            n.jump ? (
+              <span key={n.id} class={"note at " + n.kind} data-ui="note-jump" role="button" title={n.jump} onClick={() => act.noteJump?.(n.id)}>
+                {n.text}
+              </span>
+            ) : (
+              <span key={n.id} class={"note " + n.kind}>
+                {n.text}
+              </span>
+            ),
+          )}
         </div>
       ) : null}
-      <Troops t={m.troops} act={act} pointing={m.pointing} />
+      <Troops t={m.troops} act={act} pointing={m.pointing} idle={m.idle} />
+      {m.idle && m.troops.kind === "none" && !(m.undoSec !== undefined && m.undoSec > 0) ? (
+        <div data-hud="idle" class="hud-panel hud-idle">
+          <IdleChip idle={m.idle} act={act} alone={true} />
+        </div>
+      ) : null}
       {m.subtitle ? (
         <div data-hud="subtitle" class="hud-subtitle">
           <b>{m.subtitle.speaker}:</b> {m.subtitle.text}
@@ -453,12 +512,12 @@ function Hud({ act }: { act: HudActions }) {
       ) : null}
       {m.selected > 0 || m.placing || m.targeting || m.pointing ? (
         <div data-hud="selection" class="hud-panel hud-selection">
-          {m.pointing === "rally" ? "Rally point: left click the ground, right click or Esc to cancel" : m.targeting ? `Casting ${m.targeting.replace("_", " ")}: left click a target, right click or Esc to cancel${m.targetCounts ? ` | ${areaLine(m.targetCounts)}` : ""}` : m.placing ? `Placing ${m.placing}: left click to place, Esc to cancel${m.placeBlocked ? ` (${m.placeBlocked})` : ""}` : `${m.selected} selected${m.attack ? " | attack-move: click a target" : " | right click to move"}`}
+          {m.pointing === "rally" ? "Rally point: left click the ground, right click or Esc to cancel" : m.targeting ? targetingLine(m.targeting, m.targetCounts, m.targetHint) : m.placing ? `Placing ${m.placing}: left click to place, Esc to cancel${m.placeBlocked ? ` (${m.placeBlocked})` : ""}` : `${m.selected} selected${m.attack ? " | attack-move: click a target" : " | right click to move"}`}
         </div>
       ) : null}
       {m.showHelp ? (
         <div data-hud="help" class="hud-panel hud-help">
-          Drag select | double-click: same type | Ctrl+0-9 set group, 0-9 select, twice to jump | click a building to select it | right click move (on a tower: garrison) | A attack-move | R retreat | G garrison | S Shaper | Z-N spells | D dwelling | T tower | Q/E rotate | wheel zoom | M map | H help | P&nbsp;pause | F&nbsp;photo
+          Drag select | double-click: same type | Ctrl+0-9 set group, 0-9 select, twice to jump | click a building to select it | right click move (on a tower: garrison) | A attack-move | R retreat | G garrison | S Shaper | Z-N spells | D dwelling | T tower | Q/E rotate | wheel zoom | M map | H help | P&nbsp;pause | F&nbsp;photo | L health bars | -/= speed | F5/F9 quick save/load | O briefing | U latest alert | . idle troops
         </div>
       ) : null}
       <div data-hud="debug-overlap" class="hud-panel hud-overlap">

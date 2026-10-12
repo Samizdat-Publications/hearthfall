@@ -29,6 +29,8 @@ import { UnitLayer } from "./unitsLayer.ts";
 import { BuildingLayer } from "./buildingsLayer.ts";
 import { WorshipLayer } from "./worshipLayer.ts";
 import { VfxLayer } from "./vfx.ts";
+import { buildingUnder, HealthBarLayer, HoverRing, relationOf, unitUnder, type HealthBarMode, type Relation } from "./overlays.ts";
+import { AmbientLayer, resolveAmbient } from "./ambient.ts";
 import { RetroPass, resolveTilt } from "./retro.ts";
 import { applyModelFixes, loadModels, type ModelLoadReport, type ModelParts } from "./models.ts";
 
@@ -144,6 +146,19 @@ export class ThreeRenderer implements Renderer {
   private viewW = 1280;
   private viewH = 720;
   private renderScale = 1;
+  /** render polish: health bars (Settings Health bars), the hover ring and ambient life (Settings Ambient life) */
+  readonly healthBars: HealthBarLayer;
+  readonly hoverRing: HoverRing;
+  readonly ambient: AmbientLayer;
+  /** photo mode (the app sets it): no health bars and no hover ring */
+  hideOverlays = false;
+  /** cursor in CSS pixels over the canvas, or null (the app sets it from its mousemove) */
+  private hoverAt: { x: number; y: number } | null = null;
+  private hoverHit: { index: number; relation: Relation } | null = null;
+  private hoverKey = "";
+  private hoverBuilding = -1;
+  /** lighting preset name in force (fireflies come out under some) */
+  private lightingName = "";
 
   constructor(o: RendererOptions) {
     this.gl = new THREE.WebGLRenderer({
@@ -320,6 +335,12 @@ export class ThreeRenderer implements Renderer {
       r.renderOrder = 10;
       this.scene.add(r);
     }
+    this.healthBars = new HealthBarLayer(this.bend, stripComment(rs?.healthBars));
+    this.scene.add(this.healthBars.mesh);
+    this.hoverRing = new HoverRing(this.bend, stripComment(rs?.hover));
+    this.scene.add(this.hoverRing.mesh);
+    this.ambient = new AmbientLayer(this.bend, resolveAmbient(rs?.ambient));
+    this.scene.add(this.ambient.group);
     this.sky = space
       ? makeSpaceSky(space.top, space.horizon, space.stars)
       : makeSky(L.skyTop, L.skyHorizon);
@@ -345,6 +366,8 @@ export class ThreeRenderer implements Renderer {
       st.weather?.rain,
     );
     this.lighting = look;
+    const want = preset === "default" ? def : preset;
+    this.lightingName = st.lightingPresets[want] ? want : st.lightingPresets[def] ? def : (Object.keys(st.lightingPresets)[0] ?? "");
     this.sun.color.set(look.keyColor);
     this.sun.intensity = look.keyIntensity;
     this.hemi.color.set(look.hemiSky);
@@ -451,6 +474,7 @@ export class ThreeRenderer implements Renderer {
   setTribeColors(over: Record<string, string> | null): void {
     this.pal = { ...this.basePal, ...(over ?? {}) };
     if (this.world) this.buildLayers(this.world);
+    else this.syncBarColors([]);
   }
 
   /** (Re)create the entity layers for a world, with the real models when they are loaded. */
@@ -490,6 +514,90 @@ export class ThreeRenderer implements Renderer {
       bendMaterial(new THREE.MeshBasicMaterial({ color: "#ffffff", transparent: true, opacity: 0.9, depthWrite: false }), this.bend),
     );
     this.scene.add(this.worship.group);
+    this.syncBarColors(colors);
+  }
+
+  /** Health bar fill colors from the tribe palette in force. */
+  private syncBarColors(colors: string[]): void {
+    this.healthBars.setColors(
+      colors.map((c) => new THREE.Color(this.pal[c] ?? "#ffffff")),
+      new THREE.Color(this.pal.cloth ?? "#d9cbb0"),
+    );
+  }
+
+  /** Settings Health bars: "damaged" (default), "always" or "off". */
+  setHealthBars(mode: HealthBarMode | string): void {
+    this.healthBars.mode = mode === "always" || mode === "off" ? mode : "damaged";
+  }
+
+  /** Settings Ambient life: chimney smoke, birds, fireflies and walking dust on or off. */
+  setAmbientLife(on: boolean): void {
+    this.ambient.enabled = on;
+  }
+
+  /**
+   * The cursor over the canvas in CSS pixels (null when it leaves or is over the HUD). The pick runs at
+   * most once per frame inside render(): the nearest drawn unit within a few pixels, else the drawn
+   * building under the terrain point (the terrain ray only re-marches when the cursor or camera moved).
+   */
+  setHover(p: { x: number; y: number } | null): void {
+    this.hoverAt = p;
+  }
+
+  /** The entity the hover ring is on and how the viewer relates to it, or null (debug summary, e2e). */
+  hovered(): { index: number; relation: Relation } | null {
+    return this.hoverHit;
+  }
+
+  /** Pick the hovered entity and place the hover ring (once per frame, after the layers updated). */
+  private updateHover(w: World): void {
+    const at = this.hoverAt;
+    if (!at || this.hideOverlays || this.cam.map) {
+      this.hoverHit = null;
+      this.hoverRing.show(null);
+      return;
+    }
+    const L = this.hoverRing.look;
+    let i = this.units ? unitUnder(this.units, at.x, at.y, L.pickPx) : -1;
+    let r = 0;
+    let x = 0;
+    let z = 0;
+    let y = 0;
+    if (i >= 0 && this.units) {
+      const u = this.units;
+      r = L.unitRadius * (u.scaleOf(w.ents.type[i]) / 1.3);
+      x = u.drawX[i];
+      z = u.drawZ[i];
+      y = u.drawGround[i] + 0.05;
+    } else if (this.buildings) {
+      const c = this.cam;
+      const key = `${at.x}|${at.y}|${c.x}|${c.z}|${c.yaw}|${c.zoom}|${w.terrain.version}`;
+      if (key !== this.hoverKey) {
+        this.hoverKey = key;
+        const p = this.pickTerrain(at.x, at.y);
+        this.hoverBuilding = p ? buildingUnder(w, this.buildings, p.x, p.z) : -1;
+      }
+      const b = this.hoverBuilding;
+      const B = this.buildings;
+      let drawn = false;
+      for (let d = 0; d < B.drawn && b >= 0; d++) if (B.drawnIdx[d] === b) drawn = true;
+      if (drawn && w.ents.alive[b]) {
+        i = b;
+        const [fw, fh] = w.cfg.pack.buildings.buildings[w.ents.type[b]].footprint;
+        r = (Math.max(fw, fh) / 2) * 1.15 + 0.35;
+        x = B.drawX[b];
+        z = B.drawZ[b];
+        y = B.drawGround[b] + 0.06;
+      }
+    }
+    if (i < 0) {
+      this.hoverHit = null;
+      this.hoverRing.show(null);
+      return;
+    }
+    const relation = relationOf(w, i, this.viewTribe);
+    this.hoverHit = { index: i, relation };
+    this.hoverRing.show({ x, y, z, r, rel: relation });
   }
 
   /**
@@ -742,6 +850,26 @@ export class ThreeRenderer implements Renderer {
         this.selected,
       );
       this.stats.unitsDrawn = this.units?.drawn ?? 0;
+      if (this.hideOverlays || this.cam.map) this.healthBars.clear();
+      else
+        this.healthBars.update(w, this.units, this.buildings, this.view, r.distance, this.cam.zoom, this.viewTribe, this.revealFog);
+      this.updateHover(w);
+      this.ambient.update(
+        w,
+        visualTime,
+        fx,
+        fz,
+        this.palette.heightScale,
+        this.bend.uFadeEnd.value,
+        this.cam.zoom,
+        this.cam.map,
+        this.lightingName,
+        (this.lighting?.rain ?? null) !== null,
+        this.units,
+        this.buildings,
+        this.viewTribe,
+        this.revealFog,
+      );
       this.vfx.update(
         w,
         visualTime,
@@ -1161,6 +1289,13 @@ function makeSky(top: string, horizon: string): THREE.Mesh {
   m.renderOrder = -1;
   m.frustumCulled = false;
   return m;
+}
+
+/** A style block without its `$comment` (the layers take plain partial looks). */
+function stripComment<T extends object>(o: T | undefined): Omit<T, "$comment"> {
+  if (!o) return {} as Omit<T, "$comment">;
+  const { $comment: _c, ...rest } = o as T & { $comment?: string };
+  return rest;
 }
 
 /** Remove a replaced layer and free its GPU buffers (geometries and instance attributes; shared materials stay). */

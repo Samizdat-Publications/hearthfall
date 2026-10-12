@@ -31,7 +31,21 @@
   },
   "input": {
     "sameTypeRadius": 14,
-    "groupJumpMs": 400
+    "groupJumpMs": 400,
+    "edgeScrollPx": 4,
+    "edgeScrollSpeed": 18
+  },
+  "speed": {
+    "$comment": "QoL: game speed for single player matches and the campaign (keys - and =, the HUD speed control). Speed only changes how many fixed sim steps run per frame; a frame runs at most maxStepsPerFrame and drops the rest.",
+    "choices": [0.5, 1, 2, 3],
+    "maxStepsPerFrame": 12
+  },
+  "alerts": {
+    "$comment": "QoL 2: under attack alerts. A hit on your units or buildings by an enemy gives one note per place (within radius cells) every seconds; the Hearth and the Shaper have their own notes. Each alert pings the minimap for pingSeconds. Idle troops within idleGroupRadius cells count as one group for the next idle troops key.",
+    "seconds": 15,
+    "radius": 14,
+    "pingSeconds": 4,
+    "idleGroupRadius": 8
   },
   "qualityScale": {
     "high": 1,

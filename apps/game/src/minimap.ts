@@ -8,6 +8,7 @@
 // reaches past the antipode and folds into a V across the wrap.
 import { CAT } from "@hearthfall/sim";
 import type { Game } from "./game.ts";
+import { pingRing } from "./alerts.ts";
 
 let cache: { version: number; scar: number; size: number; img: ImageData } | null = null;
 
@@ -151,6 +152,39 @@ export function viewOutline(game: Game, fresh = false): [number, number][] | nul
   return pts;
 }
 
+/**
+ * QoL 2: under attack pings, a pulsing ring at each alert that fades over ui.json alerts.pingSeconds (world
+ * ticks, so a paused game holds them and fixedStep captures match). The Hearth and the Shaper ping in ember.
+ */
+function drawPings(game: Game, ctx: CanvasRenderingContext2D): void {
+  const w = game.world;
+  const hz = w.cfg.tickHz;
+  const life = game.alertCfg.pingSeconds * hz;
+  const n = w.terrain.size;
+  for (const p of game.pings) {
+    const ring = pingRing(w.tick - p.tick, life, hz);
+    if (!ring) continue;
+    const r = ring.r * (p.big ? 1.4 : 1) * Math.max(1, n / 128);
+    for (const dx of [-n, 0, n])
+      for (const dz of [-n, 0, n]) {
+        const x = p.x + dx;
+        const z = p.y + dz;
+        if (x < -r || z < -r || x > n + r || z > n + r) continue;
+        ctx.globalAlpha = ring.alpha;
+        ctx.lineWidth = Math.max(1.5, n / 96);
+        ctx.strokeStyle = "rgba(13, 11, 9, 0.85)";
+        ctx.beginPath();
+        ctx.arc(x, z, r + 1, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.strokeStyle = p.big ? "#e8913a" : "#ff5a3c";
+        ctx.beginPath();
+        ctx.arc(x, z, r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+  }
+  ctx.globalAlpha = 1;
+}
+
 export function drawMinimap(game: Game, canvas: HTMLCanvasElement): void {
   const w = game.world;
   const n = w.terrain.size;
@@ -191,6 +225,7 @@ export function drawMinimap(game: Game, canvas: HTMLCanvasElement): void {
     ctx.fillStyle = tr ? game.tribePal[tr.color] ?? "#d9cbb0" : "#d9cbb0";
     ctx.fillRect(x - 1, y - 1, 3, 3);
   }
+  drawPings(game, ctx);
   const pts = viewOutline(game);
   drawnViewKey = viewKey(game);
   const span = (k: 0 | 1) => (pts ? Math.max(...pts.map((p) => p[k])) - Math.min(...pts.map((p) => p[k])) : 0);

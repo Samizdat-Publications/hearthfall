@@ -8,7 +8,7 @@ import { signal } from "@preact/signals";
 import { useRef } from "preact/hooks";
 import { t } from "./i18n.ts";
 
-export type Screen = "none" | "main" | "campaign" | "setup" | "pause" | "settings" | "saves" | "end" | "records" | "howto" | "together";
+export type Screen = "none" | "main" | "campaign" | "setup" | "pause" | "settings" | "saves" | "end" | "records" | "howto" | "together" | "briefing";
 
 /** Leg 5 (L5-C): the LAN lobby and match state */
 export interface NetView {
@@ -92,6 +92,12 @@ export interface SettingsView {
   lighting: string;
   weathers: Choice[];
   weather: string;
+  /** render polish: health bars (damaged, always, off) and ambient life ("on" or "off"); absent hides the rows */
+  healthBarChoices?: Choice[];
+  healthBars?: string;
+  ambient?: string;
+  /** QoL: edge scrolling ("on" or "off"; absent hides the row) */
+  edgeScroll?: string;
   /** action id waiting for a key press */
   rebinding: string | null;
   message: string | null;
@@ -118,7 +124,13 @@ export interface MenuModel {
   screen: Screen;
   setup: SetupView;
   settings: SettingsView;
-  saves: { mode: "save" | "load"; slots: SlotView[]; message: string | null };
+  /** QoL: `quick` is the quick save slot (F5 and F9), listed apart from the manual slots when loading */
+  saves: { mode: "save" | "load"; slots: SlotView[]; message: string | null; quick?: SlotView | null };
+  /** QoL: pause menu extras: Restart ("level" in a campaign, "match" in a skirmish, null: none) waiting for its
+   * confirm, and whether the level briefing can be read */
+  pause?: { restart: "level" | "match" | null; confirming: boolean; briefing: boolean };
+  /** QoL: the campaign level briefing: the level text, its objectives with their state, the level messages so far */
+  briefing?: { name: string; description: string; objectives: { text: string; done: boolean }[]; messages: string[] } | null;
   end: { won: boolean; title?: string; tag?: string; lines: { label: string; value: string }[]; next: boolean; achievements?: { name: string; description: string }[]; desync?: boolean } | null;
   /** BACKLOG 21: the records screen: career stats and every achievement (earned shows its date) */
   records?: { rows: { label: string; value: string }[]; achievements: { id: string; name: string; description: string; earned: string | null }[]; summary: string; message: string | null };
@@ -138,7 +150,7 @@ export interface MenuModel {
 }
 
 export type SetupPatch = Partial<Pick<SetupView, "map" | "size" | "seed" | "opponents" | "difficulty" | "victory" | "forge" | "ley" | "wolves" | "weather" | "trait">>;
-export type SettingsPatch = Partial<Pick<SettingsView, "quality" | "master" | "music" | "sfx" | "palette" | "miniature" | "lighting" | "weather">> & { uiScale?: number; subtitles?: boolean; tips?: boolean };
+export type SettingsPatch = Partial<Pick<SettingsView, "quality" | "master" | "music" | "sfx" | "palette" | "miniature" | "lighting" | "weather">> & { uiScale?: number; subtitles?: boolean; tips?: boolean; edgeScroll?: boolean; healthBars?: string; ambient?: boolean };
 
 export interface MenuActions {
   go(screen: Screen): void;
@@ -174,6 +186,12 @@ export interface MenuActions {
   netGiveUp(): void;
   /** L5-F: download the desync report of the match that just stopped */
   downloadDesync(): void;
+  /** QoL: pause menu Restart asks first; confirm starts the level or match over, cancel keeps playing */
+  askRestart(): void;
+  confirmRestart(): void;
+  cancelRestart(): void;
+  /** QoL: load the quick save slot (the saves screen in load mode) */
+  loadQuick(): void;
 }
 
 export const menuModel = signal<MenuModel | null>(null);
@@ -479,6 +497,11 @@ function Pause({ m, act }: { m: MenuModel; act: MenuActions }) {
           {m.net.waiting ? t("together.waitingPartner") : t("together.noPause")}
         </p>
       ) : null}
+      {m.pause?.briefing ? (
+        <Btn ui="briefing" onClick={() => act.go("briefing")}>
+          {t("pause.briefing")}
+        </Btn>
+      ) : null}
       <Btn ui="save" disabled={!m.canSave} onClick={() => act.openSaves("save")}>
         {t("pause.saveGame")}
       </Btn>
@@ -491,6 +514,23 @@ function Pause({ m, act }: { m: MenuModel; act: MenuActions }) {
       <Btn ui="howto" onClick={() => act.go("howto")}>
         {t("menu.howto")}
       </Btn>
+      {m.pause?.restart && m.pause.confirming ? (
+        <div class="menu-confirm" data-ui="restart-confirm">
+          <p class="menu-note">{m.pause.restart === "level" ? t("pause.restartLevelAsk") : t("pause.restartMatchAsk")}</p>
+          <span class="confirm-row">
+            <button class="menu-small confirm-yes" data-ui="restart-yes" onClick={() => act.confirmRestart()}>
+              {t("pause.restartYes")}
+            </button>
+            <button class="menu-small" data-ui="restart-no" onClick={() => act.cancelRestart()}>
+              {t("pause.restartNo")}
+            </button>
+          </span>
+        </div>
+      ) : m.pause?.restart ? (
+        <Btn ui="restart" onClick={() => act.askRestart()}>
+          {m.pause.restart === "level" ? t("pause.restartLevel") : t("pause.restartMatch")}
+        </Btn>
+      ) : null}
       <Btn ui="quit" onClick={() => act.quitToMenu()}>
         {m.editorTest ? t("menu.backToEditor") : t("pause.quit")}
       </Btn>
@@ -503,6 +543,17 @@ function Saves({ m, act }: { m: MenuModel; act: MenuActions }) {
   return (
     <div data-hud="menu-saves" class="menu-panel menu-saves">
       <h2 class="menu-head">{v.mode === "save" ? t("pause.saveGame") : t("menu.loadGame")}</h2>
+      {v.mode === "load" && v.quick ? (
+        <div class="slot slot-quick">
+          <span class="slot-text">
+            <b>{v.quick.label}</b>
+            <span class="slot-detail">{v.quick.detail}</span>
+          </span>
+          <button class="menu-small" data-ui="load-quick" disabled={v.quick.empty} onClick={() => act.loadQuick()}>
+            {t("saves.load")}
+          </button>
+        </div>
+      ) : null}
       {v.slots.map((s) => (
         <div key={s.slot} class="slot">
           <span class="slot-text">
@@ -578,6 +629,24 @@ function Settings({ s, act }: { s: SettingsView; act: MenuActions }) {
           <Select ui="set-lighting" value={s.lighting} options={s.lightings} onChange={(v) => act.setSetting({ lighting: v })} />
           <label class="menu-label">{t("settings.weather")}</label>
           <Select ui="set-weather" value={s.weather} options={s.weathers} onChange={(v) => act.setSetting({ weather: v })} />
+          {s.healthBarChoices && s.healthBars !== undefined ? (
+            <>
+              <label class="menu-label" title={t("settings.healthBarsHint")}>{t("settings.healthBars")}</label>
+              <Select ui="set-healthbars" value={s.healthBars} options={s.healthBarChoices} onChange={(v) => act.setSetting({ healthBars: v })} />
+            </>
+          ) : null}
+          {s.ambient !== undefined ? (
+            <>
+              <label class="menu-label" title={t("settings.ambientHint")}>{t("settings.ambient")}</label>
+              <Select ui="set-ambient" value={s.ambient} options={ONOFF()} onChange={(v) => act.setSetting({ ambient: v === "on" })} />
+            </>
+          ) : null}
+          {s.edgeScroll !== undefined ? (
+            <>
+              <label class="menu-label" title={t("settings.edgeScrollHint")}>{t("settings.edgeScroll")}</label>
+              <Select ui="set-edgescroll" value={s.edgeScroll} options={ONOFF()} onChange={(v) => act.setSetting({ edgeScroll: v === "on" })} />
+            </>
+          ) : null}
         </div>
         <div class="keys">
           <h3 class="menu-sub">{t("settings.keys")}</h3>
@@ -787,6 +856,48 @@ function HowTo({ act }: { act: MenuActions }) {
   );
 }
 
+/** QoL: the campaign level briefing, readable mid-level: the level text, objectives with their state, messages so far. */
+function Briefing({ m, act }: { m: MenuModel; act: MenuActions }) {
+  const b = m.briefing;
+  if (!b) return null;
+  return (
+    <div data-hud="menu-briefing" class="menu-panel menu-briefing">
+      <h2 class="menu-head">{b.name}</h2>
+      <p class="briefing-text" data-ui="briefing-description">
+        {b.description}
+      </p>
+      <h3 class="menu-sub">{t("briefing.objectives")}</h3>
+      <ul class="briefing-list" data-ui="briefing-objectives">
+        {b.objectives.map((o, k) => (
+          <li key={k} class={"briefing-obj" + (o.done ? " done" : "")}>
+            {o.done ? "✓ " : "◇ "}
+            {o.text}
+          </li>
+        ))}
+      </ul>
+      <h3 class="menu-sub">{t("briefing.messages")}</h3>
+      {b.messages.length ? (
+        <div class="briefing-msgs" data-ui="briefing-messages">
+          {b.messages.map((text, k) => (
+            <p key={k} class="briefing-msg">
+              {text}
+            </p>
+          ))}
+        </div>
+      ) : (
+        <p class="menu-note" data-ui="briefing-messages">
+          {t("briefing.noMessages")}
+        </p>
+      )}
+      <div class="menu-actions">
+        <Btn ui="back" primary onClick={() => act.back()}>
+          {t("briefing.back")}
+        </Btn>
+      </div>
+    </div>
+  );
+}
+
 /** L5-F: over the running match, while a partner stalls, dropped out, or this page is rejoining */
 function NetBanner({ n, act }: { n: NetView; act: MenuActions }) {
   const text =
@@ -828,6 +939,7 @@ function Menus({ act }: { act: MenuActions }) {
       {m.screen === "records" ? <Records m={m} act={act} /> : null}
       {m.screen === "howto" ? <HowTo act={act} /> : null}
       {m.screen === "together" ? <Together m={m} act={act} /> : null}
+      {m.screen === "briefing" ? <Briefing m={m} act={act} /> : null}
     </div>
   );
 }

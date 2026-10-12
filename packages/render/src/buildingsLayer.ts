@@ -71,6 +71,8 @@ interface Variant {
   scale: number;
   /** placeholders grow with the dwelling level; models have a variant per level instead */
   grows: boolean;
+  /** top of the geometry (local units, before `scale`): health bars and chimney smoke sit above it */
+  height: number;
 }
 
 export class BuildingLayer {
@@ -109,7 +111,10 @@ export class BuildingLayer {
         im.count = 0;
         this.group.add(im);
       }
-      return { body: b, tint: t, scale, grows };
+      body.computeBoundingBox();
+      tintG.computeBoundingBox();
+      const height = Math.max(body.boundingBox?.max.y ?? 0, tintG.boundingBox?.max.y ?? 0, 0.5);
+      return { body: b, tint: t, scale, grows, height };
     };
     for (const b of buildings) {
       const ids = buildingModelIds(b.id, b.levels?.length ?? 0);
@@ -131,6 +136,26 @@ export class BuildingLayer {
   /** BACKLOG 3: fog of war viewer; enemy buildings show once their ground was seen */
   viewTribe = 0;
   revealAll = false;
+  /**
+   * Render polish (health bars, hover ring, chimney smoke): the buildings drawn last update in draw order
+   * (`drawnIdx[0 .. drawn)`), and per entity index the wrapped world x and z, the ground and the roof top.
+   */
+  drawn = 0;
+  drawnIdx = new Int32Array(256);
+  drawX = new Float32Array(256);
+  drawZ = new Float32Array(256);
+  drawGround = new Float32Array(256);
+  drawTop = new Float32Array(256);
+
+  private grow(hi: number): void {
+    if (this.drawX.length >= hi) return;
+    const n = Math.max(hi, this.drawX.length * 2);
+    this.drawnIdx = new Int32Array(n);
+    this.drawX = new Float32Array(n);
+    this.drawZ = new Float32Array(n);
+    this.drawGround = new Float32Array(n);
+    this.drawTop = new Float32Array(n);
+  }
 
   update(w: World, focusX: number, focusZ: number, heightScale: number): void {
     const E = w.ents;
@@ -138,6 +163,8 @@ export class BuildingLayer {
     // buildings are few; rebuild every frame so plans, construction progress and levels stay current
     void this.lastKey;
     const counts = this.kinds.map((v) => new Int32Array(v.length));
+    this.grow(E.hi);
+    this.drawn = 0;
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.building) continue;
       if (!this.revealAll && !w.vision.seenEntity(this.viewTribe, i)) continue;
@@ -161,6 +188,11 @@ export class BuildingLayer {
       this.s.set(kind.scale * lv, kind.scale * lv * rise, kind.scale * lv);
       this.q.setFromAxisAngle(THREE.Object3D.DEFAULT_UP, ((i * 2654435761) >>> 0) / 4294967296 * Math.PI * 2);
       this.m.compose(this.p, this.q, this.s);
+      this.drawnIdx[this.drawn++] = i;
+      this.drawX[i] = this.p.x;
+      this.drawZ[i] = this.p.z;
+      this.drawGround[i] = y;
+      this.drawTop[i] = y - 0.05 + kind.height * this.s.y;
       const c = counts[k][vi]++;
       kind.body.setMatrixAt(c, this.m);
       kind.tint.setMatrixAt(c, this.m);

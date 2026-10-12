@@ -187,3 +187,13 @@ body.debug-overlap-hud .hud-overlap { display: block; }
 .hud-troops { padding: 10px 12px; gap: 6px; }
 .hud-subtitle { font: 700 17px var(--ui-font); background: rgba(20, 17, 14, 0.82); border-radius: 4px; padding: 6px 14px; }
 .hud-subtitle b { color: #ffb469; }
+/* QoL: the single player game speed control in the title panel (the panel itself ignores the pointer) */
+.hud-speed { display: inline-flex; align-items: center; gap: 4px; pointer-events: auto; }
+.hud-speed .speed-btn { flex: 0 0 auto; min-width: 22px; padding: 0 5px; font: 800 14px/1.25 var(--ui-font); }
+.hud-speed .speed-value { min-width: 30px; text-align: center; font: 800 13px var(--ui-font); color: #ffcf7a; font-variant-numeric: tabular-nums; }
+/* QoL 2: notes with a place look there when clicked (the notes panel itself ignores the pointer); the idle troops chip */
+.note.at { pointer-events: auto; cursor: pointer; }
+.note.at:hover { color: #fff3dc; background: rgba(255, 240, 215, 0.06); }
+.troops-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.idle-chip { flex: 0 0 auto; font: 800 13px var(--ui-font); color: #ffcf7a; font-variant-numeric: tabular-nums; padding: 2px 8px; }
+.hud-idle { left: 50%; bottom: 64px; transform: translateX(-50%); padding: 6px 8px; pointer-events: auto; }

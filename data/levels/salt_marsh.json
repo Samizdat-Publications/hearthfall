@@ -152,8 +152,8 @@
     {
       "model": "prop.ruin_a",
       "at": [
-        60,
-        92
+        57,
+        91
       ],
       "rot": 0.2
     },
@@ -168,16 +168,16 @@
     {
       "model": "prop.standing_stone",
       "at": [
-        86,
-        100
+        94,
+        106
       ],
       "rot": 2.6
     },
     {
       "model": "prop.cairn",
       "at": [
-        90,
-        96
+        92,
+        88
       ]
     },
     {
@@ -258,6 +258,66 @@
         156,
         84
       ]
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        12,
+        98
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        48,
+        106
+      ],
+      "rot": 0.5
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        20,
+        76
+      ]
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        105,
+        44
+      ],
+      "rot": 1.4
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        92,
+        138
+      ],
+      "rot": 0.5
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        62,
+        92
+      ]
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        172,
+        114
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        166,
+        116
+      ],
+      "rot": 1.1
     }
   ],
   "setup": [

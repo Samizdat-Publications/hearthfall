@@ -73,8 +73,17 @@
     { "model": "prop.cairn", "at": [130, 128] },
     { "model": "prop.haystack", "at": [56, 140] },
     { "model": "prop.fence", "at": [66, 142], "rot": 0.3 },
-    { "model": "prop.woodpile", "at": [54, 130] },
-    { "model": "prop.flowers", "at": [86, 132] }
+    { "model": "prop.woodpile", "at": [70, 150] },
+    { "model": "prop.flowers", "at": [86, 132] },
+    { "model": "prop.cairn", "at": [40, 40] },
+    { "model": "prop.woodpile", "at": [24, 42] },
+    { "model": "prop.standing_stone", "at": [154, 42], "rot": 0.8 },
+    { "model": "prop.standing_stone", "at": [170, 40], "rot": 2 },
+    { "model": "prop.fence", "at": [151, 166], "rot": 0.3 },
+    { "model": "prop.haystack", "at": [166, 150] },
+    { "model": "prop.haystack", "at": [100, 148] },
+    { "model": "prop.haystack", "at": [42, 96] },
+    { "model": "prop.fence", "at": [84, 140], "rot": 1.2 }
   ],
   "objectives": [
     { "type": "kill", "n": 12, "tribe": 1, "unit": "firecaller", "text": "The Ember Crown lands in the northwest: cut down twelve of its firecallers (wardens beat firecallers)" },

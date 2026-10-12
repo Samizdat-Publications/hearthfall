@@ -64,4 +64,52 @@ describe("rebindable keys (M8 settings)", () => {
     const km = sanitizeKeymap({ help: "D" });
     expect(new Set(Object.values(km)).size).toBe(KEY_ACTIONS.length);
   });
+
+  it("review fix: an old binding on a newer action's default key keeps every custom binding", () => {
+    const def = defaultKeymap();
+    const clash = KEY_ACTIONS.find((a) => a.id !== "help" && def[a.id] === "L")!;
+    const km = sanitizeKeymap({ help: "L", photoMode: def.photoMode });
+    expect(km.help).toBe("L");
+    expect(km[clash.id]).toBe("");
+    expect(km.photoMode).toBe(def.photoMode);
+  });
+
+  it("review fix: numpad + and Shift+= speed the game up like =", () => {
+    const km = defaultKeymap();
+    expect(actionFor(km, { key: "+", shiftKey: false, ctrlKey: false })).toBe("speedUp");
+    expect(actionFor(km, { key: "+", shiftKey: true, ctrlKey: false })).toBe("speedUp");
+  });
+});
+
+describe("QoL keys: game speed, briefing, quick save", () => {
+  const ev = (key: string, shiftKey = false, ctrlKey = false) => ({ key, shiftKey, ctrlKey });
+  it("speed and briefing are rebindable actions with free default keys", () => {
+    const km = defaultKeymap();
+    expect(actionFor(km, ev("-"))).toBe("speedDown");
+    expect(actionFor(km, ev("="))).toBe("speedUp");
+    expect(actionFor(km, ev("o"))).toBe("briefing");
+    expect(rebind(km, "speedUp", "]").keymap.speedUp).toBe("]");
+  });
+  it("F5 and F9 (quick save and load) are reserved, so no binding can take them", () => {
+    const km = defaultKeymap();
+    expect(rebind(km, "help", "F5").error).toMatch(/reserved/);
+    expect(rebind(km, "briefing", "F9").error).toMatch(/reserved/);
+    expect(sanitizeKeymap({ help: "F5" }).help).toBe("H");
+  });
+});
+
+describe("QoL 2 keys: latest alert and idle troops", () => {
+  const ev = (key: string, shiftKey = false, ctrlKey = false) => ({ key, shiftKey, ctrlKey });
+  it("U jumps to the latest alert and the period key picks the next idle troops; both rebind", () => {
+    const km = defaultKeymap();
+    expect(actionFor(km, ev("u"))).toBe("lastAlert");
+    expect(actionFor(km, ev("."))).toBe("idleTroops");
+    // Space stays the pause key, never one of these
+    expect(actionFor(km, ev(" "))).toBe(null);
+    const r = rebind(km, "idleTroops", ",");
+    expect(r.error).toBe(null);
+    expect(actionFor(r.keymap, ev(","))).toBe("idleTroops");
+    expect(rebind(km, "lastAlert", "Space").error).toMatch(/reserved/);
+    expect(new Set(Object.values(km)).size).toBe(KEY_ACTIONS.length);
+  });
 });

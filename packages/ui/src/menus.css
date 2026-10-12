@@ -178,3 +178,17 @@
 .achievement { font-size: 14px; border-left-color: #5d564c; background: rgba(0, 0, 0, 0.22); border-radius: 0 3px 3px 0; }
 .achievement b { color: #ffcf7a; }
 .achievement.earned { border-left-color: var(--ui-ember); }
+
+/* QoL: the pause menu restart confirm, the quick save row and the campaign level briefing (carved hearthstone tokens) */
+.menu-confirm { display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; background: var(--ui-well); border: 1px solid #0d0b09; border-radius: 4px; box-shadow: var(--ui-well-bevel); }
+.confirm-row { display: flex; gap: 10px; justify-content: center; }
+.confirm-row .menu-small { flex: 1 1 0; min-height: 36px; }
+.menu-small.confirm-yes { background: var(--ui-ember-slab); box-shadow: var(--ui-ember-bevel); color: #fff6e6; }
+.slot-quick { border-color: #5d564c; }
+.menu-briefing { width: min(640px, calc(100vw - 32px)); display: flex; flex-direction: column; gap: 10px; text-align: left; }
+.briefing-text { margin: 0; font-size: 16px; line-height: 1.45; color: var(--ui-bone); white-space: normal; }
+.briefing-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.briefing-obj { font-size: 15px; line-height: 1.35; color: #ded2bb; white-space: normal; }
+.briefing-obj.done { color: var(--ui-moss); }
+.briefing-msgs { display: flex; flex-direction: column; gap: 6px; }
+.briefing-msg { margin: 0; padding: 6px 10px; font-size: 15px; line-height: 1.4; white-space: normal; background: rgba(0, 0, 0, 0.22); border-left: 4px solid var(--ui-ember); border-radius: 0 3px 3px 0; }

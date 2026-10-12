@@ -10,7 +10,8 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 - S4 DONE Leg 6 "ready for people": L6-A to L6-D, L6-E probe (ed779c0), campaign fix round over 11 levels (6dc6c30). Full npm run qa PASS at a043684 (2026-10-12T02:50Z). Aggressive retune moved to L7-E.
 - S4 Leg 7 "more campaign, more detail" (ROADMAP): L7-A chapters, L7-D map detail v2 (1bdb641), L7-B level-author workflow (b95869d), L7-F UI v2 stone and scale (a09ae2e, a043684; ADR-024; canvas https://claude.ai/artifact/W7zGavMKosrktxgD55pj9Q) DONE. L7-C chapter 3 'The Far Shores' DONE (43d2cf6 draft, 3abdb41 fix round; 35 levels, levels layer 71/71). Leg 7 DONE (2026-10-12): L7-E gaps 1, 2, 3 (063dd04) and 7 (a00a3f6) built, 4, 6, 8 design, 5 deferred; retune logged. Full npm run qa PASS at 8a5b969 plus later sim-only commits (qa:fast and levels layer 71/71 green). Leg 8 planned in ROADMAP. PAUSED for the weekly usage cap: Leg 8 needs multi-agent workflows; resume after 2026-10-15T18:00Z. Dev probe tools/harness/_objprobe.mjs prints each objective's done tick.
 - S4 Leg 8 started early on Stewart's request (2026-10-12, after his playtest: "exactly what I was hoping for"). Playtest asks DONE (86e2d8a): a closing ring marks every accepted right-click order (green move, red attack, gold special) and clicking the Shaper portrait selects her. L8-D DONE except a nav bug: aggressive economyTargetPop 60 in skirmish, 40 kept in the campaign (ADR-025); ai soak 96 x 25: aggressive 29, sneaky 26, turtle 27 (was 14, 35, 28); levels layer 71/71; balloon unload at the wrap seam fixed. L8-A, L8-B, L8-C still wait for the weekly reset (workflows).
-- USAGE CAP (Stewart, 2026-10-12): stop at about 85 percent of the weekly all-models limit (76 percent at 03:20Z; resets 2026-10-15T18:00Z). Check get_usage between steps, start no new workflows, pause cleanly at about 84 percent.
+- S4 2026-10-12 evening (Stewart, before his long playthrough from level 3): L8-A and the boat launch stall DONE (9be218b), full npm run qa PASS, ai soak 96 x 25 PASS (30, 26, 27). Chapter 4 briefs ready (tools/workflows/chapter4-briefs.json, tab "The Wild Heart" from 36), held until after the playtest. Polish workflow wf_c3d9a461-2fe running: game speed, restart, quick save F5/F9, briefing, edge scroll, attack alerts and minimap pings, spell refusal reasons and tooltips, idle troops key, health bars, hover highlight, ambient life, chapter 3 props (L8-C).
+- USAGE CAP (Stewart, 2026-10-12 evening, raised): stop at about 90 percent of the weekly all-models limit (76 percent at 03:20Z; resets 2026-10-15T18:00Z). Check get_usage between steps, start no new workflows, pause cleanly at about 84 percent.
 - Stretch 2 (2026-10-10, 24 h) DONE: tag s2-done, full npm run qa PASS at 5e11f16. Run 1 done 2026-10-09T23:58Z: m0-done to m11-done tagged. Run started: 2026-10-08T21:25:00Z.
 - Screenshot mode: headless-shell + GPU args (RTX 5070 Ti Laptop). VisionQA provider ON (about $0.00003 per low shot).
 - Machine: often at 100 percent CPU (other projects' sims and benchmarks, leave them alone). Wall-clock timing is noisy, and bench readings of 6 to 7 ms while agents run scenarios are load, not regressions (idle: 3.7 ms).
@@ -18,9 +19,9 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 - Making-of page: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5 (version 36), rebuild with `npm run making-of -- page` and republish after every backlog item (README steps).
 
 ## Next 3 actions
-1. Fix the boat launch stall (Blocked), then rerun the ai soak 96 x 25 until RESULT PASS (nightly ai 64 x 20 includes seed 1009).
-2. After the weekly reset (2026-10-15T18:00Z): L8-A Boathouse fix round (ROADMAP Leg 8), campaign-playtest workflow with fixes over 4 levels.
-3. L8-B chapter 4, batch 1 of 5 levels (level-author workflow), then batch 2; L8-C dressing pass.
+1. Polish workflow wf_c3d9a461-2fe: read its review defects, fix the high and medium ones, full npm run qa until PASS, npm run build, commit, tell Stewart.
+2. Republish the making-of page (npm run making-of -- page) with the Leg 8 shots.
+3. After Stewart's playthrough notes: fix them first, then L8-B chapter 4 (Workflow level-author with tools/workflows/chapter4-briefs.json as args, perAgent 2), then its campaign-playtest fix round.
 
 ## Blocked
 - (none)

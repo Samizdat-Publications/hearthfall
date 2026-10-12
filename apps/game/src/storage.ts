@@ -62,6 +62,16 @@ export const MINIATURE = ["default", "on", "off"] as const;
 /** BACKLOG 14: lighting presets ("default" follows style.json lightingDefault) and visual weather */
 export const LIGHTING = ["default", "day", "golden", "evening"] as const;
 export const WEATHER = ["clear", "rain"] as const;
+/** render polish: health bars over units and buildings (only when damaged, always, or off; key L cycles them) */
+export const HEALTH_BARS = ["damaged", "always", "off"] as const;
+/** the Health bars key: damaged, then always, then off, then damaged again */
+export function nextHealthBars(m: (typeof HEALTH_BARS)[number]): (typeof HEALTH_BARS)[number] {
+  return HEALTH_BARS[(HEALTH_BARS.indexOf(m) + 1) % HEALTH_BARS.length];
+}
+/** note shown when the key changes the mode */
+export function healthBarsNote(m: (typeof HEALTH_BARS)[number]): string {
+  return m === "damaged" ? "Health bars: when damaged" : m === "always" ? "Health bars: always" : "Health bars: off";
+}
 
 export interface Settings {
   quality: (typeof QUALITIES)[number];
@@ -79,12 +89,15 @@ export interface Settings {
   weather: (typeof WEATHER)[number];
   /** stretch 2: first skirmish tips (turned off when the last tip is done) */
   tips: boolean;
+  /** render polish: health bars mode and ambient life (smoke, birds, fireflies, dust) */
+  healthBars: (typeof HEALTH_BARS)[number];
+  ambient: boolean;
 }
 
 const SETTINGS_KEY = "hearthfall.settings.v1";
 
 export function defaultSettings(): Settings {
-  return { quality: "high", master: 80, music: 60, sfx: 80, keymap: defaultKeymap(), palette: "default", uiScale: 0, subtitles: true, miniature: "default", lighting: "default", weather: "clear", tips: true };
+  return { quality: "high", master: 80, music: 60, sfx: 80, keymap: defaultKeymap(), palette: "default", uiScale: 0, subtitles: true, miniature: "default", lighting: "default", weather: "clear", tips: true, healthBars: "damaged", ambient: true };
 }
 
 const vol = (v: unknown, d: number) => (typeof v === "number" && Number.isFinite(v) ? Math.min(100, Math.max(0, Math.round(v))) : d);
@@ -108,6 +121,8 @@ export function loadSettings(kv: KV): Settings {
       lighting: (LIGHTING as readonly string[]).includes(o.lighting as string) ? (o.lighting as Settings["lighting"]) : d.lighting,
       weather: (WEATHER as readonly string[]).includes(o.weather as string) ? (o.weather as Settings["weather"]) : d.weather,
       tips: typeof o.tips === "boolean" ? o.tips : d.tips,
+      healthBars: (HEALTH_BARS as readonly string[]).includes(o.healthBars as string) ? (o.healthBars as Settings["healthBars"]) : d.healthBars,
+      ambient: typeof o.ambient === "boolean" ? o.ambient : d.ambient,
     };
   } catch {
     return d;

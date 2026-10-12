@@ -6,6 +6,7 @@
 // M9: campaign levels (data/levels) run as sessions too; the level runtime decides the end.
 import { comboHint, leadInWarning, orderNote } from "./orderNotes.ts";
 import { FirstMatchTips, type TipView } from "./tips.ts";
+import { AlertThrottle, alertCfg, alertText, castBlock, castBlockText, castFailedText, castHint, castOtherText, hostileHits, idleGroups, idleTroops, nextIdleGroup, rejectBlock, type AlertCfg, type Hit, type Ping } from "./alerts.ts";
 import type { SessionRole } from "./netGate.ts";
 import { NET_DEFAULTS, NetPlay, desyncReport, relayUrl, type DesyncReport, type NetMode } from "./netPlay.ts";
 import {
@@ -45,6 +46,7 @@ import { DEFAULT_AI } from "./opponents.ts";
 import {
   actionFor,
   spellSlot,
+  t,
   type KeyAction,
   type Screen,
 } from "@hearthfall/ui";
@@ -75,11 +77,16 @@ import { REPLAY_KEY, ReplayRun, decodeReplay, encodeReplay, makeReplay, type Con
 import {
   autoUiScale,
   browserKV,
+  healthBarsNote,
   loadSettings,
+  nextHealthBars,
+  readSlot,
   storeSettings,
+  writeSlot,
   type KV,
   type Settings,
 } from "./storage.ts";
+import { QUICK_SLOT, briefingMessages, edgePan, loadQol, nextSpeed, quickLoadBlock, quickSaveBlock, restartKind, speedAllowed, speedCfg, stepPlan, type MatchState, type SpeedCfg } from "./qol.ts";
 import { AudioHooks, MusicDirector, WebAudioPlayer } from "@hearthfall/audio";
 import {
   areaCounts,
@@ -312,6 +319,8 @@ export interface Note {
   kind: "good" | "bad" | "info";
   /** tick the note disappears */
   until: number;
+  /** QoL 2: where it happened (map x, y): clicking the note looks there */
+  at?: [number, number];
 }
 
 
@@ -452,6 +461,26 @@ export class Game {
   private noteLast = new Map<string, number>();
   lastSave: { tick: number; hash: string } | null = null;
   lastLoad: { tick: number; hash: string } | null = null;
+  /** QoL: single player game speed (a multiple of real time); kept for the whole session, across matches */
+  speed = 1;
+  /** QoL: data/ui.json speed choices and the per frame step cap */
+  readonly speedCfg: SpeedCfg;
+  /** QoL: edge scrolling setting (stored apart from Settings, see qol.ts) */
+  edgeScroll = true;
+  /** QoL: the last pointer position over the window, and whether the pointer is inside it */
+  private pointer = { x: 0, y: 0, inside: false };
+  /** QoL 2: under attack alerts (data/ui.json alerts), their per place throttle, minimap pings and the latest place */
+  readonly alertCfg: AlertCfg;
+  private alertThrottle: AlertThrottle | null = null;
+  pings: Ping[] = [];
+  lastAlertAt: [number, number] | null = null;
+  /** QoL 2: why the armed spell cannot land at the pointer ("" when it can) */
+  targetHint = "";
+  /** QoL 2: own troops standing idle (HUD chip), and the entity id that leads the idle group picked last */
+  idleCount = 0;
+  private lastIdleId = -1;
+  /** QoL 2: the spell of the last cast command sent (commandRejected events do not name it) */
+  private lastCastSpell: string | null = null;
 
   constructor(canvas: HTMLCanvasElement, params: GameParams) {
     this.canvas = canvas;
@@ -492,6 +521,9 @@ export class Game {
     this.campaignLearned = loadLearned(this.kv);
     this.achievements = loadAchievementDefs(this.pack);
     this.ui = loadUiDefs(this.pack);
+    this.speedCfg = speedCfg(this.ui.speed);
+    this.alertCfg = alertCfg(this.ui.alerts);
+    this.edgeScroll = loadQol(this.kv).edgeScroll;
     this.records = loadRecords(this.kv);
     this.applyQuality();
     this.applyA11y();
@@ -551,7 +583,7 @@ export class Game {
       this.subtitle = {
         speaker: sub.speaker,
         text: sub.text,
-        until: this.world.tick + this.ui.notes.subtitleSeconds * this.world.cfg.tickHz,
+        until: this.world.tick + this.ui.notes.subtitleSeconds * this.noteHz(),
       };
   }
 
@@ -610,6 +642,12 @@ export class Game {
     this.newAchievements = [];
     this.notes = [];
     this.noteLast.clear();
+    this.alertThrottle = null;
+    this.pings = [];
+    this.lastAlertAt = null;
+    this.targetHint = "";
+    this.idleCount = 0;
+    this.lastIdleId = -1;
     this.renderer.setPlacement(null);
     this.renderer.setTargeting(null);
     this.renderer.setWorld(this.world);
@@ -1087,6 +1125,107 @@ export class Game {
     this.onChange();
   }
 
+  // ---------------------------------------------------------------- QoL part 1: speed, quick save, restart, briefing
+  /** The running match as qol.ts sees it. */
+  matchState(): MatchState {
+    return {
+      inGame: this.inGame,
+      session: this.skirmish !== null,
+      ended: this.ended !== null,
+      net: this.net !== null,
+      humans: this.skirmish?.humans?.length ?? 1,
+      replay: this.replay !== null,
+      editor: this.editor !== null,
+    };
+  }
+
+  /** Game speed applies now: a single player match or campaign level (never LAN play, replays or the editor). */
+  speedOn(): boolean {
+    return speedAllowed(this.matchState());
+  }
+
+  /** Set the game speed to one of the ui.json choices (the choice lasts the session). */
+  setSpeed(v: number): void {
+    if (!this.speedOn() || !this.speedCfg.choices.includes(v) || v === this.speed) return;
+    this.speed = v;
+    this.acc = 0;
+    this.onChange();
+  }
+
+  /** One speed step faster (1) or slower (-1). */
+  stepSpeed(dir: 1 | -1): void {
+    this.setSpeed(nextSpeed(this.speedCfg.choices, this.speed, dir));
+  }
+
+  /** F5: write the quick slot (apart from the manual slots); a note says it worked or why not. */
+  quickSave(): void {
+    const why = quickSaveBlock(this.matchState());
+    if (why) return this.quickNote(why, "bad");
+    const s = makeSave(this.world, this.skirmish!, this.log, this.pendingCommands(), new Date().toISOString(), this.stats);
+    const err = writeSlot(this.kv, QUICK_SLOT, s);
+    if (!err) this.lastSave = { tick: s.tick, hash: s.hash };
+    this.quickNote(err ? `Quick save failed: ${err}.` : "Quick saved.", err ? "bad" : "good");
+  }
+
+  /** F9: load the quick slot; a note says it worked or why not. */
+  quickLoad(): void {
+    const why = quickLoadBlock(this.matchState());
+    if (why) return this.quickNote(why, "bad");
+    let s: SaveGame;
+    try {
+      s = readSlot(this.kv, QUICK_SLOT);
+    } catch (e) {
+      const msg = String((e as Error)?.message ?? e);
+      return this.quickNote(msg === "slot is empty" ? "There is no quick save yet: press F5 during a match first." : `Could not quick load: ${msg.slice(0, 80)}.`, "bad");
+    }
+    try {
+      this.adoptSave(restoreSave(this.pack, s), s);
+    } catch (e) {
+      return this.quickNote(`Could not quick load: ${String((e as Error)?.message ?? e).slice(0, 80)}.`, "bad");
+    }
+    this.quickNote("Quick loaded.", "good");
+  }
+
+  private quickNote(text: string, kind: Note["kind"]): void {
+    this.notify("quick", text, kind);
+    this.onChange();
+  }
+
+  /** What Restart offers in the pause menu: "level" (campaign), "match" (skirmish) or null. */
+  restartable(): "level" | "match" | null {
+    return restartKind(this.matchState(), Boolean(this.skirmish?.campaign));
+  }
+
+  /** Start the current campaign level or skirmish over: same setup and seed (after a load: the match that save came from). */
+  restart(): void {
+    const sp = this.skirmish;
+    if (!sp || !this.restartable()) return;
+    this.startSkirmish(sp);
+  }
+
+  /** The campaign level briefing: its description and the scripted messages seen so far (null outside a level). */
+  briefing(): { name: string; description: string; messages: string[] } | null {
+    const lv = this.world.level;
+    if (!lv || !this.inGame || this.editor) return null;
+    const triggers = lv.def.triggers ?? [];
+    // a worship trigger speaks to the tribe that prayed there; every other trigger to the player (tribe 0)
+    const receiver = (k: number) => {
+      const when = triggers[k]?.when;
+      return when?.type === "worship" ? (this.world.worship.find(when.site)?.lastBy ?? -1) : 0;
+    };
+    return { name: lv.def.name, description: lv.def.description, messages: briefingMessages(lv.def, lv.fired, receiver, this.localTribe) };
+  }
+
+  /** Open the briefing over the match (from play, or from the pause menu; Back returns there). */
+  openBriefing(): void {
+    if (!this.briefing() || this.ended) return;
+    if (this.screen === "none") {
+      this.cancelModes();
+      this.backStack = [];
+    }
+    this.go("briefing");
+  }
+
   /** Clear every pointer mode (targeting, placing, rally pick, attack-move). */
   private cancelModes(): void {
     this.targeting = null;
@@ -1217,16 +1356,66 @@ export class Game {
     }
     if (this.world.tick % 30 === 0) this.samplePeak();
     if (this.tips && this.world.tick % 10 === 0) this.updateTips();
-    const si = shaperIndex(this.world, this.localTribe);
-    const E = this.world.ents;
-    if (
-      si >= 0 &&
-      E.hitTick[si] === this.world.tick - 1 &&
-      E.lastHit[si] >= 0 &&
-      E.lastHit[si] !== this.localTribe
-    )
-      this.notify("shaperHit", "Your Shaper is under attack!", "bad", 15);
+    // QoL 2: under attack alerts from this tick's hits (the Hearth, the Shaper, then per place), and the idle troops count
+    this.raiseAlerts(hostileHits(this.world, this.localTribe));
+    if (this.world.tick % 5 === 0) this.countIdle();
     this.checkEnd();
+  }
+
+  /** QoL 2: turn hits into alerts (throttled per place): a note that looks there when clicked and a minimap ping. */
+  private raiseAlerts(hits: readonly Hit[]): void {
+    const w = this.world;
+    const life = this.alertCfg.pingSeconds * w.cfg.tickHz;
+    if (this.pings.length && w.tick - this.pings[0].tick >= life) this.pings = this.pings.filter((p) => w.tick - p.tick < life);
+    if (!hits.length) return;
+    this.alertThrottle ??= new AlertThrottle(this.alertCfg, w.terrain.size, w.cfg.tickHz);
+    for (const a of this.alertThrottle.offer(hits, w.tick)) {
+      // the note key is the alert's own, so the place throttle above decides; a new place always speaks
+      this.notify(`alert${a.kind}${this.noteSeq}`, alertText(a.kind), "bad", 0, [a.x, a.y]);
+      this.pings = [...this.pings, { x: a.x, y: a.y, tick: a.tick, big: a.kind === "hearth" || a.kind === "shaper" }].slice(-16);
+      this.lastAlertAt = [a.x, a.y];
+    }
+  }
+
+  /** QoL 2: Jump to the latest alert's place (the U key). */
+  jumpToAlert(): void {
+    if (!this.lastAlertAt) return this.notify("alertNone", t("alert.none"), "info", 2);
+    this.renderer.setCamera({ x: this.lastAlertAt[0], z: this.lastAlertAt[1] });
+  }
+
+  /** QoL 2: a click on a note with a place looks there. */
+  jumpToNote(id: number): void {
+    const n = this.notes.find((k) => k.id === id);
+    if (n?.at) this.renderer.setCamera({ x: n.at[0], z: n.at[1] });
+  }
+
+  private countIdle(): void {
+    const n = this.world.tribes[this.localTribe] ? idleTroops(this.world, this.localTribe).length : 0;
+    if (n !== this.idleCount) {
+      this.idleCount = n;
+      this.onChange();
+    }
+  }
+
+  /** QoL 2: select the next idle troop group (troops near each other) and center the camera on it. */
+  selectIdleTroops(): void {
+    const w = this.world;
+    if (!w.tribes[this.localTribe]) return;
+    const idle = idleTroops(w, this.localTribe);
+    this.idleCount = idle.length;
+    const pick = nextIdleGroup(idleGroups(w, idle, this.alertCfg.idleGroupRadius), (i) => w.ents.idOf(i), this.lastIdleId);
+    if (!pick) {
+      this.notify("idleNone", t("idle.none"), "info", 2);
+      this.onChange();
+      return;
+    }
+    this.lastIdleId = pick.id;
+    this.cancelModes();
+    this.selection = new Set(pick.group);
+    this.selectedBuilding = -1;
+    const c = groupCenter(w, pick.group);
+    if (c) this.renderer.setCamera({ x: c[0], z: c[1] });
+    this.onChange();
   }
 
   // ---------------------------------------------------------------- BACKLOG 21: records and achievements
@@ -1366,16 +1555,25 @@ export class Game {
   }
 
   /** Add a HUD notification; `key` throttles repeats to one per `throttleSec` of game time. */
-  notify(key: string, text: string, kind: Note["kind"], throttleSec = 0): void {
+  notify(key: string, text: string, kind: Note["kind"], throttleSec = 0, at?: [number, number]): void {
     const hz = this.world.cfg.tickHz;
+    const life = this.ui.notes.seconds * this.noteHz();
     const t = this.world.tick;
     const last = this.noteLast.get(key);
     if (last !== undefined && t - last < throttleSec * hz) return;
     this.noteLast.set(key, t);
-    this.notes = [
-      ...this.notes.filter((n) => n.until > t),
-      { id: ++this.noteSeq, text, kind, until: t + this.ui.notes.seconds * hz },
-    ].slice(-this.ui.notes.max);
+    const list: Note[] = [...this.notes.filter((n) => n.until > t), { id: ++this.noteSeq, text, kind, until: t + life, ...(at ? { at } : {}) }];
+    // review fix: placed alerts give way first, so a busy fight cannot push a level message off the HUD early
+    while (list.length > this.ui.notes.max) {
+      const k = list.findIndex((n) => n.at);
+      list.splice(k >= 0 && k < list.length - 1 ? k : 0, 1);
+    }
+    this.notes = list;
+  }
+
+  /** Ticks per real second of note and subtitle life: game speed must not shorten how long text stays readable. */
+  private noteHz(): number {
+    return this.world.cfg.tickHz * (this.speedOn() ? this.speed : 1);
   }
 
   /** Player-facing voice and UI cues the sim cue table does not cover (own tribe only). */
@@ -1444,13 +1642,8 @@ export class Game {
           );
         break;
       case "killed":
-        if (e.tribe === me && rival(e.by))
-          this.notify(
-            "underAttack",
-            "Your followers are under attack!",
-            "bad",
-            20,
-          );
+        // QoL 2: a kill with no damage first (a bog, a hunter) is an attack too; the place throttle keeps it to one note
+        if (e.tribe === me && rival(e.by) && typeof e.x === "number" && typeof e.y === "number") this.raiseAlerts([{ kind: "units", x: e.x, y: e.y }]);
         break;
       case "destroyed":
         if (e.tribe === me)
@@ -1459,6 +1652,7 @@ export class Game {
             "One of your buildings was destroyed.",
             "bad",
             5,
+            typeof e.x === "number" && typeof e.y === "number" ? [e.x, e.y] : undefined,
           );
         break;
       case "tribeEliminated":
@@ -1504,13 +1698,16 @@ export class Game {
         break;
       }
       case "castFailed":
-        if (e.tribe === me)
-          this.notify(
-            "castFailed",
-            "The spell failed: the Shaper could not reach the target.",
-            "info",
-            3,
-          );
+        // QoL 2: the sim's reason in plain words (unreachable: no spot in range on the Shaper's land)
+        if (e.tribe === me) this.notify("castFailed", castFailedText(String(e.spell), String(e.reason)), "info", 3);
+        break;
+      case "commandRejected":
+        // QoL 2: a refused cast says why (the sim's cast validation reasons, see alerts.ts rejectBlock)
+        if (e.tribe === me && e.cmd === "cast") {
+          const spell = this.lastCastSpell ?? "";
+          const block = rejectBlock(String(e.reason));
+          this.notify("castBlock", block ? this.castBlockNote(block, spell) : castOtherText(spell, String(e.reason)), "info", 2);
+        }
         break;
       // M9 worship and campaign levels
       case "levelMessage":
@@ -1626,14 +1823,17 @@ export class Game {
       this.netFrame(dt);
     } else if (!this.paused && this.screen === "none" && !this.editor) {
       this.acc += dt;
-      const speed = this.replay ? this.replay.speed : 1;
+      // QoL: the single player game speed only changes how many fixed steps this frame runs (capped, the
+      // backlog dropped, so a slow frame cannot spiral); replays keep their own speed and cap
+      const speed = this.replay ? this.replay.speed : this.speedOn() ? this.speed : 1;
       const tickDt = 1 / (this.world.cfg.tickHz * speed);
+      const plan = this.replay ? stepPlan(this.acc, tickDt, 8 * speed, false) : stepPlan(this.acc, tickDt, speed === 1 ? 8 : this.speedCfg.maxStepsPerFrame, speed !== 1);
       let n = 0;
-      while (this.acc >= tickDt && n < 8 * speed && !this.ended && !this.paused) {
+      while (n < plan.steps && !this.ended && !this.paused) {
         this.stepOnce();
-        this.acc -= tickDt;
         n++;
       }
+      this.acc = plan.rest + (plan.steps - n) * tickDt;
       if (n) this.onChange();
     } else this.acc = 0;
     // the main menu backdrop turns slowly (not in fixedStep captures)
@@ -1660,6 +1860,10 @@ export class Game {
       this.selKey = sk;
     }
     this.renderer.selected = this.photo ? NO_SELECTION : this.selection;
+    // render polish: no health bars or hover ring in photo mode; settings drive bars and ambient life
+    this.renderer.hideOverlays = this.photo;
+    this.renderer.setHealthBars(this.settings.healthBars);
+    this.renderer.setAmbientLife(this.settings.ambient);
     // positional audio hears around the camera focus; the radius grows as the camera pulls out
     const cam = this.renderer.cam;
     this.player.listener = {
@@ -1671,7 +1875,7 @@ export class Game {
     this.player.yaw = cam.yaw;
     this.renderer.alpha = this.paused
       ? 1
-      : Math.min(1, this.acc * this.world.cfg.tickHz);
+      : Math.min(1, this.acc * this.world.cfg.tickHz * (!this.replay && this.speedOn() ? this.speed : 1));
     if (this.events.length) {
       const hz = this.world.cfg.tickHz;
       const wall = now / 1000;
@@ -1897,13 +2101,38 @@ export class Game {
   startTargeting(spell: string): void {
     this.cancelPlacing();
     this.targeting = spell;
+    // QoL 2: say at once when the sim would refuse this cast (no charge, the Shaper busy or dead); aiming still works
+    const block = castBlock(this.world, this.localTribe, spell);
+    this.targetHint = castHint(block, true, true);
+    if (block) {
+      this.notify("castBlock", this.castBlockNote(block, spell), "info", 2);
+      this.player.play("sfx.ui_error");
+    }
     this.onChange();
+  }
+
+  /** QoL 2: the note for a refused cast of `spell` (the cost of a charge, the Shaper's respawn time). */
+  private castBlockNote(block: NonNullable<ReturnType<typeof castBlock>>, spell: string): string {
+    const w = this.world;
+    const tr = w.tribes[this.localTribe];
+    const k = w.cfg.spellIndex.get(spell);
+    const cost = k === undefined ? 0 : w.cfg.pack.spells.spells[k].cost;
+    const back = tr && tr.alive && tr.respawnAt >= 0 ? Math.max(0, Math.ceil((tr.respawnAt - w.tick) / w.cfg.tickHz)) : -1;
+    return castBlockText(block, spell, cost, back);
   }
 
   cancelTargeting(): void {
     this.targeting = null;
     this.targetCounts = null;
+    this.targetHint = "";
     this.renderer.setTargeting(null);
+    this.onChange();
+  }
+
+  /** QoL 2: set the targeting line's reason text; redraw the HUD only when it changes. */
+  private setTargetHint(hint: string): void {
+    if (hint === this.targetHint) return;
+    this.targetHint = hint;
     this.onChange();
   }
 
@@ -1913,13 +2142,16 @@ export class Game {
     const si = shaperIndex(w, this.localTribe);
     const s = w.cfg.pack.spells.spells[w.cfg.spellIndex.get(this.targeting)!];
     const p = this.renderer.pickTerrain(px, py);
+    const block = castBlock(w, this.localTribe, this.targeting);
     if (si < 0 || !p) {
       this.renderer.setTargeting(null);
+      this.setTargetHint(castHint(block, true, Boolean(p)));
       return;
     }
     const n = w.terrain.size;
     const dx = wrapDelta(p.x - w.ents.x[si], n);
     const dy = wrapDelta(p.z - w.ents.y[si], n);
+    this.setTargetHint(castHint(block, Math.sqrt(dx * dx + dy * dy) <= s.range, true));
     const radius = Math.max(
       0.8,
       ...s.effects.map((e) =>
@@ -1987,7 +2219,23 @@ export class Game {
   castAt(px: number, py: number): boolean {
     if (!this.targeting) return false;
     const p = this.renderer.pickTerrain(px, py);
-    if (!p) return false;
+    if (!p) {
+      // QoL 2: a click on the sky says why nothing happened (the spell stays armed)
+      this.notify("castNoGround", t("cast.noGround"), "info", 3);
+      this.onChange();
+      return false;
+    }
+    // QoL 2: out of range is not a refusal (the Shaper walks closer), but say so; refusals come back from the sim
+    const w = this.world;
+    const si = shaperIndex(w, this.localTribe);
+    const k = w.cfg.spellIndex.get(this.targeting);
+    if (si >= 0 && k !== undefined && !castBlock(w, this.localTribe, this.targeting)) {
+      const n = w.terrain.size;
+      const dx = wrapDelta(p.x - w.ents.x[si], n);
+      const dy = wrapDelta(p.z - w.ents.y[si], n);
+      if (Math.sqrt(dx * dx + dy * dy) > w.cfg.pack.spells.spells[k].range) this.notify("castRange", t("cast.outOfRange"), "info", 10);
+    }
+    this.lastCastSpell = this.targeting;
     this.command({
       tribe: this.localTribe,
       type: "cast",
@@ -2016,6 +2264,20 @@ export class Game {
     const unlock = () => this.player.unlock();
     window.addEventListener("pointerdown", unlock, true);
     window.addEventListener("keydown", unlock, true);
+    // QoL edge scrolling: the last pointer spot, and whether the pointer is inside the window at all
+    window.addEventListener("mousemove", (e) => {
+      this.pointer = { x: e.clientX, y: e.clientY, inside: true };
+    });
+    // the pointer left the window (or it lost focus): stop edge scrolling and drop the hover ring
+    const pointerGone = () => {
+      this.pointer.inside = false;
+      this.renderer.setHover(null);
+    };
+    window.addEventListener("mouseout", (e) => {
+      if (!e.relatedTarget) pointerGone();
+    });
+    document.documentElement.addEventListener("mouseleave", pointerGone);
+    window.addEventListener("blur", pointerGone);
     document.addEventListener(
       "click",
       (e) => {
@@ -2060,6 +2322,8 @@ export class Game {
       }
     });
     window.addEventListener("mousemove", (e) => {
+      // render polish: the hover ring follows the cursor over the canvas (picked once per frame by the renderer)
+      this.renderer.setHover(e.target === this.canvas && this.screen === "none" ? { x: e.clientX, y: e.clientY } : null);
       if (this.forgeShown || this.world.forge?.running()) this.updateForge(e.clientX, e.clientY);
       if (this.placing) this.updatePlacement(e.clientX, e.clientY);
       if (this.targeting) this.updateTargeting(e.clientX, e.clientY);
@@ -2088,13 +2352,14 @@ export class Game {
         const i = this.unitAt(e.clientX, e.clientY);
         if (!e.shiftKey) this.selection.clear();
         if (i >= 0 && e.detail === 2) {
-          // BACKLOG 4: double-click selects every own unit of that type nearby
+          // double-click selects every own unit of that type on the whole map (Stewart, S4); Alt keeps it to
+          // ui.input.sameTypeRadius cells around the clicked unit
           this.selectedBuilding = -1;
           for (const k of sameTypeNear(
             this.world,
             this.localTribe,
             i,
-            this.ui.input.sameTypeRadius,
+            e.altKey ? this.ui.input.sameTypeRadius : Infinity,
           ))
             this.selection.add(k);
         } else if (i >= 0) {
@@ -2201,8 +2466,15 @@ export class Game {
       this.onRebindKey?.(e);
       return;
     }
+    // QoL: quick save and load; the browser must not reload (F5) while a match is loaded
+    if ((e.key === "F5" || e.key === "F9") && this.inGame && !this.editor && !e.ctrlKey && !e.altKey) {
+      e.preventDefault();
+      if (this.photo || e.repeat) return;
+      return e.key === "F5" ? this.quickSave() : this.quickLoad();
+    }
     if (this.screen !== "none") {
       if (e.key === "Escape") this.menuBack();
+      else if (this.screen === "briefing" && actionFor(this.settings.keymap, e) === "briefing") this.menuBack();
       return;
     }
     if (this.editor) return this.editorKey(e);
@@ -2246,6 +2518,29 @@ export class Game {
         return this.openPause();
       case "photoMode":
         return this.setPhoto(true);
+      // QoL: game speed (single player only) and the campaign level briefing
+      case "speedDown":
+        this.stepSpeed(-1);
+        break;
+      case "speedUp":
+        this.stepSpeed(1);
+        break;
+      case "briefing":
+        return this.openBriefing();
+      // render polish: cycle the health bars (when damaged, always, off) and keep the choice
+      case "healthBars":
+        this.settings = { ...this.settings, healthBars: nextHealthBars(this.settings.healthBars) };
+        storeSettings(this.kv, this.settings);
+        this.notify("healthBars", healthBarsNote(this.settings.healthBars), "info");
+        break;
+      // QoL 2: look at the latest under attack alert; select the next idle troop group
+      case "lastAlert":
+        this.jumpToAlert();
+        this.onChange();
+        break;
+      case "idleTroops":
+        this.selectIdleTroops();
+        break;
       default:
         break;
     }
@@ -2321,6 +2616,12 @@ export class Game {
     if (k.has("arrowright")) this.pan(sp, 0);
     if (k.has("arrowup")) this.pan(0, sp);
     if (k.has("arrowdown")) this.pan(0, -sp);
+    // QoL: edge scrolling, only while the window has focus and the pointer is inside it (never in fixedStep captures)
+    if (this.edgeScroll && this.pointer.inside && this.screen === "none" && !this.params.fixedStep && document.hasFocus()) {
+      const d = edgePan(this.pointer.x, this.pointer.y, innerWidth, innerHeight, this.ui.input.edgeScrollPx ?? 4);
+      const es = (this.ui.input.edgeScrollSpeed ?? 18) * dt;
+      if (d.right || d.forward) this.pan(d.right * es, d.forward * es);
+    }
   }
 
   // ---------------------------------------------------------------- debug API
@@ -2331,6 +2632,13 @@ export class Game {
       tick: w.tick,
       paused: this.paused,
       photo: this.photo,
+      // QoL: the game speed in use (1 wherever speed does not apply) and the edge scrolling setting
+      speed: this.speedOn() ? this.speed : 1,
+      edgeScroll: this.edgeScroll,
+      // QoL 2: under attack alerts (latest place, live minimap pings), idle troops and the targeting reason
+      alerts: { latest: this.lastAlertAt ? [+this.lastAlertAt[0].toFixed(2), +this.lastAlertAt[1].toFixed(2)] : null, pings: this.pings.length },
+      idleTroops: this.idleCount,
+      targetHint: this.targetHint,
       tip: this.tip?.id ?? null,
       traits: w.origin.traits ?? null,
       screen: this.screen,

@@ -121,8 +121,8 @@
     {
       "model": "prop.mushroom_ring",
       "at": [
-        70,
-        128
+        64,
+        122
       ]
     },
     {
@@ -135,16 +135,16 @@
     {
       "model": "prop.log_a",
       "at": [
-        88,
-        132
+        78,
+        126
       ],
       "rot": 0.5
     },
     {
       "model": "prop.log_a",
       "at": [
-        104,
-        116
+        120,
+        108
       ],
       "rot": 2.2
     },
@@ -173,25 +173,93 @@
     {
       "model": "prop.fence",
       "at": [
-        90,
-        130
+        80,
+        134
       ],
       "rot": 1.57
     },
     {
       "model": "prop.haystack",
       "at": [
-        102,
-        132
+        114,
+        134
       ]
     },
     {
       "model": "prop.ruin_a",
       "at": [
-        96,
+        70,
         20
       ],
       "rot": 1.1
+    },
+    {
+      "model": "prop.log_a",
+      "at": [
+        44,
+        120
+      ],
+      "rot": 0.4
+    },
+    {
+      "model": "prop.mushroom_ring",
+      "at": [
+        150,
+        120
+      ]
+    },
+    {
+      "model": "prop.log_a",
+      "at": [
+        82,
+        80
+      ],
+      "rot": 1.9
+    },
+    {
+      "model": "prop.fern",
+      "at": [
+        110,
+        80
+      ]
+    },
+    {
+      "model": "prop.log_a",
+      "at": [
+        100,
+        168
+      ],
+      "rot": 0.2
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        52,
+        92
+      ],
+      "rot": 0.3
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        140,
+        92
+      ],
+      "rot": 1.7
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        96,
+        184
+      ]
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        80,
+        118
+      ]
     }
   ],
   "setup": [

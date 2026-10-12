@@ -23,6 +23,8 @@ describe("command UX polish (BACKLOG 4)", () => {
     expect(sameTypeNear(w, 0, a, 14).sort()).toEqual([a, b].sort());
     expect(sameTypeNear(w, 0, a, 14)).not.toContain(far);
     expect(sameTypeNear(w, 1, a, 14)).toEqual([]);
+    // S4: plain double-click passes Infinity, so the far unit of the same type joins too
+    expect(sameTypeNear(w, 0, a, Infinity)).toContain(far);
   });
 
   it("the group center wraps around the planet edge", () => {

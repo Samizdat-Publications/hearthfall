@@ -287,10 +287,54 @@ async function flow(browser, url, vp) {
     await page.keyboard.press("Control+F1");
     const ctl0 = await page.evaluate(() => window.__game.controls());
     if (ctl0.groups[1] < 1 || ctl0.bookmarks !== 1) problem(`control group or bookmark not set: ${JSON.stringify(ctl0)}`);
+    // QoL: the game speed readout starts at 1x, = speeds up, - slows back down (single player only)
+    {
+      const sv0 = (await page.textContent('[data-ui="speed-value"]').catch(() => null))?.trim();
+      if (sv0 !== "1x") problem(`speed readout at the start: ${sv0}`);
+      await page.keyboard.press("=");
+      const up = await page.waitForFunction(() => window.__game.getSummary().speed === 2 && document.querySelector('[data-ui="speed-value"]')?.textContent?.trim() === "2x", null, { timeout: 5000 }).then(() => true, () => false);
+      if (!up) problem(`= did not set 2x: ${JSON.stringify(await page.evaluate(() => window.__game.getSummary().speed))}`);
+      await page.keyboard.press("-");
+      const down = await page.waitForFunction(() => window.__game.getSummary().speed === 1, null, { timeout: 5000 }).then(() => true, () => false);
+      if (!down) problem("- did not bring the speed back to 1x");
+    }
+    // QoL 2: spell buttons carry a one-line description and their hotkey; U with no alert says so; the period
+    // key selects the next idle troop group (or says there is none) and never errors
+    {
+      const tips = await page.$$eval("[data-spell]", (els) => els.map((e) => e.getAttribute("title") ?? ""));
+      if (!tips.length || tips.some((s) => !/mana a charge/.test(s))) problem(`spell button tooltips: ${JSON.stringify(tips.slice(0, 3))}`);
+      else if (!tips.some((s) => /^[^:(]+ \([^)]+\): \S/.test(s))) problem(`no spell tooltip names its hotkey: ${JSON.stringify(tips.slice(0, 3))}`);
+      const a0 = await page.evaluate(() => window.__game.getSummary().alerts);
+      if (!a0 || typeof a0.pings !== "number") problem(`summary has no alerts block: ${JSON.stringify(a0)}`);
+      else if (a0.latest === null) {
+        await page.keyboard.press("u");
+        const said = await page.waitForFunction(() => /No alert/i.test(document.querySelector('[data-hud="notes"]')?.textContent ?? ""), null, { timeout: 5000 }).then(() => true, () => false);
+        if (!said) problem("U with no alert gave no note");
+      }
+      const sel0 = await page.evaluate(() => window.__game.getSelection());
+      const idle = await page.evaluate(() => window.__game.getSummary().idleTroops);
+      if (typeof idle !== "number") problem(`summary idleTroops: ${idle}`);
+      await page.keyboard.press(".");
+      const sel1 = await page.evaluate(() => window.__game.getSelection());
+      if (idle > 0 && (!sel1.length || JSON.stringify(sel1) === JSON.stringify(sel0))) problem(`. with ${idle} idle troops did not select them: ${JSON.stringify(sel1)}`);
+      // put the selection back as it was before the period key
+      await page.evaluate((s) => window.__game.select(s), sel0);
+    }
     // pause, save to slot 1, load it back
     await page.keyboard.press("p");
     await screenIs("pause");
     await check("pause");
+    // QoL: a skirmish offers Restart match behind a confirm, and no level briefing
+    {
+      const rs = (await page.textContent('[data-ui="restart"]').catch(() => null))?.trim();
+      if (rs !== "Restart match") problem(`pause restart entry: ${rs}`);
+      await click("restart");
+      await page.waitForSelector('[data-ui="restart-confirm"]', { timeout: 5000 }).catch(() => problem("restart asked for no confirm"));
+      await click("restart-no");
+      await page.waitForSelector('[data-ui="restart"]', { timeout: 5000 }).catch(() => problem("Keep playing did not close the restart confirm"));
+      await screenIs("pause");
+      if (await page.$('[data-ui="briefing"]')) problem("a skirmish pause menu offers a level briefing");
+    }
     await click("save");
     await screenIs("saves");
     await click("save-1");
@@ -344,6 +388,25 @@ async function flow(browser, url, vp) {
     }
     res.geometries = geos;
     if (geos[2] > geos[1] || geos[1] > geos[0] + 8) problem(`GPU geometries grow across reloads of one save: ${geos.join(", ")}`);
+    // QoL: F5 quick saves (the page must not reload), a note says so, and F9 loads that same game back
+    {
+      const at = await page.evaluate(() => {
+        window.__game.pause(true);
+        return { tick: window.__game.getSummary().tick, hash: window.__game.hash() };
+      });
+      await page.keyboard.press("F5");
+      const qs = await page.waitForFunction((t) => window.__game.lastSave()?.tick === t, at.tick, { timeout: 5000 }).then(() => true, () => false);
+      if (!qs) problem(`F5 did not quick save at tick ${at.tick}: ${JSON.stringify(await page.evaluate(() => window.__game.lastSave()))}`);
+      const noteOk = await page.waitForFunction(() => document.querySelector('[data-hud="notes"]')?.textContent?.includes("Quick saved"), null, { timeout: 5000 }).then(() => true, () => false);
+      if (!noteOk) problem("no Quick saved note after F5");
+      await page.evaluate(() => window.__game.step(30));
+      await page.keyboard.press("F9");
+      await screenIs("none");
+      const ql = await page.waitForFunction((t) => window.__game.lastLoad()?.tick === t, at.tick, { timeout: 5000 }).then(() => true, () => false);
+      const qLoaded = await page.evaluate(() => window.__game.lastLoad());
+      res.quick = { at, qLoaded };
+      if (!ql || qLoaded?.hash !== at.hash) problem(`F9 quick load ${JSON.stringify(qLoaded)} differs from the quick save ${JSON.stringify(at)}`);
+    }
     // forced win, end screen, back to the menu
     const ended = await page.evaluate(() => window.__game.forceWin());
     if (!ended?.won) problem(`forceWin: ended ${JSON.stringify(ended)}`);
@@ -418,6 +481,28 @@ async function flow(browser, url, vp) {
     if (await page.evaluate(() => window.__game.getSummary().tip)) problem("campaign level shows first match tips");
     if (!objectives) problem("campaign: no level objectives in the HUD");
     await check("level");
+    // QoL: O opens the level briefing (text and objectives), O again returns to the level; the pause menu
+    // offers the briefing and Restart level
+    {
+      await page.keyboard.press("o");
+      await screenIs("briefing");
+      const desc = (await page.textContent('[data-ui="briefing-description"]').catch(() => ""))?.trim() ?? "";
+      const objs = await page.$$eval('[data-ui="briefing-objectives"] li', (els) => els.length).catch(() => 0);
+      if (!desc || !objs) problem(`briefing: description ${JSON.stringify(desc.slice(0, 40))}, ${objs} objectives`);
+      await check("briefing");
+      await page.keyboard.press("o");
+      await screenIs("none");
+      await page.keyboard.press("p");
+      await screenIs("pause");
+      const rl = (await page.textContent('[data-ui="restart"]').catch(() => null))?.trim();
+      if (rl !== "Restart level") problem(`campaign pause restart entry: ${rl}`);
+      await click("briefing");
+      await screenIs("briefing");
+      await page.keyboard.press("Escape");
+      await screenIs("pause");
+      await page.keyboard.press("Escape");
+      await screenIs("none");
+    }
     const won = await page.evaluate(() => window.__game.winLevel());
     if (!won?.won) problem(`winLevel: ended ${JSON.stringify(won)}`);
     await screenIs("end");

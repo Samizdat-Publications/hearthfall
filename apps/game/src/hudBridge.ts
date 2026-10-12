@@ -1,5 +1,5 @@
 // Builds the HUD view model from the Game each refresh and maps HUD intents to Commands.
-import { SPELL_KEYS, hudModel, mountHud, type HudModel, type ObjectiveView, type SpellView, type TroopView } from "@hearthfall/ui";
+import { SPELL_KEYS, hudModel, mountHud, t, type HudModel, type ObjectiveView, type SpellView, type TroopView } from "@hearthfall/ui";
 import "../../../packages/ui/src/hud.css";
 // S4 L7-F: the UI fonts, bundled (OFL): Alegreya Sans for text, Alegreya Sans SC for labels, Marcellus SC for heads
 import "@fontsource/alegreya-sans/latin-500.css";
@@ -13,6 +13,8 @@ import { drawMinimap } from "./minimap.ts";
 import { troopView, undoLeft } from "./troops.ts";
 import { etaLabel, spellEtas } from "./eta.ts";
 import { buildingIcon, resourceIcon, spellIcon, unitIcon } from "./icons.ts";
+import { speedLabel } from "./qol.ts";
+import { spellTooltip } from "./alerts.ts";
 
 /** build tool hotkeys (the rest of the build column is click only) */
 const BUILD_KEYS: Record<string, string> = { dwelling: "D", watchtower: "T" };
@@ -33,6 +35,9 @@ export function hudFor(game: Game): HudModel {
       // M9: a locked spell shows while it holds charges from a shrine or a level reward
       if (!e.unlocked[i] && e.charges[i] <= 0) return;
       sv.push({ id: s.id, name: title(s.id), tier: s.tier, cost: s.cost, charges: e.charges[i], max: s.maxCharges, progress: e.progress[i] / s.cost, auto: e.auto[i] === 1, charging: cursor === i, hotkey: SPELL_KEYS[k++] ?? "", eta: etaLabel(etas[i]), icon: spellIcon(s.id) });
+      // QoL 2: the tooltip says what the spell does and its hotkey
+      const v = sv[sv.length - 1];
+      v.tip = spellTooltip(v);
     });
   }
   const bdefs = w.cfg.pack.buildings.buildings;
@@ -61,7 +66,7 @@ export function hudFor(game: Game): HudModel {
     buildable: bdefs.filter((b) => b.buildable !== false && b.milestone !== "backlog").map((b) => ({ id: b.id, name: title(b.id), wood: b.levels?.[0]?.wood ?? b.wood ?? 0, stone: b.stone ?? 0, key: BUILD_KEYS[b.id] ?? "", locked: tr ? w.economy.buildingLock(tr.index, w.cfg.buildingIndex.get(b.id)!) : null, icon: buildingIcon(b.id) })),
     icons: { mana: resourceIcon("mana"), pop: resourceIcon("population") },
     objectives: objectivesFor(game, nextTier ? { name: title(nextTier.id), followers: nextTier.followers, opens: nextTier.buildings.map(title) } : null),
-    notes: game.notes.filter((n) => n.until > w.tick).map((n) => ({ id: n.id, text: n.text, kind: n.kind })),
+    notes: game.notes.filter((n) => n.until > w.tick).map((n) => ({ id: n.id, text: n.text, kind: n.kind, ...(n.at ? { jump: t("alert.jumpHint", { key: game.settings.keymap.lastAlert }) } : {}) })),
     tip: game.tip ? { label: `Tip ${game.tip.step}/${game.tip.of}:`, text: game.tip.text } : null,
     subtitle: game.subtitle && game.subtitle.until > w.tick ? { speaker: game.subtitle.speaker, text: game.subtitle.text } : null,
     box: game.box,
@@ -72,7 +77,12 @@ export function hudFor(game: Game): HudModel {
     troops: withUnitIcons(troopView(w, game.localTribe, [...game.selection], game.selectedBuilding)),
     pointing: game.pointing,
     targetCounts: game.targetCounts,
+    // QoL 2: why the armed spell cannot land at the pointer, and the idle troops chip
+    targetHint: game.targetHint,
+    idle: game.idleCount > 0 ? { n: game.idleCount, label: t("idle.label", { n: game.idleCount }), title: t("idle.title", { key: game.settings.keymap.idleTroops }) } : null,
     undoSec: tr ? undoLeft(w, tr.index) : -1,
+    // QoL: the game speed control (single player matches and the campaign; hidden in LAN play and replays)
+    speed: game.speedOn() ? { label: speedLabel(game.speed), canDown: game.speed > game.speedCfg.choices[0], canUp: game.speed < game.speedCfg.choices[game.speedCfg.choices.length - 1] } : null,
     forge: w.forge?.running() && tr ? { secondsLeft: w.forge.remaining() / w.cfg.tickHz, strokesLeft: w.forge.def.maxOps - w.forge.ops[tr.index], brush: game.forgeBrush, brushes: [...FORGE_BRUSHES], ready: w.forge.ready[tr.index], blocked: game.forgeBlocked } : null,
   };
 }
@@ -92,7 +102,7 @@ export function prayerNote(w: Game["world"], tag: string, me: number): string {
   return rival > 0 ? ` (prayer ${pct(mine)}, rival ${pct(rival)})` : ` (prayer ${pct(mine)})`;
 }
 
-function levelObjectives(game: Game): ObjectiveView[] {
+export function levelObjectives(game: Game): ObjectiveView[] {
   const w = game.world;
   const lv = w.level!;
   const hz = w.cfg.tickHz;
@@ -219,6 +229,9 @@ export function mountGameHud(el: HTMLElement, game: Game): { refresh: () => void
     },
     forgeReady: () => game.forgeReady(),
     selectShaper: () => game.selectKind("shaper"),
+    speedStep: (dir) => game.stepSpeed(dir),
+    noteJump: (id) => game.jumpToNote(id),
+    idleTroops: () => game.selectIdleTroops(),
     togglePriority: (key) => {
       const p = { ...(game.world.tribes[game.localTribe]?.eco.priorities ?? { build: 1, upgrade: 1, breed: 1 }) };
       p[key] = p[key] > 0 ? 0 : 1;

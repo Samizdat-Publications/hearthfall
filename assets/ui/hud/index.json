@@ -1,0 +1,92 @@
+{
+  "build_button": {
+    "w": 1400,
+    "h": 527,
+    "src": "tools/assets/raw/gemini/ui/pieces/build_button.png",
+    "sha256": "ad57c6abb223a6f47e08b302d4d65792f390e095186341a4a80d8ec74e8a93cf"
+  },
+  "build_panel": {
+    "w": 772,
+    "h": 1400,
+    "src": "tools/assets/raw/gemini/ui/pieces/build_panel.png",
+    "sha256": "9c297647e45ec97cb930db2bafd405d561fb11aac98bbdbaa81e5b2689efa25f"
+  },
+  "cauldron": {
+    "w": 1400,
+    "h": 1119,
+    "src": "tools/assets/raw/gemini/ui/pieces/cauldron.png",
+    "sha256": "0d1cfe6400e56efe1678fd030cd10a906883ca3635e0240796836c7e3401b689"
+  },
+  "level_plaque": {
+    "w": 1400,
+    "h": 495,
+    "src": "tools/assets/raw/gemini/ui/pieces/level_plaque.png",
+    "sha256": "d60ad90ae7c3f90432c0ee2aa31a5b2127df216d921f0abd3d0996af613d4eea"
+  },
+  "objectives_frame": {
+    "w": 1400,
+    "h": 1110,
+    "src": "tools/assets/raw/gemini/ui/pieces/objectives_frame.png",
+    "sha256": "4aa8969445fe4eff6e06ca2ba76c6659732bb8c70425b1b278b233c4d71c1819"
+  },
+  "portrait": {
+    "w": 991,
+    "h": 992,
+    "src": "tools/assets/raw/gemini/ui/pieces/portrait.png",
+    "sha256": "a2394b5a6a44b4214d9c522bc18d554ba8788ca43831baa195fe282d50799504"
+  },
+  "rune_disc": {
+    "w": 904,
+    "h": 888,
+    "src": "tools/assets/raw/gemini/ui/pieces/rune_disc.png",
+    "sha256": "9790cd42d405bbf2c3b556c633ec2936edc5d516dce1fe7c115da71b01f5647c"
+  },
+  "shaper_frame": {
+    "w": 1400,
+    "h": 778,
+    "src": "tools/assets/raw/gemini/ui/pieces/shaper_frame.png",
+    "sha256": "cc5028e50a1c2660e7ba80515da1a78e3c892939d04c6ffc205c894b3a857422"
+  },
+  "small_plaque": {
+    "w": 1400,
+    "h": 584,
+    "src": "tools/assets/raw/gemini/ui/pieces/small_plaque.png",
+    "sha256": "ea2faf5244905ee901da3df9adc04d8a809c752510a99c73757278ba236db396"
+  },
+  "spellbar_frame": {
+    "w": 1400,
+    "h": 461,
+    "src": "tools/assets/raw/gemini/ui/pieces/spellbar_frame.png",
+    "sha256": "b22caf2fdbe8b3d36f7630282f5f8350945d1fd427b1e8d83bb71d40d25392ff"
+  },
+  "stance_button": {
+    "w": 1209,
+    "h": 776,
+    "src": "tools/assets/raw/gemini/ui/pieces/stance_button.png",
+    "sha256": "a457bd8dafe895aba7f3f0d7e9a243d34ac1c25609610ccd10f82163fbcaab88"
+  },
+  "stance_frame": {
+    "w": 1400,
+    "h": 520,
+    "src": "tools/assets/raw/gemini/ui/pieces/stance_frame.png",
+    "sha256": "2ed322b87175b5dc376442613c78eab4bde82794cddd692dc6930ed3e69cc63d"
+  },
+  "tip_hide": {
+    "w": 1400,
+    "h": 789,
+    "src": "tools/assets/raw/gemini/ui/pieces/tip_hide.png",
+    "sha256": "63735393cf0d25f71d9f95e77d79d3fbfb553a214ac19842b70df5c88e9addaf"
+  },
+  "title_plaque": {
+    "w": 1400,
+    "h": 514,
+    "src": "tools/assets/raw/gemini/ui/pieces/title_plaque.png",
+    "sha256": "c52671e0b5863c7ab4596e870eb8cdb0a70ed9cbead45465eb3c792bd0dfad05"
+  },
+  "volcano_corner": {
+    "w": 1344,
+    "h": 1400,
+    "src": "tools/assets/raw/gemini/ui/pieces/volcano_corner.png",
+    "sha256": "b4a73f790927790b3e0af2304588d268a8fa9deb9ebcf8bc08b7a06578873922"
+  }
+}

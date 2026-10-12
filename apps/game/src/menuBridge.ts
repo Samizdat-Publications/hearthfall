@@ -8,7 +8,9 @@ import { makeSave, restoreSave, type SkirmishParams } from "./session.ts";
 import { chapterOf, levelOpen } from "./campaign.ts";
 import { decodeReplay, encodeReplay } from "./replay.ts";
 import { statText } from "./achievements.ts";
-import { LIGHTING, MINIATURE, PALETTES, WEATHER, QUALITIES, SLOTS, autoUiScale, deleteSlot, readSlot, slotMeta, storeSettings, writeSlot } from "./storage.ts";
+import { levelObjectives } from "./hudBridge.ts";
+import { QUICK_SLOT, storeQol } from "./qol.ts";
+import { HEALTH_BARS, LIGHTING, MINIATURE, PALETTES, WEATHER, QUALITIES, SLOTS, autoUiScale, deleteSlot, readSlot, slotMeta, storeSettings, writeSlot } from "./storage.ts";
 
 const title = (id: string) => id[0].toUpperCase() + id.slice(1);
 const clock = (ticks: number, hz: number) => {
@@ -69,6 +71,8 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
   let settingsMsg: string | null = null;
   /** BACKLOG 19: why the last replay file or stored replay could not be watched */
   let replayMsg: string | null = null;
+  /** QoL: the pause menu Restart is waiting for its confirm */
+  let restartAsked = false;
   const maxOpponents = Math.min(sk.maxOpponents, MAX_TRIBES - 1);
 
   const persistNote = () => (game.persistent ? null : "Browser storage is unavailable: settings and saves last until this tab closes.");
@@ -131,6 +135,12 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
         lighting: game.settings.lighting,
         weathers: opts(WEATHER, (v) => (v === "clear" ? "Clear" : "Rain")),
         weather: game.settings.weather,
+        // QoL: edge scrolling (stored apart from Settings, qol.ts)
+        edgeScroll: game.edgeScroll ? "on" : "off",
+        // render polish: health bars and ambient life
+        healthBarChoices: opts(HEALTH_BARS, (v) => (v === "damaged" ? t("settings.healthBarsDamaged") : v === "always" ? t("settings.healthBarsAlways") : t("settings.off"))),
+        healthBars: game.settings.healthBars,
+        ambient: game.settings.ambient ? "on" : "off",
         rebinding: game.rebinding,
         message: settingsMsg ?? (game.params.quality ? `Quality is set by the URL (${game.params.quality}) for this session.` : persistNote()),
       },
@@ -143,6 +153,13 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
             : { slot: k + 1, empty: true, label: `Slot ${k + 1}`, detail: "Empty" };
         }),
         message: saves.message ?? persistNote(),
+        // QoL: the quick save slot (F5 and F9), apart from the manual slots
+        quick: (() => {
+          const m = slotMeta(game.kv, QUICK_SLOT);
+          return m
+            ? { slot: QUICK_SLOT, empty: false, label: t("saves.quickLabel", { map: m.map }), detail: `${m.opponents}, ${clock(m.tick, hz)} in, saved ${new Date(m.savedAt).toLocaleString()}` }
+            : { slot: QUICK_SLOT, empty: true, label: t("saves.quick"), detail: t("saves.quickEmpty") };
+        })(),
       },
       end: game.ended
         ? {
@@ -183,6 +200,19 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
       },
       titleArt,
       canSave: game.inGame && game.skirmish !== null && !game.ended && !game.net && (game.skirmish.humans?.length ?? 0) <= 1,
+      // QoL: Restart (with its confirm) and the campaign level briefing
+      pause: (() => {
+        const restart = game.restartable();
+        if (game.screen !== "pause" || !restart) restartAsked = false;
+        return { restart, confirming: restartAsked, briefing: game.briefing() !== null };
+      })(),
+      briefing:
+        game.screen === "briefing"
+          ? (() => {
+              const b = game.briefing();
+              return b ? { ...b, objectives: levelObjectives(game).map((o) => ({ text: o.text, done: o.done })) } : null;
+            })()
+          : null,
       editorTest: game.editorTest,
       records:
         game.screen === "records"
@@ -314,7 +344,14 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
       saves.message = `Slot ${n} deleted.`;
       refresh();
     },
-    setSetting: (p) => {
+    setSetting: (patch) => {
+      // QoL: edge scrolling is stored apart from Settings (qol.ts)
+      const { edgeScroll, ...p } = patch;
+      if (edgeScroll !== undefined) {
+        game.edgeScroll = edgeScroll;
+        settingsMsg = storeQol(game.kv, { edgeScroll }) ? null : "Could not store settings in this browser.";
+        return refresh();
+      }
       game.settings = { ...game.settings, ...p } as typeof game.settings;
       if (p.quality || p.miniature || p.lighting || p.weather) game.applyQuality();
       if (p.palette !== undefined || p.uiScale !== undefined) game.applyA11y();
@@ -400,6 +437,27 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
     nextLevel: () => {
       const id = game.nextLevelId();
       if (id) game.playLevel(id);
+    },
+    // QoL: Restart asks first (the confirm row replaces the button), then starts over with the same setup
+    askRestart: () => {
+      restartAsked = game.restartable() !== null;
+      refresh();
+    },
+    confirmRestart: () => {
+      restartAsked = false;
+      game.restart();
+    },
+    cancelRestart: () => {
+      restartAsked = false;
+      refresh();
+    },
+    loadQuick: () => {
+      game.quickLoad();
+      // a failed quick load stays on the saves screen with its reason
+      if (game.screen === "saves") {
+        saves.message = game.notes[game.notes.length - 1]?.text ?? null;
+        refresh();
+      }
     },
   });
   refresh();

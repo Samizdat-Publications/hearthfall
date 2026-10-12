@@ -148,6 +148,38 @@
       "depthRange": 0.7,
       "saturation": 1.15,
       "contrast": 1.06
+    },
+    "healthBars": {
+      "$comment": "Render polish: bars over damaged units and finished buildings (Settings Health bars: when damaged, always, off; key L). Sizes in world units at refDistance; bars keep about the same screen size between minScale and maxScale, and hide past maxZoom.",
+      "unitWidth": 0.95,
+      "buildingWidth": 1.9,
+      "height": 0.16,
+      "border": 0.05,
+      "lift": 0.25,
+      "refDistance": 40,
+      "minScale": 0.55,
+      "maxScale": 1.8,
+      "maxZoom": 0.8,
+      "back": "#1b1410",
+      "buildings": true
+    },
+    "hover": {
+      "$comment": "Render polish: ring under the unit or building at the cursor; red over enemies and beasts, soft white over your own (a disguised Shade reads as your own).",
+      "own": "#f4f1ea",
+      "ally": "#cfe9c4",
+      "neutral": "#e8c872",
+      "enemy": "#e2483a",
+      "opacity": 0.8,
+      "unitRadius": 0.6,
+      "pickPx": 18
+    },
+    "ambient": {
+      "$comment": "Render polish (Settings Ambient life): chimney smoke over finished sources, bird flocks over forest or shore grid points, fireflies around Hearths and Dwellings under the listed lighting presets (not in rain), dust behind walkers on dry land near the focus. All of it follows the visual time, so fixedStep shots stay identical. enabled false or max 0 turns one effect off.",
+      "maxZoom": 0.85,
+      "smoke": { "enabled": true, "puffs": 5, "period": 4, "rise": 2.4, "drift": 0.7, "wind": [0.8, 0.35], "size": 0.13, "grow": 1.9, "color": "#d9d3c9", "opacity": 0.34, "sources": ["dwelling", "hearth"], "max": 640 },
+      "birds": { "enabled": true, "spacing": 24, "forestTrees": 14, "forestReach": 5, "shoreBand": 6, "perFlock": 5, "radius": 4.5, "height": 9, "speed": 2.2, "size": 0.55, "flap": 2.6, "color": "#2b2622", "max": 160 },
+      "fireflies": { "enabled": true, "presets": ["evening"], "perHearth": 10, "perDwelling": 2, "radius": 3.2, "size": 0.07, "blink": 0.45, "color": "#e9ff8c", "max": 240 },
+      "dust": { "enabled": true, "perUnit": 2, "period": 0.7, "radius": 24, "dryAbove": 4, "size": 0.11, "trail": 0.45, "color": "#c9b48a", "opacity": 0.5, "max": 400 }
     }
   },
   "tribePalettes": {

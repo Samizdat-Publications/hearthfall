@@ -10,7 +10,7 @@ export function spellSlot(e: { key: string; shiftKey: boolean; ctrlKey: boolean 
 }
 
 // Rebindable commands (M8 settings). Spell keys, control groups (0-9, Ctrl+0-9), camera bookmarks
-// (F1-F4), arrows, Escape and Space stay fixed so a rebind can never lock the player out.
+// (F1-F4), quick save and load (F5, F9), arrows, Escape and Space stay fixed so a rebind can never lock the player out.
 export const KEY_ACTIONS = [
   { id: "buildDwelling", label: "Place dwelling", key: "D" },
   { id: "buildTower", label: "Place watchtower", key: "T" },
@@ -26,13 +26,22 @@ export const KEY_ACTIONS = [
   { id: "cancelCast", label: "Undo a cast", key: "Backspace" },
   { id: "cancelPlan", label: "Cancel the selected plan", key: "Delete" },
   { id: "photoMode", label: "Photo mode", key: "F" },
+  // QoL: game speed (single player) and the campaign level briefing
+  { id: "speedDown", label: "Slower game", key: "-" },
+  { id: "speedUp", label: "Faster game", key: "=" },
+  { id: "briefing", label: "Level briefing", key: "O" },
+  // render polish: cycle the health bars (when damaged, always, off)
+  { id: "healthBars", label: "Health bars", key: "L" },
+  // QoL part 2: jump to the latest under attack alert, select the next idle troop group
+  { id: "lastAlert", label: "Jump to the latest alert", key: "U" },
+  { id: "idleTroops", label: "Next idle troops", key: "." },
 ] as const;
 
 export type KeyAction = (typeof KEY_ACTIONS)[number]["id"];
 export type Keymap = Record<KeyAction, string>;
 
 /** Keys a binding may not take (fixed controls listed above, plus every spell key). */
-const RESERVED = new Set<string>(["Escape", "Space", "F1", "F2", "F3", "F4", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Tab", ...SPELL_KEYS, ..."0123456789"]);
+const RESERVED = new Set<string>(["Escape", "Space", "F1", "F2", "F3", "F4", "F5", "F9", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Tab", ...SPELL_KEYS, ..."0123456789"]);
 
 /** Actions polled as held keys every frame; the held key set stores bare keys, so these cannot use Shift combos. */
 const HELD = new Set<string>(["rotateLeft", "rotateRight"]);
@@ -55,6 +64,8 @@ export function actionFor(km: Keymap, e: { key: string; shiftKey: boolean; ctrlK
   const label = keyLabel(e);
   if (!label) return null;
   for (const a of KEY_ACTIONS) if (km[a.id] === label) return a.id;
+  // numpad + and Shift+= mean the = key (speed up)
+  if (label === "+" || label === "Shift++") for (const a of KEY_ACTIONS) if (km[a.id] === "=") return a.id;
   return null;
 }
 
@@ -86,8 +97,12 @@ export function sanitizeKeymap(stored: unknown): Keymap {
       seen.add(v);
     }
   }
-  // a stored binding may now collide with a default kept for another action: fall back to defaults
-  const used = Object.values(km);
-  if (new Set(used).size !== used.length) return defaultKeymap();
+  // a stored binding may now hold a newer action's default key: the player's binding wins and the newer action
+  // starts unbound (they can bind it in Settings), so no custom binding is lost
+  for (const a of KEY_ACTIONS) {
+    const v = (stored as Record<string, unknown>)[a.id];
+    const kept = typeof v === "string" && km[a.id] === v;
+    if (!kept && seen.has(km[a.id])) km[a.id] = "";
+  }
   return km;
 }

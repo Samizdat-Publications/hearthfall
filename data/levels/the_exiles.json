@@ -434,6 +434,89 @@
         114
       ],
       "rot": 1.9
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        146,
+        70
+      ],
+      "rot": 0.2
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        154,
+        70
+      ],
+      "rot": 2.8
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        106,
+        126
+      ],
+      "rot": 1.3
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        64,
+        104
+      ],
+      "rot": 0.5
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        24,
+        144
+      ]
+    },
+    {
+      "model": "prop.pots",
+      "at": [
+        30,
+        160
+      ]
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        106,
+        166
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        82,
+        172
+      ],
+      "rot": 1.4
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        170,
+        46
+      ]
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        176,
+        58
+      ],
+      "rot": 2.2
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        134,
+        44
+      ]
     }
   ],
   "objectives": [

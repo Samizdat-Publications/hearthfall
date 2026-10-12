@@ -166,11 +166,78 @@
         "groupJumpMs": {
           "type": "number",
           "minimum": 0
+        },
+        "edgeScrollPx": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        },
+        "edgeScrollSpeed": {
+          "type": "number",
+          "minimum": 0
         }
       },
       "required": [
         "sameTypeRadius",
         "groupJumpMs"
+      ],
+      "additionalProperties": false
+    },
+    "speed": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "choices": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0.25,
+            "maximum": 8
+          }
+        },
+        "maxStepsPerFrame": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        }
+      },
+      "required": [
+        "choices",
+        "maxStepsPerFrame"
+      ],
+      "additionalProperties": false
+    },
+    "alerts": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "seconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "radius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "pingSeconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "idleGroupRadius": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "seconds",
+        "radius",
+        "pingSeconds",
+        "idleGroupRadius"
       ],
       "additionalProperties": false
     },

@@ -93,3 +93,25 @@ describe("settings and save slots (M8)", () => {
     expect(slotMeta(kv, 1)?.tick).toBe(first.tick);
   });
 });
+
+describe("render polish settings: health bars and ambient life", () => {
+  it("default to bars when damaged and ambient life on; junk falls back; the key cycles damaged, always, off", async () => {
+    const { HEALTH_BARS, healthBarsNote, nextHealthBars } = await import("../src/storage.ts");
+    const d = defaultSettings();
+    expect(d.healthBars).toBe("damaged");
+    expect(d.ambient).toBe(true);
+    const kv = new MemoryKV();
+    storeSettings(kv, { ...d, healthBars: "off", ambient: false });
+    const back = loadSettings(kv);
+    expect(back.healthBars).toBe("off");
+    expect(back.ambient).toBe(false);
+    kv.setItem("hearthfall.settings.v1", JSON.stringify({ healthBars: "sometimes", ambient: "yes" }));
+    const junk = loadSettings(kv);
+    expect(junk.healthBars).toBe("damaged");
+    expect(junk.ambient).toBe(true);
+    expect(nextHealthBars("damaged")).toBe("always");
+    expect(nextHealthBars("always")).toBe("off");
+    expect(nextHealthBars("off")).toBe("damaged");
+    for (const m of HEALTH_BARS) expect(healthBarsNote(m)).toMatch(/^Health bars: /);
+  });
+});

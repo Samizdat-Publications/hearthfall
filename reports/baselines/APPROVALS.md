@@ -152,3 +152,23 @@
 - 2026-10-12T02:24 set combat (8 shots): S4 L7-F UI v2: stone HUD panels and bundled fonts change every frame's HUD; scenes unchanged, DOM layout passes
 - 2026-10-12T02:24 set spells2 (9 shots): S4 L7-F UI v2: stone HUD panels and bundled fonts change every frame's HUD; scenes unchanged, DOM layout passes
 - 2026-10-12T04:16 set chapter3 (5 shots): S4 L7-C chapter 3 establishing shots, first baseline
+- 2026-10-12T21:43 set smoke (14 shots): polish pass: health bars, hover ring, ambient life (softer smoke), speed control in title panel, longer help line, alerts and idle chip, new settings rows; chapter 3 props v3
+- 2026-10-12T21:44 set spells (9 shots): polish pass: health bars, hover ring, ambient life (softer smoke), speed control in title panel, longer help line, alerts and idle chip, new settings rows; chapter 3 props v3
+- 2026-10-12T21:44 set combat (8 shots): polish pass: health bars, hover ring, ambient life (softer smoke), speed control in title panel, longer help line, alerts and idle chip, new settings rows; chapter 3 props v3
+- 2026-10-12T21:44 set spells2 (9 shots): polish pass: health bars, hover ring, ambient life (softer smoke), speed control in title panel, longer help line, alerts and idle chip, new settings rows; chapter 3 props v3
+- 2026-10-12T21:44 set look (13 shots): polish pass: health bars, hover ring, ambient life (softer smoke), speed control in title panel, longer help line, alerts and idle chip, new settings rows; chapter 3 props v3
+- 2026-10-12T21:45 set menus (11 shots): polish pass: health bars, hover ring, ambient life (softer smoke), speed control in title panel, longer help line, alerts and idle chip, new settings rows; chapter 3 props v3
+- 2026-10-12T21:45 set chapter3 (5 shots): polish pass: health bars, hover ring, ambient life (softer smoke), speed control in title panel, longer help line, alerts and idle chip, new settings rows; chapter 3 props v3
+- 2026-10-12T21:47 set levels (10 shots): polish pass: health bars, hover ring, ambient life, speed control, longer help line, alerts (sky_road_stack left out: stale sites assert)
+- 2026-10-12T21:47 set vehicles (3 shots): polish pass: health bars, hover ring, ambient life, speed control, longer help line, alerts
+- 2026-10-12T21:47 set forge (1 shots): polish pass: health bars, hover ring, ambient life, speed control, longer help line, alerts
+- 2026-10-12T21:54 set smoke (14 shots): polish pass integration: help line lists L health bars
+- 2026-10-12T21:54 set spells (9 shots): polish pass integration: help line lists L health bars
+- 2026-10-12T21:54 set combat (8 shots): polish pass integration: help line lists L health bars
+- 2026-10-12T21:54 set spells2 (9 shots): polish pass integration: help line lists L health bars
+- 2026-10-12T21:55 set look (13 shots): polish pass integration: help line lists L health bars
+- 2026-10-12T21:55 set menus (11 shots): polish pass integration: help line lists L health bars
+- 2026-10-12T21:55 set chapter3 (5 shots): polish pass integration: help line lists L health bars
+- 2026-10-12T21:55 set vehicles (3 shots): polish pass integration: help line lists L health bars
+- 2026-10-12T21:55 set forge (1 shots): polish pass integration: help line lists L health bars
+- 2026-10-12T21:56 set levels (10 shots): polish pass integration: help line lists L health bars (sky_road_stack left out: stale sites assert)

@@ -209,39 +209,39 @@
     {
       "model": "prop.fence",
       "at": [
-        28,
-        104
-      ],
-      "rot": 0
-    },
-    {
-      "model": "prop.fence",
-      "at": [
-        30,
-        106
-      ],
-      "rot": 0
-    },
-    {
-      "model": "prop.fence",
-      "at": [
-        32,
-        108
+        12,
+        92
       ],
       "rot": 1.57
     },
     {
+      "model": "prop.fence",
+      "at": [
+        12,
+        97
+      ],
+      "rot": 1.57
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        15,
+        100
+      ],
+      "rot": 0
+    },
+    {
       "model": "prop.haystack",
       "at": [
-        26,
-        100
+        17,
+        95
       ]
     },
     {
       "model": "prop.haystack",
       "at": [
-        24,
-        92
+        18,
+        89
       ]
     },
     {
@@ -274,6 +274,95 @@
         98
       ],
       "rot": 0.2
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        52,
+        66
+      ],
+      "rot": 0.4
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        54,
+        62
+      ]
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        56,
+        122
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        60,
+        120
+      ],
+      "rot": 1.2
+    },
+    {
+      "model": "prop.log_a",
+      "at": [
+        142,
+        96
+      ],
+      "rot": 1
+    },
+    {
+      "model": "prop.bush_a",
+      "at": [
+        130,
+        96
+      ]
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        96,
+        57
+      ],
+      "rot": 0.6
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        170,
+        158
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        174,
+        164
+      ],
+      "rot": 1.57
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        166,
+        180
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        15,
+        60
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        32,
+        64
+      ]
     }
   ],
   "setup": [

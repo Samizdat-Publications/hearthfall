@@ -29,11 +29,20 @@
     { "model": "prop.standing_stone", "at": [69, 58] },
     { "model": "prop.cairn", "at": [62, 76] },
     { "model": "prop.ruin_a", "at": [58, 84], "rot": 0.6 },
-    { "model": "prop.cairn", "at": [66, 90] },
+    { "model": "prop.cairn", "at": [70, 90] },
     { "model": "prop.cairn", "at": [8, 74] },
     { "model": "prop.haystack", "at": [52, 112] },
     { "model": "prop.fence", "at": [48, 108], "rot": 1.57 },
-    { "model": "prop.cart", "at": [76, 112], "rot": 0.3 }
+    { "model": "prop.cart", "at": [76, 112], "rot": 0.3 },
+    { "model": "prop.haystack", "at": [50, 12] },
+    { "model": "prop.fence", "at": [52, 9], "rot": 0 },
+    { "model": "prop.woodpile", "at": [84, 16] },
+    { "model": "prop.pots", "at": [78, 12] },
+    { "model": "prop.cairn", "at": [30, 64] },
+    { "model": "prop.cairn", "at": [98, 64] },
+    { "model": "prop.ruin_a", "at": [16, 72], "rot": 0.8 },
+    { "model": "prop.woodpile", "at": [38, 108] },
+    { "model": "prop.pots", "at": [84, 100] }
   ],
   "setup": [
     { "spawn": "ward_stone", "tribe": 1, "at": [64, 64], "site": { "tag": "pass_ward", "rewards": [{ "type": "message", "text": "The pass stone is yours: it strikes at any northerner who comes through." }] } },

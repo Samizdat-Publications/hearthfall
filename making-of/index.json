@@ -1410,6 +1410,26 @@
       "when": "2026-10-12T04:16:14.350Z",
       "source": "external:sheet.png",
       "bytes": 731664
+    },
+    {
+      "file": "s4/20261012-2139_hud-v3-concept-d.png",
+      "milestone": "S4",
+      "kind": "concept",
+      "caption": "HUD v3 concept D (Gemini), Stewart's pick: painted Shaper portrait, hide scroll tip, lava cauldron minimap, vine and lava stance bar, small volcano corner",
+      "highlight": true,
+      "when": "2026-10-12T21:39:09.837Z",
+      "source": "external:concept_d.png",
+      "bytes": 2767536
+    },
+    {
+      "file": "s4/20261012-2139_hud-v3-pieces.png",
+      "milestone": "S4",
+      "kind": "asset-sheet",
+      "caption": "HUD v3 painted pieces keyed from magenta",
+      "highlight": false,
+      "when": "2026-10-12T21:39:10.850Z",
+      "source": "external:hud_pieces_sheet.png",
+      "bytes": 1982831
     }
   ]
 }

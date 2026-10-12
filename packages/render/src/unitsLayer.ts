@@ -141,6 +141,19 @@ export class UnitLayer {
   screenX = new Float32Array(1024);
   screenY = new Float32Array(1024);
   drawn = 0;
+  /**
+   * Render polish (health bars, hover ring, walking dust): the units drawn last update, in draw order
+   * (`drawnIdx[0 .. drawn)`), and per entity index where each was drawn: world x and z of the wrapped copy,
+   * ground height, top of the figure (bob included) and 1 when it walks on land.
+   */
+  drawnIdx = new Int32Array(1024);
+  drawX = new Float32Array(1024);
+  drawZ = new Float32Array(1024);
+  drawGround = new Float32Array(1024);
+  drawTop = new Float32Array(1024);
+  walking = new Uint8Array(1024);
+  /** model height per unit kind (local units, before the readability and kind scale) */
+  private kindHeight: number[] = [];
   private readonly m = new THREE.Matrix4();
   private readonly q = new THREE.Quaternion();
   /** readability scale: units are tiny on screen, silhouette and tribe color matter most */
@@ -189,6 +202,7 @@ export class UnitLayer {
         this.group.add(im);
       }
       this.kinds.push({ body, detail, anim });
+      this.kindHeight.push(height > 0 ? height : 1);
       // BACKLOG 96: per-kind draw scale from style.json `render.unitScale` (the Shaper stands taller)
       this.kindScale.push(unitScale[id] ?? 1);
     }
@@ -225,6 +239,22 @@ export class UnitLayer {
     this.facing = f;
     this.screenX = new Float32Array(n);
     this.screenY = new Float32Array(n);
+    this.drawnIdx = new Int32Array(n);
+    this.drawX = new Float32Array(n);
+    this.drawZ = new Float32Array(n);
+    this.drawGround = new Float32Array(n);
+    this.drawTop = new Float32Array(n);
+    this.walking = new Uint8Array(n);
+  }
+
+  /** Facing (radians about +y) of entity i as last drawn. */
+  facingOf(i: number): number {
+    return this.facing[i] ?? 0;
+  }
+
+  /** Draw scale of unit kind k (readability scale times style.json unitScale). */
+  scaleOf(k: number): number {
+    return this.s.x * (this.kindScale[k] ?? 1);
   }
 
   /**
@@ -351,6 +381,12 @@ export class UnitLayer {
         this.m.compose(this.p, flat ? this.q.identity() : this.tilt, this.s);
         this.ring.setMatrixAt(rings++, this.m);
       }
+      this.drawnIdx[this.drawn] = i;
+      this.drawX[i] = focusX + ox;
+      this.drawZ[i] = focusZ + oz;
+      this.drawGround[i] = ground;
+      this.drawTop[i] = ground + bob + this.kindHeight[k] * this.s.x * ks;
+      this.walking[i] = moving && nav === NAV.land && h > w.terrain.sea ? 1 : 0;
       // screen position of the bent unit center for picking
       const dist2 = ox * ox + oz * oz;
       this.v.set(focusX + ox, ground + (nav === NAV.air ? bob + 1.5 : 0.45) - bendK * dist2, focusZ + oz).project(camera);
