@@ -1370,6 +1370,46 @@
       "when": "2026-10-12T02:11:15.039Z",
       "source": "external:menu_campaign_1440p.png",
       "bytes": 2405567
+    },
+    {
+      "file": "s4/20261012-0416_ch3-salt-marsh.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "Chapter 3, The Salt Marsh: the old causeway at low tide, the tidal flats risen between the isles",
+      "highlight": true,
+      "when": "2026-10-12T04:16:12.587Z",
+      "source": "external:salt_marsh_causeway.png",
+      "bytes": 586849
+    },
+    {
+      "file": "s4/20261012-0416_ch3-ash-peak.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "Chapter 3 opener, Ash Peak: the fire mountain above the home valley",
+      "highlight": false,
+      "when": "2026-10-12T04:16:13.183Z",
+      "source": "external:ash_peak_mountain.png",
+      "bytes": 712975
+    },
+    {
+      "file": "s4/20261012-0416_ch3-night-wolves.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "Chapter 3, Night of Wolves: the clearing ringed by dens; raids on the ley stones now start when that stage opens",
+      "highlight": false,
+      "when": "2026-10-12T04:16:13.766Z",
+      "source": "external:night_of_wolves_clearing.png",
+      "bytes": 679055
+    },
+    {
+      "file": "s4/20261012-0416_ch3-sheet.png",
+      "milestone": "S4",
+      "kind": "contact-sheet",
+      "caption": "Chapter 3 The Far Shores: five establishing shots (new chapter3 shot set)",
+      "highlight": false,
+      "when": "2026-10-12T04:16:14.350Z",
+      "source": "external:sheet.png",
+      "bytes": 731664
     }
   ]
 }

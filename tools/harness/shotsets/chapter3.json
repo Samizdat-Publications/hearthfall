@@ -1,0 +1,150 @@
+{
+  "$comment": "S4 L7-C: chapter 3 The Far Shores, one establishing shot per showcase level (making-of and look regressions).",
+  "shots": [
+    {
+      "id": "ash_peak_mountain",
+      "params": {
+        "campaign": "ash_peak",
+        "camera": "default",
+        "reveal": "1"
+      },
+      "steps": [
+        {
+          "step": 1500
+        },
+        {
+          "eval": "__game.setCamera({ x: 64, z: 70, zoom: 0.3, yaw: 0.4 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.getSummary().tick > 1400"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.02,
+          0.99
+        ]
+      }
+    },
+    {
+      "id": "salt_marsh_causeway",
+      "params": {
+        "campaign": "salt_marsh",
+        "camera": "default",
+        "reveal": "1"
+      },
+      "steps": [
+        {
+          "step": 1500
+        },
+        {
+          "eval": "__game.setCamera({ x: 80, z: 96, zoom: 0.3, yaw: 0.2 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.getSummary().tick > 1400"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.02,
+          0.99
+        ]
+      }
+    },
+    {
+      "id": "three_crowns_heart",
+      "params": {
+        "campaign": "three_crowns",
+        "camera": "default",
+        "reveal": "1"
+      },
+      "steps": [
+        {
+          "step": 1500
+        },
+        {
+          "eval": "__game.setCamera({ x: 96, z: 96, zoom: 0.35, yaw: 0.6 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.getSummary().tick > 1400"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.02,
+          0.99
+        ]
+      }
+    },
+    {
+      "id": "night_of_wolves_clearing",
+      "params": {
+        "campaign": "night_of_wolves",
+        "camera": "default",
+        "reveal": "1"
+      },
+      "steps": [
+        {
+          "step": 1500
+        },
+        {
+          "eval": "__game.setCamera({ x: 96, z: 112, zoom: 0.25, yaw: 0.3 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.getSummary().tick > 1400"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.02,
+          0.99
+        ]
+      }
+    },
+    {
+      "id": "hearth_unbroken_summit",
+      "params": {
+        "campaign": "hearth_unbroken",
+        "camera": "default",
+        "reveal": "1"
+      },
+      "steps": [
+        {
+          "step": 1500
+        },
+        {
+          "eval": "__game.setCamera({ x: 128, z: 128, zoom: 0.35, yaw: 0.7 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.getSummary().tick > 1400"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.02,
+          0.99
+        ]
+      }
+    }
+  ]
+}
