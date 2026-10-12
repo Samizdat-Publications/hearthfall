@@ -1,0 +1,75 @@
+{
+  "perAgent": 2,
+  "briefs": [
+    {
+      "id": "ash_peak",
+      "order": 26,
+      "name": "The Ash Peak",
+      "target": 14000,
+      "brief": "Opens the new chapter. A tall volcano cone (map paint cone, high aboveSea) rises from the middle of a green island; the player lands at its southern foot with a small village, a rival (aggressive personality) is settled on the northern slope. A worship site near the summit teaches the Volcano spell (unlockSpell volcano), and the level gives the player at least one more attacking spell. Stages: climb and worship the summit site; raise two watchtowers on the slope to see the rival come; defeat a number of rival troops (kill objective, tribe 1); then destroy the rival hearth. The level ends on destroy, not eliminateAll. A periodic eruption flavor (trigger with every, a message and damage near the summit) is welcome if the schema allows it."
+    },
+    {
+      "id": "long_ridge",
+      "order": 27,
+      "name": "The Long Ridge",
+      "target": 16400,
+      "brief": "A long high ridge (map paint ridge, steep, well above the land) splits the map east to west, with a single narrow pass cut through its middle (two ridge segments with a gap, or a ridge plus a disc lowering the pass). The player is south, the rival north. A ward stone sits in the pass. Stages: build up; take and hold the pass stone for a span while the rival sends fresh raids through it (triggers that spawn a war band and send it with raid fresh, bounded by until); defeat a number of the rival's wardens (kill with unit); then break through and destroy the rival's lodges (destroy targets). Raise Land or Flatten could open a second way over the ridge for a clever player. Not eliminateAll."
+    },
+    {
+      "id": "shepherds_moon",
+      "order": 28,
+      "name": "Shepherd's Moon",
+      "target": 18900,
+      "brief": "A quieter, wilder level: rolling hills with scattered wild people to convert and wolf dens in the woods; the wolves hunt only the player (beastPrey player). A weak rival (turtle, low maxTroops) sits far away and matters little until late. Stages: gain followers since the stage opened (followers fromStage); clear the dens in the eastern woods (clearDens with at and r); survive a wolf night (survive fromStage while a repeating trigger spawns wolves, bounded by until); gain more followers again; end on worshipping the moon stone (worship site) on a hilltop. The ending is a worship, not a war."
+    },
+    {
+      "id": "salt_marsh",
+      "order": 29,
+      "name": "The Salt Marsh",
+      "target": 21300,
+      "brief": "Low marsh islands split by shallow channels, with tides (trigger with every that floods and drains low ground, as the tide levels do) and a causeway. The rival is a boat people: its own building list (tribes[].buildings) holds only dwellings, a warden lodge and a boathouse, and it raids by water. The player has Mire. Stages: reach the old causeway head with a unit (reach); build a boathouse; hold two stones on separate islands at once (hold n 2); destroy the rival's boathouses. Not eliminateAll."
+    },
+    {
+      "id": "the_exiles",
+      "order": 30,
+      "name": "The Exiles",
+      "target": 23800,
+      "brief": "The player's hearth stands empty on the far side of the map (a hearth cannot be built, so it is placed for tribe 0 in setup with nobody near it); the player starts at the opposite edge with only the Shaper, a few wardens and a few settlers, and a rival war band chases them. Pursuers come from a repeating trigger with fresh raids, bounded by until on the reach stage. Stages: lead the band home (reach the hearth area with the Shaper); gain followers since the stage opened; defeat a number of the pursuers' tribe (kill, tribe 1); then worship the stone the pursuers guard. Make the march tense but fair: the band must be able to make it with sensible play. Not eliminateAll."
+    },
+    {
+      "id": "three_crowns",
+      "order": 31,
+      "name": "Three Crowns",
+      "target": 26200,
+      "brief": "Three rivals around a central hill, each with its own building list (tribes[].buildings) so each fields one troop type only: one only firecallers (fire lodge), one only chanters (chant house), one only wardens (warden lodge). The level teaches the counter triangle: the player must defeat a number of each tribe's troops (three kill objectives, one per tribe, staged), then take and hold the crown stone on the central hill for a span. Ends on the hold, not eliminateAll. Rival maxPopulation keeps them from snowballing."
+    },
+    {
+      "id": "sunken_road",
+      "order": 32,
+      "name": "The Sunken Road",
+      "target": 28700,
+      "brief": "Below-sea trenches (map paint ridge with negative aboveSea) cut the land into strips, so the old road to the rival is sunk under water. The player has Raise Land and Erode and must rebuild the way across, or go around by boat or balloon. Stages: worship a site on the near side that teaches a spell; build a crossing (boathouse or skyloft); worship a second site across the first trench; hold a stone on the middle strip; destroy the rival's two forts (watchtowers or lodges as destroy targets). Not eliminateAll."
+    },
+    {
+      "id": "night_of_wolves",
+      "order": 33,
+      "name": "Night of Wolves",
+      "target": 31100,
+      "brief": "A dark forest level: many wolf dens ring the player's clearing and keep sending wolves (repeating spawn triggers bounded by until on the den stages), while a rival (sneaky) raids from the north and also suffers the wolves (beastPrey all). Stages: clear the near dens; hold two stones at once through a long night (hold n 2 with a long span) while wolves and raids press; clear the far dens; defeat a number of rival troops; end on the rival's victory rules or a final hold. At most one eliminateAll in the whole chapter is allowed elsewhere, so do not end this one on it."
+    },
+    {
+      "id": "pilgrim_stones",
+      "order": 34,
+      "name": "The Pilgrim Stones",
+      "target": 33600,
+      "brief": "An island chain with a prayer chain: worship sites on four islands, each one opening the next by a trigger (a message and the next site's guardians). The player needs balloons (skyloft) or boats to hop islands. A rival does the same race by boat with pray raids (raid pray) and keepRaiders on so its pilgrims stay kneeling. Stages: build a skyloft or boathouse; worship the four sites in order (the rival can contest them); destroy the rival's skyloft or boathouse; end on worshipping the last, highest site. Not eliminateAll."
+    },
+    {
+      "id": "hearth_unbroken",
+      "order": 35,
+      "name": "The Hearth Unbroken",
+      "target": 36000,
+      "brief": "The chapter finale on a large map with four tribes: three rivals with different personalities. A volcano cone at the center, a ridge on one flank, stones and dens between. Stages build to a climax: hold the center stone; destroy the first rival's hearth; defeat a number of the second rival's troops (kill); worship the summit site for a last great spell; then end the war (eliminateAll is allowed here, as the chapter's only one). Triggers announce each turn of the story and send fresh raids. It should feel like the biggest battle in the game but stay winnable."
+    }
+  ]
+}
