@@ -810,6 +810,24 @@ describe("OpponentAI (M7)", () => {
     expect(copy.saveState()).toEqual(saved);
   }, 60000);
 
+  it("S4 L8-A: the level bot raises the Boathouse an open build objective asks for at once, on the shore", () => {
+    const p = basePack();
+    const def: LevelDef = {
+      id: "boat_goal", name: "Boat goal", order: 99, description: "test", seed: 5,
+      map: { generator: "flat", size: 64, landAboveSea: 20, paint: [{ shape: "rect", at: [32, 32], size: [12, 64], aboveSea: -30 }, { shape: "rect", at: [0, 32], size: [12, 64], aboveSea: -30 }] },
+      tribes: [{}], spells: [], buildings: ["dwelling", "boathouse"],
+      setup: [
+        { spawn: "hearth", tribe: 0, at: [16, 32] }, { spawn: "shaper", tribe: 0, at: [18, 34] },
+        { spawn: "settler", tribe: 0, near: [14, 38], count: 12 }, { spawn: "rock", near: [10, 26], count: 3, spacing: 2 }, { spawn: "tree", near: [10, 44], count: 8, spacing: 1.2 },
+      ],
+      objectives: [{ type: "build", building: "boathouse", n: 1 }],
+    };
+    const w = createLevelWorld({ def }, p.files, p.hash);
+    w.step([]);
+    const plan = new OpponentAI({ tribe: 0, personality: calm, every: 1 }).decide(w);
+    expect(plan.some((c) => c.type === "placePlan" && c.args.building === "boathouse")).toBe(true);
+  });
+
   it("S4: with no boat route the AI flies worshippers over by balloon, two at a time, but never raises a Skyloft just to pray", () => {
     // no vehicle yet: a Skyloft could stand (18 followers, stone and wood in reach) but prayer alone never raises one
     const bare = islandLevel([{ spawn: "rock", near: [10, 26], count: 2, spacing: 2 }, { spawn: "tree", near: [10, 44], count: 6, spacing: 1.2 }, { spawn: "settler", tribe: 0, near: [20, 26], count: 8 }], ["dwelling", "skyloft"]);

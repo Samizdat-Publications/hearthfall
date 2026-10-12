@@ -1,9 +1,9 @@
 {
-  "$comment": "Campaign level 32 (chapter 3). Two below-sea trenches cut the land into strips; the rival plateau is a sheer cliff that only the old road ramp climbs, so boats cannot land on it. Stages: Reliquary (teaches Whirlwind) before a rival boat raid at 480 s prays it, Boathouse, drowned shrine over trench 1 (raises the first road span, four worshippers), pray the road stone away and hold it 420 s while rival boats land beside it every 90 s from 840 s (a slower player meets a bigger garrison there), then the last span rises and all three Watchtowers (forts) must burn; the rival village sits far north on the plateau so the bot burns the forts instead of eliminating the tribe. Bot wins near tick 27500.",
+  "$comment": "Campaign level 32 (chapter 3). Two below-sea trenches cut the land into strips; the rival plateau is a sheer cliff that only the old road ramp climbs, so boats cannot land on it. Stages: Reliquary (teaches Whirlwind) before a rival boat raid at 480 s prays it, Boathouse, drowned shrine over trench 1 (raises the first road span, four worshippers; a defensive rival garrison of 8 wardens and 2 firecallers lands on the road stone hill), cut down the garrison and pray the road stone away, then hold it 300 s while rival boats land every 90 s (from 45 s after the capture) to pray it back (keepRaiders keeps them kneeling; the bot loses it once near tick 16200 and retakes it near 20600), then the last span rises and all three Watchtowers (forts) must burn; the rival village sits far north on the plateau so the bot burns the forts instead of eliminating the tribe. S4 L8-A retune: the bot raises the Boathouse at once and crossed while weak, so the counter-raid became a posted garrison. Bot wins near tick 31100.",
   "id": "sunken_road",
   "name": "The Sunken Road",
   "order": 32,
-  "description": "The old road to the rival forts is sunk under two drowned trenches that cut the land into three strips. Pray at the near Reliquary before rival boats take it, raise a Boathouse, win the drowned shrine and the road stone on the middle strip, then raise the road and burn all three forts.",
+  "description": "The old road to the rival forts is sunk under two drowned trenches. Pray at the near Reliquary before rival boats take it, raise a Boathouse, win the drowned shrine, take the road stone from its garrison and hold it against rival boats, then raise the road and burn all three forts.",
   "seed": 3207,
   "map": {
     "generator": "flat",
@@ -227,7 +227,8 @@
         "dwelling",
         "warden_lodge",
         "fire_lodge"
-      ]
+      ],
+      "keepRaiders": true
     }
   ],
   "spells": [
@@ -758,18 +759,25 @@
       "text": "Ferry four followers over the first trench and pray at the drowned shrine"
     },
     {
+      "type": "worship",
+      "site": "road_ley",
+      "fromStage": true,
+      "after": 2,
+      "text": "Cut down the rival garrison on the middle hill and pray the road stone away from them"
+    },
+    {
       "type": "hold",
       "n": 1,
       "kind": "ley_stone",
-      "seconds": 420,
-      "after": 2,
-      "text": "Pray the road stone away from the rival and hold it for seven minutes while rival boats land beside it"
+      "seconds": 300,
+      "after": 3,
+      "text": "Hold the road stone for five minutes while rival boats land beside it to pray it back"
     },
     {
       "type": "destroy",
       "tribe": 1,
       "building": "watchtower",
-      "after": 3,
+      "after": 4,
       "text": "Cross the risen road and burn all three rival forts (their Watchtowers)"
     }
   ],
@@ -784,7 +792,7 @@
     },
     {
       "type": "timeLimit",
-      "seconds": 3000
+      "seconds": 3300
     }
   ],
   "triggers": [
@@ -878,34 +886,36 @@
           "n": 8,
           "tribe": 1,
           "at": [
-            118,
-            70
-          ]
+            106,
+            78
+          ],
+          "stance": "defensive"
         },
         {
-          "type": "raid",
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 2,
           "tribe": 1,
-          "to": [
-            104,
-            80
+          "at": [
+            102,
+            78
           ],
-          "n": 8,
-          "fresh": true
+          "stance": "defensive"
         },
         {
           "type": "message",
-          "text": "Rival boats land on the middle strip to keep the road stone, and more will come every minute and a half. Pray it away and hold it."
+          "text": "Rival boats land a garrison on the middle hill to keep the road stone. Cut them down and pray the stone away."
         }
       ]
     },
     {
       "when": {
         "type": "time",
-        "seconds": 60,
+        "seconds": 45,
         "every": 90
       },
-      "after": 2,
-      "until": 3,
+      "after": 3,
+      "until": 4,
       "do": [
         {
           "type": "spawn",
@@ -954,7 +964,7 @@
     {
       "when": {
         "type": "objective",
-        "index": 3
+        "index": 4
       },
       "do": [
         {
@@ -1011,7 +1021,7 @@
     {
       "when": {
         "type": "time",
-        "seconds": 2700
+        "seconds": 3000
       },
       "do": [
         {

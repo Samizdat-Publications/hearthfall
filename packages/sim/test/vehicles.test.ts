@@ -73,6 +73,28 @@ describe("vehicles (BACKLOG 10)", () => {
     expect(w.invariants()).toEqual([]);
   });
 
+  it("a boat already on the water vertex nearest its inland goal arrives there (S4 L8-D soak seed 1009: a boat fresh from a Boathouse ground at the shore)", () => {
+    const w = strait();
+    const E = w.ents;
+    const n = w.terrain.size;
+    const pf = w.units.pfs[NAV.water];
+    pf.refresh();
+    const v = pf.nearestWalkable(w.terrain.idx(22, 20), w.cfg.pack.balance.movement.snapRadius);
+    expect(v).toBeGreaterThanOrEqual(0);
+    const b = E.index(w.spawnUnit("boat", 0, v % n, (v - (v % n)) / n));
+    expect(w.terrain.heightAt(22, 20)).toBeGreaterThan(w.terrain.sea);
+    step(w, 0, "move", { units: [E.idOf(b)], to: [22, 20] });
+    let gaveUp = 0;
+    for (let t = 0; t < 200; t++) {
+      w.step([]);
+      gaveUp += w.events.filter((e) => e.type === "orderGaveUp").length;
+    }
+    expect(gaveUp).toBe(0);
+    expect(E.order[b]).toBe(0);
+    expect(w.terrain.heightAt(E.x[b], E.y[b])).toBeLessThan(w.terrain.sea);
+    expect(w.invariants()).toEqual([]);
+  });
+
   it("riders unloaded at the wrap seam land inside the map (S4 L8-D soak: a Chanter dropped at x -0.2)", () => {
     const p = basePack();
     const w = new World({ pack: p.files, packHash: p.hash, seed: 5, map: { generator: "flat", size: 64, tribes: 1 } });

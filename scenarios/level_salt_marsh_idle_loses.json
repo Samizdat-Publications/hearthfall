@@ -1,12 +1,12 @@
 {
   "id": "level_salt_marsh_idle_loses",
-  "description": "Campaign level 29 has a real loss: an idle player never crosses the marsh, and the boat people's first wave lands on the home isle (about tick 7000) and burns the undefended Hearth (level lost near tick 8000, hearthLost, long before the time limit).",
+  "description": "Campaign level 29 has a real loss: an idle player never raises a Boathouse, so from 300 s four boat raiders land on the home isle every 150 s and cut down the idle Shaper and every follower (tribe eliminated, level lost near tick 10000, long before the time limit).",
   "tags": ["levels"],
   "level": "salt_marsh",
   "runTicks": 12000,
   "assert": [
     { "at": 6000, "expr": "!level.lost && count(tribe0.hearths) == 1" },
-    { "at": 11000, "expr": "level.lost && !level.won && count(tribe0.hearths) == 0 && level.objectivesDone == 0" },
+    { "at": 11000, "expr": "level.lost && !level.won && !alive(0) && count(tribe0.units) == 0 && level.objectivesDone == 0" },
     { "at": 12000, "expr": "level.lost && !level.won && invariants() == 0" }
   ]
 }

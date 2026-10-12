@@ -23,7 +23,7 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 3. L8-B chapter 4, batch 1 of 5 levels (level-author workflow), then batch 2; L8-C dressing pass.
 
 ## Blocked
-- Boat launch stall (S4 L8-D, 2026-10-12): `npm run soak -- --mode ai --seeds 96 --minutes 25 --jobs auto` fails on seed 1009 (aggressive v sneaky): a boat that just left a Boathouse at vertex (56,127) on the 128 map gets a move order to (50.4,121.4) and oscillates at (55.53,126.53) to (55.61,126.61) until it gives up at tick 14947 (reachable 1, 7.31 cells). The water pathfinder forbids corner cutting and movement uses the same `pf.walkable`, so the cause is not the corner rule; suspect the y 127 seam row or the launch vertex. Not caused by the data change (it only moved the trajectory). One attempt so far (an unload-trip exemption, wrong case, reverted).
+- (none)
 
 ## Cuts and deferrals
 - L6-C deferred (S4, 2026-10-11): "an attack wave leaves a vehicle home for worship trips" and "destroyTarget off the home landmass" (both AI vehicle logistics; no level needs them after the fix round's data changes). `keepRaiders` ships off by default: on for every rival it reshaped Ember Crown, Ley Crown and Stolen Stones.

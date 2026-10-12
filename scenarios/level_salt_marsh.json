@@ -1,6 +1,6 @@
 {
   "id": "level_salt_marsh",
-  "description": "Campaign level 29 is completable: the opponent bot for the player walks a warden along the old causeway at the first low tide, raises a Boathouse (which wakes the marsh stones), takes stones on two isles while the boat raiders kneel and pray them away (they take the north ley and the south ward from it during the stage), holds two at once for 150 s, then crosses the risen dry road and sandbar and burns both rival Boathouses while the rival still stands (bot wins near tick 23700; stages at about 1400, 6700 and 19200).",
+  "description": "Campaign level 29 is completable: the opponent bot for the player walks a warden along the old causeway at the first low tide, raises a Boathouse (which wakes the marsh stones and lands raiders who take the north ley), takes stones on two isles and holds two at once for 150 s while boat raiders land every 200 s from 100 s into the stage, then crosses the risen dry road and sandbar, burns both rival Boathouses past the guards at the yard while the rival still stands (its posted home guard keeps it alive through the hold), and finally burns the rival Hearth (bot wins near tick 23900; stages at about 1400, 2400, 8000 and 10400; the harry raids that land until a Boathouse stands never fire for the bot).",
   "tags": ["levels"],
   "level": "salt_marsh",
   "bots": [
@@ -9,12 +9,13 @@
   "runTicks": 30000,
   "assert": [
     { "at": 800, "expr": "level.objectivesDone == 0 && site('north_ley').by == -1" },
-    { "at": 3000, "expr": "level.objectivesDone == 1 && !level.won" },
-    { "at": 9000, "expr": "level.objectivesDone == 2 && count(tribe0.boathouses) >= 1 && site('north_ley').by == 1 && !level.won" },
-    { "at": 13000, "expr": "level.objectivesDone == 2 && count(tribe1.boathouses) == 2 && site('causeway_seer').by == 0 && site('south_ward').by == 1" },
-    { "at": 18000, "expr": "level.objectivesDone == 2 && !level.won" },
-    { "at": 21000, "expr": "level.objectivesDone == 3 && !level.won && count(tribe1.boathouses) >= 1 && alive(1)" },
-    { "at": 25000, "expr": "level.won && alive(1)" },
-    { "at": 30000, "expr": "level.won && level.objectivesDone == 4 && alive(0) && invariants() == 0" }
+    { "at": 2000, "expr": "level.objectivesDone == 1 && !level.won" },
+    { "at": 3000, "expr": "level.objectivesDone == 2 && count(tribe0.boathouses) >= 1 && site('north_ley').by == 1 && !level.won" },
+    { "at": 7000, "expr": "level.objectivesDone == 2 && site('causeway_seer').by == 0 && site('north_ley').by == 0 && count(tribe1.boathouses) == 2" },
+    { "at": 9000, "expr": "level.objectivesDone == 3 && site('north_ley').by == 1 && count(tribe1.boathouses) >= 1 && alive(1) && !level.won" },
+    { "at": 12000, "expr": "level.objectivesDone == 4 && count(tribe1.boathouses) == 0 && count(tribe1.hearths) == 1 && alive(1) && !level.won" },
+    { "at": 20000, "expr": "level.objectivesDone == 4 && count(tribe1.hearths) == 1 && !level.won" },
+    { "at": 26000, "expr": "level.won && count(tribe1.hearths) == 0" },
+    { "at": 30000, "expr": "level.won && level.objectivesDone == 5 && alive(0) && invariants() == 0" }
   ]
 }

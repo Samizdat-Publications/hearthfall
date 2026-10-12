@@ -1,9 +1,9 @@
 {
-  "$comment": "Level 8 (paced): boats. Two 28-radius islands on a 160 sea. Staged: clear the three home dens, raise a Boathouse (no boat to start), which wakes the dormant home seer stone with four posted rival guards on it and sends the rival war band there; kill the guards and pray at the seer; then raze the rival Hearth and break the tribe (aggressive, ferries too, capped at 14 troops) while growing to 65 alongside the war. Bot wins about 13450 (dens 4900, Boathouse 8400, seer 9100, followers 13150, Hearth and tribe 13450); the old 80-follower goal was only met in an uncontested growth tail after the rival fell.",
+  "$comment": "Level 8 (paced): boats. Two 28-radius islands on a 160 sea. Staged: clear the three home dens, raise a Boathouse (no boat to start), which wakes the dormant home seer stone with four posted rival guards on it and sends the rival war band there; kill the guards and pray at the seer; then raze the rival Hearth and break the tribe (aggressive, ferries too, capped at 8 troops and 24 people) while growing to 58 alongside the war. S4 L8-A retune: the bot now raises the Boathouse as soon as the stage opens, so the old 14-troop uncapped rival grew to 60 people and dragged the war to 15900; the caps keep the war contested but finite. Bot wins about 11740 (dens 4840, Boathouse 6080, seer 7010, followers 10620, Hearth and tribe 11740); idle loses to the ferried war band (Hearth razed about 12600).",
   "id": "across_the_strait",
   "name": "Across the Strait",
   "order": 8,
-  "description": "A rival lives across a wide strait and wolves prowl your island. Clear the three wolf dens, raise a Boathouse, take the waking seer stone from the rival guards, then ferry an army over to raze the rival Hearth and break the tribe, growing to 65 followers along the way.",
+  "description": "A rival lives across a wide strait and wolves prowl your island. Clear the three wolf dens, raise a Boathouse, take the waking seer stone from the rival guards, then ferry an army over to raze the rival Hearth and break the tribe, growing to 58 followers along the way.",
   "seed": 808,
   "map": {
     "generator": "flat",
@@ -16,7 +16,7 @@
   },
   "tribes": [
     {},
-    { "ai": "aggressive", "difficulty": "easy", "maxTroops": 14 }
+    { "ai": "aggressive", "difficulty": "easy", "maxTroops": 8, "maxPopulation": 24 }
   ],
   "spells": ["bolt", "lightning"],
   "buildings": ["dwelling", "watchtower", "warden_lodge", "fire_lodge", "boathouse"],
@@ -52,7 +52,7 @@
     { "type": "worship", "site": "home_seer", "after": 1, "text": "Kill the rival guards at the waking seer stone on your western shore and pray there" },
     { "type": "destroy", "tribe": 1, "building": "hearth", "after": 2, "text": "Ferry an army across the strait and raze the rival Hearth" },
     { "type": "eliminateAll", "after": 2, "text": "Break the rival tribe, Shaper and all" },
-    { "type": "followers", "n": 65, "after": 1, "text": "Grow to 65 followers while the war goes on: build dwellings between crossings" }
+    { "type": "followers", "n": 58, "after": 1, "text": "Grow to 58 followers while the war goes on: build dwellings between crossings" }
   ],
   "lose": [
     { "type": "hearthLost" },

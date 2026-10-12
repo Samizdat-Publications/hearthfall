@@ -309,7 +309,10 @@ export class UnitSystem {
       // vertex, so a unit on the shore ordered into the sea arrives there instead of steering at the raw goal in
       // the water and giving up. A goal on land (a tree, a building door, a target across a moat) keeps steering
       // at the goal itself, so workers reach their work and attackers the water's edge (level_the_forge regression)
-      const wet = !r.waypoints.length && w.terrain.heightAt(E.gx[i], E.gy[i]) < w.terrain.sea;
+      // S4 L8-D (soak seed 1009): a boat whose goal lies on land and snaps to the water vertex it already sits on
+      // (a boat fresh from a Boathouse) gets that vertex as its route too, or it steers at the shore and grinds there
+      const offLayer = pf.mode === "water" ? w.terrain.heightAt(E.gx[i], E.gy[i]) >= w.terrain.sea : w.terrain.heightAt(E.gx[i], E.gy[i]) < w.terrain.sea;
+      const wet = !r.waypoints.length && offLayer;
       this.paths[i] = wet ? Int32Array.of(goal) : r.waypoints;
       E.pathPos[i] = 0;
       // a repath onto a longer detour (BACKLOG 7, soak seed 1008): progress restarts against the new

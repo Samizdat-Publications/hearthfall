@@ -1,6 +1,6 @@
 {
   "id": "level_pilgrim_stones",
-  "description": "The Pilgrim Stones (level 34) won by the hard opponent bot as the player: a scripted first Boathouse, then the bot sails pilgrims to the Tern, Gull and Heron Stones on their far northern isles while rival boats land wardens to pray each one away, walks the risen reef path and fights through the posted rival guards at the Storm Stone, marches over the risen pilgrim road to burn the rival Boathouse under the walls of a fortified harbor, then breaks the rival band on the road and prays six followers through the summit Reliquary (bot wins near tick 34250).",
+  "description": "The Pilgrim Stones (level 34) won by the hard opponent bot as the player: a scripted first Boathouse, then the bot sails pilgrims to the Tern, Gull and Heron Stones on their far northern isles while rival boats land wardens to pray each one away, walks the risen reef path and fights through the posted rival guards at the Storm Stone, marches over the risen pilgrim road to burn the rival Boathouse under the walls of a fortified harbor, then breaks the rival band on the road and prays six followers through the summit Reliquary (bot wins near tick 34200).",
   "tags": ["levels"],
   "level": "pilgrim_stones",
   "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 2 }],

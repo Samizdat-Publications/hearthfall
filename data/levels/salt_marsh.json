@@ -1,9 +1,9 @@
 {
-  "$comment": "Campaign level 29 (S4 chapter 3, The Far Shores): low marsh isles on a shallow sea. The home isle (west) reaches the middle isle by an old causeway that drowns at high tide; tidal flats join the middle isle to the north and south isles at low water; a deep channel parts them all from the boat people's isle (east). Tides: high water until 40 s, then every 120 s the causeway and flats rise (40 s) and go under (100 s) over 8 s, with a message 10 s before each. The rival (aggressive, hard, maxTroops 14, maxPopulation 40, keepRaiders) may build only dwellings, a warden lodge and Boathouses (tribes[].buildings), starts with two Boathouses by its western shore, two boats and six posted wardens at its boatyard, and ferries its waves by water. Staged: walk a warden along the causeway to its head at low tide (reach); raise a Boathouse (build), which wakes three dormant marsh stones (middle seer, north ley, south ward) and lands three raiders who pray at the north ley; from 480 s (south) and 545 s (north) two boat raiders land on each of those isles every 130 s and pray the stones away (spawned on the isle shore: a raid reward cannot board boats) until the hold is done. keepRaiders keeps them kneeling instead of drafting them into waves, so they do take stones (in the bot run the north ley and south ward fall to them and the seer changes hands); hold stones on two isles at once for 150 s (hold n 2, a streak that restarts whenever a stone falls); that raises a dry road beside the causeway above every tide (the bot only sends waves at buildings on its own landmass, and with the tidal causeway alone it broke the rival by its Hearth instead) and a sandbar to the boatyard; burn both rival Boathouses (destroy, not eliminateAll; the rival still stands at the bot win). Mire breaks the landings. Bot win about 23700 (stages at about 1400, 6700 and 19200), time limit 2520 s.",
+  "$comment": "Campaign level 29 (S4 chapter 3, The Far Shores): low marsh isles on a shallow sea. The home isle (west) reaches the middle isle by an old causeway that drowns at high tide; tidal flats join the middle isle to the north and south isles at low water; a deep channel parts them all from the boat people's isle (east). Tides: high water until 40 s, then every 120 s the causeway and flats rise (40 s) and go under (100 s) over 8 s, with a message 10 s before each. The rival (aggressive, hard, maxTroops 14, maxPopulation 40, keepRaiders, worshipAfterSeconds 1500 so its own priests stay out of the hold) may build only dwellings, a warden lodge and Boathouses, starts with two Boathouses, two boats, six posted wardens at its boatyard and six posted wardens at its Hearth (the home guard keeps it standing through the hold, so the later destroy stages never finish at once on its fall). Until the player raises a Boathouse, four boat raiders land on the home isle every 150 s from 300 s (the idle loss; the bot never sees them). Staged: walk a warden along the causeway at low tide (reach); raise a Boathouse (build), which wakes three marsh stones (middle seer, north ley, south ward) and lands three raiders who pray at the north ley; from 100 s (south) and 165 s (north) after that, two boat raiders land on each isle every 200 s and pray the stones away until the hold is done (keepRaiders keeps them kneeling, so they do take stones and break streaks); hold stones on two isles at once for 150 s; that raises a dry road beside the causeway and a sandbar to the boatyard and posts six wardens and four firecallers at the yard; burn both rival Boathouses (destroy); then burn the rival Hearth. Mire breaks the landings. Bot win (offset 1) 23855: stages at 1416, 2413, 8011, 10363; across 13 bot offsets the win runs 18155 to 32442 (median 24223) and the rival survives every hold. Time limit 2700 s.",
   "id": "salt_marsh",
   "name": "The Salt Marsh",
   "order": 29,
-  "description": "Low isles in a shallow sea, and the tide owns the roads between them. Cross the old causeway at low water, raise a Boathouse, hold stones on two isles against the boat people's landings, then sail over and burn their Boathouses.",
+  "description": "Low isles in a shallow sea, and the tide owns the roads between them. Cross the old causeway at low water, raise a Boathouse, hold stones on two isles against the boat people's landings, then cross over, burn their Boathouses and break their Hearth.",
   "seed": 2929,
   "map": {
     "generator": "flat",
@@ -128,7 +128,7 @@
       "difficulty": "hard",
       "maxTroops": 14,
       "maxPopulation": 40,
-      "worshipAfterSeconds": 900,
+      "worshipAfterSeconds": 1500,
       "buildings": [
         "dwelling",
         "warden_lodge",
@@ -435,6 +435,16 @@
       "count": 4
     },
     {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        165,
+        99
+      ],
+      "count": 6,
+      "stance": "defensive"
+    },
+    {
       "spawn": "warden_lodge",
       "tribe": 1,
       "at": [
@@ -533,7 +543,14 @@
       "tribe": 1,
       "building": "boathouse",
       "after": 2,
-      "text": "Cross the new sandbar or sail the deep channel, and burn every Boathouse of the boat people"
+      "text": "Cross the new sandbar or sail the deep channel, and burn both Boathouses of the boat people past the guards at their yard"
+    },
+    {
+      "type": "destroy",
+      "tribe": 1,
+      "building": "hearth",
+      "after": 3,
+      "text": "With their boats in ashes, march on the boat people's isle and burn their Hearth past its posted guard"
     }
   ],
   "lose": [
@@ -542,7 +559,7 @@
     },
     {
       "type": "timeLimit",
-      "seconds": 2520
+      "seconds": 2700
     }
   ],
   "triggers": [
@@ -694,6 +711,40 @@
     },
     {
       "when": {
+        "type": "time",
+        "seconds": 300,
+        "every": 150
+      },
+      "until": 1,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            52,
+            86
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            28,
+            96
+          ],
+          "n": 4,
+          "fresh": true
+        },
+        {
+          "type": "message",
+          "text": "Boat raiders come ashore on your isle. They will keep coming until you raise a Boathouse of your own."
+        }
+      ]
+    },
+    {
+      "when": {
         "type": "objective",
         "index": 0
       },
@@ -760,8 +811,8 @@
     {
       "when": {
         "type": "time",
-        "seconds": 480,
-        "every": 130
+        "seconds": 100,
+        "every": 200
       },
       "until": 2,
       "do": [
@@ -790,13 +841,14 @@
           "type": "message",
           "text": "Boat raiders land on the south isle to pray the ward stone away."
         }
-      ]
+      ],
+      "after": 1
     },
     {
       "when": {
         "type": "time",
-        "seconds": 545,
-        "every": 130
+        "seconds": 165,
+        "every": 200
       },
       "until": 2,
       "do": [
@@ -825,7 +877,8 @@
           "type": "message",
           "text": "Boat raiders land on the north isle to pray the ley stone away."
         }
-      ]
+      ],
+      "after": 1
     },
     {
       "when": {
@@ -874,15 +927,57 @@
           "r": 18
         },
         {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 6,
+          "tribe": 1,
+          "at": [
+            143,
+            96
+          ],
+          "stance": "defensive"
+        },
+        {
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            146,
+            92
+          ],
+          "stance": "defensive"
+        },
+        {
           "type": "message",
-          "text": "The stones answer: a dry road rises beside the old causeway, above every tide, and a sandbar reaches the boat people's shore. Burn their Boathouses."
+          "text": "The stones answer: a dry road rises above every tide and a sandbar reaches the boat people's yard, where guards close ranks. Burn their Boathouses."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 3
+      },
+      "do": [
+        {
+          "type": "reveal",
+          "at": [
+            170,
+            96
+          ],
+          "r": 16
+        },
+        {
+          "type": "message",
+          "text": "Their Boathouses burn and the boat people can no longer cross. Their Hearth stands behind a posted guard: burn it."
         }
       ]
     },
     {
       "when": {
         "type": "time",
-        "seconds": 2220
+        "seconds": 2400
       },
       "do": [
         {

@@ -1,6 +1,6 @@
 {
   "id": "level_sunken_road",
-  "description": "The Sunken Road (level 32) won by the hard opponent bot as the player: prays the Reliquary past the wolf dens, raises a Boathouse, ferries four worshippers to the drowned shrine over the first trench, prays the road stone away and holds it seven minutes while rival boats land beside it, then climbs the risen road and burns all three rival Watchtowers (bot wins near tick 27830).",
+  "description": "The Sunken Road (level 32) won by the hard opponent bot as the player: prays the Reliquary past the wolf dens, raises a Boathouse, ferries four worshippers to the drowned shrine over the first trench, cuts down the rival garrison and prays the road stone away, loses it once to the rival boat waves and retakes it, holds it five minutes, then climbs the risen road and burns all three rival Watchtowers (bot wins near tick 31100).",
   "tags": [
     "levels"
   ],
@@ -14,27 +14,35 @@
       "offset": 1
     }
   ],
-  "runTicks": 31000,
+  "runTicks": 34000,
   "assert": [
     {
       "at": 5000,
-      "expr": "level.objectivesDone == 1 && site('road_reliquary').by == 0 && !level.lost"
+      "expr": "level.objectivesDone == 2 && site('road_reliquary').by == 0 && count(tribe0.boathouses) >= 1 && !level.lost"
     },
     {
-      "at": 10500,
-      "expr": "level.objectivesDone == 2 && site('drowned_shrine').by != 0 && !level.lost"
+      "at": 9000,
+      "expr": "level.objectivesDone == 3 && site('drowned_shrine').by == 0 && site('road_ley').by == 1 && !level.lost"
     },
     {
-      "at": 17500,
-      "expr": "level.objectivesDone == 3 && site('drowned_shrine').by == 0 && site('road_ley').by == 0 && !level.lost"
+      "at": 13000,
+      "expr": "level.objectivesDone == 4 && site('road_ley').by == 0 && !level.lost"
+    },
+    {
+      "at": 18000,
+      "expr": "level.objectivesDone == 4 && site('road_ley').by == 1 && !level.lost"
     },
     {
       "at": 24000,
-      "expr": "level.objectivesDone == 4 && alive(1) && count(tribe1.watchtowers) == 3 && !level.won && !level.lost"
+      "expr": "level.objectivesDone == 4 && site('road_ley').by == 0 && count(tribe1.watchtowers) == 3 && !level.won && !level.lost"
     },
     {
-      "at": 31000,
-      "expr": "level.won && level.objectivesDone == 5 && count(tribe1.watchtowers) == 0 && alive(0) && invariants() == 0"
+      "at": 28500,
+      "expr": "level.objectivesDone == 5 && alive(1) && count(tribe1.watchtowers) >= 1 && !level.won && !level.lost"
+    },
+    {
+      "at": 34000,
+      "expr": "level.won && level.objectivesDone == 6 && count(tribe1.watchtowers) == 0 && alive(0) && invariants() == 0"
     }
   ]
 }

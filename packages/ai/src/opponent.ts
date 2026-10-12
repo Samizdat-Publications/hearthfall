@@ -136,8 +136,8 @@ const FERRY_BACKOFF_SECONDS = 90;
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 /** BACKLOG 2: actions scored only for personalities with shades, so the others draw the same noise as before */
 const SHADE_ACTIONS = new Set(["buildDen", "trainShade", "sabotage"]);
-/** S4 L6-C: buildings a level's build objective leaves to the AI's own crossing and support logic */
-const OWN_TIMING = new Set(["boathouse", "skyloft", "spirit_well", "mending_hut"]);
+/** S4 L6-C: buildings a level's build objective leaves to the AI's own crossing and support logic (S4 L8-A: a requested Boathouse is raised at once) */
+const OWN_TIMING = new Set(["skyloft", "spirit_well", "mending_hut"]);
 
 export class OpponentAI implements Controller {
   readonly tribe: number;
@@ -804,8 +804,8 @@ export class OpponentAI implements Controller {
 
   /**
    * S4 L6-C: in a level, the bot playing tribe 0 plans the building an open `build` objective asks for,
-   * one plan at a time (plans and finished ones count toward n), under the open plan limit. Crossing and support
-   * buildings (Boathouse, Skyloft, Spirit Well, Mending Hut) stay with the AI's own timing: it raises them when it needs them.
+   * one plan at a time (plans and finished ones count toward n), under the open plan limit. Skyloft, Spirit Well and
+   * Mending Hut stay with the AI's own timing: it raises them when it needs them. S4 L8-A: a requested Boathouse is raised at once.
    */
   private buildGoal(c: Census, out: Command[]): void {
     const w = c.w;
