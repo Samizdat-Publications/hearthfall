@@ -189,6 +189,17 @@ describe("S4 L6-C level engine gaps", () => {
     expect(count()).toBe(2);
   });
 
+  it("S4 L7-E: trigger-spawned wolves form a den of their own", () => {
+    const def = base({ triggers: [{ when: { type: "time", seconds: 1 }, do: [{ type: "spawn", unit: "wolf", n: 3, tribe: -1, at: [60, 60] }] }] });
+    const w = make(def);
+    const d0 = w.beasts.dens.length;
+    for (let k = 0; k < 2 * w.cfg.tickHz; k++) w.step();
+    expect(w.beasts.dens.length).toBe(d0 + 1);
+    const den = w.beasts.dens[d0];
+    expect(den.members.length).toBe(3);
+    expect(den.cleared).toBe(false);
+  });
+
   it("validateLevel checks until and fresh raids", () => {
     const p = basePack();
     const ok = (over: object) => validateLevel({ ...base({}), ...over }, p.files).level !== undefined;

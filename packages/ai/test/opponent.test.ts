@@ -383,6 +383,29 @@ describe("OpponentAI (M7)", () => {
     expect((next!.args.to as number[])[0]).toBeCloseTo(w.ents.x[w.ents.index(w.tribes[1].hearth)], 0);
   });
 
+  it("in a level, the bot playing tribe 0 sends its wave at the tribe an open kill objective names (S4 L7-E)", () => {
+    const p = basePack();
+    const def: LevelDef = {
+      id: "kill_test", name: "Kill test", order: 99, description: "test", seed: 3,
+      map: { generator: "flat", size: 64, landAboveSea: 20 },
+      tribes: [{}, {}, {}], spells: [],
+      setup: [
+        { spawn: "hearth", tribe: 0, at: [12, 32] }, { spawn: "shaper", tribe: 0, at: [13, 34] },
+        { spawn: "hearth", tribe: 1, at: [32, 32] }, { spawn: "shaper", tribe: 1, at: [32, 35] },
+        { spawn: "hearth", tribe: 2, at: [50, 50] }, { spawn: "shaper", tribe: 2, at: [50, 53] },
+      ],
+      objectives: [{ type: "kill", n: 5, tribe: 2 }],
+    };
+    const w = createLevelWorld({ def }, p.files, p.hash);
+    for (let k = 0; k < 5; k++) w.spawnUnit("warden", 0, 14 + k, 28);
+    w.step([]);
+    const wave = new OpponentAI({ tribe: 0, personality: bold, every: 1 }).decide(w).find((c) => c.type === "move" && c.args.attack);
+    expect(wave).toBeDefined();
+    const h2 = w.ents.index(w.tribes[2].hearth);
+    const [x, y] = wave!.args.to as number[];
+    expect(Math.abs(x - w.ents.x[h2]) + Math.abs(y - w.ents.y[h2])).toBeLessThan(2);
+  });
+
   it("in a level, the bot playing tribe 0 hunts far dens of an open clearDens objective and walks its Shaper to a reach goal (stretch 3)", () => {
     const p = basePack();
     const def: LevelDef = {

@@ -901,9 +901,10 @@
     {
       "when": {
         "type": "time",
-        "seconds": 840,
+        "seconds": 60,
         "every": 90
       },
+      "after": 2,
       "until": 3,
       "do": [
         {

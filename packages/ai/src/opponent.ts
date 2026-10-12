@@ -1266,7 +1266,7 @@ export class OpponentAI implements Controller {
     const E = w.ents;
     const home = this.comp(w, E.x[c.h], E.y[c.h]);
     // known enemies first, then any start site (a wave scouts as it goes)
-    const ranked = [...c.enemies.filter(([t]) => this.known.has(t)), ...c.enemies.filter(([t]) => !this.known.has(t))];
+    const ranked = this.rankEnemies(c);
     // stretch 3: a level's open destroy objective for this tribe (the bot playing tribe 0) comes before any Hearth
     const goal = this.destroyTarget(c, home);
     const target: [number, number] | undefined = goal >= 0 ? [E.tribe[goal], goal] : ranked.find(([, eh]) => this.comp(w, E.x[eh], E.y[eh]) === home);
@@ -1291,6 +1291,26 @@ export class OpponentAI implements Controller {
     }
     const kinds = new Set(c.idle.map((i) => E.type[i]));
     if (kinds.size >= 2) this.stats.mixedWaves++;
+  }
+
+  /** known enemies first, then the rest; S4 L7-E: a tribe an open level `kill` objective names leads (stable sort) */
+  private rankEnemies(c: Census): [number, number][] {
+    const ranked = [...c.enemies.filter(([t]) => this.known.has(t)), ...c.enemies.filter(([t]) => !this.known.has(t))];
+    const kt = this.killTribe(c);
+    if (kt >= 0) ranked.sort((a, b) => (a[0] === kt ? 0 : 1) - (b[0] === kt ? 0 : 1));
+    return ranked;
+  }
+
+  /** S4 L7-E: the living tribe an open `kill` objective of the level names (tribe 0 only), or -1 */
+  private killTribe(c: Census): number {
+    const w = c.w;
+    const lv = w.level;
+    if (!lv || this.tribe !== 0) return -1;
+    for (let k = 0; k < lv.def.objectives.length; k++) {
+      const o = lv.def.objectives[k];
+      if (o.type === "kill" && o.tribe !== undefined && !lv.done[k] && lv.open(k) && w.tribes[o.tribe]?.alive) return o.tribe;
+    }
+    return -1;
   }
 
   /** stretch 3: nearest building named by an open `destroy` objective of the level (tribe 0 only), on the home landmass, or -1 */
@@ -1538,7 +1558,7 @@ export class OpponentAI implements Controller {
     const E = w.ents;
     if (!c.boats.length) return;
     const home = this.comp(w, E.x[c.h], E.y[c.h]);
-    const ranked = [...c.enemies.filter(([t]) => this.known.has(t)), ...c.enemies.filter(([t]) => !this.known.has(t))];
+    const ranked = this.rankEnemies(c);
     const far = ranked.find(([, eh]) => this.comp(w, E.x[eh], E.y[eh]) !== home);
     for (const b of c.boats) {
       if (E.occupants[b] === 0 || E.order[b] !== 0 || E.task[b] === TASK.unload) continue;

@@ -371,6 +371,13 @@ export function applyReward(w: World, tribe: number, r: Reward, x: number, y: nu
       const owner = r.tribe ?? tribe;
       const [bx, by] = r.at ?? [x, y];
       const n = w.terrain.size;
+      // S4 L7-E: wild beasts spawn as a new den, so they bite, leash and regrow like a placed pack
+      if (owner < 0 && w.beasts.isBeast(w.cfg.unitIndex.get(r.unit) ?? -1)) {
+        const d = w.beasts.addDen(r.unit, bx, by, r.n);
+        spawned?.push(...w.beasts.dens[d].members);
+        w.emit("rewardSpawn", { tribe: owner, unit: r.unit, n: r.n });
+        return;
+      }
       for (let k = 0; k < r.n; k++) {
         const rr = 1.2 + 0.7 * Math.sqrt(k + 0.5);
         const id = w.spawnUnit(r.unit, owner, wrap(bx + cos(k * GOLDEN_ANGLE) * rr, n), wrap(by + sin(k * GOLDEN_ANGLE) * rr, n));

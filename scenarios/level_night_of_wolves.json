@@ -1,6 +1,6 @@
 {
   "id": "level_night_of_wolves",
-  "description": "Night of Wolves (level 33) won by the hard opponent bot as the player: clears the four near wolf dens, prays both ley stones away and keeps them through the night raids, clears every far den, cuts down the war band that lands on the south shore, then wins King of the Hill at the Moon Reliquary after the rival host from the north woods takes the knoll for a while (bot wins near tick 31250).",
+  "description": "Night of Wolves (level 33) won by the hard opponent bot as the player: clears the four near wolf dens, prays both ley stones away and keeps them through the night raids, clears every far den, cuts down the war band that lands on the south shore, then wins King of the Hill at the Moon Reliquary after the rival host from the north woods takes the knoll for a while (bot wins near tick 28400).",
   "tags": [
     "levels"
   ],
@@ -25,7 +25,7 @@
       "expr": "level.objectivesDone == 1 && !level.lost"
     },
     {
-      "at": 22500,
+      "at": 21500,
       "expr": "level.objectivesDone == 2 && site('west_ley').by == 0 && site('east_ley').by == 0 && !level.lost"
     },
     {

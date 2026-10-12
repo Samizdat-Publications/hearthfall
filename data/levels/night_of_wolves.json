@@ -713,9 +713,10 @@
     {
       "when": {
         "type": "time",
-        "seconds": 240,
+        "seconds": 45,
         "every": 120
       },
+      "after": 0,
       "until": 1,
       "do": [
         {
@@ -744,9 +745,10 @@
     {
       "when": {
         "type": "time",
-        "seconds": 300,
+        "seconds": 105,
         "every": 120
       },
+      "after": 0,
       "until": 1,
       "do": [
         {
@@ -959,9 +961,10 @@
     {
       "when": {
         "type": "time",
-        "seconds": 1320,
+        "seconds": 60,
         "every": 60
       },
+      "after": 3,
       "until": 4,
       "do": [
         {
