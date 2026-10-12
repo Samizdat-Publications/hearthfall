@@ -14,7 +14,13 @@ interface Fx {
   dur: number;
   size: number;
   color: THREE.Color;
+  /** order marker: the ring closes in on the point instead of spreading out */
+  shrink?: boolean;
 }
+
+/** Order marker colors by order kind (render only): move, attack, and the special orders (garrison, worship, rally, board). */
+export type OrderMark = "move" | "attack" | "special";
+const ORDER_COLORS: Record<OrderMark, string> = { move: "#8fe36a", attack: "#e2483a", special: "#f2c75c" };
 
 const SPELL_COLORS: Record<string, string> = {
   bolt: "#ff9a3c",
@@ -107,6 +113,8 @@ export class VfxLayer {
   /** BACKLOG 45: last failed-order marker (one per target cell and tick) */
   private lastFail = "";
   private fx: Fx[] = [];
+  /** order markers waiting for the next update (the app knows the point, update knows the clock and the ground) */
+  private orders: { x: number; z: number; kind: OrderMark }[] = [];
   private flashes: THREE.InstancedMesh;
   private rings: THREE.InstancedMesh;
   private beams: THREE.InstancedMesh;
@@ -724,6 +732,11 @@ export class VfxLayer {
   }
 
   /** Lay out all transient and persistent effects for this frame (wrapped near the focus). */
+  /** Mark where the player just ordered the selected units (drawn on the next update). */
+  markOrder(x: number, z: number, kind: OrderMark): void {
+    this.orders.push({ x, z, kind });
+  }
+
   update(
     w: World,
     now: number,
@@ -745,6 +758,14 @@ export class VfxLayer {
       halo: this.halos,
       smoke: this.smoke,
     };
+    for (const o of this.orders) {
+      // a closing double ring at the clicked point: the selected units took the order
+      const col = new THREE.Color(ORDER_COLORS[o.kind]);
+      const y = Math.max(w.terrain.heightAt(o.x, o.z), w.terrain.sea) * heightScale;
+      this.fx.push({ kind: "halo", x: o.x, z: o.z, y: y + 0.1, t0: now, dur: 0.7, size: 1.1, color: col, shrink: true });
+      this.fx.push({ kind: "ring", x: o.x, z: o.z, y: y + 0.13, t0: now, dur: 0.55, size: 1.6, color: col, shrink: true });
+    }
+    this.orders.length = 0;
     this.fx = this.fx.filter((f) => now - f.t0 < f.dur);
     for (const f of this.fx) {
       const a = (now - f.t0) / f.dur;
@@ -756,7 +777,8 @@ export class VfxLayer {
       let sx = f.size;
       let sy = f.size;
       let y = f.y;
-      if (f.kind === "flash") sx = sy = f.size * (0.4 + 0.8 * a);
+      if (f.shrink) sx = sy = f.size * (1.1 - 0.75 * a);
+      else if (f.kind === "flash") sx = sy = f.size * (0.4 + 0.8 * a);
       else if (f.kind === "ring") sx = sy = f.size * (0.2 + 0.9 * a);
       else if (f.kind === "halo") sx = sy = f.size * (0.35 + 0.75 * a);
       else if (f.kind === "beam") {

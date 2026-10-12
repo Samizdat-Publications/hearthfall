@@ -175,6 +175,8 @@ export interface HudActions {
   /** BACKLOG 11: pick the Forge brush, end this tribe's Forge */
   forgeBrush(b: string): void;
   forgeReady(): void;
+  /** click the Shaper portrait: select the Shaper and center the camera on her */
+  selectShaper(): void;
 }
 
 /** Small stance glyphs: crossed blades, a shield, an open palm. */
@@ -354,7 +356,9 @@ function Hud({ act }: { act: HudActions }) {
   return (
     <>
       <div data-hud="shaper" class={"hud-panel hud-shaper" + (m.shaper.alive ? "" : " dead")}>
-        <Portrait />
+        <button class="portrait-btn" onClick={() => act.selectShaper()} disabled={!m.shaper.alive} title="Select the Shaper (S)" aria-label="Select the Shaper">
+          <Portrait />
+        </button>
         <span class="shaper-name">{m.shaper.alive ? "Shaper" : m.shaper.respawnSec >= 0 ? `back in ${m.shaper.respawnSec}s` : "fallen"}</span>
         <span class="shaper-hp" style={{ width: Math.round(m.shaper.hpFrac * 100) + "%" }} />
       </div>

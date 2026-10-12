@@ -866,6 +866,11 @@ export class ThreeRenderer implements Renderer {
     );
   }
 
+  /** Order feedback: a closing ring at grid point (x, z) where the player just sent units. */
+  markOrder(x: number, z: number, kind: import("./vfx.ts").OrderMark): void {
+    this.vfx.markOrder(x, z, kind);
+  }
+
   /** Show the rally flag at grid point (x, z), or hide it with null. */
   setRally(p: { x: number; z: number } | null): void {
     if (!p || !this.world) {

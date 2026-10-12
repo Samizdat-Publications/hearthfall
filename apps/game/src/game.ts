@@ -1783,8 +1783,13 @@ export class Game {
   orderAt(px: number, py: number, attack = false): boolean {
     const p = this.renderer.pickTerrain(px, py);
     if (!p) return false;
+    // order feedback: a closing ring where the order landed (green move, red attack, gold special)
+    const mark = (kind: "move" | "attack" | "special", ok: boolean) => {
+      if (ok) this.renderer.markOrder(p.x, p.z, kind);
+      return ok;
+    };
     if (!this.selection.size && this.selectedBuilding >= 0)
-      return this.troop({ kind: "rally", at: [p.x, p.z] });
+      return mark("special", this.troop({ kind: "rally", at: [p.x, p.z] }));
     if (!this.selection.size) return false;
     const E = this.world.ents;
     // BACKLOG 10: right click an own boat or balloon to board it; a loaded vehicle right clicked onto land unloads there
@@ -1792,11 +1797,11 @@ export class Game {
     if (vc) {
       this.command(vc);
       this.orderSound();
-      return true;
+      return mark("special", true);
     }
     const b = attack ? -1 : buildingAt(this.world, this.localTribe, p.x, p.z);
     if (b >= 0 && this.world.combat.garrisonOf(E.type[b]) > 0)
-      return this.troop({ kind: "garrison", tower: b });
+      return mark("special", this.troop({ kind: "garrison", tower: b }));
     const site = attack ? null : siteAt(this.world, p.x, p.z);
     if (site) {
       this.command({
@@ -1804,7 +1809,7 @@ export class Game {
         type: "worship",
         args: { units: [...this.selection].map((i) => E.idOf(i)), site },
       });
-      return true;
+      return mark("special", true);
     }
     // BACKLOG 4: two or more units march in a box (melee in front, ranged and the Shaper behind)
     const formation = this.selection.size >= 2 ? { formation: "box" } : {};
@@ -1822,7 +1827,7 @@ export class Game {
     for (const i of this.selection)
       this.ordered.set(E.idOf(i), this.world.tick);
     this.orderSound();
-    return true;
+    return mark(attack ? "attack" : "move", true);
   }
 
   startPlacing(building: string): void {
@@ -1995,6 +2000,7 @@ export class Game {
   selectKind(kind: string, center = true): void {
     const idx = this.world.selectUnits(`tribe${this.localTribe}.${kind}s`);
     this.selection = new Set(idx);
+    if (idx.length) this.selectedBuilding = -1;
     if (center && idx.length)
       this.renderer.setCamera({
         x: this.world.ents.x[idx[0]],

@@ -218,6 +218,7 @@ export function mountGameHud(el: HTMLElement, game: Game): { refresh: () => void
       game.onChange();
     },
     forgeReady: () => game.forgeReady(),
+    selectShaper: () => game.selectKind("shaper"),
     togglePriority: (key) => {
       const p = { ...(game.world.tribes[game.localTribe]?.eco.priorities ?? { build: 1, upgrade: 1, breed: 1 }) };
       p[key] = p[key] > 0 ? 0 : 1;

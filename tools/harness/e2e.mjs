@@ -217,8 +217,8 @@ async function flow(browser, url, vp) {
         if (await page.$('[data-act="cancel-plan"]')) problem("cancel plan: the panel still offers Cancel after the plan was cancelled");
       }
     }
-    // BACKLOG 8: ordering the Shaper speaks a bark, which shows its subtitle
-    await page.keyboard.press("s");
+    // BACKLOG 8: ordering the Shaper speaks a bark, which shows its subtitle (S4 playtest: the Shaper is selected by clicking her portrait)
+    await page.click('[data-hud="shaper"] .portrait-btn');
     await page.mouse.click(vp.width / 2 + 30, vp.height / 2 + 30, { button: "right" });
     const sub = await page.waitForSelector('[data-hud="subtitle"]', { timeout: 5000 }).then((e) => e.textContent(), () => null);
     if (!sub || !/^Shaper:/.test(sub.trim())) problem(`no Shaper subtitle after an order: ${JSON.stringify(await page.evaluate(() => window.__game.a11y().subtitle))}`);

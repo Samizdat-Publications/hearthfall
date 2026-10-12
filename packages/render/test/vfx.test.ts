@@ -62,6 +62,24 @@ describe("vfx layer", () => {
     expect(c.r).toBeGreaterThan(c.g * 2);
   });
 
+  it("marks a player order with a closing ring in the order's color that fades within a second", () => {
+    const w = world();
+    const v = new VfxLayer(makeBendUniforms());
+    v.markOrder(20, 20, "move");
+    v.markOrder(30, 30, "attack");
+    v.update(w, 5, 25, 25, 1);
+    expect(v.drawnBy().ring).toBe(2);
+    expect(v.drawnBy().halo).toBe(2);
+    const move = v.haloColor(0);
+    expect(move.g).toBeGreaterThan(move.r);
+    const atk = v.haloColor(1);
+    expect(atk.r).toBeGreaterThan(atk.g * 2);
+    // queued once: a later frame draws no new markers, and they are gone after a second
+    v.update(w, 6.2, 25, 25, 1);
+    expect(v.drawnBy().ring).toBe(0);
+    expect(v.drawnBy().halo).toBe(0);
+  });
+
   it("a terrain lead-in opens cracks and kicks up dust before the land moves (BACKLOG 36)", () => {
     const w = world();
     const v = new VfxLayer(makeBendUniforms());

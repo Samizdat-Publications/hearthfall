@@ -26,6 +26,9 @@ body.debug-overlap-hud .hud-overlap { display: block; }
 .hud-shaper { left: 12px; top: 10px; width: 72px; padding: 4px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .hud-shaper .portrait { display: block; width: 64px; height: 64px; image-rendering: pixelated; border: 2px solid #2b1d13; }
 .hud-shaper.dead .portrait { filter: grayscale(1) brightness(0.55); }
+.hud-shaper .portrait-btn { pointer-events: auto; display: block; padding: 0; margin: 0; border: 0; background: none; cursor: pointer; line-height: 0; }
+.hud-shaper .portrait-btn:hover:not(:disabled) .portrait, .hud-shaper .portrait-btn:focus-visible .portrait { outline: 2px solid #f2c75c; outline-offset: 1px; }
+.hud-shaper .portrait-btn:disabled { cursor: default; }
 .shaper-name { font-size: 12px; letter-spacing: 0.5px; }
 .shaper-hp { display: block; height: 3px; background: #8dbf5a; align-self: flex-start; }
 .hud-resources { left: 108px; top: 10px; width: 240px; display: flex; flex-direction: column; gap: 4px; padding: 6px 8px; pointer-events: auto; }
