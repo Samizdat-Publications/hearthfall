@@ -38,6 +38,8 @@ export interface LevelSaved {
   /** S4: per objective, the tick its stage opened (-1 not yet) and its clearDens baseline; only in levels with fromStage goals */
   openedAt?: number[];
   base?: number[];
+  /** S4 L7-E: per trigger, the play tick its `after` objective was done (-1 not yet); only in levels with such triggers */
+  startAt?: number[];
 }
 
 export function levelMap(def: LevelDef): MapSpec {
@@ -58,6 +60,10 @@ export class LevelRuntime {
   base: number[];
   /** S4: the level has stage-relative goals (fromStage) or kill counts (kept in base), so openedAt and base are state */
   readonly staged: boolean;
+  /** S4 L7-E: per trigger, the play tick its `after` objective was done (-1 not yet), kept only when `gated` */
+  startAt: number[];
+  /** S4 L7-E: some trigger waits for an objective (`after`), so startAt is state */
+  readonly gated: boolean;
   /** building types every tribe may build in this level (null: all) */
   readonly allowed: Set<number> | null;
   /** S4 L6-C: per tribe, its own `buildings` list in place of `allowed` (undefined: the level's) */
@@ -97,6 +103,8 @@ export class LevelRuntime {
     this.def = def;
     this.done = def.objectives.map(() => 0);
     this.fired = (def.triggers ?? []).map(() => 0);
+    this.startAt = (def.triggers ?? []).map(() => -1);
+    this.gated = (def.triggers ?? []).some((t) => t.after !== undefined);
     this.holdSince = def.objectives.map(() => -1);
     this.openedAt = def.objectives.map(() => -1);
     this.base = def.objectives.map(() => 0);
@@ -269,12 +277,18 @@ export class LevelRuntime {
       const repeat = t.when.type === "time" && t.when.every !== undefined;
       if (this.fired[k] && !repeat) return;
       if (t.until !== undefined && this.done[t.until]) return;
+      // S4 L7-E: a gated trigger waits for its objective, and its clock starts there
+      if (t.after !== undefined) {
+        if (!this.done[t.after]) return;
+        if (this.startAt[k] < 0) this.startAt[k] = w.playTick;
+      }
+      const t0 = t.after !== undefined ? this.startAt[k] : 0;
       let tribe = PLAYER;
       let x = 0;
       let y = 0;
       const when = t.when;
       if (when.type === "time") {
-        if (w.playTick + 1 < Math.round((when.seconds + this.fired[k] * (when.every ?? 0)) * w.cfg.tickHz)) return;
+        if (w.playTick + 1 < t0 + Math.round((when.seconds + this.fired[k] * (when.every ?? 0)) * w.cfg.tickHz)) return;
       } else if (when.type === "objective") {
         if (!this.done[when.index]) return;
       } else if (when.type === "followers") {
@@ -334,10 +348,11 @@ export class LevelRuntime {
     for (const d of this.fired) f.u32(d);
     if (this.holdSince.some((h) => h >= 0)) for (const h of this.holdSince) f.u32(h + 1);
     if (this.staged) for (let k = 0; k < this.openedAt.length; k++) f.u32(this.openedAt[k] + 1).u32(this.base[k]);
+    if (this.gated) for (const s of this.startAt) f.u32(s + 1);
   }
 
   save(): LevelSaved {
-    return { done: this.done.slice(), fired: this.fired.slice(), outcome: this.outcome, endedAt: this.endedAt, ...(this.holdSince.some((h) => h >= 0) ? { holdSince: this.holdSince.slice() } : {}), ...(this.staged ? { openedAt: this.openedAt.slice(), base: this.base.slice() } : {}) };
+    return { done: this.done.slice(), fired: this.fired.slice(), outcome: this.outcome, endedAt: this.endedAt, ...(this.holdSince.some((h) => h >= 0) ? { holdSince: this.holdSince.slice() } : {}), ...(this.staged ? { openedAt: this.openedAt.slice(), base: this.base.slice() } : {}), ...(this.gated ? { startAt: this.startAt.slice() } : {}) };
   }
 
   load(s: LevelSaved): void {
@@ -348,6 +363,7 @@ export class LevelRuntime {
     this.holdSince = s.holdSince ? s.holdSince.slice() : this.def.objectives.map(() => -1);
     this.openedAt = s.openedAt ? s.openedAt.slice() : this.def.objectives.map(() => -1);
     this.base = s.base ? s.base.slice() : this.def.objectives.map(() => 0);
+    this.startAt = s.startAt ? s.startAt.slice() : (this.def.triggers ?? []).map(() => -1);
   }
 }
 

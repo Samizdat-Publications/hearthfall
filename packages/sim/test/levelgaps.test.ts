@@ -164,10 +164,36 @@ describe("S4 L6-C level engine gaps", () => {
     for (const i of home) expect(w.ents.order[i]).not.toBe(ORDER.attackMove);
   });
 
+  it("S4 L7-E: a trigger with `after` waits for its objective and counts its time from there", () => {
+    const def = base({
+      objectives: [{ type: "survive", seconds: 3 }, { type: "survive", seconds: 600 }],
+      triggers: [{ when: { type: "time", seconds: 1, every: 2 }, after: 0, until: 1, do: [{ type: "spawn", unit: "warden", n: 1, tribe: 1, at: [44, 40] }] }],
+    });
+    const w = make(def);
+    const hz = w.cfg.tickHz;
+    const c0 = unitsOf(w, 1, "warden").length;
+    const count = () => unitsOf(w, 1, "warden").length - c0;
+    for (let k = 0; k < 3 * hz - 2; k++) w.step();
+    // objective 0 is not done yet: nothing fired although second 1 has passed
+    expect(count()).toBe(0);
+    while (!w.level!.done[0]) w.step();
+    // the first firing waits one second from the objective's tick
+    for (let k = 0; k < hz - 2; k++) w.step();
+    expect(count()).toBe(0);
+    for (let k = 0; k < 3; k++) w.step();
+    expect(count()).toBe(1);
+    // save and load keep the trigger's start
+    const saved = w.level!.save();
+    expect(saved.startAt![0]).toBeGreaterThan(0);
+    for (let k = 0; k < 2 * hz; k++) w.step();
+    expect(count()).toBe(2);
+  });
+
   it("validateLevel checks until and fresh raids", () => {
     const p = basePack();
     const ok = (over: object) => validateLevel({ ...base({}), ...over }, p.files).level !== undefined;
     expect(ok({ triggers: [{ when: { type: "time", seconds: 1 }, until: 5, do: [{ type: "message", text: "x" }] }] })).toBe(false);
+    expect(ok({ triggers: [{ when: { type: "time", seconds: 1 }, after: 5, do: [{ type: "message", text: "x" }] }] })).toBe(false);
     expect(ok({ triggers: [{ when: { type: "time", seconds: 1 }, do: [{ type: "raid", tribe: 1, to: [1, 1], fresh: true }] }] })).toBe(false);
     expect(ok({ objectives: [{ type: "kill", n: 1, tribe: 4 }] })).toBe(false);
     expect(ok({ objectives: [{ type: "kill", n: 1, unit: "warden" }] })).toBe(true);

@@ -1541,6 +1541,8 @@ export const TriggerSchema = z.strictObject({
   ]),
   /** S4 L6-C: the trigger stops firing once objective `until` is done (bounds a repeating spawn) */
   until: z.number().int().min(0).optional(),
+  /** S4 L7-E: the trigger waits for objective `after`; a time trigger counts its `seconds` from the tick that objective was done */
+  after: z.number().int().min(0).optional(),
   /** actions use the reward vocabulary; the receiving tribe is the player (0) unless the trigger is a worship by another tribe */
   do: z.array(RewardSchema).min(1),
 });
