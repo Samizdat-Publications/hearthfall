@@ -3,6 +3,10 @@
 // focus (the same cell always grows the same decor). Each kind has an altitude band and a weight; decor
 // keeps off water, scars, steep ground, trees, rocks, building footprints and worship sites. Render only
 // (style.json render.decor), the sim never sees it; without the models the layer draws nothing.
+// S4 L7-D: kinds grow in a zone. "land" is the scatter above; "shore" kinds (reeds, driftwood) grow on the
+// water's edge, down to just under the sea line, on slopes up to 3x maxSlope; "settle" kinds (woodpiles,
+// pots, fences) grow in a ring around buildings, outside their one-cell margin, on slopes up to 2x. Shore and settle cells have their own densities and are
+// tried first, so a village or a beach reads busier than open country.
 import * as THREE from "three";
 import { CAT, type World } from "@hearthfall/sim";
 import type { ModelParts } from "./models.ts";
@@ -17,7 +21,11 @@ export interface DecorKind {
   high: number;
   /** the model's largest footprint side is scaled to this many cells (height follows) */
   size: number;
+  /** S4 L7-D: where the kind grows (default land) */
+  zone?: DecorZone;
 }
+
+export type DecorZone = "land" | "shore" | "settle";
 
 export interface DecorOptions {
   enabled: boolean;
@@ -29,6 +37,12 @@ export interface DecorOptions {
   density: number;
   /** cells steeper than this (height units to a neighbor) grow nothing */
   maxSlope: number;
+  /** S4 L7-D: chance per shore cell (within shoreReach of water, at most 6 above the sea) of one shore piece */
+  shoreDensity: number;
+  shoreReach: number;
+  /** S4 L7-D: chance per cell in the ring settleReach wide around a building of one settle piece */
+  settleDensity: number;
+  settleReach: number;
   kinds: DecorKind[];
 }
 
@@ -38,6 +52,10 @@ export const DECOR_DEFAULTS: DecorOptions = {
   maxZoom: 0.62,
   density: 0.022,
   maxSlope: 4,
+  shoreDensity: 0.16,
+  shoreReach: 2,
+  settleDensity: 0.12,
+  settleReach: 3,
   kinds: [
     { id: "prop.bush_a", weight: 6, low: 0.03, high: 0.6, size: 0.9 },
     { id: "prop.log_a", weight: 2, low: 0.05, high: 0.55, size: 1.3 },
@@ -84,10 +102,13 @@ export class DecorLayer {
     this.o = { ...DECOR_DEFAULTS, ...opts };
     const r = Math.ceil(this.o.radius);
     const cells = (2 * r + 1) * (2 * r + 1);
-    const cap = Math.max(16, Math.ceil(cells * this.o.density * 1.5) + 8);
     for (const k of this.o.kinds) {
       const part = models?.get(k.id);
       if (!part?.body) continue;
+      const zone = k.zone ?? "land";
+      const dens = zone === "shore" ? this.o.shoreDensity : zone === "settle" ? this.o.settleDensity : this.o.density;
+      // room for the scatter plus a level's hand placed props
+      const cap = Math.max(16, Math.ceil(cells * dens * 1.5) + 8) + 64;
       // stand the model on its lowest point
       const g = part.body.clone();
       g.computeBoundingBox();
@@ -124,6 +145,51 @@ export class DecorLayer {
     return out;
   }
 
+  /** S4 L7-D: cells in the ring settleReach wide around every building's footprint (the margin is blocked anyway) */
+  private settled(w: World): Set<number> {
+    const out = new Set<number>();
+    const E = w.ents;
+    const n = w.terrain.size;
+    const r = Math.max(0, Math.round(this.o.settleReach));
+    if (!r || !this.kinds.some((k) => k.zone === "settle")) return out;
+    for (let i = 0; i < E.hi; i++) {
+      if (!E.alive[i] || E.cat[i] !== CAT.building) continue;
+      const f = w.economy.footprint(i);
+      for (let y = f.y0 - r; y < f.y0 + f.fh + r; y++) for (let x = f.x0 - r; x < f.x0 + f.fw + r; x++) out.add((((y % n) + n) % n) * n + (((x % n) + n) % n));
+    }
+    return out;
+  }
+
+  /** S4 L7-D: a cell at most 6 above the sea (down to 1 under it) with water within shoreReach */
+  private shore(w: World, gx: number, gy: number, h: number): boolean {
+    const t = w.terrain;
+    if (h < t.sea - 1 || h > t.sea + 6) return false;
+    const n = t.size;
+    const r = Math.max(1, Math.round(this.o.shoreReach));
+    for (let dy = -r; dy <= r; dy++)
+      for (let dx = -r; dx <= r; dx++) if ((dx || dy) && t.get((((gx + dx) % n) + n) % n, (((gy + dy) % n) + n) % n) < t.sea) return true;
+    return false;
+  }
+
+  /** a kind of `zone` allowed at altitude a, picked by the cell's hash and the kinds' weights (-1: none) */
+  private pick(zone: DecorZone, a: number, cell: number, allowed: number[]): number {
+    allowed.length = 0;
+    let total = 0;
+    for (let k = 0; k < this.kinds.length; k++) {
+      const kd = this.kinds[k];
+      if ((kd.zone ?? "land") !== zone || a < kd.low || a > kd.high) continue;
+      allowed.push(k);
+      total += kd.weight;
+    }
+    if (!allowed.length) return -1;
+    let pick = hashf(cell, 0x52) * total;
+    for (const j of allowed) {
+      pick -= this.kinds[j].weight;
+      if (pick < 0) return j;
+    }
+    return allowed[allowed.length - 1];
+  }
+
   /** Re-scatter when the focus crossed a cell, the terrain changed or the zoom crossed maxZoom. */
   update(w: World, focusX: number, focusZ: number, heightScale: number, zoom: number, map: boolean): void {
     if (!this.meshes.length) return;
@@ -131,7 +197,7 @@ export class DecorLayer {
     const cx = Math.round(focusX);
     const cz = Math.round(focusZ);
     const t = w.terrain;
-    const key = show ? `${cx}|${cz}|${t.version}|${t.scarVersion}|${blockSignature(w)}` : "hidden";
+    const key = show ? `${cx}|${cz}|${t.version}|${t.scarVersion}|${blockSignature(w)}|${w.level?.def.id ?? ""}` : "hidden";
     if (key === this.lastKey) return;
     this.lastKey = key;
     const counts = this.meshes.map(() => 0);
@@ -142,6 +208,7 @@ export class DecorLayer {
       const fadeFrom = o.radius * 0.8;
       const span = Math.max(1, t.heightMax - t.sea);
       const blocked = this.blocked(w);
+      const settled = this.settled(w);
       const allowed: number[] = [];
       for (let dz = -R; dz <= R; dz++) {
         for (let dx = -R; dx <= R; dx++) {
@@ -150,28 +217,18 @@ export class DecorLayer {
           const gx = (((cx + dx) % n) + n) % n;
           const gy = (((cz + dz) % n) + n) % n;
           const cell = gy * n + gx;
-          if (hashf(cell, 0x51) >= o.density || blocked.has(cell)) continue;
+          if (blocked.has(cell)) continue;
           const h = t.get(gx, gy);
-          if (h < t.sea + 2 || t.scar[t.idx(gx, gy)] > 0 || t.slope(gx, gy) > o.maxSlope) continue;
-          const a = (h - t.sea) / span;
-          allowed.length = 0;
-          let total = 0;
-          for (let k = 0; k < this.kinds.length; k++) {
-            const kd = this.kinds[k];
-            if (a < kd.low || a > kd.high) continue;
-            allowed.push(k);
-            total += kd.weight;
-          }
-          if (!allowed.length) continue;
-          let pick = hashf(cell, 0x52) * total;
-          let k = allowed[allowed.length - 1];
-          for (const j of allowed) {
-            pick -= this.kinds[j].weight;
-            if (pick < 0) {
-              k = j;
-              break;
-            }
-          }
+          if (t.scar[t.idx(gx, gy)] > 0) continue;
+          // beaches and village yards are rougher than open land (the waterline slope counts the drop into the sea)
+          const slope = t.slope(gx, gy);
+          const a = Math.max(0, (h - t.sea) / span);
+          // settle ring first, then the shore, then the open land scatter
+          let k = -1;
+          if (h >= t.sea + 1 && slope <= 2 * o.maxSlope && settled.has(cell) && hashf(cell, 0x61) < o.settleDensity) k = this.pick("settle", a, cell, allowed);
+          if (k < 0 && slope <= 3 * o.maxSlope && hashf(cell, 0x62) < o.shoreDensity && this.shore(w, gx, gy, h)) k = this.pick("shore", a, cell, allowed);
+          if (k < 0 && h >= t.sea + 2 && slope <= o.maxSlope && hashf(cell, 0x51) < o.density) k = this.pick("land", a, cell, allowed);
+          if (k < 0) continue;
           const fade = d <= fadeFrom ? 1 : Math.max(0, 1 - (d - fadeFrom) / Math.max(0.01, o.radius - fadeFrom));
           const sc = this.unit[k] * fade * (0.8 + 0.4 * hashf(cell, 0x53));
           if (sc < 0.02) continue;
@@ -189,11 +246,34 @@ export class DecorLayer {
         }
       }
     }
+    if (show) this.placeProps(w, cx, cz, heightScale, counts);
     this.meshes.forEach((im, k) => {
       im.count = counts[k];
       im.instanceMatrix.needsUpdate = true;
       if (im.instanceColor) im.instanceColor.needsUpdate = true;
     });
+  }
+
+  /** S4 L7-D: the level's hand placed props (`props`), at their cells, wrapped to the copy nearest the focus */
+  private placeProps(w: World, cx: number, cz: number, heightScale: number, counts: number[]): void {
+    const props = w.level?.def.props;
+    if (!props?.length) return;
+    const t = w.terrain;
+    const n = t.size;
+    for (const p of props) {
+      const k = this.modelIds.indexOf(p.model);
+      if (k < 0) continue;
+      const im = this.meshes[k];
+      if (counts[k] >= im.instanceMatrix.count) continue;
+      const [x, y] = p.at;
+      const sc = (this.unit[k] * (p.size ?? this.kinds[k].size)) / this.kinds[k].size;
+      this.q.setFromAxisAngle(this.up, p.rot ?? 0);
+      this.s.set(sc, sc, sc);
+      this.p.set(x + n * Math.round((cx - x) / n), t.heightAt(x, y) * heightScale - 0.04, y + n * Math.round((cz - y) / n));
+      this.m.compose(this.p, this.q, this.s);
+      im.setMatrixAt(counts[k], this.m);
+      im.setColorAt(counts[k]++, this.c.setRGB(1, 1, 1));
+    }
   }
 
   /** decor instances drawn per model id (tests and the debug summary) */

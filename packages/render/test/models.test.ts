@@ -64,7 +64,8 @@ describe("models", () => {
       // nothing lost in the split: every triangle of every mesh in the file (BACKLOG 93)
       const n = (m.body?.getAttribute("position").count ?? 0) + (m.tint?.getAttribute("position").count ?? 0);
       expect(n, id).toBe((await modelTriangles(await read(urls[id]))) * 3);
-      expect(m.size.y, id).toBeGreaterThan(0.4);
+      // S4 L7-D: a flower patch is ground cover, flat on purpose
+      expect(m.size.y, id).toBeGreaterThan(id === "prop.flowers" ? 0.2 : 0.4);
     }
     for (const u of ["shaper", "settler", "warden", "firecaller", "chanter"]) expect(models.get(unitModelId(u))!.tintShare, u).toBeGreaterThan(0.03);
     const wood = new THREE.Color(style.palette.wood);
