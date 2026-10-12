@@ -41,42 +41,32 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 - Stretch 2 end (2026-10-10): BACKLOG 65 met for outnumbered probes (Warden 6 v Firecaller 10 70, Firecaller 6 v Chanter 10 60, Chanter 6 v Warden 10 80, mixed mirror 40); equal-number pairs still 100 percent. ai soak 64 x 20 min: aggressive 16, sneaky 15, turtle 13, unfinished 20 (the M7 sneaky skew is gone).
 
 ## State of the game (for Stewart)
-Rewritten at the end of stretch 2 (2026-10-11, about 47 h after the first run started). Run 1 built the whole game (m0 to m11); stretch 2 added the look, the modes and the polish listed below. BACKLOG is done except the four items that need you (15 online play, 16 desktop build, 17 public deploy, 29 path cleanup before any push).
+Rewritten in stretch 4 (2026-10-12, after the Leg 6 exit). Run 1 built the game (m0 to m11), stretch 2 added the look and the modes, stretch 3 grew the campaign to 22 levels, stretch 4 added LAN play, 3 more levels, chapters, map detail and the stone UI. The BACKLOG items left need you: 16 desktop build, 17 public deploy, 29 path strip.
 
 **What works**
-- The core god game: a small curved, wrapping planet where your Shaper leads a tribe from a Hearth. Settlers gather wood and stone, build Dwellings and breed; followers pray for mana or train Wardens (melee), Firecallers (ranged), Chanters (convert) and Shades (disguise and sabotage). Terrain is fully deformable and water kills.
-- All 16 spells, eight of them taught at Reliquaries. Fog of war, a fogged minimap and an orthographic map view (M).
-- Opponent AI with three personalities and four difficulties. Nightly soak, 64 matches of 20 minutes: wins aggressive 16, sneaky 15, turtle 13 (balanced; run 1 had sneaky at 8 of 12). Against normal: easy never wins, hard wins 4 of the 6 decided matches, brutal wins all 6 decided.
-- New in stretch 2:
-  - Look v3, the "miniature diorama": tilt-shift focus, painted shallow water with foam lines, round clump trees, thatched huts, snow caps, lighting presets (day, golden, evening) and rain. All in Settings.
-  - Victory variants decided inside the simulation, so they replay exactly: Conquest, Hold the Reliquaries, King of the Hill and Last Stand.
-  - Forge mode: an optional 2 minute pre-match phase to reshape the land around your Hearth. The AI forges by personality: the turtle digs a moat.
-  - Boats and the Boathouse, balloons and the Skyloft. Right click your boat to board it, and right click a shore to unload. The AI ferries its waves across water.
-  - Campaign of 13 levels on a route map. Each level teaches one idea, and spells learned at Reliquaries carry forward.
-  - Map editor (main menu): paint land, sea and hills, place Hearths, trees, shrines and Reliquaries, set the goal, then playtest or download the level.
-  - Tribe traits (skirmish option), weather, photo mode (F), spell combo tips, and first match tips with a How to play page.
-  - Replays with a timeline bar, records and achievements, mod packs and a localization scaffold.
-- Counter triangle redesigned (BACKLOG 65): chants break on accumulated damage, not on any hit. Outnumbered 6 against 10, each counter now wins 60 to 80 percent: Warden over Firecaller 70, Firecaller over Chanter 60, Chanter over Warden 80. At equal numbers a counter still wins every time, which is intended.
-- Determinism and QA:
-  - Every match replays bit for bit, and 8 golden replays guard it.
-  - `npm run qa` covers typecheck, 7 code guards, 435 unit tests, 90 scenarios, golden replays in Node and Chromium, sim and render benches, 9 screenshot sets with VisionQA, end-to-end browser checks at 1280x720 and 2560x1440, and the production build.
-  - `npm run soak:nightly` runs about 130 headless AI matches.
-  - Last full PASS at 5e11f16 (s2h 18.7).
+- The core god game: a small curved, wrapping planet where your Shaper leads a tribe from a Hearth. Settlers gather and build, followers pray for mana or train Wardens, Firecallers, Chanters and Shades. All 16 spells, eight taught at Reliquaries. Fog of war, minimap and map view (M).
+- Campaign of 25 hand-made levels in two chapters ("The First Fires" 1 to 12, "The Wide Waters" 13 to 25) on a route map with chapter tabs. Every level has a scenario where a bot wins it and one where an idle player loses; bot wins ramp from about tick 5300 to 35500, and every time limit is at least twice the bot's win. Chapter 3 "The Far Shores" (10 more levels) is being authored now.
+- UI v2 "carved hearthstone" (new): stone panels with a chiselled bevel, Marcellus SC headings and Alegreya Sans text (bundled, works offline). Interface size defaults to fit your screen (135 percent at 2560x1440) and Settings has a slider from 75 to 200 percent plus a Fit to screen button.
+- Map detail v2 (new): reeds, ferns and flowers along shores, woodpiles, pots, fences, haystacks and carts around villages, and authored props (cairns, ruins, standing stones) in the levels.
+- Look v3 "miniature diorama": tilt-shift focus, painted shallow water, thatched huts, snow caps, lighting presets and rain.
+- Modes: skirmish with victory variants (Conquest, Hold the Reliquaries, King of the Hill, Last Stand), Forge pre-match, boats and balloons, map editor, LAN versus and co-op (with the campaign together and watchable replays), photo mode, replays, records and achievements.
+- Opponent AI with three personalities and four difficulties; it worships across water by boat or balloon and raids worship sites.
+- Determinism and QA: every match replays bit for bit. `npm run qa` covers typecheck, code guards, 534 unit tests, 120 scenarios (51 level scenarios in their own layer), golden replays in Node and Chromium, sim and render benches, 11 screenshot sets with VisionQA, end-to-end checks at 1280x720 and 2560x1440 (including the interface slider), and the production build. Last full PASS at a043684.
 - Making-of page with every stage of the build: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5
 
 **Known issues**
-- Counters at equal numbers win 100 percent. Mixed armies decide real games, so it plays fine, but the numbers are sharper than DESIGN asks.
-- About a third of AI versus AI matches are still undecided at 20 minutes. Human games should end sooner, because people attack.
-- In 64 soak matches the AI never cast Volcano or Call and rarely Mire, Erode or Firerain.
-- Online multiplayer, a desktop exe and a public URL are not built (BACKLOG 15, 16, 17).
-- The PC is often fully loaded by other work, so a full qa run needs several reruns to finish. That is a test timing artifact, not a game bug.
+- Counters at equal numbers still win every time; mixed armies decide real games, so it plays fine (Balance gaps).
+- The aggressive AI personality runs hot in AI versus AI soaks; its retune is L7-E.
+- The AI clears guardians only on its home landmass, and a non-repeating spawn or raid still acts for a tribe that has fallen (both L7-E).
+- Ley Crown (level 16) is a little easier than its neighbours, and levels 21/22 and 23/24 finish at nearly the same bot time.
+- Online play, a desktop exe and a public URL are not built (they need you).
 
 **Top 5 next items**
-1. Your playtest notes. They beat any soak.
-2. Static web deploy so the game opens from a link (BACKLOG 17; needs your OK and a Cloudflare account choice).
-3. Teach the AI the unused spells (Volcano, Mire, Erode combos) and rival boat raids.
-4. Counter tuning at equal numbers (aim for about 75 percent) and more campaign levels toward the 25 in DESIGN.
-5. Online co-op against the AI (BACKLOG 15).
+1. Your playtest notes, especially on the new UI size at 1440p and the later campaign levels.
+2. Chapter 3 "The Far Shores" (L7-C, in progress), then a campaign playtest pass over levels 26 to 35.
+3. AI support for the new levels (L7-E): the aggressive retune and the two engine gaps above.
+4. Static web deploy so the game opens from a link (BACKLOG 17; needs your OK and an account choice).
+5. More detail passes if the budget allows (the Meshy budget is spent; new props would be procedural or need a top up).
 
 ## First human playtest
 Two computers or a group session: see `docs/PLAYTEST.md` (LAN setup, what to try together, what to bring back).
