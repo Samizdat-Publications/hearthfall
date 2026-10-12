@@ -222,3 +222,7 @@ Stretch 3 started: 2026-10-10T21:45:00Z (Stewart, after about 40 min of play: de
 - Trigger-spawned beasts form a den; the level bot ranks an open kill objective's tribe first; a `spell` reward may cast as tribe -1 (neutral hazard). Gaps 4, 6, 8 reviewed as design; gap 5 (Boathouse at once) moves four levels' bot wins, deferred to the L8-A fix round.
 - Chapter 3 shot set (`chapter3`, 5 shots, baselines approved), making-of v35. Full npm run qa PASS at 8a5b969; levels layer 71/71 after every data change.
 - Aggressive retune: four 96-seed ai soaks (21 s wall per 24 seeds) did not move it beyond noise; logged, code-side look is L8-D. Leg 8 planned. Paused at 77 percent weekly usage, before any new workflow, for Stewart's work week.
+
+## 2026-10-12 S4 Leg 8 early start (Stewart's playtest)
+- Stewart played and loved it. Asked for order feedback and a clickable Shaper portrait: done in 86e2d8a (closing ring at the order point, green move, red attack, gold special; portrait button selects and centers the Shaper; e2e now selects her by the portrait, which caught that HUD panels ignore pointer events).
+- L8-D (1466eaf): the aggressive AI's gap was its economy, not wave size, Shades or its trait. economyTargetPop 60 in skirmish, 40 kept in levels through a new `campaign` override (ADR-025). ai soak 96 x 25: 29, 26, 27. Fixed riders unloaded at the wrap seam landing at x -0.2. Open: boat launch stall on soak seed 1009 (PROGRESS Blocked).
