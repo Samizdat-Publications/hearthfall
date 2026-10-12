@@ -1058,6 +1058,18 @@ export const PersonalitySchema = z.strictObject({
   trait: id.optional(),
   /** BACKLOG 64: no tower is planned before this share of economyTargetPop is reached (unless threatened) */
   towerFromPopShare: z.number().min(0).max(1).optional(),
+  /**
+   * S4 L8-D (ADR-025): numbers this personality uses instead inside a campaign level, so a skirmish retune
+   * leaves the hand-tuned levels (their rivals and the level test bots) as they were.
+   */
+  campaign: z
+    .strictObject({
+      ...comment,
+      economyTargetPop: z.number().int().positive().optional(),
+      aggression: z.number().min(0).max(1).optional(),
+      firstAttackMinute: pos.optional(),
+    })
+    .optional(),
   /** BACKLOG 2: keep this many Shades from this match minute on and send them at enemy buildings */
   shades: z
     .strictObject({

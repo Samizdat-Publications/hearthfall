@@ -78,6 +78,29 @@
             "minimum": 0,
             "maximum": 1
           },
+          "campaign": {
+            "type": "object",
+            "properties": {
+              "$comment": {
+                "type": "string"
+              },
+              "economyTargetPop": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              "aggression": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "firstAttackMinute": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "additionalProperties": false
+          },
           "shades": {
             "type": "object",
             "properties": {

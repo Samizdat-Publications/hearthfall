@@ -9,6 +9,7 @@ import { CAT, NO_ENTITY } from "./entities.ts";
 import { BSTATE, SHORE_REACH, TASK } from "./economy.ts";
 import { NAV, ORDER } from "./units.ts";
 import { secondsToTicks } from "./config.ts";
+import { wrap } from "./terrain.ts";
 import type { World } from "./world.ts";
 import { registerCommand } from "./commands.ts";
 
@@ -163,8 +164,9 @@ export class VehicleSystem {
       // cell edge (BACKLOG 98; the first nine land exactly as before)
       const layer = Math.floor(k / 9);
       const j = k % 9;
-      E.x[i] = lx + (j % 3) * 0.2 - 0.2 + layer * 0.07;
-      E.y[i] = ly + Math.floor(j / 3) * 0.2 - 0.1 + layer * 0.05;
+      // wrapped: a landing vertex on the seam (x or y 0) would put the first column off the map (S4 L8-D soak)
+      E.x[i] = wrap(lx + (j % 3) * 0.2 - 0.2 + layer * 0.07, n);
+      E.y[i] = wrap(ly + Math.floor(j / 3) * 0.2 - 0.1 + layer * 0.05, n);
       E.px[i] = E.x[i];
       E.py[i] = E.y[i];
       k++;

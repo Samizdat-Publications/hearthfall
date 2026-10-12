@@ -56,7 +56,16 @@ describe("OpponentAI (M7)", () => {
     const a = vsIdle("aggressive", 1002, 25).ai.stats;
     const t = vsIdle("turtle", 1002, 25).ai.stats;
     expect(t.actions.buildTower ?? 0).toBeGreaterThan(a.actions.buildTower ?? 0);
-    expect(t.decisions).toBeGreaterThan(a.decisions);
+    // S4 L8-D: the first wave's tick, not the match length (the aggressor now grows a larger economy before it wins)
+    const firstWave = (personality: string) => {
+      const p = basePack();
+      const w = new World({ pack: p.files, packHash: p.hash, seed: 1002, map: { generator: "continents", size: 128, tribes: 2 } });
+      const ai = makeBot({ type: "opponent", tribe: 0, personality }) as OpponentAI;
+      w.controllers.push(ai);
+      while (!ai.stats.waves && w.tick < 25 * 60 * w.cfg.tickHz) w.step([]);
+      return w.tick;
+    };
+    expect(firstWave("turtle")).toBeGreaterThan(firstWave("aggressive"));
   }, 60000);
 
   it("BACKLOG 23: setFocus leans the AI toward one action for a while, saves with the state and rejects unknown actions", () => {
@@ -350,6 +359,29 @@ describe("OpponentAI (M7)", () => {
     expect(wave).toBeDefined();
     const [x, y] = wave!.args.to as number[];
     expect(Math.abs(x - w.ents.x[enemy]) + Math.abs(y - w.ents.y[enemy])).toBeLessThan(2);
+  });
+
+  it("a personality's campaign numbers apply inside a level only (S4 L8-D)", () => {
+    const p = basePack();
+    const def: LevelDef = {
+      id: "campaign_numbers", name: "Campaign numbers", order: 99, description: "test", seed: 3,
+      map: { generator: "flat", size: 64, landAboveSea: 20 },
+      tribes: [{}, {}], spells: [],
+      setup: [
+        { spawn: "hearth", tribe: 0, at: [12, 32] }, { spawn: "shaper", tribe: 0, at: [13, 34] },
+        { spawn: "hearth", tribe: 1, at: [50, 32] }, { spawn: "shaper", tribe: 1, at: [50, 35] },
+      ],
+      objectives: [{ type: "eliminateAll" }],
+    };
+    const lw = createLevelWorld({ def }, p.files, p.hash);
+    const inLevel = new OpponentAI({ tribe: 1, personality: "aggressive", every: 1 });
+    inLevel.decide(lw);
+    const sw = vsIdle("aggressive", 3, 0).w;
+    const inSkirmish = new OpponentAI({ tribe: 1, personality: "aggressive", every: 1 });
+    inSkirmish.decide(sw);
+    expect(inLevel.personality.economyTargetPop).toBe(40);
+    expect(inSkirmish.personality.economyTargetPop).toBe(60);
+    expect(inLevel.personality.aggression).toBe(inSkirmish.personality.aggression);
   });
 
   it("in a level, the bot playing tribe 0 sends its wave at an open destroy objective before the Hearth (stretch 3)", () => {

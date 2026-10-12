@@ -27,7 +27,11 @@
       "id": "aggressive",
       "trait": "swift",
       "tribeColorDefault": "crimson",
-      "economyTargetPop": 40,
+      "economyTargetPop": 60,
+      "campaign": {
+        "$comment": "S4 L8-D: skirmish raised economyTargetPop 40 to 60 (ai soak 96 x 25: wins 14 to 29); the campaign levels keep 40.",
+        "economyTargetPop": 40
+      },
       "armyMix": {
         "warden": 0.6,
         "firecaller": 0.3,

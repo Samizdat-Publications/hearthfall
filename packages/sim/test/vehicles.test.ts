@@ -73,6 +73,29 @@ describe("vehicles (BACKLOG 10)", () => {
     expect(w.invariants()).toEqual([]);
   });
 
+  it("riders unloaded at the wrap seam land inside the map (S4 L8-D soak: a Chanter dropped at x -0.2)", () => {
+    const p = basePack();
+    const w = new World({ pack: p.files, packHash: p.hash, seed: 5, map: { generator: "flat", size: 64, tribes: 1 } });
+    w.spawnBuilding("hearth", 0, 12, 12);
+    const E = w.ents;
+    const v = E.index(w.spawnUnit("balloon", 0, 0.1, 20));
+    const riders: number[] = [];
+    for (let k = 0; k < 9; k++) {
+      const i = E.index(w.spawnUnit("settler", 0, 10, 10));
+      E.inside[i] = v;
+      E.task[i] = TASK.ride;
+      riders.push(i);
+    }
+    E.occupants[v] = riders.length;
+    expect(w.vehicles.disembark(v, false)).toBe(9);
+    for (const i of riders) {
+      expect(E.x[i]).toBeGreaterThanOrEqual(0);
+      expect(E.x[i]).toBeLessThan(64);
+      expect(E.y[i]).toBeGreaterThanOrEqual(0);
+    }
+    expect(w.invariants()).toEqual([]);
+  });
+
   it("board and unload validate: vehicles cannot board, a full vehicle is refused, unload needs a vehicle", () => {
     const w = strait();
     const boat = w.spawnUnit("boat", 0, 27, 32);

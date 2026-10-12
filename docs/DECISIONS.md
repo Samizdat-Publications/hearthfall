@@ -279,3 +279,11 @@ Addendum (wolves, 10/10/2026): units gain an optional `beast` block (`aggroRadiu
 - Captures wait for `__game.fonts()` as well as the models, so text pixels are stable.
 
 **Fallback.** Without the font packages the stacks fall back to Segoe UI and Georgia. To go back, remove the three imports and the dependencies; nothing else depends on them.
+
+## ADR-025: A personality may keep separate campaign numbers (12/10/2026)
+
+**Context.** The aggressive AI trailed in AI versus AI soaks (96 x 25 min: aggressive 14, sneaky 35, turtle 28). Probes (S4 L8-D) showed bigger waves (aggression 0.4: 11 wins) and a trait swap (soak worlds pass no traits, so results were identical) do not help, while a larger economy before it commits does: `economyTargetPop` 40 to 60 gives aggressive 29, sneaky 26, turtle 27 with its minute 5 first attack kept. But the 35 campaign levels were tuned with the old number: their rivals and the level test bots play aggressive, and 22 of 71 level scenarios failed with it.
+
+**Decision.** A personality gets an optional `campaign` block (`economyTargetPop`, `aggression`, `firstAttackMinute`) that `OpponentAI` merges over the personality when the world plays a campaign level (`w.level` set). Aggressive uses 60 in skirmish and keeps 40 in the campaign.
+
+**Fallback.** Delete the block and set the base number back; a later campaign retune can drop the block level by level by moving every level to the skirmish numbers and re-pinning its scenarios.

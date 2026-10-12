@@ -18,6 +18,8 @@ export interface Personality {
   scouting: number;
   towerAffinity: number;
   towerFromPopShare?: number;
+  /** S4 L8-D (ADR-025): overrides used inside a campaign level */
+  campaign?: { economyTargetPop?: number; aggression?: number; firstAttackMinute?: number };
   /** BACKLOG 2: keep this many Shades from this match minute on */
   shades?: { count: number; fromMinute: number };
   /** BACKLOG 11: the Forge plan (moat, wall or flatten strokes on a ring around the Hearth) */
@@ -363,6 +365,11 @@ export class OpponentAI implements Controller {
       if (!found) throw new Error(`unknown personality ${this.spec}`);
       this.p = found;
     } else this.p = this.spec;
+    // S4 L8-D: inside a campaign level the personality keeps the numbers its levels were tuned with
+    if (w.level && this.p.campaign) {
+      const { $comment: _, ...over } = this.p.campaign as Record<string, unknown>;
+      this.p = { ...this.p, ...over };
+    }
     this.sh = { ...AI_SHARED_DEFAULTS, ...(ai.shared ?? {}) };
     const d = ai.difficulties.find((x) => x.id === this.difficulty);
     if (!d) throw new Error(`unknown difficulty ${this.difficulty}`);
