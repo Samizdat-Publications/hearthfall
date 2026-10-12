@@ -18,7 +18,7 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 
 ## Next 3 actions
 1. L7-E gap 5 (bot builds a requested Boathouse at once): one line in opponent.ts buildGoal, but it needs a campaign-playtest fix round over across_the_strait, salt_marsh, sunken_road, pilgrim_stones (ROADMAP L7-E as built). Wait for quota.
-2. L7-E aggressive personality retune (ai soak, data only). Gap 7 DONE (spell reward `tribe`, -1 neutral).
+2. Plan Leg 8 in ROADMAP (campaign chapter 4 via the level-author workflow, gap 5 fix round, map detail), to start after the quota resets. Retune logged (Balance gaps).
 3. Pause at about 84 percent weekly usage (77 percent at 04:30Z): commit, PROGRESS, STATUS line.
 
 ## Blocked
@@ -38,6 +38,7 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 - M7 ai soak (12 seeds x 40 min, normal): wins sneaky 8, aggressive 2, turtle 2, unfinished 0, median 13.4 min (ok). Sneaky takes 8 of 12 wins (its pair win rates are over the 70 percent cap); 2 analyst passes plus garrison and training code did not fix it (BACKLOG 64, 71).
 - S4 L6-E (2026-10-11, 20 seeds): the loose equal-number probe is also 100 percent every pair, so the tight-rank result was not an artifact; outnumbered 6 v 10 sits at 65, 65, 70 (inside the 65 to 80 band), mixed mirror 35 (side a, 20 seeds). Decision: no triangle retune. A counter is worth about 1.7 of its victim, and lowering the equal-number rate into the band would drop the outnumbered probes to near 0; the band is read from the outnumbered probes.
 - S4 L6-E ai soak (2026-10-11, 48 seeds x 25 min): wins sneaky 19, turtle 15, aggressive 4, unfinished 10 of 48, median 15 min. Aggressive is the weak personality again (Stretch 2 had 16, 15, 13): a data-only retune is L7-E.
+- S4 L7-E retune tried (2026-10-12, ai soak 96 x 25 min, 1 min wall each): baseline sneaky 35, turtle 28, aggressive 14; aggression 0.7 plus first attack minute 6: 36, 35, 14; army mix 0.4/0.3/0.3: 36, 27, 16; plus economy 45 and minute 7: 38, 31, 15. Data knobs do not move it: the gap is structural (sneaky's Shades, Swift the weakest trait) and the level bots play aggressive, so any change would also move 33 level scenarios. Logged, no change; a code-side look (Shade defense, trait value) is a later item.
 - M6/M7 counter triangle: 100 percent every pair (target band 65 to 80); probes: Firecaller 6 v Chanter 10 and Chanter 6 v Warden 10 still win 100 percent, mixed mirror 40 to 50 percent (BACKLOG 65).
 - BACKLOG 7 (2026-10-09): triangle still 100 percent every pair; probes Warden 6 v Firecaller 10 0, Firecaller 6 v Chanter 10 100 (ranged hits break every chant, 3 s cooldown: needs a design change, 60 and 65), Chanter 6 v Warden 10 40 (was 100), mixed mirror 60. ai soak 12 x 30 min: sneaky 6, turtle 5, aggressive 1 (aggressive now the weakest), unfinished 0, median 17.6 min, 74 of 74 waves mixed. ai-idle: all 12 eliminated (aggressive 9 to 13 min, sneaky 11 to 12, turtle 13 to 13.5). Hold the Line (83) not tuned.
 - Stretch 2 end (2026-10-10): BACKLOG 65 met for outnumbered probes (Warden 6 v Firecaller 10 70, Firecaller 6 v Chanter 10 60, Chanter 6 v Warden 10 80, mixed mirror 40); equal-number pairs still 100 percent. ai soak 64 x 20 min: aggressive 16, sneaky 15, turtle 13, unfinished 20 (the M7 sneaky skew is gone).
