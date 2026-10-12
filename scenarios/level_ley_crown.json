@@ -1,6 +1,6 @@
 {
   "id": "level_ley_crown",
-  "description": "Campaign level 16 is completable: the hard opponent bot for the player takes the western ley, clears both wolf packs, takes the crown ward once it wakes, prays the woken northern seer away from the sneaky rival, keeps six stones while the rival still stands, then breaks the fortified eastern tribe.",
+  "description": "Campaign level 16 is completable: the hard opponent bot for the player takes the western ley, clears both wolf packs, takes the crown ward once it wakes, prays the woken northern seer away from the sneaky rival, keeps six stones while the rival still stands, then breaks through the fourteen wardens that dig in and razes the eastern Hearth (bot wins about 20500).",
   "tags": [
     "levels"
   ],
@@ -14,7 +14,7 @@
       "offset": 1
     }
   ],
-  "runTicks": 32000,
+  "runTicks": 26000,
   "assert": [
     {
       "at": 7000,
@@ -26,11 +26,11 @@
     },
     {
       "at": 18000,
-      "expr": "level.objectivesDone == 5 && alive(1) && !level.won"
+      "expr": "level.objectivesDone == 5 && alive(1) && count(tribe1.hearth) == 1 && !level.won"
     },
     {
-      "at": 32000,
-      "expr": "level.won && alive(0) && !alive(1) && level.objectivesDone == 6 && invariants() == 0"
+      "at": 26000,
+      "expr": "level.won && alive(0) && count(tribe1.hearth) == 0 && level.objectivesDone == 6 && invariants() == 0"
     }
   ]
 }

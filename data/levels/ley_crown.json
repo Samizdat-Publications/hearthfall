@@ -1,9 +1,9 @@
 {
-  "$comment": "Campaign level 16 (stretch 3, hard pass): a crown of stones. Seven capturable stones (two ley, three ward, two seer) sit on a rotationally symmetric continent, and two wolf packs den by the north seer and the southwestern ward. Staged prayer chain: take the western ley, clear both packs (which wakes the dormant crown ward), take the crown (which wakes the north seer, already held by the sneaky rival), pray the seer away, keep six of the seven stones at once for two minutes while the rival prays them back and raids, then break the eastern tribe. The rival is hard but capped at 14 troops; its village is a fort (four watchtowers, twelve posted wardens) and three more posted wardens arrive every 100 s from minute 4, so the longer the player waits the harder the last stage gets.",
+  "$comment": "Campaign level 16 (stretch 3, hard pass; S4 pacing): a crown of stones. Seven capturable stones (two ley, three ward, two seer) sit on a rotationally symmetric continent, and two wolf packs den by the north seer and the southwestern ward. Staged prayer chain: take the western ley, clear both packs (which wakes the dormant crown ward), take the crown (which wakes the north seer, already held by the sneaky rival), pray the seer away, keep six of the seven stones at once for two minutes while the rival prays them back and raids, then raze the eastern Hearth (a destroy, not eliminateAll). The rival is hard but capped at 14 troops; its village is a fort (four watchtowers, twelve posted wardens), three more posted wardens arrive every 100 s from minute 4 until the north seer falls (until 3, so a slow player faces a bigger fort but the spawn is bounded; unbounded it stalemated bot offset 12 in the hold), and fourteen more dig in around the Hearth when the hold is done. Bot (offset 1) wins about 20500; offsets 0, 3, 7, 12 win by 36000 of the 54000 limit.",
   "id": "ley_crown",
   "name": "The Ley Crown",
   "order": 16,
-  "description": "Seven old stones ring this continent, and wolves den by two of them. Whoever prayed last holds a stone, and a rival can pray it away. Take the western ley, clear the packs, wake the crown and the seer, keep six of them against the east, then break it.",
+  "description": "Seven old stones ring this continent, and wolves den by two of them. Whoever prayed last holds a stone, and a rival can pray it away. Take the western ley, clear the packs, wake the crown and the seer, keep six of them against the east, then raze its Hearth.",
   "seed": 1616,
   "map": {
     "generator": "flat",
@@ -441,9 +441,11 @@
       "text": "Keep six of the seven stones at once for two minutes while the east prays them away"
     },
     {
-      "type": "eliminateAll",
+      "type": "destroy",
+      "tribe": 1,
+      "building": "hearth",
       "after": 4,
-      "text": "March east, raze the watchtowers and break the eastern tribe"
+      "text": "March east, break through the watchtowers and raze the eastern Hearth"
     }
   ],
   "lose": [
@@ -592,8 +594,19 @@
       },
       "do": [
         {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 14,
+          "tribe": 1,
+          "at": [
+            152,
+            96
+          ],
+          "stance": "defensive"
+        },
+        {
           "type": "message",
-          "text": "The stones are yours. March east, raze the watchtowers and break the tribe."
+          "text": "The stones are yours, and the east pulls fourteen wardens back around its Hearth. March east, break through the watchtowers and raze the Hearth."
         }
       ]
     },
@@ -615,7 +628,8 @@
           ],
           "stance": "defensive"
         }
-      ]
+      ],
+      "until": 3
     },
     {
       "when": {
@@ -625,7 +639,7 @@
       "do": [
         {
           "type": "message",
-          "text": "The east posts fresh wardens around its village, and more come every few minutes. Do not wait too long."
+          "text": "The east posts fresh wardens around its village, and more come every few minutes until you take the northern seer. Do not wait too long."
         }
       ]
     }

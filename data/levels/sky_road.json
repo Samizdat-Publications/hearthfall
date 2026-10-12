@@ -68,7 +68,7 @@
     { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "awaken", "site": "east_ward" }, { "type": "spawn", "unit": "warden", "n": 3, "tribe": 1, "at": [96, 80], "stance": "defensive" }, { "type": "message", "text": "The Skyloft stirs the eastern stack. It rises from the sea with rival guards already on it." }] },
     { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "awaken", "site": "far_seer" }, { "type": "spawn", "unit": "warden", "n": 4, "tribe": 1, "at": [110, 48], "stance": "defensive" }, { "type": "reveal", "at": [110, 48], "r": 8 }, { "type": "message", "text": "A fourth stack rises by the rival island, and its guards are already on it." }] },
     { "when": { "type": "objective", "index": 4 }, "do": [{ "type": "spawn", "unit": "warden", "n": 6, "tribe": 1, "at": [48, 80], "stance": "aggressive" }, { "type": "message", "text": "With their towers burned, the raiders land in force for revenge. Their Hearth is open to the sky." }] },
-    { "when": { "type": "time", "seconds": 1400 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+    { "when": { "type": "time", "seconds": 1600 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
   ],
   "unlocks": { "buildings": ["skyloft"] }
 }

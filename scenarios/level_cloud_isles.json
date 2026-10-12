@@ -1,6 +1,6 @@
 {
   "id": "level_cloud_isles",
-  "description": "The Cloud Isles (level 22) won by the hard opponent bot as the player: a scripted first Skyloft, then the bot floats worshippers to the Reliquary and the Gale Shrine, takes both ley isles, holds three isle stones against sky raiders, wins the Sky Gate isle the causeway wakes, and breaks the rival (bot wins near tick 28400).",
+  "description": "The Cloud Isles (level 22) won by the hard opponent bot as the player: a scripted first Skyloft, then the bot floats worshippers to the Reliquary and the Gale Shrine, takes both ley isles, holds three isle stones against sky raiders, cuts down the war band the causeway brings, razes the rival Hearth over the causeway, and floats three followers to pray at the Sky Gate isle that wakes then (bot wins near tick 31275).",
   "tags": [
     "levels"
   ],
@@ -28,7 +28,7 @@
       }
     }
   ],
-  "runTicks": 32000,
+  "runTicks": 34000,
   "assert": [
     {
       "at": 4000,
@@ -39,16 +39,20 @@
       "expr": "level.objectivesDone == 4 && site('gale_shrine').by == 0 && site('south_ley').by == 0"
     },
     {
-      "at": 21500,
-      "expr": "level.objectivesDone == 5 && site('sky_gate').by != 0 && alive(1) && !level.lost"
+      "at": 20500,
+      "expr": "level.objectivesDone == 5 && alive(1) && !level.lost"
     },
     {
-      "at": 26000,
-      "expr": "level.objectivesDone == 6 && site('sky_gate').by == 0 && alive(1) && !level.won"
+      "at": 24000,
+      "expr": "level.objectivesDone == 6 && alive(1) && site('sky_gate').by != 0 && !level.won"
     },
     {
-      "at": 32000,
-      "expr": "level.won && level.objectivesDone == 7 && !alive(1) && alive(0) && invariants() == 0"
+      "at": 29000,
+      "expr": "level.objectivesDone == 7 && !alive(1) && site('sky_gate').by != 0 && !level.won"
+    },
+    {
+      "at": 34000,
+      "expr": "level.won && level.objectivesDone == 8 && site('sky_gate').by == 0 && !alive(1) && alive(0) && invariants() == 0"
     }
   ]
 }

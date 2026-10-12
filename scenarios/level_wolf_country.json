@@ -1,14 +1,44 @@
 {
   "id": "level_wolf_country",
-  "description": "Campaign level 18 is completable unscripted: the opponent bot for the player clears the northern valley dens, razes the signal pyre, clears the southern valley, prays at the gorge shrine for a land bridge and a causeway to the wolf isle, clears both isle packs, takes the turtle tribe ley stones and keeps two for two minutes, then breaks both highland tribes. The isle dens cannot be reached before the shrine.",
-  "tags": ["levels"],
+  "description": "Campaign level 18 is completable unscripted: the opponent bot for the player clears the northern valley dens, razes the signal pyre, clears the southern valley, prays at the gorge shrine for a land bridge and a causeway to the wolf isle, clears both isle packs, takes the turtle tribe ley stones against its fresh wardens and keeps two for two and a half minutes, then crosses to the south gorge isle, clears the oldest packs and prays at their seer (bot wins near tick 25850). The isle dens cannot be reached before the shrine.",
+  "tags": [
+    "levels"
+  ],
   "level": "wolf_country",
-  "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 1 }],
-  "runTicks": 32000,
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "aggressive",
+      "difficulty": "hard",
+      "offset": 1
+    }
+  ],
+  "runTicks": 30000,
   "assert": [
-    { "at": 6000, "expr": "level.objectivesDone >= 1 && alive(1) && alive(2)" },
-    { "at": 12000, "expr": "level.objectivesDone >= 2 && level.objectivesDone <= 3 && alive(1) && alive(2) && !level.won" },
-    { "at": 16000, "expr": "level.objectivesDone >= 4 && alive(1) && alive(2) && !level.won" },
-    { "at": 32000, "expr": "level.won && !alive(1) && !alive(2) && alive(0) && level.objectivesDone == 7 && invariants() == 0" }
+    {
+      "at": 6000,
+      "expr": "level.objectivesDone >= 1 && alive(1) && alive(2)"
+    },
+    {
+      "at": 12000,
+      "expr": "level.objectivesDone == 2 && alive(1) && alive(2) && !level.won"
+    },
+    {
+      "at": 17500,
+      "expr": "level.objectivesDone == 5 && alive(2) && !level.won"
+    },
+    {
+      "at": 21000,
+      "expr": "level.objectivesDone == 5 && alive(2) && site('valley_ley').by == 0 && !level.won"
+    },
+    {
+      "at": 24500,
+      "expr": "level.objectivesDone == 6 && !alive(1) && !alive(2) && site('old_seer').by != 0 && !level.won"
+    },
+    {
+      "at": 30000,
+      "expr": "level.won && level.objectivesDone == 7 && site('old_seer').by == 0 && !alive(1) && !alive(2) && alive(0) && invariants() == 0"
+    }
   ]
 }

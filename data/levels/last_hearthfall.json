@@ -1,5 +1,5 @@
 {
-  "$comment": "Campaign level 25, the finale: a centre island, three rival isles (north sneaky, east aggressive, south hard turtle) joined to it by tidal flats. A shore totem raises the home causeway, the ember shrine wakes three stones in rival hands, two wolf dens guard the centre, clearing them wakes the Last Hearth (volcano) and its southern guardians, lighting it brings three war bands, the southern towers fall to an assault (freed wardens join), then every tribe falls. The rival isles are small, so maxPopulation caps the rivals (60, 60, 72): uncapped they each reached 200 and the southern towers became a wall the bot only broke on a lucky seed. Bot win about 37900 (bot seeds 32500 to 45500).",
+  "$comment": "Campaign level 25, the finale: a centre island, three rival isles (north sneaky, east aggressive, south hard turtle) joined to it by tidal flats. A shore totem raises the home causeway, the ember shrine wakes three stones in rival hands, two wolf dens guard the centre, clearing them wakes the Last Hearth (volcano) and its southern guardians, lighting it brings three war bands, the southern towers fall to an assault (freed wardens join), then every tribe falls. The rival isles are small, so maxPopulation caps the rivals (44, 44, 52): at 60 to 72 the endgame ran 33000 to 47000 and the hearth fell to the east on one seed. The south may not build watchtowers (tribes[3].buildings): when it rebuilt every razed tower, 2 of 8 bot offsets never broke them. Bot win about 35400 (offsets 1 to 8: 27000 to 36000, all win).",
   "id": "last_hearthfall",
   "name": "The Last Hearthfall",
   "order": 25,
@@ -119,21 +119,26 @@
       "difficulty": "normal",
       "maxTroops": 10,
       "worshipAfterSeconds": 1500,
-      "maxPopulation": 60
+      "maxPopulation": 44
     },
     {
       "ai": "aggressive",
       "difficulty": "normal",
       "maxTroops": 10,
       "worshipAfterSeconds": 1500,
-      "maxPopulation": 60
+      "maxPopulation": 44
     },
     {
       "ai": "turtle",
       "difficulty": "hard",
-      "maxTroops": 12,
+      "maxTroops": 10,
       "worshipAfterSeconds": 1500,
-      "maxPopulation": 72
+      "maxPopulation": 52,
+      "buildings": [
+        "dwelling",
+        "warden_lodge",
+        "mending_hut"
+      ]
     }
   ],
   "spells": [
@@ -923,7 +928,7 @@
         {
           "type": "spawn",
           "unit": "warden",
-          "n": 20,
+          "n": 26,
           "at": [
             128,
             140

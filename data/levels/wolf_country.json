@@ -1,9 +1,9 @@
 {
-  "$comment": "Campaign level 18 (stretch 3): highland valleys full of wolf dens that hunt only the player (beastPrey player) while two rivals grow beyond a gorge. Clear the north valley; raze the sneaky tribe signal pyre that watches the northern pass; clear the south valley; pray at the gorge shrine to raise a land bridge east and an instant causeway to the wolf isle, a small island in the gorge that nothing can reach before the shrine (so its two packs cannot be cleared early); clear both isle packs (their dormant seer stone draws the bot there); pray away the turtle tribe ley stones (dormant until the isle is clear, six more posted guards arrive then) and keep two ley stones for two minutes; then break both tribes. The isle causeway is instant on purpose: a rising causeway to an awake site stalls the sim (see engine notes).",
+  "$comment": "Campaign level 18 (stretch 3): highland valleys full of wolf dens that hunt only the player (beastPrey player) while two rivals grow beyond a gorge. Clear the north valley; raze the sneaky tribe signal pyre that watches the northern pass; clear the south valley; pray at the gorge shrine to raise a land bridge east and an instant causeway to the wolf isle, a small island in the gorge that nothing can reach before the shrine (so its two packs cannot be cleared early); clear both isle packs (their dormant seer stone draws the bot there); pray away the turtle tribe ley stones (dormant until the isle is clear, six more posted guards arrive then, four fresh wardens march to pray the valley ley away, and from minute 14 the turtle tribe sends two fresh wardens a minute to pray each of its stones back while it stands) and keep two ley stones for two and a half minutes; then an instant causeway reaches the south gorge isle, where the two oldest packs den by a dormant seer: clear them and pray at it (the dens guard the seer, so the bot clears them first). The isle causeways are instant on purpose: a rising causeway to an awake site stalls the sim (see engine notes). Bot win about 25850.",
   "id": "wolf_country",
   "name": "Wolf Country",
   "order": 18,
-  "description": "Highland valleys crawl with wolves that hunt only you, while two tribes beyond the gorge grow unbothered. Clear the valleys, raze the pyre that watches the pass, raise the gorge bridges, clear the wolf isle, take the turtle tribe ley stones, and break both tribes.",
+  "description": "Highland valleys crawl with wolves that hunt only you, while two tribes beyond the gorge grow unbothered. Clear the valleys, raze the pyre that watches the pass, raise the gorge bridges, clear the wolf isle, take and keep the turtle ley stones, then clear the oldest packs and pray at their seer.",
   "seed": 1818,
   "beastPrey": "player",
   "map": {
@@ -109,6 +109,16 @@
         "at": [
           96,
           66
+        ],
+        "r": 8,
+        "aboveSea": 40,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          96,
+          126
         ],
         "r": 8,
         "aboveSea": 40,
@@ -432,6 +442,24 @@
       "count": 6
     },
     {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        92,
+        123
+      ],
+      "count": 5
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        100,
+        129
+      ],
+      "count": 5
+    },
+    {
       "spawn": "tree",
       "near": [
         52,
@@ -543,6 +571,31 @@
       }
     },
     {
+      "spawn": "seer_stone",
+      "at": [
+        96,
+        126
+      ],
+      "site": {
+        "tag": "old_seer",
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "reveal",
+            "at": [
+              96,
+              126
+            ],
+            "r": 20
+          },
+          {
+            "type": "message",
+            "text": "The old seer is yours, and the last packs of the gorge are gone. The highlands are quiet."
+          }
+        ]
+      }
+    },
+    {
       "spawn": "ley_stone",
       "at": [
         64,
@@ -571,7 +624,7 @@
         "rewards": [
           {
             "type": "message",
-            "text": "One of the turtle tribe's ley stones is yours. Keep two ley stones at once for a minute."
+            "text": "One of the turtle tribe's ley stones is yours. Keep two ley stones at once for two and a half minutes."
           }
         ]
       }
@@ -589,7 +642,7 @@
         "rewards": [
           {
             "type": "message",
-            "text": "An eastern ley stone answers you. Keep two ley stones at once for a minute."
+            "text": "An eastern ley stone answers you. Keep two ley stones at once for two and a half minutes."
           }
         ]
       }
@@ -695,15 +748,16 @@
     {
       "type": "hold",
       "n": 2,
-      "seconds": 120,
+      "seconds": 150,
       "after": 4,
-      "text": "Pray away at least one of the turtle tribe ley stones past its guards, then keep two ley stones at once for two minutes",
+      "text": "Pray away at least one of the turtle tribe ley stones past its guards, then keep two ley stones at once for two and a half minutes while turtle wardens come to pray them back",
       "kind": "ley_stone"
     },
     {
-      "type": "eliminateAll",
+      "type": "worship",
+      "site": "old_seer",
       "after": 5,
-      "text": "Break what is left of both highland tribes"
+      "text": "Cross the new causeway to the south gorge isle, clear the old packs denning there and pray at its seer stone"
     }
   ],
   "lose": [
@@ -848,8 +902,91 @@
           "n": 8
         },
         {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 2,
+          "at": [
+            140,
+            96
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            64,
+            70
+          ],
+          "n": 4,
+          "pray": "valley_ley",
+          "fresh": true
+        },
+        {
           "type": "message",
-          "text": "The isle is quiet. Two ley stones rise in the turtle tribe fields, and it posts more guards. Pray one away and keep two ley stones for two minutes."
+          "text": "The isle is quiet. Turtle ley stones rise behind fresh guards, and its wardens march on your valley ley. Keep two ley stones for two and a half minutes."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 840,
+        "every": 60
+      },
+      "until": 5,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 2,
+          "tribe": 2,
+          "at": [
+            148,
+            132
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            146,
+            102
+          ],
+          "n": 2,
+          "pray": "east_ley_b",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 870,
+        "every": 60
+      },
+      "until": 5,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 2,
+          "tribe": 2,
+          "at": [
+            148,
+            132
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            132,
+            114
+          ],
+          "n": 2,
+          "pray": "east_ley_a",
+          "fresh": true
         }
       ]
     },
@@ -860,8 +997,36 @@
       },
       "do": [
         {
+          "type": "shape",
+          "shape": "line",
+          "at": [
+            70,
+            126
+          ],
+          "to": [
+            90,
+            126
+          ],
+          "width": 4,
+          "aboveSea": 12,
+          "falloff": 2,
+          "seconds": 0
+        },
+        {
+          "type": "awaken",
+          "site": "old_seer"
+        },
+        {
+          "type": "reveal",
+          "at": [
+            96,
+            126
+          ],
+          "r": 16
+        },
+        {
           "type": "message",
-          "text": "The ley answers you. Break what is left of both highland tribes."
+          "text": "The ley answers and a causeway reaches the south gorge isle, where the oldest packs den by a seer stone. Clear them and pray there."
         }
       ]
     },

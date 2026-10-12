@@ -1,9 +1,9 @@
 {
-  "$comment": "Level 12 (pacing pass 2): Forge mode on a 160 map. After the Forge the turtle rival (hard, 18 troops, towers, posted guards, no worshippers for 15 minutes so it keeps its people) sits behind its moat and sends a war band every four minutes from minute 8. Wolf dens haunt the central plain; clearing them raises the middle ward (prayer chain), holding all three stones raises a seer stone on the north hill that the digger can reach as easily, and winning it draws a war band onto your home ward. Staged: clear two dens, hold three stones 60 s, win the hill seer stone, grow to 55 under the raids, then raze the Hearth once twelve posted guards dig in around it.",
+  "$comment": "Level 12 (pacing pass 2): Forge mode on a 160 map. After the Forge the turtle rival (hard, 18 troops, towers, posted guards, no worshippers for 15 minutes so it keeps its people) sits behind its moat and sends a war band every four minutes from minute 8. Wolf dens haunt the central plain; clearing them raises the middle ward (prayer chain), holding all three stones raises a seer stone on the north hill that the digger can reach as easily, and winning it draws a war band onto your home ward. Staged: clear two dens, hold three stones 60 s, win the hill seer stone, gain 30 followers over the count you had when the seer fell (fromStage, so a big early tribe still has to grow) under the raids, then raze the Hearth once twelve posted guards dig in around it. Bot wins about 19000 (followers stage 8500 to 14500).",
   "id": "the_forge",
   "name": "The Forge",
   "order": 12,
-  "description": "Before the battle, both tribes reshape the land around their Hearths. Raise walls or dig a moat, then press Ready. Clear two wolf dens, hold three stones, win the hill seer stone, grow to 55 followers under the digger's raids, then cross its moat and raze its Hearth.",
+  "description": "Before the battle, both tribes reshape the land around their Hearths. Raise walls or dig a moat, then press Ready. Clear two wolf dens, hold three stones, win the hill seer stone, gain 30 more followers under the digger's raids, then cross its moat and raze its Hearth.",
   "seed": 1212,
   "map": {
     "generator": "flat",
@@ -45,7 +45,7 @@
     { "type": "clearDens", "n": 2, "text": "Clear both wolf dens on the plain" },
     { "type": "hold", "n": 3, "seconds": 60, "after": 0, "text": "Pray at the risen middle ward and hold all three stones at once for a minute" },
     { "type": "worship", "site": "north_seer", "after": 1, "text": "Win the seer stone risen on the north hill before the digger does" },
-    { "type": "followers", "n": 55, "after": 2, "text": "Grow to 55 followers while the digger's war bands cross the plain" },
+    { "type": "followers", "n": 30, "fromStage": true, "after": 2, "text": "Gain 30 more followers while the digger's war bands cross the plain" },
     { "type": "destroy", "tribe": 1, "building": "hearth", "after": 3, "text": "Cross the moat, break the posted guards and raze the digger's Hearth" }
   ],
   "lose": [

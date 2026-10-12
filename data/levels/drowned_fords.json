@@ -1,5 +1,5 @@
 {
-  "$comment": "Campaign level 17 (stretch 3): a river delta. Six islands linked by sand fords that two repeating tides drown and drain out of step. The Shaper takes the ford ward at the centre and keeps it while both rivals wade over to pray it away; then two ley stones seeded to the sneaky rival wake on the north island, and praying them away raises a permanent causeway; keep the ward and both stones for a minute, cross the causeway and burn the sneaky Hearth; that wakes a seer on the south island held by the war tribe behind posted wardens, and praying it away raises a second causeway; then break the war tribe (population capped at 70 so it neither snowballs into a stalemate nor collapses early).",
+  "$comment": "Campaign level 17 (stretch 3): a river delta. Six islands linked by sand fords that two repeating tides drown and drain out of step. The Shaper takes the ford ward at the centre and keeps it for three minutes while both rivals wade over to pray it away (the war tribe always sends three fresh wardens, so the hold is contested; the bot loses the ward to them and only wins it back near tick 14500, which paces its win near 24150); then two ley stones seeded to the sneaky rival wake on the north island, and praying them away raises a permanent causeway; keep the ward and both stones for a minute, cross the causeway and burn the sneaky Hearth; that wakes a seer on the south island held by the war tribe behind posted wardens, and praying it away raises a second causeway; then break the war tribe (population capped at 70 so it neither snowballs into a stalemate nor collapses early).",
   "id": "drowned_fords",
   "name": "The Drowned Fords",
   "order": 17,
@@ -503,9 +503,9 @@
       "type": "hold",
       "n": 1,
       "kind": "ward_stone",
-      "seconds": 150,
+      "seconds": 180,
       "after": 0,
-      "text": "Keep the ford ward for two and a half minutes while both rivals wade over to pray it away"
+      "text": "Keep the ford ward for three minutes while war tribe wardens wade over to pray it away: cut them down, or pray it back and start again"
     },
     {
       "type": "worship",
@@ -800,8 +800,29 @@
           "pray": "ford_ward"
         },
         {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 2,
+          "at": [
+            96,
+            140
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            96,
+            96
+          ],
+          "n": 3,
+          "pray": "ford_ward",
+          "fresh": true
+        },
+        {
           "type": "message",
-          "text": "Both rivals are wading over to pray the ford ward away. Keep it."
+          "text": "Both rivals are wading over to pray the ford ward away, three war tribe wardens in the lead. Keep it."
         }
       ]
     },

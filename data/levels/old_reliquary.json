@@ -1,9 +1,9 @@
 {
-  "$comment": "Teaching level 4 (overhaul, paced S3): reliquaries and growth. Pray at the Reliquary (it teaches Whirlwind, remembers the Spirit Well and answers three times), build the Spirit Well it remembered, raise six dwellings and grow to 44 followers within twenty five minutes. The well comes before the dwellings so it is a real step, not one already met.",
+  "$comment": "Teaching level 4 (overhaul, paced S4): reliquaries and growth. Pray at the Reliquary (it teaches Whirlwind, remembers the Spirit Well and answers three times), build the Spirit Well it remembered, raise six dwellings, then gain 28 followers over the count when that stage opens (fromStage, so growth already made never counts) within twenty five minutes. The well comes before the dwellings so it is a real step, not one already met.",
   "id": "old_reliquary",
   "name": "The Old Reliquary",
   "order": 4,
-  "description": "An old Reliquary stands on the hill. Pray there to learn Whirlwind and to remember the Spirit Well, build the well, raise six dwellings and grow your tribe to 44 followers before the season turns.",
+  "description": "An old Reliquary stands on the hill. Pray there to learn Whirlwind and to remember the Spirit Well, build the well, raise six dwellings and then grow your tribe by 28 more followers before the season turns.",
   "seed": 404,
   "map": {
     "generator": "flat",
@@ -51,7 +51,7 @@
     { "type": "worship", "site": "old_reliquary", "text": "Pray at the Reliquary on the hill" },
     { "type": "build", "building": "spirit_well", "n": 1, "after": 0, "text": "Build a Spirit Well (the Reliquary remembered how)" },
     { "type": "build", "building": "dwelling", "n": 6, "after": 1, "text": "Raise six dwellings" },
-    { "type": "followers", "n": 44, "after": 2, "text": "Grow to 44 followers: upgrade dwellings so they hold more" }
+    { "type": "followers", "n": 28, "fromStage": true, "after": 2, "text": "Grow by 28 more followers from here: upgrade dwellings so they hold more and breed on" }
   ],
   "lose": [{ "type": "timeLimit", "seconds": 1500 }],
   "triggers": [

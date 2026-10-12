@@ -1,6 +1,6 @@
 {
   "id": "level_hold_the_line",
-  "description": "Campaign level 3 is completable: an aggressive opponent bot for the player raises the towers, breaks the war bands for 150 seconds once they stand, then crosses the isthmus and burns the rival Warden Lodge and Hearth.",
+  "description": "Campaign level 3 is completable: an aggressive opponent bot for the player raises the towers, cuts down ten rival wardens once they stand (the kill stage), then crosses the isthmus and burns the rival Warden Lodge and Hearth (bot wins about 7900).",
   "tags": [
     "levels"
   ],
@@ -70,6 +70,10 @@
     {
       "at": 3000,
       "expr": "alive(0) && level.objectivesDone == 1 && !level.won"
+    },
+    {
+      "at": 4000,
+      "expr": "level.objectivesDone == 1 && !level.won"
     },
     {
       "at": 6000,

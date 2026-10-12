@@ -1,6 +1,6 @@
 {
   "id": "level_drowned_fords",
-  "description": "Campaign level 17 is completable: the bot for the player takes and keeps the ford ward between tides, prays away the sneaky ley stones, keeps all three, burns the sneaky Hearth over the causeway, prays the southern seer away from the war tribe and breaks it.",
+  "description": "Campaign level 17 is completable: the bot for the player takes the ford ward between tides, loses it to the war tribe wardens that wade over to pray it away, wins it back and keeps it three minutes, prays away the sneaky ley stones, keeps all three, burns the sneaky Hearth over the causeway, prays the southern seer away from the war tribe and breaks it (bot wins near tick 24150).",
   "tags": [
     "levels"
   ],
@@ -14,22 +14,26 @@
       "offset": 1
     }
   ],
-  "runTicks": 32000,
+  "runTicks": 30000,
   "assert": [
     {
       "at": 6000,
-      "expr": "level.objectivesDone >= 2 && alive(1) && alive(2)"
+      "expr": "level.objectivesDone == 1 && site('ford_ward').by == 2 && alive(1) && alive(2)"
     },
     {
       "at": 12000,
-      "expr": "level.objectivesDone >= 4 && alive(1) && alive(2) && !level.won"
+      "expr": "level.objectivesDone == 1 && alive(2) && !level.won"
     },
     {
-      "at": 18000,
-      "expr": "level.objectivesDone >= 5 && !alive(1) && !level.won"
+      "at": 20000,
+      "expr": "level.objectivesDone >= 2 && level.objectivesDone <= 3 && site('ford_ward').by == 0 && !level.won"
     },
     {
-      "at": 32000,
+      "at": 23000,
+      "expr": "level.objectivesDone == 5 && !alive(1) && site('south_seer').by == 2 && !level.won"
+    },
+    {
+      "at": 30000,
       "expr": "level.won && !alive(1) && !alive(2) && alive(0) && level.objectivesDone == 7 && invariants() == 0"
     }
   ]

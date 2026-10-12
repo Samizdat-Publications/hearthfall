@@ -1,6 +1,6 @@
 {
   "id": "level_old_reliquary",
-  "description": "Campaign level 4 is completable: four followers pray at the Reliquary (it teaches Whirlwind, unlocks the Spirit Well and answers three times), a scripted Spirit Well goes up as soon as it is remembered, a turtle bot raises six dwellings and the tribe grows to 44 followers.",
+  "description": "Campaign level 4 is completable: four followers pray at the Reliquary (it teaches Whirlwind, unlocks the Spirit Well and answers three times), a scripted Spirit Well goes up as soon as it is remembered, a turtle bot raises six dwellings and the tribe then gains 28 followers over its count when that stage opens (bot wins about tick 8750).",
   "tags": [
     "levels"
   ],
@@ -49,6 +49,10 @@
     },
     {
       "at": 5000,
+      "expr": "level.objectivesDone == 3 && !level.won"
+    },
+    {
+      "at": 7500,
       "expr": "level.objectivesDone == 3 && !level.won"
     },
     {

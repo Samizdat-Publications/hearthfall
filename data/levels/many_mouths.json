@@ -1,9 +1,9 @@
 {
-  "$comment": "Teaching level 6 (overhaul, paced S3): wolves and clearing dens on a 160 map. Three wolf dens guard the hill shrine (eight settlers), the sunken southern ley stone and the ward stone; wardens clear them in stages. The cleared packs wake the ley stone with four posted raider guards, and the rival sends worshippers for it: cut the guards down and pray there first (each capture sends the raiders at it), then break the raiders. Bot wins about 12405.",
+  "$comment": "Teaching level 6 (overhaul, paced S3): wolves and clearing dens on a 160 map. Three wolf dens guard the hill shrine (eight settlers), the sunken southern ley stone and the ward stone; wardens clear them in stages. The cleared packs wake the ley stone with four posted raider guards, and the rival sends worshippers for it: cut the guards down and pray there first (each capture sends the raiders at it), then break the raiders. Objective 0 counts only the shrine hill den (at, r). Bot wins about 12405.",
   "id": "many_mouths",
   "name": "The Winter Pack",
   "order": 6,
-  "description": "A hard winter has driven the wolves down from the hills. Clear the three packs to reach the shrine and wake the ley stone, take the stone from the raiders' guards before their worshippers pray it, then march east and break the raiders before the snows close in.",
+  "description": "A hard winter has driven the wolves down from the hills. Clear the pack on the shrine hill and pray there, clear the other two packs to wake the ley stone, cut down the raiders' guards and pray the stone yours, then march east and break the raiders before the snows close in.",
   "seed": 606,
   "map": {
     "generator": "flat",
@@ -309,6 +309,11 @@
     {
       "type": "clearDens",
       "n": 1,
+      "at": [
+        58,
+        46
+      ],
+      "r": 8,
       "text": "Train wardens and clear the wolf den on the shrine hill"
     },
     {
@@ -320,13 +325,13 @@
     {
       "type": "clearDens",
       "after": 1,
-      "text": "Clear the remaining wolf dens"
+      "text": "Clear the two remaining wolf dens"
     },
     {
       "type": "worship",
       "site": "south_ley",
       "after": 2,
-      "text": "Cut down the raiders' guards at the southern ley stone and pray there before their worshippers do"
+      "text": "Cut down the raiders' guards at the southern ley stone and pray there (if their worshippers take it first, pray it back)"
     },
     {
       "type": "eliminateAll",
@@ -391,7 +396,7 @@
         },
         {
           "type": "message",
-          "text": "The packs are broken and the southern ley stone has risen. Raider guards already stand at it; their worshippers are on the way."
+          "text": "The packs are broken and the southern ley stone has risen. Raider guards already stand at it, and their worshippers will come for it."
         }
       ]
     },

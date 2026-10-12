@@ -1,6 +1,6 @@
 {
   "id": "level_last_hearthfall",
-  "description": "Campaign level 25 (finale) is completable: the Shaper wakes the shore totem, followers pray at the ember shrine and pry two stones from rival hands, wardens clear the centre dens, the opponent bot for the player takes the Last Hearth, razes the southern towers and breaks all three tribes (bot wins near tick 37900).",
+  "description": "Campaign level 25 (finale) is completable: the Shaper wakes the shore totem, followers pray at the ember shrine and pry two stones from rival hands, wardens clear the centre dens, the opponent bot for the player takes the Last Hearth, razes the southern towers (the south cannot rebuild them) and breaks all three tribes (bot wins near tick 35400; offsets 1 to 8 all win, 27000 to 36000).",
   "tags": [
     "levels"
   ],
@@ -14,22 +14,22 @@
       "offset": 1
     }
   ],
-  "runTicks": 47000,
+  "runTicks": 40000,
   "assert": [
     {
       "at": 8000,
-      "expr": "level.objectivesDone >= 3 && alive(1) && alive(2) && alive(3)"
+      "expr": "level.objectivesDone == 3 && alive(1) && alive(2) && alive(3)"
     },
     {
       "at": 16000,
-      "expr": "level.objectivesDone >= 5 && alive(1) && alive(2) && alive(3)"
+      "expr": "level.objectivesDone == 5 && alive(1) && alive(2) && alive(3)"
     },
     {
-      "at": 31000,
-      "expr": "level.objectivesDone >= 6 && alive(0)"
+      "at": 30000,
+      "expr": "level.objectivesDone == 6 && alive(0) && !level.won"
     },
     {
-      "at": 47000,
+      "at": 40000,
       "expr": "level.won && !alive(1) && !alive(2) && !alive(3) && alive(0) && level.objectivesDone == 7 && invariants() == 0"
     }
   ]

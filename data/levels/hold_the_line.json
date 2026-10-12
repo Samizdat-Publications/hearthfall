@@ -1,5 +1,5 @@
 {
-  "$comment": "Teaching level 3 (overhaul, paced S3): defense, then a counter-stroke. War bands cross a 40 cell isthmus at 60 s, when the player's third tower stands, and at 170 s; the player holds for 150 s from the towers (fromStage, so the bands land inside it), then marches across to burn the rival lodge and Hearth. Only wardens: no chanters or firecallers on either side.",
+  "$comment": "Teaching level 3 (overhaul, paced S4): defense, then a counter-stroke. War bands cross a 40 cell isthmus at 60 s, when the player's third tower stands, and at 170 s; once the towers stand the player must cut down ten rival wardens (a kill stage, so the bands must be met and broken, not waited out), then marches across to burn the rival lodge and Hearth. Only wardens: no chanters or firecallers on either side. Bot wins about 7900.",
   "id": "hold_the_line",
   "name": "Hold the Line",
   "order": 3,
@@ -42,17 +42,17 @@
   ],
   "objectives": [
     { "type": "build", "building": "watchtower", "n": 3, "text": "Raise two more Watchtowers on the shore of the isthmus" },
-    { "type": "survive", "seconds": 150, "fromStage": true, "after": 0, "text": "Break the war bands: keep them from your Hearth for two and a half minutes" },
+    { "type": "kill", "n": 10, "tribe": 1, "unit": "warden", "after": 0, "text": "Break the war bands: cut down ten of their wardens once your towers stand" },
     { "type": "destroy", "tribe": 1, "building": "warden_lodge", "after": 1, "text": "Cross the isthmus and burn their Warden Lodge" },
     { "type": "destroy", "tribe": 1, "building": "hearth", "after": 2, "text": "Burn their Hearth" }
   ],
   "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 1500 }],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Raise two more Watchtowers by the isthmus, garrison them, train wardens and keep the war band from your Hearth." }] },
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Raise two more Watchtowers by the isthmus, garrison them, train wardens, then cut down the war bands that cross." }] },
     { "when": { "type": "time", "seconds": 60 }, "do": [{ "type": "raid", "tribe": 1, "to": [20, 64] }, { "type": "message", "text": "The first war band is crossing the isthmus!" }] },
     { "when": { "type": "time", "seconds": 140 }, "do": [{ "type": "spawn", "unit": "warden", "n": 6, "at": [44, 64] }, { "type": "message", "text": "Allies have come down from the hills." }] },
     { "when": { "type": "time", "seconds": 170 }, "do": [{ "type": "spawn", "unit": "warden", "n": 5, "tribe": 1, "at": [86, 64] }, { "type": "raid", "tribe": 1, "to": [20, 64] }, { "type": "message", "text": "Another war band is coming." }] },
-    { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "raid", "tribe": 1, "to": [20, 64], "n": 12 }, { "type": "message", "text": "Your towers stand and the drums answer: a war band forms up on the far shore. Hold the line." }] },
+    { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "raid", "tribe": 1, "to": [20, 64], "n": 12 }, { "type": "message", "text": "Your towers stand and the drums answer: a war band forms up on the far shore. Meet it at the towers and cut it down." }] },
     { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "message", "text": "The drums have fallen silent. Gather your wardens and carry the fight across the isthmus." }] },
     { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "message", "text": "Their lodge burns. Only the Hearth is left." }] },
     { "when": { "type": "time", "seconds": 1200 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
