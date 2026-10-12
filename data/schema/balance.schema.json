@@ -1366,6 +1366,11 @@
                           "items": false,
                           "minItems": 2,
                           "maxItems": 2
+                        },
+                        "tribe": {
+                          "type": "integer",
+                          "minimum": -1,
+                          "maximum": 9007199254740991
                         }
                       },
                       "required": [
