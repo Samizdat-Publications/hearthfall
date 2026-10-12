@@ -72,8 +72,17 @@ photoHint.style.cssText = "position:fixed;left:50%;bottom:14px;transform:transla
 document.body.appendChild(photoHint);
 /** BACKLOG 8: window size and wanted scale the HUD was last fitted to (refitHud) */
 let fitKey = "";
+// S4 L7-F: the bundled UI fonts load in the background; captures wait for them so text pixels are stable
+let fontsReady = typeof document === "undefined" || !document.fonts;
+if (!fontsReady) {
+  const faces = ['500 16px "Alegreya Sans"', '700 16px "Alegreya Sans"', '800 16px "Alegreya Sans"', '700 16px "Alegreya Sans SC"', '16px "Marcellus SC"'];
+  void Promise.all(faces.map((f) => document.fonts.load(f))).finally(() => (fontsReady = true));
+}
+
 function resize() {
   game.renderer.resize(window.innerWidth, window.innerHeight);
+  // S4 L7-F: a fit-to-screen interface scale follows the window
+  game.applyUiScale();
 }
 
 // everything up to the first frame counts as startup: any throw here shows the fatal panel
@@ -355,6 +364,8 @@ if (debugApiAllowed(__DEBUG_API__, !!game.params.debug, game.role)) {
     audio: () => ({ hooks: game.audio.stats(), player: game.player.stats(), music: { stem: game.music.stem, updates: game.music.updates } }),
     /** M10 real models: pending while loading, ids loaded and failed, ids the current layers draw */
     models: () => game.renderer.modelStatus(),
+    /** S4 L7-F: the bundled UI fonts are in */
+    fonts: () => fontsReady,
     /** minimap camera outline: screen border samples picked onto the terrain (unwrapped around the view center) */
     viewOutline: (fresh = false) => viewOutline(game, fresh),
     minimapCurrent: () => drawnViewKey === viewKey(game),

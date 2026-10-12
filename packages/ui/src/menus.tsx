@@ -78,8 +78,9 @@ export interface SettingsView {
   /** BACKLOG 8 accessibility: tribe palette, HUD scale (percent, as a string for the select), voice subtitles ("on" or "off") */
   palettes: Choice[];
   palette: string;
-  uiScales: Choice[];
-  uiScale: string;
+  /** S4 L7-F: interface scale percent, 0 = fit to screen (then uiAuto is the scale in use) */
+  uiScale: number;
+  uiAuto: number;
   subtitles: string;
   /** stretch 2: first skirmish tips ("on" or "off") */
   tips: string;
@@ -109,6 +110,8 @@ export interface LevelView {
   description: string;
   open: boolean;
   won: boolean;
+  /** S4 L7-A: index into the campaign's chapters (0 without chapters) */
+  chapter?: number;
 }
 
 export interface MenuModel {
@@ -119,7 +122,7 @@ export interface MenuModel {
   end: { won: boolean; title?: string; tag?: string; lines: { label: string; value: string }[]; next: boolean; achievements?: { name: string; description: string }[]; desync?: boolean } | null;
   /** BACKLOG 21: the records screen: career stats and every achievement (earned shows its date) */
   records?: { rows: { label: string; value: string }[]; achievements: { id: string; name: string; description: string; earned: string | null }[]; summary: string; message: string | null };
-  campaign: { levels: LevelView[]; message: string | null };
+  campaign: { levels: LevelView[]; message: string | null; /** S4 L7-A: chapter names in order (none: one route) */ chapters?: string[] };
   /** title illustration URL for the main menu (BACKLOG 81), omitted in tests */
   titleArt?: string;
   /** saving needs a skirmish in progress (scenarios and the menu backdrop cannot be saved) */
@@ -386,23 +389,47 @@ function routePoint(k: number, n: number): [number, number] {
   return [x, y];
 }
 
+/** S4 L7-A: the level a chapter tab picks: its frontier (first open level not yet won), else its first level */
+export function chapterPick(levels: LevelView[], chapter: number): LevelView | undefined {
+  const own = levels.filter((l) => (l.chapter ?? 0) === chapter);
+  return own.find((l) => l.open && !l.won) ?? own[0];
+}
+
 function Campaign({ m, act }: { m: MenuModel; act: MenuActions }) {
   const v = m.campaign;
   const n = v.levels.length;
   const frontier = v.levels.find((l) => l.open && !l.won) ?? v.levels[n - 1];
   const sel = v.levels.find((l) => l.id === pickedLevel.value) ?? frontier;
   const k = sel ? v.levels.indexOf(sel) : -1;
-  const pts = v.levels.map((_, i) => routePoint(i, n));
+  // S4 L7-A: one chapter's route at a time (the picked level's); tabs for the chapters that have levels
+  const chapter = sel?.chapter ?? 0;
+  const tabs = (v.chapters ?? []).map((name, c) => ({ name, c })).filter((x) => v.levels.some((l) => (l.chapter ?? 0) === x.c));
+  const shown = v.levels.filter((l) => (l.chapter ?? 0) === chapter);
+  const pts = shown.map((_, i) => routePoint(i, shown.length));
   return (
     <div data-hud="menu-campaign" class="menu-panel menu-campaign">
       <h2 class="menu-head">{t("menu.campaign")}</h2>
+      {tabs.length > 1 ? (
+        <div class="route-tabs" data-ui="campaign-chapters">
+          {tabs.map((x) => (
+            <button
+              key={x.c}
+              class={"menu-small route-tab" + (x.c === chapter ? " picked" : "")}
+              data-ui={`chapter-${x.c}`}
+              onClick={() => (pickedLevel.value = chapterPick(v.levels, x.c)?.id ?? null)}
+            >
+              {x.name}
+            </button>
+          ))}
+        </div>
+      ) : null}
       <div class="route" data-ui="campaign-map">
         <svg class="route-path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
           {pts.slice(1).map((p, i) => (
-            <line key={i} x1={pts[i][0]} y1={pts[i][1]} x2={p[0]} y2={p[1]} class={v.levels[i].won ? "route-seg won" : "route-seg"} />
+            <line key={i} x1={pts[i][0]} y1={pts[i][1]} x2={p[0]} y2={p[1]} class={shown[i].won ? "route-seg won" : "route-seg"} />
           ))}
         </svg>
-        {v.levels.map((l, i) => (
+        {shown.map((l, i) => (
           <button
             key={l.id}
             class={"route-node" + (l.won ? " won" : l.open ? " open" : " locked") + (sel?.id === l.id ? " picked" : "")}
@@ -412,7 +439,7 @@ function Campaign({ m, act }: { m: MenuModel; act: MenuActions }) {
             title={l.open ? l.name : t("campaign.locked")}
             onClick={() => (pickedLevel.value = l.id)}
           >
-            {i + 1}
+            {v.levels.indexOf(l) + 1}
           </button>
         ))}
       </div>
@@ -532,8 +559,15 @@ function Settings({ s, act }: { s: SettingsView; act: MenuActions }) {
           <Slider ui="set-sfx" label={t("settings.sfx")} value={s.sfx} onInput={(v) => act.setSetting({ sfx: v })} />
           <label class="menu-label">{t("settings.palette")}</label>
           <Select ui="set-palette" value={s.palette} options={s.palettes} onChange={(v) => act.setSetting({ palette: v })} />
-          <label class="menu-label">{t("settings.uiScale")}</label>
-          <Select ui="set-uiscale" value={s.uiScale} options={s.uiScales} onChange={(v) => act.setSetting({ uiScale: Number(v) })} />
+          <label class="menu-label" for="set-uiscale">{t("settings.uiScale")}</label>
+          <span class="menu-row menu-scale">
+            {/* S4 L7-F: a slider (applied on release, so the panel does not rescale under the pointer) and fit to screen */}
+            <input id="set-uiscale" class="menu-range" data-ui="set-uiscale" type="range" min="75" max="200" step="5" value={s.uiScale || s.uiAuto} onChange={(e) => act.setSetting({ uiScale: Number((e.target as HTMLInputElement).value) })} />
+            <span class="menu-value scale-value" data-ui="uiscale-value">{s.uiScale || s.uiAuto}%</span>
+            <button class={`menu-small${s.uiScale ? "" : " picked"}`} data-ui="set-uiscale-fit" title={t("settings.uiScaleFitHint")} onClick={() => act.setSetting({ uiScale: 0 })}>
+              {t("settings.uiScaleFit")}
+            </button>
+          </span>
           <label class="menu-label">{t("settings.subtitles")}</label>
           <Select ui="set-subtitles" value={s.subtitles} options={ONOFF()} onChange={(v) => act.setSetting({ subtitles: v === "on" })} />
           <label class="menu-label" title={t("settings.tipsHint")}>{t("settings.tips")}</label>

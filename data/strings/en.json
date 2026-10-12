@@ -79,6 +79,8 @@
   "settings.tips": "First match tips",
   "settings.tipsHint": "Step by step tips in your next skirmish; they turn off once you finish them",
   "settings.uiScale": "Interface size",
+  "settings.uiScaleFit": "Fit to screen",
+  "settings.uiScaleFitHint": "Pick the size from your screen: 100 percent at 1080p, 135 at 1440p, 200 at 4K",
   "settings.weather": "Weather",
   "setup.addOpponent": "Add opponent",
   "setup.difficulty": "Difficulty",

@@ -275,6 +275,31 @@
    "minHud": 5
   },
   {
+   "id": "hud_1440p_200",
+   "params": {
+    "seed": 7,
+    "level": "continents",
+    "tribes": 2,
+    "camera": "default",
+    "uiScale": 200
+   },
+   "width": 2560,
+   "height": 1440,
+   "steps": [
+    {
+     "step": 200
+    }
+   ],
+   "kind": "hud",
+   "coverage": {
+    "green": [
+     0.03,
+     0.95
+    ]
+   },
+   "minHud": 5
+  },
+  {
    "id": "hud_troops",
    "params": {
     "seed": 7,

@@ -73,6 +73,7 @@ import {
 import { emptyStats, loadRecords, statsFrom, noteEvent, recordMatch, storeRecords, type Records, type Stats } from "./achievements.ts";
 import { REPLAY_KEY, ReplayRun, decodeReplay, encodeReplay, makeReplay, type ControllerChange, type Replay } from "./replay.ts";
 import {
+  autoUiScale,
   browserKV,
   loadSettings,
   storeSettings,
@@ -527,10 +528,14 @@ export class Game {
     const over = style.tribePalettes?.[id] ?? null;
     this.tribePal = { ...style.palette, ...(over ?? {}) };
     this.renderer.setTribeColors(over);
-    const scale = Math.min(
-      2,
-      Math.max(0.5, (this.params.uiScale ?? this.settings.uiScale) / 100),
-    );
+    this.applyUiScale();
+  }
+
+  /** S4 L7-F: the interface scale from the URL override, the setting, or (setting 0) the window size */
+  applyUiScale(): void {
+    const fit = typeof window !== "undefined" ? autoUiScale(window.innerWidth, window.innerHeight) : 100;
+    const pct = this.params.uiScale ?? (this.settings.uiScale || fit);
+    const scale = Math.min(2, Math.max(0.5, pct / 100));
     this.uiScaleWanted = scale;
     if (typeof document !== "undefined")
       document.documentElement.style.setProperty("--ui-scale", String(scale));

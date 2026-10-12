@@ -199,6 +199,12 @@ export function validateLevel(raw: unknown, pack: PackFiles, file = "level"): { 
   const persons = new Set(pack.ai.personalities.map((p) => p.id));
   const diffs = new Set(pack.ai.difficulties.map((d) => d.id));
   lv.spells.forEach((s, k) => spells.has(s) || bad(`spells.${k}`, `unknown spell ${s}`));
+  // S4 L7-D: set dressing names a decor model and stands on the map
+  const decor = new Set((pack.style.render?.decor?.kinds ?? []).map((k) => k.id));
+  (lv.props ?? []).forEach((p, k) => {
+    if (!decor.has(p.model)) bad(`props.${k}.model`, `not a decor model: ${p.model}`);
+    if (p.at.some((v) => v < 0 || v >= lv.map.size)) bad(`props.${k}.at`, "off the map");
+  });
   lv.buildings?.forEach((b, k) => buildings.has(b) || bad(`buildings.${k}`, `unknown building ${b}`));
   lv.unlocks?.spells?.forEach((s, k) => spells.has(s) || bad(`unlocks.spells.${k}`, `unknown spell ${s}`));
   lv.unlocks?.buildings?.forEach((b, k) => buildings.has(b) || bad(`unlocks.buildings.${k}`, `unknown building ${b}`));

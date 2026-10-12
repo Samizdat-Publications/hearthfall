@@ -50,6 +50,13 @@ export function recordWin(kv: KV, id: string, won: string[], learned: Record<str
   }
 }
 
+/** S4 L7-A: the chapter (index into `chapters`) a campaign order belongs to; 0 without chapters */
+export function chapterOf(order: number, chapters: readonly { from: number }[] = []): number {
+  let k = 0;
+  for (let i = 0; i < chapters.length; i++) if (order >= chapters[i].from) k = i;
+  return k;
+}
+
 /** Levels sorted by campaign order. */
 export function ordered(levels: LevelDef[]): LevelDef[] {
   return [...levels].sort((a, b) => a.order - b.order);

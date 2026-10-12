@@ -267,3 +267,15 @@ A shape reward starts a land job: a box of target heights stepped toward its goa
 Fallback: setting `leyStones` to 0 disables stone placement (the setup menu's "none"). Leaving `skirmishLey` out of `balance` also disables it, and the menu hides the choice.
 
 Addendum (wolves, 10/10/2026): units gain an optional `beast` block (`aggroRadius`, `leashRadius`, `biteSeconds`), `balance` gains an optional `beasts` block (`respawnSeconds`, `roamRadius`, `cellsPerDen`, `minSpacing`, `minHearthDistance`, `packSize`, `kind`) and `WorldInit` an optional `wolfDens` count. Beasts stay tribe -1 rather than a new "wild tribe" index, so victory rules, AI, UI and every per-tribe array are untouched; combat learns one exception (beasts are valid targets). The wolf unit is appended last in units.json so existing unit type indices, and with them old replays, keep their meaning. Fallback: `wolfDens` 0 or no `beasts` block.
+
+## ADR-024: UI v2 bundles its fonts and fits the interface to the screen (11/10/2026)
+
+**Context.** Stewart plays on a 2560x1440 monitor. The HUD and menus read as generic (Trebuchet MS and system-ui at 13 px) and too small at the old 100 percent default. He asked for a stone look, for the UI to scale with the screen, and for a slider in Settings. The design pass ran in Claude Design (canvas "Hearthfall UI v2: Stone", https://claude.ai/artifact/W7zGavMKosrktxgD55pj9Q).
+
+**Decision.**
+- Three OFL fonts become dev dependencies through @fontsource 5.3.0 (`marcellus-sc`, `alegreya-sans`, `alegreya-sans-sc`). They are imported by `apps/game/src/hudBridge.ts`, latin subsets only, so Vite bundles the woff2 files and the game stays offline.
+- The look is a set of CSS tokens on `:root` in `packages/ui/src/hud.css` (`--ui-font`, `--ui-display`, `--ui-stone`, `--ui-bevel`, `--ui-slab`, `--ui-ember-slab`, `--ui-well`). The HUD and menus build on them in a "UI v2" block at the end of each stylesheet.
+- The stored setting `uiScale` becomes a percent from 75 to 200 in steps of 5, or 0 for fit to screen, which is the new default. `autoUiScale(w, h)` is `min(w/1920, h/1080)`, rounded to 5 and clamped to 100 to 200, so 1440p gets 135 percent. `Game.applyUiScale()` reapplies it on resize. Old stored values (80 to 150) still load.
+- Captures wait for `__game.fonts()` as well as the models, so text pixels are stable.
+
+**Fallback.** Without the font packages the stacks fall back to Segoe UI and Georgia. To go back, remove the three imports and the dependencies; nothing else depends on them.

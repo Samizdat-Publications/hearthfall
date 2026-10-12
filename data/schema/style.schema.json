@@ -587,8 +587,28 @@
               "type": "number",
               "minimum": 0
             },
+            "shoreDensity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 0.5
+            },
+            "shoreReach": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            },
+            "settleDensity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 0.5
+            },
+            "settleReach": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 6
+            },
             "kinds": {
-              "maxItems": 16,
+              "maxItems": 24,
               "type": "array",
               "items": {
                 "type": "object",
@@ -614,6 +634,14 @@
                   "size": {
                     "type": "number",
                     "minimum": 0
+                  },
+                  "zone": {
+                    "type": "string",
+                    "enum": [
+                      "land",
+                      "shore",
+                      "settle"
+                    ]
                   }
                 },
                 "required": [
@@ -1066,6 +1094,29 @@
         "required": [
           "speaker",
           "text"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "campaignChapters": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "from": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "name",
+          "from"
         ],
         "additionalProperties": false
       }

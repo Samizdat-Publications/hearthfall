@@ -89,6 +89,7 @@
       "building.dwelling_medium": {
         "recolor": [{ "from": "#B98058", "to": "#DDB85E", "minY": 0.3 }, { "from": "#C9A65A", "to": "#F0D58A", "minY": 0.3 }]
       },
+      "prop.reeds": { "recolor": [{ "from": "#8A8378", "to": "#7FA040" }] },
       "building.dwelling_large": {
         "recolor": [{ "from": "#B98058", "to": "#DDB85E", "minY": 0.3 }, { "from": "#C9A65A", "to": "#F0D58A", "minY": 0.3 }]
       }
@@ -96,7 +97,16 @@
     "terrainBands": { "snowStart": 445, "snowFull": 495, "strataSand": 0.55, "snowBright": 1.7, "snowTint": [0.82, 1.14, 1.5] },
     "trees": { "clumpLow": 0.75, "clumpHigh": 0.08, "bandLow": 0.12, "bandHigh": 0.4, "modelShare": 0.15, "hueJitter": 0.12, "sizeBase": 0.8, "sizeJitter": 0.5, "sizeAtNoWood": 0.6, "woodFull": 4 },
     "groundDetail": { "enabled": true, "radius": 26, "maxZoom": 0.36, "tufts": 1.1, "flowers": 0.25, "pebbles": 0.5, "shoreBand": 0.04, "highBand": 0.55, "maxSlope": 3, "flowerColors": ["#f2e6c8", "#e8c33a", "#d86a8a", "#b07cff"] },
-    "decor": { "enabled": true, "radius": 44, "maxZoom": 0.62, "density": 0.022, "maxSlope": 4, "kinds": [
+    "decor": { "enabled": true, "radius": 44, "maxZoom": 0.62, "density": 0.026, "maxSlope": 4, "shoreDensity": 0.24, "shoreReach": 2, "settleDensity": 0.2, "settleReach": 3, "kinds": [
+      { "id": "prop.reeds", "weight": 1, "low": 0, "high": 0.2, "size": 1.0, "zone": "shore" },
+      { "id": "prop.woodpile", "weight": 3, "low": 0, "high": 1, "size": 0.85, "zone": "settle" },
+      { "id": "prop.haystack", "weight": 2, "low": 0, "high": 0.6, "size": 1.2, "zone": "settle" },
+      { "id": "prop.fence", "weight": 2.5, "low": 0, "high": 1, "size": 1.2, "zone": "settle" },
+      { "id": "prop.pots", "weight": 2, "low": 0, "high": 1, "size": 0.8, "zone": "settle" },
+      { "id": "prop.cart", "weight": 0.8, "low": 0, "high": 0.7, "size": 1.4, "zone": "settle" },
+      { "id": "prop.flowers", "weight": 3, "low": 0.03, "high": 0.5, "size": 1.0 },
+      { "id": "prop.fern", "weight": 2.5, "low": 0.05, "high": 0.6, "size": 0.9 },
+      { "id": "prop.cairn", "weight": 0.5, "low": 0.3, "high": 1, "size": 0.9 },
       { "id": "prop.bush_a", "weight": 6, "low": 0.03, "high": 0.6, "size": 0.9 },
       { "id": "prop.log_a", "weight": 2, "low": 0.05, "high": 0.55, "size": 1.3 },
       { "id": "prop.mushroom_ring", "weight": 1.5, "low": 0.04, "high": 0.4, "size": 1.2 },
@@ -143,6 +153,11 @@
   "tribePalettes": {
     "colorblind": { "azure": "#1D3FE8", "crimson": "#E95D0B", "amber": "#853488", "jade": "#76E7BF" }
   },
+  "campaignChapters": [
+    { "name": "The First Fires", "from": 1 },
+    { "name": "The Wide Waters", "from": 13 },
+    { "name": "The Far Shores", "from": 26 }
+  ],
   "subtitles": {
     "voice.shaper.acknowledged": { "speaker": "Shaper", "text": "Ihra sovenu. (It will be so.)" },
     "voice.shaper.acknowledged_b": { "speaker": "Shaper", "text": "Vael tanuri. (I go.)" },

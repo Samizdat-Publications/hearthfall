@@ -144,3 +144,6 @@
 - 2026-10-11T10:18 set combat (8 shots): S3: landscape decor layer (grass tufts, flowers) and wider ground detail; wolves baseline already post-decor passes
 - 2026-10-11T10:18 set look (13 shots): S3: HUD build list gains signal_pyre, mending_hut, spirit_well (content pack 1) plus decor; uniform 2.5% diff, scenes unchanged
 - 2026-10-11T19:56 set look (13 shots): L6-B golden thatch on v3 dwellings, intended
+- 2026-10-11T21:20 set look (13 shots): L7-D map detail v2: new settle and shore props, reeds recolored, denser village
+- 2026-10-12T02:10 set menus (11 shots): S4 L7-F UI v2: carved stone panels, bundled Marcellus SC and Alegreya Sans fonts, interface size slider with fit to screen; L7-D map props
+- 2026-10-12T02:10 set smoke (14 shots): S4 L7-F UI v2: carved stone panels, bundled Marcellus SC and Alegreya Sans fonts, fit to screen interface scale; L7-D map props

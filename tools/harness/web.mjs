@@ -65,7 +65,7 @@ export async function openGame(browser, url, { width = 1280, height = 720, minFr
   await page.goto(url, { waitUntil: "load", timeout: timeoutMs });
   await page.waitForFunction((n) => window.__game && window.__game.frames() >= n, minFrames, { timeout: timeoutMs });
   // real models load asynchronously (M10); captures and checks wait for them so pixels are stable
-  await page.waitForFunction(() => !window.__game.models().pending, null, { timeout: timeoutMs });
+  await page.waitForFunction(() => !window.__game.models().pending && (!window.__game.fonts || window.__game.fonts()), null, { timeout: timeoutMs });
   const f = await page.evaluate(() => window.__game.frames());
   await page.waitForFunction((n) => window.__game.frames() >= n, f + 2, { timeout: timeoutMs });
   return { page, consoleErrors };

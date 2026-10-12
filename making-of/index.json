@@ -1260,6 +1260,116 @@
       "when": "2026-10-11T19:57:22.594Z",
       "source": "external:lan-coop-partner-play.png",
       "bytes": 639895
+    },
+    {
+      "file": "s4/20261011-2116_leg7-map-detail-props.png",
+      "milestone": "S4",
+      "kind": "asset-sheet",
+      "caption": "Leg 7 map detail props (L7-D): reeds, woodpile, haystack, fence, flowers, fern, cairn, pots and cart, normalized to the palette",
+      "highlight": false,
+      "when": "2026-10-11T21:16:06.966Z",
+      "source": "external:assets_props_leg7_sheet.png",
+      "bytes": 369851
+    },
+    {
+      "file": "s4/20261011-2120_l7d-huts-before.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "L7-D before: the player village with only grass tufts and flowers around the huts",
+      "highlight": false,
+      "when": "2026-10-11T21:20:26.144Z",
+      "source": "external:huts_before.png",
+      "bytes": 646056
+    },
+    {
+      "file": "s4/20261011-2120_l7d-huts-after.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "L7-D after: settlement clutter (woodpiles, a fence, a cart, pots) grows in a ring around every building",
+      "highlight": true,
+      "when": "2026-10-11T21:20:27.033Z",
+      "source": "external:huts_after.png",
+      "bytes": 652892
+    },
+    {
+      "file": "s4/20261011-2120_l7d-coast-before.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "L7-D before: a bare beach",
+      "highlight": false,
+      "when": "2026-10-11T21:20:27.882Z",
+      "source": "external:coast_before.png",
+      "bytes": 209003
+    },
+    {
+      "file": "s4/20261011-2120_l7d-coast-after.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "L7-D after: reed clumps line the water's edge (shore zone decor)",
+      "highlight": false,
+      "when": "2026-10-11T21:20:28.646Z",
+      "source": "external:coast_after.png",
+      "bytes": 212255
+    },
+    {
+      "file": "s4/20261012-0211_ui-v1-hud-1440p.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "Before UI v2: the old HUD at 2560x1440, small generic panels Stewart had to squint at",
+      "highlight": false,
+      "when": "2026-10-12T02:11:11.900Z",
+      "source": "external:smoke_hud_1440p.png",
+      "bytes": 2148575
+    },
+    {
+      "file": "s4/20261012-0211_ui-v2-hud-1440p.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "After UI v2 (L7-F): carved hearthstone panels, Marcellus SC and Alegreya Sans, fit to screen sizing at 1440p",
+      "highlight": true,
+      "when": "2026-10-12T02:11:12.534Z",
+      "source": "external:hud_1440p.png",
+      "bytes": 2322867
+    },
+    {
+      "file": "s4/20261012-0211_ui-v1-main-menu.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "Before UI v2: the old main menu",
+      "highlight": false,
+      "when": "2026-10-12T02:11:13.166Z",
+      "source": "external:menus_menu_main.png",
+      "bytes": 683912
+    },
+    {
+      "file": "s4/20261012-0211_ui-v2-main-menu.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "After UI v2: stone slab buttons with an ember primary action",
+      "highlight": false,
+      "when": "2026-10-12T02:11:13.783Z",
+      "source": "external:menu_main.png",
+      "bytes": 730908
+    },
+    {
+      "file": "s4/20261012-0211_ui-v2-settings-scale.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "Settings at 1440p with the new interface size slider and Fit to screen button",
+      "highlight": true,
+      "when": "2026-10-12T02:11:14.404Z",
+      "source": "external:menu_settings_1440p.png",
+      "bytes": 2322573
+    },
+    {
+      "file": "s4/20261012-0211_ui-v2-campaign.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "Campaign route in the stone look, with chapter tabs",
+      "highlight": false,
+      "when": "2026-10-12T02:11:15.039Z",
+      "source": "external:menu_campaign_1440p.png",
+      "bytes": 2405567
     }
   ]
 }

@@ -3,5 +3,5 @@ export { KEY_ACTIONS, SPELL_KEYS, actionFor, defaultKeymap, keyLabel, rebind, sa
 export { STANCES, areaLine, hudModel, mountHud, type ForgeView, type HudActions, type HudModel, type NoteView, type ObjectiveView, type SpellView, type TroopView } from "./hud.tsx";
 export { editorModel, mountEditor, type EditorActions, type EditorView } from "./editor.tsx";
 export { replayModel, mountReplay, type ReplayActions, type ReplayView } from "./replay.tsx";
-export { menuModel, mountMenus, type Choice, type MenuActions, type MenuModel, type Screen, type SettingsPatch, type SettingsView, type SetupPatch, type SetupView, type SlotView, type LevelView } from "./menus.tsx";
+export { chapterPick, menuModel, mountMenus, type Choice, type MenuActions, type MenuModel, type Screen, type SettingsPatch, type SettingsView, type SetupPatch, type SetupView, type SlotView, type LevelView } from "./menus.tsx";
 export { locale, missingStrings, pseudoize, setStrings, t, type StringTable } from "./i18n.ts";

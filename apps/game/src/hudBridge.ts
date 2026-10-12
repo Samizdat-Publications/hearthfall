@@ -1,6 +1,12 @@
 // Builds the HUD view model from the Game each refresh and maps HUD intents to Commands.
 import { SPELL_KEYS, hudModel, mountHud, type HudModel, type ObjectiveView, type SpellView, type TroopView } from "@hearthfall/ui";
 import "../../../packages/ui/src/hud.css";
+// S4 L7-F: the UI fonts, bundled (OFL): Alegreya Sans for text, Alegreya Sans SC for labels, Marcellus SC for heads
+import "@fontsource/alegreya-sans/latin-500.css";
+import "@fontsource/alegreya-sans/latin-700.css";
+import "@fontsource/alegreya-sans/latin-800.css";
+import "@fontsource/alegreya-sans-sc/latin-700.css";
+import "@fontsource/marcellus-sc/latin-400.css";
 import { FORGE_BRUSHES, shaperIndex } from "@hearthfall/sim";
 import type { Game } from "./game.ts";
 import { drawMinimap } from "./minimap.ts";

@@ -39,9 +39,24 @@ export function browserKV(): { kv: KV; persistent: boolean } {
 
 export const QUALITIES = ["high", "medium", "low"] as const;
 
-/** BACKLOG 8: tribe color sets (style.json tribePalettes; "default" is the plain palette) and HUD scales in percent */
+/** BACKLOG 8: tribe color sets (style.json tribePalettes; "default" is the plain palette) */
 export const PALETTES = ["default", "colorblind"] as const;
-export const UI_SCALES = [80, 90, 100, 110, 125, 150] as const;
+/** S4 L7-F: the interface scale in percent, a slider from min to max in steps; the setting 0 fits it to the screen */
+export const UI_SCALE = { min: 75, max: 200, step: 5 } as const;
+
+/** S4 L7-F: the fit-to-screen interface scale: 100 percent at 1080p, 135 at 1440p, 200 at 4K, never under 100 */
+export function autoUiScale(w: number, h: number): number {
+  const raw = Math.min(w / 1920, h / 1080) * 100;
+  return Math.min(UI_SCALE.max, Math.max(100, Math.round(raw / UI_SCALE.step) * UI_SCALE.step));
+}
+
+/** a stored interface scale: 0 (fit to screen) or a slider step inside the range; anything else falls back to `d` */
+export function sanitizeUiScale(v: unknown, d: number): number {
+  if (v === 0) return 0;
+  if (typeof v !== "number" || !Number.isFinite(v)) return d;
+  const r = Math.round(v / UI_SCALE.step) * UI_SCALE.step;
+  return r >= UI_SCALE.min && r <= UI_SCALE.max ? r : d;
+}
 /** BACKLOG 14a: tilt-shift miniature focus ("default" follows style.json render.tiltShift.defaultOn) */
 export const MINIATURE = ["default", "on", "off"] as const;
 /** BACKLOG 14: lighting presets ("default" follows style.json lightingDefault) and visual weather */
@@ -56,6 +71,7 @@ export interface Settings {
   keymap: Keymap;
   /** BACKLOG 8 accessibility */
   palette: (typeof PALETTES)[number];
+  /** percent; 0 fits it to the screen (autoUiScale) */
   uiScale: number;
   subtitles: boolean;
   miniature: (typeof MINIATURE)[number];
@@ -68,7 +84,7 @@ export interface Settings {
 const SETTINGS_KEY = "hearthfall.settings.v1";
 
 export function defaultSettings(): Settings {
-  return { quality: "high", master: 80, music: 60, sfx: 80, keymap: defaultKeymap(), palette: "default", uiScale: 100, subtitles: true, miniature: "default", lighting: "default", weather: "clear", tips: true };
+  return { quality: "high", master: 80, music: 60, sfx: 80, keymap: defaultKeymap(), palette: "default", uiScale: 0, subtitles: true, miniature: "default", lighting: "default", weather: "clear", tips: true };
 }
 
 const vol = (v: unknown, d: number) => (typeof v === "number" && Number.isFinite(v) ? Math.min(100, Math.max(0, Math.round(v))) : d);
@@ -86,7 +102,7 @@ export function loadSettings(kv: KV): Settings {
       sfx: vol(o.sfx, d.sfx),
       keymap: sanitizeKeymap(o.keymap),
       palette: (PALETTES as readonly string[]).includes(o.palette as string) ? (o.palette as Settings["palette"]) : d.palette,
-      uiScale: (UI_SCALES as readonly number[]).includes(o.uiScale as number) ? (o.uiScale as number) : d.uiScale,
+      uiScale: sanitizeUiScale(o.uiScale, d.uiScale),
       subtitles: typeof o.subtitles === "boolean" ? o.subtitles : d.subtitles,
       miniature: (MINIATURE as readonly string[]).includes(o.miniature as string) ? (o.miniature as Settings["miniature"]) : d.miniature,
       lighting: (LIGHTING as readonly string[]).includes(o.lighting as string) ? (o.lighting as Settings["lighting"]) : d.lighting,

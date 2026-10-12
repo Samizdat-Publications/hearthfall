@@ -522,9 +522,14 @@ export const StyleSchema = z
             maxZoom: z.number().min(0).max(1),
             density: z.number().min(0).max(0.5),
             maxSlope: pos,
+            /** S4 L7-D: shore (water's edge) and settle (ring around buildings) zones, each with its own density */
+            shoreDensity: z.number().min(0).max(0.5).optional(),
+            shoreReach: z.number().int().min(1).max(4).optional(),
+            settleDensity: z.number().min(0).max(0.5).optional(),
+            settleReach: z.number().int().min(1).max(6).optional(),
             kinds: z
-              .array(z.strictObject({ id: z.string().min(1), weight: z.number().min(0), low: z.number().min(0).max(1), high: z.number().min(0).max(1), size: pos }))
-              .max(16),
+              .array(z.strictObject({ id: z.string().min(1), weight: z.number().min(0), low: z.number().min(0).max(1), high: z.number().min(0).max(1), size: pos, zone: z.enum(["land", "shore", "settle"]).optional() }))
+              .max(24),
           })
           .optional(),
         /** BACKLOG 41: the camera rig against zoom z (0 close, 1 globe): distance = base + quad z^2 + linear z,
@@ -635,6 +640,12 @@ export const StyleSchema = z
         z.string(),
         z.strictObject({ speaker: z.string().min(1), text: z.string().min(1) }),
       )
+      .optional(),
+    /** S4 L7-A: campaign chapters by first level order (the first starts at 1, each later one after the last); the campaign screen shows one chapter's route at a time */
+    campaignChapters: z
+      .array(z.strictObject({ name: z.string().min(1), from: z.number().int().min(1) }))
+      .min(1)
+      .refine((c) => c[0].from === 1 && c.every((x, k) => k === 0 || x.from > c[k - 1].from), { message: "chapters start at order 1 and rise" })
       .optional(),
     promptStyleSuffix: z.string(),
     promptNegative: z.string(),
@@ -1587,6 +1598,11 @@ export const LevelSchema = z.strictObject({
   beastPrey: z.enum(["all", "player"]).optional(),
   /** BACKLOG 14b: the level is played in rain (balance.weather.rain) */
   weather: z.enum(["clear", "rain"]).optional(),
+  /**
+   * S4 L7-D: hand placed set dressing (render only, the sim never sees it): a decor model (`style.json`
+   * render.decor kinds) at a cell, turned `rot` radians, its footprint `size` cells (default the kind's size)
+   */
+  props: z.array(z.strictObject({ model: z.string().min(1), at: point, rot: z.number().optional(), size: pos.optional() })).max(200).optional(),
   setup: z.array(LevelSetup).min(1),
   objectives: z.array(ObjectiveSchema).min(1),
   lose: z.array(LoseSchema).optional(),

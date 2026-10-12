@@ -5,10 +5,10 @@ import "../../../packages/ui/src/menus.css";
 import titleArt from "../../../assets/ui/title.webp?url";
 import type { Game } from "./game.ts";
 import { makeSave, restoreSave, type SkirmishParams } from "./session.ts";
-import { levelOpen } from "./campaign.ts";
+import { chapterOf, levelOpen } from "./campaign.ts";
 import { decodeReplay, encodeReplay } from "./replay.ts";
 import { statText } from "./achievements.ts";
-import { LIGHTING, MINIATURE, PALETTES, WEATHER, QUALITIES, SLOTS, UI_SCALES, deleteSlot, readSlot, slotMeta, storeSettings, writeSlot } from "./storage.ts";
+import { LIGHTING, MINIATURE, PALETTES, WEATHER, QUALITIES, SLOTS, autoUiScale, deleteSlot, readSlot, slotMeta, storeSettings, writeSlot } from "./storage.ts";
 
 const title = (id: string) => id[0].toUpperCase() + id.slice(1);
 const clock = (ticks: number, hz: number) => {
@@ -121,8 +121,8 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
         keys: KEY_ACTIONS.map((a) => ({ id: a.id, label: a.label, key: game.settings.keymap[a.id] })),
         palettes: opts(PALETTES, (v) => (v === "colorblind" ? "Colorblind safe" : "Default")),
         palette: game.settings.palette,
-        uiScales: opts(UI_SCALES.map(String), (v) => `${v}%`),
-        uiScale: String(game.settings.uiScale),
+        uiScale: game.settings.uiScale,
+        uiAuto: autoUiScale(innerWidth, innerHeight),
         subtitles: game.settings.subtitles ? "on" : "off",
         tips: game.settings.tips ? "on" : "off",
         miniatures: opts(MINIATURE, (v) => (v === "default" ? "Default" : v === "on" ? "On" : "Off")),
@@ -170,7 +170,15 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
           }
         : null,
       campaign: {
-        levels: game.levels.map((l) => ({ id: l.id, name: l.name, description: l.description, open: levelOpen(game.levels, game.campaignWon, l.id), won: game.campaignWon.includes(l.id) })),
+        levels: game.levels.map((l) => ({
+          id: l.id,
+          name: l.name,
+          description: l.description,
+          open: levelOpen(game.levels, game.campaignWon, l.id),
+          won: game.campaignWon.includes(l.id),
+          chapter: chapterOf(l.order, game.pack.files.style.campaignChapters),
+        })),
+        chapters: (game.pack.files.style.campaignChapters ?? []).map((c) => c.name),
         message: game.persistent ? null : "Browser storage is unavailable: campaign progress lasts until this tab closes.",
       },
       titleArt,

@@ -110,7 +110,7 @@ async function flow(browser, url, vp) {
     await check("settings");
     // BACKLOG 8: colorblind tribe colors and a 125 percent interface apply at once and pass the layout checks
     await page.selectOption('[data-ui="set-palette"]', "colorblind");
-    await page.selectOption('[data-ui="set-uiscale"]', "125");
+    await page.fill('[data-ui="set-uiscale"]', "125");
     const a11y = await page.evaluate(() => window.__game.a11y());
     if (a11y.uiScale !== "1.25" || a11y.tribePal.crimson !== "#E95D0B") problem(`a11y settings: ${JSON.stringify(a11y)}`);
     await check("settings-a11y");
@@ -128,7 +128,11 @@ async function flow(browser, url, vp) {
     await page.selectOption('[data-ui="set-weather"]', "clear");
     const gold = await page.evaluate(() => window.__game.look());
     if (!(dusk.intensity < gold.intensity) || dusk.rain <= 0 || gold.rain !== 0) problem(`lighting settings: evening rain ${JSON.stringify(dusk)}, default clear ${JSON.stringify(gold)}`);
-    await page.selectOption('[data-ui="set-uiscale"]', "100");
+    // S4 L7-F: fit to screen gives the window's scale back (100 percent at 1280x720, 135 at 2560x1440)
+    await click("set-uiscale-fit");
+    const fitted = await page.evaluate(() => window.__game.a11y());
+    const fitWant = vp.width >= 2560 ? "1.35" : "1";
+    if (fitted.uiScale !== fitWant) problem(`fit to screen: ui scale ${fitted.uiScale} at ${tag}, want ${fitWant}`);
     await click("keys-reset");
     await click("back");
     await screenIs("main");
@@ -443,8 +447,18 @@ async function flow(browser, url, vp) {
     if (await page.$('[data-ui="next-level"]')) problem("a lost level offers Next level");
     await click("main-menu");
     await screenIs("main");
+    // S4 L7-A: chapter tabs; the last chapter's route holds the last level, all of it still closed
+    await click("campaign");
+    await screenIs("campaign");
+    const tabs = await page.$$eval('[data-ui^="chapter-"]', (els) => els.map((e) => e.getAttribute("data-ui")));
+    if (tabs.length < 2) problem(`campaign chapters: ${JSON.stringify(tabs)}`);
+    await click(tabs[tabs.length - 1]);
+    const lastChapter = await page.$$eval('.route-node[data-ui^="level-"]', (els) => els.map((e) => ({ ui: e.getAttribute("data-ui"), disabled: e.disabled })));
+    if (!lastChapter.length || !lastChapter.every((l) => l.disabled) || lastChapter.some((l) => order.some((o) => o.ui === l.ui))) problem(`last chapter route: ${JSON.stringify(lastChapter)}`);
+    await click("back");
+    await screenIs("main");
     // and the last level's win completes the campaign: no Next level
-    const last = order[order.length - 1].ui.slice("level-".length);
+    const last = lastChapter[lastChapter.length - 1].ui.slice("level-".length);
     await page.evaluate((id) => window.__game.playLevel(id), last);
     await screenIs("none");
     await page.evaluate(() => window.__game.winLevel());

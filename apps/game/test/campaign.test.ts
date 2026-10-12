@@ -1,12 +1,44 @@
 import { describe, expect, it } from "vitest";
 import { OUTCOME } from "@hearthfall/sim";
 import { loadBasePack, loadLevels } from "../../../tools/harness/datapack.mjs";
-import { campaignCarry, levelOpen, loadLearned, loadProgress, nextLevel, recordWin, taughtSpells } from "../src/campaign.ts";
+import { chapterPick } from "@hearthfall/ui";
+import { validatePack } from "@hearthfall/data";
+import { campaignCarry, chapterOf, levelOpen, loadLearned, loadProgress, nextLevel, recordWin, taughtSpells } from "../src/campaign.ts";
 import { campaignParams, createSkirmish, decodeSave, encodeSave, makeSave, restoreSave } from "../src/session.ts";
 import { MemoryKV } from "../src/storage.ts";
 
 const pack = loadBasePack().pack!;
 const { levels, issues } = loadLevels(pack.files);
+
+describe("campaign chapters (S4 L7-A)", () => {
+  it("files every level under a chapter by order, and a tab picks the chapter's frontier", () => {
+    const ch = pack.files.style.campaignChapters!;
+    expect(ch.length).toBeGreaterThanOrEqual(2);
+    expect(chapterOf(1, ch)).toBe(0);
+    expect(chapterOf(ch[1].from - 1, ch)).toBe(0);
+    expect(chapterOf(ch[1].from, ch)).toBe(1);
+    expect(chapterOf(999, ch)).toBe(ch.length - 1);
+    expect(chapterOf(7)).toBe(0);
+    const view = levels.map((l, k) => ({ id: l.id, name: l.name, description: "", open: k <= 14, won: k < 14, chapter: chapterOf(l.order, ch) }));
+    // chapter 1 is all won: its tab shows its first level; chapter 2's tab shows the frontier
+    expect(chapterPick(view, 0)?.id).toBe(view[0].id);
+    expect(chapterPick(view, 1)?.id).toBe(view[14].id);
+    expect(chapterPick(view, 9)).toBeUndefined();
+  });
+
+  it("refuses chapters that do not start at 1 or do not rise", () => {
+    const raw = (c: unknown) => {
+      const files: Record<string, unknown> = {};
+      for (const [name, key] of Object.entries({ "manifest.json": "manifest", "balance.json": "balance", "style.json": "style", "units.json": "units", "buildings.json": "buildings", "spells.json": "spells", "ai_personalities.json": "ai", "terrain.json": "terrain" }))
+        files[name] = (pack.files as unknown as Record<string, unknown>)[key];
+      files["style.json"] = { ...pack.files.style, campaignChapters: c };
+      return validatePack(files).issues.length;
+    };
+    expect(raw([{ name: "a", from: 1 }, { name: "b", from: 9 }])).toBe(0);
+    expect(raw([{ name: "a", from: 2 }])).toBeGreaterThan(0);
+    expect(raw([{ name: "a", from: 1 }, { name: "b", from: 1 }])).toBeGreaterThan(0);
+  });
+});
 
 describe("campaign (M9)", () => {
   it("ships valid levels in campaign order", () => {
