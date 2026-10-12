@@ -1,16 +1,16 @@
 {
   "id": "level_hearth_unbroken",
-  "description": "The Hearth Unbroken (level 35, chapter 3 finale) won by the hard opponent bot as the player: it prays the Heart Stone away from the western tribe and holds it three minutes, burns the western Hearth, breaks the north eastern war bands (fourteen kills), prays the summit Reliquary for Volcano, then crosses the bridge the mountain raises and ends every tribe (bot wins near tick 33750).",
+  "description": "The Hearth Unbroken (level 35, chapter 3 finale) won by the hard opponent bot as the player: it prays the Heart Stone away from the western tribe, loses it to the western wardens who march in every 150 s to pray it back, retakes it and holds it three minutes, burns the fortified western Hearth, kills twenty north eastern troops, prays the summit Reliquary for Volcano, then crosses the bridge the mountain raises and ends every tribe (bot wins near tick 36000).",
   "tags": ["levels"],
   "level": "hearth_unbroken",
   "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 2 }],
-  "runTicks": 36000,
+  "runTicks": 39000,
   "assert": [
-    { "at": 4000, "expr": "level.objectivesDone == 0 && site('heart_stone').by == 0 && !level.lost" },
-    { "at": 9000, "expr": "level.objectivesDone == 1 && alive(1) && alive(2) && alive(3) && !level.lost" },
-    { "at": 14500, "expr": "level.objectivesDone == 2 && !alive(1) && alive(2) && alive(3) && !level.lost" },
-    { "at": 19000, "expr": "level.objectivesDone == 3 && site('summit_hearth').by != 0 && alive(3) && !level.lost" },
-    { "at": 27000, "expr": "level.objectivesDone == 4 && site('summit_hearth').by == 0 && alive(3) && !level.won && !level.lost" },
-    { "at": 36000, "expr": "level.won && level.objectivesDone == 5 && !alive(1) && !alive(2) && !alive(3) && alive(0) && invariants() == 0" }
+    { "at": 6000, "expr": "level.objectivesDone == 0 && site('heart_stone').by == 1 && !level.lost" },
+    { "at": 13500, "expr": "level.objectivesDone == 1 && site('heart_stone').by == 0 && alive(1) && !level.lost" },
+    { "at": 17500, "expr": "level.objectivesDone == 2 && alive(2) && alive(3) && !level.lost" },
+    { "at": 22000, "expr": "level.objectivesDone == 3 && site('summit_hearth').by != 0 && alive(3) && !level.lost" },
+    { "at": 30000, "expr": "level.objectivesDone == 4 && site('summit_hearth').by == 0 && alive(3) && !level.won && !level.lost" },
+    { "at": 39000, "expr": "level.won && level.objectivesDone == 5 && !alive(1) && !alive(2) && !alive(3) && alive(0) && invariants() == 0" }
   ]
 }

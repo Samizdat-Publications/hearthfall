@@ -1,18 +1,18 @@
 {
   "id": "level_pilgrim_stones",
-  "description": "The Pilgrim Stones (level 34) won by the hard opponent bot as the player: a scripted first Boathouse, then the bot sails pilgrims to the Tern, Gull and Heron Stones in turn while rival boats land wardens to pray each one away, walks the risen reef path to the Storm Stone, marches over the risen pilgrim road to burn the rival Boathouse, and prays six followers through the summit Reliquary (bot wins near tick 27600).",
+  "description": "The Pilgrim Stones (level 34) won by the hard opponent bot as the player: a scripted first Boathouse, then the bot sails pilgrims to the Tern, Gull and Heron Stones on their far northern isles while rival boats land wardens to pray each one away, walks the risen reef path and fights through the posted rival guards at the Storm Stone, marches over the risen pilgrim road to burn the rival Boathouse under the walls of a fortified harbor, then breaks the rival band on the road and prays six followers through the summit Reliquary (bot wins near tick 34250).",
   "tags": ["levels"],
   "level": "pilgrim_stones",
   "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 2 }],
   "commands": [{ "tick": 1, "tribe": 0, "type": "placePlan", "args": { "building": "boathouse", "at": [68, 167] } }],
-  "runTicks": 30000,
+  "runTicks": 37000,
   "assert": [
     { "at": 3000, "expr": "level.objectivesDone == 1 && count(tribe0.boathouses) >= 1 && !level.lost" },
     { "at": 6000, "expr": "level.objectivesDone == 2 && !level.lost" },
-    { "at": 9000, "expr": "level.objectivesDone == 3 && !level.lost" },
-    { "at": 13000, "expr": "level.objectivesDone == 4 && site('storm_ley').by != 0 && !level.lost" },
-    { "at": 18500, "expr": "level.objectivesDone == 5 && count(tribe1.boathouses) >= 1 && alive(1) && !level.lost" },
-    { "at": 24500, "expr": "level.objectivesDone == 6 && site('pilgrim_crown').by != 0 && !level.won && !level.lost" },
-    { "at": 30000, "expr": "level.won && level.objectivesDone == 7 && site('pilgrim_crown').by == 0 && alive(0) && invariants() == 0" }
+    { "at": 11000, "expr": "level.objectivesDone == 3 && !level.lost" },
+    { "at": 18000, "expr": "level.objectivesDone == 4 && count(tribe1.boathouses) >= 1 && alive(1) && !level.lost" },
+    { "at": 25000, "expr": "level.objectivesDone == 5 && alive(1) && !level.won && !level.lost" },
+    { "at": 31000, "expr": "level.objectivesDone == 6 && site('pilgrim_crown').by != 0 && !level.won && !level.lost" },
+    { "at": 37000, "expr": "level.won && level.objectivesDone == 7 && site('pilgrim_crown').by == 0 && alive(0) && invariants() == 0" }
   ]
 }

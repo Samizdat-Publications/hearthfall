@@ -1,9 +1,9 @@
 {
-  "$comment": "Campaign level 30 (S4 L7-B, chapter 3): a march home. The player lands on the western beach with only the Shaper, five wardens and five settlers; the old Hearth stands empty on the northeastern plateau, sunk in a pit of black water (so a Shaper who falls on the road cannot respawn and skip the march), a long winding road away. Any unit reaching the gate stones raises it. Pursuers (tribe 1, whose camp is on an island to the south, so they can never be wiped out early) land behind the band every 60 s and chase it to the gate (spawn plus fresh raid, until the reach stage), and a band from the Oath Stone cuts the road at the ford. Stages: bring the Shaper to the gate (reach), gain fourteen followers (fromStage), cut down twenty four pursuers (kill, tribe 1; raids every 75 s from minute 10 until done), then pray at the Oath Stone (dormant until then, held by tribe 1, posted guards plus eight keepers). Not eliminateAll. Bot (hard, offsets 0 to 5, normal) wins 20900 to 22400.",
+  "$comment": "Campaign level 30 (S4 chapter 3): a march home. The player lands on the western beach with only the Shaper, five wardens and five settlers; the old Hearth stands empty (nobody near it) on the northeastern plateau, sunk in a pit of black water so a Shaper who falls on the road cannot respawn and skip the march. Only the Shaper reaching the gate stones raises it (area trigger unit shaper, so no other unit can wake it early), and three old keepers (defensive wardens) come out of it then. If she has not arrived by 600 s the Hearth rises alone with the three keepers (time trigger until 0; the gate trigger still adds three more when she arrives), so a fallen Shaper cannot soft lock the level and the Hearth is not left bare to the 600 s raids. Pursuers (tribe 1, whose camp is on an island to the south, so they can never be wiped out early) land behind the band every 60 s and chase it to the gate (spawn plus fresh raid, until the reach stage), and a band from the Oath Stone cuts the road at the ford. Stages: bring the Shaper to the gate (reach); gain twenty four followers (fromStage); cut down eighteen pursuers (kill, tribe 1): two bands of six march on the Hearth when the stage opens (ridge and ford, staggered) and four more come every 60 s from 600 s until done, so a strong player ends it on the fight, not on a clock; pray at the Oath Stone (dormant until then, held by tribe 1, six posted guards plus sixteen keepers, four worshippers for 40 s under its ward strike); that wakes the old road ley at the middle plateau, and the player holds both stones at once for 210 s (hold n 2) while pursuers land on the beach (three at once, then every 75 s from 840 s) and pray at the ley (keepRaiders keeps them kneeling; before it wakes they stand on the beach). The bot loses the ley and retakes it in the bot runs. Not eliminateAll. Bot (hard, offsets 0 to 3) wins 23771 to 24321 (offset 1: 24084; stages at about 2000, 11000, 13750 and 16750), time limit 2520 s.",
   "id": "the_exiles",
   "name": "The Exiles",
   "order": 30,
-  "description": "Driven from the west, your band has one place left: the old Hearth across the island, sunk in black water until its people come home. Lead the Shaper home with a war band on your heels, fill the village again, break the pursuers and take their stone.",
+  "description": "Driven from the west, your band has one place left: the old Hearth across the island, sunk in black water until its Shaper comes home. Lead her home with a war band on your heels, fill the village, break the pursuers, take their stone and hold the old road.",
   "seed": 3030,
   "map": {
     "generator": "flat",
@@ -131,7 +131,8 @@
       "difficulty": "normal",
       "maxTroops": 10,
       "maxPopulation": 36,
-      "worshipAfterSeconds": 3000
+      "worshipAfterSeconds": 3000,
+      "keepRaiders": true
     }
   ],
   "spells": [
@@ -168,16 +169,6 @@
         172,
         38
       ]
-    },
-    {
-      "spawn": "warden",
-      "tribe": 0,
-      "near": [
-        166,
-        60
-      ],
-      "count": 3,
-      "stance": "defensive"
     },
     {
       "spawn": "shaper",
@@ -270,7 +261,9 @@
             "type": "message",
             "text": "The Oath Stone is yours. Its strike now guards your road home."
           }
-        ]
+        ],
+        "prayerSeconds": 40,
+        "worshippers": 4
       }
     },
     {
@@ -354,6 +347,23 @@
       ],
       "count": 6,
       "spacing": 1.3
+    },
+    {
+      "spawn": "ley_stone",
+      "at": [
+        70,
+        110
+      ],
+      "site": {
+        "tag": "road_ley",
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The road ley is yours again. Hold it and the Oath Stone together."
+          }
+        ]
+      }
     }
   ],
   "props": [
@@ -438,23 +448,30 @@
     },
     {
       "type": "followers",
-      "n": 14,
+      "n": 24,
       "fromStage": true,
       "after": 0,
-      "text": "Fill the village again: gain fourteen more followers (raise dwellings, call in the wild folk)"
+      "text": "Fill the village again: gain twenty four more followers (raise dwellings, call in the wild folk)"
     },
     {
       "type": "kill",
-      "n": 24,
+      "n": 18,
       "tribe": 1,
       "after": 1,
-      "text": "The pursuers come for your Hearth: cut down twenty four of their warriors"
+      "text": "The pursuers march on your Hearth from the road: cut down eighteen of their warriors"
     },
     {
       "type": "worship",
       "site": "oath_stone",
       "after": 2,
-      "text": "Break the guards at the Oath Stone south of the road and pray there with three followers"
+      "text": "Break the keepers at the Oath Stone south of the road and pray there with four followers"
+    },
+    {
+      "type": "hold",
+      "n": 2,
+      "seconds": 210,
+      "after": 3,
+      "text": "Hold the Oath Stone and the old road ley at once for three and a half minutes while pursuers land on the beach to pray the ley away"
     }
   ],
   "lose": [
@@ -463,7 +480,7 @@
     },
     {
       "type": "timeLimit",
-      "seconds": 2400
+      "seconds": 2520
     }
   ],
   "triggers": [
@@ -475,7 +492,7 @@
       "do": [
         {
           "type": "message",
-          "text": "A war band is on your heels. March everyone east along the road to the old Hearth. If the Shaper falls, she returns only once the Hearth has risen."
+          "text": "A war band is on your heels. March east along the road to the old Hearth: only the Shaper can wake it, and if she falls she returns only once it has risen."
         }
       ]
     },
@@ -562,7 +579,8 @@
           150,
           66
         ],
-        "r": 10
+        "r": 10,
+        "unit": "shaper"
       },
       "do": [
         {
@@ -578,8 +596,55 @@
           "seconds": 6
         },
         {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 0,
+          "at": [
+            166,
+            60
+          ],
+          "stance": "defensive"
+        },
+        {
           "type": "message",
-          "text": "Your people are home, and the old Hearth rises out of the black water to meet them."
+          "text": "The Shaper is home. The old Hearth rises out of the black water, and its three old keepers come out to meet her."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 600
+      },
+      "until": 0,
+      "do": [
+        {
+          "type": "shape",
+          "shape": "disc",
+          "at": [
+            158,
+            50
+          ],
+          "r": 9,
+          "aboveSea": 40,
+          "falloff": 3,
+          "seconds": 6
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 0,
+          "at": [
+            166,
+            60
+          ],
+          "stance": "defensive"
+        },
+        {
+          "type": "message",
+          "text": "The old Hearth will not wait in the black water any longer: it rises alone with its three old keepers. Bring the Shaper to the gate stones."
         }
       ]
     },
@@ -612,11 +677,21 @@
         {
           "type": "spawn",
           "unit": "warden",
-          "n": 4,
+          "n": 6,
           "tribe": 1,
           "at": [
             140,
             96
+          ]
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 6,
+          "tribe": 1,
+          "at": [
+            112,
+            120
           ]
         },
         {
@@ -630,7 +705,7 @@
         },
         {
           "type": "message",
-          "text": "The pursuers march on your Hearth. Meet them on the road and cut them down."
+          "text": "Two pursuer bands march on your Hearth, one from the ridge and one from the ford. Meet them on the road and cut them down."
         }
       ]
     },
@@ -647,7 +722,7 @@
         {
           "type": "spawn",
           "unit": "warden",
-          "n": 8,
+          "n": 16,
           "tribe": 1,
           "at": [
             144,
@@ -657,7 +732,7 @@
         },
         {
           "type": "message",
-          "text": "Their war bands are broken. The Oath Stone rises south of the road and its keepers close ranks: break them and pray there."
+          "text": "Their war bands are broken. The Oath Stone rises south of the road and its keepers close ranks: break them and pray there with four followers."
         }
       ]
     },
@@ -665,7 +740,7 @@
       "when": {
         "type": "time",
         "seconds": 600,
-        "every": 75
+        "every": 60
       },
       "until": 2,
       "do": [
@@ -693,12 +768,100 @@
     {
       "when": {
         "type": "time",
-        "seconds": 2100
+        "seconds": 2220
       },
       "do": [
         {
           "type": "message",
           "text": "Five minutes remain."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 3
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "road_ley"
+        },
+        {
+          "type": "reveal",
+          "at": [
+            70,
+            110
+          ],
+          "r": 16
+        },
+        {
+          "type": "message",
+          "text": "The Oath Stone wakes the old ley on the road west. Take it and hold both stones while the last pursuers land on the beach to pray it away."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 3
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 1,
+          "at": [
+            16,
+            156
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            20,
+            150
+          ],
+          "n": 3,
+          "pray": "road_ley",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 840,
+        "every": 75
+      },
+      "until": 4,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 1,
+          "at": [
+            16,
+            156
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            20,
+            150
+          ],
+          "n": 3,
+          "pray": "road_ley",
+          "fresh": true
+        },
+        {
+          "type": "message",
+          "text": "Pursuers land on the western beach. When the road ley is awake they march to pray it away."
         }
       ]
     }

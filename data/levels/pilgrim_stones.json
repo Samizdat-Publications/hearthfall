@@ -1,5 +1,5 @@
 {
-  "$comment": "Campaign level 34 (S4 L7-C, chapter 3): a boat pilgrim chain on open sea. Home isle west, rival isle east, the high summit isle between them on the line of a sunken pilgrim road, and four small pilgrim isles to the north. Staged: raise a Boathouse; pray at the Tern, Gull and Heron Stones in order by boat. Each stone wakes the next, and its trigger lands that stone's guardians: unarmed rival pilgrims camped on its isle (settlers, so the level bot, which cannot clear armed guards on another landmass, can still out-pray them). Behind the player a rival boat lands a war band that kneels to pray the stone just taken away (raid pray, keepRaiders on). The Heron Stone lifts a reef path from the home coast to the Storm Stone (the level bot sends its boats with attack waves late in a game, so the fourth stone is reached on foot). The Storm Stone lifts the pilgrim road: the player marches past the summit guardians and burns the rival Boathouse in its fortified harbor (the rival may not rebuild one). Then the summit Reliquary wakes, a twelve warden rival band comes over the road to pray it away, and six followers pray there for four minutes to finish. The rival AI sails its own pilgrims only from 1200 s. At 420 s a rival boat lands wardens on the Tern Stone: an idle player loses it (siteLost before stage 1). Bot win near tick 27600.",
+  "$comment": "Campaign level 34 (S4 L7-C, chapter 3): a boat pilgrim chain on open sea. Home isle west, rival isle east (a fortified harbor and a Hearth ringed by twenty posted wardens and eight towers), the high summit isle between them on the line of a sunken pilgrim road, the Tern and Storm isles close by and the Gull and Heron isles far to the north. Staged: raise a Boathouse; pray at the Tern, Gull and Heron Stones in order by boat. Each stone wakes the next, and its trigger lands that stone's guardians: unarmed rival pilgrims camped on its isle (settlers, so the level bot, which cannot clear armed guards on another landmass, can still out-pray them). Behind the player a rival boat lands a war band that kneels to pray the stone just taken away (raid pray, keepRaiders on). The Heron Stone lifts a reef path from the home coast to the Storm Stone (the level bot sends its boats with attack waves late in a game, so the fourth stone is reached on foot), and five posted rival wardens hold the Storm isle: the player fights through them on the reef. The Storm Stone lifts the pilgrim road: the player marches past the summit guards and burns the rival Boathouse in its fortified harbor (the rival may not rebuild one). Then the summit Reliquary wakes, a fourteen warden rival band comes over the road to pray it away, and six followers pray there for four minutes to finish. The rival AI sails its own pilgrims only from 1200 s. At 420 s a rival boat lands wardens on the Tern Stone: an idle player loses it (siteLost before stage 1). Bot stages near ticks 1250, 4250, 7250, 14000, 22500, 27750; bot win near tick 34250.",
   "id": "pilgrim_stones",
   "name": "The Pilgrim Stones",
   "order": 34,
@@ -63,8 +63,8 @@
       {
         "shape": "disc",
         "at": [
-          100,
-          84
+          96,
+          56
         ],
         "r": 7,
         "aboveSea": 38,
@@ -73,8 +73,8 @@
       {
         "shape": "disc",
         "at": [
-          156,
-          84
+          160,
+          56
         ],
         "r": 7,
         "aboveSea": 42,
@@ -139,29 +139,29 @@
     {
       "model": "prop.cairn",
       "at": [
-        97,
-        82
+        93,
+        54
       ]
     },
     {
       "model": "prop.cairn",
       "at": [
-        103,
-        87
+        99,
+        59
       ]
     },
     {
       "model": "prop.cairn",
       "at": [
-        153,
-        82
+        157,
+        54
       ]
     },
     {
       "model": "prop.cairn",
       "at": [
-        159,
-        87
+        163,
+        59
       ]
     },
     {
@@ -353,7 +353,7 @@
         216,
         186
       ],
-      "count": 12,
+      "count": 20,
       "stance": "defensive"
     },
     {
@@ -423,6 +423,22 @@
       ]
     },
     {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        204,
+        190
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        220,
+        174
+      ]
+    },
+    {
       "spawn": "warden_lodge",
       "tribe": 1,
       "at": [
@@ -479,8 +495,8 @@
     {
       "spawn": "ward_stone",
       "at": [
-        100,
-        84
+        96,
+        56
       ],
       "site": {
         "tag": "gull_stone",
@@ -498,8 +514,8 @@
     {
       "spawn": "seer_stone",
       "at": [
-        156,
-        84
+        160,
+        56
       ],
       "site": {
         "tag": "heron_stone",
@@ -576,33 +592,33 @@
       "type": "worship",
       "site": "gull_stone",
       "after": 1,
-      "text": "Pray at the Gull Stone to the north with four followers; drive off or out-pray the rival pilgrims camped there"
+      "text": "Sail north to the far Gull Stone and pray there with four followers; out-pray the rival pilgrims camped on its isle"
     },
     {
       "type": "worship",
       "site": "heron_stone",
       "after": 2,
-      "text": "Pray at the Heron Stone to the north east with four followers"
+      "text": "Sail to the Heron Stone on the far north eastern isle and pray there with four followers"
     },
     {
       "type": "worship",
       "site": "storm_ley",
       "after": 3,
-      "text": "Walk the risen reef path to the Storm Stone and pray there with five followers"
+      "text": "Walk the risen reef path, cut down the rival guards on the Storm isle and pray at the Storm Stone with five followers"
     },
     {
       "type": "destroy",
       "tribe": 1,
       "building": "boathouse",
       "after": 4,
-      "text": "March over the risen pilgrim road, past the summit guards, and burn the rival Boathouse in its harbor"
+      "text": "March over the risen pilgrim road, past the summit guards, and burn the rival Boathouse in its fortified harbor"
     },
     {
       "type": "worship",
       "site": "pilgrim_crown",
       "fromStage": true,
       "after": 5,
-      "text": "Climb the summit and pray at its Reliquary with six followers before the rival band prays it away"
+      "text": "Climb the summit, break the rival band on the road and pray at the Reliquary with six followers before the band prays it away"
     }
   ],
   "lose": [
@@ -714,24 +730,24 @@
         {
           "type": "reveal",
           "at": [
-            100,
-            84
+            96,
+            56
           ],
           "r": 9
         },
         {
           "type": "spawn",
           "unit": "settler",
-          "n": 4,
+          "n": 6,
           "tribe": 1,
           "at": [
-            104,
-            80
+            100,
+            52
           ]
         },
         {
           "type": "message",
-          "text": "The Tern Stone wakes the Gull Stone to the north, but rival pilgrims already camp on its isle, waiting to kneel."
+          "text": "The Tern Stone wakes the Gull Stone, far to the north, but rival pilgrims already camp on its isle, waiting to kneel."
         }
       ]
     },
@@ -748,19 +764,19 @@
         {
           "type": "reveal",
           "at": [
-            156,
-            84
+            160,
+            56
           ],
           "r": 9
         },
         {
           "type": "spawn",
           "unit": "settler",
-          "n": 4,
+          "n": 6,
           "tribe": 1,
           "at": [
-            160,
-            80
+            164,
+            52
           ]
         },
         {
@@ -769,23 +785,23 @@
           "n": 3,
           "tribe": 1,
           "at": [
-            103,
-            81
+            99,
+            53
           ]
         },
         {
           "type": "raid",
           "tribe": 1,
           "to": [
-            100,
-            84
+            96,
+            56
           ],
           "fresh": true,
           "pray": "gull_stone"
         },
         {
           "type": "message",
-          "text": "The Gull Stone wakes the Heron Stone, where more rival pilgrims camp. Behind you a rival boat lands wardens to pray the Gull Stone away."
+          "text": "The Gull Stone wakes the far Heron Stone, where more rival pilgrims camp. Behind you a rival boat lands wardens to pray the Gull Stone away."
         }
       ]
     },
@@ -826,7 +842,7 @@
         {
           "type": "spawn",
           "unit": "settler",
-          "n": 5,
+          "n": 7,
           "tribe": 1,
           "at": [
             170,
@@ -836,26 +852,37 @@
         {
           "type": "spawn",
           "unit": "warden",
+          "n": 5,
+          "tribe": 1,
+          "at": [
+            170,
+            144
+          ],
+          "stance": "defensive"
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
           "n": 3,
           "tribe": 1,
           "at": [
-            159,
-            81
+            163,
+            53
           ]
         },
         {
           "type": "raid",
           "tribe": 1,
           "to": [
-            156,
-            84
+            160,
+            56
           ],
           "fresh": true,
           "pray": "heron_stone"
         },
         {
           "type": "message",
-          "text": "The Heron Stone lifts a reef path from your coast to the Storm Stone. Rival pilgrims wait there, and rival wardens kneel at the Heron Stone."
+          "text": "The Heron Stone lifts a reef path from your coast to the Storm Stone. Rival wardens hold its isle, and more kneel at the Heron Stone."
         }
       ]
     },
@@ -945,7 +972,7 @@
         {
           "type": "spawn",
           "unit": "warden",
-          "n": 12,
+          "n": 14,
           "tribe": 1,
           "at": [
             168,

@@ -1,9 +1,9 @@
 {
-  "$comment": "Campaign level 32 (chapter 3). Two below-sea trenches cut the land into strips; the rival plateau is a sheer cliff that only the old road ramp climbs, so boats cannot land on it. Stages: Reliquary (teaches Whirlwind) before a rival boat raid at 480 s prays it, Boathouse, drowned shrine over trench 1 (raises the first road span), hold the road stone 360 s under rival raids every 60 s, then the last span rises and both Watchtowers must burn; the rival village sits far north on the plateau so the bot burns the forts instead of eliminating the tribe. Bot wins near tick 26100.",
+  "$comment": "Campaign level 32 (chapter 3). Two below-sea trenches cut the land into strips; the rival plateau is a sheer cliff that only the old road ramp climbs, so boats cannot land on it. Stages: Reliquary (teaches Whirlwind) before a rival boat raid at 480 s prays it, Boathouse, drowned shrine over trench 1 (raises the first road span, four worshippers), pray the road stone away and hold it 420 s while rival boats land beside it every 90 s from 840 s (a slower player meets a bigger garrison there), then the last span rises and all three Watchtowers (forts) must burn; the rival village sits far north on the plateau so the bot burns the forts instead of eliminating the tribe. Bot wins near tick 27500.",
   "id": "sunken_road",
   "name": "The Sunken Road",
   "order": 32,
-  "description": "The old road to the rival's forts is sunk under two drowned trenches that cut the land into three strips. Pray at the near Reliquary before rival boats take it, raise a Boathouse, win the drowned shrine and the road stone on the middle strip, then raise the road and burn both forts.",
+  "description": "The old road to the rival forts is sunk under two drowned trenches that cut the land into three strips. Pray at the near Reliquary before rival boats take it, raise a Boathouse, win the drowned shrine and the road stone on the middle strip, then raise the road and burn all three forts.",
   "seed": 3207,
   "map": {
     "generator": "flat",
@@ -516,7 +516,7 @@
       ],
       "site": {
         "tag": "drowned_shrine",
-        "worshippers": 5,
+        "worshippers": 4,
         "prayerSeconds": 45,
         "dormant": true,
         "rewards": [
@@ -633,13 +633,31 @@
       ]
     },
     {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        146,
+        132
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        142,
+        134
+      ],
+      "count": 12,
+      "stance": "defensive"
+    },
+    {
       "spawn": "warden",
       "tribe": 1,
       "near": [
         160,
         88
       ],
-      "count": 10,
+      "count": 16,
       "stance": "defensive"
     },
     {
@@ -649,7 +667,27 @@
         174,
         138
       ],
-      "count": 10,
+      "count": 16,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "firecaller",
+      "tribe": 1,
+      "near": [
+        176,
+        140
+      ],
+      "count": 2,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "firecaller",
+      "tribe": 1,
+      "near": [
+        158,
+        90
+      ],
+      "count": 2,
       "stance": "defensive"
     },
     {
@@ -711,7 +749,7 @@
       "building": "boathouse",
       "n": 1,
       "after": 0,
-      "text": "Raise a Boathouse on the shore of the first trench (or bridge it with Raise Land)"
+      "text": "Raise a Boathouse on the shore of the first trench"
     },
     {
       "type": "worship",
@@ -723,16 +761,16 @@
       "type": "hold",
       "n": 1,
       "kind": "ley_stone",
-      "seconds": 360,
+      "seconds": 420,
       "after": 2,
-      "text": "Pray the road stone away from the rival and hold it for six minutes while rival boats land"
+      "text": "Pray the road stone away from the rival and hold it for seven minutes while rival boats land beside it"
     },
     {
       "type": "destroy",
       "tribe": 1,
       "building": "watchtower",
       "after": 3,
-      "text": "Cross the risen road and burn both rival forts (their Watchtowers)"
+      "text": "Cross the risen road and burn all three rival forts (their Watchtowers)"
     }
   ],
   "lose": [
@@ -837,7 +875,7 @@
         {
           "type": "spawn",
           "unit": "warden",
-          "n": 5,
+          "n": 8,
           "tribe": 1,
           "at": [
             118,
@@ -851,20 +889,20 @@
             104,
             80
           ],
-          "n": 5,
+          "n": 8,
           "fresh": true
         },
         {
           "type": "message",
-          "text": "Rival boats land on the middle strip to keep the road stone. Pray it away and hold it."
+          "text": "Rival boats land on the middle strip to keep the road stone, and more will come every minute and a half. Pray it away and hold it."
         }
       ]
     },
     {
       "when": {
         "type": "time",
-        "seconds": 600,
-        "every": 60
+        "seconds": 840,
+        "every": 90
       },
       "until": 3,
       "do": [
@@ -874,8 +912,8 @@
           "n": 3,
           "tribe": 1,
           "at": [
-            118,
-            108
+            116,
+            84
           ]
         },
         {
@@ -886,6 +924,27 @@
             80
           ],
           "n": 3,
+          "pray": "road_ley",
+          "fresh": true
+        },
+        {
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 1,
+          "tribe": 1,
+          "at": [
+            116,
+            84
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            104,
+            80
+          ],
+          "n": 1,
           "pray": "road_ley",
           "fresh": true
         }
@@ -916,7 +975,7 @@
         {
           "type": "spawn",
           "unit": "warden",
-          "n": 10,
+          "n": 14,
           "tribe": 1,
           "at": [
             162,
@@ -930,7 +989,7 @@
             118,
             96
           ],
-          "n": 10,
+          "n": 14,
           "fresh": true
         },
         {
@@ -944,7 +1003,7 @@
         },
         {
           "type": "message",
-          "text": "The road stone lifts the last span of the Sunken Road. Wardens from the middle strip join you: burn both forts."
+          "text": "The road stone lifts the last span of the Sunken Road. Wardens from the middle strip join you: burn all three forts."
         }
       ]
     },

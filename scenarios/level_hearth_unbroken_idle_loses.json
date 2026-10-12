@@ -1,11 +1,11 @@
 {
   "id": "level_hearth_unbroken_idle_loses",
-  "description": "The Hearth Unbroken (level 35) has a real loss: an idle player never takes the Heart Stone, the three rivals outlast them and the time limit runs out (or the Hearth falls first).",
+  "description": "The Hearth Unbroken (level 35) has a real loss: an idle player never takes the Heart Stone, and the north eastern war bands that come every two minutes from 900 s burn its Hearth near tick 22000 (hearthLost, well before the time limit).",
   "tags": ["levels"],
   "level": "hearth_unbroken",
-  "runTicks": 80100,
+  "runTicks": 24000,
   "assert": [
-    { "at": 20000, "expr": "!level.won && level.objectivesDone == 0" },
-    { "at": 80100, "expr": "level.lost && !level.won && level.objectivesDone == 0 && alive(2) && alive(3) && invariants() == 0" }
+    { "at": 20000, "expr": "!level.won && !level.lost && level.objectivesDone == 0 && count(tribe0.hearths) == 1" },
+    { "at": 24000, "expr": "level.lost && !level.won && level.objectivesDone == 0 && count(tribe0.hearths) == 0 && alive(2) && alive(3) && invariants() == 0" }
   ]
 }

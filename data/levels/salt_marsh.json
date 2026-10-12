@@ -1,5 +1,5 @@
 {
-  "$comment": "Campaign level 29 (S4 chapter 3, The Far Shores): low marsh isles on a shallow sea. The home isle (west) reaches the middle isle by an old causeway that drowns at high tide; tidal flats join the middle isle to the north and south isles at low water; a deep channel parts them all from the boat people's isle (east). Tides: high water until 40 s, then every 120 s the causeway and flats rise (40 s) and go under (100 s) over 8 s, with a message 10 s before each. The rival (aggressive, hard, maxTroops 14, maxPopulation 40) may build only dwellings, a warden lodge and Boathouses (tribes[].buildings), starts with two Boathouses by its western shore, two boats and six posted wardens at its boatyard, and ferries its waves by water. Staged: walk a warden along the causeway to its head at low tide (reach); raise a Boathouse (build), which wakes three dormant marsh stones (middle seer, north ley, south ward) and lands three raiders on the north isle; from minute 8 boat raiders land two at a time on the north and south isles every 100 s to pray the stones away (spawned on the isle shore: a raid reward cannot board boats) until the hold is done; hold stones on two isles at once for three minutes (hold n 2); that raises a dry road beside the causeway above every tide (the bot only sends waves at buildings on its own landmass, and with the tidal causeway alone it broke the rival by its Hearth instead) and a sandbar to the boatyard; burn both rival Boathouses (destroy, not eliminateAll; the rival still stands at the bot win). Mire breaks the landings. Bot win about 22900 (stages at about 1500, 6750 and 20500), time limit 2400 s.",
+  "$comment": "Campaign level 29 (S4 chapter 3, The Far Shores): low marsh isles on a shallow sea. The home isle (west) reaches the middle isle by an old causeway that drowns at high tide; tidal flats join the middle isle to the north and south isles at low water; a deep channel parts them all from the boat people's isle (east). Tides: high water until 40 s, then every 120 s the causeway and flats rise (40 s) and go under (100 s) over 8 s, with a message 10 s before each. The rival (aggressive, hard, maxTroops 14, maxPopulation 40, keepRaiders) may build only dwellings, a warden lodge and Boathouses (tribes[].buildings), starts with two Boathouses by its western shore, two boats and six posted wardens at its boatyard, and ferries its waves by water. Staged: walk a warden along the causeway to its head at low tide (reach); raise a Boathouse (build), which wakes three dormant marsh stones (middle seer, north ley, south ward) and lands three raiders who pray at the north ley; from 480 s (south) and 545 s (north) two boat raiders land on each of those isles every 130 s and pray the stones away (spawned on the isle shore: a raid reward cannot board boats) until the hold is done. keepRaiders keeps them kneeling instead of drafting them into waves, so they do take stones (in the bot run the north ley and south ward fall to them and the seer changes hands); hold stones on two isles at once for 150 s (hold n 2, a streak that restarts whenever a stone falls); that raises a dry road beside the causeway above every tide (the bot only sends waves at buildings on its own landmass, and with the tidal causeway alone it broke the rival by its Hearth instead) and a sandbar to the boatyard; burn both rival Boathouses (destroy, not eliminateAll; the rival still stands at the bot win). Mire breaks the landings. Bot win about 23700 (stages at about 1400, 6700 and 19200), time limit 2520 s.",
   "id": "salt_marsh",
   "name": "The Salt Marsh",
   "order": 29,
@@ -133,7 +133,8 @@
         "dwelling",
         "warden_lodge",
         "boathouse"
-      ]
+      ],
+      "keepRaiders": true
     }
   ],
   "spells": [
@@ -523,9 +524,9 @@
     {
       "type": "hold",
       "n": 2,
-      "seconds": 180,
+      "seconds": 150,
       "after": 1,
-      "text": "Pray at stones on two different isles and hold both at once for three minutes while the boat people land raiders"
+      "text": "Pray at stones on two different isles and hold both at once for two and a half minutes while boat raiders land to pray them away"
     },
     {
       "type": "destroy",
@@ -541,7 +542,7 @@
     },
     {
       "type": "timeLimit",
-      "seconds": 2400
+      "seconds": 2520
     }
   ],
   "triggers": [
@@ -752,7 +753,7 @@
         },
         {
           "type": "message",
-          "text": "The marsh stones rise from the reeds on three isles, and a rival boat lands raiders on the north isle. Take stones on two isles and hold both for three minutes."
+          "text": "The marsh stones rise from the reeds on three isles, and rival raiders land on the north isle. Hold stones on two isles for two and a half minutes."
         }
       ]
     },
@@ -760,7 +761,7 @@
       "when": {
         "type": "time",
         "seconds": 480,
-        "every": 100
+        "every": 130
       },
       "until": 2,
       "do": [
@@ -784,14 +785,18 @@
           "n": 2,
           "pray": "south_ward",
           "fresh": true
+        },
+        {
+          "type": "message",
+          "text": "Boat raiders land on the south isle to pray the ward stone away."
         }
       ]
     },
     {
       "when": {
         "type": "time",
-        "seconds": 530,
-        "every": 100
+        "seconds": 545,
+        "every": 130
       },
       "until": 2,
       "do": [
@@ -815,6 +820,10 @@
           "n": 2,
           "pray": "north_ley",
           "fresh": true
+        },
+        {
+          "type": "message",
+          "text": "Boat raiders land on the north isle to pray the ley stone away."
         }
       ]
     },
@@ -873,7 +882,7 @@
     {
       "when": {
         "type": "time",
-        "seconds": 2100
+        "seconds": 2220
       },
       "do": [
         {

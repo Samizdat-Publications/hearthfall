@@ -1,5 +1,5 @@
 {
-  "$comment": "Campaign level 33 (chapter 3). A forest clearing ringed by eleven wolf dens (beastPrey all, so rival raiders are bitten too); the rival lives on a sheer crag across the northern strait that no boat lands on, so it is never conquered and every rival attack is a scripted boat landing on the north shore. Stages: clear the four near dens (a raid on the Hearth at 540 s punishes an idle start), pray both rival ley stones away and keep both 300 s while raids pray them back by turns, clear every den left, kill 14 of the landed war band, then win King of the Hill at the Moon Reliquary (counted from that stage; rival bands march on it every 60 s). Wolves come back by den regrowth, not trigger spawns (a spawned wolf joins no den). Bot wins near tick 30560.",
+  "$comment": "Campaign level 33 (chapter 3). A forest clearing ringed by eleven wolf dens (beastPrey all, so rival raiders are bitten too); the rival lives on a sheer crag across the northern strait that no boat lands on, so it is never conquered and every rival attack is a scripted landing. Stages: clear the four near dens (a raid on the Hearth at 540 s punishes an idle start), pray both rival ley stones away and keep both 300 s while raids pray them back by turns, clear every den left, kill 14 of a war band that lands on the far south shore (it pulls the army off the knoll), then win King of the Hill at the Moon Reliquary (counted from that stage) against a host that steps out of the north woods as the stage opens; praying the Reliquary gives six wardens but calls a second host, and small bands land every 60 s from 1320 s. The opponent AI camps the hill from the start, so the knoll stays in the clearing. Bot wins near tick 31250.",
   "id": "night_of_wolves",
   "name": "Night of Wolves",
   "order": 33,
@@ -240,10 +240,16 @@
         "dormant": true,
         "rewards": [
           {
+            "type": "spawn",
+            "unit": "warden",
+            "n": 6
+          },
+          {
             "type": "message",
-            "text": "The Moon Reliquary wakes."
+            "text": "The moon answers: six wardens step out of the dark to stand with you. But the rival saw the light, and another host comes out of the woods."
           }
-        ]
+        ],
+        "prayerSeconds": 20
       }
     },
     {
@@ -604,13 +610,13 @@
       "n": 14,
       "tribe": 1,
       "after": 2,
-      "text": "Cut down 14 of the rival's people when their war band lands"
+      "text": "Cut down 14 of the rival war band that lands on the south shore"
     },
     {
       "type": "victory",
       "fromStage": true,
       "after": 3,
-      "text": "Keep more of your people than the rival at the Moon Reliquary for four minutes in all"
+      "text": "Keep more of your people than the rival at the Moon Reliquary for four minutes in all while rival boats land to take it"
     }
   ],
   "lose": [
@@ -795,11 +801,11 @@
         {
           "type": "spawn",
           "unit": "warden",
-          "n": 12,
+          "n": 16,
           "tribe": 1,
           "at": [
-            96,
-            52
+            132,
+            160
           ]
         },
         {
@@ -809,7 +815,7 @@
             96,
             124
           ],
-          "n": 12,
+          "n": 16,
           "fresh": true
         },
         {
@@ -818,8 +824,8 @@
           "n": 4,
           "tribe": 1,
           "at": [
-            96,
-            52
+            132,
+            160
           ]
         },
         {
@@ -834,7 +840,7 @@
         },
         {
           "type": "message",
-          "text": "The forest is quiet, and the rival war band lands on the north shore. Cut it down."
+          "text": "The forest is quiet. The rival war band rounds the coast by boat and lands on the south shore to march on your Hearth. Cut it down."
         }
       ]
     },
@@ -857,15 +863,103 @@
           "r": 10
         },
         {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 20,
+          "tribe": 1,
+          "at": [
+            96,
+            84
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            96,
+            102
+          ],
+          "n": 20,
+          "fresh": true
+        },
+        {
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 6,
+          "tribe": 1,
+          "at": [
+            96,
+            84
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            96,
+            102
+          ],
+          "n": 6,
+          "fresh": true
+        },
+        {
           "type": "message",
-          "text": "The Moon Reliquary on the knoll wakes. Keep more of your people there than the rival for four minutes in all."
+          "text": "The Moon Reliquary wakes and a rival host steps out of the north woods to take the knoll. Keep more people there than the rival. A prayer there calls help."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "worship",
+        "site": "moon_reliquary"
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 16,
+          "tribe": 1,
+          "at": [
+            96,
+            84
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            96,
+            102
+          ],
+          "n": 16,
+          "fresh": true
+        },
+        {
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            96,
+            84
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            96,
+            102
+          ],
+          "n": 4,
+          "fresh": true
         }
       ]
     },
     {
       "when": {
         "type": "time",
-        "seconds": 1200,
+        "seconds": 1320,
         "every": 60
       },
       "until": 4,
@@ -888,6 +982,26 @@
             102
           ],
           "n": 4,
+          "fresh": true
+        },
+        {
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 1,
+          "tribe": 1,
+          "at": [
+            96,
+            52
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            96,
+            102
+          ],
+          "n": 1,
           "fresh": true
         }
       ]

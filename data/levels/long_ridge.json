@@ -1,5 +1,5 @@
 {
-  "$comment": "Campaign level 27 (S4 L7-C, chapter 3): a long steep ridge (two painted ridge segments) splits the island east to west; the only gap is a narrow pass in the middle where a ward stone stands, held by the northern rival at the start, so it strikes the player's units that come near. The western tip of the ridge ends in a short strait: Raise Land bridges it for a second way north. Staged: raise two more Warden Lodges (build up), pray the ward stone away and hold it for two and a half minutes while fresh northern bands (spawn plus fresh raid, bounded by until) come to pray it back or march through the pass, cut down ten northern wardens (the posted wall of wardens that answers the hold, and any band), then break through and burn both northern Warden Lodges (destroy, not eliminateAll). Four ridge herders join the player when the hold is done; the wall is six posted wardens. The rival cannot raise new lodges (its own buildings list). Bot (offset 1) wins about 17330; offsets 0, 2, 3 win near 12380, 19200 and 17960 of the 34000 limit; an idle player loses its Hearth to the bands near tick 12420.",
+  "$comment": "Campaign level 27 (S4 L7-C, chapter 3): a long steep ridge (two painted ridge segments) splits the island east to west; the only gap is a narrow pass in the middle where a ward stone stands, held by the northern rival at the start, so it strikes the player's units that come near. The western tip of the ridge ends in a short strait: Raise Land bridges it for a second way north. Staged: raise two more Warden Lodges (build up), pray the ward stone away and hold it for two and a half minutes while fresh northern bands (spawn plus fresh raid, bounded by until) come to pray it back or march through the pass, cut down ten northern wardens (the posted wall of wardens that answers the hold, and any band), then break through and burn both northern Warden Lodges (destroy, not eliminateAll). Four ridge herders join the player when the hold is done; the wall is six posted wardens. The rival cannot raise new lodges (its own buildings list). Bot (offset 1) wins about 17330; offsets 0, 2, 3 win near 12380, 19200 and 17960 of the 35200 limit (1760 s, over 2x the offset 1 win); an idle player loses its Hearth to the bands near tick 12420.",
   "id": "long_ridge",
   "name": "The Long Ridge",
   "order": 27,
@@ -67,7 +67,7 @@
   ],
   "lose": [
     { "type": "hearthLost" },
-    { "type": "timeLimit", "seconds": 1700 }
+    { "type": "timeLimit", "seconds": 1760 }
   ],
   "triggers": [
     { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "The ridge is too steep to climb and the north holds the stone in its only pass. Build up first. The western tip ends in a strait that Raise Land could bridge." }] },
@@ -87,6 +87,6 @@
       { "type": "message", "text": "The pass is yours and ridge herders come to fight beside you. The north plants a wall of wardens beyond it: cut them down." }
     ] },
     { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "message", "text": "Their wardens are broken. Burn both lodges, west and east of their Hearth." }] },
-    { "when": { "type": "time", "seconds": 1400 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+    { "when": { "type": "time", "seconds": 1460 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
   ]
 }

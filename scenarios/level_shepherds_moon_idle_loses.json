@@ -1,10 +1,12 @@
 {
   "id": "level_shepherds_moon_idle_loses",
-  "description": "Campaign level 28 has a real loss: an idle player never grows, never clears the woods and runs out of time in the hills.",
+  "description": "Campaign level 28 has a real loss: an idle player never grows or clears the woods, and once the moon rises (from minute 6) the far tribe's night hunters burn its Hearth (hearthLost, between ticks 9000 and 10000), long before the time limit.",
   "tags": ["levels"],
   "level": "shepherds_moon",
   "runTicks": 42100,
   "assert": [
+    { "at": 6000, "expr": "!level.lost && !level.won && level.objectivesDone == 0" },
+    { "at": 12000, "expr": "level.lost && !level.won && count(tribe0.hearths) == 0 && level.objectivesDone == 0 && events.count('levelLost') == 1 && invariants() == 0" },
     { "at": 42100, "expr": "level.lost && !level.won && invariants() == 0" }
   ]
 }

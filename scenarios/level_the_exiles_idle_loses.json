@@ -1,10 +1,12 @@
 {
   "id": "level_the_exiles_idle_loses",
-  "description": "Campaign level 30 is not won by doing nothing: an idle band never marches, the pursuers cut it down on the beach and gather at the gate, the Hearth never rises, and the level ends lost.",
+  "description": "Campaign level 30 is not won by doing nothing: an idle band never marches, so the sunk Hearth never rises (only the Shaper at the gate stones wakes it), and the pursuers landing on the beach cut the whole band down; the tribe falls and the level is lost near tick 7000, long before the time limit.",
   "tags": ["levels"],
   "level": "the_exiles",
-  "runTicks": 48100,
+  "runTicks": 12000,
   "assert": [
-    { "at": 48100, "expr": "level.lost && !level.won && level.objectivesDone == 0 && events.count('levelLost') == 1" }
+    { "at": 3000, "expr": "!level.lost && level.objectivesDone == 0 && !terrain.isLand([158,50])" },
+    { "at": 9000, "expr": "level.lost && !level.won && !alive(0) && level.objectivesDone == 0 && !terrain.isLand([158,50])" },
+    { "at": 12000, "expr": "level.lost && !level.won && events.count('levelLost') == 1 && invariants() == 0" }
   ]
 }
