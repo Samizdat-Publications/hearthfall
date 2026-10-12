@@ -65,6 +65,14 @@ h1 span { display: inline-block; }
 .panel > header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; }
 h2 { font: 700 clamp(26px, 4.2vw, 38px)/1.05 var(--display); margin: 0; text-wrap: balance; }
 .panel .hint { font: 400 12.5px/1.4 var(--mono); color: var(--muted); margin: 0; }
+.howto { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+.howto > div { background: var(--stone); border: 1px solid var(--stone-edge); border-radius: 8px; padding: 14px 16px; min-width: 0; }
+.howto h3 { margin: 0 0 8px; font: 600 15px/1.3 var(--body); color: var(--ember); }
+.howto p, .howto li { font: 400 14px/1.55 var(--body); color: var(--text); margin: 0 0 6px; }
+.howto ul, .howto ol { margin: 0; padding-left: 20px; }
+.howto pre { margin: 0 0 8px; padding: 10px 12px; overflow-x: auto; background: var(--space); border: 1px solid var(--stone-edge); border-radius: 6px; font: 400 13px/1.5 var(--mono); color: var(--text); }
+.howto code { font: 400 13px var(--mono); color: var(--ember); overflow-wrap: anywhere; }
+.howto kbd { font: 600 12px var(--mono); padding: 1px 5px; border: 1px solid var(--stone-edge); border-radius: 4px; background: var(--space); color: var(--text); }
 
 /* run track */
 .trackbox { background: var(--stone); border: 2px solid var(--stone-edge); padding: 12px 0 10px; overflow-x: auto; }
@@ -212,6 +220,39 @@ dialog#lb .lbbar p { flex: 1; margin: 0; font-size: 13.5px; min-width: 0; }
     </div>
   </section>
   %%CHAPTERS%%
+  <section class="panel" id="how-to-run" aria-labelledby="run-h">
+    <header><h2 id="run-h">How to run the game</h2><p class="hint">Stewart's reminder. The same steps live in docs/PROGRESS.md under First human playtest.</p></header>
+    <div class="howto">
+      <div>
+        <h3>Start it</h3>
+        <p>Open a terminal (Git Bash, PowerShell or cmd) and run:</p>
+        <pre>cd C:\Users\stewa\Documents\Claude\Hearthfall
+npm run build
+npm run serve</pre>
+        <p>Then open <code>http://127.0.0.1:5182/</code> in Chrome or Edge. Full screen at 1920x1080 or larger looks best; interface size is in Settings (it scales up on its own at 2560x1440).</p>
+        <p>Stop it with <kbd>Ctrl</kbd>+<kbd>C</kbd> in that terminal. Run <code>npm run build</code> again only after new work lands; <code>npm run serve</code> alone serves the last build.</p>
+      </div>
+      <div>
+        <h3>Where to start</h3>
+        <ol>
+          <li><b>Main menu, How to play</b>, then <b>Campaign</b>: three chapters, 35 levels, one idea per level.</li>
+          <li><b>Skirmish</b>: continents, one opponent on easy, first match tips on.</li>
+          <li>Two PCs on one network: see <code>docs/PLAYTEST.md</code> for LAN play.</li>
+        </ol>
+        <p>Goal: destroy every rival Hearth (or meet the goal at the top right) and keep your own Hearth and Shaper alive. Land that sinks drowns whoever stands on it.</p>
+      </div>
+      <div>
+        <h3>Keys worth remembering</h3>
+        <ul>
+          <li><kbd>D</kbd> Dwelling near the Hearth, <kbd>T</kbd> Watchtower (at 10 followers).</li>
+          <li>The slider at the top left splits mana between charging spells and training troops.</li>
+          <li><kbd>Z</kbd> <kbd>X</kbd> <kbd>C</kbd> <kbd>V</kbd> <kbd>B</kbd> <kbd>N</kbd> cast (Shift for the later spells), right click a spell to auto-charge, <kbd>Backspace</kbd> takes back a cast that has not landed.</li>
+          <li>Drag to select, right click to move, <kbd>A</kbd> attack-move, <kbd>R</kbd> retreat, <kbd>G</kbd> garrison, <kbd>Ctrl</kbd>+digit saves a group.</li>
+          <li>Wheel zooms, <kbd>Q</kbd> <kbd>E</kbd> rotate, <kbd>M</kbd> map, <kbd>P</kbd> or <kbd>Esc</kbd> pause, <kbd>H</kbd> lists every key, <kbd>F</kbd> photo mode.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
   <footer>%%FOOTER%%</footer>
 </main>
 <div class="tip" id="tip" aria-hidden="true"><img alt=""><p></p></div>
