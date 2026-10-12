@@ -8,7 +8,7 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 - S4 DONE Leg 5 LAN play (BACKLOG 15): L5-A to L5-F plus the campaign together (7c0f1df). Internet play waits for Stewart (public relay, deploy).
 - S4 DONE BACKLOG 9: 25 levels (22 Cloud Isles, 23 Stolen Stones, 24 Ember Crown); campaign rerun workflow over all 25 (bd7fb5e), every level scenario green.
 - S4 DONE Leg 6 "ready for people": L6-A to L6-D, L6-E probe (ed779c0), campaign fix round over 11 levels (6dc6c30). Full npm run qa PASS at a043684 (2026-10-12T02:50Z). Aggressive retune moved to L7-E.
-- S4 Leg 7 "more campaign, more detail" (ROADMAP): L7-A chapters, L7-D map detail v2 (1bdb641), L7-B level-author workflow (b95869d), L7-F UI v2 stone and scale (a09ae2e, a043684; ADR-024; canvas https://claude.ai/artifact/W7zGavMKosrktxgD55pj9Q) DONE. Now: L7-C chapter 3: first draft of 10 levels committed (43d2cf6, bot wins 14778 to 33750); fix round wf_6db6e827-33c over 8 levels (skeptic findings plus curve dips at 30 and 34) running.
+- S4 Leg 7 "more campaign, more detail" (ROADMAP): L7-A chapters, L7-D map detail v2 (1bdb641), L7-B level-author workflow (b95869d), L7-F UI v2 stone and scale (a09ae2e, a043684; ADR-024; canvas https://claude.ai/artifact/W7zGavMKosrktxgD55pj9Q) DONE. L7-C chapter 3 'The Far Shores' DONE (43d2cf6 draft, 3abdb41 fix round; 35 levels, levels layer 71/71). Now: L7-E trigger `after` (sim level.ts trigger loop: gate on done[after], time triggers count from the playTick it completed; new per-trigger startAt state saved and hashed only when a trigger has after; schema next to `until` in schemas.ts ~1542, validateLevel index.ts ~287, test in packages/sim/test/levelgaps.test.ts, DESIGN line 181 primitives).
 - USAGE CAP (Stewart, 2026-10-12): stop at about 85 percent of the weekly all-models limit (76 percent at 03:20Z; resets 2026-10-15T18:00Z). Check get_usage between steps, start no new workflows, pause cleanly at about 84 percent.
 - Stretch 2 (2026-10-10, 24 h) DONE: tag s2-done, full npm run qa PASS at 5e11f16. Run 1 done 2026-10-09T23:58Z: m0-done to m11-done tagged. Run started: 2026-10-08T21:25:00Z.
 - Screenshot mode: headless-shell + GPU args (RTX 5070 Ti Laptop). VisionQA provider ON (about $0.00003 per low shot).
@@ -17,9 +17,9 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 - Making-of page: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5 (version 34), rebuild with `npm run making-of -- page` and republish after every backlog item (README steps).
 
 ## Next 3 actions
-1. When the chapter 3 fix round ends: no zz_probe files, levels layer, qa:fast, review the diff, commit; making-of shots of chapter 3 (levels shot set) and republish.
-2. L7-E level engine gaps (ROADMAP list, most-hit first): trigger `after` stage-relative start, spawned wolves join a den, the level bot aims at a kill objective's tribe; each with a unit test, then rerun the levels layer.
-3. L7-E aggressive personality retune (data only, playtest-analyst soak), then rival spell use.
+1. L7-E trigger `after` (see Now), qa:fast, commit; then use it in salt_marsh, sunken_road, night_of_wolves, hearth_unbroken raids (data, levels layer).
+2. L7-E: spawned wolves join a den; the level bot aims at a kill objective's tribe (unit tests, levels layer).
+3. Making-of shots of chapter 3 levels and republish (v35); pause at about 84 percent weekly usage (77 percent at 03:58Z).
 
 ## Blocked
 (none)
