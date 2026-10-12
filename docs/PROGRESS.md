@@ -7,18 +7,18 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 - S4 DONE: stage-relative goals (0cb646a), raid pray and worship under threat (95b6a65), AI worship across water by boat or balloon (02d5a68), siteLost stage gate (b359244).
 - S4 DONE Leg 5 LAN play (BACKLOG 15): L5-A to L5-F plus the campaign together (7c0f1df). Internet play waits for Stewart (public relay, deploy).
 - S4 DONE BACKLOG 9: 25 levels (22 Cloud Isles, 23 Stolen Stones, 24 Ember Crown); campaign rerun workflow over all 25 (bd7fb5e), every level scenario green.
-- S4 Leg 6 "ready for people" (ROADMAP): L6-A LAN replays and L6-D playtest kit (46c4690), L6-B look follow-ups (d9a2209), L6-C level engine gaps (aec6dd9 flow field hang, 8b9c38d, 3991e46, c95fe13) DONE. Now: campaign fix round workflow wf_215155fe-3ad over 11 levels (critic follow-ups 1 to 10). L6-E probe done (ed779c0), aggressive retune moved to L7-E.
-- S4 Leg 7 (uncommitted, waits for the fix round to finish): L7-A campaign chapters (3 tabs), L7-B level-author workflow and chapter 3 briefs, L7-D map detail v2 (shore and settle decor zones, level `props`, 9 new prop models; Meshy budget now spent), L7-F UI v2 stone and scale (ADR-024; design canvas https://claude.ai/artifact/W7zGavMKosrktxgD55pj9Q): bundled fonts, stone tokens, UI scale slider 75 to 200 with fit to screen (1440p gets 135). Shot sets menus and smoke need approving, plus new shots hud_1440p_200, menu_settings_1440p, menu_campaign_1440p.
+- S4 DONE Leg 6 "ready for people": L6-A to L6-D, L6-E probe (ed779c0), campaign fix round over 11 levels (6dc6c30). Full npm run qa PASS at a043684 (2026-10-12T02:50Z). Aggressive retune moved to L7-E.
+- S4 Leg 7 "more campaign, more detail" (ROADMAP): L7-A chapters, L7-D map detail v2 (1bdb641), L7-B level-author workflow (b95869d), L7-F UI v2 stone and scale (a09ae2e, a043684; ADR-024; canvas https://claude.ai/artifact/W7zGavMKosrktxgD55pj9Q) DONE. Now: L7-C chapter 3 via the level-author workflow (briefs in tools/workflows/chapter3-briefs.json).
 - Stretch 2 (2026-10-10, 24 h) DONE: tag s2-done, full npm run qa PASS at 5e11f16. Run 1 done 2026-10-09T23:58Z: m0-done to m11-done tagged. Run started: 2026-10-08T21:25:00Z.
 - Screenshot mode: headless-shell + GPU args (RTX 5070 Ti Laptop). VisionQA provider ON (about $0.00003 per low shot).
 - Machine: often at 100 percent CPU (other projects' sims and benchmarks, leave them alone). Wall-clock timing is noisy, and bench readings of 6 to 7 ms while agents run scenarios are load, not regressions (idle: 3.7 ms).
 - Keys: Meshy, ElevenLabs, Gemini, OpenAI present; Tripo, PixelLab missing.
-- Making-of page: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5 (version 33), rebuild with `npm run making-of -- page` and republish after every backlog item (README steps).
+- Making-of page: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5 (version 34), rebuild with `npm run making-of -- page` and republish after every backlog item (README steps).
 
 ## Next 3 actions
-1. Fix round done: review its diff, no zz_probe files, scenarios --tag levels, qa:fast, e2e; commit the fix round, then L7-A, L7-D, L7-F separately (approve shot sets menus, smoke, look with reasons; making-of before and after).
-2. Leg 6 exit (full npm run qa, PROGRESS_LOG, making-of republish v34), then launch L7-C: level-author workflow with tools/workflows/chapter3-briefs.json.
-3. While chapter 3 authors: L7-E aggressive personality retune (data only) is blocked by live probes, so do UI polish and docs; after it, campaign-playtest over levels 26 to 35.
+1. L7-C: level-author workflow over the 10 chapter 3 briefs; while it runs, no qa:fast, no sim, ai or data/base gameplay edits (UI, docs and making-of only).
+2. After it: review the diff (no zz_probe files), levels layer, qa:fast, commit; then campaign-playtest over orders 26 to 35 (fix round).
+3. L7-E: aggressive personality retune (data only, playtest-analyst) and the engine gaps (AI clears guardians across water, fallen-tribe triggers); rewrite "State of the game".
 
 ## Blocked
 (none)
