@@ -151,3 +151,4 @@
 - 2026-10-12T02:23 set spells (9 shots): S4 L7-F UI v2: stone HUD panels and bundled fonts change every frame's HUD; scenes unchanged, DOM layout passes
 - 2026-10-12T02:24 set combat (8 shots): S4 L7-F UI v2: stone HUD panels and bundled fonts change every frame's HUD; scenes unchanged, DOM layout passes
 - 2026-10-12T02:24 set spells2 (9 shots): S4 L7-F UI v2: stone HUD panels and bundled fonts change every frame's HUD; scenes unchanged, DOM layout passes
+- 2026-10-12T04:16 set chapter3 (5 shots): S4 L7-C chapter 3 establishing shots, first baseline
