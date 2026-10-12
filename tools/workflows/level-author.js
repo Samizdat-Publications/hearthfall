@@ -18,6 +18,9 @@ export const meta = {
 // probe files sit in scenarios/ while the run is live).
 
 const briefs = (args && args.briefs) || []
+// S4 L8-B: args.chapter names the chapter in each brief (default chapter 3), args.chapterNotes adds chapter wide guidance
+const chapter = (args && args.chapter) || 'chapter 3 "The Far Shores"'
+const chapterNotes = (args && args.chapterNotes) || ''
 const perAgent = (args && args.perAgent) || 2
 if (!briefs.length) throw new Error('pass args.briefs: [{ id, order, name, target, brief }, ...]')
 
@@ -32,7 +35,7 @@ Hard rules for this run (several agents work in parallel on other levels):
 - Temporary probe scenarios must be named scenarios/zz_probe_<levelid>_<n>.json with "id": "zz_probe_<levelid>_<n>". Delete every one you create before you return.
 - Guards you may run: node tools/guards/dashes.mjs, node tools/guards/ip-names.mjs, node tools/guards/data.mjs. Text has no em or en dashes and no names from the original 90s god game. Every name and line of text is original.
 - What levels can express: grep the "level scripting primitives" bullets in docs/DESIGN.md and read the level schema in packages/data/src/schemas.ts (grep LevelSchema and the objective, trigger, reward and map paint parts). validateLevel in packages/data/src/index.ts adds cross checks. If the brief needs something the engine cannot do, adapt the design inside what it can do and report the gap under engineGaps; never hack around it.
-- Learn the file shapes from existing levels near your order: data/levels/ember_crown.json, data/levels/cloud_isles.json, data/levels/last_hearthfall.json, data/levels/hold_the_line.json, and their scenarios/level_<id>.json and scenarios/level_<id>_idle_loses.json. Set dressing: a level may place 'props' (render only: a decor model id from data/base/style.json render.decor kinds, such as prop.cairn, prop.ruin_a, prop.standing_stone, prop.fence, prop.haystack, at a cell with optional rot and size); use a handful to make key places read (a ruined road, cairns by a shrine, a farmstead). A new level needs: a unique id equal to its file name, the given order, name, description (two or three plain sentences: the situation and the goal), a seed, a map (generator flat plus paint shapes is how the hand made maps are drawn), tribes (0 is the player), spells, setup, objectives, lose, and triggers and messages as the design needs.
+- Learn the file shapes from existing levels near your order: data/levels/ember_crown.json, data/levels/cloud_isles.json, data/levels/last_hearthfall.json, data/levels/hold_the_line.json, data/levels/three_crowns.json (four tribes), data/levels/sunken_road.json and data/levels/salt_marsh.json (triggers with after, stage timed raids), and their scenarios/level_<id>.json and scenarios/level_<id>_idle_loses.json. Set dressing: a level may place 'props' (render only: a decor model id from data/base/style.json render.decor kinds, such as prop.cairn, prop.ruin_a, prop.standing_stone, prop.fence, prop.haystack, at a cell with optional rot and size); use a handful to make key places read (a ruined road, cairns by a shrine, a farmstead). A new level needs: a unique id equal to its file name, the given order, name, description (two or three plain sentences: the situation and the goal), a seed, a map (generator flat plus paint shapes is how the hand made maps are drawn), tribes (0 is the player), spells, setup, objectives, lose, and triggers and messages as the design needs.
 `
 
 const PROBE = `
@@ -40,8 +43,8 @@ How to measure the bot win timeline: copy scenarios/level_<id>.json to a probe f
 `
 
 const BRIEF = (b) => `
-Level ${b.id} "${b.name}" (campaign order ${b.order}, chapter 3 "The Far Shores"):
-${b.brief}
+Level ${b.id} "${b.name}" (campaign order ${b.order}, ${chapter}):
+${b.brief}${chapterNotes ? String.fromCharCode(10) + chapterNotes : ''}
 Pacing: the level bot wins near tick ${b.target} (plus or minus 25 percent). The time limit is at least 2x the bot win tick. Every stage asks for a decision or an action and takes the bot at least about 600 ticks; no padding (no stage that is only waiting or that the starting units finish untouched). Use at least 4 staged objectives (after chains). Objective text tells the player what to do in plain words.
 `
 

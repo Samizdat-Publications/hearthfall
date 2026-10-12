@@ -156,7 +156,8 @@
   "campaignChapters": [
     { "name": "The First Fires", "from": 1 },
     { "name": "The Wide Waters", "from": 13 },
-    { "name": "The Far Shores", "from": 26 }
+    { "name": "The Far Shores", "from": 26 },
+    { "name": "The Wild Heart", "from": 36 }
   ],
   "subtitles": {
     "voice.shaper.acknowledged": { "speaker": "Shaper", "text": "Ihra sovenu. (It will be so.)" },

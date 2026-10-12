@@ -46,32 +46,30 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 - Stretch 2 end (2026-10-10): BACKLOG 65 met for outnumbered probes (Warden 6 v Firecaller 10 70, Firecaller 6 v Chanter 10 60, Chanter 6 v Warden 10 80, mixed mirror 40); equal-number pairs still 100 percent. ai soak 64 x 20 min: aggressive 16, sneaky 15, turtle 13, unfinished 20 (the M7 sneaky skew is gone).
 
 ## State of the game (for Stewart)
-Rewritten in stretch 4 (2026-10-12, after the Leg 6 exit). Run 1 built the game (m0 to m11), stretch 2 added the look and the modes, stretch 3 grew the campaign to 22 levels, stretch 4 added LAN play, 3 more levels, chapters, map detail and the stone UI. The BACKLOG items left need you: 16 desktop build, 17 public deploy, 29 path strip.
+Rewritten 2026-10-12 evening, before Stewart's long playtest. Full `npm run qa` PASS at 9be218b, ai soak 96 x 25 clean, production build fresh. Run 1 built the game (m0 to m11), stretch 2 added the look and the modes, stretch 3 grew the campaign, stretch 4 added LAN play, chapters 2 and 3, map detail, the stone UI and the Leg 8 fixes. BACKLOG items that need you: 16 desktop build, 17 public deploy, 29 path strip.
 
 **What works**
 - The core god game: a small curved, wrapping planet where your Shaper leads a tribe from a Hearth. Settlers gather and build, followers pray for mana or train Wardens, Firecallers, Chanters and Shades. All 16 spells, eight taught at Reliquaries. Fog of war, minimap and map view (M).
-- Campaign of 25 hand-made levels in two chapters ("The First Fires" 1 to 12, "The Wide Waters" 13 to 25) on a route map with chapter tabs. Every level has a scenario where a bot wins it and one where an idle player loses; bot wins ramp from about tick 5300 to 35500, and every time limit is at least twice the bot's win. Chapter 3 "The Far Shores" (10 more levels) is being authored now.
-- UI v2 "carved hearthstone" (new): stone panels with a chiselled bevel, Marcellus SC headings and Alegreya Sans text (bundled, works offline). Interface size defaults to fit your screen (135 percent at 2560x1440) and Settings has a slider from 75 to 200 percent plus a Fit to screen button.
-- Map detail v2 (new): reeds, ferns and flowers along shores, woodpiles, pots, fences, haystacks and carts around villages, and authored props (cairns, ruins, standing stones) in the levels.
-- Look v3 "miniature diorama": tilt-shift focus, painted shallow water, thatched huts, snow caps, lighting presets and rain.
-- Modes: skirmish with victory variants (Conquest, Hold the Reliquaries, King of the Hill, Last Stand), Forge pre-match, boats and balloons, map editor, LAN versus and co-op (with the campaign together and watchable replays), photo mode, replays, records and achievements.
-- Opponent AI with three personalities and four difficulties; it worships across water by boat or balloon and raids worship sites.
-- Determinism and QA: every match replays bit for bit. `npm run qa` covers typecheck, code guards, 534 unit tests, 120 scenarios (51 level scenarios in their own layer), golden replays in Node and Chromium, sim and render benches, 11 screenshot sets with VisionQA, end-to-end checks at 1280x720 and 2560x1440 (including the interface slider), and the production build. Last full PASS at a043684.
-- Making-of page with every stage of the build: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5
+- Campaign of 35 hand-made levels in three chapters ("The First Fires" 1 to 12, "The Wide Waters" 13 to 25, "The Far Shores" 26 to 35) on a route map with chapter tabs. Every level has a scenario where a bot wins it and one where an idle player loses; bot wins ramp per chapter, and every time limit is at least twice the bot's win.
+- New tonight: the level bot raises a Boathouse a goal asks for at once, and four levels were retuned around it (Across the Strait, Salt Marsh, Sunken Road, Pilgrim Stones); boats fresh from a Boathouse no longer stall at the shore; right-click orders show a closing ring (green move, red attack, gold special) and the Shaper portrait selects her.
+- UI v2 "carved hearthstone": stone panels, Marcellus SC and Alegreya Sans, interface size fits your screen (135 percent at 2560x1440) with a 75 to 200 percent slider in Settings.
+- Look v3 "miniature diorama" (tilt-shift, painted shallow water, thatched huts, lighting presets, rain) plus map detail v2 (shore plants, village clutter, authored props).
+- Modes: skirmish with victory variants, Forge pre-match, boats and balloons, map editor, LAN versus and co-op (campaign together, watchable replays), photo mode, replays, records and achievements.
+- Opponent AI: three personalities, four difficulties, worships across water by boat or balloon, raids worship sites. Personalities now win about equally (aggressive 30, sneaky 26, turtle 27 of 96).
+- QA: 543 unit tests, 120 scenarios plus 71 level scenarios, golden replays in Node and Chromium, benches, 11 shot sets with VisionQA, end-to-end at 1280x720 and 2560x1440, production build.
 
 **Known issues**
-- Counters at equal numbers still win every time; mixed armies decide real games, so it plays fine (Balance gaps).
-- The aggressive AI personality runs hot in AI versus AI soaks; its retune is L7-E.
-- The AI clears guardians only on its home landmass, and a non-repeating spawn or raid still acts for a tribe that has fallen (both L7-E).
-- Ley Crown (level 16) is a little easier than its neighbours, and levels 21/22 and 23/24 finish at nearly the same bot time.
+- Counters at equal numbers still win every time; mixed armies decide real games.
+- Salt Marsh's bot win varies a lot with the start (about 18000 to 32000 ticks); its last stage is a long siege. Across the Strait's rival is smaller than before (if it feels easy, tell me).
+- The AI clears guardians only on its home landmass.
 - Online play, a desktop exe and a public URL are not built (they need you).
 
 **Top 5 next items**
-1. Your playtest notes, especially on the new UI size at 1440p and the later campaign levels.
-2. Chapter 3 "The Far Shores" (L7-C, in progress), then a campaign playtest pass over levels 26 to 35.
-3. AI support for the new levels (L7-E): the aggressive retune and the two engine gaps above.
-4. Static web deploy so the game opens from a link (BACKLOG 17; needs your OK and an account choice).
-5. More detail passes if the budget allows (the Meshy budget is spent; new props would be procedural or need a top up).
+1. Your playtest notes from tonight.
+2. Chapter 4 (L8-B, 10 levels in two batches), then its fix round.
+3. Map detail v3 (L8-C) for chapters 3 and 4.
+4. Static web deploy so the game opens from a link (BACKLOG 17; needs your OK).
+5. Engine gaps the tuners logged: posted guards count toward maxTroops; a destroy goal that stays open if its tribe falls early.
 
 ## First human playtest
 Two computers or a group session: see `docs/PLAYTEST.md` (LAN setup, what to try together, what to bring back).
