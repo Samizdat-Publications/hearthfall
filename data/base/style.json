@@ -137,13 +137,14 @@
       "chantRing": "#c39bff", "chantHalo": "#8a3cff", "melee": "#f2e6c8", "chantBreak": "#8a8378", "glow": "#ff7a2e"
     },
     "tiltShift": {
-      "$comment": "Tilt-shift miniature focus (BACKLOG 14a, ADR-013): sharp band at the camera focus (screen uv), blur ramps over falloff to maxBlur low-res pixels; depthWeight also blurs by distance from the focus depth. order pre = blur before palette quantization, post = after.",
+      "$comment": "Tilt-shift miniature focus (BACKLOG 14a, ADR-013): sharp band at the camera focus (screen uv), blur ramps over falloff to maxBlur low-res pixels (maxBlurCrisp screen pixels at 1080 rows in the crisp Pixel look, scaled by the render height); depthWeight also blurs by distance from the focus depth. order pre = blur before palette quantization, post = after.",
       "defaultOn": true,
       "order": "post",
       "bandCenter": 0.5,
       "bandHalf": 0.1,
       "falloff": 0.32,
       "maxBlur": 2.5,
+      "maxBlurCrisp": 9,
       "depthWeight": 0.6,
       "depthRange": 0.7,
       "saturation": 1.15,

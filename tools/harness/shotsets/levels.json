@@ -109,7 +109,7 @@
           "step": 2
         },
         {
-          "assert": "__game.getSummary().sites.length === 1"
+          "assert": "__game.getSummary().sites.some((s) => s.tag === 'sky_reliquary')"
         }
       ],
       "kind": "world",

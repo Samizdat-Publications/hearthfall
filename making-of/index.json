@@ -1490,6 +1490,26 @@
       "when": "2026-10-13T01:27:28.812Z",
       "source": "external:st1_many.png",
       "bytes": 367657
+    },
+    {
+      "file": "s4/20261013-0420_retro-vs-crisp.png",
+      "milestone": "S4",
+      "kind": "comparison",
+      "caption": "Retro pixels (left) against the new default Crisp look (right), same seed and camera: Stewart picked Crisp because it matches the painted HUD, a little more modern, almost Dwarf Fortress. Retro stays in Settings, Pixel look.",
+      "highlight": true,
+      "when": "2026-10-13T04:20:30.039Z",
+      "source": "external:retro_vs_crisp.png",
+      "bytes": 1260239
+    },
+    {
+      "file": "s4/20261013-0420_stance-plank-fixed.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "The stance plank at 2560x1440 after the fix: the panel's kind class was capping it at 454 px, so the label never sat in the painted tab. Now centered, and the whole bottom row runs at 80 percent of the HUD scale for more play area.",
+      "highlight": false,
+      "when": "2026-10-13T04:20:31.539Z",
+      "source": "external:w_2560_many.png",
+      "bytes": 301664
     }
   ]
 }

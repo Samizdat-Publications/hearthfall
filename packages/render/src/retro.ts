@@ -20,6 +20,8 @@ export interface TiltShiftOptions {
   falloff: number;
   /** blur radius at full strength in low-res pixels */
   maxBlur: number;
+  /** S4 crisp look: blur radius in screen pixels at 1080 rows when the pass runs at full resolution (pixelScale 1); it scales with the render height */
+  maxBlurCrisp?: number;
   /** 0 = screen band only, 1 = also blur by distance from the focus depth */
   depthWeight: number;
   /** depth difference (as a share of the focus distance) that reaches full depth blur */
@@ -80,7 +82,7 @@ export function resolveTilt(
 }
 
 /** Uniform values for the tilt-shift knobs (pure, unit tested). */
-export function tiltUniforms(t: TiltShiftOptions | undefined): {
+export function tiltUniforms(t: TiltShiftOptions | undefined, pixelScale = 3, rows = 1080): {
   mode: number;
   band: [number, number, number, number];
   blur: number;
@@ -97,7 +99,7 @@ export function tiltUniforms(t: TiltShiftOptions | undefined): {
       Math.max(1e-3, o.falloff),
       Math.min(1, Math.max(0, o.depthWeight)),
     ],
-    blur: mode ? Math.max(0, o.maxBlur) : 0,
+    blur: mode ? Math.max(0, pixelScale <= 1 && o.maxBlurCrisp !== undefined ? (o.maxBlurCrisp * rows) / 1080 : o.maxBlur) : 0,
     depthRange: Math.max(1e-3, o.depthRange),
     lift: mode ? [o.saturation, o.contrast] : [1, 1],
   };
@@ -202,15 +204,21 @@ export class RetroPass {
             outc = finish(texture2D(tScene, vUv).rgb, vUv * uLow);
           } else if (uTilt < 1.5) {
             vec3 acc = texture2D(tScene, vUv).rgb;
-            for (int i = 0; i < 12; i++) acc += texture2D(tScene, vUv + TAPS[i] * texel * r).rgb;
-            outc = finish(acc / 13.0, vUv * uLow);
+            // two rings (the inner one mirrored) so a wide crisp blur stays smooth
+            for (int i = 0; i < 12; i++) {
+              acc += texture2D(tScene, vUv + TAPS[i] * texel * r).rgb;
+              acc += texture2D(tScene, vUv - TAPS[i] * texel * r * 0.5).rgb;
+            }
+            outc = finish(acc / 25.0, vUv * uLow);
           } else {
             vec3 acc = finish(texture2D(tScene, vUv).rgb, vUv * uLow);
             for (int i = 0; i < 12; i++) {
               vec2 uv = vUv + TAPS[i] * texel * r;
               acc += finish(texture2D(tScene, uv).rgb, uv * uLow);
+              vec2 uv2 = vUv - TAPS[i] * texel * r * 0.5;
+              acc += finish(texture2D(tScene, uv2).rgb, uv2 * uLow);
             }
-            outc = acc / 13.0;
+            outc = acc / 25.0;
           }
           gl_FragColor = vec4(outc, 1.0);
         }`,
@@ -234,13 +242,14 @@ export class RetroPass {
     const lh = Math.max(1, Math.ceil(h / s));
     this.rt.setSize(lw, lh);
     this.mat.uniforms.uLow.value.set(lw, lh);
+    this.mat.uniforms.uBlur.value = tiltUniforms(this.opts.tilt, this.opts.pixelScale, lh).blur;
   }
 
   setOptions(o: Partial<RetroOptions>): void {
     this.opts = { ...this.opts, ...o };
     this.mat.uniforms.uLevels.value = this.opts.paletteLevels;
     this.mat.uniforms.uDither.value = this.opts.ditherStrength;
-    const tu = tiltUniforms(this.opts.tilt);
+    const tu = tiltUniforms(this.opts.tilt, this.opts.pixelScale, this.mat.uniforms.uLow.value.y);
     this.mat.uniforms.uTilt.value = tu.mode;
     this.mat.uniforms.uBand.value.set(...tu.band);
     this.mat.uniforms.uBlur.value = tu.blur;
@@ -250,7 +259,7 @@ export class RetroPass {
 
   /** Focus distance (camera to its target) and clip planes for the depth blur, set every frame. */
   setFocus(distance: number, near: number, far: number, active = true): void {
-    const tu = tiltUniforms(this.opts.tilt);
+    const tu = tiltUniforms(this.opts.tilt, this.opts.pixelScale, this.mat.uniforms.uLow.value.y);
     this.mat.uniforms.uTilt.value = active ? tu.mode : 0;
     // map view (inactive) drops the saturation and contrast lift too (ADR-013)
     this.mat.uniforms.uLift.value.set(

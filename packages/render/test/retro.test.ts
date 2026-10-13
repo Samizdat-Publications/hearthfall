@@ -25,6 +25,11 @@ describe("tilt-shift", () => {
     expect(u.blur).toBe(style.maxBlur);
     expect(u.band).toEqual([style.bandCenter, style.bandHalf, style.falloff, style.depthWeight]);
     expect(u.lift).toEqual([style.saturation, style.contrast]);
+    // the crisp Pixel look (full resolution) uses its own screen-pixel radius
+    expect(style.maxBlurCrisp).toBeGreaterThan(style.maxBlur);
+    expect(tiltUniforms(resolveTilt(style, "post"), 1).blur).toBe(style.maxBlurCrisp);
+    expect(tiltUniforms(resolveTilt(style, "post"), 1, 720).blur).toBeCloseTo((style.maxBlurCrisp! * 720) / 1080);
+    expect(tiltUniforms(resolveTilt(style, "post"), 3).blur).toBe(style.maxBlur);
     const off = tiltUniforms(TILT_OFF);
     expect(off).toMatchObject({ mode: 0, blur: 0, lift: [1, 1] });
   });

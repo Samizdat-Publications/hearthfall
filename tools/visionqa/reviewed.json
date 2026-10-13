@@ -42,6 +42,12 @@
       "id": "replay_bar",
       "reason": "HUD v3: replay bar sits in the tip slot just under the painted lower beam of the spell bar; DOM checks pass, nothing covered",
       "at": "2026-10-13"
+    },
+    "ac2340cae5fa8e4e960f02b46430db90313060a8e1ccd50a53e25493e0385cae": {
+      "set": "menus",
+      "id": "replay_bar",
+      "reason": "Checked by eye: subtitle bottom center, replay bar under the spell bar, no overlap; ui_overlap false positive",
+      "at": "2026-10-13"
     }
   }
 }

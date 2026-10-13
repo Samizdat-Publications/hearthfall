@@ -59,6 +59,9 @@ export function sanitizeUiScale(v: unknown, d: number): number {
 }
 /** BACKLOG 14a: tilt-shift miniature focus ("default" follows style.json render.tiltShift.defaultOn) */
 export const MINIATURE = ["default", "on", "off"] as const;
+/** S4 (Stewart 2026-10-12): crisp renders at full resolution (the default), retro keeps the chunky pixel pass
+ * (style.json render.pixelScale); both keep the palette, dither and miniature focus */
+export const PIXEL_LOOK = ["crisp", "retro"] as const;
 /** BACKLOG 14: lighting presets ("default" follows style.json lightingDefault) and visual weather */
 export const LIGHTING = ["default", "day", "golden", "evening"] as const;
 export const WEATHER = ["clear", "rain"] as const;
@@ -85,6 +88,7 @@ export interface Settings {
   uiScale: number;
   subtitles: boolean;
   miniature: (typeof MINIATURE)[number];
+  pixelLook: (typeof PIXEL_LOOK)[number];
   lighting: (typeof LIGHTING)[number];
   weather: (typeof WEATHER)[number];
   /** stretch 2: first skirmish tips (turned off when the last tip is done) */
@@ -97,7 +101,7 @@ export interface Settings {
 const SETTINGS_KEY = "hearthfall.settings.v1";
 
 export function defaultSettings(): Settings {
-  return { quality: "high", master: 80, music: 60, sfx: 80, keymap: defaultKeymap(), palette: "default", uiScale: 0, subtitles: true, miniature: "default", lighting: "default", weather: "clear", tips: true, healthBars: "damaged", ambient: true };
+  return { quality: "high", master: 80, music: 60, sfx: 80, keymap: defaultKeymap(), palette: "default", uiScale: 0, subtitles: true, miniature: "default", pixelLook: "crisp", lighting: "default", weather: "clear", tips: true, healthBars: "damaged", ambient: true };
 }
 
 const vol = (v: unknown, d: number) => (typeof v === "number" && Number.isFinite(v) ? Math.min(100, Math.max(0, Math.round(v))) : d);
@@ -118,6 +122,7 @@ export function loadSettings(kv: KV): Settings {
       uiScale: sanitizeUiScale(o.uiScale, d.uiScale),
       subtitles: typeof o.subtitles === "boolean" ? o.subtitles : d.subtitles,
       miniature: (MINIATURE as readonly string[]).includes(o.miniature as string) ? (o.miniature as Settings["miniature"]) : d.miniature,
+      pixelLook: (PIXEL_LOOK as readonly string[]).includes(o.pixelLook as string) ? (o.pixelLook as Settings["pixelLook"]) : d.pixelLook,
       lighting: (LIGHTING as readonly string[]).includes(o.lighting as string) ? (o.lighting as Settings["lighting"]) : d.lighting,
       weather: (WEATHER as readonly string[]).includes(o.weather as string) ? (o.weather as Settings["weather"]) : d.weather,
       tips: typeof o.tips === "boolean" ? o.tips : d.tips,

@@ -188,3 +188,14 @@
 - 2026-10-13T00:22 set spells2 (9 shots): HUD v3: key list hint note and art preload
 - 2026-10-13T01:31 set menus (11 shots): New Gemini title key art from real game shots, crop nudged up
 - 2026-10-13T01:32 set smoke (14 shots): Stance plank: label centered in the painted tab, chips inset from the vine post
+- 2026-10-13T03:29 set smoke (14 shots): Crisp Pixel look default (ADR-026), height-scaled miniature focus, smaller bottom HUD row, stance plank fix
+- 2026-10-13T03:29 set combat (8 shots): Crisp Pixel look default (ADR-026) and smaller bottom HUD row
+- 2026-10-13T03:30 set chapter3 (5 shots): Crisp Pixel look default (ADR-026) and smaller bottom HUD row
+- 2026-10-13T03:30 set forge (1 shots): Crisp Pixel look default (ADR-026) and smaller bottom HUD row
+- 2026-10-13T03:35 set levels (11 shots): Crisp Pixel look default (ADR-026) and smaller bottom HUD row; sky_road_stack assert follows the four-site Sky Road
+- 2026-10-13T03:37 set spells (9 shots): Crisp Pixel look default (ADR-026), smaller bottom HUD row, voice subtitle moved to the top of the bottom column
+- 2026-10-13T03:38 set spells2 (9 shots): Crisp Pixel look default (ADR-026), smaller bottom HUD row, voice subtitle in the bottom column
+- 2026-10-13T03:39 set vehicles (3 shots): Crisp Pixel look default (ADR-026) and smaller bottom HUD row
+- 2026-10-13T03:49 set menus (6 shots): Crisp Pixel look default (ADR-026): Pixel look row in Settings, crisp globe behind the menus
+- 2026-10-13T03:50 set menus (5 shots): Crisp Pixel look default (ADR-026): replay bar frame, pseudo locale Pixel look row, crisp editor globe
+- 2026-10-13T03:51 set look (13 shots): Smaller bottom HUD row and the 25 tap two ring tilt-shift blur (retro pixel 3 kept)

@@ -8,6 +8,8 @@
 :root {
   /* HUD v3: the spell bar sits this far right of center so the Shaper panel and objectives leave it equal room */
   --spell-shift: 50px;
+  /* S4 (Stewart 2026-10-12): the bottom row (level plaque, stance plank, minimap cauldron) is smaller than the rest so it leaves more play area */
+  --hud-low: 0.8;
   --ui-font: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
   --ui-display: "Marcellus SC", Georgia, serif;
   --ui-caps: "Alegreya Sans SC", "Alegreya Sans", system-ui, sans-serif;
@@ -163,24 +165,27 @@ body.debug-overlap-hud .hud-overlap { display: block; }
 /* ---------- bottom center: undo, selection line, idle chip, the vine and lava stance plank ---------- */
 .hud-bottom { position: absolute; left: 50%; bottom: 4px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; }
 .hud-bottom > .hud-panel { position: relative; left: auto; top: auto; bottom: auto; transform: none; }
+.hud-bottom > .hud-panel, .hud-minimap, .hud-title, .deco-volcano { zoom: calc(var(--hud-scale, var(--ui-scale, 1)) * var(--hud-low)); }
 .hud-selection { font: 700 15px var(--ui-font); }
 .hud-undo { font: 700 15px var(--ui-font); color: #ffcf7a; }
 .hud-idle { padding: 10px 16px; pointer-events: auto; }
-.hud-troops { width: 600px; min-height: 223px; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 68px 66px 42px 80px; border-image: var(--art-stance-frame) 140 140 104 98 fill / 60px 60px 45px 42px stretch; pointer-events: auto; }
-.troops-tab { position: absolute; left: 190px; top: 17px; width: 104px; height: 34px; text-align: center; font: 400 17px/34px var(--ui-display); letter-spacing: 0.1em; color: var(--ui-lintel); pointer-events: none; }
+.hud-troops { width: 600px; min-height: 196px; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 72px 186px 52px 80px; border-image: var(--art-stance-frame) 140 140 104 98 fill / 60px 60px 45px 42px stretch; pointer-events: auto; }
+.troops-tab { position: absolute; left: 252px; top: 17px; width: 104px; height: 34px; text-align: center; font: 400 17px/34px var(--ui-display); letter-spacing: 0.1em; color: var(--ui-lintel); pointer-events: none; }
 .troops-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .troops-label { font: 700 14px var(--ui-caps); letter-spacing: 0.05em; color: var(--ui-lintel); }
-.troops-units { display: flex; flex-wrap: wrap; gap: 5px; max-width: 454px; }
+/* descendant only: the panel itself carries the class troops-units (its kind), so a bare .troops-units rule would size the whole panel */
+.hud-troops .troops-units { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; }
 .unit-chip { position: relative; font: 600 13px var(--ui-font); background: rgba(14, 10, 7, 0.78); border: 1px solid #0d0b09; border-radius: 3px; box-shadow: var(--ui-well-bevel); padding: 2px 7px 4px; }
 .unit-icon { width: 18px; height: 18px; margin: -3px 3px -4px -3px; vertical-align: middle; }
 .unit-hp { position: absolute; left: 0; bottom: 0; height: 2px; background: var(--ui-moss); }
 .troops-row { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
-.hud-troops .troops-row .prio { flex: 0 1 auto; height: 40px; padding: 0 12px; border-image-width: 10px; font-size: 15px; }
+.hud-troops .troops-row { gap: 5px; }
+.hud-troops .troops-row .prio { flex: 0 1 auto; height: 36px; padding: 0 8px; gap: 3px; border-image-width: 10px; font-size: 13px; }
 .prio.stance { flex: 0 0 auto; }
 .stance-icon { display: block; flex: 0 0 auto; }
 .troops-head .idle-chip { flex: 0 0 auto; height: 26px; }
 .idle-chip { font: 800 13px var(--ui-font); font-variant-numeric: tabular-nums; padding: 3px 10px; }
 
-/* BACKLOG 8: voice subtitles (a plank caption, not a panel) under the tip */
-.hud-subtitle { position: absolute; left: 50%; top: 30%; transform: translateX(-50%); box-sizing: border-box; max-width: 680px; zoom: var(--ui-scale, 1); color: var(--ui-bone); font: 700 17px/1.35 var(--ui-font); text-align: center; text-shadow: var(--ui-shadow); pointer-events: none; }
+/* BACKLOG 8: voice subtitles (a plank caption, not a panel). S4: the top of the bottom column, the classic caption spot; at 30 percent height a larger fitted HUD scale ran the build panel into it */
+.hud-subtitle { position: relative; box-sizing: border-box; max-width: 680px; zoom: var(--ui-scale, 1); color: var(--ui-bone); font: 700 17px/1.35 var(--ui-font); text-align: center; text-shadow: var(--ui-shadow); pointer-events: none; }
 .hud-subtitle b { color: #ffb469; }

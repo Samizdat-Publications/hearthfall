@@ -596,6 +596,7 @@ export const StyleSchema = z
             bandHalf: z.number().min(0).max(0.5),
             falloff: z.number().positive().max(1),
             maxBlur: z.number().min(0).max(8),
+            maxBlurCrisp: z.number().min(0).max(24).optional(),
             depthWeight: z.number().min(0).max(1),
             depthRange: z.number().positive(),
             saturation: z.number().min(0).max(2),

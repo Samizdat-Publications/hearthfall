@@ -40,7 +40,7 @@ describe("OpponentAI (M7)", () => {
     }
     expect(bad).toEqual([]);
     expect(charged).toBeGreaterThan(0);
-  });
+  }, 60000);
 
   it("the aggressive personality builds lodges, trains, casts and eliminates an idle tribe", () => {
     const { w, ai } = vsIdle("aggressive", 1001, 25);

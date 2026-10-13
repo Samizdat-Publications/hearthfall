@@ -287,3 +287,11 @@ Addendum (wolves, 10/10/2026): units gain an optional `beast` block (`aggroRadiu
 **Decision.** A personality gets an optional `campaign` block (`economyTargetPop`, `aggression`, `firstAttackMinute`) that `OpponentAI` merges over the personality when the world plays a campaign level (`w.level` set). Aggressive uses 60 in skirmish and keeps 40 in the campaign.
 
 **Fallback.** Delete the block and set the base number back; a later campaign retune can drop the block level by level by moving every level to the skirmish numbers and re-pinning its scenarios.
+
+## ADR-026: The crisp look is the default; the retro pixel pass is a setting (12/10/2026)
+
+**Context.** ADR-005 rendered the scene at a third of the screen resolution (`render.pixelScale` 3) for a chunky retro look. With HUD v3 (painted Gemini pieces) Stewart tried the URL override `?pixel=1` and preferred it: it matches the painted UI better and reads more modern. The tilt-shift blur radius was in low-res pixels, so at full resolution the miniature focus became a third as strong.
+
+**Decision.** Settings gets a Pixel look choice, crisp (default, `pixelScale` 1) or retro (style.json `pixelScale`). Palette levels, dither and the miniature focus stay on in both. `render.tiltShift.maxBlurCrisp` gives the crisp look its own blur radius in screen pixels at 1080 rows, scaled by the render height so the effect matches at every window size, and the blur takes two rings of taps so the wider radius stays smooth. The URL `pixel` override still wins for look comparisons; `look.json` shots pin `pixel: 3`.
+
+**Fallback.** Set `pixelLook` back to "retro" in `defaultSettings()` (`apps/game/src/storage.ts`); players who picked crisp keep it.

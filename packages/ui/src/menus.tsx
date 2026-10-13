@@ -87,6 +87,9 @@ export interface SettingsView {
   /** BACKLOG 14a: tilt-shift miniature focus (default, on, off) */
   miniatures: Choice[];
   miniature: string;
+  /** S4: crisp (full resolution) or retro pixels */
+  pixelLooks: Choice[];
+  pixelLook: string;
   /** BACKLOG 14: lighting preset (default, day, golden, evening) and weather (clear, rain) */
   lightings: Choice[];
   lighting: string;
@@ -150,7 +153,7 @@ export interface MenuModel {
 }
 
 export type SetupPatch = Partial<Pick<SetupView, "map" | "size" | "seed" | "opponents" | "difficulty" | "victory" | "forge" | "ley" | "wolves" | "weather" | "trait">>;
-export type SettingsPatch = Partial<Pick<SettingsView, "quality" | "master" | "music" | "sfx" | "palette" | "miniature" | "lighting" | "weather">> & { uiScale?: number; subtitles?: boolean; tips?: boolean; edgeScroll?: boolean; healthBars?: string; ambient?: boolean };
+export type SettingsPatch = Partial<Pick<SettingsView, "quality" | "master" | "music" | "sfx" | "palette" | "miniature" | "pixelLook" | "lighting" | "weather">> & { uiScale?: number; subtitles?: boolean; tips?: boolean; edgeScroll?: boolean; healthBars?: string; ambient?: boolean };
 
 export interface MenuActions {
   go(screen: Screen): void;
@@ -623,6 +626,8 @@ function Settings({ s, act }: { s: SettingsView; act: MenuActions }) {
           <Select ui="set-subtitles" value={s.subtitles} options={ONOFF()} onChange={(v) => act.setSetting({ subtitles: v === "on" })} />
           <label class="menu-label" title={t("settings.tipsHint")}>{t("settings.tips")}</label>
           <Select ui="set-tips" value={s.tips} options={ONOFF()} onChange={(v) => act.setSetting({ tips: v === "on" })} />
+          <label class="menu-label">{t("settings.pixelLook")}</label>
+          <Select ui="set-pixellook" value={s.pixelLook} options={s.pixelLooks} onChange={(v) => act.setSetting({ pixelLook: v })} />
           <label class="menu-label">{t("settings.miniature")}</label>
           <Select ui="set-miniature" value={s.miniature} options={s.miniatures} onChange={(v) => act.setSetting({ miniature: v })} />
           <label class="menu-label">{t("settings.lighting")}</label>

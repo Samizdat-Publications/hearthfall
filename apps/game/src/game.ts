@@ -540,8 +540,8 @@ export class Game {
   applyQuality(): void {
     const q = this.params.quality ?? this.settings.quality;
     this.renderer.setRenderScale(this.ui.qualityScale[q as keyof UiFile["qualityScale"]] ?? 1);
-    if (this.params.pixel !== null)
-      this.renderer.setPixelScale(this.params.pixel);
+    // the URL pixel override wins; otherwise the Pixel look setting (retro uses style.json pixelScale)
+    this.renderer.setPixelScale(this.params.pixel ?? (this.settings.pixelLook === "retro" ? null : 1));
     this.renderer.setTiltShift(
       this.params.tiltshift ?? this.settings.miniature,
     );

@@ -939,6 +939,11 @@
               "minimum": 0,
               "maximum": 8
             },
+            "maxBlurCrisp": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 24
+            },
             "depthWeight": {
               "type": "number",
               "minimum": 0,

@@ -50,6 +50,12 @@ describe("settings and save slots (M8)", () => {
     expect(loadSettings(kv).miniature).toBe("off");
     kv.setItem("hearthfall.settings.v1", JSON.stringify({ miniature: "blurry" }));
     expect(loadSettings(kv).miniature).toBe("default");
+    // S4: the Pixel look defaults to crisp, round trips retro and falls back to crisp
+    expect(defaultSettings().pixelLook).toBe("crisp");
+    expect(storeSettings(kv, { ...defaultSettings(), pixelLook: "retro" })).toBe(true);
+    expect(loadSettings(kv).pixelLook).toBe("retro");
+    kv.setItem("hearthfall.settings.v1", JSON.stringify({ pixelLook: "fuzzy" }));
+    expect(loadSettings(kv).pixelLook).toBe("crisp");
     // BACKLOG 14: lighting and weather round trip and fall back
     expect(storeSettings(kv, { ...defaultSettings(), lighting: "evening", weather: "rain" })).toBe(true);
     expect(loadSettings(kv)).toMatchObject({ lighting: "evening", weather: "rain" });

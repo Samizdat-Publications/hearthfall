@@ -502,8 +502,13 @@ function Hud({ act }: { act: HudActions }) {
           )}
         </div>
       ) : null}
-      {/* bottom center, top to bottom: undo, selection line, idle chip, then the stance plank at the screen edge */}
+      {/* bottom center, top to bottom: voice subtitle, undo, selection line, idle chip, then the stance plank at the screen edge */}
       <div class="hud-bottom">
+        {m.subtitle ? (
+          <div data-hud="subtitle" class="hud-subtitle">
+            <b>{m.subtitle.speaker}:</b> {m.subtitle.text}
+          </div>
+        ) : null}
         {undo ? (
           <div data-hud="undo" class="hud-panel hud-undo">
             Backspace undoes this cast ({(m.undoSec ?? 0).toFixed(1)} s)
@@ -521,11 +526,6 @@ function Hud({ act }: { act: HudActions }) {
         ) : null}
         <Troops t={m.troops} act={act} pointing={m.pointing} idle={m.idle} />
       </div>
-      {m.subtitle ? (
-        <div data-hud="subtitle" class="hud-subtitle">
-          <b>{m.subtitle.speaker}:</b> {m.subtitle.text}
-        </div>
-      ) : null}
       {m.forge ? <ForgePanel f={m.forge} act={act} /> : null}
       {m.tip && !m.forge ? (
         <div data-hud="tip" class="hud-panel hud-tip">

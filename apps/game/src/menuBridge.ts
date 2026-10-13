@@ -10,7 +10,7 @@ import { decodeReplay, encodeReplay } from "./replay.ts";
 import { statText } from "./achievements.ts";
 import { levelObjectives } from "./hudBridge.ts";
 import { QUICK_SLOT, storeQol } from "./qol.ts";
-import { HEALTH_BARS, LIGHTING, MINIATURE, PALETTES, WEATHER, QUALITIES, SLOTS, autoUiScale, deleteSlot, readSlot, slotMeta, storeSettings, writeSlot } from "./storage.ts";
+import { HEALTH_BARS, LIGHTING, MINIATURE, PALETTES, PIXEL_LOOK, WEATHER, QUALITIES, SLOTS, autoUiScale, deleteSlot, readSlot, slotMeta, storeSettings, writeSlot } from "./storage.ts";
 
 const title = (id: string) => id[0].toUpperCase() + id.slice(1);
 const clock = (ticks: number, hz: number) => {
@@ -131,6 +131,8 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
         tips: game.settings.tips ? "on" : "off",
         miniatures: opts(MINIATURE, (v) => (v === "default" ? "Default" : v === "on" ? "On" : "Off")),
         miniature: game.settings.miniature,
+        pixelLooks: opts(PIXEL_LOOK, (v) => (v === "crisp" ? "Crisp" : "Retro pixels")),
+        pixelLook: game.settings.pixelLook,
         lightings: opts(LIGHTING, (v) => (v === "default" ? "Default" : v[0].toUpperCase() + v.slice(1))),
         lighting: game.settings.lighting,
         weathers: opts(WEATHER, (v) => (v === "clear" ? "Clear" : "Rain")),
@@ -353,7 +355,7 @@ export function mountGameMenus(el: HTMLElement, game: Game): { refresh: () => vo
         return refresh();
       }
       game.settings = { ...game.settings, ...p } as typeof game.settings;
-      if (p.quality || p.miniature || p.lighting || p.weather) game.applyQuality();
+      if (p.quality || p.miniature || p.pixelLook || p.lighting || p.weather) game.applyQuality();
       if (p.palette !== undefined || p.uiScale !== undefined) game.applyA11y();
       game.player.setVolumes(game.settings);
       settingsMsg = null;
