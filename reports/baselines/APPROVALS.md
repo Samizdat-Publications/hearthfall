@@ -186,3 +186,5 @@
 - 2026-10-12T23:50 set spells (9 shots): HUD v3 review fixes: 3 column build panel, bigger small text, square minimap inside the ring, spell bar shift
 - 2026-10-12T23:55 set menus (11 shots): replay_bar baseline had caught the title art before it loaded; HUD art now preloads
 - 2026-10-13T00:22 set spells2 (9 shots): HUD v3: key list hint note and art preload
+- 2026-10-13T01:31 set menus (11 shots): New Gemini title key art from real game shots, crop nudged up
+- 2026-10-13T01:32 set smoke (14 shots): Stance plank: label centered in the painted tab, chips inset from the vine post

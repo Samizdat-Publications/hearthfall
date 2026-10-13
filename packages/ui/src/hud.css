@@ -166,11 +166,11 @@ body.debug-overlap-hud .hud-overlap { display: block; }
 .hud-selection { font: 700 15px var(--ui-font); }
 .hud-undo { font: 700 15px var(--ui-font); color: #ffcf7a; }
 .hud-idle { padding: 10px 16px; pointer-events: auto; }
-.hud-troops { width: 600px; min-height: 223px; display: flex; flex-direction: column; justify-content: center; gap: 7px; padding: 58px 66px 46px 50px; border-image: var(--art-stance-frame) 140 140 104 98 fill / 60px 60px 45px 42px stretch; pointer-events: auto; }
-.troops-tab { position: absolute; left: 168px; top: 5px; width: 104px; height: 34px; text-align: center; font: 400 17px/34px var(--ui-display); letter-spacing: 0.1em; color: var(--ui-lintel); pointer-events: none; }
+.hud-troops { width: 600px; min-height: 223px; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 68px 66px 42px 80px; border-image: var(--art-stance-frame) 140 140 104 98 fill / 60px 60px 45px 42px stretch; pointer-events: auto; }
+.troops-tab { position: absolute; left: 190px; top: 17px; width: 104px; height: 34px; text-align: center; font: 400 17px/34px var(--ui-display); letter-spacing: 0.1em; color: var(--ui-lintel); pointer-events: none; }
 .troops-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .troops-label { font: 700 14px var(--ui-caps); letter-spacing: 0.05em; color: var(--ui-lintel); }
-.troops-units { display: flex; flex-wrap: wrap; gap: 5px; max-width: 484px; }
+.troops-units { display: flex; flex-wrap: wrap; gap: 5px; max-width: 454px; }
 .unit-chip { position: relative; font: 600 13px var(--ui-font); background: rgba(14, 10, 7, 0.78); border: 1px solid #0d0b09; border-radius: 3px; box-shadow: var(--ui-well-bevel); padding: 2px 7px 4px; }
 .unit-icon { width: 18px; height: 18px; margin: -3px 3px -4px -3px; vertical-align: middle; }
 .unit-hp { position: absolute; left: 0; bottom: 0; height: 2px; background: var(--ui-moss); }

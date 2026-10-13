@@ -1460,6 +1460,36 @@
       "when": "2026-10-12T23:32:48.689Z",
       "source": "external:hud_troops.png",
       "bytes": 1038617
+    },
+    {
+      "file": "s4/20261013-0127_title-key-art.png",
+      "milestone": "S4",
+      "kind": "concept",
+      "caption": "New title key art, painted by Gemini from real game screenshots: the faceted planet, Hearth village, Shaper, volcano and surf",
+      "highlight": true,
+      "when": "2026-10-13T01:27:26.549Z",
+      "source": "external:title_v2a.png",
+      "bytes": 2243950
+    },
+    {
+      "file": "s4/20261013-0127_title-candidates.png",
+      "milestone": "S4",
+      "kind": "contact-sheet",
+      "caption": "The three title art candidates; the left one won for its crisp faceted terrain",
+      "highlight": false,
+      "when": "2026-10-13T01:27:27.688Z",
+      "source": "external:title_candidates.png",
+      "bytes": 1181131
+    },
+    {
+      "file": "s4/20261013-0127_stance-fix.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "Stance plank fixed at 1440p: the label sits in its painted tab and the unit chips clear the vine post",
+      "highlight": false,
+      "when": "2026-10-13T01:27:28.812Z",
+      "source": "external:st1_many.png",
+      "bytes": 367657
     }
   ]
 }

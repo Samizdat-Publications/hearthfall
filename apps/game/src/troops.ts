@@ -199,3 +199,9 @@ export function undoLeft(w: World, tribe: number): number {
   const left = w.cfg.pack.spells.chargeRules.undoSeconds - (w.tick - t.casting.startedAt) / w.cfg.tickHz;
   return left > 0 ? left : -1;
 }
+
+/** Selection keys (S for the Shaper): the first press only selects, so the camera stays put; a second press while
+ * exactly that group is already selected centers the camera on it (the portrait click always centers). */
+export function keySelectCenters(selection: ReadonlySet<number>, idx: readonly number[]): boolean {
+  return idx.length > 0 && selection.size === idx.length && idx.every((i) => selection.has(i));
+}

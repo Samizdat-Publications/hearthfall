@@ -92,6 +92,7 @@ import {
   areaCounts,
   buildingAt,
   groupCenter,
+  keySelectCenters,
   rallyMarker,
   sameTypeNear,
   siteAt,
@@ -2504,9 +2505,12 @@ export class Game {
       case "attackMove":
         if (sel) this.attackMode = true;
         break;
-      case "selectShaper":
-        this.selectKind("shaper");
+      case "selectShaper": {
+        // Stewart 2026-10-12: S selects without moving the camera; S again (or the portrait) centers on her
+        const idx = this.world.selectUnits(`tribe${this.localTribe}.shapers`);
+        this.selectKind("shaper", keySelectCenters(this.selection, idx));
         break;
+      }
       case "toggleMap":
         this.renderer.setCamera({ map: !this.renderer.cam.map });
         break;

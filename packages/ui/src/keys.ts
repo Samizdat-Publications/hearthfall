@@ -17,7 +17,7 @@ export const KEY_ACTIONS = [
   { id: "attackMove", label: "Attack-move", key: "A" },
   { id: "retreat", label: "Retreat", key: "R" },
   { id: "garrison", label: "Garrison", key: "G" },
-  { id: "selectShaper", label: "Select the Shaper", key: "S" },
+  { id: "selectShaper", label: "Select the Shaper (again to center)", key: "S" },
   { id: "rotateLeft", label: "Rotate camera left", key: "Q" },
   { id: "rotateRight", label: "Rotate camera right", key: "E" },
   { id: "toggleMap", label: "Map view", key: "M" },

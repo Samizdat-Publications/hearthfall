@@ -395,7 +395,7 @@ function Hud({ act }: { act: HudActions }) {
       <div class="hud-deco deco-shaper" aria-hidden="true" />
       <div class="hud-deco deco-volcano" aria-hidden="true" />
       <div data-hud="shaper" class={"hud-panel hud-shaper" + (m.shaper.alive ? "" : " dead")}>
-        <button class="portrait-btn" onClick={() => act.selectShaper()} disabled={!m.shaper.alive} title="Select the Shaper (S)" aria-label="Select the Shaper">
+        <button class="portrait-btn" onClick={() => act.selectShaper()} disabled={!m.shaper.alive} title="Center on the Shaper (S selects in place)" aria-label="Select the Shaper">
           <Portrait />
         </button>
         <span class="shaper-name">{m.shaper.alive ? "Shaper" : m.shaper.respawnSec >= 0 ? `back in ${m.shaper.respawnSec}s` : "fallen"}</span>

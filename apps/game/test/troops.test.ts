@@ -123,3 +123,13 @@ describe("selected units panel (M8)", () => {
     expect(siteAt(w, 30, 30)).toBeNull();
   });
 });
+
+describe("Shaper select key", () => {
+  it("first press only selects, a second press on the same selection centers", async () => {
+    const { keySelectCenters } = await import("../src/troops.ts");
+    expect(keySelectCenters(new Set(), [7])).toBe(false);
+    expect(keySelectCenters(new Set([3, 7]), [7])).toBe(false);
+    expect(keySelectCenters(new Set([7]), [7])).toBe(true);
+    expect(keySelectCenters(new Set([7]), [])).toBe(false);
+  });
+});
