@@ -273,3 +273,6 @@
 {"ts": "2026-10-12T21:36:27Z", "provider": "gemini", "asset": "ui.piece.small_plaque", "step": "ui", "attempt": 1, "kind": "settled", "usd": 0.0336, "units": 1, "unit": "image", "endpoint": "generateContent"}
 {"ts": "2026-10-12T21:36:29Z", "provider": "gemini", "asset": "ui.piece.stance_button", "step": "ui", "attempt": 1, "kind": "settled", "usd": 0.0336, "units": 1, "unit": "image", "endpoint": "generateContent"}
 {"ts": "2026-10-12T21:36:39Z", "provider": "gemini", "asset": "ui.piece.volcano_corner", "step": "ui", "attempt": 1, "kind": "settled", "usd": 0.0504, "units": 1, "unit": "image", "endpoint": "generateContent"}
+{"ts": "2026-10-13T01:26:30Z", "provider": "gemini", "asset": "ui.title.v2a", "step": "ui", "attempt": 1, "kind": "settled", "usd": 0.0504, "units": 1, "unit": "image", "endpoint": "generateContent"}
+{"ts": "2026-10-13T01:26:33Z", "provider": "gemini", "asset": "ui.title.v2b", "step": "ui", "attempt": 1, "kind": "settled", "usd": 0.0504, "units": 1, "unit": "image", "endpoint": "generateContent"}
+{"ts": "2026-10-13T01:26:44Z", "provider": "gemini", "asset": "ui.title.v2c", "step": "ui", "attempt": 1, "kind": "settled", "usd": 0.0504, "units": 1, "unit": "image", "endpoint": "generateContent"}
