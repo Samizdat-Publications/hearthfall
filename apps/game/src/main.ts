@@ -119,6 +119,7 @@ function refitHud() {
   if (document.body.classList.contains("debug-overlap-hud")) {
     fitKey = "";
     hudEl.style.setProperty("--hud-scale", String(game.uiScaleWanted));
+    mirrorHudScale();
     return;
   }
   const key = `${game.uiScaleWanted} ${innerWidth}x${innerHeight}`;
@@ -126,6 +127,17 @@ function refitHud() {
     fitKey = key;
     fitHud(hudEl, game.uiScaleWanted);
   }
+  mirrorHudScale();
+}
+// HUD v3: the replay bar sits in the tip slot under the spell bar, so it follows the fitted HUD scale
+function mirrorHudScale() {
+  const z = hudEl.style.getPropertyValue("--hud-scale");
+  const bar = document.getElementById("replay");
+  if (bar && bar.style.getPropertyValue("--hud-scale") !== z) bar.style.setProperty("--hud-scale", z);
+  // a spell bar wrapped to more rows pushes the tip and the Forge panel down (design px, so divide out the zoom)
+  const sb = hudEl.querySelector<HTMLElement>(".hud-spellbar");
+  const bottom = sb ? `${Math.round(sb.getBoundingClientRect().bottom / (Number(z) || 1))}px` : "";
+  if (hudEl.style.getPropertyValue("--spell-bottom") !== bottom) hudEl.style.setProperty("--spell-bottom", bottom);
 }
 // mana and charges change every tick: refresh the HUD a few times a second
 setInterval(() => {
@@ -339,7 +351,8 @@ if (debugApiAllowed(__DEBUG_API__, !!game.params.debug, game.role)) {
       for (let py = c.top + 40; f && py < c.bottom - 40; py += 16)
         for (let px = c.left + 40; px < c.right - 40; px += 16) {
           const p = game.renderer.pickTerrain(px, py);
-          if (p && f.blocker(game.localTribe, p.x, p.z) === null) return [px, py];
+          // only a spot the player can click: the canvas itself, not a HUD panel over it
+          if (p && f.blocker(game.localTribe, p.x, p.z) === null && document.elementFromPoint(px, py) === game.canvas) return [px, py];
         }
       return null;
     },

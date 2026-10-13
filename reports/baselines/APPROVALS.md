@@ -172,3 +172,17 @@
 - 2026-10-12T21:55 set vehicles (3 shots): polish pass integration: help line lists L health bars
 - 2026-10-12T21:55 set forge (1 shots): polish pass integration: help line lists L health bars
 - 2026-10-12T21:56 set levels (10 shots): polish pass integration: help line lists L health bars (sky_road_stack left out: stale sites assert)
+- 2026-10-12T23:27 set spells (9 shots): S4 HUD v3 Ember Grove painted HUD and ambient 2 (water glints, evening Hearth glow); help off at start, replay bar under the spell bar
+- 2026-10-12T23:28 set smoke (14 shots): S4 HUD v3 Ember Grove painted HUD and ambient 2 (water glints, evening Hearth glow); help off at start, replay bar under the spell bar
+- 2026-10-12T23:28 set menus (11 shots): S4 HUD v3 Ember Grove painted HUD and ambient 2 (water glints, evening Hearth glow); help off at start, replay bar under the spell bar
+- 2026-10-12T23:28 set look (13 shots): S4 HUD v3 Ember Grove painted HUD and ambient 2 (water glints, evening Hearth glow); help off at start, replay bar under the spell bar
+- 2026-10-12T23:29 set combat (8 shots): S4 HUD v3 Ember Grove painted HUD and ambient 2 (water glints, evening Hearth glow); help off at start, replay bar under the spell bar
+- 2026-10-12T23:29 set spells2 (9 shots): S4 HUD v3 Ember Grove painted HUD and ambient 2
+- 2026-10-12T23:47 set smoke (14 shots): HUD v3 review fixes: 3 column build panel, bigger small text, square minimap inside the ring, spell bar shift
+- 2026-10-12T23:49 set menus (11 shots): HUD v3 review fixes: 3 column build panel, bigger small text, square minimap inside the ring, spell bar shift, replay bar scales with the HUD
+- 2026-10-12T23:50 set spells2 (9 shots): HUD v3 review fixes: 3 column build panel, bigger small text, square minimap inside the ring, spell bar shift
+- 2026-10-12T23:50 set look (13 shots): HUD v3 review fixes: 3 column build panel, bigger small text, square minimap inside the ring, spell bar shift
+- 2026-10-12T23:50 set combat (8 shots): HUD v3 review fixes: 3 column build panel, bigger small text, square minimap inside the ring, spell bar shift
+- 2026-10-12T23:50 set spells (9 shots): HUD v3 review fixes: 3 column build panel, bigger small text, square minimap inside the ring, spell bar shift
+- 2026-10-12T23:55 set menus (11 shots): replay_bar baseline had caught the title art before it loaded; HUD art now preloads
+- 2026-10-13T00:22 set spells2 (9 shots): HUD v3: key list hint note and art preload

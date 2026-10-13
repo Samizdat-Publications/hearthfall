@@ -36,6 +36,12 @@
       "id": "replay_bar",
       "reason": "UI v2: the replay bar sits close under the spellbar but nothing overlaps; the DOM layout check passes",
       "at": "2026-10-12"
+    },
+    "a41e496265966218b181b067685b11a17bbdbd34d63ae4aeda494720eba91358": {
+      "set": "menus",
+      "id": "replay_bar",
+      "reason": "HUD v3: replay bar sits in the tip slot just under the painted lower beam of the spell bar; DOM checks pass, nothing covered",
+      "at": "2026-10-13"
     }
   }
 }

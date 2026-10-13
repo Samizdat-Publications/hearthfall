@@ -1315,6 +1315,160 @@
                 }
               },
               "additionalProperties": false
+            },
+            "glints": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "cell": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 8
+                },
+                "rate": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "near": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 128
+                },
+                "density": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "rain": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "minQuality": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "presets": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "pattern": "^[a-z]+$"
+                  },
+                  "additionalProperties": {
+                    "type": "object",
+                    "properties": {
+                      "strength": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 4
+                      },
+                      "color": {
+                        "type": "string",
+                        "pattern": "^#[0-9A-Fa-f]{6}$"
+                      }
+                    },
+                    "required": [
+                      "strength",
+                      "color"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "fire": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "presets": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "rain": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "flicker": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "flickerRate": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "glowRadius": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 16
+                },
+                "glowColor": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                },
+                "glowIntensity": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 4
+                },
+                "hutRadius": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 8
+                },
+                "hutIntensity": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 4
+                },
+                "embers": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 32
+                },
+                "emberPeriod": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "emberRise": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "emberSpread": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "emberSize": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 1
+                },
+                "emberColor": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                },
+                "max": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1024
+                },
+                "emberMax": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1024
+                }
+              },
+              "additionalProperties": false
             }
           },
           "additionalProperties": false

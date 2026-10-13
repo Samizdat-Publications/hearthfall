@@ -14,9 +14,13 @@ import {
   birdPose,
   dustEligible,
   dustPuff,
+  emberPose,
+  fireStrength,
   fireflyPose,
   firefliesOut,
   flockAnchors,
+  glintFor,
+  hearthFlicker,
   resolveAmbient,
   smokePuff,
 } from "../src/ambient.ts";
@@ -75,6 +79,64 @@ describe("ambient spawn rules (pure)", () => {
     const f = fireflyPose(12, 5, 3, L.fireflies);
     expect(Math.hypot(f.dx, f.dz)).toBeLessThanOrEqual(L.fireflies.radius * Math.SQRT2 + 1e-9);
     expect(f.dy).toBeGreaterThan(0.3);
+  });
+
+  it("water glints: per preset strength and color, none in rain, with the setting off, unlisted presets or low quality", () => {
+    const G = L.glints;
+    const day = glintFor(G, "day", false, true, 1);
+    const night = glintFor(G, "night", false, true, 1);
+    expect(day.strength).toBe(G.presets.day.strength);
+    expect(day.color).toBe(G.presets.day.color);
+    expect(glintFor(G, "evening", false, true, 1).strength).toBeGreaterThan(glintFor(G, "golden", false, true, 1).strength);
+    expect(night.strength).toBeGreaterThan(0);
+    expect(night.strength).toBeLessThan(day.strength);
+    expect(glintFor(G, "day", true, true, 1).strength).toBe(0);
+    expect(glintFor({ ...G, rain: 0.5 }, "day", true, true, 1).strength).toBeCloseTo(day.strength * 0.5);
+    expect(glintFor(G, "day", false, false, 1).strength).toBe(0);
+    expect(glintFor(G, "storm", false, true, 1).strength).toBe(0);
+    expect(glintFor(G, "day", false, true, 0.5).strength).toBe(0);
+    expect(glintFor(G, "day", false, true, G.minQuality).strength).toBe(day.strength);
+    expect(glintFor({ ...G, enabled: false }, "day", false, true, 1).strength).toBe(0);
+    expect(resolveAmbient({ glints: { near: 10 } }).glints.presets).toEqual(G.presets);
+  });
+
+  it("hearth fire: lit under the fire presets scaled by hearthGlow, dimmed by rain; the flicker stays in its band", () => {
+    const F = L.fire;
+    expect(fireStrength(F, "golden", false, 1)).toBe(0);
+    expect(fireStrength(F, "evening", false, 1.9)).toBeCloseTo(1.9);
+    expect(fireStrength(F, "night", false, 1)).toBe(1);
+    expect(fireStrength(F, "evening", true, 2)).toBeCloseTo(2 * F.rain);
+    expect(fireStrength({ ...F, enabled: false }, "evening", false, 1)).toBe(0);
+    const fl = Array.from({ length: 400 }, (_, s) => hearthFlicker(s * 0.037, 7, F));
+    expect(Math.min(...fl)).toBeGreaterThanOrEqual(1 - F.flicker - 1e-9);
+    expect(Math.max(...fl)).toBeLessThanOrEqual(1 + F.flicker + 1e-9);
+    expect(Math.max(...fl) - Math.min(...fl)).toBeGreaterThan(F.flicker);
+    expect(hearthFlicker(3.21, 7, F)).toBe(hearthFlicker(3.21, 7, F));
+    expect(hearthFlicker(3.21, 7, F)).not.toBe(hearthFlicker(3.21, 8, F));
+    expect(hearthFlicker(5, 7, { ...F, flicker: 0 })).toBe(1);
+  });
+
+  it("an ember rises from the fire, shrinks to nothing at the top and the embers of one fire are spread over the life", () => {
+    const F = L.fire;
+    const a = emberPose(4.4, 21, 2, F);
+    expect(emberPose(4.4, 21, 2, F)).toEqual(a);
+    expect(a.phase).toBeGreaterThanOrEqual(0);
+    expect(a.phase).toBeLessThan(1);
+    expect(a.dy).toBeGreaterThanOrEqual(0);
+    expect(a.dy).toBeLessThanOrEqual(F.emberRise);
+    expect(Math.hypot(a.dx, a.dz)).toBeLessThanOrEqual(F.emberSpread * 1.3 + 1e-9);
+    // follow one ember through a life: it climbs steadily and its radius goes to zero
+    const off = a.phase - 4.4 / F.emberPeriod;
+    const t0 = (3 - (off - Math.floor(off))) * F.emberPeriod;
+    let lastDy = -1;
+    for (let s = 0; s < 30; s++) {
+      const e = emberPose(t0 + 1e-6 + (s / 30) * F.emberPeriod * 0.998, 21, 2, F);
+      expect(e.dy).toBeGreaterThan(lastDy);
+      lastDy = e.dy;
+    }
+    expect(emberPose(t0 + F.emberPeriod * 0.999, 21, 2, F).r).toBeLessThan(F.emberSize * 0.01);
+    const phases = Array.from({ length: F.embers }, (_, k) => emberPose(2, 9, k, F).phase);
+    expect(new Set(phases.map((p) => p.toFixed(3))).size).toBe(F.embers);
   });
 
   it("dust only rises behind walkers on dry land near the focus", () => {
@@ -177,6 +239,59 @@ describe("ambient layer", () => {
     }
     expect(lit).toBeGreaterThan(0);
     expect(lit).toBeLessThanOrEqual(L.fireflies.perHearth);
+  });
+
+  it("lights the Hearth fire (glow pool, embers) and warm pools round finished homes at evening only, the same at the same time", () => {
+    const w = world();
+    const h = w.ents.index(w.spawnBuilding("hearth", 0, 20, 20));
+    const home = w.ents.index(w.spawnBuilding("dwelling", 0, 25, 20));
+    const plan = w.ents.index(w.spawnBuilding("dwelling", 0, 15, 20));
+    w.ents.state[h] = 3;
+    w.ents.state[home] = 3;
+    w.ents.state[plan] = 0;
+    const s = scene(w);
+    const amb = new AmbientLayer(makeBendUniforms());
+    const at = (t: number, preset: string, glow = 1, raining = false) =>
+      amb.update(w, t, 20, 20, 1, 1000, 0.42, false, preset, raining, s.u, s.b, 0, false, glow);
+    at(2, "golden");
+    expect(amb.counts.glows).toBe(0);
+    expect(amb.counts.embers).toBe(0);
+    expect(amb.fire).toBe(0);
+    at(2, "evening", 1.9);
+    expect(amb.fire).toBeCloseTo(1.9);
+    // one pool for the Hearth and one for the finished home, none for the plan
+    expect(amb.counts.glows).toBe(2);
+    expect(amb.counts.embers).toBeGreaterThan(0);
+    expect(amb.counts.embers).toBeLessThanOrEqual(L.fire.embers);
+    const meshes = amb.group.children as THREE.InstancedMesh[];
+    const glows = meshes[4];
+    const m = new THREE.Matrix4();
+    glows.getMatrixAt(0, m);
+    const p = new THREE.Vector3().setFromMatrixPosition(m);
+    expect(Math.hypot(p.x - s.b.drawX[h], p.z - s.b.drawZ[h])).toBeLessThan(1e-6);
+    expect(p.y).toBeGreaterThan(s.b.drawGround[h]);
+    const c1 = new THREE.Color();
+    glows.getColorAt(0, c1);
+    const first = m.elements.slice();
+    at(2.37, "evening", 1.9);
+    const c2 = new THREE.Color();
+    glows.getColorAt(0, c2);
+    expect(c2.r).not.toBeCloseTo(c1.r, 6);
+    at(2, "evening", 1.9);
+    glows.getMatrixAt(0, m);
+    expect(m.elements).toEqual(first);
+    // brighter with a larger hearthGlow, hearth pool brighter than the home pool
+    const home1 = new THREE.Color();
+    glows.getColorAt(1, home1);
+    expect(c1.r).toBeGreaterThan(home1.r);
+    at(2, "evening", 1);
+    const dim = new THREE.Color();
+    glows.getColorAt(0, dim);
+    expect(dim.r).toBeLessThan(c1.r);
+    amb.enabled = false;
+    at(2, "evening", 1.9);
+    expect(amb.counts.glows + amb.counts.embers).toBe(0);
+    expect(amb.fire).toBe(0);
   });
 
   it("kicks up dust behind walking units on dry land, none behind standing ones", () => {

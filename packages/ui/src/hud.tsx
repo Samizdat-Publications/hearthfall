@@ -1,7 +1,9 @@
 // HUD (M4, layout v2 after ADR-005): Preact DOM overlay driven by a plain HudModel. The UI never
 // touches the sim: it renders the model and calls back into the app, which turns intents into
 // Commands. Layout follows the target look: Shaper portrait and bars top-left, spells top-center,
-// build tools in the right column, minimap with population bottom-right.
+// build tools in the right column, minimap with population bottom-right. HUD v3 "Ember Grove"
+// (docs/design/hud-v3.md) paints the panels with the keyed pieces in assets/ui/hud through the
+// --art-<piece> CSS custom properties the app sets (apps/game/src/hudArt.ts); all text stays live.
 import { render } from "preact";
 import { useEffect, useRef } from "preact/hooks";
 import { signal } from "@preact/signals";
@@ -224,10 +226,17 @@ export function StanceIcon({ s }: { s: (typeof STANCES)[number] }) {
   );
 }
 
+/** HUD v3: the word on the stance plank's top tab */
+const TROOP_TAB: Record<TroopView["kind"], string> = { none: "", units: "Stance", lodge: "Lodge", tower: "Tower", site: "Site" };
+const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
+
 function Troops({ t, act, pointing, idle }: { t: TroopView; act: HudActions; pointing: string | null; idle?: { n: number; label: string; title: string } | null }) {
   if (t.kind === "none") return null;
   return (
-    <div data-hud="troops" class="hud-panel hud-troops">
+    <div data-hud="troops" class={"hud-panel hud-troops troops-" + t.kind}>
+      <span class="troops-tab" aria-hidden="true">
+        {t.building ? "Plan" : TROOP_TAB[t.kind]}
+      </span>
       {t.label || idle ? (
         <span class="troops-head">
           {t.label ? <span class="troops-label">{t.label}</span> : <span />}
@@ -250,6 +259,7 @@ function Troops({ t, act, pointing, idle }: { t: TroopView; act: HudActions; poi
           {STANCES.map((s) => (
             <button key={s} class={"prio stance" + (t.stance === s ? " on" : "")} title={`Stance: ${s}`} aria-label={`Stance: ${s}`} data-stance={s} onClick={() => act.setStance(s)}>
               <StanceIcon s={s} />
+              <span class="stance-name">{cap(s)}</span>
             </button>
           ))}
           <button class="prio" title="Run to the nearest own Watchtower, else the Hearth (R)" onClick={() => act.retreat()}>
@@ -300,18 +310,19 @@ function Troops({ t, act, pointing, idle }: { t: TroopView; act: HudActions; poi
 
 export const hudModel = signal<HudModel | null>(null);
 
+/** HUD v3: a spell is a painted rune disc (CSS background); the charge ring sits on the disc's inner rim. */
 function SpellButton({ s, act }: { s: SpellView; act: HudActions }) {
-  const ring = 2 * Math.PI * 17;
+  const ring = 2 * Math.PI * 19;
   const full = s.charges >= s.max;
   return (
-    <button class={"spell" + (s.auto ? " auto" : "") + (full ? " full" : "")} data-spell={s.id} title={s.tip ?? `${s.name}: ${s.cost} mana, ${s.charges}/${s.max} charges. Click to cast, right click to toggle auto-charge.`} onClick={() => act.target(s.id)} onContextMenu={(e) => { e.preventDefault(); act.toggleAuto(s.id); }} data-tier={s.tier}>
-      <svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true">
-        <circle cx="22" cy="22" r="17" class="ring-bg" />
-        <circle cx="22" cy="22" r="17" class="ring" style={{ strokeDasharray: `${ring * (full ? 1 : s.progress)} ${ring}` }} transform="rotate(-90 22 22)" />
+    <button class={"spell" + (s.auto ? " auto" : "") + (full ? " full" : "") + (s.charging ? " charging" : "")} data-spell={s.id} title={s.tip ?? `${s.name}: ${s.cost} mana, ${s.charges}/${s.max} charges. Click to cast, right click to toggle auto-charge.`} onClick={() => act.target(s.id)} onContextMenu={(e) => { e.preventDefault(); act.toggleAuto(s.id); }} data-tier={s.tier}>
+      <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
+        <circle cx="28" cy="28" r="19" class="ring-bg" />
+        <circle cx="28" cy="28" r="19" class="ring" style={{ strokeDasharray: `${ring * (full ? 1 : s.progress)} ${ring}` }} transform="rotate(-90 28 28)" />
         {s.icon ? (
-          <image href={s.icon} x="10" y="10" width="24" height="24" class="icon" />
+          <image href={s.icon} x="14" y="14" width="28" height="28" class="icon" />
         ) : (
-          <text x="22" y="27" text-anchor="middle" class="glyph">
+          <text x="28" y="33" text-anchor="middle" class="glyph">
             {s.name.slice(0, 2)}
           </text>
         )}
@@ -323,41 +334,29 @@ function SpellButton({ s, act }: { s: SpellView; act: HudActions }) {
   );
 }
 
+/** HUD v3: the painted elder Shaper portrait (--art-portrait, set by the app) in the bone slot of the Shaper frame. */
 function Portrait() {
-  // placeholder Shaper portrait: feathered headdress, hide cloak, carved staff (icons arrive in M10)
-  return (
-    <svg class="portrait" viewBox="0 0 32 32" width="64" height="64" aria-hidden="true" shape-rendering="crispEdges">
-      <rect width="32" height="32" fill="#141a2e" />
-      <rect x="3" y="2" width="2" height="1" fill="#f4f1ea" />
-      <rect x="26" y="5" width="1" height="1" fill="#f4f1ea" />
-      <rect x="7" y="4" width="2" height="26" fill="#8b5a2b" />
-      <rect x="6" y="3" width="4" height="3" fill="#b07cff" />
-      <rect x="13" y="4" width="2" height="5" fill="#c8312e" />
-      <rect x="16" y="3" width="2" height="6" fill="#e0a12a" />
-      <rect x="19" y="4" width="2" height="5" fill="#2fa36b" />
-      <rect x="13" y="9" width="8" height="2" fill="#5e3a1a" />
-      <rect x="14" y="11" width="6" height="6" fill="#b98058" />
-      <rect x="15" y="13" width="1" height="1" fill="#2b1d13" />
-      <rect x="18" y="13" width="1" height="1" fill="#2b1d13" />
-      <rect x="11" y="17" width="12" height="13" fill="#7c5a3a" />
-      <rect x="16" y="17" width="2" height="13" fill="#2e6fd8" />
-      <rect x="9" y="19" width="3" height="3" fill="#b98058" />
-    </svg>
-  );
+  return <span class="portrait" role="img" aria-label="The Shaper" />;
 }
 
-function Bar({ kind, frac, label, icon }: { kind: "mana" | "pop"; frac: number; label: string; icon?: string }) {
+function Bar({ kind, frac, label, icon, warn }: { kind: "mana" | "pop"; frac: number; label: string; icon?: string; warn?: { text: string; title: string } | null }) {
   return (
     <div class={"bar bar-" + kind} title={label}>
       {icon ? <img class="bar-icon" src={icon} alt="" /> : <span class="bar-glyph" aria-hidden="true">{kind === "mana" ? "◆" : "✚"}</span>}
       <span class="bar-track">
         <span class="bar-fill" style={{ width: Math.round(Math.min(1, Math.max(0, frac)) * 100) + "%" }} />
         <span class="bar-text">{label}</span>
+        {warn ? (
+          <span class="waste" title={warn.title}>
+            {warn.text}
+          </span>
+        ) : null}
       </span>
     </div>
   );
 }
 
+/** HUD v3: the minimap shows through the bone ring beside the lava cauldron; Population sits on a small plaque. */
 function Minimap({ m, act }: { m: HudModel; act: HudActions }) {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
@@ -366,7 +365,7 @@ function Minimap({ m, act }: { m: HudModel; act: HudActions }) {
   return (
     <div data-hud="minimap" class="hud-panel hud-minimap">
       <div class="mm-pop" title="Followers / housing">
-        <span class="mm-icon" aria-hidden="true">{"☺"}</span>
+        <span class="mm-label">Population</span>
         <b class={m.pop >= m.cap ? "warn" : ""}>{m.pop}</b>
         <span class="mm-cap">/{m.cap}</span>
       </div>
@@ -388,19 +387,25 @@ function Hud({ act }: { act: HudActions }) {
   const m = hudModel.value;
   if (!m) return null;
   const b = m.box;
+  const undo = m.undoSec !== undefined && m.undoSec > 0;
   return (
     <>
+      {/* HUD v3 "Ember Grove": painted ornaments (no data-hud, never take the pointer); live panels sit on top */}
+      <div class="hud-deco deco-title" role="img" aria-label={m.title} />
+      <div class="hud-deco deco-shaper" aria-hidden="true" />
+      <div class="hud-deco deco-volcano" aria-hidden="true" />
       <div data-hud="shaper" class={"hud-panel hud-shaper" + (m.shaper.alive ? "" : " dead")}>
         <button class="portrait-btn" onClick={() => act.selectShaper()} disabled={!m.shaper.alive} title="Select the Shaper (S)" aria-label="Select the Shaper">
           <Portrait />
         </button>
         <span class="shaper-name">{m.shaper.alive ? "Shaper" : m.shaper.respawnSec >= 0 ? `back in ${m.shaper.respawnSec}s` : "fallen"}</span>
-        <span class="shaper-hp" style={{ width: Math.round(m.shaper.hpFrac * 100) + "%" }} />
+        <span class="shaper-hp-track">
+          <span class="shaper-hp" style={{ width: Math.round(m.shaper.hpFrac * 100) + "%" }} />
+        </span>
       </div>
       <div data-hud="resources" class="hud-panel hud-resources">
-        <Bar kind="mana" frac={m.manaFrac} label={`Mana ${Math.round(m.manaPerMin)}/min`} icon={m.icons?.mana} />
+        <Bar kind="mana" frac={m.manaFrac} label={`Mana ${Math.round(m.manaPerMin)}/min`} icon={m.icons?.mana} warn={m.wasting ? { text: "wasting", title: "Mana is wasting: no spell or training can absorb it. Right click a spell to auto-charge it." } : null} />
         <Bar kind="pop" frac={m.cap > 0 ? m.pop / m.cap : 0} label={`Followers ${m.pop}/${m.cap}`} icon={m.icons?.pop} />
-        {m.wasting ? <span class="waste" title="No spell or training can absorb mana: toggle auto-charge on a spell">mana wasting: auto-charge a spell</span> : null}
         <label class="res-row split">
           <span class="res-label">Spells {m.spellsPct}%</span>
           <input type="range" min="0" max="100" step="5" value={m.spellsPct} onInput={(e) => act.setSplit(Number((e.target as HTMLInputElement).value))} aria-label="Mana split between spells and training" />
@@ -420,10 +425,11 @@ function Hud({ act }: { act: HudActions }) {
         ))}
       </div>
       <div data-hud="title" class="hud-panel hud-title">
-        <span class="hud-name">{m.title}</span>
+        <span class="hud-name">{m.mapLine}</span>
         <span class="hud-sub">
-          {m.mapLine} | tick {m.tick}
+          tick {m.tick}
           {m.paused ? " | paused" : ""}
+          {m.showHelp ? "" : " | H keys"}
         </span>
         {m.speed ? (
           <span data-ui="speed" class="hud-speed" title="Game speed (- and = keys)">
@@ -447,17 +453,25 @@ function Hud({ act }: { act: HudActions }) {
             <span class="obj-head">Objectives</span>
             {m.objectives.map((o) => (
               <span key={o.part ?? o.text} class={"obj" + (o.done ? " done" : "")} data-hud-part={o.part}>
-                {o.done ? "\u2713 " : "\u25c7 "}
-                {o.text}
+                <i class="obj-mark" aria-hidden="true">
+                  {o.done ? "✓" : "◆"}
+                </i>
+                <span class="obj-text">{o.text}</span>
               </span>
             ))}
           </div>
         ) : null}
         <div data-hud="build" class="hud-panel hud-build">
+          <span class="build-head" aria-hidden="true">
+            Build
+          </span>
           {m.buildable.map((bd) => (
             <button key={bd.id} class={"build-btn" + (m.placing === bd.id ? " active" : "") + (bd.locked ? " locked" : "")} disabled={bd.locked !== null} onClick={() => (m.placing === bd.id ? act.cancel() : act.startPlacing(bd.id))} title={`${bd.name}: ${costText(bd)}${bd.key ? ` (${bd.key})` : ""}${bd.locked ? `, locked: ${bd.locked}` : ""}`}>
               {bd.icon ? <img class="build-icon" src={bd.icon} alt="" /> : null}
-              {bd.name} {bd.key ? <span class="hotkey">{bd.key}</span> : null}
+              <span class="build-name">
+                {bd.name}
+                {bd.key ? <span class="hotkey">{bd.key}</span> : null}
+              </span>
               <span class="build-cost" data-cost>
                 {bd.wood}
                 <i class="res-wood" />
@@ -488,12 +502,25 @@ function Hud({ act }: { act: HudActions }) {
           )}
         </div>
       ) : null}
-      <Troops t={m.troops} act={act} pointing={m.pointing} idle={m.idle} />
-      {m.idle && m.troops.kind === "none" && !(m.undoSec !== undefined && m.undoSec > 0) ? (
-        <div data-hud="idle" class="hud-panel hud-idle">
-          <IdleChip idle={m.idle} act={act} alone={true} />
-        </div>
-      ) : null}
+      {/* bottom center, top to bottom: undo, selection line, idle chip, then the stance plank at the screen edge */}
+      <div class="hud-bottom">
+        {undo ? (
+          <div data-hud="undo" class="hud-panel hud-undo">
+            Backspace undoes this cast ({(m.undoSec ?? 0).toFixed(1)} s)
+          </div>
+        ) : null}
+        {m.selected > 0 || m.placing || m.targeting || m.pointing ? (
+          <div data-hud="selection" class="hud-panel hud-selection">
+            {m.pointing === "rally" ? "Rally point: left click the ground, right click or Esc to cancel" : m.targeting ? targetingLine(m.targeting, m.targetCounts, m.targetHint) : m.placing ? `Placing ${m.placing}: left click to place, Esc to cancel${m.placeBlocked ? ` (${m.placeBlocked})` : ""}` : `${m.selected} selected${m.attack ? " | attack-move: click a target" : " | right click to move"}`}
+          </div>
+        ) : null}
+        {m.idle && m.troops.kind === "none" && !undo ? (
+          <div data-hud="idle" class="hud-panel hud-idle">
+            <IdleChip idle={m.idle} act={act} alone={true} />
+          </div>
+        ) : null}
+        <Troops t={m.troops} act={act} pointing={m.pointing} idle={m.idle} />
+      </div>
       {m.subtitle ? (
         <div data-hud="subtitle" class="hud-subtitle">
           <b>{m.subtitle.speaker}:</b> {m.subtitle.text}
@@ -503,16 +530,6 @@ function Hud({ act }: { act: HudActions }) {
       {m.tip && !m.forge ? (
         <div data-hud="tip" class="hud-panel hud-tip">
           <b>{m.tip.label}</b> {m.tip.text}
-        </div>
-      ) : null}
-      {m.undoSec !== undefined && m.undoSec > 0 ? (
-        <div data-hud="undo" class="hud-panel hud-undo">
-          Backspace undoes this cast ({m.undoSec.toFixed(1)} s)
-        </div>
-      ) : null}
-      {m.selected > 0 || m.placing || m.targeting || m.pointing ? (
-        <div data-hud="selection" class="hud-panel hud-selection">
-          {m.pointing === "rally" ? "Rally point: left click the ground, right click or Esc to cancel" : m.targeting ? targetingLine(m.targeting, m.targetCounts, m.targetHint) : m.placing ? `Placing ${m.placing}: left click to place, Esc to cancel${m.placeBlocked ? ` (${m.placeBlocked})` : ""}` : `${m.selected} selected${m.attack ? " | attack-move: click a target" : " | right click to move"}`}
         </div>
       ) : null}
       {m.showHelp ? (

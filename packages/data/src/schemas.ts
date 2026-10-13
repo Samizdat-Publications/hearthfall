@@ -697,6 +697,42 @@ export const StyleSchema = z
                 max: z.number().int().min(0).max(4096).optional(),
               })
               .optional(),
+            /** sun or moon glints on the sea near the camera, per lighting preset (a preset not listed has none) */
+            glints: z
+              .strictObject({
+                enabled: z.boolean().optional(),
+                cell: z.number().positive().max(8).optional(),
+                rate: pos.optional(),
+                near: z.number().positive().max(128).optional(),
+                density: z.number().min(0).max(1).optional(),
+                rain: z.number().min(0).max(1).optional(),
+                minQuality: z.number().min(0).max(1).optional(),
+                presets: z.record(z.string().regex(/^[a-z]+$/), z.strictObject({ strength: z.number().min(0).max(4), color: hex })).optional(),
+              })
+              .optional(),
+            /** Hearth firelight under the listed presets: flickering ground glow, embers, faint pools round Dwellings */
+            fire: z
+              .strictObject({
+                enabled: z.boolean().optional(),
+                presets: z.array(z.string().min(1)).optional(),
+                rain: z.number().min(0).max(1).optional(),
+                flicker: z.number().min(0).max(1).optional(),
+                flickerRate: pos.optional(),
+                glowRadius: z.number().positive().max(16).optional(),
+                glowColor: hex.optional(),
+                glowIntensity: z.number().min(0).max(4).optional(),
+                hutRadius: z.number().positive().max(8).optional(),
+                hutIntensity: z.number().min(0).max(4).optional(),
+                embers: z.number().int().min(0).max(32).optional(),
+                emberPeriod: z.number().positive().optional(),
+                emberRise: pos.optional(),
+                emberSpread: pos.optional(),
+                emberSize: z.number().positive().max(1).optional(),
+                emberColor: hex.optional(),
+                max: z.number().int().min(0).max(1024).optional(),
+                emberMax: z.number().int().min(0).max(1024).optional(),
+              })
+              .optional(),
           })
           .optional(),
       })

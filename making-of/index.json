@@ -1430,6 +1430,36 @@
       "when": "2026-10-12T21:39:10.850Z",
       "source": "external:hud_pieces_sheet.png",
       "bytes": 1982831
+    },
+    {
+      "file": "s4/20261012-2332_hud-v3-ember-grove-1440p.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "HUD v3 Ember Grove at 2560x1440: painted title, Shaper plaque, spell tray, tip parchment, objectives, build panel, cauldron minimap and volcano level plaque behind live text",
+      "highlight": true,
+      "when": "2026-10-12T23:32:47.460Z",
+      "source": "external:2560x1440-play.png",
+      "bytes": 3606783
+    },
+    {
+      "file": "s4/20261012-2332_ambient2-evening-hearth-glow.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "Ambient 2: evening Hearth firelight, a flickering warm ground pool with rising embers, under the new painted HUD",
+      "highlight": false,
+      "when": "2026-10-12T23:32:48.062Z",
+      "source": "external:light_evening.png",
+      "bytes": 1083887
+    },
+    {
+      "file": "s4/20261012-2332_hud-v3-stance-panel.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "HUD v3 troop panel: stance stones on the vine and lava plank, the active stance glows; help is off at start (H keys on the level plaque)",
+      "highlight": false,
+      "when": "2026-10-12T23:32:48.689Z",
+      "source": "external:hud_troops.png",
+      "bytes": 1038617
     }
   ]
 }

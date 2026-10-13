@@ -263,6 +263,9 @@
    "steps": [
     {
      "step": 200
+    },
+    {
+     "eval": "for (const type of ['keydown', 'keyup']) window.dispatchEvent(new KeyboardEvent(type, { key: 'h', code: 'KeyH' }))"
     }
    ],
    "kind": "hud",
@@ -272,7 +275,8 @@
      0.95
     ]
    },
-   "minHud": 5
+   "minHud": 5,
+   "$comment": "help (H) is off at start since HUD v3; this shot opens it so the DOM checks cover it"
   },
   {
    "id": "hud_1440p_200",
@@ -354,6 +358,9 @@
    "steps": [
     {
      "step": 200
+    },
+    {
+     "eval": "for (const type of ['keydown', 'keyup']) window.dispatchEvent(new KeyboardEvent(type, { key: 'h', code: 'KeyH' }))"
     }
    ],
    "kind": "hud",
@@ -363,7 +370,8 @@
      0.95
     ]
    },
-   "minHud": 5
+   "minHud": 5,
+   "$comment": "help (H) is off at start since HUD v3; this shot opens it so the DOM checks cover it"
   }
  ]
 }

@@ -15,6 +15,10 @@ import { etaLabel, spellEtas } from "./eta.ts";
 import { buildingIcon, resourceIcon, spellIcon, unitIcon } from "./icons.ts";
 import { speedLabel } from "./qol.ts";
 import { spellTooltip } from "./alerts.ts";
+import { applyHudArt } from "./hudArt.ts";
+
+// HUD v3 "Ember Grove": the painted pieces as --art-<piece> CSS custom properties on the document root (hud.css, menus.css)
+if (typeof document !== "undefined") applyHudArt(document.documentElement);
 
 /** build tool hotkeys (the rest of the build column is click only) */
 const BUILD_KEYS: Record<string, string> = { dwelling: "D", watchtower: "T" };

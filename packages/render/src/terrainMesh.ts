@@ -296,6 +296,10 @@ export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: {
         uLook: { value: new THREE.Vector3(look.shallowDepth, look.foamWidth, look.foamRing) },
         uRing: { value: new THREE.Vector2(look.ringDrift ?? 0.12, look.ringWidth ?? 0.35) },
         uLight: { value: new THREE.Color(1, 1, 1) },
+        // ambient life: sun or moon glints (rgb color, w strength; 0 skips the branch) and their look
+        // (cell size, twinkles per second, radius around the focus, share of lit cells); see ambient.ts glintFor
+        uGlint: { value: new THREE.Vector4(1, 1, 1, 0) },
+        uGlintLook: { value: new THREE.Vector4(0.9, 1.1, 24, 0.3) },
       },
     ]),
     vertexShader: /* glsl */ `
@@ -328,6 +332,8 @@ export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: {
       uniform vec3 uLook;
       uniform vec2 uRing;
       uniform vec3 uLight;
+      uniform vec4 uGlint;
+      uniform vec4 uGlintLook;
       varying float vDepth;
       float wh(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
       // short wave strokes: rows of cells along a slowly turning swell direction, a hashed share lit
@@ -377,6 +383,24 @@ export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: {
         // BACKLOG 14: the lighting preset and weather tint the water and its foam (white under the default preset)
         col *= uLight;
         float alpha = mix(0.72, 0.94, t);
+        if (uGlint.w > 0.0 && vBendDist < uGlintLook.z) {
+          // ambient life: a hashed share of world-anchored cells each hold one sparkle that twinkles on its own
+          // beat, off the foam line and fading out toward the edge of the radius around the camera focus
+          vec2 gq = vWorld.xz / uGlintLook.x;
+          vec2 gc = floor(gq);
+          float gh = wh(gc + 7.31);
+          if (gh < uGlintLook.w) {
+            vec2 go = (vec2(wh(gc + 1.7), wh(gc + 4.3)) - 0.5) * 0.5;
+            float gd = 1.0 - smoothstep(0.06, 0.2, length(fract(gq) - 0.5 - go));
+            float tw = max(sin(uTime * uGlintLook.y * (0.6 + 0.8 * wh(gc + 9.9)) * 6.2832 + gh * 40.0), 0.0);
+            tw *= tw; tw *= tw; tw *= tw;
+            float gnear = 1.0 - smoothstep(uGlintLook.z * 0.45, uGlintLook.z, vBendDist);
+            float gopen = smoothstep(uLook.y * 0.6, uLook.y * 1.4, dep);
+            float g = uGlint.w * gd * tw * gnear * gopen;
+            col += uGlint.rgb * g;
+            alpha = max(alpha, g);
+          }
+        }
         gl_FragColor = vec4(col, alpha);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>

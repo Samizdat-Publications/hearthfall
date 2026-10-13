@@ -174,12 +174,22 @@
       "pickPx": 18
     },
     "ambient": {
-      "$comment": "Render polish (Settings Ambient life): chimney smoke over finished sources, bird flocks over forest or shore grid points, fireflies around Hearths and Dwellings under the listed lighting presets (not in rain), dust behind walkers on dry land near the focus. All of it follows the visual time, so fixedStep shots stay identical. enabled false or max 0 turns one effect off.",
+      "$comment": "Render polish (Settings Ambient life): chimney smoke over finished sources, bird flocks over forest or shore grid points, fireflies around Hearths and Dwellings under the listed lighting presets (not in rain), dust behind walkers on dry land near the focus, sun or moon glints on the sea near the focus per lighting preset (none below the minQuality render scale, scaled by rain while raining), and Hearth firelight under the fire presets (a flickering ground glow pool scaled by the preset hearthGlow, rising embers, a faint warm pool round finished Dwellings; the hearth lights flicker with it). All of it follows the visual time, so fixedStep shots stay identical. enabled false or max 0 turns one effect off.",
       "maxZoom": 0.85,
       "smoke": { "enabled": true, "puffs": 5, "period": 4, "rise": 2.4, "drift": 0.7, "wind": [0.8, 0.35], "size": 0.13, "grow": 1.9, "color": "#d9d3c9", "opacity": 0.34, "sources": ["dwelling", "hearth"], "max": 640 },
       "birds": { "enabled": true, "spacing": 24, "forestTrees": 14, "forestReach": 5, "shoreBand": 6, "perFlock": 5, "radius": 4.5, "height": 9, "speed": 2.2, "size": 0.55, "flap": 2.6, "color": "#2b2622", "max": 160 },
       "fireflies": { "enabled": true, "presets": ["evening"], "perHearth": 10, "perDwelling": 2, "radius": 3.2, "size": 0.07, "blink": 0.45, "color": "#e9ff8c", "max": 240 },
-      "dust": { "enabled": true, "perUnit": 2, "period": 0.7, "radius": 24, "dryAbove": 4, "size": 0.11, "trail": 0.45, "color": "#c9b48a", "opacity": 0.5, "max": 400 }
+      "dust": { "enabled": true, "perUnit": 2, "period": 0.7, "radius": 24, "dryAbove": 4, "size": 0.11, "trail": 0.45, "color": "#c9b48a", "opacity": 0.5, "max": 400 },
+      "glints": {
+        "enabled": true, "cell": 0.9, "rate": 1.1, "near": 24, "density": 0.3, "rain": 0, "minQuality": 0.75,
+        "presets": {
+          "day": { "strength": 0.9, "color": "#fff6e2" },
+          "golden": { "strength": 0.6, "color": "#ffe2ad" },
+          "evening": { "strength": 0.8, "color": "#ffbd8c" },
+          "night": { "strength": 0.3, "color": "#c8d3ea" }
+        }
+      },
+      "fire": { "enabled": true, "presets": ["evening", "night"], "rain": 0.7, "flicker": 0.2, "flickerRate": 1, "glowRadius": 3.4, "glowColor": "#ff9a42", "glowIntensity": 0.3, "hutRadius": 1.5, "hutIntensity": 0.1, "embers": 6, "emberPeriod": 2.2, "emberRise": 2.6, "emberSpread": 0.35, "emberSize": 0.05, "emberColor": "#ffb45a", "max": 256, "emberMax": 96 }
     }
   },
   "tribePalettes": {

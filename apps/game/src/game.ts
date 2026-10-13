@@ -376,7 +376,8 @@ export class Game {
   private forgeShown = false;
   placeBlocked: string | null = null;
   private placeAt: [number, number] | null = null;
-  showHelp = true;
+  /** the key list (H); off at start since HUD v3 centers it over the play area, the level plaque says "H keys" */
+  showHelp = false;
   /** Parking lot: photo mode hides the HUD, selection and markers and pauses the match; the camera stays free */
   photo = false;
   private photoWasPaused = false;
@@ -652,6 +653,8 @@ export class Game {
     this.renderer.setTargeting(null);
     this.renderer.setWorld(this.world);
     this.applyQuality(); // BACKLOG 14b: the match weather
+    // HUD v3 keeps the key list hidden at start, so say once where it is
+    if (!this.replay && this.settings.keymap.help) this.notify("helpHint", `Press ${this.settings.keymap.help.toUpperCase()} to show the key list.`, "info", 0);
     this.renderer.viewTribe = this.localTribe;
     this.renderer.revealFog = this.params.reveal;
     const home = this.world.tribes[this.localTribe]

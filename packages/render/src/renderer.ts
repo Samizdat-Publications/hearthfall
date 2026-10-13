@@ -30,7 +30,7 @@ import { BuildingLayer } from "./buildingsLayer.ts";
 import { WorshipLayer } from "./worshipLayer.ts";
 import { VfxLayer } from "./vfx.ts";
 import { buildingUnder, HealthBarLayer, HoverRing, relationOf, unitUnder, type HealthBarMode, type Relation } from "./overlays.ts";
-import { AmbientLayer, resolveAmbient } from "./ambient.ts";
+import { AmbientLayer, glintFor, hearthFlicker, resolveAmbient } from "./ambient.ts";
 import { RetroPass, resolveTilt } from "./retro.ts";
 import { applyModelFixes, loadModels, type ModelLoadReport, type ModelParts } from "./models.ts";
 
@@ -159,6 +159,7 @@ export class ThreeRenderer implements Renderer {
   private hoverBuilding = -1;
   /** lighting preset name in force (fireflies come out under some) */
   private lightingName = "";
+  private readonly glintColor = new THREE.Color();
 
   constructor(o: RendererOptions) {
     this.gl = new THREE.WebGLRenderer({
@@ -530,7 +531,7 @@ export class ThreeRenderer implements Renderer {
     this.healthBars.mode = mode === "always" || mode === "off" ? mode : "damaged";
   }
 
-  /** Settings Ambient life: chimney smoke, birds, fireflies and walking dust on or off. */
+  /** Settings Ambient life: chimney smoke, birds, fireflies, walking dust, water glints and Hearth firelight on or off. */
   setAmbientLife(on: boolean): void {
     this.ambient.enabled = on;
   }
@@ -869,7 +870,9 @@ export class ThreeRenderer implements Renderer {
         this.buildings,
         this.viewTribe,
         this.revealFog,
+        this.lighting?.hearthGlow ?? 1,
       );
+      this.syncGlints();
       this.vfx.update(
         w,
         visualTime,
@@ -892,7 +895,7 @@ export class ThreeRenderer implements Renderer {
         visualTime,
       );
     }
-    this.placeHearthLights();
+    this.placeHearthLights(visualTime);
     this.sky.visible = !this.cam.map && this.scene.visible;
     this.sky.position.copy(this.camera.position);
     this.sky.scale.setScalar((this.camera.far * 0.9) / 900);
@@ -914,15 +917,29 @@ export class ThreeRenderer implements Renderer {
     this.stats.cpuMs = performance.now() - t0;
   }
 
+  /**
+   * Ambient life: sun or moon glints on the water under the preset in force (style.json render.ambient.glints),
+   * none in rain by default, with the setting off, in the map view, past maxZoom or below the quality floor.
+   */
+  private syncGlints(): void {
+    const L = this.ambient.look;
+    const on = this.ambient.enabled && !this.cam.map && this.cam.zoom <= L.maxZoom;
+    const g = glintFor(L.glints, this.lightingName, (this.lighting?.rain ?? null) !== null, on, this.renderScale);
+    const u = this.waterMat.uniforms;
+    const c = this.glintColor.set(g.color);
+    u.uGlint.value.set(c.r, c.g, c.b, g.strength);
+    u.uGlintLook.value.set(L.glints.cell, L.glints.rate, L.glints.near, L.glints.density);
+  }
+
   /** Warm firelight on up to four Hearths nearest the camera focus (wrapped near the focus). */
-  private placeHearthLights(): void {
+  private placeHearthLights(t = 0): void {
     const w = this.world;
     for (const l of this.hearthLights) l.intensity = 0;
     if (!w) return;
     const n = w.terrain.size;
     const E = w.ents;
     const rs = this.styleRender;
-    const found: { d: number; x: number; z: number; y: number }[] = [];
+    const found: { i: number; d: number; x: number; z: number; y: number }[] = [];
     for (const t of w.tribes) {
       const h = E.index(t.hearth);
       if (h < 0) continue;
@@ -934,6 +951,7 @@ export class ThreeRenderer implements Renderer {
         Math.max(w.terrain.heightAt(E.x[h], E.y[h]), w.terrain.sea) *
         this.palette.heightScale;
       found.push({
+        i: h,
         d: ox * ox + oz * oz,
         x: this.cam.x + ox,
         z: this.cam.z + oz,
@@ -941,11 +959,15 @@ export class ThreeRenderer implements Renderer {
       });
     }
     found.sort((a, b) => a.d - b.d);
+    // ambient life: while the fires are lit (evening and night) the light flickers in step with the glow pool
+    const flick = this.ambient.fire > 0;
     found.slice(0, this.hearthLights.length).forEach((f, k) => {
       const l = this.hearthLights[k];
       l.position.set(f.x, f.y + 1.2 - this.bend.uBendK.value * f.d, f.z);
       l.intensity =
-        (rs?.hearthLight.intensity ?? 14) * (this.lighting?.hearthGlow ?? 1);
+        (rs?.hearthLight.intensity ?? 14) *
+        (this.lighting?.hearthGlow ?? 1) *
+        (flick ? hearthFlicker(t, f.i, this.ambient.look.fire) : 1);
     });
   }
 

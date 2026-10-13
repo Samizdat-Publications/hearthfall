@@ -1,112 +1,13 @@
-.hud-panel { position: absolute; color: #f4e6c8; background: linear-gradient(180deg, #4a3423 0%, #3a281b 100%); border: 4px solid #8a8378; border-image: repeating-linear-gradient(90deg, #9a9387 0 7px, #7d766b 7px 10px, #a8a195 10px 16px) 4; border-radius: 0; box-shadow: inset 0 0 0 2px #2b1d13, inset 0 2px 0 3px rgba(255, 230, 190, 0.12), 0 3px 0 #2b1d13, 0 4px 10px rgba(0, 0, 0, 0.45); padding: 6px 12px; font: 600 13px "Trebuchet MS", "Segoe UI", system-ui, sans-serif; text-shadow: 0 1px 0 #1d130c; white-space: nowrap; pointer-events: none; image-rendering: pixelated; }
-.res-row { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
-.res-row b.warn { color: #ff7a5c; }
-.res-label { font-size: 12px; opacity: 0.8; }
-.res-row.split input { flex: 1; min-width: 70px; accent-color: #b07cff; }
-.priorities { gap: 4px; }
-.prio { flex: 1; border: 1px solid #8a8378; background: #2b1d13; color: #b8a58a; border-radius: 6px; font: 600 11px system-ui; padding: 2px 4px; cursor: pointer; }
-.prio.on { background: #8dbf5a; border-color: #5e8c3a; color: #fff; }
-.spell { position: relative; width: 48px; height: 48px; border: none; background: transparent; padding: 0; cursor: pointer; opacity: 0.55; }
-.spell.auto { opacity: 1; }
-.spell .ring-bg { fill: #2b1d13; stroke: #8a8378; stroke-width: 4; }
-.spell .ring { fill: none; stroke: #b07cff; stroke-width: 4; stroke-linecap: round; }
-.spell[data-tier="1"] .ring { stroke: #2e6fd8; }
-.spell[data-tier="3"] .ring { stroke: #e0a12a; }
-.spell[data-tier="4"] .ring { stroke: #c8312e; }
-.spell.full .ring-bg { fill: #5a3d1e; }
-.spell .glyph { font: 700 13px "Trebuchet MS", system-ui, sans-serif; fill: #f4e6c8; }
-.spell .charges { position: absolute; right: 1px; bottom: 1px; font: 700 11px system-ui; background: #e0a12a; color: #2b1d13; border-radius: 7px; min-width: 14px; height: 14px; line-height: 14px; text-align: center; }
-.spell .hotkey, .build-btn .hotkey { position: absolute; left: 2px; top: 0; font-size: 9px; opacity: 0.6; }
-.build-btn .hotkey { position: static; margin-left: 4px; }
-.build-btn.active { background: #e0a12a; color: #fff; }
-.hud-overlap { display: none; left: 40px; top: 18px; }
-body.debug-overlap-hud .hud-overlap { display: block; }
-.hud-box { position: absolute; border: 1.5px solid rgba(230, 244, 248, 0.95); background: rgba(230, 244, 248, 0.12); pointer-events: none; }
-/* layout v2 (ADR-005 target look): stone-framed panels around the edges, the world in the middle */
-.hud-shaper { left: 12px; top: 10px; width: 72px; padding: 4px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
-.hud-shaper .portrait { display: block; width: 64px; height: 64px; image-rendering: pixelated; border: 2px solid #2b1d13; }
-.hud-shaper.dead .portrait { filter: grayscale(1) brightness(0.55); }
-.hud-shaper .portrait-btn { pointer-events: auto; display: block; padding: 0; margin: 0; border: 0; background: none; cursor: pointer; line-height: 0; }
-.hud-shaper .portrait-btn:hover:not(:disabled) .portrait, .hud-shaper .portrait-btn:focus-visible .portrait { outline: 2px solid #f2c75c; outline-offset: 1px; }
-.hud-shaper .portrait-btn:disabled { cursor: default; }
-.shaper-name { font-size: 12px; letter-spacing: 0.5px; }
-.shaper-hp { display: block; height: 3px; background: #8dbf5a; align-self: flex-start; }
-.hud-resources { left: 108px; top: 10px; width: 240px; display: flex; flex-direction: column; gap: 4px; padding: 6px 8px; pointer-events: auto; }
-.bar { display: flex; align-items: center; gap: 6px; }
-.bar-glyph { width: 14px; text-align: center; font-size: 14px; }
-.bar-icon { width: 18px; height: 18px; margin: -2px -2px; image-rendering: pixelated; }
-.build-icon { width: 22px; height: 22px; margin: -4px 6px -4px -4px; vertical-align: middle; image-rendering: pixelated; }
-.spell image.icon { image-rendering: pixelated; }
-.build-btn.locked .build-icon { filter: grayscale(1) opacity(0.5); }
-.bar-mana .bar-glyph { color: #58b4d6; }
-.bar-pop .bar-glyph { color: #e0a12a; }
-.bar-track { position: relative; flex: 1; height: 16px; background: #120c08; border: 2px solid #2b1d13; box-shadow: inset 0 0 0 1px #5c564e; overflow: hidden; }
-.bar-fill { position: absolute; left: 0; top: 0; bottom: 0; }
-.bar-mana .bar-fill { background: repeating-linear-gradient(90deg, #2e6fd8 0 6px, #4a8ae8 6px 8px); }
-.bar-pop .bar-fill { background: repeating-linear-gradient(90deg, #2fa36b 0 6px, #46bf80 6px 8px); }
-.bar-text { position: relative; padding-left: 6px; font-size: 11px; line-height: 14px; }
-.waste { font-size: 11px; color: #fff; background: #c8312e; padding: 0 5px; align-self: flex-start; }
-.hud-spellbar { left: 50%; top: 10px; transform: translateX(-50%); display: flex; flex-wrap: wrap; justify-content: center; max-width: 440px; gap: 4px; padding: 4px 8px; pointer-events: auto; }
-/* BACKLOG 1: more than 8 spells (worship site unlocks) wrap into a second row of 8 under the first */
-.hud-right { position: absolute; right: 12px; top: 10px; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; pointer-events: none; }
-.hud-right > .hud-panel { position: relative; top: auto; right: auto; }
-.hud-build { display: flex; flex-direction: column; gap: 6px; padding: 6px; pointer-events: auto; }
-.build-btn { border: 2px solid #8a8378; background: #5a3d26; color: #f4e6c8; border-radius: 0; padding: 6px 8px; font: 600 12px system-ui; cursor: pointer; min-width: 84px; text-align: left; }
-.hud-minimap { right: 12px; bottom: 12px; width: 156px; padding: 6px; display: flex; flex-direction: column; gap: 4px; pointer-events: auto; }
-.mm-pop { display: flex; align-items: baseline; gap: 4px; font-size: 16px; color: #8dff9a; }
-.mm-pop b.warn { color: #ff7a5c; }
-.mm-cap { font-size: 12px; color: #c9e8c0; }
-.mm-icon { color: #e2b48c; }
-.mm-canvas { width: 144px; height: 144px; image-rendering: pixelated; background: #04060f; border: 2px solid #2b1d13; cursor: pointer; display: block; }
-.hud-title { left: 12px; bottom: 12px; display: flex; gap: 10px; align-items: baseline; padding: 4px 10px; }
-.hud-name { font-weight: 800; font-size: 14px; letter-spacing: 0.5px; }
-.hud-sub { font-size: 11px; opacity: 0.85; }
-.hud-help { left: 12px; top: 176px; max-width: 320px; white-space: normal; line-height: 1.5; font-size: 11px; }
-.hud-selection { left: 50%; bottom: 12px; transform: translateX(-50%); font-weight: 600; }
-.hud-undo { left: 50%; bottom: 44px; transform: translateX(-50%); font-weight: 600; }
-/* BACKLOG 11: the Forge panel under the spell bar */
-.hud-forge { left: 50%; top: 92px; transform: translateX(-50%); display: flex; flex-direction: column; gap: 4px; padding: 6px 8px; pointer-events: auto; align-items: center; }
-.forge-title { font-weight: 600; font-size: 12px; }
-.forge-ready { font-weight: 700; }
-.hud-troops { left: 50%; bottom: 64px; transform: translateX(-50%); display: flex; flex-direction: column; gap: 4px; padding: 6px 8px; pointer-events: auto; min-width: 260px; }
-.troops-label { font-weight: 600; font-size: 12px; }
-.troops-row { display: flex; gap: 4px; }
-.prio:disabled { opacity: 0.45; cursor: default; }
-.build-btn.locked { opacity: 0.5; cursor: default; filter: grayscale(0.6); }
-.next-unlock { font-size: 11px; color: #e8d9b0; white-space: normal; line-height: 1.3; }
-/* M8 HUD v2: spell ETA, waste warning, selected units, objectives, notifications */
-.spell .eta { position: absolute; left: 0; bottom: 1px; font: 700 9px system-ui; color: #e8d9b0; background: rgba(18, 12, 8, 0.8); padding: 0 2px; }
-.hud-spellbar.wasting { box-shadow: inset 0 0 0 2px #c8312e, 0 0 0 2px #c8312e, 0 4px 10px rgba(0, 0, 0, 0.45); }
-.troops-units { display: flex; flex-wrap: wrap; gap: 4px; max-width: 320px; }
-.unit-icon { width: 16px; height: 16px; margin: -3px 3px -4px -3px; vertical-align: middle; image-rendering: pixelated; }
-.unit-chip { position: relative; font-size: 11px; background: #2b1d13; border: 1px solid #8a8378; padding: 1px 6px 3px; }
-.unit-hp { position: absolute; left: 0; bottom: 0; height: 2px; background: #8dbf5a; }
-.hud-objectives { width: 236px; display: flex; flex-direction: column; gap: 2px; padding: 5px 10px; white-space: normal; }
-.obj-head { font-size: 12px; color: #ffd27a; letter-spacing: 0.5px; }
-.obj { font-size: 11px; line-height: 1.3; }
-.obj.done { opacity: 0.6; text-decoration: line-through; }
-.hud-tip { left: 50%; top: 92px; transform: translateX(-50%); max-width: 460px; padding: 5px 12px; font-size: 13px; line-height: 1.35; white-space: normal; text-align: center; color: #ffe9a8; }
-.hud-tip b { color: #ffd27a; }
-.hud-notes { left: 12px; bottom: 52px; max-width: 320px; display: flex; flex-direction: column; gap: 3px; padding: 5px 8px; white-space: normal; }
-.note { font-size: 12px; line-height: 1.3; padding-left: 6px; border-left: 3px solid #8a8378; }
-.note.bad { border-left-color: #c8312e; color: #ffd0c4; }
-.note.good { border-left-color: #8dbf5a; color: #dcf5c8; }
-/* BACKLOG 8: voice subtitles (plain caption, no panel frame) and the UI scale setting */
-.hud-subtitle { position: absolute; left: 50%; top: 30%; transform: translateX(-50%); max-width: 640px; padding: 4px 12px; background: rgba(18, 12, 8, 0.78); color: #f4e6c8; font: 600 15px "Trebuchet MS", "Segoe UI", system-ui, sans-serif; text-align: center; border-radius: 3px; pointer-events: none; zoom: var(--ui-scale, 1); }
-.hud-subtitle b { color: #e0b04a; }
-/* BACKLOG 8: --hud-scale is the UI scale setting stepped down until the panels fit the window (apps/game/src/hudFit.ts) */
-.hud-panel { zoom: var(--hud-scale, var(--ui-scale, 1)); }
-.prio.stance { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; min-width: 28px; }
-.stance-icon { display: block; }
-.build-cost { display: block; font-size: 10px; font-weight: 500; opacity: 0.85; margin-top: 1px; }
-.build-cost i { display: inline-block; width: 7px; height: 7px; margin: 0 2px 0 2px; border-radius: 2px; vertical-align: 0; }
-.res-wood { background: #b07a3e; }
-.res-stone { background: #a7a39b; }
-
-/* S4 L7-F UI v2 "carved hearthstone" (Claude Design canvas Hearthfall UI v2: Stone): warm basalt slabs with a
-   chiselled bevel, Marcellus SC for heads, Alegreya Sans for text, ember for the one thing to press or watch.
+/* HUD v3 "Ember Grove" (docs/design/hud-v3.md, Gemini concept D). The painted pieces in assets/ui/hud come in as
+   --art-<piece> custom properties (url values) set on the document root by apps/game/src/hudArt.ts. Frames that
+   hold a varying amount of content are 9-slice border images (slices in source pixels, widths in design pixels),
+   fixed pieces are backgrounds at their own aspect, so nothing is distorted beyond the plain middle of a frame.
+   Designed at 1920 x 1080; --hud-scale (the UI scale setting, stepped down by apps/game/src/hudFit.ts until the
+   panels fit) zooms every panel and ornament. Ornaments (.hud-deco) carry no data-hud and never take the pointer.
    Fonts are bundled (OFL, @fontsource) and imported by apps/game/src/hudBridge.ts. */
 :root {
+  /* HUD v3: the spell bar sits this far right of center so the Shaper panel and objectives leave it equal room */
+  --spell-shift: 50px;
   --ui-font: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
   --ui-display: "Marcellus SC", Georgia, serif;
   --ui-caps: "Alegreya Sans SC", "Alegreya Sans", system-ui, sans-serif;
@@ -117,6 +18,8 @@ body.debug-overlap-hud .hud-overlap { display: block; }
   --ui-mana: #5aa9e6;
   --ui-moss: #7fb24a;
   --ui-kiln: #d0493a;
+  --ui-ink: #2e2014;
+  --ui-ink-soft: #5b4329;
   --ui-stone: radial-gradient(circle at 20% 30%, rgba(255, 240, 215, 0.05) 0 1px, transparent 2px) 0 0 / 7px 7px, radial-gradient(circle at 70% 60%, rgba(0, 0, 0, 0.2) 0 1px, transparent 2px) 0 0 / 11px 11px, linear-gradient(180deg, #4a443d 0%, #35302b 100%) #3b3631;
   --ui-bevel: inset 0 2px 0 rgba(255, 240, 215, 0.13), inset 0 -3px 0 rgba(0, 0, 0, 0.35), inset 0 0 0 3px #5d564c, inset 0 0 0 4px #1d1a16, 0 4px 0 #0d0b09, 0 10px 22px rgba(0, 0, 0, 0.45);
   --ui-slab: linear-gradient(180deg, #5c544a 0%, #443e37 100%);
@@ -126,74 +29,158 @@ body.debug-overlap-hud .hud-overlap { display: block; }
   --ui-ember-bevel: inset 0 1px 0 rgba(255, 230, 190, 0.45), inset 0 -2px 0 rgba(0, 0, 0, 0.3), 0 2px 0 #0d0b09, 0 0 14px rgba(232, 145, 58, 0.35);
   --ui-well: #191512;
   --ui-well-bevel: inset 0 2px 4px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(255, 240, 215, 0.08);
+  --ui-shadow: 0 1px 0 #000, 0 0 3px rgba(0, 0, 0, 0.85);
 }
-.hud-panel { color: var(--ui-bone); background: var(--ui-stone); border: 2px solid #14110e; border-image: none; border-radius: 6px; box-shadow: var(--ui-bevel); padding: 8px 14px; font: 500 15px/1.3 var(--ui-font); text-shadow: 0 1px 0 #14110e; image-rendering: auto; }
-.hud-shaper { width: 72px; padding: 8px; gap: 4px; }
-.hud-shaper .portrait { border: 1px solid #0d0b09; border-radius: 3px; box-shadow: var(--ui-well-bevel); }
-.shaper-name { font: 400 13px var(--ui-display); letter-spacing: 0.06em; color: var(--ui-lintel); }
-.shaper-hp { height: 4px; background: linear-gradient(180deg, #a4d46a, #5e8f30); border-radius: 2px; }
-.hud-resources { left: 116px; width: 260px; padding: 10px 12px; gap: 6px; }
-.res-label, .troops-label, .forge-title { font: 700 13px var(--ui-caps); letter-spacing: 0.06em; color: var(--ui-muted); opacity: 1; }
-.bar-track { height: 18px; background: var(--ui-well); border: 1px solid #0d0b09; border-radius: 3px; box-shadow: var(--ui-well-bevel); }
-.bar-mana .bar-fill { background: linear-gradient(180deg, #7cc2f0 0%, #3a86c8 100%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35); }
-.bar-pop .bar-fill { background: linear-gradient(180deg, #a4d46a 0%, #5e8f30 100%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3); }
+
+/* ---------- base ---------- */
+.hud-panel { position: absolute; box-sizing: border-box; zoom: var(--hud-scale, var(--ui-scale, 1)); color: var(--ui-bone); font: 500 15px/1.3 var(--ui-font); text-shadow: var(--ui-shadow); white-space: nowrap; pointer-events: none; border: 0 solid transparent; }
+.hud-deco { position: absolute; zoom: var(--hud-scale, var(--ui-scale, 1)); pointer-events: none; background: no-repeat 0 0 / 100% 100%; }
+/* dark wood plank (the build button piece as a 9-slice): notes, selection, undo, idle, Forge, subtitle */
+.hud-notes, .hud-selection, .hud-undo, .hud-idle, .hud-forge, .hud-overlap, .hud-subtitle { border: 0 solid transparent; border-image: var(--art-build-button) 105 98 105 98 fill / 17px 16px stretch; padding: 12px 20px; }
+.hud-box { position: absolute; border: 1.5px solid rgba(230, 244, 248, 0.95); background: rgba(230, 244, 248, 0.12); pointer-events: none; }
+.hud-overlap { display: none; left: 80px; top: 130px; }
+body.debug-overlap-hud .hud-overlap { display: block; }
+
+/* stone buttons (the stance button piece): stance and troop orders, priorities, speed, Forge brushes, idle chip */
+.prio { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 5px; box-sizing: border-box; border: 0 solid transparent; border-image: var(--art-stance-button) 90 90 90 90 fill / 6px stretch; background: none; border-radius: 0; box-shadow: none; color: var(--ui-ink); font: 800 13px/1 var(--ui-font); text-shadow: 0 1px 0 rgba(255, 250, 240, 0.35); padding: 4px 8px; cursor: pointer; pointer-events: auto; }
+.prio:hover:not(:disabled) { filter: brightness(1.14); }
+.prio.on { color: #3a1200; filter: sepia(0.6) saturate(2) brightness(1.12) drop-shadow(0 0 2px #ffc060) drop-shadow(0 0 7px rgba(240, 150, 50, 0.95)); }
+.prio:disabled { opacity: 0.5; cursor: default; }
+
+/* ---------- top left: title plaque, Shaper frame with portrait, bars in its dark recess ---------- */
+.deco-title { left: 74px; top: 4px; width: 380px; height: 140px; background-image: var(--art-title-plaque); }
+.deco-shaper { left: 8px; top: 84px; width: 540px; height: 300px; background-image: var(--art-shaper-frame); }
+.hud-shaper { left: 70px; top: 121px; width: 128px; height: 138px; display: flex; flex-direction: column; align-items: center; }
+.hud-shaper .portrait-btn { pointer-events: auto; display: block; padding: 0; margin: 0; border: 0; background: none; cursor: pointer; line-height: 0; }
+.hud-shaper .portrait-btn:disabled { cursor: default; }
+.hud-shaper .portrait { display: block; width: 108px; height: 108px; background: var(--art-portrait) center / contain no-repeat; }
+.hud-shaper .portrait-btn:hover:not(:disabled) .portrait, .hud-shaper .portrait-btn:focus-visible .portrait { filter: brightness(1.15) drop-shadow(0 0 4px #f2c75c); }
+.hud-shaper.dead .portrait { filter: grayscale(1) brightness(0.55); }
+.shaper-name { margin-top: 3px; padding: 0 8px; font: 400 15px/19px var(--ui-display); letter-spacing: 0.08em; color: var(--ui-lintel); background: rgba(20, 14, 9, 0.82); border-radius: 3px; }
+.shaper-hp-track { display: block; width: 96px; height: 5px; margin-top: 3px; background: rgba(13, 9, 6, 0.85); border-radius: 3px; overflow: hidden; }
+.shaper-hp { display: block; height: 100%; background: linear-gradient(180deg, #a4d46a, #5e8f30); }
+.hud-resources { left: 212px; top: 136px; width: 290px; height: 122px; display: flex; flex-direction: column; justify-content: center; gap: 5px; padding: 4px 8px 4px 4px; pointer-events: auto; }
+.bar { display: flex; align-items: center; gap: 6px; }
+.bar-glyph { width: 16px; text-align: center; font-size: 15px; }
+.bar-icon { width: 20px; height: 20px; margin: -2px -1px; }
 .bar-mana .bar-glyph { color: #8fd0ff; }
 .bar-pop .bar-glyph { color: #c6ec98; }
-.bar-text { font-size: 13px; font-weight: 700; line-height: 16px; font-variant-numeric: tabular-nums; text-shadow: 0 1px 0 #000, 0 0 3px #000; }
-.res-row.split input { accent-color: var(--ui-ember); }
-.waste { font-size: 13px; font-weight: 700; background: var(--ui-kiln); border-radius: 3px; padding: 0 6px; }
-.prio { border: 1px solid #14110e; background: var(--ui-slab); box-shadow: var(--ui-slab-bevel); color: var(--ui-bone); border-radius: 4px; font: 700 13px var(--ui-font); padding: 4px 6px; text-shadow: 0 1px 0 #14110e; }
-.prio:hover:not(:disabled) { background: var(--ui-slab-hover); }
-.prio.on { background: var(--ui-lintel); border-color: #14110e; color: #241f1a; text-shadow: none; }
-.hud-spellbar { padding: 8px 12px; gap: 6px; }
-.spell .ring-bg { fill: #241f1a; stroke: #5d564c; }
-.spell .ring { stroke: #b48ae0; }
+.bar-track { position: relative; flex: 1; display: flex; align-items: center; height: 20px; background: rgba(8, 6, 5, 0.8); border: 1px solid #0d0b09; border-radius: 4px; box-shadow: var(--ui-well-bevel), 0 0 0 1px rgba(232, 145, 58, 0.18); overflow: hidden; }
+.bar-fill { position: absolute; left: 0; top: 0; bottom: 0; }
+.bar-mana .bar-fill { background: linear-gradient(180deg, #8cd2ff 0%, #3a86c8 55%, #2b63a0 100%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 0 8px rgba(90, 169, 230, 0.6); }
+.bar-pop .bar-fill { background: linear-gradient(180deg, #b4e27a 0%, #5e8f30 60%, #46701f 100%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 0 8px rgba(127, 178, 74, 0.55); }
+.bar-text { position: relative; flex: 1; padding-left: 7px; font: 400 13px/18px var(--ui-display); letter-spacing: 0.05em; font-variant-numeric: tabular-nums; text-shadow: 0 1px 0 #000, 0 0 3px #000, 0 0 2px #000; }
+.waste { position: relative; margin-right: 3px; padding: 0 6px; font: 800 13px/16px var(--ui-font); color: #fff; background: var(--ui-kiln); border-radius: 3px; text-shadow: none; pointer-events: auto; }
+.res-row { display: flex; align-items: center; gap: 7px; justify-content: space-between; }
+.res-label { font: 700 13px var(--ui-caps); letter-spacing: 0.05em; color: var(--ui-lintel); }
+.res-row.split input { flex: 1; min-width: 60px; height: 14px; margin: 0; accent-color: var(--ui-ember); }
+.priorities { gap: 5px; }
+.priorities .prio { height: 24px; font-size: 13px; }
+
+/* ---------- top center: spells on rune discs in the branch beam's basalt tray, the tip on a hide below ---------- */
+.hud-spellbar { left: calc(50% + var(--spell-shift)); top: 6px; transform: translateX(-50%); width: 672px; min-height: 176px; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 7px 6px; padding: 84px 94px 22px 80px; border-image: var(--art-spellbar-frame) 175 196 138 168 fill / 84px 94px 66px 80px / 0 0 44px 0 stretch; pointer-events: auto; }
+.hud-spellbar.wasting { filter: drop-shadow(0 0 5px rgba(208, 73, 58, 0.95)); }
+.spell { position: relative; flex: 0 0 auto; width: 56px; height: 56px; border: 0; padding: 0; background: var(--art-rune-disc) center / contain no-repeat; cursor: pointer; opacity: 0.6; filter: saturate(0.6); }
+.spell.auto { opacity: 1; filter: none; }
+.spell:hover { filter: brightness(1.18); opacity: 1; }
+.spell svg { position: absolute; left: 0; top: 0; }
+.spell .ring-bg { fill: none; stroke: rgba(0, 0, 0, 0.55); stroke-width: 3.5; }
+.spell .ring { fill: none; stroke: #b48ae0; stroke-width: 3.5; stroke-linecap: round; filter: drop-shadow(0 0 2px currentColor); }
 .spell[data-tier="1"] .ring { stroke: var(--ui-mana); }
-.spell[data-tier="3"] .ring { stroke: #e8a33a; }
-.spell[data-tier="4"] .ring { stroke: var(--ui-kiln); }
-.spell.full .ring-bg { fill: #4a3420; }
-.spell .glyph { font: 700 13px var(--ui-font); fill: var(--ui-bone); }
-.spell .charges { font: 800 12px var(--ui-font); background: var(--ui-ember); color: #241f1a; min-width: 16px; height: 16px; line-height: 16px; border-radius: 8px; box-shadow: 0 1px 0 #0d0b09; }
-.spell .hotkey { font-size: 11px; font-weight: 800; opacity: 0.9; text-shadow: 0 1px 0 #000, 0 0 3px #000; }
-.spell .eta { font: 700 10px var(--ui-font); color: var(--ui-lintel); background: rgba(20, 17, 14, 0.85); border-radius: 2px; }
-.hud-spellbar.wasting { box-shadow: var(--ui-bevel), 0 0 0 2px var(--ui-kiln), 0 0 16px rgba(208, 73, 58, 0.5); }
-.hud-build { gap: 4px; padding: 8px; }
-.build-btn { border: 1px solid #14110e; background: var(--ui-slab); box-shadow: var(--ui-slab-bevel); color: var(--ui-bone); border-radius: 4px; padding: 4px 10px 5px; font: 700 14px/1.15 var(--ui-font); min-width: 120px; text-shadow: 0 1px 0 #14110e; }
-.build-btn:hover:not(.locked) { background: var(--ui-slab-hover); }
-.build-btn.active { background: var(--ui-ember-slab); box-shadow: var(--ui-ember-bevel); color: #fff6e6; }
-.build-btn .hotkey { font-size: 11px; opacity: 0.75; }
-.build-cost { font-size: 12px; line-height: 1.1; color: #c9bba1; opacity: 1; }
-.next-unlock { font-size: 13px; color: #c9bba1; }
-.hud-minimap { width: 170px; padding: 10px; gap: 6px; }
-.mm-pop { font-size: 18px; font-weight: 800; color: #c6ec98; font-variant-numeric: tabular-nums; }
-.mm-cap { font-size: 13px; color: #c9bba1; }
-.mm-canvas { border: 1px solid #0d0b09; border-radius: 3px; box-shadow: var(--ui-well-bevel); }
-.hud-title { padding: 6px 14px; gap: 12px; }
-.hud-name { font: 400 17px var(--ui-display); letter-spacing: 0.06em; color: var(--ui-lintel); }
-.hud-sub { font-size: 13px; color: #c9bba1; opacity: 1; }
-.hud-help { font-size: 13px; }
-.hud-objectives { width: 270px; padding: 10px 14px; gap: 4px; }
-.obj-head { font: 400 17px var(--ui-display); letter-spacing: 0.06em; color: var(--ui-lintel); padding-bottom: 4px; margin-bottom: 2px; border-bottom: 2px solid #1d1a16; box-shadow: 0 1px 0 rgba(255, 240, 215, 0.09); }
-.obj { font-size: 14px; line-height: 1.35; }
-.obj.done { opacity: 0.55; }
-.hud-tip { padding: 8px 18px; font-size: 16px; line-height: 1.4; color: #ffe2b8; border-color: #6a3a14; box-shadow: inset 0 2px 0 rgba(255, 240, 215, 0.13), inset 0 -3px 0 rgba(0, 0, 0, 0.35), inset 0 0 0 3px #8a5a2c, inset 0 0 0 4px #1d1a16, 0 4px 0 #0d0b09, 0 0 20px rgba(232, 145, 58, 0.3); }
-.hud-tip b { color: #ffb469; }
-.hud-notes { bottom: 62px; padding: 8px 12px; gap: 5px; }
-.note { font-size: 14px; line-height: 1.35; padding-left: 8px; border-left: 4px solid #8a8070; }
+.spell[data-tier="3"] .ring { stroke: #f0a83a; }
+.spell[data-tier="4"] .ring { stroke: #f0573f; }
+.spell.full .ring-bg { stroke: rgba(255, 190, 110, 0.35); }
+.spell.charging .ring { stroke-width: 4.5; }
+.spell .glyph { font: 400 16px var(--ui-display); fill: var(--ui-bone); }
+.spell .charges { position: absolute; right: -2px; bottom: -1px; min-width: 20px; height: 20px; padding: 0 3px; box-sizing: border-box; font: 800 14px/20px var(--ui-font); text-align: center; color: #241a10; background: radial-gradient(circle at 40% 35%, #ffd08a, #e8913a 60%, #a8561d); border: 1px solid #2a1a0c; border-radius: 9px; text-shadow: none; }
+.spell .hotkey { position: absolute; left: -1px; top: -3px; font: 800 13px var(--ui-font); color: var(--ui-lintel); opacity: 1; text-shadow: 0 1px 0 #000, 0 0 3px #000, 0 0 3px #000; }
+.spell .eta { position: absolute; left: -3px; bottom: -1px; padding: 0 3px; font: 700 13px/16px var(--ui-font); color: var(--ui-lintel); background: rgba(16, 11, 7, 0.88); border-radius: 3px; text-shadow: none; }
+.hud-tip { left: calc(50% + var(--spell-shift)); top: max(198px, calc(var(--spell-bottom, 182px) + 16px)); transform: translateX(-50%); width: 560px; min-height: 128px; display: flex; flex-direction: column; justify-content: center; padding: 38px 66px 46px; border-image: var(--art-tip-hide) 103 182 158 182 fill / 31px 55px 47px 55px stretch; white-space: normal; text-align: center; color: var(--ui-ink); font: 600 16px/1.35 var(--ui-font); text-shadow: 0 1px 0 rgba(255, 245, 225, 0.35); }
+.hud-tip b { display: block; font: 400 17px/1.2 var(--ui-display); letter-spacing: 0.05em; color: #7a2f0c; }
+/* BACKLOG 11: the Forge panel where the tip goes */
+.hud-forge { left: calc(50% + var(--spell-shift)); top: max(198px, calc(var(--spell-bottom, 182px) + 16px)); transform: translateX(-50%); display: flex; flex-direction: column; gap: 6px; align-items: center; padding: 14px 22px; pointer-events: auto; }
+.forge-title { font: 700 14px var(--ui-font); color: var(--ui-lintel); }
+.forge-ready { font-weight: 800; }
+
+/* ---------- right column: objectives on lashed parchment, the build list in the basalt column ---------- */
+.hud-right { position: absolute; right: 8px; top: 6px; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; pointer-events: none; }
+.hud-right > .hud-panel { position: relative; top: auto; right: auto; }
+.hud-objectives { width: 372px; min-height: 196px; display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 58px 64px 62px 60px; border-image: var(--art-objectives-frame) 211 210 244 210 fill / 53px 52px 61px 52px stretch; white-space: normal; color: var(--ui-ink); text-shadow: 0 1px 0 rgba(255, 245, 225, 0.3); }
+.obj-head { font: 400 19px/1.1 var(--ui-display); letter-spacing: 0.08em; color: #3a2412; padding-bottom: 4px; margin-bottom: 2px; border-bottom: 2px solid rgba(70, 45, 22, 0.45); }
+.obj { display: flex; gap: 7px; align-items: baseline; font: 600 14px/1.3 var(--ui-font); }
+.obj-mark { flex: 0 0 auto; width: 13px; font-style: normal; font-size: 12px; color: #8a5a2a; }
+.obj.done { color: var(--ui-ink-soft); }
+.obj.done .obj-text { text-decoration: line-through; text-decoration-color: rgba(60, 40, 20, 0.5); }
+.obj.done .obj-mark { font-size: 15px; font-weight: 800; color: #3f7a1e; }
+.hud-build { width: 520px; display: grid; grid-template-columns: repeat(3, 140px); gap: 5px 6px; justify-content: center; padding: 48px 40px 44px 46px; border-image: var(--art-build-panel) 119 100 112 116 fill / 43px 36px 40px 42px stretch; pointer-events: auto; }
+.build-head { position: absolute; left: calc(50% - 100px); top: 0; width: 200px; height: 25px; text-align: center; font: 400 16px/25px var(--ui-display); letter-spacing: 0.1em; color: var(--ui-lintel); }
+.build-btn { position: relative; display: grid; grid-template-columns: 30px minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 6px; align-items: center; align-content: center; box-sizing: border-box; width: 140px; height: 55px; padding: 5px 10px 6px 9px; border: 0; border-radius: 0; background: var(--art-build-button) 0 0 / 100% 100% no-repeat; box-shadow: none; color: var(--ui-bone); font: 700 14px/1.15 var(--ui-font); text-align: left; text-shadow: var(--ui-shadow); cursor: pointer; overflow: hidden; }
+.build-btn:hover:not(.locked) { filter: brightness(1.2); }
+.build-btn.active { filter: brightness(1.15) sepia(0.3) drop-shadow(0 0 4px #ffb04a); color: #fff3d6; }
+.build-btn.locked { cursor: default; filter: brightness(0.72); }
+.build-btn.locked .build-icon { filter: grayscale(1); opacity: 0.7; }
+.build-icon { grid-row: 1 / 3; grid-column: 1; width: 30px; height: 30px; }
+.build-name { grid-column: 2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.build-btn .hotkey { margin-left: 4px; font-size: 13px; font-weight: 800; color: #e7c98f; opacity: 0.9; }
+.build-cost { grid-column: 2; display: block; font: 700 14px/1.15 var(--ui-font); color: #dccaa6; overflow: hidden; white-space: nowrap; }
+.build-cost i { display: inline-block; width: 9px; height: 9px; margin: 0 2px; border-radius: 2px; vertical-align: 0; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6); }
+.res-wood { background: #c08546; }
+.res-stone { background: #b4b0a8; }
+
+/* ---------- bottom right: the minimap through the bone ring beside the lava cauldron ---------- */
+/* the ring's hole (measured on cauldron.webp): center 0.70 x 0.375 of the piece, radius 0.191 of its width */
+/* the box starts 24px below the art (only the top of the bone ring rises above it), so the build panel above can come closer */
+.hud-minimap { right: 6px; bottom: 4px; width: 460px; height: 344px; pointer-events: none; }
+.hud-minimap::before { content: ""; position: absolute; left: 230px; top: 22px; width: 184px; height: 184px; border-radius: 50%; background: radial-gradient(circle, #0b1424 60%, #04060f); }
+.hud-minimap::after { content: ""; position: absolute; left: 0; top: -24px; width: 460px; height: 368px; background: var(--art-cauldron) 0 0 / 100% 100% no-repeat; pointer-events: none; }
+.mm-canvas { position: absolute; left: 260px; top: 52px; width: 124px; height: 124px; background: #04060f; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6); cursor: pointer; display: block; pointer-events: auto; }
+.mm-pop { position: absolute; z-index: 1; left: 5px; top: 11px; pointer-events: auto; width: 180px; height: 75px; box-sizing: border-box; padding: 16px 22px 14px; display: flex; align-items: center; justify-content: center; gap: 5px; background: var(--art-small-plaque) 0 0 / 100% 100% no-repeat; color: var(--ui-ink); text-shadow: none; line-height: 1.1; }
+.mm-label { font: 400 14px var(--ui-display); letter-spacing: 0.06em; color: #3a2412; margin-right: 3px; }
+.mm-pop b { font: 800 20px var(--ui-font); font-variant-numeric: tabular-nums; color: #2a1a0c; }
+.mm-pop b.warn { color: #a02a14; }
+.mm-cap { font: 700 13px var(--ui-font); color: var(--ui-ink-soft); }
+
+/* ---------- bottom left: the volcano ornament and the level plaque (level name, tick, game speed) ---------- */
+.deco-volcano { left: 0; bottom: 138px; width: 264px; height: 275px; background-image: var(--art-volcano-corner); }
+.hud-title { left: 6px; bottom: 6px; width: 510px; min-height: 166px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 26px 100px; border-image: var(--art-level-plaque) 99 294 99 294 fill / 33px 99px 33px 99px stretch; white-space: normal; text-align: center; }
+.hud-name { font: 400 17px/1.15 var(--ui-display); letter-spacing: 0.04em; color: var(--ui-lintel); }
+.hud-sub { font: 600 14px var(--ui-font); color: #c9bba1; }
+/* QoL: the single player game speed control (the plaque itself ignores the pointer) */
+.hud-speed { display: inline-flex; align-items: center; gap: 5px; pointer-events: auto; }
+.hud-speed .speed-btn { flex: 0 0 auto; width: 34px; height: 28px; padding: 0; font: 800 18px/1 var(--ui-font); }
+.hud-speed .speed-value { min-width: 30px; text-align: center; font: 800 14px var(--ui-font); color: #ffcf7a; font-variant-numeric: tabular-nums; }
+
+/* ---------- left: notes under the Shaper frame, help in the middle ---------- */
+.hud-notes { left: 12px; top: 392px; max-width: 380px; display: flex; flex-direction: column; gap: 5px; white-space: normal; }
+.note { font: 600 14px/1.35 var(--ui-font); padding-left: 8px; border-left: 4px solid #8a8070; }
 .note.bad { border-left-color: var(--ui-kiln); color: #ffd6cc; }
 .note.good { border-left-color: var(--ui-moss); color: #e2f4cc; }
-.unit-chip { font-size: 13px; background: var(--ui-well); border: 1px solid #0d0b09; border-radius: 3px; box-shadow: var(--ui-well-bevel); padding: 2px 7px 4px; }
-.unit-hp { background: var(--ui-moss); }
-.hud-troops { padding: 10px 12px; gap: 6px; }
-.hud-subtitle { font: 700 17px var(--ui-font); background: rgba(20, 17, 14, 0.82); border-radius: 4px; padding: 6px 14px; }
-.hud-subtitle b { color: #ffb469; }
-/* QoL: the single player game speed control in the title panel (the panel itself ignores the pointer) */
-.hud-speed { display: inline-flex; align-items: center; gap: 4px; pointer-events: auto; }
-.hud-speed .speed-btn { flex: 0 0 auto; min-width: 22px; padding: 0 5px; font: 800 14px/1.25 var(--ui-font); }
-.hud-speed .speed-value { min-width: 30px; text-align: center; font: 800 13px var(--ui-font); color: #ffcf7a; font-variant-numeric: tabular-nums; }
-/* QoL 2: notes with a place look there when clicked (the notes panel itself ignores the pointer); the idle troops chip */
+/* QoL 2: notes with a place look there when clicked (the notes panel itself ignores the pointer) */
 .note.at { pointer-events: auto; cursor: pointer; }
-.note.at:hover { color: #fff3dc; background: rgba(255, 240, 215, 0.06); }
+.note.at:hover { color: #fff3dc; background: rgba(255, 240, 215, 0.08); }
+.hud-help { left: 50%; top: 50%; transform: translate(-50%, -50%); max-width: 560px; padding: 40px 48px 36px; border-image: var(--art-small-plaque) 88 140 117 140 fill / 18px 28px 23px 28px stretch; white-space: normal; line-height: 1.5; font: 600 14px/1.5 var(--ui-font); color: var(--ui-ink); text-shadow: none; }
+
+/* ---------- bottom center: undo, selection line, idle chip, the vine and lava stance plank ---------- */
+.hud-bottom { position: absolute; left: 50%; bottom: 4px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; }
+.hud-bottom > .hud-panel { position: relative; left: auto; top: auto; bottom: auto; transform: none; }
+.hud-selection { font: 700 15px var(--ui-font); }
+.hud-undo { font: 700 15px var(--ui-font); color: #ffcf7a; }
+.hud-idle { padding: 10px 16px; pointer-events: auto; }
+.hud-troops { width: 600px; min-height: 223px; display: flex; flex-direction: column; justify-content: center; gap: 7px; padding: 58px 66px 46px 50px; border-image: var(--art-stance-frame) 140 140 104 98 fill / 60px 60px 45px 42px stretch; pointer-events: auto; }
+.troops-tab { position: absolute; left: 168px; top: 5px; width: 104px; height: 34px; text-align: center; font: 400 17px/34px var(--ui-display); letter-spacing: 0.1em; color: var(--ui-lintel); pointer-events: none; }
 .troops-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.idle-chip { flex: 0 0 auto; font: 800 13px var(--ui-font); color: #ffcf7a; font-variant-numeric: tabular-nums; padding: 2px 8px; }
-.hud-idle { left: 50%; bottom: 64px; transform: translateX(-50%); padding: 6px 8px; pointer-events: auto; }
+.troops-label { font: 700 14px var(--ui-caps); letter-spacing: 0.05em; color: var(--ui-lintel); }
+.troops-units { display: flex; flex-wrap: wrap; gap: 5px; max-width: 484px; }
+.unit-chip { position: relative; font: 600 13px var(--ui-font); background: rgba(14, 10, 7, 0.78); border: 1px solid #0d0b09; border-radius: 3px; box-shadow: var(--ui-well-bevel); padding: 2px 7px 4px; }
+.unit-icon { width: 18px; height: 18px; margin: -3px 3px -4px -3px; vertical-align: middle; }
+.unit-hp { position: absolute; left: 0; bottom: 0; height: 2px; background: var(--ui-moss); }
+.troops-row { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.hud-troops .troops-row .prio { flex: 0 1 auto; height: 40px; padding: 0 12px; border-image-width: 10px; font-size: 15px; }
+.prio.stance { flex: 0 0 auto; }
+.stance-icon { display: block; flex: 0 0 auto; }
+.troops-head .idle-chip { flex: 0 0 auto; height: 26px; }
+.idle-chip { font: 800 13px var(--ui-font); font-variant-numeric: tabular-nums; padding: 3px 10px; }
+
+/* BACKLOG 8: voice subtitles (a plank caption, not a panel) under the tip */
+.hud-subtitle { position: absolute; left: 50%; top: 30%; transform: translateX(-50%); box-sizing: border-box; max-width: 680px; zoom: var(--ui-scale, 1); color: var(--ui-bone); font: 700 17px/1.35 var(--ui-font); text-align: center; text-shadow: var(--ui-shadow); pointer-events: none; }
+.hud-subtitle b { color: #ffb469; }

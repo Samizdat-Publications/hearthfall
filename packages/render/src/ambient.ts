@@ -1,6 +1,8 @@
 // Ambient life (render only, never touches the sim): thin chimney smoke over finished Dwellings and the
 // Hearth, small bird flocks circling high over forests and shores, fireflies around the village under the
-// dusk lighting presets, and a little dust at the feet of units walking on dry land.
+// dusk lighting presets, and a little dust at the feet of units walking on dry land. Glints twinkle on the
+// sea near the camera (a water material uniform, see `glintFor`), and at evening and night each Hearth gets a
+// flickering warm ground glow with rising embers, with a fainter warm pool around finished Dwellings.
 // Every effect is stateless: each puff, bird and firefly is a pure function of the visual time and of the
 // world (hashed seeds per entity or anchor), so the shot harness's fixedStep mode (visual time = sim tick
 // time) renders the same pixels for the same tick. Each effect is one instanced mesh with a hard cap.
@@ -81,6 +83,55 @@ export interface DustLook {
   max: number;
 }
 
+export interface GlintPreset {
+  /** sparkle brightness (0 none) and color under this lighting preset */
+  strength: number;
+  color: string;
+}
+
+export interface GlintsLook {
+  enabled: boolean;
+  /** sparkle cell size in world units, twinkles per second, radius around the focus, share of lit cells */
+  cell: number;
+  rate: number;
+  near: number;
+  density: number;
+  /** strength scale while raining (0 none) */
+  rain: number;
+  /** no glints below this render scale (Settings Quality: 1 high, 0.75 medium, 0.5 low) */
+  minQuality: number;
+  /** per lighting preset; a preset not listed has no glints */
+  presets: Record<string, GlintPreset>;
+}
+
+export interface FireLook {
+  enabled: boolean;
+  /** lighting presets that light the fires (style.json lightingPresets names) */
+  presets: string[];
+  /** strength scale while raining */
+  rain: number;
+  /** hearth light and glow flicker: share of the intensity (0 steady) and speed scale */
+  flicker: number;
+  flickerRate: number;
+  /** ground glow pool around a Hearth: radius (world units), color, brightness at hearthGlow 1 */
+  glowRadius: number;
+  glowColor: string;
+  glowIntensity: number;
+  /** fainter warm pool around finished tribe Dwellings (hutIntensity 0 turns it off) */
+  hutRadius: number;
+  hutIntensity: number;
+  /** rising ember sparks per Hearth, seconds for one to rise and fade, rise height, spread, size, color */
+  embers: number;
+  emberPeriod: number;
+  emberRise: number;
+  emberSpread: number;
+  emberSize: number;
+  emberColor: string;
+  /** caps: glow pools and embers */
+  max: number;
+  emberMax: number;
+}
+
 export interface AmbientLook {
   /** no ambient life past this zoom (0 close, 1 globe) */
   maxZoom: number;
@@ -88,6 +139,8 @@ export interface AmbientLook {
   birds: BirdsLook;
   fireflies: FirefliesLook;
   dust: DustLook;
+  glints: GlintsLook;
+  fire: FireLook;
 }
 
 export const AMBIENT_DEFAULTS: AmbientLook = {
@@ -96,10 +149,53 @@ export const AMBIENT_DEFAULTS: AmbientLook = {
   birds: { enabled: true, spacing: 24, forestTrees: 14, forestReach: 5, shoreBand: 6, perFlock: 5, radius: 4.5, height: 9, speed: 2.2, size: 0.55, flap: 2.6, color: "#2b2622", max: 160 },
   fireflies: { enabled: true, presets: ["evening"], perHearth: 10, perDwelling: 2, radius: 3.2, size: 0.07, blink: 0.45, color: "#e9ff8c", max: 240 },
   dust: { enabled: true, perUnit: 2, period: 0.7, radius: 24, dryAbove: 4, size: 0.11, trail: 0.45, color: "#c9b48a", opacity: 0.5, max: 400 },
+  glints: {
+    enabled: true,
+    cell: 0.9,
+    rate: 1.1,
+    near: 24,
+    density: 0.3,
+    rain: 0,
+    minQuality: 0.75,
+    presets: {
+      day: { strength: 0.9, color: "#fff6e2" },
+      golden: { strength: 0.6, color: "#ffe2ad" },
+      evening: { strength: 0.8, color: "#ffbd8c" },
+      night: { strength: 0.3, color: "#c8d3ea" },
+    },
+  },
+  fire: {
+    enabled: true,
+    presets: ["evening", "night"],
+    rain: 0.7,
+    flicker: 0.2,
+    flickerRate: 1,
+    glowRadius: 3.4,
+    glowColor: "#ff9a42",
+    glowIntensity: 0.3,
+    hutRadius: 1.5,
+    hutIntensity: 0.1,
+    embers: 6,
+    emberPeriod: 2.2,
+    emberRise: 2.6,
+    emberSpread: 0.35,
+    emberSize: 0.05,
+    emberColor: "#ffb45a",
+    max: 256,
+    emberMax: 96,
+  },
 };
 
 /** Style overrides merged over the defaults per effect (any key may be left out). Pure. */
-export function resolveAmbient(o?: { maxZoom?: number; smoke?: Partial<SmokeLook>; birds?: Partial<BirdsLook>; fireflies?: Partial<FirefliesLook>; dust?: Partial<DustLook> }): AmbientLook {
+export function resolveAmbient(o?: {
+  maxZoom?: number;
+  smoke?: Partial<SmokeLook>;
+  birds?: Partial<BirdsLook>;
+  fireflies?: Partial<FirefliesLook>;
+  dust?: Partial<DustLook>;
+  glints?: Partial<GlintsLook>;
+  fire?: Partial<FireLook>;
+}): AmbientLook {
   const d = AMBIENT_DEFAULTS;
   return {
     maxZoom: o?.maxZoom ?? d.maxZoom,
@@ -107,6 +203,8 @@ export function resolveAmbient(o?: { maxZoom?: number; smoke?: Partial<SmokeLook
     birds: { ...d.birds, ...(o?.birds ?? {}) },
     fireflies: { ...d.fireflies, ...(o?.fireflies ?? {}) },
     dust: { ...d.dust, ...(o?.dust ?? {}) },
+    glints: { ...d.glints, ...(o?.glints ?? {}) },
+    fire: { ...d.fire, ...(o?.fire ?? {}) },
   };
 }
 
@@ -231,23 +329,86 @@ export function dustEligible(walking: boolean, groundHeight: number, sea: number
   return walking && groundHeight >= sea + L.dryAbove && dist2 <= L.radius * L.radius;
 }
 
+/**
+ * Water glints under a lighting preset: sparkle strength (0 none) and color from the preset's entry, scaled
+ * by `rain` while raining, off with the setting (`on`) and below the quality floor. Pure.
+ */
+export function glintFor(L: GlintsLook, preset: string, raining: boolean, on: boolean, renderScale: number): { strength: number; color: string } {
+  const p = L.presets[preset];
+  if (!on || !L.enabled || !p || renderScale < L.minQuality) return { strength: 0, color: p?.color ?? "#ffffff" };
+  return { strength: Math.max(0, p.strength * (raining ? L.rain : 1)), color: p.color };
+}
+
+/** Hearth fire strength under a lighting preset: hearthGlow (the preset's light scale) when lit, rain dims it, else 0. Pure. */
+export function fireStrength(L: Pick<FireLook, "enabled" | "presets" | "rain">, preset: string, raining: boolean, hearthGlow: number): number {
+  if (!L.enabled || !L.presets.includes(preset)) return 0;
+  return Math.max(0, hearthGlow) * (raining ? L.rain : 1);
+}
+
+/** Firelight flicker at time t for a fire with seed `seed`: a factor in [1 - flicker, 1 + flicker]. Pure. */
+export function hearthFlicker(t: number, seed: number, L: Pick<FireLook, "flicker" | "flickerRate">): number {
+  const s = hash01(seed * 19 + 5) * 6.283;
+  const r = L.flickerRate;
+  const w = 0.55 * Math.sin(t * 7.3 * r + s) + 0.3 * Math.sin(t * 13.1 * r + s * 2.3) + 0.15 * Math.sin(t * 23.7 * r + s * 3.7);
+  return 1 + L.flicker * w;
+}
+
+/** Ember k over a Hearth at time t: life phase, offset from the fire (rising and swirling) and radius. Pure. */
+export function emberPose(
+  t: number,
+  seed: number,
+  k: number,
+  L: Pick<FireLook, "embers" | "emberPeriod" | "emberRise" | "emberSpread" | "emberSize">,
+): { phase: number; dx: number; dy: number; dz: number; r: number } {
+  const h = (m: number) => hash01(seed * 37 + k * 11 + m);
+  const phase = frac(t / L.emberPeriod + h(1) + k / Math.max(1, L.embers));
+  const a = h(2) * 6.283 + phase * (2 + 3 * h(3));
+  const spread = L.emberSpread * (0.3 + phase);
+  // bright out of the fire, shrinking to nothing at the top of the climb
+  return { phase, dx: Math.cos(a) * spread, dy: L.emberRise * phase * (0.7 + 0.3 * h(4)), dz: Math.sin(a) * spread, r: L.emberSize * (1 - phase) * (0.6 + 0.4 * h(5)) };
+}
+
+/** Radial falloff texture for the glow pools (white center to black rim; drawn additively). */
+function glowTexture(size = 32): THREE.DataTexture {
+  const d = new Uint8Array(size * size * 4);
+  for (let y = 0; y < size; y++)
+    for (let x = 0; x < size; x++) {
+      const r = Math.min(1, Math.hypot((x + 0.5) / size - 0.5, (y + 0.5) / size - 0.5) * 2);
+      const v = Math.round(255 * (1 - r) * (1 - r));
+      d.set([v, v, v, 255], (y * size + x) * 4);
+    }
+  const tex = new THREE.DataTexture(d, size, size, THREE.RGBAFormat);
+  tex.magFilter = THREE.LinearFilter;
+  tex.minFilter = THREE.LinearFilter;
+  tex.needsUpdate = true;
+  return tex;
+}
+
 /** Instance counts drawn in the last update (tests, debug summary). */
 export interface AmbientCounts {
   smoke: number;
   birds: number;
   fireflies: number;
   dust: number;
+  glows: number;
+  embers: number;
 }
 
 export class AmbientLayer {
   readonly group = new THREE.Group();
   readonly look: AmbientLook;
   enabled = true;
-  readonly counts: AmbientCounts = { smoke: 0, birds: 0, fireflies: 0, dust: 0 };
+  readonly counts: AmbientCounts = { smoke: 0, birds: 0, fireflies: 0, dust: 0, glows: 0, embers: 0 };
+  /** fire strength in the last update (0 when the fires are not lit); the renderer flickers the hearth lights by it */
+  fire = 0;
   private readonly smoke: THREE.InstancedMesh;
   private readonly birds: THREE.InstancedMesh;
   private readonly flies: THREE.InstancedMesh;
   private readonly dust: THREE.InstancedMesh;
+  private readonly glows: THREE.InstancedMesh;
+  private readonly embers: THREE.InstancedMesh;
+  private readonly glowColor: THREE.Color;
+  private readonly tint = new THREE.Color();
   private anchors: FlockAnchor[] = [];
   private anchorKey = "";
   private anchorWorld: World | null = null;
@@ -280,12 +441,27 @@ export class AmbientLayer {
     this.birds = make(v, bendMaterial(new THREE.MeshBasicMaterial({ color: look.birds.color, side: THREE.DoubleSide }), bend), look.birds.max, 3);
     this.flies = make(new THREE.OctahedronGeometry(1, 0), bendMaterial(new THREE.MeshBasicMaterial({ color: look.fireflies.color, transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false, fog: false, toneMapped: false }), bend), look.fireflies.max, 6);
     this.dust = make(new THREE.IcosahedronGeometry(1, 0), mat(look.dust.color, look.dust.opacity, THREE.NormalBlending), look.dust.max, 4);
+    // firelight pools: flat discs with a radial falloff drawn additively; the per-instance color carries the flicker
+    const glowMat = bendMaterial(
+      new THREE.MeshBasicMaterial({ map: glowTexture(), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, fog: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }),
+      bend,
+    );
+    this.glows = make(new THREE.CircleGeometry(1, 20).rotateX(-Math.PI / 2), glowMat, look.fire.max, 2);
+    this.glows.setColorAt(0, new THREE.Color(0, 0, 0));
+    this.glowColor = new THREE.Color(look.fire.glowColor);
+    this.embers = make(
+      new THREE.OctahedronGeometry(1, 0),
+      bendMaterial(new THREE.MeshBasicMaterial({ color: look.fire.emberColor, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, fog: false, toneMapped: false }), bend),
+      look.fire.emberMax,
+      6,
+    );
   }
 
   /** Hide everything (setting off, map view, zoomed out). */
   clear(): void {
-    for (const im of [this.smoke, this.birds, this.flies, this.dust]) im.count = 0;
-    this.counts.smoke = this.counts.birds = this.counts.fireflies = this.counts.dust = 0;
+    for (const im of [this.smoke, this.birds, this.flies, this.dust, this.glows, this.embers]) im.count = 0;
+    this.counts.smoke = this.counts.birds = this.counts.fireflies = this.counts.dust = this.counts.glows = this.counts.embers = 0;
+    this.fire = 0;
   }
 
   /** Flock anchors in use (tests, debug). */
@@ -326,6 +502,7 @@ export class AmbientLayer {
     buildings: BuildingLayer | null,
     viewTribe: number,
     revealAll: boolean,
+    hearthGlow = 1,
   ): void {
     if (!this.enabled || map || zoom > this.look.maxZoom) return this.clear();
     this.syncTypes(w);
@@ -433,6 +610,50 @@ export class AmbientLayer {
     }
     this.dust.count = c;
     this.counts.dust = c;
-    for (const im of [this.smoke, this.birds, this.flies, this.dust]) im.instanceMatrix.needsUpdate = true;
+    // firelight at evening and night: a flickering pool and embers over each Hearth, a faint pool round homes
+    const F = L.fire;
+    const fire = buildings ? fireStrength(F, preset, raining, hearthGlow) : 0;
+    this.fire = fire;
+    c = 0;
+    let e = 0;
+    if (buildings && fire > 0) {
+      // pools stop short of the horizon fade, where an additive disc would pick up the rim color
+      const near = Math.max(0, fadeEnd - 12);
+      const near2 = near * near;
+      for (let d = 0; d < buildings.drawn && c < F.max; d++) {
+        const i = buildings.drawnIdx[d];
+        if (E.state[i] !== 3) continue;
+        const hearth = E.type[i] === this.hearthType;
+        if (!hearth && (E.type[i] !== this.dwellingType || F.hutIntensity <= 0 || E.tribe[i] < 0)) continue;
+        const bx = buildings.drawX[i];
+        const bz = buildings.drawZ[i];
+        if ((bx - focusX) * (bx - focusX) + (bz - focusZ) * (bz - focusZ) > near2) continue;
+        const fl = hearthFlicker(t, i, F);
+        const gy = buildings.drawGround[i] + 0.06;
+        const rad = (hearth ? F.glowRadius : F.hutRadius) * (0.97 + 0.03 * fl);
+        this.p.set(bx, gy, bz);
+        this.s.set(rad, 1, rad);
+        this.m.compose(this.p, this.q.identity(), this.s);
+        this.glows.setMatrixAt(c, this.m);
+        this.tint.copy(this.glowColor).multiplyScalar((hearth ? F.glowIntensity : F.hutIntensity) * fire * fl);
+        this.glows.setColorAt(c++, this.tint);
+        if (!hearth) continue;
+        const top = gy + 0.25;
+        for (let k = 0; k < F.embers && e < F.emberMax; k++) {
+          const em = emberPose(t, i * 59 + 13, k, F);
+          if (em.r <= 0.002) continue;
+          this.p.set(bx + em.dx, top + em.dy, bz + em.dz);
+          this.s.setScalar(em.r);
+          this.m.compose(this.p, this.q.identity(), this.s);
+          this.embers.setMatrixAt(e++, this.m);
+        }
+      }
+    }
+    this.glows.count = c;
+    this.counts.glows = c;
+    this.embers.count = e;
+    this.counts.embers = e;
+    if (this.glows.instanceColor) this.glows.instanceColor.needsUpdate = true;
+    for (const im of [this.smoke, this.birds, this.flies, this.dust, this.glows, this.embers]) im.instanceMatrix.needsUpdate = true;
   }
 }
