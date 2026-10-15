@@ -94,9 +94,10 @@
         "recolor": [{ "from": "#B98058", "to": "#DDB85E", "minY": 0.3 }, { "from": "#C9A65A", "to": "#F0D58A", "minY": 0.3 }]
       }
     },
-    "terrainBands": { "snowStart": 445, "snowFull": 495, "strataSand": 0.55, "snowBright": 1.7, "snowTint": [0.82, 1.14, 1.5] },
+    "terrainBands": { "snowStart": 445, "snowFull": 495, "strataSand": 0.55, "snowBright": 1.7, "snowTint": [0.82, 1.14, 1.5], "cliffStart": 1.0, "cliffFloor": 0.3, "cliffFade": 0.4, "faceJitter": 0.08 },
     "trees": { "clumpLow": 0.75, "clumpHigh": 0.08, "bandLow": 0.12, "bandHigh": 0.4, "modelShare": 0.15, "hueJitter": 0.12, "sizeBase": 0.8, "sizeJitter": 0.5, "sizeAtNoWood": 0.6, "woodFull": 4 },
     "groundDetail": { "enabled": true, "radius": 26, "maxZoom": 0.36, "tufts": 1.1, "flowers": 0.25, "pebbles": 0.5, "shoreBand": 0.04, "highBand": 0.55, "maxSlope": 3, "flowerColors": ["#f2e6c8", "#e8c33a", "#d86a8a", "#b07cff"] },
+    "contactShadows": { "enabled": true, "strength": 0.5, "units": 1.8, "buildings": 1.1, "trees": 1.15, "decor": 0.85, "sunOffset": 0.18, "skip": ["prop.reeds", "prop.flowers"] },
     "decor": { "enabled": true, "radius": 44, "maxZoom": 0.62, "density": 0.026, "maxSlope": 4, "shoreDensity": 0.24, "shoreReach": 2, "settleDensity": 0.2, "settleReach": 3, "kinds": [
       { "id": "prop.reeds", "weight": 1, "low": 0, "high": 0.2, "size": 1.0, "zone": "shore" },
       { "id": "prop.woodpile", "weight": 3, "low": 0, "high": 1, "size": 0.85, "zone": "settle" },
@@ -121,7 +122,7 @@
       "fog": { "nearMul": 1.1, "farMul": 2.6, "farAdd": 40, "farQuad": 400 }
     },
     "verticalScale": 2,
-    "water": { "shallowDepth": 26, "foamWidth": 6, "foamRing": 14, "ringDrift": 0.12, "ringWidth": 0.35 },
+    "water": { "shallowDepth": 26, "foamWidth": 6, "foamRing": 14, "ringDrift": 0.12, "ringWidth": 0.35, "strokeWidthCrisp": 0.13, "strokeAlphaCrisp": 0.6 },
     "unitScale": { "shaper": 1.2, "wolf": 0.7 },
     "mapFrame": { "mask": "#1b2633", "grid": "#f2e6c8", "gridOpacity": 0.14, "gridCells": 16 },
     "vfxColors": {

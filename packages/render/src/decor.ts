@@ -10,6 +10,7 @@
 import * as THREE from "three";
 import { CAT, type World } from "@hearthfall/sim";
 import type { ModelParts } from "./models.ts";
+import type { ContactShadows } from "./shadows.ts";
 
 export interface DecorKind {
   /** model id (assets/models/<id>.glb) */
@@ -91,6 +92,8 @@ export class DecorLayer {
   private readonly unit: number[] = [];
   private readonly o: DecorOptions;
   private lastKey = "";
+  /** Look v4: soft contact shadows under props (set by the renderer; refilled with the instances) */
+  shadows: ContactShadows | null = null;
   private readonly m = new THREE.Matrix4();
   private readonly q = new THREE.Quaternion();
   private readonly s = new THREE.Vector3();
@@ -201,6 +204,8 @@ export class DecorLayer {
     if (key === this.lastKey) return;
     this.lastKey = key;
     const counts = this.meshes.map(() => 0);
+    const sh = this.shadows;
+    sh?.begin();
     if (show) {
       const o = this.o;
       const n = t.size;
@@ -240,6 +245,10 @@ export class DecorLayer {
           this.m.compose(this.p, this.q, this.s);
           const im = this.meshes[k];
           im.setMatrixAt(counts[k], this.m);
+          if (sh && !sh.look.skip.includes(this.modelIds[k])) {
+            const sz = (sc / this.unit[k]) * this.kinds[k].size;
+            sh.add(t, gx + ox, gy + oz, this.p.x, this.p.z, this.p.y + 0.04, sz * sh.look.decor, sz * 0.6, heightScale);
+          }
           const g = 0.88 + 0.24 * hashf(cell, 0x57);
           im.setColorAt(counts[k]++, this.c.setRGB(g, g, g));
           if (counts[k] >= im.instanceMatrix.count) counts[k] = im.instanceMatrix.count - 1;
@@ -247,6 +256,7 @@ export class DecorLayer {
       }
     }
     if (show) this.placeProps(w, cx, cz, heightScale, counts);
+    sh?.end();
     this.meshes.forEach((im, k) => {
       im.count = counts[k];
       im.instanceMatrix.needsUpdate = true;
@@ -272,6 +282,11 @@ export class DecorLayer {
       this.p.set(x + n * Math.round((cx - x) / n), t.heightAt(x, y) * heightScale - 0.04, y + n * Math.round((cz - y) / n));
       this.m.compose(this.p, this.q, this.s);
       im.setMatrixAt(counts[k], this.m);
+      const sh = this.shadows;
+      if (sh && !sh.look.skip.includes(p.model)) {
+        const sz = p.size ?? this.kinds[k].size;
+        sh.add(t, x, y, this.p.x, this.p.z, this.p.y + 0.04, sz * sh.look.decor, sz * 0.6, heightScale);
+      }
       im.setColorAt(counts[k]++, this.c.setRGB(1, 1, 1));
     }
   }

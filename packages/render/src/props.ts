@@ -9,6 +9,7 @@ import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { CAT, type World } from "@hearthfall/sim";
 import { ROCK_MODELS, TREE_MODELS, trimBase, type ModelParts } from "./models.ts";
+import type { ContactShadows } from "./shadows.ts";
 
 /** tree models are 2 to 3 units tall; this brings them to the placeholder scale the sim spacing expects */
 const TREE_MODEL_SCALE = 0.72;
@@ -134,6 +135,8 @@ export class TreeLayer {
   private readonly rockScale: number[];
   private cap: number;
   private lastKey = "";
+  /** Look v4: soft contact shadows under trees and rocks (set by the renderer; refilled with the instances) */
+  shadows: ContactShadows | null = null;
   private readonly m = new THREE.Matrix4();
   private readonly q = new THREE.Quaternion();
   private readonly s = new THREE.Vector3();
@@ -181,6 +184,8 @@ export class TreeLayer {
     this.lastKey = key;
     const counts = this.meshes.map(() => 0);
     const maxStone = w.cfg.pack.buildings.rocks?.maxStone ?? 16;
+    const sh = this.shadows;
+    sh?.begin();
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i]) continue;
       if (E.cat[i] === CAT.rock) {
@@ -198,6 +203,10 @@ export class TreeLayer {
         this.p.set(focusX + x, w.terrain.heightAt(E.x[i], E.y[i]) * heightScale - 0.05, focusZ + z);
         this.m.compose(this.p, this.q, this.s);
         this.meshes[kind].setMatrixAt(k, this.m);
+        if (sh) {
+          const rs = sc / this.rockScale[r];
+          sh.add(w.terrain, E.x[i], E.y[i], this.p.x, this.p.z, this.p.y + 0.05, ROCK_WIDTH * 0.5 * rs * sh.look.trees * 1.4, ROCK_HEIGHT * rs, heightScale);
+        }
         const g = 0.9 + 0.2 * hashf(i, 0x61);
         this.meshes[kind].setColorAt(k, this.c.setRGB(g, g, g));
         counts[kind]++;
@@ -222,6 +231,10 @@ export class TreeLayer {
       this.p.set(focusX + x, y - 0.05, focusZ + z);
       this.m.compose(this.p, this.q, this.s);
       this.meshes[kind].setMatrixAt(k, this.m);
+      if (sh) {
+        const sz = sc / (what === "model" ? this.unit : 1);
+        sh.add(w.terrain, E.x[i], E.y[i], this.p.x, this.p.z, y, sz * sh.look.trees, sz * (what === "pine" ? 3 : 2.2), heightScale);
+      }
       const tint = (what === "clump" ? 0.92 : what === "model" && this.unit < 1 ? 1.35 : 0.85) + 0.3 * hashf(i, 0x13);
       if (what === "clump") {
         // warm (yellower) or cool (bluer) per tree, so a grove is not one flat green
@@ -239,5 +252,6 @@ export class TreeLayer {
       im.instanceMatrix.needsUpdate = true;
       if (im.instanceColor) im.instanceColor.needsUpdate = true;
     });
+    sh?.end();
   }
 }

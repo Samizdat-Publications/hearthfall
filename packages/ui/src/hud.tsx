@@ -405,7 +405,13 @@ function Hud({ act }: { act: HudActions }) {
       </div>
       <div data-hud="resources" class="hud-panel hud-resources">
         <Bar kind="mana" frac={m.manaFrac} label={`Mana ${Math.round(m.manaPerMin)}/min`} icon={m.icons?.mana} warn={m.wasting ? { text: "wasting", title: "Mana is wasting: no spell or training can absorb it. Right click a spell to auto-charge it." } : null} />
-        <Bar kind="pop" frac={m.cap > 0 ? m.pop / m.cap : 0} label={`Followers ${m.pop}/${m.cap}`} icon={m.icons?.pop} />
+        <Bar
+          kind="pop"
+          frac={m.cap > 0 ? m.pop / m.cap : 0}
+          label={m.pop > m.cap ? `Followers ${m.pop} · homes ${m.cap}` : `Followers ${m.pop}/${m.cap}`}
+          icon={m.icons?.pop}
+          warn={m.pop > m.cap ? { text: "full", title: "More followers than homes: no one breeds until you build or upgrade Dwellings." } : null}
+        />
         <label class="res-row split">
           <span class="res-label">Spells {m.spellsPct}%</span>
           <input type="range" min="0" max="100" step="5" value={m.spellsPct} onInput={(e) => act.setSplit(Number((e.target as HTMLInputElement).value))} aria-label="Mana split between spells and training" />

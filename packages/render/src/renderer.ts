@@ -19,10 +19,12 @@ import {
   fillDepth,
   fillDepthRects,
   makeWaterMaterial,
+  strokeLookFor,
   TerrainChunk,
   type TerrainPalette,
 } from "./terrainMesh.ts";
 import { TreeLayer } from "./props.ts";
+import { ContactShadows, makeShadowMaterial, resolveContactShadows } from "./shadows.ts";
 import { DecorLayer } from "./decor.ts";
 import { GroundDetailLayer } from "./groundDetail.ts";
 import { UnitLayer } from "./unitsLayer.ts";
@@ -114,6 +116,8 @@ export class ThreeRenderer implements Renderer {
   /** BACKLOG 39: grass tufts, flowers and pebbles near the focus (null when style.json turns it off) */
   private groundDetail: GroundDetailLayer | null = null;
   private decor: DecorLayer | null = null;
+  /** Look v4: one contact shadow set per entity layer, kept across layer rebuilds (null when off) */
+  private readonly contact: { units: ContactShadows; buildings: ContactShadows; trees: ContactShadows; decor: ContactShadows } | null = null;
   private models: Map<string, ModelParts> | null = null;
   private modelReport: ModelLoadReport | null = null;
   private modelsPending = false;
@@ -243,6 +247,8 @@ export class ThreeRenderer implements Renderer {
       rs?.foamStrokes ?? 0,
       rs?.water,
     );
+    this.styleRender = o.style.render;
+    this.applyStrokeLook(rs?.pixelScale ?? 1);
     this.pal = pal;
     this.basePal = pal;
     this.styleRender = o.style.render;
@@ -268,6 +274,13 @@ export class ThreeRenderer implements Renderer {
     );
     this.trees = new TreeLayer(this.propMat, pal, null, 8192, rs?.trees);
     for (const m of this.trees.meshes) this.scene.add(m);
+    const cs = resolveContactShadows(rs?.contactShadows);
+    if (cs.enabled) {
+      const sm = makeShadowMaterial(this.bend, cs.strength);
+      this.contact = { units: new ContactShadows(sm, 4096, cs), buildings: new ContactShadows(sm, 2048, cs), trees: new ContactShadows(sm, 8192, cs), decor: new ContactShadows(sm, 4096, cs) };
+      for (const c of Object.values(this.contact)) this.scene.add(c.mesh);
+    }
+    this.trees.shadows = this.contact?.trees ?? null;
     if (rs?.groundDetail?.enabled ?? true) {
       this.groundDetail = new GroundDetailLayer(this.propMat, pal, rs?.groundDetail);
       for (const m of this.groundDetail.meshes) this.scene.add(m);
@@ -492,6 +505,7 @@ export class ThreeRenderer implements Renderer {
       undefined,
       this.styleRender?.unitScale,
     );
+    this.units.shadows = this.contact?.units ?? null;
     this.scene.add(this.units.group);
     if (this.buildings) disposeGroup(this.scene, this.buildings.group);
     this.buildings = new BuildingLayer(
@@ -503,6 +517,7 @@ export class ThreeRenderer implements Renderer {
       2048,
       this.styleRender?.buildingScale ?? 1,
     );
+    this.buildings.shadows = this.contact?.buildings ?? null;
     this.scene.add(this.buildings.group);
     if (this.worship) disposeGroup(this.scene, this.worship.group);
     this.worship = new WorshipLayer(
@@ -630,11 +645,13 @@ export class ThreeRenderer implements Renderer {
         8192,
         this.styleRender?.trees,
       );
+      this.trees.shadows = this.contact?.trees ?? null;
       for (const m of this.trees.meshes) this.scene.add(m);
       if (this.styleRender?.decor?.enabled ?? true) {
         if (this.decor) for (const m of this.decor.meshes) this.scene.remove(m);
         this.decor?.dispose();
         this.decor = new DecorLayer(this.propMat, this.models, this.styleRender?.decor);
+        this.decor.shadows = this.contact?.decor ?? null;
         for (const m of this.decor.meshes) this.scene.add(m);
       }
       if (this.world) this.buildLayers(this.world);
@@ -762,13 +779,16 @@ export class ThreeRenderer implements Renderer {
 
   /** Retro pixel size override (URL `pixel`, look comparisons); null restores style.json. */
   setPixelScale(n: number | null): void {
-    this.retro.setOptions({
-      pixelScale: Math.max(
-        1,
-        Math.round(n ?? this.styleRender?.pixelScale ?? 1),
-      ),
-    });
+    const ps = Math.max(1, Math.round(n ?? this.styleRender?.pixelScale ?? 1));
+    this.retro.setOptions({ pixelScale: ps });
+    this.applyStrokeLook(ps);
     this.resize(this.viewW, this.viewH);
+  }
+
+  /** Crisp (pixel scale 1) draws soft tapered foam strokes, Retro keeps the hard ones (style.json render.water). */
+  private applyStrokeLook(pixelScale: number): void {
+    const v = strokeLookFor(this.styleRender?.water, pixelScale === 1);
+    (this.waterMat.uniforms.uStrokeLook.value as THREE.Vector3).set(v[0], v[1], v[2]);
   }
 
   /** Internal render resolution scale (settings quality: 1, 0.75, 0.5). Picking and HUD keep CSS pixels. */
@@ -1230,6 +1250,14 @@ export class ThreeRenderer implements Renderer {
     return null;
   }
 
+  /** Look v4: contact shadow blobs drawn per layer in the last fill (null when off; the debug look summary) */
+  contactCounts(): Record<string, number> | null {
+    if (!this.contact) return null;
+    const out: Record<string, number> = {};
+    for (const [k, c] of Object.entries(this.contact)) out[k] = c.count();
+    return out;
+  }
+
   /** Deliberate breakage for visual QA calibration (TESTING section 7, VISIONQA section 5). */
   setDebug(f: {
     hideTerrain?: boolean;
@@ -1241,6 +1269,7 @@ export class ThreeRenderer implements Renderer {
       c.water.visible = !f.hideTerrain;
     }
     for (const m of this.trees.meshes) m.visible = !f.hideTerrain;
+    if (this.contact) for (const c of Object.values(this.contact)) c.mesh.visible = !f.hideTerrain;
     this.sky.visible = !f.blackCanvas;
     this.scene.visible = !f.blackCanvas;
     this.gl.setClearColor(f.blackCanvas ? 0x000000 : this.palette.water, 1);

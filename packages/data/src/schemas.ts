@@ -476,6 +476,12 @@ export const StyleSchema = z
             snowBright: z.number().min(0.5).max(2),
             /** per channel multiplier of the snow color, to counter the warm sun (default [0.97, 1, 1.06]) */
             snowTint: z.tuple([z.number().min(0.3).max(2), z.number().min(0.3).max(2), z.number().min(0.3).max(2)]).optional(),
+            /** cliff tint from this share of maxWalkSlope (default 0.85), starting at cliffFloor (default 0.5) and full after cliffFade (default 0.4) more */
+            cliffStart: z.number().min(0.3).max(2).optional(),
+            cliffFloor: z.number().min(0).max(0.95).optional(),
+            cliffFade: z.number().min(0.05).max(2).optional(),
+            /** per triangle brightness jitter (default 0.12) */
+            faceJitter: z.number().min(0).max(0.4).optional(),
           })
           .refine(
             (b) => b.snowFull > b.snowStart,
@@ -513,6 +519,19 @@ export const StyleSchema = z
             flowerColors: z.array(z.string().regex(/^#[0-9a-fA-F]{6}$/)).max(8),
           })
           .refine((g) => g.highBand > g.shoreBand, "highBand must be above shoreBand")
+          .optional(),
+        /** S4 Look v4: soft contact shadows under units, buildings, trees, rocks and props (render shadows.ts); omitted = off */
+        contactShadows: z
+          .strictObject({
+            enabled: z.boolean(),
+            strength: z.number().min(0).max(1),
+            units: z.number().min(0).max(4),
+            buildings: z.number().min(0).max(4),
+            trees: z.number().min(0).max(4),
+            decor: z.number().min(0).max(4),
+            sunOffset: z.number().min(0).max(1),
+            skip: z.array(z.string()).max(32),
+          })
           .optional(),
         /** Stretch 3: landscape decor from the prop models (render decor.ts); omitted = code defaults */
         decor: z
@@ -555,6 +574,9 @@ export const StyleSchema = z
             /** S4 (14c): offshore ring cycles per second (absent 0.12) and its width as a share of foamWidth (absent 0.35) */
             ringDrift: z.number().min(0).optional(),
             ringWidth: z.number().positive().optional(),
+            /** Crisp look foam strokes: half width (Retro 0.2) and opacity (Retro 0.9) */
+            strokeWidthCrisp: z.number().min(0.02).max(0.4).optional(),
+            strokeAlphaCrisp: z.number().min(0).max(1).optional(),
           })
           .optional(),
         /** look v2 (BACKLOG 0a): draw scale of the building models, so villages read as villages next to the

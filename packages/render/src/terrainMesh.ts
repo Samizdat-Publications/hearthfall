@@ -42,6 +42,14 @@ export interface TerrainBandsLook {
   snowBright: number;
   /** per channel multiplier of the snow color (before snowBright); counters the warm sun so caps read white. Default SNOW_TINT_DEFAULT. */
   snowTint?: readonly [number, number, number];
+  /** cliff tint starts at this share of maxWalkSlope (default 0.85) */
+  cliffStart?: number;
+  /** cliff tint share at cliffStart (default 0.5: a hard step); lower values fade slopes in instead */
+  cliffFloor?: number;
+  /** slope span (in maxWalkSlope units) over which the cliff tint grows to full (default 0.4) */
+  cliffFade?: number;
+  /** per triangle brightness jitter (default 0.12: faces vary from 0.93 to 1.05) */
+  faceJitter?: number;
 }
 
 export const SNOW_TINT_DEFAULT: readonly [number, number, number] = [0.97, 1, 1.06];
@@ -88,16 +96,18 @@ export function faceColor(p: TerrainPalette, sea: number, h0: number, h1: number
     out.copy(c0).lerp(c1, f * f * (3 - 2 * f));
   }
   // steep faces turn to brown earth cliffs with layered strata (rock above the rock band)
-  if (avg >= sea && span > p.maxWalkSlope * 0.85) {
+  const cs = p.look?.cliffStart ?? 0.85;
+  if (avg >= sea && span > p.maxWalkSlope * cs) {
     const layer = Math.floor(avg / 14) % 3;
     const high = avg >= b.rock - 10;
     tmp.copy(high ? p.rock : p.cliff).lerp(high ? p.rockDark : p.cliffDark, layer === 0 ? 0.65 : layer === 1 ? 0.2 : 0.4);
     // look v3: the middle stratum of earth cliffs reads as a pale sandstone band
     if (p.look && !high && layer === 1) tmp.lerp(p.sand, p.look.strataSand);
-    out.lerp(tmp, Math.min(0.95, 0.5 + (span - p.maxWalkSlope * 0.85) / (p.maxWalkSlope * 0.4)));
+    out.lerp(tmp, Math.min(0.95, (p.look?.cliffFloor ?? 0.5) + (span - p.maxWalkSlope * cs) / (p.maxWalkSlope * (p.look?.cliffFade ?? 0.4))));
   }
   if (scar > 0) out.lerp(p.scar, Math.min(0.85, scar / 60));
-  const j = 0.93 + 0.12 * faceHash(seed);
+  const fj = p.look?.faceJitter ?? 0.12;
+  const j = 0.99 - fj / 2 + fj * faceHash(seed);
   return out.multiplyScalar(j);
 }
 
@@ -242,6 +252,15 @@ export interface WaterLook {
   /** S4: ring cycles per second (absent 0.12) and its width as a share of foamWidth (absent 0.35) */
   ringDrift?: number;
   ringWidth?: number;
+  /** foam stroke half width (share of a stroke row, absent 0.2) and opacity (absent 0.9) in the Crisp look; Retro keeps 0.2 and 0.9 */
+  strokeWidthCrisp?: number;
+  strokeAlphaCrisp?: number;
+}
+
+/** Foam stroke look for the water material: half width, opacity and taper (1 = soft tapered brush strokes, 0 = the retro hard strokes). */
+export function strokeLookFor(look: WaterLook | undefined, crisp: boolean): [number, number, number] {
+  if (!crisp) return [0.2, 0.9, 0];
+  return [look?.strokeWidthCrisp ?? 0.2, look?.strokeAlphaCrisp ?? 0.9, 1];
 }
 
 export const WATER_LOOK_V2: WaterLook = { shallowDepth: 30, foamWidth: 10, foamRing: 0 };
@@ -295,6 +314,7 @@ export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: {
         uDepthSize: { value: 0 },
         uLook: { value: new THREE.Vector3(look.shallowDepth, look.foamWidth, look.foamRing) },
         uRing: { value: new THREE.Vector2(look.ringDrift ?? 0.12, look.ringWidth ?? 0.35) },
+        uStrokeLook: { value: new THREE.Vector3(0.2, 0.9, 0) },
         uLight: { value: new THREE.Color(1, 1, 1) },
         // ambient life: sun or moon glints (rgb color, w strength; 0 skips the branch) and their look
         // (cell size, twinkles per second, radius around the focus, share of lit cells); see ambient.ts glintFor
@@ -327,6 +347,7 @@ export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: {
       uniform vec3 uSun;
       uniform float uTime;
       uniform float uStrokes;
+      uniform vec3 uStrokeLook;
       uniform sampler2D uDepthTex;
       uniform float uDepthSize;
       uniform vec3 uLook;
@@ -351,7 +372,14 @@ export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: {
         float len = 0.35 + 0.4 * wh(cell + 1.3);
         float start = 0.1 + 0.3 * wh(cell + 2.9);
         float bend = 0.16 * sin((f.x - start) / len * 3.1416);
-        return step(start, f.x) * step(f.x, start + len) * step(abs(f.y - 0.5 + bend), 0.2);
+        if (uStrokeLook.z < 0.5) return step(start, f.x) * step(f.x, start + len) * step(abs(f.y - 0.5 + bend), 0.2);
+        // Crisp: a brush stroke that tapers at both ends, with soft anti-aliased edges
+        float u = (f.x - start) / len;
+        if (u < 0.0 || u > 1.0) return 0.0;
+        float w = uStrokeLook.x * (0.25 + 0.75 * sin(u * 3.1416));
+        float d = abs(f.y - 0.5 + bend);
+        float aa = max(fwidth(f.y) * 1.2, 0.01);
+        return 1.0 - smoothstep(w - aa, w + aa, d);
       }
       varying vec3 vWorld;
       void main() {
@@ -377,7 +405,7 @@ export function makeWaterMaterial(p: TerrainPalette, bend: BendUniforms, time: {
           float near = 1.0 - smoothstep(4.0, 40.0, dep);
           float s1 = strokeAt(vWorld.xz, uStrokes * (0.3 + 0.4 * near), 0.42);
           float s2 = strokeAt(vWorld.xz + 31.7, uStrokes * 0.45, 0.33);
-          col = mix(col, uFoam, s1 * 0.9);
+          col = mix(col, uFoam, s1 * uStrokeLook.y);
           col = mix(col, uDeep * 0.7, s2 * (1.0 - s1) * 0.5);
         }
         // BACKLOG 14: the lighting preset and weather tint the water and its foam (white under the default preset)

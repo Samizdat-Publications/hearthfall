@@ -8,6 +8,7 @@
 // (walk, work, attack, shoot, cast, pray, panic, idle), and a unit that dies leaves a short ghost
 // that topples over (or flails and sinks when it drowned).
 import * as THREE from "three";
+import type { ContactShadows } from "./shadows.ts";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { unitModelId, type ModelParts } from "./models.ts";
 import { CAT, NAV, type SimEvent, type World } from "@hearthfall/sim";
@@ -133,6 +134,8 @@ export class UnitLayer {
   readonly disc: THREE.InstancedMesh;
   /** per kind draw scale (the Shaper stands out) */
   private kindScale: number[] = [];
+  /** Look v4: soft contact shadows under walking and flying units (set by the renderer) */
+  shadows: ContactShadows | null = null;
   private readonly cap: number;
   private tribeColors: THREE.Color[];
   private wildColor: THREE.Color;
@@ -323,6 +326,8 @@ export class UnitLayer {
     let rings = 0;
     let discs = 0;
     this.drawn = 0;
+    const sh = this.shadows;
+    sh?.begin();
     const fade2 = fadeEnd * fadeEnd;
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.unit || E.inside[i] >= 0) continue;
@@ -366,6 +371,10 @@ export class UnitLayer {
       kind.detail.setMatrixAt(c, this.m);
       kind.anim.array.set(unitPose(this.forceClip ? this.forceClip(i) : unitClip(w, i), visualTime, i, this.pose), c * 4);
       kind.body.setColorAt(c, shown >= 0 ? this.tribeColors[shown % this.tribeColors.length] : this.wildColor);
+      if (sh && nav !== NAV.water) {
+        const landY = Math.max(h, w.terrain.sea) * heightScale;
+        sh.add(w.terrain, ix, iz, focusX + ox, focusZ + oz, landY, DISC_RADIUS * this.s.x * (ks > 1 ? SHAPER_DISC : 1) * sh.look.units, this.kindHeight[k] * this.s.x * ks, heightScale);
+      }
       const flat = nav !== NAV.land;
       const lift = flat ? 0 : this.groundFitCached(w, ix, iz, n, heightScale, Math.max(DISC_RADIUS * (ks > 1 ? SHAPER_DISC : 1), 0.42) * this.s.x, ks > 1 ? 1 : 0);
       if (E.tribe[i] >= 0 && discs < this.cap) {
@@ -437,5 +446,6 @@ export class UnitLayer {
     this.disc.count = discs;
     this.disc.instanceMatrix.needsUpdate = true;
     if (this.disc.instanceColor) this.disc.instanceColor.needsUpdate = true;
+    sh?.end();
   }
 }

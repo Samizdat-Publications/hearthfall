@@ -3,6 +3,7 @@
 // GLB models (M10, models.ts) replace the procedural placeholders by id; a kind without a model keeps
 // its placeholder scaled to the footprint. Static between sim ticks, so no interpolation.
 import * as THREE from "three";
+import type { ContactShadows } from "./shadows.ts";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { CAT, type World } from "@hearthfall/sim";
 import { buildingModelIds, withBanner, type ModelParts } from "./models.ts";
@@ -84,6 +85,8 @@ export class BuildingLayer {
   private tribeColors: THREE.Color[];
   private readonly neutral: THREE.Color;
   private lastKey = "";
+  /** Look v4: soft contact shadows under buildings (set by the renderer) */
+  shadows: ContactShadows | null = null;
   private readonly m = new THREE.Matrix4();
   private readonly q = new THREE.Quaternion();
   private readonly s = new THREE.Vector3();
@@ -165,6 +168,8 @@ export class BuildingLayer {
     const counts = this.kinds.map((v) => new Int32Array(v.length));
     this.grow(E.hi);
     this.drawn = 0;
+    const sh = this.shadows;
+    sh?.begin();
     for (let i = 0; i < E.hi; i++) {
       if (!E.alive[i] || E.cat[i] !== CAT.building) continue;
       if (!this.revealAll && !w.vision.seenEntity(this.viewTribe, i)) continue;
@@ -193,6 +198,10 @@ export class BuildingLayer {
       this.drawZ[i] = this.p.z;
       this.drawGround[i] = y;
       this.drawTop[i] = y - 0.05 + kind.height * this.s.y;
+      if (sh && st >= 2) {
+        const fp = def.footprint;
+        sh.add(w.terrain, E.x[i], E.y[i], this.p.x, this.p.z, y, (Math.max(fp[0], fp[1]) / 2) * kind.scale * lv * sh.look.buildings, kind.height * this.s.y, heightScale);
+      }
       const c = counts[k][vi]++;
       kind.body.setMatrixAt(c, this.m);
       kind.tint.setMatrixAt(c, this.m);
@@ -207,5 +216,6 @@ export class BuildingLayer {
         if (kind.tint.instanceColor) kind.tint.instanceColor.needsUpdate = true;
       }),
     );
+    sh?.end();
   }
 }

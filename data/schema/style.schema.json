@@ -423,6 +423,26 @@
               "items": false,
               "minItems": 3,
               "maxItems": 3
+            },
+            "cliffStart": {
+              "type": "number",
+              "minimum": 0.3,
+              "maximum": 2
+            },
+            "cliffFloor": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 0.95
+            },
+            "cliffFade": {
+              "type": "number",
+              "minimum": 0.05,
+              "maximum": 2
+            },
+            "faceJitter": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 0.4
             }
           },
           "required": [
@@ -559,6 +579,62 @@
             "highBand",
             "maxSlope",
             "flowerColors"
+          ],
+          "additionalProperties": false
+        },
+        "contactShadows": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "strength": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "units": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 4
+            },
+            "buildings": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 4
+            },
+            "trees": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 4
+            },
+            "decor": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 4
+            },
+            "sunOffset": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "skip": {
+              "maxItems": 32,
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "enabled",
+            "strength",
+            "units",
+            "buildings",
+            "trees",
+            "decor",
+            "sunOffset",
+            "skip"
           ],
           "additionalProperties": false
         },
@@ -788,6 +864,16 @@
             "ringWidth": {
               "type": "number",
               "exclusiveMinimum": 0
+            },
+            "strokeWidthCrisp": {
+              "type": "number",
+              "minimum": 0.02,
+              "maximum": 0.4
+            },
+            "strokeAlphaCrisp": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
             }
           },
           "required": [
