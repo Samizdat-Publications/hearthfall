@@ -12,18 +12,19 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 - S4 Leg 8 started early on Stewart's request (2026-10-12, after his playtest: "exactly what I was hoping for"). Playtest asks DONE (86e2d8a): a closing ring marks every accepted right-click order (green move, red attack, gold special) and clicking the Shaper portrait selects her. L8-D DONE except a nav bug: aggressive economyTargetPop 60 in skirmish, 40 kept in the campaign (ADR-025); ai soak 96 x 25: aggressive 29, sneaky 26, turtle 27 (was 14, 35, 28); levels layer 71/71; balloon unload at the wrap seam fixed. L8-A, L8-B, L8-C still wait for the weekly reset (workflows).
 - S4 2026-10-12 evening (Stewart, before his long playthrough from level 3): L8-A and the boat launch stall DONE (9be218b), full npm run qa PASS, ai soak 96 x 25 PASS (30, 26, 27). Chapter 4 briefs ready (tools/workflows/chapter4-briefs.json, tab "The Wild Heart" from 36), held until after the playtest. Polish workflow DONE and committed 6778470 (game speed, restart, F5/F9, briefing O, edge scroll, alerts and pings U, spell refusal reasons and tooltips, idle troops, health bars L, hover ring, ambient smoke birds fireflies dust, chapter 3 props) with review fixes; double-click now selects the type map-wide (Alt keeps 14 cells). Stewart rejected the CSS-only HUD canvas; he picked Gemini concept D (painted, docs/design/hud-v3.md; pieces in assets/ui/hud via tools/assets/ui_gen.py and ui_key.py). HUD v3 Ember Grove plus ambient 2 (water glints, evening Hearth firelight, embers, hut glow) DONE b08cc70 with review fixes (3 column build panel and spell bar shift: HUD fits 1.5 at 1440p, 1.1 at 1080p, 0.75 at 720p; whole square minimap in the ring; key list hint note). Full npm run qa PASS, build PASS. Pack hash changed (style.json), so saves from before b08cc70 no longer load. Open: menus.css still the old look; no night lighting preset yet; net unit tests flake (localhost ETIMEDOUT) under full-unit load but pass alone.
 - S4 2026-10-12 late (Stewart mid-playthrough: "plays great for the first few levels"): S selects the Shaper in place (S again or the portrait centers), stance plank label and chips fixed at 1440p, new Gemini title key art (assets/ui/title.webp from title_v2a, refs are real game shots). qa:fast, smoke, menus, combat, e2e, build PASS.
-- S4 2026-10-13 (Stewart: crisp "matches the UI better, almost Dwarf Fortress"; chapter 4 on hold, polish first; plan kind-cooking-wind Part A DONE): Crisp is the default look, Retro pixels in Settings, Pixel look (ADR-026); stronger crisp miniature focus (render.tiltShift.maxBlurCrisp 9, scaled by render height, 25 tap blur); bottom HUD row at 80 percent (--hud-low); stance plank fixed (the panel kind class troops-units capped the panel at 454 px); voice subtitle moved to the top of the bottom column (a larger fitted HUD ran the build panel into it). Every shot set re-baselined. Full qa: all layers PASS except bench-render WARN (median 5.5 to 5.8 ms vs 3.7 baseline, identical under pixel=3, so not the crisp change; Stewart was playing a build in Chrome; re-check idle before re-baselining). e2e lan-versus flaked once (partner WebSocket closing), passed on rerun.
-- USAGE CAP (Stewart, 2026-10-12 evening, raised): stop at about 90 percent of the weekly all-models limit (76 percent at 03:20Z; resets 2026-10-15T18:00Z). Check get_usage between steps, start no new workflows, pause cleanly at about 84 percent.
+- S4 2026-10-13 (Stewart: crisp "matches the UI better, almost Dwarf Fortress"): Crisp is the default look, Retro pixels in Settings (ADR-026); stronger crisp miniature focus; bottom HUD row at 80 percent; stance plank and voice subtitle fixed. Every shot set re-baselined.
+- S4 2026-10-15 (Stewart: "finish all the final polish so the only thing remaining is chapter 4", he plays the campaign tonight): Look v4 contact shadows (49493d5, ADR-027). Menus v3 in the Ember Grove stone (painted frame, stone buttons, chapter route maps, build tag on the main menu). Chapter 4 shared engine prep, so chapters 1 to 3 get it too: wolf den pins and soft ground rings (and minimap dots), timed neutral hazards warn 8 s ahead (ring and countdown on the ground, a note, a rumble; balance.hazards.warnSeconds), Ash Peak volcano plume, survive readouts count from their stage start, night lighting preset. Campaign text pass (L1 teaches S and right-click, no AI personality names, US spelling) and 597 props on levels 1 to 25. Deploy prepared (wrangler.jsonc, docs/DEPLOY.md), waits for Stewart. Every shot set re-baselined; look gains light_night. Commit 9396f58 plus the docs commit.
+- QA 2026-10-15: qa:fast 660/660, check, unit, scenarios, levels 71/71 (alone, 482 s; the driver's 480 s cap cut it under load), replays (Node and browser), bench, prod and e2e (LAN too) PASS; every shot set re-shot, reviewed and re-approved (menus re-run PASS). bench-render WARN 5.3 ms vs the 3.7 baseline while other sessions loaded the PC (Godot, Python, 40 percent CPU): draw calls unchanged at 65 and placeholders equally slower, so load, not code. VisionQA advisory flag on replay_bar (spell bar and replay bar touch; DOM check passes). Pack hash changed: match saves and replays from before today do not load; campaign unlocks are kept.
 - Stretch 2 (2026-10-10, 24 h) DONE: tag s2-done, full npm run qa PASS at 5e11f16. Run 1 done 2026-10-09T23:58Z: m0-done to m11-done tagged. Run started: 2026-10-08T21:25:00Z.
 - Screenshot mode: headless-shell + GPU args (RTX 5070 Ti Laptop). VisionQA provider ON (about $0.00003 per low shot).
 - Machine: often at 100 percent CPU (other projects' sims and benchmarks, leave them alone). Wall-clock timing is noisy, and bench readings of 6 to 7 ms while agents run scenarios are load, not regressions (idle: 3.7 ms).
 - Keys: Meshy, ElevenLabs, Gemini, OpenAI present; Tripo, PixelLab missing.
-- Making-of page: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5 (version 39), rebuild with `npm run making-of -- page` and republish after every backlog item (README steps).
+- Making-of page: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5 (version 40), rebuild with `npm run making-of -- page` and republish after every backlog item (README steps).
 
 ## Next 3 actions
-1. Stewart's playthrough notes first (crisp look and HUD v3 are new to him).
-2. Plan Part B in order: crisp quality audit (texture seams, detail noise, shimmer; top 3 fixes with baselines), menus restyle with the Ember Grove pieces, campaign polish over the 25 levels, review leftovers (ambient emberPose/syncGlints allocations, hard-coded key names; also re-check bench-render idle), night lighting preset.
-3. After the usage reset (2026-10-15T18:00Z): Look v4, the key art made playable (contact AO, warm village key light, model texture filtering). Chapter 4 only when Stewart asks.
+1. Stewart's campaign playthrough notes first (stone menus, night, den markers and hazard warnings are new to him).
+2. Public deploy only on Stewart's yes (docs/DEPLOY.md: `npx wrangler login` once, then `npm run build; npx wrangler deploy`).
+3. Chapter 4 "The Wild Heart" (L8-B, briefs in tools/workflows/chapter4-briefs.json), then map detail v3 (L8-C). Its engine pieces are in; left as TODOs: disc-painted and spell-raised volcanoes get no plume, non-time hazard triggers get no warning, key names in help text (Cuts). Re-check bench-render on an idle PC before any re-baseline.
 
 ## Blocked
 - (none)
@@ -50,29 +51,32 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 - Stretch 2 end (2026-10-10): BACKLOG 65 met for outnumbered probes (Warden 6 v Firecaller 10 70, Firecaller 6 v Chanter 10 60, Chanter 6 v Warden 10 80, mixed mirror 40); equal-number pairs still 100 percent. ai soak 64 x 20 min: aggressive 16, sneaky 15, turtle 13, unfinished 20 (the M7 sneaky skew is gone).
 
 ## State of the game (for Stewart)
-Rewritten 2026-10-12 evening, before Stewart's long playtest. Full `npm run qa` PASS at 9be218b, ai soak 96 x 25 clean, production build fresh. Run 1 built the game (m0 to m11), stretch 2 added the look and the modes, stretch 3 grew the campaign, stretch 4 added LAN play, chapters 2 and 3, map detail, the stone UI and the Leg 8 fixes. BACKLOG items that need you: 16 desktop build, 17 public deploy, 29 path strip.
+Rewritten 2026-10-15 evening, for Stewart's campaign playthrough. Every QA layer passes except the render bench, which only warns under the PC's load from other sessions (see Now); production build fresh. Run 1 built the game (m0 to m11), stretch 2 added the look and the modes, stretch 3 grew the campaign, stretch 4 added LAN play, chapters 2 and 3, map detail, the stone UI, the painted HUD and menus, and the chapter 4 engine prep. BACKLOG items that need you: 16 desktop build, 17 public deploy (prepared, one command), 29 path strip.
 
 **What works**
 - The core god game: a small curved, wrapping planet where your Shaper leads a tribe from a Hearth. Settlers gather and build, followers pray for mana or train Wardens, Firecallers, Chanters and Shades. All 16 spells, eight taught at Reliquaries. Fog of war, minimap and map view (M).
 - Campaign of 35 hand-made levels in three chapters ("The First Fires" 1 to 12, "The Wide Waters" 13 to 25, "The Far Shores" 26 to 35) on a route map with chapter tabs. Every level has a scenario where a bot wins it and one where an idle player loses; bot wins ramp per chapter, and every time limit is at least twice the bot's win.
-- New tonight: the level bot raises a Boathouse a goal asks for at once, and four levels were retuned around it (Across the Strait, Salt Marsh, Sunken Road, Pilgrim Stones); boats fresh from a Boathouse no longer stall at the shore; right-click orders show a closing ring (green move, red attack, gold special) and the Shaper portrait selects her.
-- UI v2 "carved hearthstone": stone panels, Marcellus SC and Alegreya Sans, interface size fits your screen (135 percent at 2560x1440) with a 75 to 200 percent slider in Settings.
+- New tonight: menus in the same painted stone as the HUD (main menu, settings, campaign route maps per chapter, briefing, saves; the build date shows on the main menu). Wolf dens carry a pin and a ground ring, and timed eruptions and quakes on a level warn 8 seconds ahead with a ring and a countdown. A night lighting preset. Clearer hints in the first levels (S selects the Shaper, right-click a shrine to pray) and more props on levels 1 to 25.
+- Since your last session: soft contact shadows under units, buildings, trees and rocks; the Crisp look is the default (Retro pixels in Settings); S selects the Shaper; right-click orders show a closing ring.
+- HUD v3 "Ember Grove": painted wood, stone and lava pieces, interface size fits your screen with a 75 to 200 percent slider in Settings.
 - Look v3 "miniature diorama" (tilt-shift, painted shallow water, thatched huts, lighting presets, rain) plus map detail v2 (shore plants, village clutter, authored props).
 - Modes: skirmish with victory variants, Forge pre-match, boats and balloons, map editor, LAN versus and co-op (campaign together, watchable replays), photo mode, replays, records and achievements.
 - Opponent AI: three personalities, four difficulties, worships across water by boat or balloon, raids worship sites. Personalities now win about equally (aggressive 30, sneaky 26, turtle 27 of 96).
-- QA: 543 unit tests, 120 scenarios plus 71 level scenarios, golden replays in Node and Chromium, benches, 11 shot sets with VisionQA, end-to-end at 1280x720 and 2560x1440, production build.
+- QA: 660 unit tests, scenarios plus 71 level scenarios, golden replays in Node and Chromium, benches, 12 shot sets with VisionQA, end-to-end at 1280x720 and 2560x1440, production build.
 
 **Known issues**
 - Counters at equal numbers still win every time; mixed armies decide real games.
 - Salt Marsh's bot win varies a lot with the start (about 18000 to 32000 ticks); its last stage is a long siege. Across the Strait's rival is smaller than before (if it feels easy, tell me).
 - The AI clears guardians only on its home landmass.
-- Online play, a desktop exe and a public URL are not built (they need you).
+- Help text and level hints name the default keys, so they go stale if you rebind a key.
+- Match saves and replays from before today do not load (the game data changed); campaign unlocks are kept.
+- Online play and a desktop exe are not built; the public URL is one command away and waits for your OK.
 
 **Top 5 next items**
-1. Your playtest notes from tonight.
+1. Your campaign notes from tonight.
 2. Chapter 4 (L8-B, 10 levels in two batches), then its fix round.
 3. Map detail v3 (L8-C) for chapters 3 and 4.
-4. Static web deploy so the game opens from a link (BACKLOG 17; needs your OK).
+4. Static web deploy so the game opens from a link (BACKLOG 17; prepared in docs/DEPLOY.md, needs your OK).
 5. Engine gaps the tuners logged: posted guards count toward maxTroops; a destroy goal that stays open if its tribe falls early.
 
 ## First human playtest
@@ -95,7 +99,7 @@ Then open http://127.0.0.1:5182/ in Chrome or Edge, and press Ctrl+C in that win
 - **Grow:** settlers gather on their own. Press D and click near the Hearth for Dwellings, which breed followers. At 10 followers you unlock the Watchtower (T) and the Warden Lodge.
 - **Mana:** the slider at the top left splits followers between praying (mana) and training (troops).
 - **Spells:** press Z, X, C, V, B or N (Shift plus a letter for the later ones), then click a target. Right click a spell to auto-charge it, and Backspace takes back a cast that has not landed.
-- **Army:** drag to select (double-click selects every unit of that type). Right click moves. A then click attack-moves, R retreats, G garrisons. Ctrl plus a digit saves a group.
+- **Army:** S selects the Shaper; drag to select (double-click selects every unit of that type). Right click moves, and right click on a shrine sends them to pray. A then click attack-moves, R retreats, G garrisons. Ctrl plus a digit saves a group.
 - **Camera:** wheel to zoom, Q and E to rotate, M for the map, click the minimap to jump. P or Esc pauses, H lists every key, and F is photo mode (Enter saves a PNG).
 
 **What to try, in this order (about 2 hours)**
@@ -110,7 +114,7 @@ Then open http://127.0.0.1:5182/ in Chrome or Edge, and press Ctrl+C in that win
    - The rain weather.
    - Each tribe trait.
 5. **Map editor:** make a small map, press Playtest, then quit back to the editor.
-6. **Settings:** compare miniature focus on and off and the three lighting presets. Is the tilt-shift look what you wanted from your reference?
+6. **Settings:** compare miniature focus on and off and the lighting presets (day, golden, evening and the new night). Is the tilt-shift look what you wanted from your reference?
 7. **After a match:** Records, then Main menu > Last replay. Scrub the timeline.
 
 **What to tell me afterwards** (a few lines each is plenty)

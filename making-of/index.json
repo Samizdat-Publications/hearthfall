@@ -1540,6 +1540,26 @@
       "when": "2026-10-15T22:40:33.487Z",
       "source": "external:menus-v3-before-after.png",
       "bytes": 943954
+    },
+    {
+      "file": "s4/20261015-2348_night-lighting.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "New night lighting preset: cool moonlight on the land while the Hearth throws a warm pool of firelight (The Ash Peak camp)",
+      "highlight": true,
+      "when": "2026-10-15T23:48:16.556Z",
+      "source": "external:camp_ash_peak.png",
+      "bytes": 1921909
+    },
+    {
+      "file": "s4/20261015-2348_den-markers.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "Chapter 4 prep: wolf dens now carry a pin and a soft ground ring so they read at a glance, and units walk over the ring (The Ash Peak)",
+      "highlight": false,
+      "when": "2026-10-15T23:48:17.631Z",
+      "source": "external:ash_peak_mountain.png",
+      "bytes": 1266203
     }
   ]
 }
