@@ -199,3 +199,14 @@
 - 2026-10-13T03:49 set menus (6 shots): Crisp Pixel look default (ADR-026): Pixel look row in Settings, crisp globe behind the menus
 - 2026-10-13T03:50 set menus (5 shots): Crisp Pixel look default (ADR-026): replay bar frame, pseudo locale Pixel look row, crisp editor globe
 - 2026-10-13T03:51 set look (13 shots): Smaller bottom HUD row and the 25 tap two ring tilt-shift blur (retro pixel 3 kept)
+- 2026-10-15T22:35 set menus (11 shots): Menus v3 Ember Grove: painted frame with a real stone border, painted buttons, chapter route maps
+- 2026-10-15T22:48 set menus (14 shots): Menus v3: add how to play, load game and briefing shots in the painted frame
+- 2026-10-15T23:03 set smoke (14 shots): Look v4 contact shadows, menus v3, chapter 4 prep markers
+- 2026-10-15T23:05 set combat (8 shots): Look v4 contact shadows; wolf den pin and ground ring (chapter 4 prep)
+- 2026-10-15T23:07 set chapter3 (5 shots): Look v4 contact shadows; chapter 4 prep den markers, hazard rings and volcano plume
+- 2026-10-15T23:07 set forge (1 shots): Look v4 contact shadows and Crisp audit
+- 2026-10-15T23:09 set levels (11 shots): Look v4 contact shadows, campaign props and hint text pass
+- 2026-10-15T23:09 set spells (9 shots): Look v4 contact shadows and Crisp audit
+- 2026-10-15T23:10 set spells2 (9 shots): Look v4 contact shadows and Crisp audit
+- 2026-10-15T23:10 set vehicles (3 shots): Look v4 contact shadows and Crisp audit
+- 2026-10-15T23:14 set look (14 shots): Look v4 contact shadows and Crisp audit; new light_night shot for the night lighting preset

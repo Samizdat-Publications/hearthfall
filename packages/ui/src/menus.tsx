@@ -90,7 +90,7 @@ export interface SettingsView {
   /** S4: crisp (full resolution) or retro pixels */
   pixelLooks: Choice[];
   pixelLook: string;
-  /** BACKLOG 14: lighting preset (default, day, golden, evening) and weather (clear, rain) */
+  /** BACKLOG 14: lighting preset (default, day, golden, evening, night) and weather (clear, rain) */
   lightings: Choice[];
   lighting: string;
   weathers: Choice[];
@@ -148,6 +148,8 @@ export interface MenuModel {
   replay?: { last: boolean; ended: boolean; message: string | null };
   /** BACKLOG 18: the active mods ("Name version", load order), empty without mods */
   mods?: string[];
+  /** BACKLOG 17: the build tag ("YYYY-MM-DD sha") shown small under the main menu; empty in test builds */
+  build?: string;
   /** Leg 5: LAN play (absent outside the lobby and LAN matches) */
   net?: NetView;
 }
@@ -288,6 +290,11 @@ function Main({ act, art, m }: { act: MenuActions; art?: string; m: MenuModel })
       {m.mods?.length ? (
         <p class="menu-note" data-ui="mods-active">
           {t("menu.mods", { list: m.mods.join(", ") })}
+        </p>
+      ) : null}
+      {m.build ? (
+        <p class="menu-build" data-ui="build-tag">
+          {t("menu.build", { tag: m.build })}
         </p>
       ) : null}
     </div>
@@ -444,7 +451,7 @@ function Campaign({ m, act }: { m: MenuModel; act: MenuActions }) {
           ))}
         </div>
       ) : null}
-      <div class="route" data-ui="campaign-map">
+      <div class={`route ch-${chapter}`} data-ui="campaign-map">
         <svg class="route-path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
           {pts.slice(1).map((p, i) => (
             <line key={i} x1={pts[i][0]} y1={pts[i][1]} x2={p[0]} y2={p[1]} class={shown[i].won ? "route-seg won" : "route-seg"} />

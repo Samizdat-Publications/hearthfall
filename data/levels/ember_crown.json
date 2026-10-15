@@ -24,6 +24,34 @@
   ],
   "rules": "king_of_hill",
   "spells": ["bolt", "raise_land", "lightning", "whirlwind"],
+  "props": [
+    { "model": "prop.woodpile", "at": [27, 164], "rot": 5.3 },
+    { "model": "prop.haystack", "at": [30, 144], "rot": 0.3 },
+    { "model": "prop.fence", "at": [27, 152], "rot": 1.6 },
+    { "model": "prop.pots", "at": [29, 150], "rot": 1.1 },
+    { "model": "prop.cairn", "at": [164, 141], "rot": 2 },
+    { "model": "prop.woodpile", "at": [170, 152], "rot": 1.6 },
+    { "model": "prop.cairn", "at": [105, 25], "rot": 5.2 },
+    { "model": "prop.woodpile", "at": [105, 38], "rot": 3.2 },
+    { "model": "prop.ruin_a", "at": [91, 94], "rot": 0.2 },
+    { "model": "prop.ruin_a", "at": [101, 93], "rot": 1.1 },
+    { "model": "prop.cairn", "at": [97, 101], "rot": 3.9 },
+    { "model": "prop.standing_stone", "at": [95, 89], "rot": 0.9 },
+    { "model": "prop.mushroom_ring", "at": [102, 100], "rot": 6.1 },
+    { "model": "prop.fence", "at": [78, 99] },
+    { "model": "prop.cairn", "at": [78, 89], "rot": 0.2 },
+    { "model": "prop.fence", "at": [100, 121] },
+    { "model": "prop.cairn", "at": [100, 111], "rot": 0.1 },
+    { "model": "prop.woodpile", "at": [86, 65], "rot": 6.1 },
+    { "model": "prop.woodpile", "at": [106, 65], "rot": 0.5 },
+    { "model": "prop.cairn", "at": [27, 166], "rot": 1.6 },
+    { "model": "prop.reeds", "at": [35, 51], "rot": 2.6 },
+    { "model": "prop.reeds", "at": [145, 51], "rot": 4 },
+    { "model": "prop.reeds", "at": [88, 150], "rot": 4.6 },
+    { "model": "prop.bush_a", "at": [32, 134], "rot": 1.3 },
+    { "model": "prop.fern", "at": [160, 136], "rot": 5.3 },
+    { "model": "prop.log_a", "at": [79, 12], "rot": 2.2 }
+  ],
   "setup": [
     { "spawn": "reliquary", "at": [96, 96], "site": { "tag": "crown_reliquary", "worshippers": 4, "prayerSeconds": 40, "uses": 1, "rewards": [{ "type": "charges", "spell": "firerain", "n": 1 }, { "type": "spawn", "unit": "warden", "n": 10 }], "dormant": true } },
     { "spawn": "hearth", "tribe": 0, "at": [40, 152] },
@@ -60,7 +88,7 @@
     { "type": "worship", "site": "crown_reliquary", "after": 1, "text": "Claim the Reliquary in the crown with four followers before the north prays it away" },
     { "type": "victory", "fromStage": true, "after": 2, "text": "The hill counts now: keep more people in the crown than any rival for four minutes in all" },
     { "type": "destroy", "tribe": 2, "building": "signal_pyre", "after": 3, "text": "Put out both northern signal pyres that call their war bands" },
-    { "type": "destroy", "tribe": 1, "building": "hearth", "after": 4, "text": "Raze the eastern war tribe's Hearth" },
+    { "type": "destroy", "tribe": 1, "building": "hearth", "after": 4, "text": "Raze the eastern tribe's Hearth" },
     { "type": "destroy", "tribe": 2, "building": "hearth", "after": 5, "text": "Raze the northern tribe's Hearth" }
   ],
   "lose": [
@@ -112,7 +140,7 @@
       { "type": "spawn", "unit": "warden", "n": 8, "tribe": 1, "at": [150, 144], "stance": "defensive" },
       { "type": "message", "text": "You are king of the hill. Both rivals dig in behind posted guards; the north still lights its signal pyres." }
     ] },
-    { "when": { "type": "objective", "index": 4 }, "do": [{ "type": "message", "text": "The pyres are cold and the north falls quiet. Break the eastern war tribe first, then the north." }] },
+    { "when": { "type": "objective", "index": 4 }, "do": [{ "type": "message", "text": "The pyres are cold and the north falls quiet. Break the eastern tribe first, then the north." }] },
     { "when": { "type": "time", "seconds": 3200 }, "do": [{ "type": "message", "text": "Five minutes remain before the volcano buries the valley." }] }
   ]
 }

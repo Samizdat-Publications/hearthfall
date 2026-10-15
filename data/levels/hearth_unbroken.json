@@ -3,7 +3,7 @@
   "id": "hearth_unbroken",
   "name": "The Hearth Unbroken",
   "order": 35,
-  "description": "Three rival tribes share the great continent around the fire mountain. Take and hold the Heart Stone, burn the western Hearth, break the north eastern war bands, climb to the summit for the mountain's fire, then end every rival tribe.",
+  "description": "Three rival tribes share the great continent around the fire mountain. Take and hold the Heart Stone, burn the western Hearth, break the northeastern war bands, climb to the summit for the mountain's fire, then end every rival tribe.",
   "seed": 3535,
   "map": {
     "generator": "flat",
@@ -891,7 +891,7 @@
           },
           {
             "type": "message",
-            "text": "The summit answers. Volcano is yours, with two charges ready. Now end this war."
+            "text": "The summit answers. The Volcano returns, with two charges ready. Now end this war."
           }
         ]
       }
@@ -917,7 +917,7 @@
       "n": 20,
       "tribe": 2,
       "after": 1,
-      "text": "Break the north eastern war bands: kill twenty of their troops"
+      "text": "Break the northeastern war bands: kill 20 of their troops"
     },
     {
       "type": "worship",
@@ -1077,7 +1077,7 @@
         },
         {
           "type": "message",
-          "text": "The western Hearth is ash. North eastern war bands come round the mountain for your village. Break them."
+          "text": "The western Hearth is ash. Northeastern war bands come round the mountain for your village. Break them."
         }
       ]
     },
@@ -1135,7 +1135,7 @@
         },
         {
           "type": "message",
-          "text": "The north east is broken and the mountain stirs. Climb to the summit and pray at its Reliquary with six followers."
+          "text": "The northeast is broken and the mountain stirs. Climb to the summit and pray at its Reliquary with six followers."
         }
       ]
     },

@@ -88,5 +88,47 @@
     "h": 1400,
     "src": "tools/assets/raw/gemini/ui/pieces/volcano_corner.png",
     "sha256": "b4a73f790927790b3e0af2304588d268a8fa9deb9ebcf8bc08b7a06578873922"
+  },
+  "menu_button": {
+    "w": 1400,
+    "h": 313,
+    "src": "tools/assets/raw/gemini/ui/pieces/menu_button.png",
+    "sha256": "2d962e6632421486a990e3f83479ef033173e5c78538f2cbeccdba76ea5c688f"
+  },
+  "menu_button_primary": {
+    "w": 1400,
+    "h": 315,
+    "src": "tools/assets/raw/gemini/ui/pieces/menu_button_primary.png",
+    "sha256": "901bc55255c305155facd41fb6e27f2cd7b47a894bf436c92c19f66cd45dacaa"
+  },
+  "menu_frame": {
+    "w": 1030,
+    "h": 1400,
+    "src": "tools/assets/raw/gemini/ui/pieces/menu_frame.png",
+    "sha256": "0f6b79f3d4fc5a773e4437421c0b42d1fce9de88a1f16fe2ca594ea55cd568c3"
+  },
+  "map_ch1": {
+    "w": 1600,
+    "h": 679,
+    "src": "tools/assets/raw/gemini/ui/menu/map_ch1.png",
+    "sha256": "ac988e64f0a4c2d5acbffbb8e4c87fb52da125ded1d8ea35085b0eba280e3245"
+  },
+  "map_ch2": {
+    "w": 1600,
+    "h": 679,
+    "src": "tools/assets/raw/gemini/ui/menu/map_ch2.png",
+    "sha256": "af7d679364ce2feb126f3a4df93ec489c0dc1f787804e9c7a5a318fe906afbc8"
+  },
+  "map_ch3": {
+    "w": 1600,
+    "h": 679,
+    "src": "tools/assets/raw/gemini/ui/menu/map_ch3.png",
+    "sha256": "47fd0cd34df9d50eec5e7175358379c5692d94df75fb56bbfd759f676aa2e650"
+  },
+  "map_ch4": {
+    "w": 1600,
+    "h": 679,
+    "src": "tools/assets/raw/gemini/ui/menu/map_ch4_v2.png",
+    "sha256": "c2106c031ce24202240f6450a9c0b962aa3c40daa3848bac6e285a605e1f775a"
   }
 }

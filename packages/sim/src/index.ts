@@ -22,3 +22,4 @@ export { RulesRuntime, type RulesSaved, type VictoryDef } from "./rules.ts";
 export { FORGE_BRUSHES, FORGE_COMMANDS, ForgeRuntime, type ForgeBrush, type ForgeDef, type ForgeSaved } from "./forge.ts";
 export { runMatchup, type MatchupResult } from "./matchup.ts";
 export { VisionSystem, type VisionState } from "./vision.ts";
+export { denMarks, hazardMarks, hazardRadius, hazardSpecs, isHarmful, type DenMark, type HazardMark, type HazardSpec } from "./warnings.ts";

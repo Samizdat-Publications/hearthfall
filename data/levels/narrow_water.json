@@ -17,6 +17,25 @@
   "tribes": [{}],
   "spells": ["raise_land"],
   "buildings": ["dwelling"],
+  "props": [
+    { "model": "prop.woodpile", "at": [23, 25], "rot": 4.5 },
+    { "model": "prop.haystack", "at": [9, 37], "rot": 4 },
+    { "model": "prop.pots", "at": [25, 37], "rot": 2.6 },
+    { "model": "prop.cart", "at": [27, 37], "rot": 0.7 },
+    { "model": "prop.fence", "at": [9, 27], "rot": 1.2 },
+    { "model": "prop.fence", "at": [26, 35], "rot": 0.4 },
+    { "model": "prop.log_a", "at": [16, 22], "rot": 0.6 },
+    { "model": "prop.bush_a", "at": [23, 23], "rot": 1.9 },
+    { "model": "prop.standing_stone", "at": [41, 30], "rot": 0.5 },
+    { "model": "prop.standing_stone", "at": [51, 30], "rot": 2.1 },
+    { "model": "prop.standing_stone", "at": [46, 37], "rot": 1.3 },
+    { "model": "prop.flowers", "at": [51, 35], "rot": 5.6 },
+    { "model": "prop.cairn", "at": [53, 30], "rot": 0.5 },
+    { "model": "prop.mushroom_ring", "at": [42, 36], "rot": 0.6 },
+    { "model": "prop.reeds", "at": [30, 27], "rot": 5.7 },
+    { "model": "prop.reeds", "at": [29, 39], "rot": 1.7 },
+    { "model": "prop.reeds", "at": [53, 39], "rot": 5.9 }
+  ],
   "setup": [
     { "spawn": "hearth", "tribe": 0, "at": [14, 32] },
     { "spawn": "shaper", "tribe": 0, "at": [17, 30] },
@@ -44,10 +63,10 @@
   ],
   "lose": [{ "type": "timeLimit", "seconds": 900 }],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "charges", "spell": "raise_land", "n": 2 }, { "type": "message", "text": "Walk the Shaper to the eastern shore of the island." }] },
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "charges", "spell": "raise_land", "n": 2 }, { "type": "message", "text": "Walk the Shaper to the eastern shore. Press S to select her, then right-click to move. Select followers and right-click the shrine to pray." }] },
     { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "message", "text": "Now plan two dwellings near the Hearth. Settlers chop wood and build them." }] },
     { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "message", "text": "Dwellings breed new followers. Keep them stocked with wood and wait for the tribe to grow." }] },
-    { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "awaken", "site": "far_shrine" }, { "type": "reveal", "at": [46, 32], "r": 10 }, { "type": "message", "text": "The shrine across the strait is waking. Raise Land from the shore, then send three followers." }] },
+    { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "awaken", "site": "far_shrine" }, { "type": "reveal", "at": [46, 32], "r": 10 }, { "type": "message", "text": "The shrine across the strait is waking. Raise Land from the shore, then select three followers and right-click the shrine to pray." }] },
     { "when": { "type": "time", "seconds": 420 }, "do": [{ "type": "message", "text": "Strait still open? Raise Land recharges from your mana; cast it from the very edge of the shore." }] },
     { "when": { "type": "time", "seconds": 720 }, "do": [{ "type": "message", "text": "Three minutes remain. If you are stuck, restart the level from the pause menu." }] }
   ],

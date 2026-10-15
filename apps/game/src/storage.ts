@@ -63,7 +63,7 @@ export const MINIATURE = ["default", "on", "off"] as const;
  * (style.json render.pixelScale); both keep the palette, dither and miniature focus */
 export const PIXEL_LOOK = ["crisp", "retro"] as const;
 /** BACKLOG 14: lighting presets ("default" follows style.json lightingDefault) and visual weather */
-export const LIGHTING = ["default", "day", "golden", "evening"] as const;
+export const LIGHTING = ["default", "day", "golden", "evening", "night"] as const;
 export const WEATHER = ["clear", "rain"] as const;
 /** render polish: health bars over units and buildings (only when damaged, always, or off; key L cycles them) */
 export const HEALTH_BARS = ["damaged", "always", "off"] as const;

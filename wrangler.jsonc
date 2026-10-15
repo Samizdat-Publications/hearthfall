@@ -1,0 +1,7 @@
+// BACKLOG 17: static web deploy of the production build (Cloudflare Workers static assets).
+// Deploy only with Stewart's go-ahead: npm run build, then npx wrangler deploy (see docs/DEPLOY.md).
+{
+  "name": "hearthfall",
+  "compatibility_date": "2026-10-01",
+  "assets": { "directory": "./apps/game/dist" }
+}

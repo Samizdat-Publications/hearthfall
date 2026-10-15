@@ -192,3 +192,39 @@
 .briefing-obj.done { color: var(--ui-moss); }
 .briefing-msgs { display: flex; flex-direction: column; gap: 6px; }
 .briefing-msg { margin: 0; padding: 6px 10px; font-size: 15px; line-height: 1.4; white-space: normal; background: rgba(0, 0, 0, 0.22); border-left: 4px solid var(--ui-ember); border-radius: 0 3px 3px 0; }
+/* BACKLOG 17: build tag under the main menu buttons */
+.menu-build { margin: 2px 0 0; font-size: 12px; color: #a99c86; opacity: 0.8; letter-spacing: 0.04em; }
+
+/* S4 menus v3 "Ember Grove": the painted HUD family on every menu (docs/design/hud-v3.md). The frame and the
+   buttons are 9-slice border images (--art-* from apps/game/src/hudArt.ts). The real border width matches the
+   painted stone band, so a long panel scrolls inside the frame instead of over it; the side panels (map editor, replay
+   bar) keep the carved hearthstone look. The slices keep the corner feathers, ropes and vines whole. */
+.menu-panel:not(.editor-panel):not(.replay-bar) { background: none; border-radius: 0; box-shadow: none; border-style: solid; border-color: transparent; border-width: 44px 38px 54px 38px; border-image: var(--art-menu-frame) 380 170 330 170 fill / 122px 54px 106px 54px stretch; padding: 14px 26px 6px; scrollbar-width: thin; scrollbar-color: #9a7748 transparent; }
+.menu-main { width: 470px; }
+.menu-setup { width: 600px; }
+.menu-saves { width: 660px; }
+.menu-settings { width: 940px; }
+.menu-campaign { width: 800px; }
+.menu-briefing { width: min(700px, calc(100vw - 32px)); }
+.menu-records { width: min(940px, calc(100vw - 32px)); }
+.menu-howto { width: min(980px, calc(100vw - 32px)); }
+.menu-btn { border: 0 solid transparent; border-radius: 0; background: none; box-shadow: none; border-image: var(--art-menu-button) 70 100 60 100 fill / 11px 16px 10px 16px stretch; padding: 11px 22px; }
+.menu-btn.primary { background: none; box-shadow: none; border-image: var(--art-menu-button-primary) 70 100 60 100 fill / 11px 16px 10px 16px stretch; color: #fff1d8; }
+.menu-btn:hover:not(:disabled), .menu-btn.primary:hover:not(:disabled) { background: none; filter: brightness(1.18) saturate(1.1); }
+.menu-btn:active:not(:disabled) { filter: brightness(0.92); transform: translateY(1px); }
+.route { background-color: #2f4527; background-size: cover; background-position: center; }
+.route.ch-0 { background-image: var(--art-map-ch1); }
+.route.ch-1 { background-image: var(--art-map-ch2); }
+.route.ch-2 { background-image: var(--art-map-ch3); }
+.route.ch-3 { background-image: var(--art-map-ch4); }
+.route-seg { stroke: #f4e6c8; stroke-width: 3px; opacity: 0.8; filter: drop-shadow(0 0 1.5px #14110e); }
+.route-seg.won { stroke: #ffcf7a; opacity: 1; }
+
+/* short windows (720p): the painted frame costs height, so the main menu packs tighter and the title art goes wide */
+@media (max-height: 800px) {
+  .menu-panel:not(.editor-panel):not(.replay-bar) { padding: 4px 22px 0; }
+  .menu-main { gap: 6px; }
+  .menu-main .menu-btn { min-height: 34px; padding: 6px 14px; }
+  .menu-main .menu-art { aspect-ratio: 3 / 1; }
+  .menu-main .menu-tag { margin: 0 0 2px; }
+}

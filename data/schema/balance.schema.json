@@ -1217,6 +1217,23 @@
       ],
       "additionalProperties": false
     },
+    "hazards": {
+      "type": "object",
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "warnSeconds": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 60
+        }
+      },
+      "required": [
+        "warnSeconds"
+      ],
+      "additionalProperties": false
+    },
     "skirmishWorship": {
       "type": "object",
       "properties": {

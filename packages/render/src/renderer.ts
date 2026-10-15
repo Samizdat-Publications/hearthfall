@@ -33,6 +33,7 @@ import { WorshipLayer } from "./worshipLayer.ts";
 import { VfxLayer } from "./vfx.ts";
 import { buildingUnder, HealthBarLayer, HoverRing, relationOf, unitUnder, type HealthBarMode, type Relation } from "./overlays.ts";
 import { AmbientLayer, glintFor, hearthFlicker, resolveAmbient } from "./ambient.ts";
+import { MarkerLayer, resolveMarkers } from "./markers.ts";
 import { RetroPass, resolveTilt } from "./retro.ts";
 import { applyModelFixes, loadModels, type ModelLoadReport, type ModelParts } from "./models.ts";
 
@@ -154,6 +155,8 @@ export class ThreeRenderer implements Renderer {
   readonly healthBars: HealthBarLayer;
   readonly hoverRing: HoverRing;
   readonly ambient: AmbientLayer;
+  /** chapter 4 prep: wolf den pins, clearDens beacons and the neutral hazard ring with its countdown (style render.markers) */
+  readonly markers: MarkerLayer;
   /** photo mode (the app sets it): no health bars and no hover ring */
   hideOverlays = false;
   /** cursor in CSS pixels over the canvas, or null (the app sets it from its mousemove) */
@@ -355,6 +358,8 @@ export class ThreeRenderer implements Renderer {
     this.scene.add(this.hoverRing.mesh);
     this.ambient = new AmbientLayer(this.bend, resolveAmbient(rs?.ambient));
     this.scene.add(this.ambient.group);
+    this.markers = new MarkerLayer(this.bend, resolveMarkers(rs?.markers));
+    this.scene.add(this.markers.group);
     this.sky = space
       ? makeSpaceSky(space.top, space.horizon, space.stars)
       : makeSky(L.skyTop, L.skyHorizon);
@@ -875,6 +880,7 @@ export class ThreeRenderer implements Renderer {
       else
         this.healthBars.update(w, this.units, this.buildings, this.view, r.distance, this.cam.zoom, this.viewTribe, this.revealFog);
       this.updateHover(w);
+      this.markers.update(w, visualTime, fx, fz, this.palette.heightScale, this.view, r.distance, this.cam.zoom, this.viewTribe, this.revealFog, this.alpha, this.hideOverlays);
       this.ambient.update(
         w,
         visualTime,

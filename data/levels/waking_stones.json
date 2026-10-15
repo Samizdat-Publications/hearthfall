@@ -3,7 +3,7 @@
   "id": "waking_stones",
   "name": "The Waking Stones",
   "order": 14,
-  "description": "Old stones sleep under these islands, and wolves guard two of them. Pray at one and the next wakes. Clear both dens, follow the chain to the Reliquary before the eastern priests do, take their ley on the middle island and hold three stones against their priests, then break the tribe in the east.",
+  "description": "Old stones sleep under these islands, and wolves guard two of them. Pray at one and the next wakes. Clear both dens, follow the chain to the Reliquary before the eastern worshippers do, take their ley on the middle island and hold three stones against them, then break the tribe in the east.",
   "seed": 1414,
   "map": {
     "generator": "flat",
@@ -70,6 +70,33 @@
     "dwelling",
     "watchtower",
     "warden_lodge"
+  ],
+  "props": [
+    { "model": "prop.woodpile", "at": [17, 72], "rot": 4.7 },
+    { "model": "prop.haystack", "at": [17, 57], "rot": 4.1 },
+    { "model": "prop.fence", "at": [15, 65], "rot": 1.6 },
+    { "model": "prop.pots", "at": [18, 67], "rot": 5.2 },
+    { "model": "prop.cairn", "at": [112, 57], "rot": 1.3 },
+    { "model": "prop.woodpile", "at": [113, 70] },
+    { "model": "prop.fence", "at": [112, 73], "rot": 0.4 },
+    { "model": "prop.standing_stone", "at": [39, 62], "rot": 0.5 },
+    { "model": "prop.standing_stone", "at": [45, 62], "rot": 2.1 },
+    { "model": "prop.standing_stone", "at": [42, 69], "rot": 1.3 },
+    { "model": "prop.standing_stone", "at": [58, 65], "rot": 0.5 },
+    { "model": "prop.standing_stone", "at": [70, 67], "rot": 2.1 },
+    { "model": "prop.standing_stone", "at": [62, 71], "rot": 1.3 },
+    { "model": "prop.ruin_a", "at": [57, 40], "rot": 0.2 },
+    { "model": "prop.ruin_a", "at": [67, 39], "rot": 1.1 },
+    { "model": "prop.cairn", "at": [63, 47], "rot": 4.4 },
+    { "model": "prop.standing_stone", "at": [61, 36], "rot": 0.9 },
+    { "model": "prop.standing_stone", "at": [25, 52] },
+    { "model": "prop.standing_stone", "at": [16, 59], "rot": 3.1 },
+    { "model": "prop.fence", "at": [30, 79] },
+    { "model": "prop.standing_stone", "at": [60, 62] },
+    { "model": "prop.reeds", "at": [14, 72], "rot": 2.6 },
+    { "model": "prop.fern", "at": [17, 61], "rot": 3 },
+    { "model": "prop.bush_a", "at": [35, 68], "rot": 5.8 },
+    { "model": "prop.fern", "at": [100, 52], "rot": 5.3 }
   ],
   "setup": [
     {
@@ -418,7 +445,7 @@
       "n": 3,
       "seconds": 165,
       "after": 3,
-      "text": "Take the eastern ley on the middle island, then hold it and both home stones at once for two minutes and 45 seconds while their priests try to pray them away"
+      "text": "Take the eastern ley on the middle island, then hold it and both home stones at once for 2 minutes 45 seconds while their worshippers try to pray them away"
     },
     {
       "type": "eliminateAll",
@@ -452,7 +479,7 @@
       "do": [
         {
           "type": "message",
-          "text": "Walk your Shaper to the stone on the eastern shore and order it to worship."
+          "text": "Walk your Shaper to the stone on the eastern shore, then select her and right-click it to worship."
         }
       ]
     },
@@ -504,7 +531,7 @@
       "do": [
         {
           "type": "message",
-          "text": "Take the eastern ley on the middle island and hold all three stones for two minutes and 45 seconds."
+          "text": "Take the eastern ley on the middle island and hold all three stones for 2 minutes 45 seconds."
         }
       ]
     },
@@ -516,7 +543,7 @@
       "do": [
         {
           "type": "message",
-          "text": "The eastern tribe is gathering. Its war band and priests come within two minutes."
+          "text": "The eastern tribe is gathering. Its war band and worshippers come within two minutes."
         }
       ]
     },
@@ -585,7 +612,7 @@
         },
         {
           "type": "message",
-          "text": "Their war band marches on your Hearth, and their priests now seek the stones, the shrine and the Reliquary."
+          "text": "Their war band marches on your Hearth, and their worshippers now seek the stones, the shrine and the Reliquary."
         }
       ]
     },

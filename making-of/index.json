@@ -1510,6 +1510,36 @@
       "when": "2026-10-13T04:20:31.539Z",
       "source": "external:w_2560_many.png",
       "bytes": 301664
+    },
+    {
+      "file": "s4/20261015-2225_contact-shadows.png",
+      "milestone": "S4",
+      "kind": "comparison",
+      "caption": "Look v4: soft contact shadows ground every tree, rock, prop, hut and follower (left before, right after); one blob per caster, no shadow maps",
+      "highlight": false,
+      "when": "2026-10-15T22:25:41.363Z",
+      "source": "external:shadows_before_after.png",
+      "bytes": 1167778
+    },
+    {
+      "file": "s4/20261015-2226_menu-art-sheet.png",
+      "milestone": "S4",
+      "kind": "asset-sheet",
+      "caption": "Menu art pieces for the Ember Grove menus restyle",
+      "highlight": false,
+      "when": "2026-10-15T22:26:39.372Z",
+      "source": "external:menu_art_sheet.png",
+      "bytes": 2836589
+    },
+    {
+      "file": "s4/20261015-2240_menus-v3-before-after.png",
+      "milestone": "S4",
+      "kind": "comparison",
+      "caption": "Menus v3: the old carved stone menus (left) and the Ember Grove painted frame, buttons and chapter route map (right)",
+      "highlight": true,
+      "when": "2026-10-15T22:40:33.487Z",
+      "source": "external:menus-v3-before-after.png",
+      "bytes": 943954
     }
   ]
 }

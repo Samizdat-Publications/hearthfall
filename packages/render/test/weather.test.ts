@@ -9,13 +9,16 @@ describe("lighting presets and weather", () => {
   const presets = style.lightingPresets!;
   const rain = style.weather!.rain;
 
-  it("ships day, golden and evening with golden as the default", () => {
-    expect(Object.keys(presets).sort()).toEqual(["day", "evening", "golden"]);
+  it("ships day, golden, evening and night with golden as the default", () => {
+    expect(Object.keys(presets).sort()).toEqual(["day", "evening", "golden", "night"]);
     expect(style.lightingDefault).toBe("golden");
     // evening is dimmer than golden with a brighter hearth, day is the brightest
     expect(presets.evening.keyIntensity).toBeLessThan(presets.golden.keyIntensity);
     expect(presets.evening.hearthGlow).toBeGreaterThan(presets.golden.hearthGlow);
     expect(presets.day.keyIntensity).toBeGreaterThan(presets.golden.keyIntensity);
+    // night is the darkest key light with the brightest hearth, so the fires carry the village
+    expect(presets.night.keyIntensity).toBeLessThan(presets.evening.keyIntensity);
+    expect(presets.night.hearthGlow).toBeGreaterThan(presets.evening.hearthGlow);
   });
 
   it("falls back to the default preset and folds rain dimming in", () => {

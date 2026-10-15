@@ -29,6 +29,7 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 - (none)
 
 ## Cuts and deferrals
+- Key names in help text (S4, 2026-10-15): How to play, the first match tips and a few level hints name the default keys (D, T, Z, A, H, S) instead of reading the keymap, so they go stale only if a player rebinds a key. Deferred: it needs a `{key:action}` substitution in the UI text and the level hint renderer; worth doing with chapter 4's text pass.
 - L6-C deferred (S4, 2026-10-11): "an attack wave leaves a vehicle home for worship trips" and "destroyTarget off the home landmass" (both AI vehicle logistics; no level needs them after the fix round's data changes). `keepRaiders` ships off by default: on for every rival it reshaped Ember Crown, Ley Crown and Stolen Stones.
 - BACKLOG 20 (WebGPU renderer, P2) cut in stretch 2 (10/10/2026): the curved planet is a GLSL `onBeforeCompile` injection on every material (curve.ts) and the retro, terrain, weather and renderer passes are custom ShaderMaterials (5 files); three r186 WebGPURenderer supports neither, so the port is a TSL rewrite of the whole look, and its QA would be headed only. The WebGL2 path holds its budgets (bench:render median about 4 ms CPU at 2560x1440). Revisit only if a GPU bound shows up.
 - BACKLOG 5a (rigged clips, P1 but conditional: "only if close-zoom quality needs it"). Cut 10/09/2026: at the closest camera zoom with the retro pass (pixelScale 3) units are about 60 to 90 screen px tall and the procedural poses (walk, work, attack, shoot, cast, pray, panic, idle) read clearly in the combat anim_gallery shot, so the condition is not met; Meshy rigging would also spend asset budget for little visible gain. Revisit if a close-up or portrait camera ships (ADR-012 fallback stays valid: same instanceAnim attribute).
@@ -83,11 +84,9 @@ Two computers or a group session: see `docs/PLAYTEST.md` (LAN setup, what to try
 - Full qa passes and about 130 headless AI matches run clean: no stuck units, no crashes, no drift.
 - What it cannot tell you is whether it is fun, how fast a real match feels, and whether the spells feel strong enough. That is what this playtest is for.
 
-**Start it**
-```
-cd C:\Users\stewa\Documents\Claude\Hearthfall
-npm run build
-npm run serve
+**Start it** (Windows PowerShell, one line)
+```powershell
+cd "C:\Users\stewa\Documents\Claude\Hearthfall"; npm run build; npm run serve
 ```
 Then open http://127.0.0.1:5182/ in Chrome or Edge, and press Ctrl+C in that window when you are done. A full screen window at 1920x1080 or larger looks best. Interface size is in Settings.
 

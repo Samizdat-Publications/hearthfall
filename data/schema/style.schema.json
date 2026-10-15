@@ -1164,6 +1164,147 @@
           },
           "additionalProperties": false
         },
+        "markers": {
+          "type": "object",
+          "properties": {
+            "$comment": {
+              "type": "string"
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "maxZoom": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "refDistance": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "minScale": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 4
+            },
+            "maxScale": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 8
+            },
+            "den": {
+              "type": "object",
+              "properties": {
+                "color": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                },
+                "size": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 8
+                },
+                "lift": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 8
+                },
+                "bob": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 2
+                },
+                "bobRate": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ringRadius": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 16
+                },
+                "ringColor": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                },
+                "ringWidth": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 2
+                }
+              },
+              "additionalProperties": false
+            },
+            "beacon": {
+              "type": "object",
+              "properties": {
+                "color": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                },
+                "height": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 64
+                },
+                "width": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 8
+                },
+                "ringRadius": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 24
+                },
+                "pulse": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "additionalProperties": false
+            },
+            "hazard": {
+              "type": "object",
+              "properties": {
+                "color": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                },
+                "fillColor": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                },
+                "width": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 2
+                },
+                "segments": {
+                  "type": "integer",
+                  "minimum": 12,
+                  "maximum": 96
+                },
+                "digitSize": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 8
+                },
+                "digitLift": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 16
+                },
+                "pulse": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
         "ambient": {
           "type": "object",
           "properties": {
@@ -1557,6 +1698,105 @@
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 1024
+                }
+              },
+              "additionalProperties": false
+            },
+            "volcano": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "minAboveSea": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "puffs": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 24
+                },
+                "period": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "rise": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "drift": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "wind": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "number"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "size": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 4
+                },
+                "grow": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "color": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                },
+                "topColor": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                },
+                "opacity": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "glowRadius": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 16
+                },
+                "glowColor": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                },
+                "glowIntensity": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 4
+                },
+                "pulse": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "pulseRate": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "max": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1024
+                },
+                "vents": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 32
                 }
               },
               "additionalProperties": false

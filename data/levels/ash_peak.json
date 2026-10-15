@@ -3,7 +3,7 @@
   "id": "ash_peak",
   "name": "The Ash Peak",
   "order": 26,
-  "description": "A sleeping volcano rises from the middle of a green island, and a war tribe holds its northern shore. Climb to the summit altar to learn the Volcano, raise watchtowers on the slope, break the raiders who come over the mountain and burn their Hearth.",
+  "description": "A sleeping volcano rises from the middle of a green island, and a rival tribe holds its northern shore. Climb to the summit altar to call back the Volcano, raise watchtowers on the slope, break the raiders who come over the mountain and burn their Hearth.",
   "seed": 2626,
   "map": {
     "generator": "flat",
@@ -88,7 +88,7 @@
     { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "The Ash Peak smokes above your landing. Take wardens up the slope, past the wolves, and kneel at the summit altar before the north does." }] },
     { "when": { "type": "objective", "index": 0 }, "do": [
       { "type": "reveal", "at": [64, 40], "r": 22 },
-      { "type": "message", "text": "The altar teaches you the Volcano and the craft of the Watchtower. From the top you see the northern war camp." }
+      { "type": "message", "text": "The altar returns the Volcano and teaches you the craft of the Watchtower. From the top you see the northern war camp." }
     ] },
     { "when": { "type": "objective", "index": 1 }, "do": [
       { "type": "spawn", "unit": "warden", "n": 6, "tribe": 1, "at": [64, 36] },

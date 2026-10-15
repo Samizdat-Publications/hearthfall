@@ -132,6 +132,34 @@
     "boathouse",
     "mending_hut"
   ],
+  "props": [
+    { "model": "prop.woodpile", "at": [25, 136], "rot": 5.3 },
+    { "model": "prop.haystack", "at": [24, 120], "rot": 2.7 },
+    { "model": "prop.fence", "at": [22, 129], "rot": 1.6 },
+    { "model": "prop.pots", "at": [26, 131], "rot": 5.8 },
+    { "model": "prop.cairn", "at": [216, 49], "rot": 0.7 },
+    { "model": "prop.woodpile", "at": [219, 60], "rot": 4.5 },
+    { "model": "prop.cairn", "at": [219, 195], "rot": 3.6 },
+    { "model": "prop.woodpile", "at": [217, 206], "rot": 3.9 },
+    { "model": "prop.cairn", "at": [58, 130], "rot": 1.7 },
+    { "model": "prop.standing_stone", "at": [62, 122], "rot": 1.6 },
+    { "model": "prop.standing_stone", "at": [90, 125], "rot": 0.5 },
+    { "model": "prop.standing_stone", "at": [100, 125], "rot": 2.1 },
+    { "model": "prop.standing_stone", "at": [86, 131] },
+    { "model": "prop.standing_stone", "at": [138, 122], "rot": 0.5 },
+    { "model": "prop.standing_stone", "at": [138, 129], "rot": 1.3 },
+    { "model": "prop.mushroom_ring", "at": [138, 134], "rot": 6.2 },
+    { "model": "prop.ruin_a", "at": [230, 123], "rot": 0.2 },
+    { "model": "prop.ruin_a", "at": [239, 127], "rot": 1.1 },
+    { "model": "prop.cairn", "at": [236, 129], "rot": 5.3 },
+    { "model": "prop.fence", "at": [237, 132] },
+    { "model": "prop.reeds", "at": [82, 119], "rot": 4.2 },
+    { "model": "prop.reeds", "at": [102, 119], "rot": 5.6 },
+    { "model": "prop.reeds", "at": [86, 140], "rot": 2.8 },
+    { "model": "prop.log_a", "at": [31, 113], "rot": 0.6 },
+    { "model": "prop.fern", "at": [29, 151], "rot": 2.4 },
+    { "model": "prop.bush_a", "at": [221, 45], "rot": 5.3 }
+  ],
   "setup": [
     {
       "spawn": "hearth",
@@ -687,7 +715,7 @@
       "do": [
         {
           "type": "message",
-          "text": "Walk your Shaper to the totem on the eastern shore and order it to worship."
+          "text": "Walk your Shaper to the totem on the eastern shore, then select her and right-click it to worship."
         }
       ]
     },

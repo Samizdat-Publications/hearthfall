@@ -4,12 +4,14 @@
 // sim state (hashed and snapshotted), so a replay of a level proves the same win or loss.
 import type { LevelDef, PackFiles } from "@hearthfall/data";
 import { registerCommand } from "./commands.ts";
+import { secondsToTicks } from "./config.ts";
 import { BSTATE } from "./economy.ts";
 import { CAT } from "./entities.ts";
 import type { Fnv } from "./hash.ts";
 import { wrapDelta } from "./terrain.ts";
 import type { MapSpec } from "./generator.ts";
 import { applySetup, type BotFactory } from "./scenario.ts";
+import { hazardSpecs, type HazardSpec } from "./warnings.ts";
 import { applyReward } from "./worship.ts";
 import { World, type WorldInit } from "./world.ts";
 
@@ -64,6 +66,8 @@ export class LevelRuntime {
   startAt: number[];
   /** S4 L7-E: some trigger waits for an objective (`after`), so startAt is state */
   readonly gated: boolean;
+  /** chapter 4 prep: the neutral (tribe -1) harmful spells of time triggers, which warn before they land (balance.hazards) */
+  readonly hazards: HazardSpec[];
   /** building types every tribe may build in this level (null: all) */
   readonly allowed: Set<number> | null;
   /** S4 L6-C: per tribe, its own `buildings` list in place of `allowed` (undefined: the level's) */
@@ -105,6 +109,7 @@ export class LevelRuntime {
     this.fired = (def.triggers ?? []).map(() => 0);
     this.startAt = (def.triggers ?? []).map(() => -1);
     this.gated = (def.triggers ?? []).some((t) => t.after !== undefined);
+    this.hazards = hazardSpecs(def, w);
     this.holdSince = def.objectives.map(() => -1);
     this.openedAt = def.objectives.map(() => -1);
     this.base = def.objectives.map(() => 0);
@@ -237,6 +242,61 @@ export class LevelRuntime {
     return after === undefined || this.done[after] === 1;
   }
 
+  /**
+   * Chapter 4 prep: the window of a neutral hazard's next firing, in play ticks. The warning opens at `from` (the
+   * tick count after the step that emits `hazardWarn`) and the spell lands at `at` (the tick count after the step
+   * that casts it). Null when its trigger can no longer fire or there is no room for a warning. Pure over the
+   * level state, so a view can ask it every frame and a loaded game still shows the warning.
+   */
+  hazardWindow(h: HazardSpec): { from: number; at: number } | null {
+    const t = this.def.triggers?.[h.trigger];
+    if (!t || t.when.type !== "time") return null;
+    const k = h.trigger;
+    const every = t.when.every ?? 0;
+    if (this.fired[k] && t.when.every === undefined) return null;
+    if (t.until !== undefined && this.done[t.until]) return null;
+    let t0 = 0;
+    if (t.after !== undefined) {
+      if (!this.done[t.after] || this.startAt[k] < 0) return null;
+      t0 = this.startAt[k];
+    }
+    const hz = this.w.cfg.tickHz;
+    const lead = secondsToTicks(this.w.cfg.pack.balance.hazards?.warnSeconds ?? 0, hz);
+    const at = t0 + Math.round((t.when.seconds + this.fired[k] * every) * hz);
+    // never before the previous firing (a short `every` keeps the warning open between casts) or the first tick
+    const prev = this.fired[k] > 0 ? t0 + Math.round((t.when.seconds + (this.fired[k] - 1) * every) * hz) : t0;
+    const from = Math.max(at - lead, prev + 1);
+    return from < at ? { from, at } : null;
+  }
+
+  /** Where a hazard lands (its own target, else the trigger's anchor: the player's Hearth, Shaper or the map center), written into `out`. */
+  hazardAt(h: HazardSpec, out: [number, number]): [number, number] {
+    if (h.at) {
+      out[0] = h.at[0];
+      out[1] = h.at[1];
+      return out;
+    }
+    const w = this.w;
+    let i = w.ents.index(w.tribes[PLAYER].hearth);
+    if (i < 0) i = w.ents.index(w.tribes[PLAYER].shaper);
+    out[0] = i >= 0 ? w.ents.x[i] : w.terrain.size / 2;
+    out[1] = i >= 0 ? w.ents.y[i] : w.terrain.size / 2;
+    return out;
+  }
+
+  private readonly hazardPoint: [number, number] = [0, 0];
+
+  /** The tick a hazard's warning opens: one `hazardWarn` event (audio cue, HUD note). The ring itself is drawn from hazardWindow. */
+  private warnHazards(): void {
+    const w = this.w;
+    for (const h of this.hazards) {
+      const win = this.hazardWindow(h);
+      if (!win || w.playTick + 1 !== win.from) continue;
+      const [x, y] = this.hazardAt(h, this.hazardPoint);
+      w.emit("hazardWarn", { tribe: -1, spell: h.spell, x, y, r: h.r, seconds: (win.at - win.from) / w.cfg.tickHz, impact: win.at });
+    }
+  }
+
   private lost(): string | null {
     const w = this.w;
     if (!w.tribes[PLAYER].alive) return "eliminated";
@@ -329,6 +389,7 @@ export class LevelRuntime {
         applyReward(w, tribe, r, x, y, spawned);
       }
     });
+    if (this.hazards.length) this.warnHazards();
     if (this.done.every((d) => d === 1)) this.finish(OUTCOME.won, "objectives");
     else {
       const why = this.lost();

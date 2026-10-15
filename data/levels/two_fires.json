@@ -19,6 +19,33 @@
   },
   "tribes": [{}, { "ai": "turtle", "difficulty": "normal", "maxTroops": 4, "worshipAfterSeconds": 180 }, { "ai": "aggressive", "difficulty": "normal", "maxTroops": 8, "worshipAfterSeconds": 240 }],
   "spells": ["bolt", "raise_land", "lightning"],
+  "props": [
+    { "model": "prop.woodpile", "at": [17, 88], "rot": 0.3 },
+    { "model": "prop.haystack", "at": [15, 72], "rot": 3.3 },
+    { "model": "prop.fence", "at": [14, 81], "rot": 1.6 },
+    { "model": "prop.pots", "at": [17, 83], "rot": 0.1 },
+    { "model": "prop.cairn", "at": [138, 25], "rot": 3.1 },
+    { "model": "prop.woodpile", "at": [139, 38], "rot": 1.8 },
+    { "model": "prop.cairn", "at": [138, 120], "rot": 0.6 },
+    { "model": "prop.woodpile", "at": [139, 134], "rot": 0.6 },
+    { "model": "prop.mushroom_ring", "at": [57, 83], "rot": 2.9 },
+    { "model": "prop.flowers", "at": [49, 78], "rot": 3.4 },
+    { "model": "prop.standing_stone", "at": [69, 44] },
+    { "model": "prop.standing_stone", "at": [59, 44], "rot": 3.1 },
+    { "model": "prop.mushroom_ring", "at": [64, 50], "rot": 2.7 },
+    { "model": "prop.standing_stone", "at": [69, 116] },
+    { "model": "prop.standing_stone", "at": [59, 116], "rot": 3.1 },
+    { "model": "prop.mushroom_ring", "at": [64, 122], "rot": 1.8 },
+    { "model": "prop.standing_stone", "at": [97, 84] },
+    { "model": "prop.standing_stone", "at": [87, 84], "rot": 3.1 },
+    { "model": "prop.reeds", "at": [78, 44], "rot": 4.7 },
+    { "model": "prop.reeds", "at": [82, 68], "rot": 0.9 },
+    { "model": "prop.reeds", "at": [78, 92], "rot": 4.1 },
+    { "model": "prop.reeds", "at": [82, 116], "rot": 0.3 },
+    { "model": "prop.fern", "at": [15, 75], "rot": 0.9 },
+    { "model": "prop.bush_a", "at": [23, 94], "rot": 6 },
+    { "model": "prop.fern", "at": [130, 18], "rot": 1 }
+  ],
   "setup": [
     { "spawn": "hearth", "tribe": 0, "at": [26, 80] },
     { "spawn": "shaper", "tribe": 0, "at": [30, 77] },
@@ -56,7 +83,7 @@
     { "type": "worship", "site": "hill_seer", "text": "Pray at the seer stone on the hill to find the two fires" },
     { "type": "destroy", "tribe": 1, "building": "hearth", "after": 0, "text": "Take the northern fire first: burn the Hearth of the northern tribe" },
     { "type": "hold", "n": 2, "kind": "ley_stone", "seconds": 50, "after": 1, "text": "Hold two of the three ley stones at once for 50 seconds while the south tribe prays them away" },
-    { "type": "eliminateAll", "after": 2, "text": "The stones raise a war band at the centre: use it to defeat both rival tribes" }
+    { "type": "eliminateAll", "after": 2, "text": "The stones raise a war band at the center: use it to defeat both rival tribes" }
   ],
   "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 1600 }],
   "triggers": [

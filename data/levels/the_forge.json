@@ -3,7 +3,7 @@
   "id": "the_forge",
   "name": "The Forge",
   "order": 12,
-  "description": "Before the battle, both tribes reshape the land around their Hearths. Raise walls or dig a moat, then press Ready. Clear two wolf dens, hold three stones, win the hill seer stone, gain 30 more followers under the digger's raids, then cross its moat and raze its Hearth.",
+  "description": "Before the battle, both tribes reshape the land around their Hearths. Raise walls or dig a moat, then press Ready. Clear two wolf dens, hold three stones, win the hill seer stone, gain 30 more followers under the rival's raids, then cross its moat and raze its Hearth.",
   "seed": 1212,
   "map": {
     "generator": "flat",
@@ -20,6 +20,32 @@
   ],
   "forge": true,
   "spells": ["bolt", "raise_land", "lightning", "flatten"],
+  "props": [
+    { "model": "prop.woodpile", "at": [20, 90], "rot": 5 },
+    { "model": "prop.haystack", "at": [22, 72], "rot": 1.9 },
+    { "model": "prop.fence", "at": [20, 81], "rot": 1.6 },
+    { "model": "prop.pots", "at": [22, 79], "rot": 4.7 },
+    { "model": "prop.cart", "at": [28, 95], "rot": 0.7 },
+    { "model": "prop.cairn", "at": [136, 73], "rot": 1.1 },
+    { "model": "prop.woodpile", "at": [141, 86], "rot": 2.6 },
+    { "model": "prop.fence", "at": [141, 90], "rot": 0.4 },
+    { "model": "prop.standing_stone", "at": [51, 62] },
+    { "model": "prop.standing_stone", "at": [41, 62], "rot": 3.1 },
+    { "model": "prop.mushroom_ring", "at": [46, 68], "rot": 0.9 },
+    { "model": "prop.fence", "at": [46, 103] },
+    { "model": "prop.cairn", "at": [46, 93], "rot": 1.9 },
+    { "model": "prop.fence", "at": [80, 85] },
+    { "model": "prop.cairn", "at": [80, 75], "rot": 2.3 },
+    { "model": "prop.woodpile", "at": [75, 87], "rot": 1.8 },
+    { "model": "prop.woodpile", "at": [85, 87], "rot": 0.5 },
+    { "model": "prop.cart", "at": [87, 75], "rot": 1.2 },
+    { "model": "prop.pots", "at": [73, 75], "rot": 3.7 },
+    { "model": "prop.mushroom_ring", "at": [83, 39], "rot": 1.7 },
+    { "model": "prop.flowers", "at": [75, 34], "rot": 2.2 },
+    { "model": "prop.standing_stone", "at": [83, 31], "rot": 2.4 },
+    { "model": "prop.bush_a", "at": [28, 58], "rot": 0.5 },
+    { "model": "prop.fern", "at": [130, 95], "rot": 0.3 }
+  ],
   "setup": [
     { "spawn": "hearth", "tribe": 0, "at": [32, 80] },
     { "spawn": "shaper", "tribe": 0, "at": [35, 77] },
@@ -39,14 +65,14 @@
     { "spawn": "ley_stone", "at": [46, 62], "site": { "tag": "home_ley", "rewards": [{ "type": "message", "text": "The home ley pays mana while you hold it." }] } },
     { "spawn": "ward_stone", "at": [46, 98], "site": { "tag": "home_ward", "rewards": [{ "type": "message", "text": "The home ward guards your southern flank." }] } },
     { "spawn": "ward_stone", "at": [80, 80], "site": { "tag": "mid_ward", "rewards": [{ "type": "message", "text": "The middle ward commands the road to the moat." }], "dormant": true } },
-    { "spawn": "seer_stone", "at": [80, 36], "site": { "tag": "north_seer", "dormant": true, "rewards": [{ "type": "charges", "spell": "lightning", "n": 2 }, { "type": "message", "text": "The hill seer stone looks over the digger's moat." }] } }
+    { "spawn": "seer_stone", "at": [80, 36], "site": { "tag": "north_seer", "dormant": true, "rewards": [{ "type": "charges", "spell": "lightning", "n": 2 }, { "type": "message", "text": "The hill seer stone looks over the rival's moat." }] } }
   ],
   "objectives": [
     { "type": "clearDens", "n": 2, "text": "Clear both wolf dens on the plain" },
     { "type": "hold", "n": 3, "seconds": 60, "after": 0, "text": "Pray at the risen middle ward and hold all three stones at once for a minute" },
-    { "type": "worship", "site": "north_seer", "after": 1, "text": "Win the seer stone risen on the north hill before the digger does" },
-    { "type": "followers", "n": 30, "fromStage": true, "after": 2, "text": "Gain 30 more followers while the digger's war bands cross the plain" },
-    { "type": "destroy", "tribe": 1, "building": "hearth", "after": 3, "text": "Cross the moat, break the posted guards and raze the digger's Hearth" }
+    { "type": "worship", "site": "north_seer", "after": 1, "text": "Win the seer stone risen on the north hill before the rival does" },
+    { "type": "followers", "n": 30, "fromStage": true, "after": 2, "text": "Gain 30 more followers while the rival's war bands cross the plain" },
+    { "type": "destroy", "tribe": 1, "building": "hearth", "after": 3, "text": "Cross the moat, break the posted guards and raze the rival's Hearth" }
   ],
   "lose": [
     { "type": "hearthLost" },
@@ -54,10 +80,10 @@
   ],
   "triggers": [
     { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "The Forge is over. Flatten or Raise Land can bridge a moat. Wolves hold the central plain." }] },
-    { "when": { "type": "time", "seconds": 480, "every": 240 }, "do": [{ "type": "spawn", "unit": "warden", "n": 3, "tribe": 1, "at": [124, 80] }, { "type": "raid", "tribe": 1, "to": [32, 80], "n": 8 }, { "type": "message", "text": "The digger sends a war band across the plain." }] },
-    { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "awaken", "site": "mid_ward" }, { "type": "message", "text": "With the wolves gone, the middle ward rises on the plain. The digger wants it too." }] },
-    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "awaken", "site": "north_seer" }, { "type": "reveal", "at": [80, 36], "r": 8 }, { "type": "message", "text": "A seer stone rises on the north hill, as near the digger as it is to you." }] },
-    { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "spawn", "unit": "warden", "n": 6, "tribe": 1, "at": [110, 80] }, { "type": "raid", "tribe": 1, "to": [46, 98], "n": 10 }, { "type": "message", "text": "The digger answers the seer stone: a war band marches on your home ward." }] },
-    { "when": { "type": "objective", "index": 3 }, "do": [{ "type": "spawn", "unit": "warden", "n": 12, "tribe": 1, "at": [122, 80], "stance": "defensive" }, { "type": "message", "text": "The digger digs in: posted guards now ring its Hearth behind the moat." }] }
+    { "when": { "type": "time", "seconds": 480, "every": 240 }, "do": [{ "type": "spawn", "unit": "warden", "n": 3, "tribe": 1, "at": [124, 80] }, { "type": "raid", "tribe": 1, "to": [32, 80], "n": 8 }, { "type": "message", "text": "The rival sends a war band across the plain." }] },
+    { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "awaken", "site": "mid_ward" }, { "type": "message", "text": "With the wolves gone, the middle ward rises on the plain. The rival wants it too." }] },
+    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "awaken", "site": "north_seer" }, { "type": "reveal", "at": [80, 36], "r": 8 }, { "type": "message", "text": "A seer stone rises on the north hill, as near the rival as it is to you." }] },
+    { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "spawn", "unit": "warden", "n": 6, "tribe": 1, "at": [110, 80] }, { "type": "raid", "tribe": 1, "to": [46, 98], "n": 10 }, { "type": "message", "text": "The rival answers the seer stone: a war band marches on your home ward." }] },
+    { "when": { "type": "objective", "index": 3 }, "do": [{ "type": "spawn", "unit": "warden", "n": 12, "tribe": 1, "at": [122, 80], "stance": "defensive" }, { "type": "message", "text": "The rival digs in: posted guards now ring its Hearth behind the moat." }] }
   ]
 }

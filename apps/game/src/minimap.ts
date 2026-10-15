@@ -6,7 +6,7 @@
 // the local tribe cannot see (renderer.revealFog shows everything). BACKLOG 80: the footprint is clipped
 // to the terrain fade radius (half the world less 2), where drawing stops, so on small maps it never
 // reaches past the antipode and folds into a V across the wrap.
-import { CAT } from "@hearthfall/sim";
+import { CAT, denMarks, type DenMark, type World } from "@hearthfall/sim";
 import type { Game } from "./game.ts";
 import { pingRing } from "./alerts.ts";
 
@@ -185,6 +185,48 @@ function drawPings(game: Game, ctx: CanvasRenderingContext2D): void {
   ctx.globalAlpha = 1;
 }
 
+/** The slice of the 2D context the den icons use (tests pass a recorder). */
+export type DenCtx = Pick<CanvasRenderingContext2D, "beginPath" | "moveTo" | "lineTo" | "closePath" | "fill" | "stroke" | "arc" | "fillStyle" | "strokeStyle" | "lineWidth">;
+
+const denBuf: DenMark[] = [];
+
+/**
+ * Chapter 4 prep: a diamond over every standing wolf den the viewer has explored (everything with the fog revealed):
+ * red with a dark rim, gold with a ring for a den an open clearDens objective counts (shown even in the dark).
+ * Reads sim state only; returns how many dens were drawn. The icons grow with the map so they read at any size.
+ */
+export function drawDens(w: World, viewer: number, reveal: boolean, ctx: DenCtx, buf: DenMark[] = denBuf): number {
+  const n = denMarks(w, reveal ? null : viewer, buf);
+  const k = Math.max(1, w.terrain.size / 128);
+  for (let i = 0; i < n; i++) {
+    const d = buf[i];
+    const x = Math.floor(d.x);
+    const y = Math.floor(d.y);
+    const diamond = (r: number) => {
+      ctx.beginPath();
+      ctx.moveTo(x, y - r);
+      ctx.lineTo(x + r, y);
+      ctx.lineTo(x, y + r);
+      ctx.lineTo(x - r, y);
+      ctx.closePath();
+    };
+    if (d.beacon) {
+      ctx.lineWidth = Math.max(1.5, k);
+      ctx.strokeStyle = "#ffd23a";
+      ctx.beginPath();
+      ctx.arc(x, y, 6 * k, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.fillStyle = "rgba(13, 11, 9, 0.9)";
+    diamond(4 * k);
+    ctx.fill();
+    ctx.fillStyle = d.beacon ? "#ffd23a" : "#e2483a";
+    diamond(2.6 * k);
+    ctx.fill();
+  }
+  return n;
+}
+
 export function drawMinimap(game: Game, canvas: HTMLCanvasElement): void {
   const w = game.world;
   const n = w.terrain.size;
@@ -225,6 +267,7 @@ export function drawMinimap(game: Game, canvas: HTMLCanvasElement): void {
     ctx.fillStyle = tr ? game.tribePal[tr.color] ?? "#d9cbb0" : "#d9cbb0";
     ctx.fillRect(x - 1, y - 1, 3, 3);
   }
+  drawDens(w, viewer, reveal, ctx);
   drawPings(game, ctx);
   const pts = viewOutline(game);
   drawnViewKey = viewKey(game);

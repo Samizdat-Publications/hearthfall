@@ -4,7 +4,7 @@
 // M8: the game flow (main menu, skirmish, pause, saves, settings, end screen) is a `screen` here; the
 // sim only runs while no menu screen is up. menuBridge.ts turns this state into the menu view model.
 // M9: campaign levels (data/levels) run as sessions too; the level runtime decides the end.
-import { comboHint, leadInWarning, orderNote } from "./orderNotes.ts";
+import { comboHint, hazardNote, leadInWarning, orderNote } from "./orderNotes.ts";
 import { FirstMatchTips, type TipView } from "./tips.ts";
 import { AlertThrottle, alertCfg, alertText, castBlock, castBlockText, castFailedText, castHint, castOtherText, hostileHits, idleGroups, idleTroops, nextIdleGroup, rejectBlock, type AlertCfg, type Hit, type Ping } from "./alerts.ts";
 import type { SessionRole } from "./netGate.ts";
@@ -1698,7 +1698,13 @@ export class Game {
       }
       case "terrainLeadIn": {
         const n = leadInWarning(e, this.world, me);
-        if (n) this.notify(n.key, n.text, "bad", n.throttleSec);
+        if (n) this.notify(n.key, n.text, "bad", n.throttleSec, n.at);
+        break;
+      }
+      case "hazardWarn": {
+        // chapter 4 prep: a neutral level hazard opened its warning (the ring and countdown are drawn by the renderer)
+        const n = hazardNote(e);
+        if (n) this.notify(n.key, n.text, "bad", n.throttleSec, n.at);
         break;
       }
       case "castFailed":

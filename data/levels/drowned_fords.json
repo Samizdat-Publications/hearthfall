@@ -3,7 +3,7 @@
   "id": "drowned_fords",
   "name": "The Drowned Fords",
   "order": 17,
-  "description": "A river delta of six islands joined by sand fords that drown and drain by turns. Seize the ford ward and keep it, pray away the sneaky ley stones to raise a causeway, burn the sneaky Hearth, take the southern seer for a second causeway, then break the war tribe.",
+  "description": "A river delta of six islands joined by sand fords that drown and drain by turns. Seize the ford ward and keep it, pray away the northeastern ley stones to raise a causeway, burn the northeastern Hearth, take the southern seer for a second causeway, then break the southeastern tribe.",
   "seed": 1717,
   "map": {
     "generator": "flat",
@@ -162,6 +162,33 @@
     "dwelling",
     "watchtower",
     "warden_lodge"
+  ],
+  "props": [
+    { "model": "prop.woodpile", "at": [19, 104], "rot": 3.6 },
+    { "model": "prop.haystack", "at": [17, 88], "rot": 0.3 },
+    { "model": "prop.fence", "at": [16, 97], "rot": 1.6 },
+    { "model": "prop.pots", "at": [20, 99], "rot": 4.1 },
+    { "model": "prop.cairn", "at": [168, 30], "rot": 5.4 },
+    { "model": "prop.woodpile", "at": [170, 46], "rot": 2.4 },
+    { "model": "prop.cairn", "at": [170, 147], "rot": 1.4 },
+    { "model": "prop.woodpile", "at": [172, 157], "rot": 3.2 },
+    { "model": "prop.fence", "at": [96, 101] },
+    { "model": "prop.cairn", "at": [96, 91], "rot": 2.8 },
+    { "model": "prop.fence", "at": [90, 101], "rot": 1.6 },
+    { "model": "prop.fence", "at": [102, 91], "rot": 1.6 },
+    { "model": "prop.mushroom_ring", "at": [102, 152], "rot": 4.4 },
+    { "model": "prop.flowers", "at": [91, 148], "rot": 4.1 },
+    { "model": "prop.standing_stone", "at": [92, 37] },
+    { "model": "prop.standing_stone", "at": [83, 36], "rot": 3.1 },
+    { "model": "prop.standing_stone", "at": [107, 44] },
+    { "model": "prop.standing_stone", "at": [99, 46], "rot": 3.1 },
+    { "model": "prop.reeds", "at": [109, 92], "rot": 0.6 },
+    { "model": "prop.reeds", "at": [109, 100], "rot": 4.7 },
+    { "model": "prop.reeds", "at": [108, 90], "rot": 3.6 },
+    { "model": "prop.log_a", "at": [20, 80], "rot": 2.2 },
+    { "model": "prop.bush_a", "at": [30, 116], "rot": 1.7 },
+    { "model": "prop.log_a", "at": [175, 37], "rot": 0.6 },
+    { "model": "prop.fern", "at": [165, 165], "rot": 2.4 }
   ],
   "setup": [
     {
@@ -427,7 +454,7 @@
           },
           {
             "type": "message",
-            "text": "The southern seer is yours, and a second causeway rises toward the war tribe's island."
+            "text": "The southern seer is yours, and a second causeway rises toward the southeastern tribe's island."
           }
         ]
       }
@@ -486,7 +513,7 @@
           },
           {
             "type": "message",
-            "text": "The second ley stone lifts a causeway toward the sneaky tribe's island. The tide cannot take it."
+            "text": "The second ley stone lifts a causeway toward the northeastern tribe's island. The tide cannot take it."
           }
         ],
         "dormant": true
@@ -497,7 +524,7 @@
     {
       "type": "worship",
       "site": "ford_ward",
-      "text": "Cross at low water and pray at the ford ward in the centre"
+      "text": "Cross at low water and pray at the ford ward in the center"
     },
     {
       "type": "hold",
@@ -505,13 +532,13 @@
       "kind": "ward_stone",
       "seconds": 180,
       "after": 0,
-      "text": "Keep the ford ward for three minutes while war tribe wardens wade over to pray it away: cut them down, or pray it back and start again"
+      "text": "Keep the ford ward for three minutes while southeastern wardens wade over to pray it away: cut them down, or pray it back and start again"
     },
     {
       "type": "worship",
       "site": "north_ley_a",
       "after": 1,
-      "text": "Pray the first ley stone away from the sneaky tribe (north island)"
+      "text": "Pray the first ley stone away from the northeastern tribe (north island)"
     },
     {
       "type": "hold",
@@ -525,18 +552,18 @@
       "tribe": 1,
       "building": "hearth",
       "after": 3,
-      "text": "Cross the causeway and burn the sneaky tribe's Hearth on the north-east island"
+      "text": "Cross the causeway and burn the northeastern tribe's Hearth on its island"
     },
     {
       "type": "worship",
       "site": "south_seer",
       "after": 4,
-      "text": "Pray the southern seer away from the war tribe to raise a causeway to its island"
+      "text": "Pray the southern seer away from the southeastern tribe to raise a causeway to its island"
     },
     {
       "type": "eliminateAll",
       "after": 5,
-      "text": "Break the war tribe on the south-east island and any sneaky stragglers"
+      "text": "Break the southeastern tribe on the southeast island and any northeastern stragglers"
     }
   ],
   "lose": [
@@ -557,7 +584,7 @@
       "do": [
         {
           "type": "message",
-          "text": "The fords drown and drain by turns. Cross while the sand is dry, and pray at the ward in the centre."
+          "text": "The fords drown and drain by turns. Cross while the sand is dry, and pray at the ward in the center."
         }
       ]
     },
@@ -570,7 +597,7 @@
       "do": [
         {
           "type": "message",
-          "text": "The tide is turning on the home and centre fords. Ten seconds."
+          "text": "The tide is turning on the home and center fords. Ten seconds."
         }
       ]
     },
@@ -822,7 +849,7 @@
         },
         {
           "type": "message",
-          "text": "Both rivals are wading over to pray the ford ward away, three war tribe wardens in the lead. Keep it."
+          "text": "Both rivals are wading over to pray the ford ward away, three southeastern wardens in the lead. Keep it."
         }
       ]
     },
@@ -850,7 +877,7 @@
         },
         {
           "type": "message",
-          "text": "The counterattack breaks. Two ley stones rise on the north island, and the sneaky tribe already holds them."
+          "text": "The counterattack breaks. Two ley stones rise on the north island, and the northeastern tribe already holds them."
         }
       ]
     },
@@ -871,7 +898,7 @@
         },
         {
           "type": "message",
-          "text": "The sneaky tribe wades back to pray its stones home. Keep all three."
+          "text": "The northeastern tribe wades back to pray its stones home. Keep all three."
         }
       ]
     },
@@ -892,7 +919,7 @@
         },
         {
           "type": "message",
-          "text": "The ley stones answer and the causeway holds. Cross it and burn the sneaky Hearth while the war tribe storms the ford."
+          "text": "The ley stones answer and the causeway holds. Cross it and burn the northeastern Hearth while the southeastern tribe storms the ford."
         }
       ]
     },
@@ -926,7 +953,7 @@
         },
         {
           "type": "message",
-          "text": "The sneaky Hearth is ash. A seer rises on the south island in the war tribe's hands: pray it away."
+          "text": "The northeastern Hearth is ash. A seer rises on the south island in the southeastern tribe's hands: pray it away."
         }
       ]
     },
@@ -948,7 +975,7 @@
         },
         {
           "type": "message",
-          "text": "A war band wades toward the centre."
+          "text": "A war band wades toward the center."
         }
       ]
     },
@@ -972,7 +999,7 @@
       "do": [
         {
           "type": "message",
-          "text": "The causeway to the south-east stands. Cross it and break the war tribe."
+          "text": "The causeway to the southeast stands. Cross it and break the southeastern tribe."
         }
       ]
     }

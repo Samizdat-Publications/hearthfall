@@ -3,7 +3,7 @@
   "id": "stolen_stones",
   "name": "The Stolen Stones",
   "order": 23,
-  "description": "Four old stones ring your valley, and both neighbours want them. Claim them, hold all four while war bands come to pray them away, burn the western lodges, win back the old ley the east carried off and hold all three leys, then raze the eastern Hearth.",
+  "description": "Four old stones ring your valley, and both neighbors want them. Claim them, hold all four while war bands come to pray them away, burn the western lodges, win back the old ley the east carried off and hold all three leys, then raze the eastern Hearth.",
   "seed": 2323,
   "map": {
     "generator": "flat",
@@ -27,6 +27,33 @@
   ],
   "spells": ["bolt", "raise_land", "hornets", "lightning"],
   "buildings": ["dwelling", "watchtower", "warden_lodge", "mending_hut"],
+  "props": [
+    { "model": "prop.woodpile", "at": [21, 136], "rot": 2.5 },
+    { "model": "prop.haystack", "at": [20, 120], "rot": 6.2 },
+    { "model": "prop.fence", "at": [18, 129], "rot": 1.6 },
+    { "model": "prop.pots", "at": [22, 131], "rot": 3 },
+    { "model": "prop.cairn", "at": [235, 121], "rot": 0.5 },
+    { "model": "prop.woodpile", "at": [235, 134], "rot": 4.8 },
+    { "model": "prop.fence", "at": [234, 138], "rot": 0.4 },
+    { "model": "prop.cairn", "at": [138, 121], "rot": 1.9 },
+    { "model": "prop.woodpile", "at": [140, 137], "rot": 5.2 },
+    { "model": "prop.fence", "at": [137, 138], "rot": 0.4 },
+    { "model": "prop.standing_stone", "at": [133, 100] },
+    { "model": "prop.standing_stone", "at": [123, 100], "rot": 3.1 },
+    { "model": "prop.standing_stone", "at": [133, 156] },
+    { "model": "prop.standing_stone", "at": [123, 156], "rot": 3.1 },
+    { "model": "prop.fence", "at": [100, 133] },
+    { "model": "prop.mushroom_ring", "at": [159, 131], "rot": 4.4 },
+    { "model": "prop.ruin_a", "at": [185, 94], "rot": 0.4 },
+    { "model": "prop.standing_stone", "at": [194, 94], "rot": 2 },
+    { "model": "prop.cairn", "at": [191, 101], "rot": 0.4 },
+    { "model": "prop.reeds", "at": [70, 66], "rot": 2.5 },
+    { "model": "prop.reeds", "at": [166, 170], "rot": 3.3 },
+    { "model": "prop.reeds", "at": [72, 189] },
+    { "model": "prop.bush_a", "at": [124, 120], "rot": 3.4 },
+    { "model": "prop.log_a", "at": [149, 145], "rot": 0.6 },
+    { "model": "prop.fern", "at": [21, 118], "rot": 4.3 }
+  ],
   "setup": [
     { "spawn": "hearth", "tribe": 0, "at": [128, 128] },
     { "spawn": "shaper", "tribe": 0, "at": [132, 124] },
@@ -83,7 +110,7 @@
   ],
   "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 3400 }],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Four stones ring your valley. Pray at them before your neighbours do." }] },
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "message", "text": "Four stones ring your valley. Pray at them before your neighbors do." }] },
     {
       "when": { "type": "objective", "index": 0 },
       "do": [

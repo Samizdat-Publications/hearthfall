@@ -3,7 +3,7 @@
   "id": "wolf_country",
   "name": "Wolf Country",
   "order": 18,
-  "description": "Highland valleys crawl with wolves that hunt only you, while two tribes beyond the gorge grow unbothered. Clear the valleys, raze the pyre that watches the pass, raise the gorge bridges, clear the wolf isle, take and keep the turtle ley stones, then clear the oldest packs and pray at their seer.",
+  "description": "Highland valleys crawl with wolves that hunt only you, while two tribes beyond the gorge grow unbothered. Clear the valleys, raze the pyre that watches the pass, raise the gorge bridges, clear the wolf isle, hold the walled tribe's ley stones, then clear the oldest packs and pray at their seer.",
   "seed": 1818,
   "beastPrey": "player",
   "map": {
@@ -150,6 +150,31 @@
     "dwelling",
     "watchtower",
     "warden_lodge"
+  ],
+  "props": [
+    { "model": "prop.woodpile", "at": [35, 104], "rot": 2.2 },
+    { "model": "prop.haystack", "at": [31, 91], "rot": 1.4 },
+    { "model": "prop.fence", "at": [32, 97], "rot": 1.6 },
+    { "model": "prop.pots", "at": [36, 99], "rot": 2.7 },
+    { "model": "prop.cairn", "at": [156, 47], "rot": 0.2 },
+    { "model": "prop.woodpile", "at": [158, 58], "rot": 3.3 },
+    { "model": "prop.cairn", "at": [158, 135], "rot": 2.6 },
+    { "model": "prop.woodpile", "at": [157, 145], "rot": 2.3 },
+    { "model": "prop.standing_stone", "at": [75, 94], "rot": 0.5 },
+    { "model": "prop.standing_stone", "at": [85, 94], "rot": 2.1 },
+    { "model": "prop.standing_stone", "at": [80, 101], "rot": 1.3 },
+    { "model": "prop.mushroom_ring", "at": [99, 121], "rot": 6.1 },
+    { "model": "prop.standing_stone", "at": [69, 70] },
+    { "model": "prop.standing_stone", "at": [59, 70], "rot": 3.1 },
+    { "model": "prop.standing_stone", "at": [138, 113] },
+    { "model": "prop.standing_stone", "at": [152, 101] },
+    { "model": "prop.cairn", "at": [46, 44], "rot": 1.2 },
+    { "model": "prop.log_a", "at": [55, 52], "rot": 0.7 },
+    { "model": "prop.cairn", "at": [36, 62], "rot": 5 },
+    { "model": "prop.cairn", "at": [37, 139], "rot": 5 },
+    { "model": "prop.log_a", "at": [50, 148], "rot": 1.3 },
+    { "model": "prop.bush_a", "at": [40, 82], "rot": 2.3 },
+    { "model": "prop.fern", "at": [148, 40], "rot": 4.4 }
   ],
   "setup": [
     {
@@ -624,7 +649,7 @@
         "rewards": [
           {
             "type": "message",
-            "text": "One of the turtle tribe's ley stones is yours. Keep two ley stones at once for two and a half minutes."
+            "text": "One of the walled tribe's ley stones is yours. Keep two ley stones at once for two and a half minutes."
           }
         ]
       }
@@ -717,7 +742,7 @@
       "tribe": 1,
       "building": "signal_pyre",
       "after": 0,
-      "text": "The northern pass is open: raze the sneaky tribe's signal pyre that watches it"
+      "text": "The northern pass is open: raze the northern tribe's signal pyre that watches it"
     },
     {
       "type": "clearDens",
@@ -750,7 +775,7 @@
       "n": 2,
       "seconds": 150,
       "after": 4,
-      "text": "Pray away at least one of the turtle tribe ley stones past its guards, then keep two ley stones at once for two and a half minutes while turtle wardens come to pray them back",
+      "text": "Pray away at least one of the walled tribe's ley stones past its guards, then keep two ley stones at once for two and a half minutes while walled tribe wardens come to pray them back",
       "kind": "ley_stone"
     },
     {
@@ -798,7 +823,7 @@
         },
         {
           "type": "message",
-          "text": "The northern valley is quiet, and the pass beyond it is open. The sneaky tribe's signal pyre watches it: bring it down."
+          "text": "The northern valley is quiet, and the pass beyond it is open. The northern tribe's signal pyre watches it: bring it down."
         }
       ]
     },
@@ -819,7 +844,7 @@
         },
         {
           "type": "message",
-          "text": "The pyre is dark and the sneaky tribe sends a band for your Hearth. The southern packs are still hunting: clear them."
+          "text": "The pyre is dark and the northern tribe sends a band for your Hearth. The southern packs are still hunting: clear them."
         }
       ]
     },
@@ -924,7 +949,7 @@
         },
         {
           "type": "message",
-          "text": "The isle is quiet. Turtle ley stones rise behind fresh guards, and its wardens march on your valley ley. Keep two ley stones for two and a half minutes."
+          "text": "The isle is quiet. The walled tribe's ley stones rise behind fresh guards, and its wardens march on your valley ley. Keep two stones for two and a half minutes."
         }
       ]
     },
@@ -1048,7 +1073,7 @@
         },
         {
           "type": "message",
-          "text": "The sneaky tribe sends a band through the northern pass."
+          "text": "The northern tribe sends a band through the northern pass."
         }
       ]
     },

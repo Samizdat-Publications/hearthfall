@@ -6,6 +6,13 @@ import buildButton from "../../../assets/ui/hud/build_button.webp?url";
 import buildPanel from "../../../assets/ui/hud/build_panel.webp?url";
 import cauldron from "../../../assets/ui/hud/cauldron.webp?url";
 import levelPlaque from "../../../assets/ui/hud/level_plaque.webp?url";
+import mapCh1 from "../../../assets/ui/hud/map_ch1.webp?url";
+import mapCh2 from "../../../assets/ui/hud/map_ch2.webp?url";
+import mapCh3 from "../../../assets/ui/hud/map_ch3.webp?url";
+import mapCh4 from "../../../assets/ui/hud/map_ch4.webp?url";
+import menuButton from "../../../assets/ui/hud/menu_button.webp?url";
+import menuButtonPrimary from "../../../assets/ui/hud/menu_button_primary.webp?url";
+import menuFrame from "../../../assets/ui/hud/menu_frame.webp?url";
 import objectivesFrame from "../../../assets/ui/hud/objectives_frame.webp?url";
 import portrait from "../../../assets/ui/hud/portrait.webp?url";
 import runeDisc from "../../../assets/ui/hud/rune_disc.webp?url";
@@ -24,6 +31,13 @@ export const HUD_ART: Record<string, string> = {
   build_panel: buildPanel,
   cauldron,
   level_plaque: levelPlaque,
+  map_ch1: mapCh1,
+  map_ch2: mapCh2,
+  map_ch3: mapCh3,
+  map_ch4: mapCh4,
+  menu_button: menuButton,
+  menu_button_primary: menuButtonPrimary,
+  menu_frame: menuFrame,
   objectives_frame: objectivesFrame,
   portrait,
   rune_disc: runeDisc,

@@ -295,3 +295,11 @@ Addendum (wolves, 10/10/2026): units gain an optional `beast` block (`aggroRadiu
 **Decision.** Settings gets a Pixel look choice, crisp (default, `pixelScale` 1) or retro (style.json `pixelScale`). Palette levels, dither and the miniature focus stay on in both. `render.tiltShift.maxBlurCrisp` gives the crisp look its own blur radius in screen pixels at 1080 rows, scaled by the render height so the effect matches at every window size, and the blur takes two rings of taps so the wider radius stays smooth. The URL `pixel` override still wins for look comparisons; `look.json` shots pin `pixel: 3`.
 
 **Fallback.** Set `pixelLook` back to "retro" in `defaultSettings()` (`apps/game/src/storage.ts`); players who picked crisp keep it.
+
+## ADR-027: Look v4 grounds models with blob contact shadows, not shadow maps (15/10/2026)
+
+**Context.** At full resolution (ADR-026) units, buildings, trees and props looked pasted on the terrain: the scene has no shadows at all, and the title key art reads as grounded because every object sits in a soft dark pool. Real shadow maps would cost a depth pass over a bent, wrapped world with thousands of instances, and the retro pass would alias them.
+
+**Decision.** `packages/render/src/shadows.ts` draws one instanced, bent quad per caster: a radial dark blob tilted to the terrain slope, nudged away from the sun by a share of the caster's height, faded toward the horizon like the rest of the world. Each entity layer (units, buildings, trees and rocks, decor and level props) owns a `ContactShadows` set by the renderer and refills it in the same pass that refills its instances, so cached layers (trees, decor) cost nothing per frame. Knobs live in `style.json render.contactShadows` (strength, a radius multiplier per layer, sun offset, decor ids that cast none); a missing block turns them off. Water units cast none. The same pass tightened the Crisp terrain (cliff tint only on faces too steep to walk, `terrainBands.cliffStart/cliffFloor/cliffFade`, calmer `faceJitter`) and drew water strokes as soft tapered brush marks in Crisp only (`water.strokeWidthCrisp/strokeAlphaCrisp`); Retro keeps its hard strokes.
+
+**Fallback.** Set `render.contactShadows.enabled` to false (or delete the block); drop the four `terrainBands` look keys and the two crisp stroke keys to get the old terrain and water back.

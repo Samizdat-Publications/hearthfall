@@ -106,11 +106,22 @@ export function prayerNote(w: Game["world"], tag: string, me: number): string {
   return rival > 0 ? ` (prayer ${pct(mine)}, rival ${pct(rival)})` : ` (prayer ${pct(mine)})`;
 }
 
+/**
+ * The play tick a survive objective counts from: the level start (0), or for a fromStage goal the tick its stage
+ * opened (the runtime's holdSince, else openedAt before its first evaluation, else now). The runtime counts in
+ * world ticks, so the Forge phase, which playTick leaves out, is taken off.
+ */
+export function stageStart(w: Game["world"], k: number): number {
+  const lv = w.level!;
+  const t = lv.holdSince[k] >= 0 ? lv.holdSince[k] : lv.openedAt[k] >= 0 ? lv.openedAt[k] : w.tick;
+  return t - (w.tick - w.playTick);
+}
+
 export function levelObjectives(game: Game): ObjectiveView[] {
   const w = game.world;
   const lv = w.level!;
   const hz = w.cfg.tickHz;
-  const left = (sec: number) => clock(Math.max(0, sec - w.playTick / hz));
+  const left = (sec: number, since = 0) => clock(Math.max(0, sec - (w.playTick - since) / hz));
   const out: ObjectiveView[] = [];
   lv.def.objectives.forEach((o, k) => {
     // stretch 3: a staged objective appears once the one it follows is done
@@ -134,7 +145,7 @@ export function levelObjectives(game: Game): ObjectiveView[] {
         : o.type === "worship"
           ? `Worship at the ${words(o.site)}`
           : o.type === "survive"
-            ? `Survive ${clock(o.seconds)}${done ? "" : ` (${left(o.seconds)} left)`}`
+            ? `Survive ${clock(o.seconds)}${done ? "" : ` (${left(o.seconds, o.fromStage ? stageStart(w, k) : 0)} left)`}`
             : o.type === "victory"
               ? (victoryLine(w, game.localTribe) ?? w.rules?.def.name ?? "Win the day")
               : o.fromStage

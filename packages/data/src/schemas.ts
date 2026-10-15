@@ -318,6 +318,17 @@ export const BalanceSchema = z.strictObject({
       kind: id,
     })
     .optional(),
+  /**
+   * Chapter 4 prep: neutral level hazards. A time trigger that casts a harmful spell with `tribe: -1` (an eruption,
+   * a quake, a fire storm) opens a located warning `warnSeconds` before the cast: a `hazardWarn` event (sound cue, HUD
+   * note) and a ground ring with a countdown. Absent: hazards give no warning, as before.
+   */
+  hazards: z
+    .strictObject({
+      ...comment,
+      warnSeconds: z.number().min(1).max(60),
+    })
+    .optional(),
   skirmishWorship: z
     .strictObject({
       ...comment,
@@ -655,6 +666,51 @@ export const StyleSchema = z
             pickPx: z.number().positive().max(64).optional(),
           })
           .optional(),
+        /** chapter 4 prep: world markers (render markers.ts MarkerLook): wolf den pins, clearDens beacons and the neutral hazard ring with its countdown; any key left out keeps its default */
+        markers: z
+          .strictObject({
+            ...comment,
+            enabled: z.boolean().optional(),
+            /** no pins or numbers when zoomed out past this (0 close, 1 globe); rings stay */
+            maxZoom: z.number().min(0).max(1).optional(),
+            /** camera distance at which the sizes hold; pins keep about the same size on screen within minScale..maxScale */
+            refDistance: z.number().positive().optional(),
+            minScale: z.number().positive().max(4).optional(),
+            maxScale: z.number().positive().max(8).optional(),
+            den: z
+              .strictObject({
+                color: hex.optional(),
+                size: z.number().positive().max(8).optional(),
+                lift: z.number().min(0).max(8).optional(),
+                bob: z.number().min(0).max(2).optional(),
+                bobRate: pos.optional(),
+                ringRadius: z.number().positive().max(16).optional(),
+                ringColor: hex.optional(),
+                ringWidth: z.number().positive().max(2).optional(),
+              })
+              .optional(),
+            beacon: z
+              .strictObject({
+                color: hex.optional(),
+                height: z.number().positive().max(64).optional(),
+                width: z.number().positive().max(8).optional(),
+                ringRadius: z.number().positive().max(24).optional(),
+                pulse: pos.optional(),
+              })
+              .optional(),
+            hazard: z
+              .strictObject({
+                color: hex.optional(),
+                fillColor: hex.optional(),
+                width: z.number().positive().max(2).optional(),
+                segments: z.number().int().min(12).max(96).optional(),
+                digitSize: z.number().positive().max(8).optional(),
+                digitLift: z.number().min(0).max(16).optional(),
+                pulse: pos.optional(),
+              })
+              .optional(),
+          })
+          .optional(),
         /** render polish: ambient life (render ambient.ts AmbientLook), one block per effect; any key left out keeps its default */
         ambient: z
           .strictObject({
@@ -754,6 +810,30 @@ export const StyleSchema = z
                 emberColor: hex.optional(),
                 max: z.number().int().min(0).max(1024).optional(),
                 emberMax: z.number().int().min(0).max(1024).optional(),
+              })
+              .optional(),
+            /** painted volcano cones (level map paint with aboveSea >= minAboveSea): smoke plume from the crater and a dull rim glow; the block left out turns the effect off */
+            volcano: z
+              .strictObject({
+                enabled: z.boolean().optional(),
+                minAboveSea: z.number().min(0).optional(),
+                puffs: z.number().int().min(1).max(24).optional(),
+                period: z.number().positive().optional(),
+                rise: pos.optional(),
+                drift: pos.optional(),
+                wind: z.tuple([z.number(), z.number()]).optional(),
+                size: z.number().positive().max(4).optional(),
+                grow: pos.optional(),
+                color: hex.optional(),
+                topColor: hex.optional(),
+                opacity: z.number().min(0).max(1).optional(),
+                glowRadius: z.number().positive().max(16).optional(),
+                glowColor: hex.optional(),
+                glowIntensity: z.number().min(0).max(4).optional(),
+                pulse: z.number().min(0).max(1).optional(),
+                pulseRate: pos.optional(),
+                max: z.number().int().min(0).max(1024).optional(),
+                vents: z.number().int().min(0).max(32).optional(),
               })
               .optional(),
           })

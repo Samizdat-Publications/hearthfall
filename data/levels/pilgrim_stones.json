@@ -649,7 +649,7 @@
       "type": "worship",
       "site": "heron_stone",
       "after": 2,
-      "text": "Sail to the Heron Stone on the far north eastern isle and pray there with four followers"
+      "text": "Sail to the Heron Stone on the far northeastern isle and pray there with four followers"
     },
     {
       "type": "worship",
@@ -720,7 +720,7 @@
         },
         {
           "type": "message",
-          "text": "Your Boathouse stands. The Tern Stone waits on its isle to the north east."
+          "text": "Your Boathouse stands. The Tern Stone waits on its isle to the northeast."
         }
       ]
     },

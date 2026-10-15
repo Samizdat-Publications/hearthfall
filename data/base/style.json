@@ -42,7 +42,8 @@
   "lightingPresets": {
     "day": { "keyColor": "#fff3e2", "keyIntensity": 2.1, "hemiSky": "#6f9bd6", "ambient": 0.92, "sunDir": [0.3, 1, 0.2], "hearthGlow": 0.5, "rim": "#78bdf0" },
     "golden": { "keyColor": "#ffc98f", "keyIntensity": 2, "hemiSky": "#3d5f96", "ambient": 1, "sunDir": [0.4, 0.8, 0.25], "hearthGlow": 1, "rim": "#5fa8e0" },
-    "evening": { "keyColor": "#ff8f66", "keyIntensity": 1.3, "hemiSky": "#33427e", "ambient": 0.75, "sunDir": [0.9, 0.32, 0.15], "hearthGlow": 1.9, "rim": "#b27a98", "skyHorizon": "#3a2440" }
+    "evening": { "keyColor": "#ff8f66", "keyIntensity": 1.3, "hemiSky": "#33427e", "ambient": 0.75, "sunDir": [0.9, 0.32, 0.15], "hearthGlow": 1.9, "rim": "#b27a98", "skyHorizon": "#3a2440" },
+    "night": { "keyColor": "#b4c6ff", "keyIntensity": 1.05, "hemiSky": "#22305e", "ambient": 0.66, "sunDir": [-0.35, 0.85, 0.4], "hearthGlow": 2.2, "rim": "#7088cc", "skyHorizon": "#151b36" }
   },
   "lightingDefault": "golden",
   "weather": {
@@ -175,12 +176,23 @@
       "unitRadius": 0.6,
       "pickPx": 18
     },
+    "markers": {
+      "$comment": "Chapter 4 prep: world markers drawn over the scene. A bobbing paw pin and a roaming ring over every standing wolf den the viewer has explored; a light beam and a wide pulsing ring on the dens an open clearDens objective counts (shown even in unexplored ground); and for a neutral level hazard (balance.hazards) a ring where the spell lands, a ring closing in on it and the seconds left above it. Sizes in world units at refDistance; pins and numbers keep about the same size on screen within minScale..maxScale and hide past maxZoom (rings and beams stay). enabled false turns it all off.",
+      "enabled": true,
+      "maxZoom": 0.85,
+      "refDistance": 40,
+      "minScale": 0.7,
+      "maxScale": 2.4,
+      "den": { "color": "#e2483a", "size": 2.1, "lift": 0.5, "bob": 0.22, "bobRate": 2.2, "ringRadius": 3.4, "ringColor": "#c8503e", "ringWidth": 0.11 },
+      "beacon": { "color": "#ffd23a", "height": 16, "width": 1.1, "ringRadius": 5, "pulse": 1.4 },
+      "hazard": { "color": "#ff6a2e", "fillColor": "#ffd23a", "width": 0.24, "segments": 48, "digitSize": 1.5, "digitLift": 2.2, "pulse": 3 }
+    },
     "ambient": {
       "$comment": "Render polish (Settings Ambient life): chimney smoke over finished sources, bird flocks over forest or shore grid points, fireflies around Hearths and Dwellings under the listed lighting presets (not in rain), dust behind walkers on dry land near the focus, sun or moon glints on the sea near the focus per lighting preset (none below the minQuality render scale, scaled by rain while raining), and Hearth firelight under the fire presets (a flickering ground glow pool scaled by the preset hearthGlow, rising embers, a faint warm pool round finished Dwellings; the hearth lights flicker with it). All of it follows the visual time, so fixedStep shots stay identical. enabled false or max 0 turns one effect off.",
       "maxZoom": 0.85,
       "smoke": { "enabled": true, "puffs": 5, "period": 4, "rise": 2.4, "drift": 0.7, "wind": [0.8, 0.35], "size": 0.13, "grow": 1.9, "color": "#d9d3c9", "opacity": 0.34, "sources": ["dwelling", "hearth"], "max": 640 },
       "birds": { "enabled": true, "spacing": 24, "forestTrees": 14, "forestReach": 5, "shoreBand": 6, "perFlock": 5, "radius": 4.5, "height": 9, "speed": 2.2, "size": 0.55, "flap": 2.6, "color": "#2b2622", "max": 160 },
-      "fireflies": { "enabled": true, "presets": ["evening"], "perHearth": 10, "perDwelling": 2, "radius": 3.2, "size": 0.07, "blink": 0.45, "color": "#e9ff8c", "max": 240 },
+      "fireflies": { "enabled": true, "presets": ["evening", "night"], "perHearth": 10, "perDwelling": 2, "radius": 3.2, "size": 0.07, "blink": 0.45, "color": "#e9ff8c", "max": 240 },
       "dust": { "enabled": true, "perUnit": 2, "period": 0.7, "radius": 24, "dryAbove": 4, "size": 0.11, "trail": 0.45, "color": "#c9b48a", "opacity": 0.5, "max": 400 },
       "glints": {
         "enabled": true, "cell": 0.9, "rate": 1.1, "near": 24, "density": 0.3, "rain": 0, "minQuality": 0.75,
@@ -191,7 +203,8 @@
           "night": { "strength": 0.3, "color": "#c8d3ea" }
         }
       },
-      "fire": { "enabled": true, "presets": ["evening", "night"], "rain": 0.7, "flicker": 0.2, "flickerRate": 1, "glowRadius": 3.4, "glowColor": "#ff9a42", "glowIntensity": 0.3, "hutRadius": 1.5, "hutIntensity": 0.1, "embers": 6, "emberPeriod": 2.2, "emberRise": 2.6, "emberSpread": 0.35, "emberSize": 0.05, "emberColor": "#ffb45a", "max": 256, "emberMax": 96 }
+      "fire": { "enabled": true, "presets": ["evening", "night"], "rain": 0.7, "flicker": 0.2, "flickerRate": 1, "glowRadius": 3.4, "glowColor": "#ff9a42", "glowIntensity": 0.3, "hutRadius": 1.5, "hutIntensity": 0.1, "embers": 6, "emberPeriod": 2.2, "emberRise": 2.6, "emberSpread": 0.35, "emberSize": 0.05, "emberColor": "#ffb45a", "max": 256, "emberMax": 96 },
+      "volcano": { "enabled": true, "minAboveSea": 250, "puffs": 7, "period": 9, "rise": 9, "drift": 4, "wind": [0.8, 0.35], "size": 0.7, "grow": 2.6, "color": "#4a433d", "topColor": "#8d857b", "opacity": 0.3, "glowRadius": 3.6, "glowColor": "#d4541c", "glowIntensity": 0.55, "pulse": 0.25, "pulseRate": 0.35, "max": 96, "vents": 6 }
     }
   },
   "tribePalettes": {
@@ -236,7 +249,8 @@
         "cue": "sfx.terrain_moved",
         "maxPerTick": 1
       },
-      "planPlaced": { "cue": "sfx.plan_placed", "maxPerTick": 1 }
+      "planPlaced": { "cue": "sfx.plan_placed", "maxPerTick": 1 },
+      "hazardWarn": { "cue": "sfx.hazard_warn", "maxPerTick": 1 }
     },
     "alias": {
       "sfx.hornets_cast": "sfx.hornets",
@@ -247,7 +261,8 @@
       "sfx.fireball": "sfx.bolt_impact",
       "sfx.melee_hit": "sfx.chop",
       "sfx.building_down": "sfx.quake",
-      "sfx.terrain_moved": "sfx.flatten"
+      "sfx.terrain_moved": "sfx.flatten",
+      "sfx.hazard_warn": "sfx.tide_rumble"
     }
   },
   "promptStyleSuffix": "stylized low-poly game asset, crisp flat-shaded facets, chunky readable shapes, warm earthy palette, warm golden-hour lighting, clean silhouette, plain neutral background, no text, no logo",

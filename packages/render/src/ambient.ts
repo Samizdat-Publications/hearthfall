@@ -132,6 +132,34 @@ export interface FireLook {
   emberMax: number;
 }
 
+/** Painted volcano cones: a soft smoke plume from the crater and a dull glow on its rim. */
+export interface VolcanoLook {
+  enabled: boolean;
+  /** a painted cone whose peak stands at least this many height units over the sea is a volcano */
+  minAboveSea: number;
+  /** plume: puffs per vent, seconds for one puff to rise and fade, rise height, drift along the wind (grows with the square of the life) */
+  puffs: number;
+  period: number;
+  rise: number;
+  drift: number;
+  wind: [number, number];
+  /** start radius of a puff and how much it grows over its life (1 + grow); colors at the crater and high up; opacity */
+  size: number;
+  grow: number;
+  color: string;
+  topColor: string;
+  opacity: number;
+  /** rim glow: radius (world units), color, brightness (scaled by the lighting preset's hearthGlow), share and rate (per second) of its slow pulse */
+  glowRadius: number;
+  glowColor: string;
+  glowIntensity: number;
+  pulse: number;
+  pulseRate: number;
+  /** caps: plume puffs and vents */
+  max: number;
+  vents: number;
+}
+
 export interface AmbientLook {
   /** no ambient life past this zoom (0 close, 1 globe) */
   maxZoom: number;
@@ -141,7 +169,32 @@ export interface AmbientLook {
   dust: DustLook;
   glints: GlintsLook;
   fire: FireLook;
+  /** left out (undefined) turns the volcano effect off; a style.json render.ambient.volcano block turns it on */
+  volcano?: VolcanoLook;
 }
+
+/** Values for any key a style.json volcano block leaves out (the block itself must exist to turn the effect on). */
+export const VOLCANO_DEFAULTS: VolcanoLook = {
+  enabled: true,
+  minAboveSea: 250,
+  puffs: 7,
+  period: 9,
+  rise: 9,
+  drift: 4,
+  wind: [0.8, 0.35],
+  size: 0.7,
+  grow: 2.6,
+  color: "#4a433d",
+  topColor: "#8d857b",
+  opacity: 0.3,
+  glowRadius: 3.6,
+  glowColor: "#d4541c",
+  glowIntensity: 0.55,
+  pulse: 0.25,
+  pulseRate: 0.35,
+  max: 96,
+  vents: 6,
+};
 
 export const AMBIENT_DEFAULTS: AmbientLook = {
   maxZoom: 0.85,
@@ -195,6 +248,7 @@ export function resolveAmbient(o?: {
   dust?: Partial<DustLook>;
   glints?: Partial<GlintsLook>;
   fire?: Partial<FireLook>;
+  volcano?: Partial<VolcanoLook>;
 }): AmbientLook {
   const d = AMBIENT_DEFAULTS;
   return {
@@ -205,6 +259,8 @@ export function resolveAmbient(o?: {
     dust: { ...d.dust, ...(o?.dust ?? {}) },
     glints: { ...d.glints, ...(o?.glints ?? {}) },
     fire: { ...d.fire, ...(o?.fire ?? {}) },
+    // no volcano block, no volcano effect
+    ...(o?.volcano ? { volcano: { ...VOLCANO_DEFAULTS, ...o.volcano } } : {}),
   };
 }
 
@@ -353,19 +409,85 @@ export function hearthFlicker(t: number, seed: number, L: Pick<FireLook, "flicke
   return 1 + L.flicker * w;
 }
 
-/** Ember k over a Hearth at time t: life phase, offset from the fire (rising and swirling) and radius. Pure. */
+/** A rising ember or plume puff: life phase, offset from its source and radius. */
+export interface Pose {
+  phase: number;
+  dx: number;
+  dy: number;
+  dz: number;
+  r: number;
+}
+
+/**
+ * Ember k over a Hearth at time t: life phase, offset from the fire (rising and swirling) and radius. Pure.
+ * Pass a reusable `out` (the frame loop does) and nothing is allocated; without one a fresh object is returned.
+ */
 export function emberPose(
   t: number,
   seed: number,
   k: number,
   L: Pick<FireLook, "embers" | "emberPeriod" | "emberRise" | "emberSpread" | "emberSize">,
-): { phase: number; dx: number; dy: number; dz: number; r: number } {
-  const h = (m: number) => hash01(seed * 37 + k * 11 + m);
-  const phase = frac(t / L.emberPeriod + h(1) + k / Math.max(1, L.embers));
-  const a = h(2) * 6.283 + phase * (2 + 3 * h(3));
+  out: Pose = { phase: 0, dx: 0, dy: 0, dz: 0, r: 0 },
+): Pose {
+  const b = seed * 37 + k * 11;
+  const phase = frac(t / L.emberPeriod + hash01(b + 1) + k / Math.max(1, L.embers));
+  const a = hash01(b + 2) * 6.283 + phase * (2 + 3 * hash01(b + 3));
   const spread = L.emberSpread * (0.3 + phase);
   // bright out of the fire, shrinking to nothing at the top of the climb
-  return { phase, dx: Math.cos(a) * spread, dy: L.emberRise * phase * (0.7 + 0.3 * h(4)), dz: Math.sin(a) * spread, r: L.emberSize * (1 - phase) * (0.6 + 0.4 * h(5)) };
+  out.phase = phase;
+  out.dx = Math.cos(a) * spread;
+  out.dy = L.emberRise * phase * (0.7 + 0.3 * hash01(b + 4));
+  out.dz = Math.sin(a) * spread;
+  out.r = L.emberSize * (1 - phase) * (0.6 + 0.4 * hash01(b + 5));
+  return out;
+}
+
+/** A volcano crater found in a level's painted map: where it is (cells) and a stable seed. */
+export interface Vent {
+  x: number;
+  z: number;
+  seed: number;
+}
+
+/**
+ * The volcano vents of a world: the center of every painted cone (level map paint) whose peak stands at least
+ * `minAboveSea` height units over the sea, up to `vents`. A world with no level, or generated terrain, has none.
+ * TODO: a volcano raised by the Volcano spell or painted as discs (Ember Crown) is not found; it needs a marker in the level data.
+ */
+export function volcanoVents(w: World, L: Pick<VolcanoLook, "minAboveSea" | "vents">): Vent[] {
+  const paint = w.level?.def.map.paint;
+  const out: Vent[] = [];
+  if (!paint) return out;
+  for (let k = 0; k < paint.length && out.length < L.vents; k++) {
+    const p = paint[k];
+    if (p.shape === "cone" && p.aboveSea >= L.minAboveSea) out.push({ x: p.at[0], z: p.at[1], seed: k + 1 });
+  }
+  return out;
+}
+
+/**
+ * Puff k of a vent's plume at time t, written into `out` (so the frame loop allocates nothing): it climbs and
+ * widens, leans along the wind more and more with height, swells in over the first tenth of its life and thins
+ * out over the last quarter so it never pops. Pure.
+ */
+export function volcanoPuff(out: Pose, t: number, seed: number, k: number, L: Pick<VolcanoLook, "puffs" | "period" | "rise" | "drift" | "wind" | "size" | "grow">): Pose {
+  const phase = frac(t / L.period + hash01(seed) + k / Math.max(1, L.puffs));
+  const wl = Math.hypot(L.wind[0], L.wind[1]) || 1;
+  const sway = Math.sin(t * 0.5 + seed * 0.7 + k * 2.1) * 0.35 * phase;
+  const d = L.drift * phase * phase;
+  const swell = Math.min(1, phase / 0.1);
+  const fade = phase > 0.75 ? (1 - phase) / 0.25 : 1;
+  out.phase = phase;
+  out.dx = (L.wind[0] / wl) * d + sway + (hash01(seed * 5 + k) - 0.5) * 0.8;
+  out.dy = L.rise * phase;
+  out.dz = (L.wind[1] / wl) * d - sway * 0.5 + (hash01(seed * 7 + k) - 0.5) * 0.8;
+  out.r = L.size * (1 + L.grow * phase) * swell * fade;
+  return out;
+}
+
+/** Brightness factor of a vent's rim glow at time t: 1 plus or minus the pulse share, each vent on its own phase. Pure. */
+export function rimGlowLevel(t: number, seed: number, L: Pick<VolcanoLook, "pulse" | "pulseRate">): number {
+  return 1 + L.pulse * Math.sin(t * L.pulseRate * Math.PI * 2 + hash01(seed) * Math.PI * 2);
 }
 
 /** Radial falloff texture for the glow pools (white center to black rim; drawn additively). */
@@ -384,6 +506,27 @@ function glowTexture(size = 32): THREE.DataTexture {
   return tex;
 }
 
+/** Pixels of the rim glow texture: a soft bright ring (peak at 70 percent of the radius) fading to black at the edge and in the middle. */
+export function rimGlowPixels(size = 32): Uint8Array {
+  const d = new Uint8Array(size * size * 4);
+  for (let y = 0; y < size; y++)
+    for (let x = 0; x < size; x++) {
+      const r = Math.min(1, Math.hypot((x + 0.5) / size - 0.5, (y + 0.5) / size - 0.5) * 2);
+      const q = (r - 0.7) / 0.25;
+      const v = Math.round(255 * Math.exp(-q * q) * Math.max(0, 1 - r ** 8));
+      d.set([v, v, v, 255], (y * size + x) * 4);
+    }
+  return d;
+}
+
+function rimTexture(size = 32): THREE.DataTexture {
+  const tex = new THREE.DataTexture(rimGlowPixels(size), size, size, THREE.RGBAFormat);
+  tex.magFilter = THREE.LinearFilter;
+  tex.minFilter = THREE.LinearFilter;
+  tex.needsUpdate = true;
+  return tex;
+}
+
 /** Instance counts drawn in the last update (tests, debug summary). */
 export interface AmbientCounts {
   smoke: number;
@@ -392,13 +535,16 @@ export interface AmbientCounts {
   dust: number;
   glows: number;
   embers: number;
+  /** volcano plume puffs and rim glows (0 without a style volcano block) */
+  plume: number;
+  rims: number;
 }
 
 export class AmbientLayer {
   readonly group = new THREE.Group();
   readonly look: AmbientLook;
   enabled = true;
-  readonly counts: AmbientCounts = { smoke: 0, birds: 0, fireflies: 0, dust: 0, glows: 0, embers: 0 };
+  readonly counts: AmbientCounts = { smoke: 0, birds: 0, fireflies: 0, dust: 0, glows: 0, embers: 0, plume: 0, rims: 0 };
   /** fire strength in the last update (0 when the fires are not lit); the renderer flickers the hearth lights by it */
   fire = 0;
   private readonly smoke: THREE.InstancedMesh;
@@ -407,6 +553,17 @@ export class AmbientLayer {
   private readonly dust: THREE.InstancedMesh;
   private readonly glows: THREE.InstancedMesh;
   private readonly embers: THREE.InstancedMesh;
+  /** volcano plume and rim glow meshes, only with a style volcano block (added last, so the child order above holds) */
+  private readonly plume: THREE.InstancedMesh | null = null;
+  private readonly rim: THREE.InstancedMesh | null = null;
+  private readonly plumeColor = new THREE.Color();
+  private readonly plumeTop = new THREE.Color();
+  private readonly rimColor = new THREE.Color();
+  /** reused by the frame loop so embers and plume puffs allocate nothing per frame */
+  private readonly ember: Pose = { phase: 0, dx: 0, dy: 0, dz: 0, r: 0 };
+  private readonly puff: Pose = { phase: 0, dx: 0, dy: 0, dz: 0, r: 0 };
+  private vents: Vent[] = [];
+  private ventsFor: World | null = null;
   private readonly glowColor: THREE.Color;
   private readonly tint = new THREE.Color();
   private anchors: FlockAnchor[] = [];
@@ -455,13 +612,46 @@ export class AmbientLayer {
       look.fire.emberMax,
       6,
     );
+    // volcano: a grey plume (per-instance color, low to high) and an additive ring glow on the crater rim
+    const V = look.volcano;
+    if (V?.enabled) {
+      this.plume = make(new THREE.IcosahedronGeometry(1, 0), mat("#ffffff", V.opacity, THREE.NormalBlending), V.max, 4);
+      this.plume.setColorAt(0, new THREE.Color(0, 0, 0));
+      this.plumeColor.set(V.color);
+      this.plumeTop.set(V.topColor);
+      this.rim = make(
+        new THREE.CircleGeometry(1, 24).rotateX(-Math.PI / 2),
+        bendMaterial(
+          new THREE.MeshBasicMaterial({ map: rimTexture(), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, fog: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }),
+          bend,
+        ),
+        V.vents,
+        2,
+      );
+      this.rim.setColorAt(0, new THREE.Color(0, 0, 0));
+      this.rimColor.set(V.glowColor);
+    }
   }
 
   /** Hide everything (setting off, map view, zoomed out). */
   clear(): void {
     for (const im of [this.smoke, this.birds, this.flies, this.dust, this.glows, this.embers]) im.count = 0;
-    this.counts.smoke = this.counts.birds = this.counts.fireflies = this.counts.dust = this.counts.glows = this.counts.embers = 0;
+    if (this.plume) this.plume.count = 0;
+    if (this.rim) this.rim.count = 0;
+    this.counts.smoke = this.counts.birds = this.counts.fireflies = this.counts.dust = this.counts.glows = this.counts.embers = this.counts.plume = this.counts.rims = 0;
     this.fire = 0;
+  }
+
+  /** Volcano vents in use (tests, debug); none without a style volcano block. */
+  volcanoes(w: World): readonly Vent[] {
+    this.syncVents(w);
+    return this.vents;
+  }
+
+  private syncVents(w: World): void {
+    if (this.ventsFor === w) return;
+    this.ventsFor = w;
+    this.vents = this.look.volcano?.enabled ? volcanoVents(w, this.look.volcano) : [];
   }
 
   /** Flock anchors in use (tests, debug). */
@@ -640,7 +830,7 @@ export class AmbientLayer {
         if (!hearth) continue;
         const top = gy + 0.25;
         for (let k = 0; k < F.embers && e < F.emberMax; k++) {
-          const em = emberPose(t, i * 59 + 13, k, F);
+          const em = emberPose(t, i * 59 + 13, k, F, this.ember);
           if (em.r <= 0.002) continue;
           this.p.set(bx + em.dx, top + em.dy, bz + em.dz);
           this.s.setScalar(em.r);
@@ -654,6 +844,68 @@ export class AmbientLayer {
     this.embers.count = e;
     this.counts.embers = e;
     if (this.glows.instanceColor) this.glows.instanceColor.needsUpdate = true;
-    for (const im of [this.smoke, this.birds, this.flies, this.dust, this.glows, this.embers]) im.instanceMatrix.needsUpdate = true;
+    this.smoke.instanceMatrix.needsUpdate = true;
+    this.birds.instanceMatrix.needsUpdate = true;
+    this.flies.instanceMatrix.needsUpdate = true;
+    this.dust.instanceMatrix.needsUpdate = true;
+    this.glows.instanceMatrix.needsUpdate = true;
+    this.embers.instanceMatrix.needsUpdate = true;
+    this.updateVolcano(w, t, focusX, focusZ, heightScale, fade2, viewTribe, revealAll, hearthGlow);
+  }
+
+  /** Volcano plume and crater rim glow over each vent near the focus (nothing without a style volcano block). */
+  private updateVolcano(w: World, t: number, focusX: number, focusZ: number, heightScale: number, fade2: number, viewTribe: number, revealAll: boolean, hearthGlow: number): void {
+    const V = this.look.volcano;
+    const plume = this.plume;
+    const rim = this.rim;
+    if (!V || !plume || !rim) return;
+    this.syncVents(w);
+    const T = w.terrain;
+    const n = T.size;
+    let c = 0;
+    let r = 0;
+    for (let v = 0; v < this.vents.length; v++) {
+      const a = this.vents[v];
+      let ox = a.x - focusX;
+      let oz = a.z - focusZ;
+      ox -= Math.round(ox / n) * n;
+      oz -= Math.round(oz / n) * n;
+      if (ox * ox + oz * oz > fade2) continue;
+      const wx = ((a.x % n) + n) % n;
+      const wz = ((a.z % n) + n) % n;
+      if (!revealAll && !w.vision.seen(viewTribe, wx, wz)) continue;
+      const x = focusX + ox;
+      const z = focusZ + oz;
+      const crater = Math.max(T.heightAt(wx, wz), T.sea) * heightScale;
+      // the rim disc rides the ground a little way out from the peak, so a steep cone does not bury or float it
+      const ring = V.glowRadius * 0.7;
+      const rimH = (Math.max(T.heightAt((wx + ring) % n, wz), T.sea) + Math.max(T.heightAt((wx - ring + n) % n, wz), T.sea) + Math.max(T.heightAt(wx, (wz + ring) % n), T.sea) + Math.max(T.heightAt(wx, (wz - ring + n) % n), T.sea)) * 0.25 * heightScale;
+      if (r < V.vents) {
+        this.p.set(x, rimH + 0.05, z);
+        this.s.set(V.glowRadius, 1, V.glowRadius);
+        this.m.compose(this.p, this.q.identity(), this.s);
+        rim.setMatrixAt(r, this.m);
+        this.tint.copy(this.rimColor).multiplyScalar(V.glowIntensity * rimGlowLevel(t, a.seed, V) * (0.5 + 0.5 * Math.max(0, hearthGlow)));
+        rim.setColorAt(r++, this.tint);
+      }
+      for (let k = 0; k < V.puffs && c < V.max; k++) {
+        const pf = volcanoPuff(this.puff, t, a.seed, k, V);
+        if (pf.r <= 0.001) continue;
+        this.p.set(x + pf.dx, crater + pf.dy, z + pf.dz);
+        this.s.setScalar(pf.r);
+        this.m.compose(this.p, this.q.identity(), this.s);
+        plume.setMatrixAt(c, this.m);
+        this.tint.copy(this.plumeColor).lerp(this.plumeTop, pf.phase);
+        plume.setColorAt(c++, this.tint);
+      }
+    }
+    plume.count = c;
+    rim.count = r;
+    this.counts.plume = c;
+    this.counts.rims = r;
+    plume.instanceMatrix.needsUpdate = true;
+    rim.instanceMatrix.needsUpdate = true;
+    if (plume.instanceColor) plume.instanceColor.needsUpdate = true;
+    if (rim.instanceColor) rim.instanceColor.needsUpdate = true;
   }
 }

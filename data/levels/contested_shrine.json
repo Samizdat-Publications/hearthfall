@@ -69,6 +69,32 @@
     "dwelling",
     "watchtower"
   ],
+  "props": [
+    { "model": "prop.woodpile", "at": [13, 72], "rot": 1.9 },
+    { "model": "prop.haystack", "at": [12, 56], "rot": 5.6 },
+    { "model": "prop.fence", "at": [10, 65], "rot": 1.6 },
+    { "model": "prop.pots", "at": [14, 67], "rot": 2.4 },
+    { "model": "prop.cart", "at": [20, 77], "rot": 0.7 },
+    { "model": "prop.cairn", "at": [114, 57], "rot": 2.7 },
+    { "model": "prop.woodpile", "at": [115, 70], "rot": 1.4 },
+    { "model": "prop.fence", "at": [115, 73], "rot": 0.4 },
+    { "model": "prop.standing_stone", "at": [39, 62], "rot": 0.5 },
+    { "model": "prop.standing_stone", "at": [49, 62], "rot": 2.1 },
+    { "model": "prop.standing_stone", "at": [44, 69], "rot": 1.3 },
+    { "model": "prop.standing_stone", "at": [61, 62], "rot": 0.5 },
+    { "model": "prop.standing_stone", "at": [71, 62], "rot": 2.1 },
+    { "model": "prop.standing_stone", "at": [66, 69], "rot": 1.3 },
+    { "model": "prop.standing_stone", "at": [55, 42] },
+    { "model": "prop.standing_stone", "at": [43, 34], "rot": 3.1 },
+    { "model": "prop.cairn", "at": [57, 42] },
+    { "model": "prop.woodpile", "at": [44, 42], "rot": 3.5 },
+    { "model": "prop.reeds", "at": [57, 39], "rot": 2.4 },
+    { "model": "prop.reeds", "at": [76, 36], "rot": 5.5 },
+    { "model": "prop.reeds", "at": [57, 89], "rot": 4.4 },
+    { "model": "prop.log_a", "at": [23, 55], "rot": 0.6 },
+    { "model": "prop.fern", "at": [27, 85], "rot": 3.4 },
+    { "model": "prop.bush_a", "at": [118, 70], "rot": 3.5 }
+  ],
   "setup": [
     {
       "spawn": "hearth",
@@ -321,7 +347,7 @@
       "do": [
         {
           "type": "message",
-          "text": "Select four followers and order them to worship the hill shrine."
+          "text": "Select four followers and right-click the hill shrine to worship."
         }
       ]
     },

@@ -673,7 +673,7 @@
       "site": "moon_stone",
       "fromStage": true,
       "after": 3,
-      "text": "Climb the moon hill to the north east, drive off its wolves and the far tribe's warriors, and pray at the moon stone with six followers"
+      "text": "Climb the moon hill to the northeast, drive off its wolves and the far tribe's warriors, and pray at the moon stone with six followers"
     }
   ],
   "lose": [
@@ -758,7 +758,7 @@
       "do": [
         {
           "type": "message",
-          "text": "The moon is rising. Hunters from the far tribe come down the south eastern hills for your Hearth, two at a time."
+          "text": "Hunters from the far tribe come down the southeastern hills for your Hearth, two at a time."
         }
       ]
     },
@@ -864,7 +864,7 @@
         },
         {
           "type": "message",
-          "text": "The moon stone rises on the hill to the north east, past a wolf den, and the far tribe sends warriors to claim the hill. Drive them off and pray there."
+          "text": "The moon stone rises on the hill to the northeast, past a wolf den, and the far tribe sends warriors to claim the hill. Drive them off and pray there."
         }
       ]
     },

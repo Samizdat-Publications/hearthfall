@@ -71,6 +71,34 @@
     "watchtower",
     "warden_lodge"
   ],
+  "props": [
+    { "model": "prop.woodpile", "at": [27, 104], "rot": 2.9 },
+    { "model": "prop.haystack", "at": [26, 88], "rot": 0.3 },
+    { "model": "prop.fence", "at": [24, 97], "rot": 1.6 },
+    { "model": "prop.pots", "at": [28, 99], "rot": 3.4 },
+    { "model": "prop.cairn", "at": [165, 89], "rot": 4.4 },
+    { "model": "prop.woodpile", "at": [165, 102], "rot": 2.4 },
+    { "model": "prop.fence", "at": [164, 106], "rot": 0.4 },
+    { "model": "prop.standing_stone", "at": [65, 66] },
+    { "model": "prop.standing_stone", "at": [55, 66], "rot": 3.1 },
+    { "model": "prop.standing_stone", "at": [137, 126] },
+    { "model": "prop.standing_stone", "at": [127, 126], "rot": 3.1 },
+    { "model": "prop.fence", "at": [62, 131] },
+    { "model": "prop.fence", "at": [130, 71] },
+    { "model": "prop.fence", "at": [96, 101] },
+    { "model": "prop.standing_stone", "at": [106, 96], "rot": 0.1 },
+    { "model": "prop.standing_stone", "at": [99, 106], "rot": 1.4 },
+    { "model": "prop.standing_stone", "at": [88, 102], "rot": 2.5 },
+    { "model": "prop.standing_stone", "at": [88, 90], "rot": 3.6 },
+    { "model": "prop.standing_stone", "at": [99, 86], "rot": 4.8 },
+    { "model": "prop.mushroom_ring", "at": [99, 49], "rot": 0.7 },
+    { "model": "prop.mushroom_ring", "at": [99, 149], "rot": 4.7 },
+    { "model": "prop.reeds", "at": [91, 65], "rot": 3.3 },
+    { "model": "prop.reeds", "at": [91, 127], "rot": 2 },
+    { "model": "prop.bush_a", "at": [34, 76], "rot": 2.9 },
+    { "model": "prop.fern", "at": [156, 108], "rot": 3.9 },
+    { "model": "prop.log_a", "at": [81, 57], "rot": 0.9 }
+  ],
   "setup": [
     {
       "spawn": "hearth",
@@ -425,7 +453,7 @@
       "type": "worship",
       "site": "crown_ward",
       "after": 1,
-      "text": "Take the crown ward in the centre with four followers (it wakes when the packs are gone)"
+      "text": "Take the crown ward in the center with four followers (it wakes when the packs are gone)"
     },
     {
       "type": "worship",
