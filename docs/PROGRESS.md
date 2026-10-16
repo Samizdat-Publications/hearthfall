@@ -15,17 +15,17 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 - S4 2026-10-13 (Stewart: crisp "matches the UI better, almost Dwarf Fortress"): Crisp is the default look, Retro pixels in Settings (ADR-026); stronger crisp miniature focus; bottom HUD row at 80 percent; stance plank and voice subtitle fixed. Every shot set re-baselined.
 - S4 2026-10-15 (Stewart: "finish all the final polish so the only thing remaining is chapter 4", he plays the campaign tonight): Look v4 contact shadows (49493d5, ADR-027). Menus v3 in the Ember Grove stone (painted frame, stone buttons, chapter route maps, build tag on the main menu). Chapter 4 shared engine prep, so chapters 1 to 3 get it too: wolf den pins and soft ground rings (and minimap dots), timed neutral hazards warn 8 s ahead (ring and countdown on the ground, a note, a rumble; balance.hazards.warnSeconds), Ash Peak volcano plume, survive readouts count from their stage start, night lighting preset. Campaign text pass (L1 teaches S and right-click, no AI personality names, US spelling) and 597 props on levels 1 to 25. Deployed by Stewart: https://hearthfall.stewartgregerson.workers.dev (build d408bd3, all 50 models load, no console errors). Every shot set re-baselined; look gains light_night. Commit 9396f58 plus the docs commit.
 - QA 2026-10-15: qa:fast 660/660, check, unit, scenarios, levels 71/71 (alone, 482 s; the driver's 480 s cap cut it under load), replays (Node and browser), bench, prod and e2e (LAN too) PASS; every shot set re-shot, reviewed and re-approved (menus re-run PASS). bench-render WARN 5.3 ms vs the 3.7 baseline while other sessions loaded the PC (Godot, Python, 40 percent CPU): draw calls unchanged at 65 and placeholders equally slower, so load, not code. VisionQA advisory flag on replay_bar (spell bar and replay bar touch; DOM check passes). Pack hash changed: match saves and replays from before today do not load; campaign unlocks are kept.
-- S4 2026-10-16 (Stewart: playable and polished by 12:00Z, then stop): plumes on disc volcanoes (paint `vent`) and Volcano spell cones while their scar lasts; help, tips, HUD tooltips and level 1 text name the bound keys (`{key:action}` in strings and level text); replay bar 14 px lower. L8-B batch 1 drafted by wf_9f52b1d3-177 (levels 36 to 40, all scenarios green; skeptic fixes pending).
+- S4 2026-10-16 (Stewart: playable and polished by 12:00Z, then stop): L8-B chapter 4 'The Wild Heart' DONE: levels 36 to 45 (batch 1 wf_9f52b1d3-177 then skeptic fixes 9657f1a, batch 2 plus fixes 5891fee), order by bot win: Smoke on the Wind, Howling Woods, Storm Coast, Shaking Plain, Caught Between, Pack Mother, Burning Field, Four Hearths, Drowning Mire, Wild Heart. 45 levels, 91 level scenarios green. Also: plumes on disc volcanoes (paint `vent`) and Volcano spell cones, key names follow bindings (`{key:action}`), level `lighting` field (42d4aed, 77415ce). Shot set chapter4 plus menus re-baseline (9d6116e). Full qa runs the levels as two shards (`--shard k/n`, c4f2ae0): one layer took 500 s. Dev probe tools/harness/_wintimes.mjs prints bot win ticks per offset.
 - Stretch 2 (2026-10-10, 24 h) DONE: tag s2-done, full npm run qa PASS at 5e11f16. Run 1 done 2026-10-09T23:58Z: m0-done to m11-done tagged. Run started: 2026-10-08T21:25:00Z.
 - Screenshot mode: headless-shell + GPU args (RTX 5070 Ti Laptop). VisionQA provider ON (about $0.00003 per low shot).
 - Machine: often at 100 percent CPU (other projects' sims and benchmarks, leave them alone). Wall-clock timing is noisy, and bench readings of 6 to 7 ms while agents run scenarios are load, not regressions (idle: 3.7 ms).
 - Keys: Meshy, ElevenLabs, Gemini, OpenAI present; Tripo, PixelLab missing.
-- Making-of page: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5 (version 40), rebuild with `npm run making-of -- page` and republish after every backlog item (README steps).
+- Making-of page: https://claude.ai/artifact/7ypAnF57hVkHQ83aRDHGf5 (republished 2026-10-16 with chapter 4), rebuild with `npm run making-of -- page` and republish after every backlog item (README steps).
 
 ## Next 3 actions
-1. Stewart's campaign playthrough notes first (stone menus, night, den markers and hazard warnings are new to him).
-2. Redeploy only when Stewart asks, and he runs it (docs/DEPLOY.md; auto mode blocks Claude from production deploys). Live: https://hearthfall.stewartgregerson.workers.dev.
-3. Chapter 4 "The Wild Heart" (L8-B, briefs in tools/workflows/chapter4-briefs.json), then map detail v3 (L8-C). Its engine pieces are in; left as TODOs: disc-painted and spell-raised volcanoes get no plume, non-time hazard triggers get no warning, key names in help text (Cuts). Re-check bench-render on an idle PC before any re-baseline.
+1. Stewart's campaign playthrough notes first (he has not played chapter 4 or the newest polish yet). Fix what he hits before anything new.
+2. Redeploy only when Stewart asks, and he runs it (docs/DEPLOY.md; auto mode blocks Claude from production deploys). Live: https://hearthfall.stewartgregerson.workers.dev is build d408bd3, before chapter 4.
+3. Map detail v3 (L8-C) for chapters 3 and 4, then the engine gaps in Top 5. Re-check bench-render on an idle PC before any re-baseline.
 
 ## Blocked
 - (none)
@@ -36,6 +36,7 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 - BACKLOG 5a (rigged clips, P1 but conditional: "only if close-zoom quality needs it"). Cut 10/09/2026: at the closest camera zoom with the retro pass (pixelScale 3) units are about 60 to 90 screen px tall and the procedural poses (walk, work, attack, shoot, cast, pray, panic, idle) read clearly in the combat anim_gallery shot, so the condition is not met; Meshy rigging would also spend asset budget for little visible gain. Revisit if a close-up or portrait camera ships (ADR-012 fallback stays valid: same instanceAnim attribute).
 
 ## Balance gaps
+- Chapter 4 (S4 L8-B, 2026-10-16): bot wins by order at offsets 0 to 3: 36 smoke_on_the_wind 13180 to 17410, 37 howling_woods 16506 to 21526, 38 storm_coast 17152 to 22690, 39 shaking_plain 18641 to 26476, 40 caught_between 20730 to 29685, 41 pack_mother 22109 to 27459, 42 burning_field 22172 to 34713, 43 four_hearths about 29232 to 34494, 44 drowning_mire 31928 to 36008, 45 wild_heart about 35250 to 39450. Wide spreads at 39, 40 and 42 follow the bot's start. Not playtested by a person.
 - Chapter 3 fix round (S4, wf_6db6e827-33c): bot wins 14778, 17350, 19100, 23730, 24084, 25788, 27750, 31250, 34250, 36000 (monotonic, each inside +-25 percent of its target). Skeptic notes left for L7-E (stage-relative triggers fix most): salt_marsh only holds at the pinned bot offset (o0 34246, the rival can fall during the hold so destroy finishes at once); sunken_road hold stage and night_of_wolves final hill lightly contested; hearth_unbroken summit worship (objective 3) uncontested.
 - Stretch 3 (2026-10-10): equal-number counters stay 100 percent by design decision: the 10 v 10 probe has no formation jitter, so each pair is deterministic; real games mix armies and the outnumbered probes (70, 60, 80) carry the counter feel. Revisit only with jitter in the equal probe (tools/harness/soak.mjs, triangle-probe.mjs) and a full retune.
 - S4 campaign rerun (2026-10-11, bd7fb5e): verified bot wins by order 5300, 7100, 8550, 8883, 12530, 12405, 14650, 13400, 16400, 17116, 18870, 20251, 20500, 21750, 24000, 23505, 20708, 21473, 26770, 28324, 31693, 28400, 30100, 33750, 37900 (target line about 5000 + 1208 per level, band 25 percent). Out of band: stone_totem +27 percent (paced by the bot's build-up). Dips: 17 and 18 below 14 to 16; 22 and 23 below 21; near ties 5/6, 7/8, 15/16. Critic follow-ups: (1) last_hearthfall: 2 of 8 offsets never win (tribe 3 towers); (2) ley_crown: unbounded warden spawn, offset 12 stalemates; (3) drowned_fords ward hold and wolf_country late hold uncontested, aim 24000 to 25500; (4) hold_the_line survive stage won by the starting wardens; (5) old_reliquary followers 44 met idle; (6) the_forge followers 55 already met for a slow human; (7) stolen_stones old_ley raid never arrives; (8) stone_totem overshoot accepted; (9) small text fixes (many_mouths, sky_road clock message, cloud_isles sky_gate text); (10) variety: 15 of 25 levels end in eliminateAll.
@@ -51,32 +52,33 @@ Stretch 4 started: 2026-10-11T16:34:00Z (Stewart: work the remaining queue and b
 - Stretch 2 end (2026-10-10): BACKLOG 65 met for outnumbered probes (Warden 6 v Firecaller 10 70, Firecaller 6 v Chanter 10 60, Chanter 6 v Warden 10 80, mixed mirror 40); equal-number pairs still 100 percent. ai soak 64 x 20 min: aggressive 16, sneaky 15, turtle 13, unfinished 20 (the M7 sneaky skew is gone).
 
 ## State of the game (for Stewart)
-Rewritten 2026-10-15 evening, for Stewart's campaign playthrough. Every QA layer passes except the render bench, which only warns under the PC's load from other sessions (see Now); production build fresh. Run 1 built the game (m0 to m11), stretch 2 added the look and the modes, stretch 3 grew the campaign, stretch 4 added LAN play, chapters 2 and 3, map detail, the stone UI, the painted HUD and menus, and the chapter 4 engine prep. Live at https://hearthfall.stewartgregerson.workers.dev. BACKLOG items that need you: 16 desktop build, 29 path strip.
+Rewritten 2026-10-16 morning, after chapter 4. Every QA layer passes except the render bench, which only warns under the PC's load from other sessions (see Now); production build fresh. Run 1 built the game (m0 to m11), stretch 2 added the look and the modes, stretch 3 grew the campaign, stretch 4 added LAN play, chapters 2 and 3, map detail, the stone UI, the painted HUD and menus, and chapter 4. Live at https://hearthfall.stewartgregerson.workers.dev (build d408bd3, before chapter 4; redeploy to get it). BACKLOG items that need you: 16 desktop build, 29 path strip.
 
 **What works**
 - The core god game: a small curved, wrapping planet where your Shaper leads a tribe from a Hearth. Settlers gather and build, followers pray for mana or train Wardens, Firecallers, Chanters and Shades. All 16 spells, eight taught at Reliquaries. Fog of war, minimap and map view (M).
-- Campaign of 35 hand-made levels in three chapters ("The First Fires" 1 to 12, "The Wide Waters" 13 to 25, "The Far Shores" 26 to 35) on a route map with chapter tabs. Every level has a scenario where a bot wins it and one where an idle player loses; bot wins ramp per chapter, and every time limit is at least twice the bot's win.
-- New tonight: menus in the same painted stone as the HUD (main menu, settings, campaign route maps per chapter, briefing, saves; the build date shows on the main menu). Wolf dens carry a pin and a ground ring, and timed eruptions and quakes on a level warn 8 seconds ahead with a ring and a countdown. A night lighting preset. Clearer hints in the first levels (S selects the Shaper, right-click a shrine to pray) and more props on levels 1 to 25.
+- Campaign of 45 hand-made levels in four chapters ("The First Fires" 1 to 12, "The Wide Waters" 13 to 25, "The Far Shores" 26 to 35, "The Wild Heart" 36 to 45) on a route map with chapter tabs. Every level has a scenario where a bot wins it and one where an idle player loses; bot wins ramp per chapter, and every time limit is at least twice the bot's win.
+- New this morning: chapter 4, "The Wild Heart", ten levels where the land itself fights back: wolf dens to clear, a pack mother at night, storms and boat crossings, quakes and eruptions that warn you first, a burning field, a drowning marsh, a four-way crown hill, and a finale around a live volcano. Help text, tips and level hints now name the keys you bound, and some levels set their own lighting (golden, evening, night).
+- New last night: menus in the same painted stone as the HUD (main menu, settings, campaign route maps per chapter, briefing, saves; the build date shows on the main menu). Wolf dens carry a pin and a ground ring, and timed eruptions and quakes on a level warn 8 seconds ahead with a ring and a countdown. A night lighting preset. Clearer hints in the first levels (S selects the Shaper, right-click a shrine to pray) and more props on levels 1 to 25.
 - Since your last session: soft contact shadows under units, buildings, trees and rocks; the Crisp look is the default (Retro pixels in Settings); S selects the Shaper; right-click orders show a closing ring.
 - HUD v3 "Ember Grove": painted wood, stone and lava pieces, interface size fits your screen with a 75 to 200 percent slider in Settings.
 - Look v3 "miniature diorama" (tilt-shift, painted shallow water, thatched huts, lighting presets, rain) plus map detail v2 (shore plants, village clutter, authored props).
 - Modes: skirmish with victory variants, Forge pre-match, boats and balloons, map editor, LAN versus and co-op (campaign together, watchable replays), photo mode, replays, records and achievements.
 - Opponent AI: three personalities, four difficulties, worships across water by boat or balloon, raids worship sites. Personalities now win about equally (aggressive 30, sneaky 26, turtle 27 of 96).
-- QA: 660 unit tests, scenarios plus 71 level scenarios, golden replays in Node and Chromium, benches, 12 shot sets with VisionQA, end-to-end at 1280x720 and 2560x1440, production build.
+- QA: 668 unit tests, scenarios plus 91 level scenarios, golden replays in Node and Chromium, benches, 13 shot sets with VisionQA, end-to-end at 1280x720 and 2560x1440, production build.
 
 **Known issues**
 - Counters at equal numbers still win every time; mixed armies decide real games.
 - Salt Marsh's bot win varies a lot with the start (about 18000 to 32000 ticks); its last stage is a long siege. Across the Strait's rival is smaller than before (if it feels easy, tell me).
 - The AI clears guardians only on its home landmass.
-- Help text and level hints name the default keys, so they go stale if you rebind a key.
+- Chapter 4 was tuned by the level bot, not a person yet: if a level feels unfair or a goal unclear, tell me which. Drowning Mire and Wild Heart are the longest (about 32000 to 39000 ticks for the bot, about 27 to 33 minutes at normal speed).
 - Match saves and replays from before today do not load (the game data changed); campaign unlocks are kept.
 - Online play and a desktop exe are not built. Saves on the public site are separate from your local copy.
 
 **Top 5 next items**
-1. Your campaign notes from tonight.
-2. Chapter 4 (L8-B, 10 levels in two batches), then its fix round.
-3. Map detail v3 (L8-C) for chapters 3 and 4.
-4. Internet play over the public site (BACKLOG 15 needs a public relay).
+1. Your campaign notes, chapter 4 included.
+2. Map detail v3 (L8-C) for chapters 3 and 4.
+3. Internet play over the public site (BACKLOG 15 needs a public relay).
+4. A desktop build (BACKLOG 16) if you want one.
 5. Engine gaps the tuners logged: posted guards count toward maxTroops; a destroy goal that stays open if its tribe falls early.
 
 ## First human playtest
@@ -116,6 +118,7 @@ Then open http://127.0.0.1:5182/ in Chrome or Edge, and press Ctrl+C in that win
 5. **Map editor:** make a small map, press Playtest, then quit back to the editor.
 6. **Settings:** compare miniature focus on and off and the lighting presets (day, golden, evening and the new night). Is the tilt-shift look what you wanted from your reference?
 7. **After a match:** Records, then Main menu > Last replay. Scrub the timeline.
+8. **Chapter 4 (The Wild Heart, levels 36 to 45)** when you reach it. A campaign save from the live site does not carry over to your local copy. Watch for the hazard rings (a quake or eruption lands 8 seconds after the warning), clear wolf dens with troops, and read each level's goals with O.
 
 **What to tell me afterwards** (a few lines each is plenty)
 - The best moment and the most frustrating moment.

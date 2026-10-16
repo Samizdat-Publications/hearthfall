@@ -48,6 +48,12 @@
       "id": "replay_bar",
       "reason": "Checked by eye: subtitle bottom center, replay bar under the spell bar, no overlap; ui_overlap false positive",
       "at": "2026-10-13"
+    },
+    "9abbc9fad7e8f7645bc0d3a56d0ca1b02046d3dfa8119bb335ea341f7e8bfa23": {
+      "set": "menus",
+      "id": "replay_bar",
+      "reason": "S4: replay bar sits 15 px below the spell bar with no overlap; looked at the image, false positive",
+      "at": "2026-10-16"
     }
   }
 }

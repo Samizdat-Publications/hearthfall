@@ -1560,6 +1560,56 @@
       "when": "2026-10-15T23:48:17.631Z",
       "source": "external:ash_peak_mountain.png",
       "bytes": 1266203
+    },
+    {
+      "file": "s4/20261016-0536_wild-heart-volcano.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "Chapter 4 finale, The Wild Heart (level 45): a night valley around a live volcano vent with a lava ring and smoke plume",
+      "highlight": true,
+      "when": "2026-10-16T05:36:19.942Z",
+      "source": "external:wild_heart_volcano.png",
+      "bytes": 1059439
+    },
+    {
+      "file": "s4/20261016-0536_storm-coast.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "Storm Coast (level 38): rain over the lane between isles, where boat waves cross to a far isle garrison",
+      "highlight": false,
+      "when": "2026-10-16T05:36:21.404Z",
+      "source": "external:storm_coast_lane.png",
+      "bytes": 1214423
+    },
+    {
+      "file": "s4/20261016-0536_pack-mother.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "The Pack Mother (level 41): a night level built around wolf dens and the pack that guards them",
+      "highlight": false,
+      "when": "2026-10-16T05:36:22.897Z",
+      "source": "external:pack_mother_night.png",
+      "bytes": 1224338
+    },
+    {
+      "file": "s4/20261016-0536_four-hearths.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "Four Hearths (level 43): the crown hill held between three rival tribes",
+      "highlight": false,
+      "when": "2026-10-16T05:36:24.359Z",
+      "source": "external:four_hearths_crown.png",
+      "bytes": 1308881
+    },
+    {
+      "file": "s4/20261016-0536_drowning-mire.png",
+      "milestone": "S4",
+      "kind": "screenshot",
+      "caption": "The Drowning Mire (level 44): stormy marsh isles that boats cross at any tide",
+      "highlight": false,
+      "when": "2026-10-16T05:36:25.701Z",
+      "source": "external:drowning_mire_isles.png",
+      "bytes": 1198140
     }
   ]
 }
