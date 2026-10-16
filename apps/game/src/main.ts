@@ -76,7 +76,11 @@ let fitKey = "";
 let fontsReady = typeof document === "undefined" || !document.fonts;
 if (!fontsReady) {
   const faces = ['500 16px "Alegreya Sans"', '700 16px "Alegreya Sans"', '800 16px "Alegreya Sans"', '700 16px "Alegreya Sans SC"', '16px "Marcellus SC"'];
-  void Promise.all(faces.map((f) => document.fonts.load(f))).finally(() => (fontsReady = true));
+  // the HUD fit only steps down, so a fit made with fallback font metrics could stick: refit from the wanted scale once the fonts are in
+  void Promise.all(faces.map((f) => document.fonts.load(f))).finally(() => {
+    fontsReady = true;
+    fitKey = "";
+  });
 }
 
 function resize() {
@@ -379,6 +383,12 @@ if (debugApiAllowed(__DEBUG_API__, !!game.params.debug, game.role)) {
     models: () => game.renderer.modelStatus(),
     /** S4 L7-F: the bundled UI fonts are in */
     fonts: () => fontsReady,
+    /** S4: refresh the HUD and refit its scale now (captures call it so they never land between a render and the 250 ms refit) */
+    settleHud: () => {
+      if (game.screen === "none") hud.refresh();
+      refitHud();
+      return hudEl.style.getPropertyValue("--hud-scale");
+    },
     /** minimap camera outline: screen border samples picked onto the terrain (unwrapped around the view center) */
     viewOutline: (fresh = false) => viewOutline(game, fresh),
     minimapCurrent: () => drawnViewKey === viewKey(game),

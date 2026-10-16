@@ -212,3 +212,5 @@
 - 2026-10-15T23:14 set look (14 shots): Look v4 contact shadows and Crisp audit; new light_night shot for the night lighting preset
 - 2026-10-16T04:53 set chapter4 (6 shots): S4 L8-B: new chapter 4 shot set (six world views of levels 36 to 45)
 - 2026-10-16T04:54 set menus (14 shots): S4 L8-B: campaign menu gains The Wild Heart tab, replay bar spacing, how to play names bound keys
+- 2026-10-16T05:57 set spells (9 shots): S4: Volcano spell cones carry a plume while their scar lasts (77415ce)
+- 2026-10-16T06:02 set spells2 (9 shots): S4: captures settle the HUD fit first (settleHud); the old baselines caught some shots before the 250 ms refit at the larger scale

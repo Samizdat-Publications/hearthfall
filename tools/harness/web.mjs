@@ -71,6 +71,14 @@ export async function openGame(browser, url, { width = 1280, height = 720, minFr
   return { page, consoleErrors };
 }
 
+/** S4: the HUD refits every 250 ms after its content renders; settle it twice, two frames apart, so a capture shows the fitted scale. */
+export async function settleHud(page, timeoutMs = 10000) {
+  for (let i = 0; i < 2; i++) {
+    const f = await page.evaluate(() => (window.__game.settleHud?.(), window.__game.frames()));
+    await page.waitForFunction((n) => window.__game.frames() >= n, f + 2, { timeout: timeoutMs });
+  }
+}
+
 /** Pixel statistics for the blank check: luminance std dev and the dominant 4-bit color share. */
 /**
  * BACKLOG 32: the part of the page that shows the 3D view, measured in the page (CSS px): the game canvas

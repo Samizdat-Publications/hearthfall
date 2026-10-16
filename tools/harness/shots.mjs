@@ -5,7 +5,7 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, appendF
 import pixelmatch from "pixelmatch";
 import { PNG } from "pngjs";
 import { LATEST, ROOT, writeReport } from "./lib.mjs";
-import { blankCheck, launch, MIN_VIEW_SHARE, maskShare, openGame, pixelStats, regionMask, shotMode, startPreview, viewRegionFn, viteBuild } from "./web.mjs";
+import { blankCheck, launch, MIN_VIEW_SHARE, maskShare, openGame, pixelStats, regionMask, settleHud, shotMode, startPreview, viewRegionFn, viteBuild } from "./web.mjs";
 
 const SHOT_DIR = LATEST + "shots/";
 const BASE_DIR = (set) => ROOT + `reports/baselines/shots/${set}/`;
@@ -154,6 +154,7 @@ export async function captureSet(set, { onlyIds } = {}) {
           res.checks.vfx = after.render.vfx ?? 0;
           if (res.checks.vfx < shot.expectVfx) fail(`vfx: ${res.checks.vfx} effect instances drawn, expected at least ${shot.expectVfx}`);
         }
+        await settleHud(page);
         const path = SHOT_DIR + shot.id + ".png";
         await page.screenshot({ path });
         res.checks.dom = await page.evaluate(domCheckFn);
