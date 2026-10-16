@@ -2,7 +2,7 @@
 
 Hearthfall's production build is a plain static site (`apps/game/dist`, relative `base: "./"`), so it can be hosted anywhere that serves files. The prepared target is Cloudflare Workers static assets, configured in `wrangler.jsonc` at the project root (worker name `hearthfall`, no server code).
 
-Nothing deploys automatically. A public deploy waits for Stewart's go-ahead.
+Live: https://hearthfall.stewartgregerson.workers.dev (first deploy 2026-10-15, build 2026-10-15 d408bd3, Stewart ran it). Nothing deploys automatically: Stewart runs the deploy command himself, because Claude Code's auto mode blocks production deploys.
 
 ## Play locally (no deploy)
 
@@ -20,7 +20,7 @@ First time only, sign in to Cloudflare (opens a browser):
 cd "C:\Users\stewa\Documents\Claude\Hearthfall"; npx wrangler login
 ```
 
-Every deploy:
+Every deploy (the build step ships whatever is in the working folder, so commit or set aside unfinished work first; if a fresh build is already in apps/game/dist, `npx wrangler deploy` alone is enough):
 
 ```powershell
 cd "C:\Users\stewa\Documents\Claude\Hearthfall"; npm run build; npx wrangler deploy
