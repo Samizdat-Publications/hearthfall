@@ -10,153 +10,1207 @@
     "size": 160,
     "landAboveSea": -30,
     "paint": [
-      { "shape": "rect", "at": [80, 80], "size": [150, 150], "aboveSea": 10, "falloff": 6 },
-      { "shape": "disc", "at": [142, 142], "r": 22, "aboveSea": -24, "falloff": 8 },
-      { "shape": "disc", "at": [30, 130], "r": 12, "aboveSea": 18, "falloff": 6 },
-      { "shape": "ridge", "at": [36, 124], "to": [114, 46], "width": 4, "aboveSea": 26, "falloff": 3 },
-      { "shape": "disc", "at": [70, 104], "r": 4, "aboveSea": 20, "falloff": 3 },
-      { "shape": "disc", "at": [82, 64], "r": 4, "aboveSea": 20, "falloff": 3 },
-      { "shape": "disc", "at": [132, 28], "r": 15, "aboveSea": 60, "falloff": 1 }
+      {
+        "shape": "rect",
+        "at": [
+          80,
+          80
+        ],
+        "size": [
+          150,
+          150
+        ],
+        "aboveSea": 10,
+        "falloff": 6
+      },
+      {
+        "shape": "disc",
+        "at": [
+          142,
+          142
+        ],
+        "r": 22,
+        "aboveSea": -24,
+        "falloff": 8
+      },
+      {
+        "shape": "disc",
+        "at": [
+          30,
+          130
+        ],
+        "r": 12,
+        "aboveSea": 18,
+        "falloff": 6
+      },
+      {
+        "shape": "ridge",
+        "at": [
+          36,
+          124
+        ],
+        "to": [
+          114,
+          46
+        ],
+        "width": 4,
+        "aboveSea": 26,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          70,
+          104
+        ],
+        "r": 4,
+        "aboveSea": 20,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          82,
+          64
+        ],
+        "r": 4,
+        "aboveSea": 20,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          132,
+          28
+        ],
+        "r": 15,
+        "aboveSea": 60,
+        "falloff": 1
+      }
     ]
   },
   "tribes": [
     {},
-    { "ai": "aggressive", "difficulty": "normal", "maxTroops": 10, "maxPopulation": 30, "worshipAfterSeconds": 3200, "buildings": ["dwelling", "warden_lodge", "fire_lodge", "watchtower"] }
+    {
+      "ai": "aggressive",
+      "difficulty": "normal",
+      "maxTroops": 10,
+      "maxPopulation": 30,
+      "worshipAfterSeconds": 3200,
+      "buildings": [
+        "dwelling",
+        "warden_lodge",
+        "fire_lodge",
+        "watchtower"
+      ]
+    }
   ],
-  "spells": ["bolt", "call", "raise_land", "flatten"],
-  "buildings": ["dwelling", "watchtower", "warden_lodge", "fire_lodge", "mending_hut"],
+  "spells": [
+    "bolt",
+    "call",
+    "raise_land",
+    "flatten"
+  ],
+  "buildings": [
+    "dwelling",
+    "watchtower",
+    "warden_lodge",
+    "fire_lodge",
+    "mending_hut"
+  ],
   "setup": [
-    { "spawn": "hearth", "tribe": 0, "at": [30, 130] },
-    { "spawn": "shaper", "tribe": 0, "at": [34, 127] },
-    { "spawn": "settler", "tribe": 0, "near": [26, 134], "count": 6 },
-    { "spawn": "warden", "tribe": 0, "near": [36, 132], "count": 2 },
-    { "spawn": "tree", "near": [18, 116], "count": 12, "spacing": 1.2 },
-    { "spawn": "tree", "near": [44, 144], "count": 10, "spacing": 1.2 },
-    { "spawn": "tree", "near": [14, 140], "count": 8, "spacing": 1.3 },
-    { "spawn": "tree", "near": [52, 104], "count": 6, "spacing": 1.3 },
-    { "spawn": "rock", "near": [40, 116], "count": 4, "spacing": 2 },
-    { "spawn": "wild", "tribe": -1, "near": [50, 140], "count": 4 },
-
-    { "spawn": "hearth", "tribe": 1, "at": [134, 26] },
-    { "spawn": "shaper", "tribe": 1, "at": [130, 30] },
-    { "spawn": "settler", "tribe": 1, "near": [138, 22], "count": 10 },
-    { "spawn": "warden_lodge", "tribe": 1, "at": [126, 21] },
-    { "spawn": "watchtower", "tribe": 1, "at": [123, 31] },
-    { "spawn": "watchtower", "tribe": 1, "at": [134, 37] },
-    { "spawn": "watchtower", "tribe": 1, "at": [140, 28] },
-    { "spawn": "warden", "tribe": 1, "near": [127, 33], "count": 6, "stance": "defensive" },
-    { "spawn": "warden", "tribe": 1, "near": [133, 28], "count": 6, "stance": "defensive" },
-    { "spawn": "firecaller", "tribe": 1, "near": [130, 30], "count": 4, "stance": "defensive" },
-    { "spawn": "tree", "near": [141, 17], "count": 8, "spacing": 1.2 },
-    { "spawn": "rock", "near": [140, 33], "count": 3, "spacing": 2 },
-
-    { "spawn": "ward_stone", "tribe": 1, "at": [70, 104], "site": { "tag": "ward_knoll", "dormant": true, "rewards": [{ "type": "message", "text": "The ward stone on the southern knoll is yours: it strikes at enemies who come near." }] } },
-    { "spawn": "warden", "tribe": 1, "near": [72, 102], "count": 6, "stance": "defensive" },
-    { "spawn": "firecaller", "tribe": 1, "near": [68, 106], "count": 2, "stance": "defensive" },
-    { "spawn": "ley_stone", "tribe": 1, "at": [82, 64], "site": { "tag": "ley_knoll", "dormant": true, "rewards": [{ "type": "message", "text": "The ley stone on the northern knoll is yours." }] } },
-    { "spawn": "warden", "tribe": 1, "near": [84, 66], "count": 6, "stance": "defensive" },
-    { "spawn": "firecaller", "tribe": 1, "near": [80, 62], "count": 2, "stance": "defensive" }
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        30,
+        130
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        34,
+        127
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        26,
+        134
+      ],
+      "count": 6
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        36,
+        132
+      ],
+      "count": 2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        18,
+        116
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        44,
+        144
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        14,
+        140
+      ],
+      "count": 8,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        52,
+        104
+      ],
+      "count": 6,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        40,
+        116
+      ],
+      "count": 4,
+      "spacing": 2
+    },
+    {
+      "spawn": "wild",
+      "tribe": -1,
+      "near": [
+        50,
+        140
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        134,
+        26
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        130,
+        30
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        138,
+        22
+      ],
+      "count": 10
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 1,
+      "at": [
+        126,
+        21
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        123,
+        31
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        134,
+        37
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        140,
+        28
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        127,
+        33
+      ],
+      "count": 6,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        133,
+        28
+      ],
+      "count": 6,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "firecaller",
+      "tribe": 1,
+      "near": [
+        130,
+        30
+      ],
+      "count": 4,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        141,
+        17
+      ],
+      "count": 8,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        140,
+        33
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "ward_stone",
+      "tribe": 1,
+      "at": [
+        70,
+        104
+      ],
+      "site": {
+        "tag": "ward_knoll",
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The ward stone on the southern knoll is yours: it strikes at enemies who come near."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        72,
+        102
+      ],
+      "count": 6,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "firecaller",
+      "tribe": 1,
+      "near": [
+        68,
+        106
+      ],
+      "count": 2,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "ley_stone",
+      "tribe": 1,
+      "at": [
+        82,
+        64
+      ],
+      "site": {
+        "tag": "ley_knoll",
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The ley stone on the northern knoll is yours."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        84,
+        66
+      ],
+      "count": 6,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "firecaller",
+      "tribe": 1,
+      "near": [
+        80,
+        62
+      ],
+      "count": 2,
+      "stance": "defensive"
+    }
   ],
   "props": [
-    { "model": "prop.haystack", "at": [24, 125] },
-    { "model": "prop.fence", "at": [21, 136], "rot": 1.5 },
-    { "model": "prop.fence", "at": [35, 139], "rot": 0.2 },
-    { "model": "prop.woodpile", "at": [37, 123] },
-    { "model": "prop.cart", "at": [41, 131], "rot": 0.7 },
-    { "model": "prop.pots", "at": [25, 128] },
-    { "model": "prop.flowers", "at": [58, 140] },
-    { "model": "prop.standing_stone", "at": [49, 118], "rot": 0.8 },
-    { "model": "prop.standing_stone", "at": [72, 82], "rot": 2.2 },
-    { "model": "prop.standing_stone", "at": [105, 61], "rot": 0.8 },
-    { "model": "prop.cairn", "at": [67, 101] },
-    { "model": "prop.cairn", "at": [73, 107] },
-    { "model": "prop.standing_stone", "at": [74, 101], "rot": 0.4 },
-    { "model": "prop.cairn", "at": [79, 61] },
-    { "model": "prop.cairn", "at": [85, 67] },
-    { "model": "prop.standing_stone", "at": [86, 61], "rot": 1.2 },
-    { "model": "prop.reeds", "at": [100, 90] },
-    { "model": "prop.reeds", "at": [60, 122] },
-    { "model": "prop.reeds", "at": [50, 84] },
-    { "model": "prop.reeds", "at": [114, 76] },
-    { "model": "prop.reeds", "at": [118, 120] },
-    { "model": "prop.reeds", "at": [124, 128] },
-    { "model": "prop.reeds", "at": [64, 70] },
-    { "model": "prop.reeds", "at": [94, 44] },
-    { "model": "prop.mushroom_ring", "at": [40, 96] },
-    { "model": "prop.ruin_a", "at": [116, 48], "rot": 0.8 },
-    { "model": "prop.log_a", "at": [112, 43], "rot": 2.4 },
-    { "model": "prop.cairn", "at": [125, 26] },
-    { "model": "prop.pots", "at": [139, 25] },
-    { "model": "prop.woodpile", "at": [138, 31] },
-    { "model": "prop.standing_stone", "at": [128, 18], "rot": 0.3 }
+    {
+      "model": "prop.haystack",
+      "at": [
+        24,
+        125
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        21,
+        136
+      ],
+      "rot": 1.5
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        35,
+        139
+      ],
+      "rot": 0.2
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        37,
+        123
+      ]
+    },
+    {
+      "model": "prop.cart",
+      "at": [
+        41,
+        131
+      ],
+      "rot": 0.7
+    },
+    {
+      "model": "prop.pots",
+      "at": [
+        25,
+        128
+      ]
+    },
+    {
+      "model": "prop.flowers",
+      "at": [
+        58,
+        140
+      ]
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        49,
+        118
+      ],
+      "rot": 0.8
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        72,
+        82
+      ],
+      "rot": 2.2
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        105,
+        61
+      ],
+      "rot": 0.8
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        67,
+        101
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        73,
+        107
+      ]
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        74,
+        101
+      ],
+      "rot": 0.4
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        79,
+        61
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        85,
+        67
+      ]
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        86,
+        61
+      ],
+      "rot": 1.2
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        100,
+        90
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        60,
+        122
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        50,
+        84
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        114,
+        76
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        118,
+        120
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        124,
+        128
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        64,
+        70
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        94,
+        44
+      ]
+    },
+    {
+      "model": "prop.mushroom_ring",
+      "at": [
+        40,
+        96
+      ]
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        116,
+        48
+      ],
+      "rot": 0.8
+    },
+    {
+      "model": "prop.log_a",
+      "at": [
+        112,
+        43
+      ],
+      "rot": 2.4
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        125,
+        26
+      ]
+    },
+    {
+      "model": "prop.pots",
+      "at": [
+        139,
+        25
+      ]
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        138,
+        31
+      ]
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        128,
+        18
+      ],
+      "rot": 0.3
+    }
   ],
   "objectives": [
-    { "type": "followers", "n": 30, "text": "Raise dwellings and grow your village to thirty followers" },
-    { "type": "hold", "n": 2, "seconds": 0, "after": 0, "text": "Drive the rise's guards off both knolls beside the road and pray the ward stone and the ley stone away from them" },
-    { "type": "hold", "n": 2, "seconds": 120, "after": 1, "text": "Hold both stones at once for two minutes while the plain shakes and the rise sends war bands to pray them back" },
-    { "type": "destroy", "tribe": 1, "building": "hearth", "after": 2, "text": "Climb the risen ramp onto the rocky rise and burn the rival Hearth past its guard and towers" }
+    {
+      "type": "followers",
+      "n": 30,
+      "text": "Raise dwellings and grow your village to thirty followers"
+    },
+    {
+      "type": "hold",
+      "n": 2,
+      "seconds": 0,
+      "after": 0,
+      "text": "Drive the rise's guards off both knolls beside the road and pray the ward stone and the ley stone away from them"
+    },
+    {
+      "type": "hold",
+      "n": 2,
+      "seconds": 120,
+      "after": 1,
+      "text": "Hold both stones at once for two minutes while the plain shakes and the rise sends war bands to pray them back"
+    },
+    {
+      "type": "destroy",
+      "tribe": 1,
+      "building": "hearth",
+      "after": 2,
+      "text": "Climb the risen ramp onto the rocky rise and burn the rival Hearth past its guard and towers"
+    }
   ],
-  "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 3200 }],
+  "lose": [
+    {
+      "type": "hearthLost"
+    },
+    {
+      "type": "timeLimit",
+      "seconds": 3200
+    }
+  ],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [
-      { "type": "reveal", "at": [132, 28], "r": 16 },
-      { "type": "reveal", "at": [70, 104], "r": 6 },
-      { "type": "reveal", "at": [82, 64], "r": 6 },
-      { "type": "message", "text": "The old road runs from your village across a plain barely above the sea, to a rocky rise where a warlike tribe waits. The ground here is restless." }
-    ] },
-    { "when": { "type": "time", "seconds": 230, "every": 200 }, "until": 0, "do": [{ "type": "message", "text": "Warriors are climbing down the rocks of the rise and marching on your village along the road." }] },
-    { "when": { "type": "time", "seconds": 240, "every": 200 }, "until": 0, "do": [
-      { "type": "spawn", "unit": "warden", "n": 3, "tribe": 1, "at": [112, 50] },
-      { "type": "raid", "tribe": 1, "to": [30, 130], "fresh": true }
-    ] },
-    { "when": { "type": "objective", "index": 0 }, "do": [
-      { "type": "awaken", "site": "ward_knoll" },
-      { "type": "awaken", "site": "ley_knoll" },
-      { "type": "message", "text": "The ground heaves. The two old stones on the knolls beside the road wake, and the rise has posted guards on both. Take them." }
-    ] },
-
-    { "when": { "type": "time", "seconds": 20, "every": 780 }, "after": 0, "until": 2, "do": [{ "type": "message", "text": "The ground groans: a quake splits the plain south of the road, midway along it, in ten seconds." }] },
-    { "when": { "type": "time", "seconds": 30, "every": 780 }, "after": 0, "until": 2, "do": [{ "type": "spell", "spell": "quake", "at": [96, 86], "tribe": -1 }] },
-    { "when": { "type": "time", "seconds": 150, "every": 780 }, "after": 0, "until": 2, "do": [{ "type": "message", "text": "The ground groans: a quake splits the plain north of the road, near your village, in ten seconds." }] },
-    { "when": { "type": "time", "seconds": 160, "every": 780 }, "after": 0, "until": 2, "do": [{ "type": "spell", "spell": "quake", "at": [52, 86], "tribe": -1 }] },
-    { "when": { "type": "time", "seconds": 280, "every": 780 }, "after": 0, "until": 2, "do": [{ "type": "message", "text": "The ground groans: a quake splits the plain south of the road, below the rise, in ten seconds." }] },
-    { "when": { "type": "time", "seconds": 290, "every": 780 }, "after": 0, "until": 2, "do": [{ "type": "spell", "spell": "quake", "at": [110, 72], "tribe": -1 }] },
-    { "when": { "type": "time", "seconds": 410, "every": 780 }, "after": 0, "until": 2, "do": [{ "type": "message", "text": "The ground groans: a quake splits the plain south of the road, near your village, in ten seconds." }] },
-    { "when": { "type": "time", "seconds": 420, "every": 780 }, "after": 0, "until": 2, "do": [{ "type": "spell", "spell": "quake", "at": [56, 126], "tribe": -1 }] },
-    { "when": { "type": "time", "seconds": 540, "every": 780 }, "after": 0, "until": 2, "do": [{ "type": "message", "text": "The ground groans: a quake splits the plain north of the road, below the rise, in ten seconds." }] },
-    { "when": { "type": "time", "seconds": 550, "every": 780 }, "after": 0, "until": 2, "do": [{ "type": "spell", "spell": "quake", "at": [92, 46], "tribe": -1 }] },
-    { "when": { "type": "time", "seconds": 670, "every": 780 }, "after": 0, "until": 2, "do": [{ "type": "message", "text": "The ground groans: a quake splits the plain north of the road, midway along it, in ten seconds." }] },
-    { "when": { "type": "time", "seconds": 680, "every": 780 }, "after": 0, "until": 2, "do": [{ "type": "spell", "spell": "quake", "at": [66, 72], "tribe": -1 }] },
-
-    { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "message", "text": "Both stones are yours. Hold them together for two minutes: the rise will send war bands down to pray them back." }] },
-    { "when": { "type": "time", "seconds": 5, "every": 200 }, "after": 1, "until": 2, "do": [{ "type": "message", "text": "Two war bands are climbing down the rise, one for each knoll, to pray the stones back." }] },
-    { "when": { "type": "time", "seconds": 15, "every": 200 }, "after": 1, "until": 2, "do": [
-      { "type": "spawn", "unit": "warden", "n": 4, "tribe": 1, "at": [112, 50] },
-      { "type": "spawn", "unit": "firecaller", "n": 1, "tribe": 1, "at": [110, 52] },
-      { "type": "raid", "tribe": 1, "to": [70, 104], "pray": "ward_knoll", "fresh": true }
-    ] },
-    { "when": { "type": "time", "seconds": 15, "every": 200 }, "after": 1, "until": 2, "do": [
-      { "type": "spawn", "unit": "warden", "n": 4, "tribe": 1, "at": [108, 46] },
-      { "type": "spawn", "unit": "firecaller", "n": 1, "tribe": 1, "at": [106, 48] },
-      { "type": "raid", "tribe": 1, "to": [82, 64], "pray": "ley_knoll", "fresh": true }
-    ] },
-
-    { "when": { "type": "objective", "index": 2 }, "do": [
-      { "type": "shape", "shape": "line", "at": [114, 46], "to": [122, 38], "width": 4, "aboveSea": 40, "falloff": 3, "seconds": 20 },
-      { "type": "message", "text": "The stones are held. A last great heave lifts the road's fallen ramp back onto the rise. Climb it and burn the rival Hearth." }
-    ] },
-    { "when": { "type": "time", "seconds": 25 }, "after": 2, "do": [
-      { "type": "spawn", "unit": "warden", "n": 6, "tribe": 1, "at": [127, 33] },
-      { "type": "spawn", "unit": "firecaller", "n": 2, "tribe": 1, "at": [129, 31] },
-      { "type": "raid", "tribe": 1, "to": [30, 130], "fresh": true },
-      { "type": "message", "text": "A war band comes down the new ramp and marches on your village along the road." }
-    ] },
-    { "when": { "type": "time", "seconds": 165, "every": 150 }, "after": 2, "until": 3, "do": [{ "type": "message", "text": "Another war band is gathering at the top of the ramp." }] },
-    { "when": { "type": "time", "seconds": 175, "every": 150 }, "after": 2, "until": 3, "do": [
-      { "type": "spawn", "unit": "warden", "n": 4, "tribe": 1, "at": [127, 33] },
-      { "type": "spawn", "unit": "firecaller", "n": 1, "tribe": 1, "at": [129, 31] },
-      { "type": "raid", "tribe": 1, "to": [30, 130], "fresh": true }
-    ] },
-    { "when": { "type": "time", "seconds": 2900 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1
+      },
+      "do": [
+        {
+          "type": "reveal",
+          "at": [
+            132,
+            28
+          ],
+          "r": 16
+        },
+        {
+          "type": "reveal",
+          "at": [
+            70,
+            104
+          ],
+          "r": 6
+        },
+        {
+          "type": "reveal",
+          "at": [
+            82,
+            64
+          ],
+          "r": 6
+        },
+        {
+          "type": "message",
+          "text": "The old road runs from your village across a plain barely above the sea, to a rocky rise where a warlike tribe waits. The ground here is restless."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 230,
+        "every": 200
+      },
+      "until": 0,
+      "do": [
+        {
+          "type": "message",
+          "text": "Warriors are climbing down the rocks of the rise and marching on your village along the road."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 240,
+        "every": 200
+      },
+      "until": 0,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 1,
+          "at": [
+            112,
+            50
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            30,
+            130
+          ],
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 0
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "ward_knoll"
+        },
+        {
+          "type": "awaken",
+          "site": "ley_knoll"
+        },
+        {
+          "type": "message",
+          "text": "The ground heaves. The two old stones on the knolls beside the road wake, and the rise has posted guards on both. Take them."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 20,
+        "every": 780
+      },
+      "after": 0,
+      "until": 2,
+      "do": [
+        {
+          "type": "message",
+          "text": "The ground groans: a quake splits the plain south of the road, midway along it, in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 30,
+        "every": 780
+      },
+      "after": 0,
+      "until": 2,
+      "do": [
+        {
+          "type": "spell",
+          "spell": "quake",
+          "at": [
+            96,
+            86
+          ],
+          "tribe": -1
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 150,
+        "every": 780
+      },
+      "after": 0,
+      "until": 2,
+      "do": [
+        {
+          "type": "message",
+          "text": "The ground groans: a quake splits the plain beside the ward stone's knoll, south of the road, in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 160,
+        "every": 780
+      },
+      "after": 0,
+      "until": 2,
+      "do": [
+        {
+          "type": "spell",
+          "spell": "quake",
+          "at": [
+            76,
+            110
+          ],
+          "tribe": -1
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 280,
+        "every": 780
+      },
+      "after": 0,
+      "until": 2,
+      "do": [
+        {
+          "type": "message",
+          "text": "The ground groans: a quake splits the plain beside the ley stone's knoll, north of the road, in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 290,
+        "every": 780
+      },
+      "after": 0,
+      "until": 2,
+      "do": [
+        {
+          "type": "spell",
+          "spell": "quake",
+          "at": [
+            76,
+            58
+          ],
+          "tribe": -1
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 410,
+        "every": 780
+      },
+      "after": 0,
+      "until": 2,
+      "do": [
+        {
+          "type": "message",
+          "text": "The ground groans: a quake splits the plain north of the road, near your village, in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 420,
+        "every": 780
+      },
+      "after": 0,
+      "until": 2,
+      "do": [
+        {
+          "type": "spell",
+          "spell": "quake",
+          "at": [
+            52,
+            86
+          ],
+          "tribe": -1
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 540,
+        "every": 780
+      },
+      "after": 0,
+      "until": 2,
+      "do": [
+        {
+          "type": "message",
+          "text": "The ground groans: a quake splits the plain north of the road, below the rise, in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 550,
+        "every": 780
+      },
+      "after": 0,
+      "until": 2,
+      "do": [
+        {
+          "type": "spell",
+          "spell": "quake",
+          "at": [
+            92,
+            46
+          ],
+          "tribe": -1
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 670,
+        "every": 780
+      },
+      "after": 0,
+      "until": 2,
+      "do": [
+        {
+          "type": "message",
+          "text": "The ground groans: a quake splits the plain south of the road, below the rise, in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 680,
+        "every": 780
+      },
+      "after": 0,
+      "until": 2,
+      "do": [
+        {
+          "type": "spell",
+          "spell": "quake",
+          "at": [
+            110,
+            72
+          ],
+          "tribe": -1
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Both stones are yours. Hold them together for two minutes: the rise will send war bands down to pray them back."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 5,
+        "every": 200
+      },
+      "after": 1,
+      "until": 2,
+      "do": [
+        {
+          "type": "message",
+          "text": "Two war bands are climbing down the rise, one for each knoll, to pray the stones back."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 15,
+        "every": 200
+      },
+      "after": 1,
+      "until": 2,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            112,
+            50
+          ]
+        },
+        {
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 1,
+          "tribe": 1,
+          "at": [
+            110,
+            52
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            70,
+            104
+          ],
+          "pray": "ward_knoll",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 15,
+        "every": 200
+      },
+      "after": 1,
+      "until": 2,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            108,
+            46
+          ]
+        },
+        {
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 1,
+          "tribe": 1,
+          "at": [
+            106,
+            48
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            82,
+            64
+          ],
+          "pray": "ley_knoll",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 2
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "line",
+          "at": [
+            114,
+            46
+          ],
+          "to": [
+            122,
+            38
+          ],
+          "width": 4,
+          "aboveSea": 40,
+          "falloff": 3,
+          "seconds": 20
+        },
+        {
+          "type": "message",
+          "text": "The stones are held. A last great heave lifts the road's fallen ramp back onto the rise. Climb it and burn the rival Hearth."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 25
+      },
+      "after": 2,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 6,
+          "tribe": 1,
+          "at": [
+            127,
+            33
+          ]
+        },
+        {
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 2,
+          "tribe": 1,
+          "at": [
+            129,
+            31
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            30,
+            130
+          ],
+          "fresh": true
+        },
+        {
+          "type": "message",
+          "text": "A war band comes down the new ramp and marches on your village along the road."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 165,
+        "every": 150
+      },
+      "after": 2,
+      "until": 3,
+      "do": [
+        {
+          "type": "message",
+          "text": "Another war band is gathering at the top of the ramp."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 175,
+        "every": 150
+      },
+      "after": 2,
+      "until": 3,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            127,
+            33
+          ]
+        },
+        {
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 1,
+          "tribe": 1,
+          "at": [
+            129,
+            31
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            30,
+            130
+          ],
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 2900
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Five minutes remain."
+        }
+      ]
+    }
   ]
 }

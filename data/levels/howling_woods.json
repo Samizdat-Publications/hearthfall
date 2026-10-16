@@ -797,8 +797,8 @@
           "n": 4,
           "tribe": -1,
           "at": [
-            57,
-            58
+            60,
+            61
           ]
         },
         {
@@ -843,7 +843,7 @@
         },
         {
           "type": "message",
-          "text": "Two packs wake around the glade, one in the hollow to the southwest and one in the thicket to the northeast. Clear them both."
+          "text": "Two packs wake around the glade, one in the hollow to the southwest and one in the thicket to the northeast. Clear any two dens."
         }
       ]
     },
@@ -872,7 +872,7 @@
     {
       "when": {
         "type": "time",
-        "seconds": 35
+        "seconds": 20
       },
       "after": 2,
       "do": [
@@ -885,7 +885,7 @@
     {
       "when": {
         "type": "time",
-        "seconds": 45
+        "seconds": 30
       },
       "after": 2,
       "do": [

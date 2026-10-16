@@ -14,7 +14,7 @@
       "offset": 1
     }
   ],
-  "runTicks": 31000,
+  "runTicks": 24000,
   "assert": [
     {
       "at": 2500,
@@ -25,19 +25,19 @@
       "expr": "level.objectivesDone == 2 && site('storm_seer').by == 0 && alive(2) && !level.lost"
     },
     {
-      "at": 9500,
+      "at": 8000,
       "expr": "level.objectivesDone == 2 && alive(2) && !level.lost"
     },
     {
-      "at": 14000,
-      "expr": "level.objectivesDone == 3 && alive(1) && alive(2) && count(tribe1.hearths) == 1 && !level.won && !level.lost"
+      "at": 10000,
+      "expr": "level.objectivesDone == 3 && alive(1) && alive(2) && count(tribe1.hearths) == 1 && !level.won && !level.lost && events.count('hazardWarn') >= 3"
     },
     {
-      "at": 24000,
+      "at": 16000,
       "expr": "level.objectivesDone == 3 && count(tribe1.hearths) == 1 && !level.won && !level.lost"
     },
     {
-      "at": 31000,
+      "at": 24000,
       "expr": "level.won && level.objectivesDone == 4 && count(tribe1.hearths) == 0 && alive(0) && invariants() == 0"
     }
   ]

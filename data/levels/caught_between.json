@@ -10,150 +10,1132 @@
     "size": 192,
     "landAboveSea": -30,
     "paint": [
-      { "shape": "rect", "at": [96, 94], "size": [172, 120], "aboveSea": 26, "falloff": 6 },
-      { "shape": "ridge", "at": [16, 42], "to": [176, 42], "width": 8, "aboveSea": 58, "falloff": 6 },
-      { "shape": "ridge", "at": [16, 150], "to": [176, 150], "width": 6, "aboveSea": 52, "falloff": 5 },
-      { "shape": "ridge", "at": [2, 118], "to": [190, 118], "width": 18, "aboveSea": -26, "falloff": 2 },
-      { "shape": "ridge", "at": [140, 20], "to": [140, 110], "width": 8, "aboveSea": -26, "falloff": 2 },
-      { "shape": "disc", "at": [96, 118], "r": 5, "aboveSea": 20, "falloff": 2 },
-      { "shape": "rect", "at": [96, 108], "size": [5, 8], "aboveSea": 10, "falloff": 3 },
-      { "shape": "rect", "at": [166, 118], "size": [8, 22], "aboveSea": 10, "falloff": 3 }
+      {
+        "shape": "rect",
+        "at": [
+          96,
+          94
+        ],
+        "size": [
+          172,
+          120
+        ],
+        "aboveSea": 26,
+        "falloff": 6
+      },
+      {
+        "shape": "ridge",
+        "at": [
+          16,
+          42
+        ],
+        "to": [
+          176,
+          42
+        ],
+        "width": 8,
+        "aboveSea": 58,
+        "falloff": 6
+      },
+      {
+        "shape": "ridge",
+        "at": [
+          16,
+          150
+        ],
+        "to": [
+          176,
+          150
+        ],
+        "width": 6,
+        "aboveSea": 52,
+        "falloff": 5
+      },
+      {
+        "shape": "ridge",
+        "at": [
+          2,
+          118
+        ],
+        "to": [
+          190,
+          118
+        ],
+        "width": 18,
+        "aboveSea": -26,
+        "falloff": 2
+      },
+      {
+        "shape": "ridge",
+        "at": [
+          140,
+          20
+        ],
+        "to": [
+          140,
+          110
+        ],
+        "width": 8,
+        "aboveSea": -26,
+        "falloff": 2
+      },
+      {
+        "shape": "disc",
+        "at": [
+          96,
+          118
+        ],
+        "r": 5,
+        "aboveSea": 20,
+        "falloff": 2
+      },
+      {
+        "shape": "rect",
+        "at": [
+          96,
+          108
+        ],
+        "size": [
+          5,
+          8
+        ],
+        "aboveSea": 10,
+        "falloff": 3
+      },
+      {
+        "shape": "rect",
+        "at": [
+          166,
+          118
+        ],
+        "size": [
+          8,
+          22
+        ],
+        "aboveSea": 10,
+        "falloff": 3
+      }
     ]
   },
   "tribes": [
     {},
-    { "ai": "aggressive", "difficulty": "normal", "maxTroops": 6, "maxPopulation": 34, "worshipAfterSeconds": 3000, "buildings": ["dwelling", "warden_lodge", "fire_lodge", "watchtower"] },
-    { "ai": "sneaky", "difficulty": "normal", "maxTroops": 6, "maxPopulation": 28, "worshipAfterSeconds": 3000, "buildings": ["dwelling", "warden_lodge", "fire_lodge", "watchtower"] }
+    {
+      "ai": "aggressive",
+      "difficulty": "normal",
+      "maxTroops": 6,
+      "maxPopulation": 34,
+      "worshipAfterSeconds": 3000,
+      "buildings": [
+        "dwelling",
+        "warden_lodge",
+        "fire_lodge",
+        "watchtower"
+      ]
+    },
+    {
+      "ai": "sneaky",
+      "difficulty": "normal",
+      "maxTroops": 6,
+      "maxPopulation": 28,
+      "worshipAfterSeconds": 3000,
+      "buildings": [
+        "dwelling",
+        "warden_lodge",
+        "fire_lodge",
+        "watchtower"
+      ]
+    }
   ],
-  "spells": ["bolt", "call", "hornets"],
-  "buildings": ["dwelling", "watchtower", "warden_lodge", "fire_lodge", "mending_hut"],
+  "spells": [
+    "bolt",
+    "call",
+    "hornets"
+  ],
+  "buildings": [
+    "dwelling",
+    "watchtower",
+    "warden_lodge",
+    "fire_lodge",
+    "mending_hut"
+  ],
   "setup": [
-    { "spawn": "hearth", "tribe": 0, "at": [84, 80] },
-    { "spawn": "shaper", "tribe": 0, "at": [88, 77] },
-    { "spawn": "settler", "tribe": 0, "near": [80, 86], "count": 5 },
-    { "spawn": "warden", "tribe": 0, "near": [76, 78], "count": 4 },
-    { "spawn": "tree", "near": [66, 64], "count": 14, "spacing": 1.2 },
-    { "spawn": "tree", "near": [106, 62], "count": 10, "spacing": 1.2 },
-    { "spawn": "tree", "near": [60, 98], "count": 8, "spacing": 1.3 },
-    { "spawn": "rock", "near": [100, 92], "count": 4, "spacing": 2 },
-    { "spawn": "wild", "tribe": -1, "near": [48, 62], "count": 5 },
-    { "spawn": "wild", "tribe": -1, "near": [118, 56], "count": 4 },
-
-    { "spawn": "hearth", "tribe": 1, "at": [166, 74] },
-    { "spawn": "shaper", "tribe": 1, "at": [162, 78] },
-    { "spawn": "settler", "tribe": 1, "near": [170, 66], "count": 10 },
-    { "spawn": "warden_lodge", "tribe": 1, "at": [156, 62] },
-    { "spawn": "watchtower", "tribe": 1, "at": [151, 72] },
-    { "spawn": "watchtower", "tribe": 1, "at": [164, 96] },
-    { "spawn": "warden", "tribe": 1, "near": [163, 79], "count": 8, "stance": "defensive" },
-    { "spawn": "firecaller", "tribe": 1, "near": [169, 72], "count": 2, "stance": "defensive" },
-    { "spawn": "tree", "near": [174, 52], "count": 10, "spacing": 1.2 },
-    { "spawn": "tree", "near": [154, 100], "count": 6, "spacing": 1.3 },
-    { "spawn": "rock", "near": [176, 82], "count": 3, "spacing": 2 },
-
-    { "spawn": "hearth", "tribe": 2, "at": [36, 140] },
-    { "spawn": "shaper", "tribe": 2, "at": [40, 137] },
-    { "spawn": "settler", "tribe": 2, "near": [30, 144], "count": 10 },
-    { "spawn": "warden_lodge", "tribe": 2, "at": [48, 144] },
-    { "spawn": "watchtower", "tribe": 2, "at": [52, 134] },
-    { "spawn": "warden", "tribe": 2, "near": [44, 136], "count": 2 },
-    { "spawn": "warden", "tribe": 2, "near": [38, 134], "count": 4, "stance": "defensive" },
-    { "spawn": "firecaller", "tribe": 2, "near": [32, 136], "count": 1, "stance": "defensive" },
-    { "spawn": "tree", "near": [22, 146], "count": 10, "spacing": 1.2 },
-    { "spawn": "tree", "near": [66, 144], "count": 8, "spacing": 1.3 },
-    { "spawn": "rock", "near": [26, 132], "count": 3, "spacing": 2 },
-
-    { "spawn": "seer_stone", "tribe": 1, "at": [96, 118], "site": { "tag": "river_seer", "dormant": true, "rewards": [{ "type": "message", "text": "The seer stone is yours. From the island you can see far along both banks of the river." }] } },
-    { "spawn": "tree", "near": [110, 136], "count": 8, "spacing": 1.3 },
-    { "spawn": "tree", "near": [140, 142], "count": 6, "spacing": 1.3 }
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        84,
+        80
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        88,
+        77
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        80,
+        86
+      ],
+      "count": 5
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        76,
+        78
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        66,
+        64
+      ],
+      "count": 14,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        106,
+        62
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        60,
+        98
+      ],
+      "count": 8,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        100,
+        92
+      ],
+      "count": 4,
+      "spacing": 2
+    },
+    {
+      "spawn": "wild",
+      "tribe": -1,
+      "near": [
+        48,
+        62
+      ],
+      "count": 5
+    },
+    {
+      "spawn": "wild",
+      "tribe": -1,
+      "near": [
+        118,
+        56
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        166,
+        74
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        162,
+        78
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        170,
+        66
+      ],
+      "count": 10
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 1,
+      "at": [
+        156,
+        62
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        151,
+        72
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        164,
+        96
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        163,
+        79
+      ],
+      "count": 8,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "firecaller",
+      "tribe": 1,
+      "near": [
+        169,
+        72
+      ],
+      "count": 2,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        174,
+        52
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        154,
+        100
+      ],
+      "count": 6,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        176,
+        82
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 2,
+      "at": [
+        36,
+        140
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 2,
+      "at": [
+        40,
+        137
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 2,
+      "near": [
+        30,
+        144
+      ],
+      "count": 10
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 2,
+      "at": [
+        48,
+        144
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        52,
+        134
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 2,
+      "near": [
+        44,
+        136
+      ],
+      "count": 2
+    },
+    {
+      "spawn": "warden",
+      "tribe": 2,
+      "near": [
+        38,
+        134
+      ],
+      "count": 4,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "firecaller",
+      "tribe": 2,
+      "near": [
+        32,
+        136
+      ],
+      "count": 1,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        22,
+        146
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        66,
+        144
+      ],
+      "count": 8,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        26,
+        132
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "seer_stone",
+      "tribe": 1,
+      "at": [
+        96,
+        118
+      ],
+      "site": {
+        "tag": "river_seer",
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The seer stone is yours. From the island you can see far along both banks of the river."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        110,
+        136
+      ],
+      "count": 8,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        140,
+        142
+      ],
+      "count": 6,
+      "spacing": 1.3
+    }
   ],
   "props": [
-    { "model": "prop.cairn", "at": [93, 115] },
-    { "model": "prop.cairn", "at": [99, 121] },
-    { "model": "prop.standing_stone", "at": [99, 115], "rot": 0.6 },
-    { "model": "prop.reeds", "at": [91, 110] },
-    { "model": "prop.reeds", "at": [101, 111] },
-    { "model": "prop.reeds", "at": [24, 106] },
-    { "model": "prop.reeds", "at": [30, 107] },
-    { "model": "prop.haystack", "at": [74, 84] },
-    { "model": "prop.fence", "at": [76, 90], "rot": 0.3 },
-    { "model": "prop.fence", "at": [70, 88], "rot": 1.4 },
-    { "model": "prop.cart", "at": [92, 86], "rot": 0.8 },
-    { "model": "prop.woodpile", "at": [78, 74] },
-    { "model": "prop.flowers", "at": [96, 98] },
-    { "model": "prop.ruin_a", "at": [100, 130], "rot": 0.4 },
-    { "model": "prop.log_a", "at": [26, 104], "rot": 1.1 },
-    { "model": "prop.pots", "at": [30, 138] },
-    { "model": "prop.woodpile", "at": [24, 140] },
-    { "model": "prop.cairn", "at": [56, 128] },
-    { "model": "prop.haystack", "at": [176, 70] },
-    { "model": "prop.fence", "at": [172, 80], "rot": 1.57 },
-    { "model": "prop.standing_stone", "at": [132, 68], "rot": 0.2 },
-    { "model": "prop.standing_stone", "at": [132, 76], "rot": 1.9 }
+    {
+      "model": "prop.cairn",
+      "at": [
+        93,
+        115
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        99,
+        121
+      ]
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        99,
+        115
+      ],
+      "rot": 0.6
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        91,
+        110
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        101,
+        111
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        24,
+        106
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        30,
+        107
+      ]
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        74,
+        84
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        76,
+        90
+      ],
+      "rot": 0.3
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        70,
+        88
+      ],
+      "rot": 1.4
+    },
+    {
+      "model": "prop.cart",
+      "at": [
+        92,
+        86
+      ],
+      "rot": 0.8
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        78,
+        74
+      ]
+    },
+    {
+      "model": "prop.flowers",
+      "at": [
+        96,
+        98
+      ]
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        100,
+        130
+      ],
+      "rot": 0.4
+    },
+    {
+      "model": "prop.log_a",
+      "at": [
+        26,
+        104
+      ],
+      "rot": 1.1
+    },
+    {
+      "model": "prop.pots",
+      "at": [
+        30,
+        138
+      ]
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        24,
+        140
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        56,
+        128
+      ]
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        176,
+        70
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        172,
+        80
+      ],
+      "rot": 1.57
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        132,
+        68
+      ],
+      "rot": 0.2
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        132,
+        76
+      ],
+      "rot": 1.9
+    }
   ],
   "objectives": [
-    { "type": "build", "building": "warden_lodge", "n": 1, "text": "Grow to ten followers, which opens the Warden Lodge, then raise one" },
-    { "type": "kill", "n": 12, "tribe": 2, "after": 0, "text": "Raiders from the far bank wade over the western shallows: cut down twelve of them" },
-    { "type": "worship", "site": "river_seer", "after": 1, "text": "Cross the ford to the river island, drive off the eastern guards and pray at the seer stone with two followers" },
-    { "type": "destroy", "tribe": 2, "building": "hearth", "after": 2, "text": "Cross the raiders' risen ford to the far bank and burn their Hearth past its guard" },
-    { "type": "destroy", "tribe": 1, "building": "hearth", "after": 3, "text": "Cross the risen stream ford in the east and burn the eastern tribe's Hearth past its towers" }
+    {
+      "type": "build",
+      "building": "warden_lodge",
+      "n": 1,
+      "text": "Grow to ten followers, which opens the Warden Lodge, then raise one"
+    },
+    {
+      "type": "kill",
+      "n": 12,
+      "tribe": 2,
+      "after": 0,
+      "text": "Raiders from the west come over the hills and out of the woods: cut down twelve of them"
+    },
+    {
+      "type": "worship",
+      "site": "river_seer",
+      "after": 1,
+      "text": "Cross the ford to the river island, drive off the eastern guards and pray at the seer stone with two followers"
+    },
+    {
+      "type": "destroy",
+      "tribe": 2,
+      "building": "hearth",
+      "after": 2,
+      "text": "Cross the raiders' risen ford to the far bank and burn their Hearth past its guard"
+    },
+    {
+      "type": "destroy",
+      "tribe": 1,
+      "building": "hearth",
+      "after": 3,
+      "text": "Cross the risen stream ford in the east and burn the eastern tribe's Hearth past its towers"
+    }
   ],
-  "lose": [{ "type": "hearthLost" }, { "type": "timeLimit", "seconds": 3000 }],
+  "lose": [
+    {
+      "type": "hearthLost"
+    },
+    {
+      "type": "timeLimit",
+      "seconds": 3000
+    }
+  ],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [
-      { "type": "reveal", "at": [36, 140], "r": 12 },
-      { "type": "reveal", "at": [166, 74], "r": 12 },
-      { "type": "message", "text": "Your meadow lies between two tribes: war drums in the east, raiders on the far bank. They hate each other as much as they hate you." }
-    ] },
-    { "when": { "type": "time", "seconds": 35, "every": 200 }, "until": 1, "do": [{ "type": "message", "text": "War horns on the far bank: eastern warriors and western raiders march on each other below the river island. Let them bleed." }] },
-    { "when": { "type": "time", "seconds": 45, "every": 200 }, "until": 1, "do": [
-      { "type": "spawn", "unit": "warden", "n": 3, "tribe": 1, "at": [160, 134] },
-      { "type": "raid", "tribe": 1, "to": [104, 137], "fresh": true },
-      { "type": "spawn", "unit": "warden", "n": 3, "tribe": 2, "at": [54, 138] },
-      { "type": "spawn", "unit": "firecaller", "n": 1, "tribe": 2, "at": [52, 140] },
-      { "type": "raid", "tribe": 2, "to": [104, 137], "fresh": true }
-    ] },
-    { "when": { "type": "time", "seconds": 290, "every": 200 }, "until": 0, "do": [{ "type": "message", "text": "Eastern scouts are coming down from the hills. Without a Warden Lodge you cannot stand against them." }] },
-    { "when": { "type": "time", "seconds": 300, "every": 200 }, "until": 0, "do": [
-      { "type": "spawn", "unit": "warden", "n": 4, "tribe": 1, "at": [128, 50] },
-      { "type": "raid", "tribe": 1, "to": [84, 80], "fresh": true }
-    ] },
-    { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "message", "text": "The lodge stands. Smoke rises over the western shallows: the raiders are coming for your Hearth. Train wardens and cut them down." }] },
-    { "when": { "type": "time", "seconds": 40, "every": 150 }, "after": 0, "until": 1, "do": [{ "type": "message", "text": "Raiders are wading the western shallows. They will be at your Hearth soon." }] },
-    { "when": { "type": "time", "seconds": 50, "every": 150 }, "after": 0, "until": 1, "do": [
-      { "type": "spawn", "unit": "warden", "n": 3, "tribe": 2, "at": [22, 102] },
-      { "type": "spawn", "unit": "firecaller", "n": 1, "tribe": 2, "at": [25, 100] },
-      { "type": "raid", "tribe": 2, "to": [84, 80], "fresh": true }
-    ] },
-    { "when": { "type": "time", "seconds": 115, "every": 150 }, "after": 0, "until": 1, "do": [{ "type": "message", "text": "Raiders are slipping down from the north western hills." }] },
-    { "when": { "type": "time", "seconds": 125, "every": 150 }, "after": 0, "until": 1, "do": [
-      { "type": "spawn", "unit": "warden", "n": 3, "tribe": 2, "at": [30, 58] },
-      { "type": "spawn", "unit": "firecaller", "n": 1, "tribe": 2, "at": [33, 57] },
-      { "type": "raid", "tribe": 2, "to": [84, 80], "fresh": true }
-    ] },
-    { "when": { "type": "objective", "index": 1 }, "do": [
-      { "type": "awaken", "site": "river_seer" },
-      { "type": "spawn", "unit": "warden", "n": 4, "tribe": 1, "at": [97, 119], "stance": "defensive" },
-      { "type": "spawn", "unit": "firecaller", "n": 1, "tribe": 1, "at": [94, 120], "stance": "defensive" },
-      { "type": "reveal", "at": [96, 118], "r": 8 },
-      { "type": "message", "text": "The raiders fall back. A seer stone rises on the river island, and the eastern tribe has posted guards on it. Take it." }
-    ] },
-    { "when": { "type": "time", "seconds": 50 }, "after": 1, "until": 2, "do": [{ "type": "message", "text": "Raiders are wading toward the river island to take the seer stone for themselves." }] },
-    { "when": { "type": "time", "seconds": 60 }, "after": 1, "until": 2, "do": [
-      { "type": "spawn", "unit": "warden", "n": 3, "tribe": 2, "at": [60, 104] },
-      { "type": "raid", "tribe": 2, "to": [96, 118], "pray": "river_seer", "fresh": true }
-    ] },
-    { "when": { "type": "objective", "index": 2 }, "do": [
-      { "type": "shape", "shape": "line", "at": [96, 121], "to": [96, 131], "width": 4, "aboveSea": 12, "falloff": 2, "seconds": 20 },
-      { "type": "reveal", "at": [36, 140], "r": 16 },
-      { "type": "message", "text": "From the seer stone you see the raiders' old ford rise out of the river to the far bank. Cross it and burn their Hearth." }
-    ] },
-    { "when": { "type": "objective", "index": 3 }, "do": [
-      { "type": "shape", "shape": "line", "at": [130, 72], "to": [150, 72], "width": 4, "aboveSea": 16, "falloff": 2, "seconds": 20 },
-      { "type": "spawn", "unit": "warden", "n": 5, "tribe": 1, "at": [154, 66] },
-      { "type": "raid", "tribe": 1, "to": [84, 80], "fresh": true },
-      { "type": "message", "text": "The raiders' camp burns. The eastern tribe turns on you: a ford rises over the stream and their war band crosses. Break it and burn their Hearth." }
-    ] },
-    { "when": { "type": "time", "seconds": 2700 }, "do": [{ "type": "message", "text": "Five minutes remain." }] }
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1
+      },
+      "do": [
+        {
+          "type": "reveal",
+          "at": [
+            36,
+            140
+          ],
+          "r": 12
+        },
+        {
+          "type": "reveal",
+          "at": [
+            166,
+            74
+          ],
+          "r": 12
+        },
+        {
+          "type": "message",
+          "text": "Your meadow lies between two tribes: war drums in the east, raiders on the far bank. They hate each other as much as they hate you."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 35,
+        "every": 200
+      },
+      "until": 1,
+      "do": [
+        {
+          "type": "message",
+          "text": "War horns on the far bank: eastern warriors and western raiders march on each other below the river island. Let them bleed."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 45,
+        "every": 200
+      },
+      "until": 1,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 1,
+          "at": [
+            160,
+            134
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            104,
+            137
+          ],
+          "fresh": true
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 2,
+          "at": [
+            54,
+            138
+          ]
+        },
+        {
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 1,
+          "tribe": 2,
+          "at": [
+            52,
+            140
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            104,
+            137
+          ],
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 290,
+        "every": 200
+      },
+      "until": 0,
+      "do": [
+        {
+          "type": "message",
+          "text": "Eastern scouts are coming down from the hills. Without a Warden Lodge you cannot stand against them."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 300,
+        "every": 200
+      },
+      "until": 0,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            128,
+            50
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            84,
+            80
+          ],
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 0
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "The lodge stands. Smoke rises in the western woods: the raiders are coming for your Hearth. Train wardens and cut them down."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 40,
+        "every": 150
+      },
+      "after": 0,
+      "until": 1,
+      "do": [
+        {
+          "type": "message",
+          "text": "Raiders are coming out of the western woods. They will be at your Hearth soon."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 50,
+        "every": 150
+      },
+      "after": 0,
+      "until": 1,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 2,
+          "at": [
+            22,
+            102
+          ]
+        },
+        {
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 1,
+          "tribe": 2,
+          "at": [
+            25,
+            100
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            84,
+            80
+          ],
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 115,
+        "every": 150
+      },
+      "after": 0,
+      "until": 1,
+      "do": [
+        {
+          "type": "message",
+          "text": "Raiders are slipping down from the north western hills."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 125,
+        "every": 150
+      },
+      "after": 0,
+      "until": 1,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 2,
+          "at": [
+            30,
+            58
+          ]
+        },
+        {
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 1,
+          "tribe": 2,
+          "at": [
+            33,
+            57
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            84,
+            80
+          ],
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 1
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "river_seer"
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            97,
+            119
+          ],
+          "stance": "defensive"
+        },
+        {
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 1,
+          "tribe": 1,
+          "at": [
+            94,
+            120
+          ],
+          "stance": "defensive"
+        },
+        {
+          "type": "reveal",
+          "at": [
+            96,
+            118
+          ],
+          "r": 8
+        },
+        {
+          "type": "message",
+          "text": "The raiders fall back. A seer stone rises on the river island, and the eastern tribe has posted guards on it. Take it."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 50
+      },
+      "after": 1,
+      "until": 2,
+      "do": [
+        {
+          "type": "message",
+          "text": "Raiders are wading toward the river island to take the seer stone for themselves."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 60
+      },
+      "after": 1,
+      "until": 2,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 2,
+          "at": [
+            60,
+            104
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            96,
+            118
+          ],
+          "pray": "river_seer",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 2
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "line",
+          "at": [
+            96,
+            121
+          ],
+          "to": [
+            96,
+            131
+          ],
+          "width": 4,
+          "aboveSea": 12,
+          "falloff": 2,
+          "seconds": 20
+        },
+        {
+          "type": "reveal",
+          "at": [
+            36,
+            140
+          ],
+          "r": 16
+        },
+        {
+          "type": "message",
+          "text": "From the seer stone you see the raiders' old ford rise out of the river to the far bank. Cross it and burn their Hearth."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 3
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "line",
+          "at": [
+            130,
+            72
+          ],
+          "to": [
+            150,
+            72
+          ],
+          "width": 4,
+          "aboveSea": 16,
+          "falloff": 2,
+          "seconds": 20
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 5,
+          "tribe": 1,
+          "at": [
+            154,
+            66
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            84,
+            80
+          ],
+          "fresh": true
+        },
+        {
+          "type": "message",
+          "text": "The raiders' camp burns. The eastern tribe turns on you: a ford rises over the stream and their war band crosses. Break it and burn their Hearth."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 2700
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Five minutes remain."
+        }
+      ]
+    }
   ]
 }

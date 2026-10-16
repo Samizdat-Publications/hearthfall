@@ -499,7 +499,7 @@
       "building": "watchtower",
       "n": 2,
       "after": 1,
-      "text": "Raise two Watchtowers facing the pass south of the peak"
+      "text": "Raise two Watchtowers to meet the war band coming through the pass"
     },
     {
       "type": "destroy",
@@ -595,7 +595,7 @@
         },
         {
           "type": "message",
-          "text": "Your hearth smoke rises and the mountain wakes. Its fire burns everyone on the flank, rivals and beasts alike. Take the ley stone there between eruptions."
+          "text": "The mountain wakes. Its fire burns every tribe on the flank, yours and the rival's alike. Take the ley stone there between eruptions."
         }
       ]
     },

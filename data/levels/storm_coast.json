@@ -212,7 +212,7 @@
     {
       "ai": "turtle",
       "difficulty": "normal",
-      "maxTroops": 10,
+      "maxTroops": 7,
       "maxPopulation": 36,
       "worshipAfterSeconds": 3600,
       "buildings": [
@@ -403,8 +403,8 @@
       "spawn": "watchtower",
       "tribe": 1,
       "at": [
-        128,
-        106
+        146,
+        108
       ]
     },
     {
@@ -414,7 +414,7 @@
         134,
         100
       ],
-      "count": 8,
+      "count": 6,
       "stance": "defensive"
     },
     {
@@ -424,17 +424,7 @@
         138,
         96
       ],
-      "count": 3,
-      "stance": "defensive"
-    },
-    {
-      "spawn": "warden",
-      "tribe": 1,
-      "near": [
-        124,
-        100
-      ],
-      "count": 4,
+      "count": 2,
       "stance": "defensive"
     },
     {
@@ -532,10 +522,10 @@
     },
     {
       "type": "kill",
-      "n": 16,
+      "n": 10,
       "tribe": 2,
       "after": 1,
-      "text": "Raiders from the sea stack land on your north and south shores: cut down sixteen of them"
+      "text": "Raiders from the sea stack land on your north and south shores: cut down ten of them"
     },
     {
       "type": "destroy",
@@ -643,7 +633,7 @@
       "when": {
         "type": "time",
         "seconds": 50,
-        "every": 110
+        "every": 140
       },
       "after": 0,
       "until": 3,
@@ -658,7 +648,7 @@
       "when": {
         "type": "time",
         "seconds": 60,
-        "every": 110
+        "every": 140
       },
       "after": 0,
       "until": 3,
@@ -835,7 +825,7 @@
         },
         {
           "type": "message",
-          "text": "The raiders turn back to their rock. Four wardens join you: sail on the far isle and burn the rival Hearth."
+          "text": "The raiders lose heart, though a few sails still come. Four wardens join you: sail to the far isle and burn the rival Hearth."
         }
       ]
     },
