@@ -1,0 +1,179 @@
+{
+  "$comment": "S4 L8-B: chapter 4 The Wild Heart, one establishing shot per showcase level (making-of and look regressions; review only, not in npm run qa).",
+  "shots": [
+    {
+      "id": "smoke_on_the_wind_peak",
+      "params": {
+        "campaign": "smoke_on_the_wind",
+        "camera": "default",
+        "reveal": "1"
+      },
+      "steps": [
+        {
+          "step": 1500
+        },
+        {
+          "eval": "__game.setCamera({ x: 64, z: 62, zoom: 0.3, yaw: 0.4 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.getSummary().tick > 1400"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.02,
+          0.99
+        ]
+      }
+    },
+    {
+      "id": "storm_coast_lane",
+      "params": {
+        "campaign": "storm_coast",
+        "camera": "default",
+        "reveal": "1"
+      },
+      "steps": [
+        {
+          "step": 1500
+        },
+        {
+          "eval": "__game.setCamera({ x: 72, z: 96, zoom: 0.35, yaw: 0.3 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.getSummary().tick > 1400"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.02,
+          0.99
+        ]
+      }
+    },
+    {
+      "id": "pack_mother_night",
+      "params": {
+        "campaign": "pack_mother",
+        "camera": "default",
+        "reveal": "1"
+      },
+      "steps": [
+        {
+          "step": 1500
+        },
+        {
+          "eval": "__game.setCamera({ x: 60, z: 96, zoom: 0.3, yaw: 0.5 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.getSummary().tick > 1400"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.02,
+          0.99
+        ]
+      }
+    },
+    {
+      "id": "four_hearths_crown",
+      "params": {
+        "campaign": "four_hearths",
+        "camera": "default",
+        "reveal": "1"
+      },
+      "steps": [
+        {
+          "step": 1500
+        },
+        {
+          "eval": "__game.setCamera({ x: 96, z: 104, zoom: 0.32, yaw: 0.2 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.getSummary().tick > 1400"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.02,
+          0.99
+        ]
+      }
+    },
+    {
+      "id": "drowning_mire_isles",
+      "params": {
+        "campaign": "drowning_mire",
+        "camera": "default",
+        "reveal": "1"
+      },
+      "steps": [
+        {
+          "step": 1500
+        },
+        {
+          "eval": "__game.setCamera({ x: 80, z: 112, zoom: 0.3, yaw: 0.4 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.getSummary().tick > 1400"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.01,
+          0.99
+        ]
+      }
+    },
+    {
+      "id": "wild_heart_volcano",
+      "params": {
+        "campaign": "wild_heart",
+        "camera": "default",
+        "reveal": "1"
+      },
+      "steps": [
+        {
+          "step": 1500
+        },
+        {
+          "eval": "__game.setCamera({ x: 128, z: 134, zoom: 0.36, yaw: 0.3 });"
+        },
+        {
+          "step": 2
+        },
+        {
+          "assert": "__game.getSummary().tick > 1400"
+        }
+      ],
+      "kind": "world",
+      "coverage": {
+        "green": [
+          0.02,
+          0.99
+        ]
+      }
+    }
+  ]
+}
