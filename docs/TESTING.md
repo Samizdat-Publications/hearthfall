@@ -17,7 +17,7 @@ All commands are npm scripts that call `node tools/harness/...` with a hard inte
 |---|---|---|
 | `npm run qa:fast` | typecheck + guards + unit tests + scenarios tagged `fast` (the inner loop) | 2 min |
 | `npm run check` | typecheck + all guards (determinism, import direction, data schemas, docs freshness, IP names, dash characters, string keys); a guard that scans 0 files fails (BACKLOG 27); the guards' own self-tests are `tools/guards/guards.test.mjs` (in the unit layer) | 2 min |
-| `npm run test:scenarios` | all `scenarios/*.json` headless, parallel workers (`-- --tag levels` or `-- --skip-tag levels` for half; full qa runs the two halves as the `scenarios` and `scenarios-levels` layers) | 7 min |
+| `npm run test:scenarios` | all `scenarios/*.json` headless, parallel workers (`-- --tag levels` or `-- --skip-tag levels` for half; full qa runs `scenarios` without the levels tag, then the levels as two shards balanced by runTicks, `-- --tag levels --shard 1/2` and `2/2`, the `scenarios-levels` and `scenarios-levels-2` layers) | 7 min |
 | `npm run test:replays` | golden replays, compare hash checkpoints | 3 min |
 | `npm run soak -- --seeds 8 --minutes 45 --jobs auto` | bot vs AI matches headless in worker_threads (jobs = cores minus 2), invariants and metrics | 9 min |
 | `npm run soak:nightly` | BACKLOG 24: the nightly-style soak set (ai 64 seeds x 20 min, ai-idle 4 x 25, difficulty 8 x 20, economy 16 x 10, war 8 x 20, war-long 8 x 20), each recorded to the run history, then the trend chart; `-- --only ai,war` runs a subset; summary in `reports/latest/nightly.json` | 9 min |

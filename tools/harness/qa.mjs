@@ -12,7 +12,9 @@ const LAYERS = [
   { id: "unit", cmd: ["unit"], timeoutMs: 180000 },
   // campaign level scenarios run as their own layer: stretch 3 levels play 5000 to 42000 ticks each
   { id: "scenarios", cmd: ["scenarios", "--skip-tag", "levels"], timeoutMs: 300000 },
-  { id: "scenarios-levels", cmd: ["scenarios", "--tag", "levels"], timeoutMs: 480000 },
+  // 45 levels (bot win plus idle loss each) took 500 s in one layer, so they run as two shards balanced by runTicks
+  { id: "scenarios-levels", cmd: ["scenarios", "--tag", "levels", "--shard", "1/2"], timeoutMs: 480000 },
+  { id: "scenarios-levels-2", cmd: ["scenarios", "--tag", "levels", "--shard", "2/2"], timeoutMs: 480000 },
   { id: "replays", cmd: ["replays"], timeoutMs: 180000 },
   { id: "bench", cmd: ["bench"], timeoutMs: 240000 },
   { id: "bench-render", cmd: ["bench-render"], timeoutMs: 240000 },

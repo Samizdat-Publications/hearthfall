@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { loadBasePack } from "./datapack.mjs";
-import { loadScenarios, runScenario } from "./scenarios.mjs";
+import { loadScenarios, pickShard, runScenario } from "./scenarios.mjs";
 
 const pack = loadBasePack().pack;
 const base = { id: "t", seed: 1, map: { generator: "flat", size: 64, tribes: 1 }, setup: [{ spawn: "wild", at: [5, 5] }], runTicks: 10 };
@@ -31,5 +31,15 @@ describe("scenario runner", () => {
       expect((d.tags ?? []).length, d.id).toBeGreaterThan(0);
       expect((d.assert ?? []).length, d.id).toBeGreaterThan(0);
     }
+  });
+
+  it("pickShard splits scenarios into balanced shards that cover each one once", () => {
+    const defs = [9, 1, 5, 5, 3, 7, 2].map((r, i) => ({ id: "s" + i, runTicks: r }));
+    const a = pickShard(defs, 1, 2);
+    const b = pickShard(defs, 2, 2);
+    expect([...a, ...b].map((d) => d.id).sort()).toEqual(defs.map((d) => d.id).sort());
+    const sum = (x) => x.reduce((t, d) => t + d.runTicks, 0);
+    expect(Math.abs(sum(a) - sum(b))).toBeLessThanOrEqual(1);
+    expect(a.map((d) => d.id)).toEqual([...a].sort((x, y) => Number(x.id.slice(1)) - Number(y.id.slice(1))).map((d) => d.id));
   });
 });

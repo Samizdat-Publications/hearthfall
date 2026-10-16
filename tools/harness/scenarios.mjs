@@ -24,6 +24,20 @@ export function loadScenarios(filter = {}) {
   return out;
 }
 
+/** Split scenarios into n shards of similar total runTicks (longest first, each to the lightest shard) and keep shard k (1-based), in file order. */
+export function pickShard(defs, k, n) {
+  const load = new Array(n).fill(0);
+  const keep = [];
+  const order = defs.map((_, i) => i).sort((a, b) => defs[b].runTicks - defs[a].runTicks || a - b);
+  for (const i of order) {
+    let s = 0;
+    for (let j = 1; j < n; j++) if (load[j] < load[s]) s = j;
+    load[s] += defs[i].runTicks;
+    if (s === k - 1) keep.push(i);
+  }
+  return keep.sort((a, b) => a - b).map((i) => defs[i]);
+}
+
 /** Query context for assertions against a world at its current tick. */
 export function makeCtx(w) {
   const E = w.ents;
@@ -184,7 +198,9 @@ export default async function scenariosCmd(out, _cmd, args) {
     out.line("data pack invalid; run npm run data:check");
     return out.finish("FAIL", "1");
   }
-  const defs = loadScenarios({ tag: typeof args.tag === "string" ? args.tag : undefined, id: typeof args.id === "string" ? args.id : undefined, skipTag: typeof args["skip-tag"] === "string" ? args["skip-tag"] : undefined });
+  let defs = loadScenarios({ tag: typeof args.tag === "string" ? args.tag : undefined, id: typeof args.id === "string" ? args.id : undefined, skipTag: typeof args["skip-tag"] === "string" ? args["skip-tag"] : undefined });
+  // --shard k/n keeps one of n shards balanced by runTicks, so a long tag can run as several qa layers
+  if (typeof args.shard === "string") { const [k, n] = args.shard.split("/").map(Number); defs = pickShard(defs, k, n); }
   if (!defs.length) return out.finish("SKIP", "no matching scenarios");
   const results = defs.map((d) => runScenario(d, res.pack));
   writeReport("scenarios.json", results);
