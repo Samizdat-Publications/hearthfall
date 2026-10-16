@@ -1,0 +1,19 @@
+{
+  "id": "level_pack_mother_idle_loses",
+  "description": "The Pack Mother (level 41) with an idle player: the near dens stay up, the moon stone never wakes, and rival scouts landing on the south shore every 120 s from minute 8 overrun the village (lost near tick 11400).",
+  "tags": [
+    "levels"
+  ],
+  "level": "pack_mother",
+  "runTicks": 15000,
+  "assert": [
+    {
+      "at": 9000,
+      "expr": "!level.lost && !level.won && level.objectivesDone == 0 && site('moon_stone').by < 0 && events.count('raid') == 0"
+    },
+    {
+      "at": 15000,
+      "expr": "level.lost && !level.won && level.objectivesDone == 0 && events.count('raid') >= 1 && events.count('levelLost') == 1 && invariants() == 0"
+    }
+  ]
+}

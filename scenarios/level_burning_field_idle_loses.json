@@ -1,0 +1,19 @@
+{
+  "id": "level_burning_field_idle_loses",
+  "description": "Campaign level 43 is lost when the player does nothing: with no Warden Lodge raised, war bands climb down the eastern bluff from 480 s and burn the Hearth (about tick 11400).",
+  "tags": [
+    "levels"
+  ],
+  "level": "burning_field",
+  "runTicks": 13000,
+  "assert": [
+    {
+      "at": 9000,
+      "expr": "!level.lost && level.objectivesDone == 0"
+    },
+    {
+      "at": 13000,
+      "expr": "level.lost && !level.won && level.objectivesDone == 0 && invariants() == 0"
+    }
+  ]
+}

@@ -1,0 +1,1953 @@
+{
+  "$comment": "Campaign level 44 (chapter 4, The Wild Heart): a drowned marsh under evening rain. Home isle southwest; two small reed isles east and north with a wolf den of four each; the seer isle and the ley isle further out; five causeways (rect aboveSea -8) join them only at low tide (from 40 s, every 120 s they rise to aboveSea 5 for 60 s, over 8 s, warned 10 s ahead). The aggressive eastern raiders and the turtle tribe in the north live on sheer plateaus (aboveSea 96 and 100, falloff 2) inside low rims, so neither can be reached until its stage raises a dry road and a stepped ramp. Stages: raise a Boathouse (start with 8 followers; until it stands, 4 raiders land on the home isle every 150 s from 300 s, the idle loss); clear both dens (clearDens n 2 without an area: the level has only these two dens); pray the dormant seer and ley stones until both are held; hold both 150 s (two posted keeper wardens spawn at each stone; 3 raiders land at the seer from 90 s and at the ley from 150 s, every 200 s, to pray them away); kill twelve of the eastern raiders after their road and ramp rise (a war band of 5 at 30 s, then 3 every 120 s, for the ley stone); take the north road and ramp and burn the walled Hearth (16 posted wardens, 3 towers, maxTroops 12; war bands of 4 for the seer every 150 s). From the dens on, neutral Mire swallows one causeway head every 160 s in turn, warned 10 s ahead, until the win. Hard bot offset 1 wins at tick 32406 (stages done at 2801, 11366, 14948, 17947, 24235); offsets 0 to 7 win 29550 to 35050. Time limit 3700 s (74000 ticks, over 2x the bot).",
+  "id": "drowning_mire",
+  "name": "The Drowning Mire",
+  "order": 44,
+  "description": "A drowned marsh of low isles, joined by causeways only at low tide. Raise a Boathouse, clear the wolves from the reed isles, then take and hold the seer and ley stones while mire boils up at the causeway heads. Break the eastern raiders and burn the walled Hearth in the north.",
+  "lighting": "evening",
+  "seed": 4444,
+  "weather": "rain",
+  "map": {
+    "generator": "flat",
+    "size": 192,
+    "landAboveSea": -24,
+    "paint": [
+      {
+        "shape": "disc",
+        "at": [
+          44,
+          148
+        ],
+        "r": 20,
+        "aboveSea": 14,
+        "falloff": 5
+      },
+      {
+        "shape": "disc",
+        "at": [
+          32,
+          158
+        ],
+        "r": 7,
+        "aboveSea": 24,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          84,
+          152
+        ],
+        "r": 7,
+        "aboveSea": 12,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          40,
+          108
+        ],
+        "r": 7,
+        "aboveSea": 12,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          84,
+          108
+        ],
+        "r": 9,
+        "aboveSea": 12,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          128,
+          152
+        ],
+        "r": 9,
+        "aboveSea": 12,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          168,
+          152
+        ],
+        "r": 16,
+        "aboveSea": 10,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          172,
+          152
+        ],
+        "r": 10,
+        "aboveSea": 96,
+        "falloff": 2
+      },
+      {
+        "shape": "disc",
+        "at": [
+          96,
+          52
+        ],
+        "r": 18,
+        "aboveSea": 10,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          96,
+          46
+        ],
+        "r": 11,
+        "aboveSea": 100,
+        "falloff": 2
+      },
+      {
+        "shape": "rect",
+        "at": [
+          71,
+          152
+        ],
+        "size": [
+          12,
+          5
+        ],
+        "aboveSea": -8,
+        "falloff": 2
+      },
+      {
+        "shape": "rect",
+        "at": [
+          40,
+          121
+        ],
+        "size": [
+          5,
+          12
+        ],
+        "aboveSea": -8,
+        "falloff": 2
+      },
+      {
+        "shape": "rect",
+        "at": [
+          84,
+          131
+        ],
+        "size": [
+          5,
+          28
+        ],
+        "aboveSea": -8,
+        "falloff": 2
+      },
+      {
+        "shape": "rect",
+        "at": [
+          61,
+          108
+        ],
+        "size": [
+          28,
+          5
+        ],
+        "aboveSea": -8,
+        "falloff": 2
+      },
+      {
+        "shape": "rect",
+        "at": [
+          105,
+          152
+        ],
+        "size": [
+          28,
+          5
+        ],
+        "aboveSea": -8,
+        "falloff": 2
+      }
+    ]
+  },
+  "props": [
+    {
+      "model": "prop.haystack",
+      "at": [
+        30,
+        150
+      ]
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        28,
+        146
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        26,
+        152
+      ],
+      "rot": 0
+    },
+    {
+      "model": "prop.cart",
+      "at": [
+        48,
+        160
+      ],
+      "rot": 0.4
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        36,
+        144
+      ]
+    },
+    {
+      "model": "prop.pots",
+      "at": [
+        46,
+        158
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        62,
+        146
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        63,
+        158
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        44,
+        128
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        35,
+        129
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        78,
+        147
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        90,
+        158
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        35,
+        103
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        46,
+        113
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        78,
+        100
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        92,
+        114
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        122,
+        146
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        134,
+        159
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        154,
+        144
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        100,
+        70
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        64,
+        150
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        78,
+        155
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        42,
+        127
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        87,
+        118
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        74,
+        111
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        119,
+        155
+      ]
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        82,
+        103
+      ],
+      "rot": 0.4
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        90,
+        110
+      ],
+      "rot": 1.2
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        126,
+        154
+      ],
+      "rot": 0.8
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        133,
+        155
+      ],
+      "rot": 0.3
+    },
+    {
+      "model": "prop.log_a",
+      "at": [
+        88,
+        150
+      ],
+      "rot": 1.3
+    },
+    {
+      "model": "prop.mushroom_ring",
+      "at": [
+        82,
+        156
+      ]
+    },
+    {
+      "model": "prop.log_a",
+      "at": [
+        37,
+        110
+      ],
+      "rot": 0.5
+    },
+    {
+      "model": "prop.fern",
+      "at": [
+        43,
+        104
+      ]
+    },
+    {
+      "model": "prop.pots",
+      "at": [
+        180,
+        156
+      ]
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        178,
+        146
+      ]
+    },
+    {
+      "model": "prop.pots",
+      "at": [
+        90,
+        40
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        102,
+        38
+      ],
+      "rot": 1.57
+    }
+  ],
+  "tribes": [
+    {},
+    {
+      "ai": "turtle",
+      "difficulty": "normal",
+      "maxTroops": 12,
+      "maxPopulation": 34,
+      "worshipAfterSeconds": 3700,
+      "buildings": [
+        "dwelling",
+        "warden_lodge",
+        "watchtower"
+      ]
+    },
+    {
+      "ai": "aggressive",
+      "difficulty": "normal",
+      "maxTroops": 8,
+      "maxPopulation": 20,
+      "worshipAfterSeconds": 3700,
+      "buildings": [
+        "dwelling",
+        "warden_lodge"
+      ]
+    }
+  ],
+  "spells": [
+    "bolt",
+    "mire",
+    "lightning"
+  ],
+  "buildings": [
+    "dwelling",
+    "watchtower",
+    "warden_lodge",
+    "boathouse"
+  ],
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        42,
+        152
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        48,
+        148
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        36,
+        156
+      ],
+      "count": 6
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        52,
+        146
+      ],
+      "count": 2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        30,
+        164
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        42,
+        136
+      ],
+      "count": 8,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        54,
+        162
+      ],
+      "count": 6,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        28,
+        140
+      ],
+      "count": 4,
+      "spacing": 2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        84,
+        112
+      ],
+      "count": 5,
+      "spacing": 1.4
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        126,
+        156
+      ],
+      "count": 4,
+      "spacing": 1.4
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        85,
+        153
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        40,
+        107
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "seer_stone",
+      "at": [
+        86,
+        106
+      ],
+      "site": {
+        "tag": "mire_seer",
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The seer stone is yours: from its isle you watch the whole middle of the marsh."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "ley_stone",
+      "at": [
+        130,
+        150
+      ],
+      "site": {
+        "tag": "mire_ley",
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The ley stone is yours: it pays mana while you hold it."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        96,
+        42
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        100,
+        44
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        92,
+        40
+      ],
+      "count": 12
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 1,
+      "at": [
+        104,
+        40
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        91,
+        53
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        101,
+        53
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        96,
+        36
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        96,
+        52
+      ],
+      "count": 10,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        94,
+        44
+      ],
+      "count": 6,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        88,
+        36
+      ],
+      "count": 8,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        104,
+        34
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 2,
+      "at": [
+        176,
+        152
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 2,
+      "at": [
+        174,
+        148
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 2,
+      "near": [
+        178,
+        158
+      ],
+      "count": 10
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 2,
+      "at": [
+        176,
+        144
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        165,
+        147
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        165,
+        157
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 2,
+      "near": [
+        166,
+        152
+      ],
+      "count": 8,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "firecaller",
+      "tribe": 2,
+      "near": [
+        169,
+        152
+      ],
+      "count": 3,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        180,
+        162
+      ],
+      "count": 6,
+      "spacing": 1.3
+    }
+  ],
+  "objectives": [
+    {
+      "type": "build",
+      "building": "boathouse",
+      "n": 1,
+      "text": "Grow the village and raise a Boathouse: boats cross the marsh at any tide"
+    },
+    {
+      "type": "clearDens",
+      "n": 2,
+      "after": 0,
+      "text": "Clear the two wolf dens in the marsh, on the reed isles east and north of your village"
+    },
+    {
+      "type": "hold",
+      "n": 2,
+      "seconds": 1,
+      "after": 1,
+      "text": "Pray at the seer stone and the ley stone on their isles until you hold both at once"
+    },
+    {
+      "type": "hold",
+      "n": 2,
+      "seconds": 150,
+      "after": 2,
+      "text": "Hold both stones at once for two and a half minutes while raiders land to pray them away"
+    },
+    {
+      "type": "kill",
+      "n": 12,
+      "tribe": 2,
+      "after": 3,
+      "text": "Cut down twelve of the eastern raiders, war band or villagers, as their ramp opens"
+    },
+    {
+      "type": "destroy",
+      "tribe": 1,
+      "building": "hearth",
+      "after": 4,
+      "text": "Take the new road north, climb the ramp onto the walled isle and burn its Hearth"
+    }
+  ],
+  "lose": [
+    {
+      "type": "hearthLost"
+    },
+    {
+      "type": "timeLimit",
+      "seconds": 3700
+    }
+  ],
+  "triggers": [
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1
+      },
+      "do": [
+        {
+          "type": "reveal",
+          "at": [
+            84,
+            130
+          ],
+          "r": 30
+        },
+        {
+          "type": "message",
+          "text": "High water covers the causeways of the marsh. They rise at low tide and drown again. Grow your village and raise a Boathouse."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 30,
+        "every": 120
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "The tide is going out. The causeways rise in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 40,
+        "every": 120
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            71,
+            152
+          ],
+          "size": [
+            12,
+            5
+          ],
+          "aboveSea": 5,
+          "falloff": 2,
+          "seconds": 8
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            40,
+            121
+          ],
+          "size": [
+            5,
+            12
+          ],
+          "aboveSea": 5,
+          "falloff": 2,
+          "seconds": 8
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            84,
+            131
+          ],
+          "size": [
+            5,
+            28
+          ],
+          "aboveSea": 5,
+          "falloff": 2,
+          "seconds": 8
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            61,
+            108
+          ],
+          "size": [
+            28,
+            5
+          ],
+          "aboveSea": 5,
+          "falloff": 2,
+          "seconds": 8
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            105,
+            152
+          ],
+          "size": [
+            28,
+            5
+          ],
+          "aboveSea": 5,
+          "falloff": 2,
+          "seconds": 8
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 90,
+        "every": 120
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "The tide is turning. The causeways go under in ten seconds: get off them."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 100,
+        "every": 120
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            71,
+            152
+          ],
+          "size": [
+            12,
+            5
+          ],
+          "aboveSea": -8,
+          "falloff": 2,
+          "seconds": 8
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            40,
+            121
+          ],
+          "size": [
+            5,
+            12
+          ],
+          "aboveSea": -8,
+          "falloff": 2,
+          "seconds": 8
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            84,
+            131
+          ],
+          "size": [
+            5,
+            28
+          ],
+          "aboveSea": -8,
+          "falloff": 2,
+          "seconds": 8
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            61,
+            108
+          ],
+          "size": [
+            28,
+            5
+          ],
+          "aboveSea": -8,
+          "falloff": 2,
+          "seconds": 8
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            105,
+            152
+          ],
+          "size": [
+            28,
+            5
+          ],
+          "aboveSea": -8,
+          "falloff": 2,
+          "seconds": 8
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 290,
+        "every": 150
+      },
+      "until": 0,
+      "do": [
+        {
+          "type": "message",
+          "text": "Raider boats close on your shore from the east. They land in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 300,
+        "every": 150
+      },
+      "until": 0,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 2,
+          "at": [
+            60,
+            142
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            42,
+            152
+          ],
+          "n": 4,
+          "fresh": true
+        },
+        {
+          "type": "message",
+          "text": "Raiders come ashore. They will keep landing while you have no Boathouse to meet them on the water."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 0
+      },
+      "do": [
+        {
+          "type": "reveal",
+          "at": [
+            62,
+            130
+          ],
+          "r": 32
+        },
+        {
+          "type": "message",
+          "text": "Your Boathouse stands. Wolves den on the reed isles east and north: cross at low tide or by boat and clear both dens."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 1
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "mire_seer"
+        },
+        {
+          "type": "awaken",
+          "site": "mire_ley"
+        },
+        {
+          "type": "reveal",
+          "at": [
+            86,
+            106
+          ],
+          "r": 12
+        },
+        {
+          "type": "reveal",
+          "at": [
+            130,
+            150
+          ],
+          "r": 12
+        },
+        {
+          "type": "message",
+          "text": "The dens are quiet and two stones rise from the reeds on their isles. The mud stirs: watch the causeway heads."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 30,
+        "every": 640
+      },
+      "after": 1,
+      "until": 5,
+      "do": [
+        {
+          "type": "message",
+          "text": "The mud boils at the head of the east causeway. Mire swallows it in ten seconds: keep off."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 40,
+        "every": 640
+      },
+      "after": 1,
+      "until": 5,
+      "do": [
+        {
+          "type": "spell",
+          "spell": "mire",
+          "tribe": -1,
+          "at": [
+            77,
+            152
+          ]
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 190,
+        "every": 640
+      },
+      "after": 1,
+      "until": 5,
+      "do": [
+        {
+          "type": "message",
+          "text": "The mud boils where the long causeway meets the seer isle. Mire swallows it in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 200,
+        "every": 640
+      },
+      "after": 1,
+      "until": 5,
+      "do": [
+        {
+          "type": "spell",
+          "spell": "mire",
+          "tribe": -1,
+          "at": [
+            84,
+            119
+          ]
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 350,
+        "every": 640
+      },
+      "after": 1,
+      "until": 5,
+      "do": [
+        {
+          "type": "message",
+          "text": "The mud boils where the far causeway meets the ley isle. Mire swallows it in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 360,
+        "every": 640
+      },
+      "after": 1,
+      "until": 5,
+      "do": [
+        {
+          "type": "spell",
+          "spell": "mire",
+          "tribe": -1,
+          "at": [
+            118,
+            152
+          ]
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 510,
+        "every": 640
+      },
+      "after": 1,
+      "until": 5,
+      "do": [
+        {
+          "type": "message",
+          "text": "The mud boils where the north causeway meets the seer isle. Mire swallows it in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 520,
+        "every": 640
+      },
+      "after": 1,
+      "until": 5,
+      "do": [
+        {
+          "type": "spell",
+          "spell": "mire",
+          "tribe": -1,
+          "at": [
+            75,
+            108
+          ]
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 2
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 2,
+          "tribe": 0,
+          "at": [
+            84,
+            104
+          ],
+          "stance": "defensive"
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 2,
+          "tribe": 0,
+          "at": [
+            128,
+            148
+          ],
+          "stance": "defensive"
+        },
+        {
+          "type": "message",
+          "text": "Both stones are yours, and wardens from the reed isles take post beside each one. Hold them both while the raider boats come."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 30,
+        "every": 200
+      },
+      "after": 2,
+      "until": 3,
+      "do": [
+        {
+          "type": "message",
+          "text": "A raider boat makes for the seer isle. It lands in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 40,
+        "every": 200
+      },
+      "after": 2,
+      "until": 3,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 2,
+          "tribe": 2,
+          "at": [
+            89,
+            101
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            86,
+            106
+          ],
+          "n": 2,
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 75,
+        "every": 200
+      },
+      "after": 2,
+      "until": 3,
+      "do": [
+        {
+          "type": "message",
+          "text": "A raider boat makes for the ley isle. It lands in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 85,
+        "every": 200
+      },
+      "after": 2,
+      "until": 3,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 2,
+          "tribe": 2,
+          "at": [
+            136,
+            156
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            130,
+            150
+          ],
+          "n": 2,
+          "pray": "mire_ley",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 3
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "line",
+          "at": [
+            137,
+            152
+          ],
+          "to": [
+            152,
+            152
+          ],
+          "width": 5,
+          "aboveSea": 8,
+          "falloff": 2,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            161.5,
+            152
+          ],
+          "size": [
+            2,
+            8
+          ],
+          "aboveSea": 94,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            159.5,
+            152
+          ],
+          "size": [
+            2,
+            8
+          ],
+          "aboveSea": 78,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            157.5,
+            152
+          ],
+          "size": [
+            2,
+            8
+          ],
+          "aboveSea": 62,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            155.5,
+            152
+          ],
+          "size": [
+            2,
+            8
+          ],
+          "aboveSea": 46,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            153.5,
+            152
+          ],
+          "size": [
+            2,
+            8
+          ],
+          "aboveSea": 30,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            151.5,
+            152
+          ],
+          "size": [
+            2,
+            8
+          ],
+          "aboveSea": 14,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "reveal",
+          "at": [
+            168,
+            152
+          ],
+          "r": 18
+        },
+        {
+          "type": "message",
+          "text": "The stones answer: a dry road rises east of the ley isle and a ramp climbs the raiders' cliff. Their war band comes down."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 20
+      },
+      "after": 3,
+      "do": [
+        {
+          "type": "message",
+          "text": "War horns on the eastern cliff. The raiders' war band comes down the ramp in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 30
+      },
+      "after": 3,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 5,
+          "tribe": 2,
+          "at": [
+            156,
+            152
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            130,
+            150
+          ],
+          "n": 5,
+          "pray": "mire_ley",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 140
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "message",
+          "text": "More raiders gather at the top of the eastern ramp. They come down in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 150
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 2,
+          "at": [
+            156,
+            152
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            130,
+            150
+          ],
+          "n": 3,
+          "pray": "mire_ley",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 260
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "message",
+          "text": "More raiders gather at the top of the eastern ramp. They come down in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 270
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 2,
+          "at": [
+            156,
+            152
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            130,
+            150
+          ],
+          "n": 3,
+          "pray": "mire_ley",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 380
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "message",
+          "text": "More raiders gather at the top of the eastern ramp. They come down in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 390
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 2,
+          "at": [
+            156,
+            152
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            130,
+            150
+          ],
+          "n": 3,
+          "pray": "mire_ley",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 4
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "line",
+          "at": [
+            88,
+            98
+          ],
+          "to": [
+            94,
+            72
+          ],
+          "width": 5,
+          "aboveSea": 8,
+          "falloff": 2,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            96,
+            58.5
+          ],
+          "size": [
+            8,
+            2
+          ],
+          "aboveSea": 98,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            96,
+            60.5
+          ],
+          "size": [
+            8,
+            2
+          ],
+          "aboveSea": 84,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            96,
+            62.5
+          ],
+          "size": [
+            8,
+            2
+          ],
+          "aboveSea": 70,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            96,
+            64.5
+          ],
+          "size": [
+            8,
+            2
+          ],
+          "aboveSea": 56,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            96,
+            66.5
+          ],
+          "size": [
+            8,
+            2
+          ],
+          "aboveSea": 42,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            96,
+            68.5
+          ],
+          "size": [
+            8,
+            2
+          ],
+          "aboveSea": 28,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            96,
+            70.5
+          ],
+          "size": [
+            8,
+            2
+          ],
+          "aboveSea": 14,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "reveal",
+          "at": [
+            96,
+            50
+          ],
+          "r": 20
+        },
+        {
+          "type": "message",
+          "text": "The raiders are broken. A dry road rises north of the seer isle and a ramp climbs the walled isle. Burn its Hearth."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 150,
+        "every": 150
+      },
+      "after": 4,
+      "until": 5,
+      "do": [
+        {
+          "type": "message",
+          "text": "The walled isle sends a war band down its ramp for the seer stone in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 160,
+        "every": 150
+      },
+      "after": 4,
+      "until": 5,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 2,
+          "tribe": 1,
+          "at": [
+            94,
+            76
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            86,
+            106
+          ],
+          "n": 2,
+          "pray": "mire_seer",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 3400
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Five minutes remain."
+        }
+      ]
+    }
+  ]
+}

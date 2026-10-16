@@ -1,0 +1,1962 @@
+{
+  "$comment": "Campaign level 43 (chapter 4, The Wild Heart): four tribes on one round continent, all hostile. The player lives in the south; the western war tribe (tribe 1, aggressive), the northern stone keepers (tribe 2, turtle) and the eastern raiders (tribe 3, sneaky) each live on a mesa walled by cliffs (disc aboveSea 104, falloff 2), so no army climbs one until its stage, when six shape steps raise a ramp on the face toward the center. Every rival is capped (maxPopulation 24, 24 and 22, maxTroops 8) and keeps posted guards and towers. A crown of three stones (ley, ward, seer) on the central hill is held by the stone keepers, dormant until the raiders fall, with 6 posted wardens and 2 firecallers. Stages: grow to 34 followers (an idle village falls to 5 raiders landing on the southeast shore every 150 s from 420 s, until 0); kill 12 eastern raiders (4 wardens and a firecaller from below the east mesa and 4 wardens from the southeast shore every 90 s, until 1); burn the raiders' Hearth (east ramp; 10 wardens, 3 firecallers, 2 towers, 3 more wardens every 75 s); hold two crown stones at once for 180 s (the stone keepers and the war tribe each send 4 wardens to pray them back every 120 s, until 3); kill 12 of the war tribe (bands of 6 and 4 every 100 s, until 4); burn the war tribe's Hearth (west ramp; 26 wardens, 8 firecallers, 4 towers, 6 more every 45 s); burn the stone keepers' Hearth (north ramp; 24 wardens, 6 firecallers, 4 towers, 5 more every 60 s). Every raid and muster is warned 10 s before. Measured with the hard aggressive bot: offset 1 stages done near ticks 5949, 9199, 16595, 22981, 26459, 28391, 34494; offsets 0 to 5 win at 33570, 34494, 29232, 30217, 30023, 29069. Time limit 3700 s (74000 ticks).",
+  "id": "four_hearths",
+  "name": "Four Hearths",
+  "order": 43,
+  "description": "Four tribes share one round land, all at war: you in the south, a war tribe on its walled mesa in the west, stone keepers in the north and raiders in the east, with a crown of three stones between them. Break the raiders, take the crown, then burn the last two Hearths.",
+  "lighting": "golden",
+  "seed": 4242,
+  "map": {
+    "generator": "flat",
+    "size": 192,
+    "landAboveSea": -30,
+    "paint": [
+      {
+        "shape": "disc",
+        "at": [
+          96,
+          96
+        ],
+        "r": 86,
+        "aboveSea": 34,
+        "falloff": 6
+      },
+      {
+        "shape": "disc",
+        "at": [
+          30,
+          96
+        ],
+        "r": 14,
+        "aboveSea": 104,
+        "falloff": 2
+      },
+      {
+        "shape": "disc",
+        "at": [
+          96,
+          30
+        ],
+        "r": 14,
+        "aboveSea": 104,
+        "falloff": 2
+      },
+      {
+        "shape": "disc",
+        "at": [
+          162,
+          96
+        ],
+        "r": 14,
+        "aboveSea": 104,
+        "falloff": 2
+      },
+      {
+        "shape": "disc",
+        "at": [
+          96,
+          96
+        ],
+        "r": 8,
+        "aboveSea": 46,
+        "falloff": 6
+      },
+      {
+        "shape": "disc",
+        "at": [
+          60,
+          140
+        ],
+        "r": 6,
+        "aboveSea": 44,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          134,
+          140
+        ],
+        "r": 6,
+        "aboveSea": 42,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          60,
+          58
+        ],
+        "r": 6,
+        "aboveSea": 44,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          134,
+          58
+        ],
+        "r": 6,
+        "aboveSea": 44,
+        "falloff": 4
+      }
+    ]
+  },
+  "tribes": [
+    {},
+    {
+      "ai": "aggressive",
+      "difficulty": "normal",
+      "maxTroops": 8,
+      "maxPopulation": 24,
+      "worshipAfterSeconds": 3600,
+      "keepRaiders": true,
+      "buildings": [
+        "dwelling",
+        "warden_lodge",
+        "fire_lodge",
+        "watchtower"
+      ]
+    },
+    {
+      "ai": "turtle",
+      "difficulty": "normal",
+      "maxTroops": 8,
+      "maxPopulation": 24,
+      "worshipAfterSeconds": 3600,
+      "keepRaiders": true,
+      "buildings": [
+        "dwelling",
+        "warden_lodge",
+        "watchtower"
+      ]
+    },
+    {
+      "ai": "sneaky",
+      "difficulty": "normal",
+      "maxTroops": 8,
+      "maxPopulation": 22,
+      "worshipAfterSeconds": 3600,
+      "buildings": [
+        "dwelling",
+        "warden_lodge",
+        "fire_lodge",
+        "watchtower"
+      ]
+    }
+  ],
+  "spells": [
+    "bolt",
+    "hornets",
+    "lightning"
+  ],
+  "buildings": [
+    "dwelling",
+    "warden_lodge",
+    "fire_lodge",
+    "watchtower"
+  ],
+  "props": [
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        89,
+        92
+      ],
+      "rot": 0.4
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        103,
+        92
+      ],
+      "rot": 1.9
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        96,
+        104
+      ],
+      "rot": 2.8
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        92,
+        86
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        100,
+        86
+      ]
+    },
+    {
+      "model": "prop.mushroom_ring",
+      "at": [
+        84,
+        104
+      ]
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        84,
+        168
+      ]
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        108,
+        160
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        86,
+        174
+      ],
+      "rot": 0.1
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        106,
+        174
+      ],
+      "rot": 3
+    },
+    {
+      "model": "prop.pots",
+      "at": [
+        99,
+        170
+      ]
+    },
+    {
+      "model": "prop.cart",
+      "at": [
+        90,
+        152
+      ],
+      "rot": 0.6
+    },
+    {
+      "model": "prop.flowers",
+      "at": [
+        80,
+        160
+      ]
+    },
+    {
+      "model": "prop.flowers",
+      "at": [
+        112,
+        168
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        78,
+        132
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        116,
+        130
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        70,
+        100
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        124,
+        98
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        98,
+        70
+      ]
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        126,
+        112
+      ],
+      "rot": 1.1
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        66,
+        110
+      ],
+      "rot": 2.2
+    },
+    {
+      "model": "prop.log_a",
+      "at": [
+        110,
+        128
+      ],
+      "rot": 0.8
+    },
+    {
+      "model": "prop.pots",
+      "at": [
+        22,
+        100
+      ]
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        24,
+        88
+      ]
+    },
+    {
+      "model": "prop.pots",
+      "at": [
+        90,
+        22
+      ]
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        104,
+        30
+      ]
+    },
+    {
+      "model": "prop.pots",
+      "at": [
+        170,
+        100
+      ]
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        168,
+        86
+      ]
+    },
+    {
+      "model": "prop.bush_a",
+      "at": [
+        70,
+        150
+      ]
+    },
+    {
+      "model": "prop.bush_a",
+      "at": [
+        124,
+        150
+      ]
+    },
+    {
+      "model": "prop.fern",
+      "at": [
+        58,
+        124
+      ]
+    },
+    {
+      "model": "prop.fern",
+      "at": [
+        134,
+        124
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        96,
+        182
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        70,
+        176
+      ]
+    }
+  ],
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        96,
+        164
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        100,
+        160
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        90,
+        170
+      ],
+      "count": 12
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        100,
+        156
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "dwelling",
+      "tribe": 0,
+      "at": [
+        88,
+        158
+      ]
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 0,
+      "at": [
+        105,
+        168
+      ]
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        72,
+        166
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        120,
+        166
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        78,
+        146
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        116,
+        146
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        60,
+        122
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        132,
+        122
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        56,
+        74
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        136,
+        74
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        114,
+        66
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        78,
+        64
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        80,
+        118
+      ],
+      "count": 8,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        112,
+        118
+      ],
+      "count": 8,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        38,
+        140
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        154,
+        140
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        40,
+        54
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        152,
+        54
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        86,
+        148
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        140,
+        110
+      ],
+      "count": 2,
+      "spacing": 2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        52,
+        110
+      ],
+      "count": 2,
+      "spacing": 2
+    },
+    {
+      "spawn": "ley_stone",
+      "at": [
+        96,
+        90
+      ],
+      "tribe": 2,
+      "site": {
+        "tag": "crown_ley",
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The crown ley stone is yours. It pays mana while you hold it."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "ward_stone",
+      "at": [
+        91,
+        99
+      ],
+      "tribe": 2,
+      "site": {
+        "tag": "crown_ward",
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "charges",
+            "spell": "lightning",
+            "n": 1
+          },
+          {
+            "type": "message",
+            "text": "The crown ward stone is yours: it strikes at foes near it, and one Lightning answers you."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "seer_stone",
+      "at": [
+        101,
+        99
+      ],
+      "tribe": 2,
+      "site": {
+        "tag": "crown_seer",
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "reveal",
+            "at": [
+              96,
+              96
+            ],
+            "r": 40
+          },
+          {
+            "type": "message",
+            "text": "The crown seer stone is yours and shows the land around the crown."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "warden",
+      "tribe": 2,
+      "near": [
+        96,
+        96
+      ],
+      "count": 6,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "firecaller",
+      "tribe": 2,
+      "near": [
+        96,
+        94
+      ],
+      "count": 2,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        28,
+        96
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        25,
+        92
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        24,
+        102
+      ],
+      "count": 8
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 1,
+      "at": [
+        34,
+        88
+      ]
+    },
+    {
+      "spawn": "fire_lodge",
+      "tribe": 1,
+      "at": [
+        34,
+        105
+      ]
+    },
+    {
+      "spawn": "dwelling",
+      "tribe": 1,
+      "at": [
+        22,
+        89
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        40,
+        92
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        40,
+        100
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        36,
+        85
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        36,
+        107
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        39,
+        96
+      ],
+      "count": 26,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "firecaller",
+      "tribe": 1,
+      "near": [
+        35,
+        96
+      ],
+      "count": 8,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 2,
+      "at": [
+        96,
+        28
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 2,
+      "at": [
+        92,
+        25
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 2,
+      "near": [
+        102,
+        24
+      ],
+      "count": 8
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 2,
+      "at": [
+        88,
+        34
+      ]
+    },
+    {
+      "spawn": "dwelling",
+      "tribe": 2,
+      "at": [
+        103,
+        21
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        92,
+        40
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        100,
+        40
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        85,
+        36
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        107,
+        36
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 2,
+      "near": [
+        96,
+        39
+      ],
+      "count": 24,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "firecaller",
+      "tribe": 2,
+      "near": [
+        96,
+        35
+      ],
+      "count": 6,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 3,
+      "at": [
+        164,
+        96
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 3,
+      "at": [
+        167,
+        92
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 3,
+      "near": [
+        168,
+        102
+      ],
+      "count": 8
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 3,
+      "at": [
+        158,
+        88
+      ]
+    },
+    {
+      "spawn": "fire_lodge",
+      "tribe": 3,
+      "at": [
+        159,
+        105
+      ]
+    },
+    {
+      "spawn": "dwelling",
+      "tribe": 3,
+      "at": [
+        170,
+        89
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 3,
+      "at": [
+        152,
+        92
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 3,
+      "at": [
+        152,
+        100
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 3,
+      "near": [
+        153,
+        96
+      ],
+      "count": 10,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "firecaller",
+      "tribe": 3,
+      "near": [
+        157,
+        96
+      ],
+      "count": 3,
+      "stance": "defensive"
+    }
+  ],
+  "objectives": [
+    {
+      "type": "followers",
+      "n": 34,
+      "text": "Grow your village to 34 followers (troops count too)"
+    },
+    {
+      "type": "kill",
+      "n": 12,
+      "tribe": 3,
+      "after": 0,
+      "text": "The eastern raiders come for your village: cut down twelve of them"
+    },
+    {
+      "type": "destroy",
+      "tribe": 3,
+      "building": "hearth",
+      "after": 1,
+      "text": "Climb the ramp that rises up the eastern mesa and burn the raiders' Hearth"
+    },
+    {
+      "type": "hold",
+      "n": 2,
+      "seconds": 180,
+      "after": 2,
+      "text": "Take two of the three crown stones on the central hill and hold both at once for three minutes"
+    },
+    {
+      "type": "kill",
+      "n": 12,
+      "tribe": 1,
+      "after": 3,
+      "text": "The western war tribe marches on you: cut down twelve of its troops"
+    },
+    {
+      "type": "destroy",
+      "tribe": 1,
+      "building": "hearth",
+      "after": 4,
+      "text": "Climb the ramp that rises up the western mesa and burn the war tribe's Hearth"
+    },
+    {
+      "type": "destroy",
+      "tribe": 2,
+      "building": "hearth",
+      "after": 5,
+      "text": "Climb the ramp that rises up the northern mesa and burn the stone keepers' Hearth"
+    }
+  ],
+  "lose": [
+    {
+      "type": "hearthLost"
+    },
+    {
+      "type": "timeLimit",
+      "seconds": 3700
+    }
+  ],
+  "triggers": [
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1
+      },
+      "do": [
+        {
+          "type": "reveal",
+          "at": [
+            30,
+            96
+          ],
+          "r": 15
+        },
+        {
+          "type": "reveal",
+          "at": [
+            96,
+            30
+          ],
+          "r": 15
+        },
+        {
+          "type": "reveal",
+          "at": [
+            162,
+            96
+          ],
+          "r": 15
+        },
+        {
+          "type": "reveal",
+          "at": [
+            96,
+            96
+          ],
+          "r": 10
+        },
+        {
+          "type": "message",
+          "text": "Three rival Hearths stand on walled mesas around you, and all of them want this land. Grow strong first: the eastern raiders are watching."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 410,
+        "every": 150
+      },
+      "until": 0,
+      "do": [
+        {
+          "type": "message",
+          "text": "Eastern raiders land on the southeast shore in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 420,
+        "every": 150
+      },
+      "until": 0,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 5,
+          "tribe": 3,
+          "at": [
+            140,
+            150
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 3,
+          "to": [
+            96,
+            164
+          ],
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 0
+      },
+      "do": [
+        {
+          "type": "reveal",
+          "at": [
+            128,
+            104
+          ],
+          "r": 14
+        },
+        {
+          "type": "message",
+          "text": "Your village is strong enough to be worth raiding. The eastern raiders come now: cut down twelve of them."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 20,
+        "every": 90
+      },
+      "after": 0,
+      "until": 1,
+      "do": [
+        {
+          "type": "message",
+          "text": "Raiders climb down below the eastern mesa. They march on your village in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 30,
+        "every": 90
+      },
+      "after": 0,
+      "until": 1,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 3,
+          "at": [
+            128,
+            104
+          ]
+        },
+        {
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 1,
+          "tribe": 3,
+          "at": [
+            128,
+            104
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 3,
+          "to": [
+            96,
+            164
+          ],
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 65,
+        "every": 90
+      },
+      "after": 0,
+      "until": 1,
+      "do": [
+        {
+          "type": "message",
+          "text": "More raiders land on the southeast shore in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 75,
+        "every": 90
+      },
+      "after": 0,
+      "until": 1,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 3,
+          "at": [
+            140,
+            150
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 3,
+          "to": [
+            96,
+            164
+          ],
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 1
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            146.5,
+            96
+          ],
+          "size": [
+            2,
+            6
+          ],
+          "aboveSea": 94,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            144.5,
+            96
+          ],
+          "size": [
+            2,
+            6
+          ],
+          "aboveSea": 84,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            142.5,
+            96
+          ],
+          "size": [
+            2,
+            6
+          ],
+          "aboveSea": 74,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            140.5,
+            96
+          ],
+          "size": [
+            2,
+            6
+          ],
+          "aboveSea": 64,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            138.5,
+            96
+          ],
+          "size": [
+            2,
+            6
+          ],
+          "aboveSea": 54,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            136.5,
+            96
+          ],
+          "size": [
+            2,
+            6
+          ],
+          "aboveSea": 44,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "reveal",
+          "at": [
+            162,
+            96
+          ],
+          "r": 20
+        },
+        {
+          "type": "message",
+          "text": "The raiders' bands are broken. A stone ramp rises up the west face of their mesa: climb it and burn their Hearth."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 20,
+        "every": 75
+      },
+      "after": 1,
+      "until": 2,
+      "do": [
+        {
+          "type": "message",
+          "text": "Raiders gather at the head of their ramp in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 30,
+        "every": 75
+      },
+      "after": 1,
+      "until": 2,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 3,
+          "at": [
+            154,
+            96
+          ],
+          "stance": "defensive"
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 2
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "crown_ley"
+        },
+        {
+          "type": "awaken",
+          "site": "crown_ward"
+        },
+        {
+          "type": "awaken",
+          "site": "crown_seer"
+        },
+        {
+          "type": "reveal",
+          "at": [
+            96,
+            96
+          ],
+          "r": 16
+        },
+        {
+          "type": "message",
+          "text": "The raiders' Hearth is ash, and the crown of stones wakes on the central hill. Take two of the three from the stone keepers and hold them."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 20,
+        "every": 120
+      },
+      "after": 2,
+      "until": 3,
+      "do": [
+        {
+          "type": "message",
+          "text": "Stone keepers come down from the northern mesa to pray the crown back in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 30,
+        "every": 120
+      },
+      "after": 2,
+      "until": 3,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 2,
+          "at": [
+            104,
+            64
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            96,
+            96
+          ],
+          "pray": "crown_ley",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 80,
+        "every": 120
+      },
+      "after": 2,
+      "until": 3,
+      "do": [
+        {
+          "type": "message",
+          "text": "War tribe troops come down from the western mesa to seize the crown in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 90,
+        "every": 120
+      },
+      "after": 2,
+      "until": 3,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            64,
+            104
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            96,
+            96
+          ],
+          "pray": "crown_ward",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 3
+      },
+      "do": [
+        {
+          "type": "reveal",
+          "at": [
+            64,
+            104
+          ],
+          "r": 14
+        },
+        {
+          "type": "message",
+          "text": "The crown is yours. The western war tribe answers with war bands: cut down twelve of its troops."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 20,
+        "every": 100
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "message",
+          "text": "War drums below the western mesa: a war band marches on your village in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 30,
+        "every": 100
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 5,
+          "tribe": 1,
+          "at": [
+            64,
+            104
+          ]
+        },
+        {
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 1,
+          "tribe": 1,
+          "at": [
+            64,
+            104
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            96,
+            164
+          ],
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 70,
+        "every": 100
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "message",
+          "text": "More war tribe troops land on the southwest shore in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 80,
+        "every": 100
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            52,
+            150
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            96,
+            164
+          ],
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 4
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            45.5,
+            96
+          ],
+          "size": [
+            2,
+            6
+          ],
+          "aboveSea": 94,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            47.5,
+            96
+          ],
+          "size": [
+            2,
+            6
+          ],
+          "aboveSea": 84,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            49.5,
+            96
+          ],
+          "size": [
+            2,
+            6
+          ],
+          "aboveSea": 74,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            51.5,
+            96
+          ],
+          "size": [
+            2,
+            6
+          ],
+          "aboveSea": 64,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            53.5,
+            96
+          ],
+          "size": [
+            2,
+            6
+          ],
+          "aboveSea": 54,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            55.5,
+            96
+          ],
+          "size": [
+            2,
+            6
+          ],
+          "aboveSea": 44,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "reveal",
+          "at": [
+            30,
+            96
+          ],
+          "r": 20
+        },
+        {
+          "type": "message",
+          "text": "The war bands are broken. A stone ramp rises up the east face of the western mesa: climb it and burn the war tribe's Hearth."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 20,
+        "every": 45
+      },
+      "after": 4,
+      "until": 5,
+      "do": [
+        {
+          "type": "message",
+          "text": "War tribe troops gather at the head of their ramp in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 30,
+        "every": 45
+      },
+      "after": 4,
+      "until": 5,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 6,
+          "tribe": 1,
+          "at": [
+            38,
+            96
+          ],
+          "stance": "defensive"
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 5
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            96,
+            45.5
+          ],
+          "size": [
+            6,
+            2
+          ],
+          "aboveSea": 94,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            96,
+            47.5
+          ],
+          "size": [
+            6,
+            2
+          ],
+          "aboveSea": 84,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            96,
+            49.5
+          ],
+          "size": [
+            6,
+            2
+          ],
+          "aboveSea": 74,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            96,
+            51.5
+          ],
+          "size": [
+            6,
+            2
+          ],
+          "aboveSea": 64,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            96,
+            53.5
+          ],
+          "size": [
+            6,
+            2
+          ],
+          "aboveSea": 54,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            96,
+            55.5
+          ],
+          "size": [
+            6,
+            2
+          ],
+          "aboveSea": 44,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "reveal",
+          "at": [
+            96,
+            30
+          ],
+          "r": 20
+        },
+        {
+          "type": "message",
+          "text": "One Hearth remains. A stone ramp rises up the south face of the northern mesa: climb it and burn the stone keepers' Hearth."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 20,
+        "every": 60
+      },
+      "after": 5,
+      "until": 6,
+      "do": [
+        {
+          "type": "message",
+          "text": "Stone keepers gather at the head of their ramp in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 30,
+        "every": 60
+      },
+      "after": 5,
+      "until": 6,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 5,
+          "tribe": 2,
+          "at": [
+            96,
+            38
+          ],
+          "stance": "defensive"
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 3400
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Five minutes remain."
+        }
+      ]
+    }
+  ]
+}

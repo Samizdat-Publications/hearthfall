@@ -1,0 +1,52 @@
+{
+  "id": "level_four_hearths",
+  "description": "Four Hearths (level 42) won by the hard opponent bot as the player: grows to 34 followers, cuts down 12 eastern raiders, climbs the ramp that rises up the eastern mesa and burns the raiders' Hearth, takes two of the three crown stones and holds them for three minutes while the stone keepers and the war tribe pray them back, cuts down 12 of the war tribe, then burns the war tribe's Hearth and the stone keepers' Hearth up their risen ramps (bot offset 1 wins near tick 34500; offsets 0 to 3 win between about 29200 and 34500).",
+  "tags": [
+    "levels"
+  ],
+  "level": "four_hearths",
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "aggressive",
+      "difficulty": "hard",
+      "offset": 1
+    }
+  ],
+  "runTicks": 40000,
+  "assert": [
+    {
+      "at": 3000,
+      "expr": "level.objectivesDone == 0 && site('crown_ley').by == 2 && !terrain.walkable([147,96]) && !terrain.walkable([45,96]) && !terrain.walkable([96,45]) && alive(1) && alive(2) && alive(3) && !level.lost"
+    },
+    {
+      "at": 7500,
+      "expr": "level.objectivesDone == 1 && events.count('raid') >= 1 && !terrain.walkable([147,96]) && alive(3) && !level.lost"
+    },
+    {
+      "at": 12500,
+      "expr": "level.objectivesDone == 2 && terrain.walkable([147,96]) && !terrain.walkable([45,96]) && site('crown_ley').by == 2 && alive(3)"
+    },
+    {
+      "at": 20000,
+      "expr": "level.objectivesDone == 3 && !alive(3) && alive(1) && alive(2) && events.count('worshipComplete') >= 2 && !terrain.walkable([45,96])"
+    },
+    {
+      "at": 24500,
+      "expr": "level.objectivesDone == 4 && events.count('raid') >= 8 && alive(1) && !terrain.walkable([45,96]) && !level.lost"
+    },
+    {
+      "at": 27400,
+      "expr": "level.objectivesDone == 5 && terrain.walkable([45,96]) && !terrain.walkable([96,45]) && alive(1) && alive(2)"
+    },
+    {
+      "at": 31000,
+      "expr": "level.objectivesDone == 6 && !alive(1) && alive(2) && terrain.walkable([96,45]) && !level.won && !level.lost"
+    },
+    {
+      "at": 40000,
+      "expr": "level.won && alive(0) && level.objectivesDone == 7 && events.count('levelWon') == 1 && invariants() == 0"
+    }
+  ]
+}

@@ -1,0 +1,1399 @@
+{
+  "$comment": "Campaign level 41 (chapter 4, The Wild Heart), at night. Deep wolf country: the player village in the west, a sneaky rival on a crag walled by cliffs in the east (disc aboveSea 104, falloff 2) that no army climbs until objective 3, when six shape steps raise a stone stair on its west face, so the rival lives until its stage. Stage 1 clear the three dens within 34 cells of the village (8, 7 and 7 wolves; the road den also stands in the forest road area so the validator sees a setup den there); an idle village falls to four warden scouts landing on the south shore every 120 s from 480 s (until 0). Stage 2 the dormant moon stone (reliquary, 6 followers, 60 s) wakes; 8 wolves guard the hill and 6 more spill out when your people near it; it teaches the Fire Lodge. Stage 3 the prayer spawns the pack mother's great den (28 wolves) on the forest road at once, and kin packs of 8 den north and south of it 20 and 50 s later (warned); clearDens fromStage with no n counts every den in the road area, so the kin count once they land. Stage 4 survive 420 s while 6 wardens and 2 firecallers march from the east foot and 4 wardens slip through the north woods every 70 s (warned, until 3). Stage 5 the stair rises and the rival musters 5 wardens at its head every 60 s (warned, until 4) on top of 18 posted wardens, 6 firecallers and 3 towers. Measured with the hard aggressive bot: offset 2 stages done near ticks 7214, 11014, 15040, 23439, 34304; offsets 0 to 5 win at 25117, 24393, 34304, 35095, 24535, 31818 (the crag fight either breaks at once or grinds through several musters). Time limit 3600 s (72000 ticks).",
+  "id": "pack_mother",
+  "name": "The Pack Mother",
+  "order": 41,
+  "description": "Deep wolf country at night, with a sneaky rival on a walled crag across the forest. Clear the dens around your village, pray at the moon stone on the hill, kill the pack mother it wakes on the forest road, hold out through the rival's night raids, then climb the crag and burn the rival Hearth.",
+  "lighting": "night",
+  "seed": 4141,
+  "map": {
+    "generator": "flat",
+    "size": 192,
+    "landAboveSea": -30,
+    "paint": [
+      {
+        "shape": "rect",
+        "at": [
+          96,
+          96
+        ],
+        "size": [
+          180,
+          140
+        ],
+        "aboveSea": 36,
+        "falloff": 5
+      },
+      {
+        "shape": "disc",
+        "at": [
+          164,
+          96
+        ],
+        "r": 14,
+        "aboveSea": 104,
+        "falloff": 2
+      },
+      {
+        "shape": "cone",
+        "at": [
+          92,
+          44
+        ],
+        "r": 18,
+        "aboveSea": 80,
+        "vent": false
+      },
+      {
+        "shape": "disc",
+        "at": [
+          58,
+          148
+        ],
+        "r": 7,
+        "aboveSea": 46,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          124,
+          142
+        ],
+        "r": 8,
+        "aboveSea": 44,
+        "falloff": 5
+      },
+      {
+        "shape": "disc",
+        "at": [
+          136,
+          52
+        ],
+        "r": 7,
+        "aboveSea": 48,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          40,
+          46
+        ],
+        "r": 6,
+        "aboveSea": 44,
+        "falloff": 4
+      }
+    ]
+  },
+  "tribes": [
+    {},
+    {
+      "ai": "sneaky",
+      "difficulty": "normal",
+      "maxTroops": 8,
+      "maxPopulation": 26,
+      "worshipAfterSeconds": 3600,
+      "buildings": [
+        "dwelling",
+        "warden_lodge",
+        "fire_lodge",
+        "watchtower"
+      ]
+    }
+  ],
+  "spells": [
+    "bolt",
+    "hornets",
+    "lightning"
+  ],
+  "buildings": [
+    "dwelling",
+    "warden_lodge",
+    "watchtower"
+  ],
+  "props": [
+    {
+      "model": "prop.cairn",
+      "at": [
+        40,
+        103
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        66,
+        98
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        118,
+        105
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        132,
+        97
+      ]
+    },
+    {
+      "model": "prop.cart",
+      "at": [
+        37,
+        105
+      ],
+      "rot": 0.4
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        108,
+        107
+      ],
+      "rot": 0.7
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        100,
+        96
+      ],
+      "rot": 2.1
+    },
+    {
+      "model": "prop.log_a",
+      "at": [
+        112,
+        99
+      ],
+      "rot": 1.2
+    },
+    {
+      "model": "prop.log_a",
+      "at": [
+        84,
+        106
+      ],
+      "rot": 0.3
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        87,
+        44
+      ],
+      "rot": 0.2
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        97,
+        44
+      ],
+      "rot": 1.4
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        92,
+        39
+      ],
+      "rot": 2.4
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        92,
+        49
+      ],
+      "rot": 0.9
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        88,
+        48
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        96,
+        40
+      ]
+    },
+    {
+      "model": "prop.mushroom_ring",
+      "at": [
+        84,
+        54
+      ]
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        16,
+        104
+      ]
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        19,
+        110
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        15,
+        97
+      ],
+      "rot": 1.6
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        35,
+        110
+      ],
+      "rot": 0.2
+    },
+    {
+      "model": "prop.pots",
+      "at": [
+        24,
+        94
+      ]
+    },
+    {
+      "model": "prop.pots",
+      "at": [
+        170,
+        100
+      ]
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        174,
+        95
+      ]
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        138,
+        92
+      ],
+      "rot": 1
+    },
+    {
+      "model": "prop.fern",
+      "at": [
+        52,
+        98
+      ]
+    },
+    {
+      "model": "prop.fern",
+      "at": [
+        31,
+        69
+      ]
+    },
+    {
+      "model": "prop.fern",
+      "at": [
+        48,
+        127
+      ]
+    },
+    {
+      "model": "prop.bush_a",
+      "at": [
+        127,
+        135
+      ]
+    },
+    {
+      "model": "prop.bush_a",
+      "at": [
+        134,
+        59
+      ]
+    }
+  ],
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        26,
+        100
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        30,
+        96
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        24,
+        108
+      ],
+      "count": 8
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        32,
+        102
+      ],
+      "count": 3
+    },
+    {
+      "spawn": "dwelling",
+      "tribe": 0,
+      "at": [
+        20,
+        96
+      ]
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 0,
+      "at": [
+        30,
+        112
+      ]
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        54,
+        102
+      ],
+      "count": 8
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        34,
+        72
+      ],
+      "count": 7
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        46,
+        124
+      ],
+      "count": 7
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        96,
+        51
+      ],
+      "count": 8
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        118,
+        106
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "wolf",
+      "tribe": -1,
+      "at": [
+        45,
+        68
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "reliquary",
+      "at": [
+        92,
+        44
+      ],
+      "site": {
+        "tag": "moon_stone",
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "unlockBuilding",
+            "building": "fire_lodge"
+          },
+          {
+            "type": "message",
+            "text": "The moon stone answers and teaches you the Fire Lodge: firecallers burn wolves and raiders from a distance."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        12,
+        118
+      ],
+      "count": 6,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        14,
+        80
+      ],
+      "count": 6,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        44,
+        84
+      ],
+      "count": 6,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        68,
+        76
+      ],
+      "count": 14,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        66,
+        124
+      ],
+      "count": 14,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        110,
+        84
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        116,
+        122
+      ],
+      "count": 14,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        100,
+        134
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        80,
+        142
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        120,
+        74
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        138,
+        120
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        32,
+        142
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        54,
+        48
+      ],
+      "count": 14,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        130,
+        38
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        74,
+        56
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        112,
+        56
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        170,
+        140
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        170,
+        52
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        88,
+        76
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        150,
+        126
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        14,
+        92
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        72,
+        148
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        104,
+        62
+      ],
+      "count": 2,
+      "spacing": 2
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        166,
+        96
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        169,
+        92
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        169,
+        102
+      ],
+      "count": 10
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 1,
+      "at": [
+        160,
+        88
+      ]
+    },
+    {
+      "spawn": "fire_lodge",
+      "tribe": 1,
+      "at": [
+        161,
+        106
+      ]
+    },
+    {
+      "spawn": "dwelling",
+      "tribe": 1,
+      "at": [
+        172,
+        89
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        154,
+        93
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        154,
+        103
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        158,
+        98
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        157,
+        98
+      ],
+      "count": 18,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "firecaller",
+      "tribe": 1,
+      "near": [
+        161,
+        98
+      ],
+      "count": 6,
+      "stance": "defensive"
+    }
+  ],
+  "objectives": [
+    {
+      "type": "clearDens",
+      "at": [
+        26,
+        100
+      ],
+      "r": 34,
+      "text": "Train wardens and clear the three wolf dens closest to your village"
+    },
+    {
+      "type": "worship",
+      "site": "moon_stone",
+      "after": 0,
+      "text": "Climb the moon hill north of the road and pray at the moon stone with six followers"
+    },
+    {
+      "type": "clearDens",
+      "at": [
+        78,
+        102
+      ],
+      "r": 27,
+      "fromStage": true,
+      "after": 1,
+      "text": "Clear every den on the forest road: the pack mother's great den and any kin that gather to her"
+    },
+    {
+      "type": "survive",
+      "seconds": 270,
+      "fromStage": true,
+      "after": 2,
+      "text": "Keep your Hearth standing for four and a half minutes while the rival raids your village in the dark"
+    },
+    {
+      "type": "destroy",
+      "tribe": 1,
+      "building": "hearth",
+      "after": 3,
+      "text": "Climb the stair that rises up the crag and burn the rival Hearth"
+    }
+  ],
+  "lose": [
+    {
+      "type": "hearthLost"
+    },
+    {
+      "type": "timeLimit",
+      "seconds": 3600
+    }
+  ],
+  "triggers": [
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1
+      },
+      "do": [
+        {
+          "type": "reveal",
+          "at": [
+            164,
+            96
+          ],
+          "r": 15
+        },
+        {
+          "type": "message",
+          "text": "Wolves den in the woods all around your village, and a rival watches from its walled crag across the forest. Clear the three nearest packs."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 470,
+        "every": 120
+      },
+      "until": 0,
+      "do": [
+        {
+          "type": "message",
+          "text": "Rival scouts land on the southern shore in ten seconds and creep toward your village."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 480,
+        "every": 120
+      },
+      "until": 0,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            16,
+            150
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            26,
+            100
+          ],
+          "n": 4,
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 0
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "moon_stone"
+        },
+        {
+          "type": "reveal",
+          "at": [
+            92,
+            44
+          ],
+          "r": 12
+        },
+        {
+          "type": "message",
+          "text": "The near woods are quiet. On the hill north of the road the moon stone stirs: send six followers to pray there, with troops to guard them."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "area",
+        "at": [
+          92,
+          44
+        ],
+        "r": 15
+      },
+      "after": 0,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "wolf",
+          "n": 6,
+          "tribe": -1,
+          "at": [
+            89,
+            40
+          ]
+        },
+        {
+          "type": "message",
+          "text": "Wolves spill out of the rocks below the moon stone. Keep your worshippers guarded."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "wolf",
+          "n": 28,
+          "tribe": -1,
+          "at": [
+            104,
+            102
+          ]
+        },
+        {
+          "type": "reveal",
+          "at": [
+            78,
+            102
+          ],
+          "r": 30
+        },
+        {
+          "type": "message",
+          "text": "The moonlight wakes the pack mother. Her great den now blocks the forest road, and she howls for her kin. Strike before they gather."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 10
+      },
+      "after": 1,
+      "until": 2,
+      "do": [
+        {
+          "type": "message",
+          "text": "Kin answer the pack mother's howl. In ten seconds a new pack dens in the woods just north of the road."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 20
+      },
+      "after": 1,
+      "until": 2,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "wolf",
+          "n": 8,
+          "tribe": -1,
+          "at": [
+            90,
+            90
+          ]
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 40
+      },
+      "after": 1,
+      "until": 2,
+      "do": [
+        {
+          "type": "message",
+          "text": "More kin answer. In ten seconds another pack dens in the woods just south of the road."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 50
+      },
+      "after": 1,
+      "until": 2,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "wolf",
+          "n": 8,
+          "tribe": -1,
+          "at": [
+            92,
+            114
+          ]
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 2
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "The pack mother is dead and the road lies open. The rival will use it: hold your Hearth through four and a half minutes of night raids."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 20,
+        "every": 70
+      },
+      "after": 2,
+      "until": 3,
+      "do": [
+        {
+          "type": "message",
+          "text": "Torches on the forest road: rival raiders come down from the crag. They reach the road in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 30,
+        "every": 70
+      },
+      "after": 2,
+      "until": 3,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 6,
+          "tribe": 1,
+          "at": [
+            134,
+            100
+          ]
+        },
+        {
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 2,
+          "tribe": 1,
+          "at": [
+            134,
+            100
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            26,
+            100
+          ],
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 55,
+        "every": 70
+      },
+      "after": 2,
+      "until": 3,
+      "do": [
+        {
+          "type": "message",
+          "text": "Shapes slip past the moon hill: rival raiders come through the north woods in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 65,
+        "every": 70
+      },
+      "after": 2,
+      "until": 3,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            64,
+            36
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            26,
+            100
+          ],
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 3
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            148.5,
+            98
+          ],
+          "size": [
+            2,
+            6
+          ],
+          "aboveSea": 94,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            146.5,
+            98
+          ],
+          "size": [
+            2,
+            6
+          ],
+          "aboveSea": 84,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            144.5,
+            98
+          ],
+          "size": [
+            2,
+            6
+          ],
+          "aboveSea": 74,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            142.5,
+            98
+          ],
+          "size": [
+            2,
+            6
+          ],
+          "aboveSea": 64,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            140.5,
+            98
+          ],
+          "size": [
+            2,
+            6
+          ],
+          "aboveSea": 54,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            138.5,
+            98
+          ],
+          "size": [
+            2,
+            6
+          ],
+          "aboveSea": 44,
+          "falloff": 0,
+          "seconds": 12
+        },
+        {
+          "type": "reveal",
+          "at": [
+            164,
+            96
+          ],
+          "r": 20
+        },
+        {
+          "type": "message",
+          "text": "The night raids are broken. An old stone stair rises out of the scree on the crag's west face: climb it and burn the rival Hearth."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 20
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "message",
+          "text": "Rival folk gather at the head of the stair in ten seconds. Push up before they form."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 30
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            160,
+            96
+          ],
+          "stance": "defensive"
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 80
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "message",
+          "text": "Rival folk gather at the head of the stair in ten seconds. Push up before they form."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 90
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            160,
+            96
+          ],
+          "stance": "defensive"
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 140
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "message",
+          "text": "Rival folk gather at the head of the stair in ten seconds. Push up before they form."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 150
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            160,
+            96
+          ],
+          "stance": "defensive"
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 200
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "message",
+          "text": "Rival folk gather at the head of the stair in ten seconds. Push up before they form."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 210
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            160,
+            96
+          ],
+          "stance": "defensive"
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 3300
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Five minutes remain."
+        }
+      ]
+    }
+  ]
+}

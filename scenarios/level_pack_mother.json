@@ -1,0 +1,44 @@
+{
+  "id": "level_pack_mother",
+  "description": "The Pack Mother (level 41) won by the hard opponent bot as the player: clears the three dens by the village, prays at the moon stone on the hill through its wolf guard, clears the pack mother's great den and the kin packs that den beside it on the forest road, holds the Hearth through seven minutes of rival night raids, then climbs the stone stair that rises up the walled crag, fights through the musters and burns the rival Hearth (bot offset 2 wins near tick 34300; offsets 0 to 3 win between about 24400 and 35100).",
+  "tags": [
+    "levels"
+  ],
+  "level": "pack_mother",
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "aggressive",
+      "difficulty": "hard",
+      "offset": 2
+    }
+  ],
+  "runTicks": 34000,
+  "assert": [
+    {
+      "at": 3000,
+      "expr": "level.objectivesDone == 0 && site('moon_stone').by < 0 && !terrain.walkable([149,98]) && alive(1) && !level.lost"
+    },
+    {
+      "at": 9000,
+      "expr": "level.objectivesDone == 1 && events.count('denCleared') >= 3 && site('moon_stone').by < 0 && !level.lost"
+    },
+    {
+      "at": 13000,
+      "expr": "level.objectivesDone == 2 && site('moon_stone').by == 0 && events.count('raid') == 0 && alive(1) && !level.won && events.count('denCleared') >= 5"
+    },
+    {
+      "at": 19000,
+      "expr": "level.objectivesDone == 3 && events.count('denCleared') >= 8 && events.count('raid') >= 4 && !terrain.walkable([149,98]) && alive(1)"
+    },
+    {
+      "at": 26000,
+      "expr": "level.objectivesDone == 4 && terrain.walkable([149,98]) && events.count('raid') >= 7 && alive(1) && !level.won && !level.lost"
+    },
+    {
+      "at": 34000,
+      "expr": "level.won && alive(0) && !alive(1) && level.objectivesDone == 5 && events.count('levelWon') == 1 && invariants() == 0"
+    }
+  ]
+}

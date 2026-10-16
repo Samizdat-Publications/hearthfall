@@ -1,0 +1,11 @@
+{
+  "id": "level_wild_heart_idle_loses",
+  "description": "Campaign level 45 (The Wild Heart): an idle player never grows to 40 followers, and the raider scouts that come around the mountain from minute 5 every 140 s (4 wardens each) burn the Hearth near tick 9500, so the level is lost.",
+  "tags": ["levels"],
+  "level": "wild_heart",
+  "runTicks": 14000,
+  "assert": [
+    { "at": 5000, "expr": "!level.lost && !level.won && level.objectivesDone == 0 && count(tribe0.hearths) == 1 && events.count('hazardWarn') == 0" },
+    { "at": 14000, "expr": "level.lost && !level.won && level.objectivesDone == 0 && count(tribe0.hearths) == 0 && invariants() == 0" }
+  ]
+}

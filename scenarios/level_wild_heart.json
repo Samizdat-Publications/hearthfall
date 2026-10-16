@@ -1,0 +1,52 @@
+{
+  "id": "level_wild_heart",
+  "description": "Campaign level 45 (The Wild Heart, the chapter 4 finale): the hard aggressive bot (offset 0, a typical offset: offsets 0 to 3 win near ticks 40000, 35500, 39500 and 38500) grows to 40 followers under raider scouts, cuts down 12 raiders, climbs the north eastern ramp and burns the raiders' Hearth, prays the ley stone away from the walled tribe between terrace eruptions, sends its Shaper to the summit shrine past the wolves for Volcano, burns the warlike Hearth beyond the northern ramp while quakes split the west road, then breaks every tribe; the eruptions and quakes really fire (hazard warnings counted) and each ramp really opens.",
+  "tags": [
+    "levels"
+  ],
+  "level": "wild_heart",
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "aggressive",
+      "difficulty": "hard",
+      "offset": 0
+    }
+  ],
+  "runTicks": 44000,
+  "assert": [
+    {
+      "at": 6000,
+      "expr": "alive(0) && level.objectivesDone == 0 && !level.won && !level.lost && alive(1) && alive(2) && alive(3) && events.count('hazardWarn') == 0"
+    },
+    {
+      "at": 11000,
+      "expr": "level.objectivesDone == 1 && count(tribe2.hearths) == 1 && events.count('hazardWarn') >= 1 && !level.lost"
+    },
+    {
+      "at": 16000,
+      "expr": "level.objectivesDone == 2 && count(tribe2.hearths) == 1 && terrain.height([188, 68]) >= sea + 60 && alive(1) && alive(3) && !level.lost"
+    },
+    {
+      "at": 21000,
+      "expr": "level.objectivesDone == 3 && count(tribe2.hearths) == 0 && !alive(2) && site('heart_ley').by == 3 && events.count('hazardWarn') >= 4 && !level.lost"
+    },
+    {
+      "at": 26000,
+      "expr": "level.objectivesDone == 4 && site('heart_ley').by == 0 && count(tribe1.hearths) == 1 && alive(3) && !level.lost"
+    },
+    {
+      "at": 31000,
+      "expr": "level.objectivesDone == 5 && site('summit_shrine').by == 0 && count(tribe1.hearths) == 1 && terrain.height([30, 82]) >= sea + 60 && !level.lost"
+    },
+    {
+      "at": 37000,
+      "expr": "level.objectivesDone == 6 && count(tribe1.hearths) == 0 && terrain.height([206, 231]) >= sea + 60 && events.count('hazardWarn') >= 14 && !level.lost"
+    },
+    {
+      "at": 44000,
+      "expr": "level.won && alive(0) && level.objectivesDone == 7 && events.count('levelWon') == 1 && events.count('hazardWarn') >= 18 && invariants() == 0"
+    }
+  ]
+}

@@ -1,0 +1,1636 @@
+{
+  "$comment": "Campaign level 42 (chapter 4, The Wild Heart): a dry grassland under golden light. Home hills west, a walled aggressive tribe on a sheer bluff east (disc aboveSea 100, falloff 2, sealed until objective 4 raises a nine step ramp), the sneaky hill tribe on a sealed southern hill (opened by a seven step ramp at objective 3), and a dormant reliquary with an unheld dormant ward stone in mid field. Stages: raise a Warden Lodge (start with 8 followers; until it stands, 4 bluff wardens march on the Hearth every 120 s from 480 s, the idle loss); raise a Fire Lodge; break the 10 warden and 4 firecaller guard posted at the ward stone and pray it; pray 60 s with six at the reliquary while hill raiders (3 every 110 s) come for the worshippers; kill fourteen of the hill tribe after its ramp rises (4 raiders every 120 s go for the ward stone); climb the bluff ramp and burn the rival Hearth (10 plus 8 posted wardens, 4 firecallers, 3 towers, maxTroops 14; war bands for the ward stone 30 s after the ramp and every 150 s). From the ward stone on, neutral Fire Rain falls on the roads to the reliquary every 130 s (south lane, south track, west road halfway home, east road by the ward stone), each warned 10 s ahead, until the win; the points sit 10 to 30 cells from the reliquary so the knockback never throws worshippers out of the ring. The hill raids after the reliquary are four one shot bands of 4 (16 for a kill goal of 14), so the goal stays possible if the hill tribe falls early. Hard bot offset 1 wins at tick 30016 (stages done at 2802, 4934, 9810, 13917, 15472); offsets 0 to 5 win 26947 to 40544. Time limit 3600 s (72000 ticks, over 2x the bot).",
+  "id": "burning_field",
+  "name": "The Burning Field",
+  "order": 42,
+  "description": "A dry field lies between your hills and a walled tribe on the eastern bluff, with an old reliquary in its middle. Take the ward stone beside it and the sky starts to burn. Pray at the reliquary between the falls of fire, break the hill tribe to the south, then climb the bluff.",
+  "lighting": "golden",
+  "seed": 4343,
+  "map": {
+    "generator": "flat",
+    "size": 192,
+    "landAboveSea": -30,
+    "paint": [
+      {
+        "shape": "rect",
+        "at": [
+          96,
+          96
+        ],
+        "size": [
+          168,
+          152
+        ],
+        "aboveSea": 22,
+        "falloff": 6
+      },
+      {
+        "shape": "disc",
+        "at": [
+          30,
+          96
+        ],
+        "r": 16,
+        "aboveSea": 40,
+        "falloff": 10
+      },
+      {
+        "shape": "cone",
+        "at": [
+          16,
+          78
+        ],
+        "r": 10,
+        "aboveSea": 72
+      },
+      {
+        "shape": "cone",
+        "at": [
+          18,
+          116
+        ],
+        "r": 9,
+        "aboveSea": 66
+      },
+      {
+        "shape": "disc",
+        "at": [
+          96,
+          96
+        ],
+        "r": 5,
+        "aboveSea": 27,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          162,
+          96
+        ],
+        "r": 17,
+        "aboveSea": 100,
+        "falloff": 2
+      },
+      {
+        "shape": "disc",
+        "at": [
+          96,
+          158
+        ],
+        "r": 12,
+        "aboveSea": 84,
+        "falloff": 2
+      },
+      {
+        "shape": "cone",
+        "at": [
+          62,
+          150
+        ],
+        "r": 10,
+        "aboveSea": 58,
+        "vent": false
+      },
+      {
+        "shape": "cone",
+        "at": [
+          130,
+          152
+        ],
+        "r": 10,
+        "aboveSea": 54,
+        "vent": false
+      }
+    ]
+  },
+  "props": [
+    {
+      "model": "prop.haystack",
+      "at": [
+        24,
+        104
+      ]
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        22,
+        100
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        20,
+        106
+      ],
+      "rot": 0
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        20,
+        102
+      ],
+      "rot": 0
+    },
+    {
+      "model": "prop.cart",
+      "at": [
+        38,
+        104
+      ],
+      "rot": 0.6
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        34,
+        102
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        48,
+        99
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        60,
+        93
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        74,
+        99
+      ]
+    },
+    {
+      "model": "prop.log_a",
+      "at": [
+        82,
+        92
+      ],
+      "rot": 1.1
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        92,
+        92
+      ],
+      "rot": 0.3
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        92,
+        101
+      ],
+      "rot": 1
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        100,
+        101
+      ],
+      "rot": 0.6
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        89,
+        97
+      ],
+      "rot": 0.4
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        105,
+        89
+      ]
+    },
+    {
+      "model": "prop.flowers",
+      "at": [
+        98,
+        103
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        114,
+        99
+      ]
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        127,
+        102
+      ],
+      "rot": 1.4
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        99,
+        122
+      ]
+    },
+    {
+      "model": "prop.log_a",
+      "at": [
+        92,
+        132
+      ],
+      "rot": 0.2
+    },
+    {
+      "model": "prop.pots",
+      "at": [
+        172,
+        100
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        176,
+        92
+      ],
+      "rot": 1.57
+    },
+    {
+      "model": "prop.pots",
+      "at": [
+        90,
+        162
+      ]
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        100,
+        168
+      ]
+    }
+  ],
+  "tribes": [
+    {},
+    {
+      "ai": "aggressive",
+      "difficulty": "normal",
+      "maxTroops": 14,
+      "maxPopulation": 40,
+      "worshipAfterSeconds": 3600,
+      "buildings": [
+        "dwelling",
+        "warden_lodge",
+        "fire_lodge",
+        "watchtower"
+      ]
+    },
+    {
+      "ai": "sneaky",
+      "difficulty": "normal",
+      "maxTroops": 8,
+      "maxPopulation": 18,
+      "worshipAfterSeconds": 3600,
+      "buildings": [
+        "dwelling",
+        "warden_lodge"
+      ]
+    }
+  ],
+  "spells": [
+    "bolt",
+    "hornets",
+    "lightning"
+  ],
+  "buildings": [
+    "dwelling",
+    "watchtower",
+    "warden_lodge",
+    "fire_lodge"
+  ],
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        30,
+        96
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        34,
+        93
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        26,
+        100
+      ],
+      "count": 6
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        36,
+        99
+      ],
+      "count": 2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        14,
+        96
+      ],
+      "count": 14,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        30,
+        80
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        36,
+        114
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        48,
+        86
+      ],
+      "count": 6,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        22,
+        88
+      ],
+      "count": 4,
+      "spacing": 2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        78,
+        122
+      ],
+      "count": 4,
+      "spacing": 1.6
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        116,
+        70
+      ],
+      "count": 4,
+      "spacing": 1.6
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        66,
+        70
+      ],
+      "count": 3,
+      "spacing": 1.6
+    },
+    {
+      "spawn": "reliquary",
+      "at": [
+        96,
+        96
+      ],
+      "site": {
+        "tag": "field_reliquary",
+        "worshippers": 6,
+        "prayerSeconds": 60,
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "charges",
+            "spell": "firerain",
+            "n": 2
+          },
+          {
+            "type": "message",
+            "text": "The reliquary answers: the field's fire is yours to call. Fire Rain gains two charges."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "ward_stone",
+      "at": [
+        102,
+        92
+      ],
+      "site": {
+        "tag": "field_ward",
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The ward stone is yours: it strikes at enemies who come near the reliquary."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        168,
+        96
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        164,
+        100
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        170,
+        104
+      ],
+      "count": 12
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 1,
+      "at": [
+        160,
+        86
+      ]
+    },
+    {
+      "spawn": "fire_lodge",
+      "tribe": 1,
+      "at": [
+        160,
+        106
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        151,
+        91
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        151,
+        101
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        170,
+        88
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        154,
+        96
+      ],
+      "count": 10,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "firecaller",
+      "tribe": 1,
+      "near": [
+        158,
+        96
+      ],
+      "count": 4,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        167,
+        92
+      ],
+      "count": 8,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        174,
+        84
+      ],
+      "count": 8,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        172,
+        110
+      ],
+      "count": 8,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        176,
+        98
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 2,
+      "at": [
+        96,
+        162
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 2,
+      "at": [
+        99,
+        159
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 2,
+      "near": [
+        92,
+        164
+      ],
+      "count": 10
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 2,
+      "at": [
+        103,
+        166
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 2,
+      "near": [
+        96,
+        152
+      ],
+      "count": 8,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        91,
+        151
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 2,
+      "at": [
+        101,
+        151
+      ]
+    },
+    {
+      "spawn": "firecaller",
+      "tribe": 2,
+      "near": [
+        93,
+        154
+      ],
+      "count": 4,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        88,
+        166
+      ],
+      "count": 6,
+      "spacing": 1.3
+    }
+  ],
+  "objectives": [
+    {
+      "type": "build",
+      "building": "warden_lodge",
+      "n": 1,
+      "text": "Raise a Warden Lodge so your village can train wardens"
+    },
+    {
+      "type": "build",
+      "building": "fire_lodge",
+      "n": 1,
+      "after": 0,
+      "text": "Grow your village and raise a Fire Lodge to train firecallers"
+    },
+    {
+      "type": "worship",
+      "site": "field_ward",
+      "fromStage": true,
+      "after": 1,
+      "text": "Cut down the eastern guard in the middle of the field and take the ward stone by prayer"
+    },
+    {
+      "type": "worship",
+      "site": "field_reliquary",
+      "fromStage": true,
+      "after": 2,
+      "text": "Pray at the reliquary with six followers while fire falls on the roads to it"
+    },
+    {
+      "type": "kill",
+      "n": 14,
+      "tribe": 2,
+      "after": 3,
+      "text": "Cut down fourteen of the hill tribe from the south, raiders or villagers"
+    },
+    {
+      "type": "destroy",
+      "tribe": 1,
+      "building": "hearth",
+      "after": 4,
+      "text": "Climb the risen ramp onto the eastern bluff and burn the rival Hearth past its guard and towers"
+    }
+  ],
+  "lose": [
+    {
+      "type": "hearthLost"
+    },
+    {
+      "type": "timeLimit",
+      "seconds": 3600
+    }
+  ],
+  "triggers": [
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1
+      },
+      "do": [
+        {
+          "type": "reveal",
+          "at": [
+            96,
+            96
+          ],
+          "r": 10
+        },
+        {
+          "type": "reveal",
+          "at": [
+            162,
+            96
+          ],
+          "r": 18
+        },
+        {
+          "type": "message",
+          "text": "A dry field lies between your hills and the walled bluff in the east. The eastern tribe has climbed down to raid before. Raise a Warden Lodge."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 470,
+        "every": 120
+      },
+      "until": 0,
+      "do": [
+        {
+          "type": "message",
+          "text": "Warriors are climbing down the eastern bluff. They march on your village in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 480,
+        "every": 120
+      },
+      "until": 0,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            128,
+            96
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            30,
+            96
+          ],
+          "n": 4,
+          "fresh": true
+        },
+        {
+          "type": "message",
+          "text": "The bluff's warriors march on your village. They will keep coming while you have no lodge to train defenders."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 0
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Your lodge stands. Grow the village and raise a Fire Lodge: firecallers outreach the guards in the field."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 1
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "field_ward"
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 10,
+          "tribe": 1,
+          "at": [
+            104,
+            93
+          ],
+          "stance": "defensive"
+        },
+        {
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            106,
+            90
+          ],
+          "stance": "defensive"
+        },
+        {
+          "type": "reveal",
+          "at": [
+            102,
+            92
+          ],
+          "r": 12
+        },
+        {
+          "type": "message",
+          "text": "The ward stone beside the reliquary wakes, and the eastern tribe sends a guard down to keep it. Break the guard and pray the stone away."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 2
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "field_reliquary"
+        },
+        {
+          "type": "message",
+          "text": "The stone is yours and the reliquary wakes. The sky turns red: fire will fall on the roads to the reliquary. Walk your people in between the falls."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 50,
+        "every": 520
+      },
+      "after": 2,
+      "until": 5,
+      "do": [
+        {
+          "type": "message",
+          "text": "Fire gathers over the south lane just below the reliquary. It falls there in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 60,
+        "every": 520
+      },
+      "after": 2,
+      "until": 5,
+      "do": [
+        {
+          "type": "spell",
+          "spell": "firerain",
+          "tribe": -1,
+          "at": [
+            96,
+            106
+          ]
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 160,
+        "every": 520
+      },
+      "after": 2,
+      "until": 5,
+      "do": [
+        {
+          "type": "message",
+          "text": "Fire gathers over the south track below the reliquary. It falls in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 170,
+        "every": 520
+      },
+      "after": 2,
+      "until": 5,
+      "do": [
+        {
+          "type": "spell",
+          "spell": "firerain",
+          "tribe": -1,
+          "at": [
+            96,
+            110
+          ]
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 290,
+        "every": 520
+      },
+      "after": 2,
+      "until": 5,
+      "do": [
+        {
+          "type": "message",
+          "text": "Fire gathers over the west road, halfway to your hills. It falls in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 300,
+        "every": 520
+      },
+      "after": 2,
+      "until": 5,
+      "do": [
+        {
+          "type": "spell",
+          "spell": "firerain",
+          "tribe": -1,
+          "at": [
+            66,
+            96
+          ]
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 420,
+        "every": 520
+      },
+      "after": 2,
+      "until": 5,
+      "do": [
+        {
+          "type": "message",
+          "text": "Fire gathers over the east road beside the ward stone. It falls in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 430,
+        "every": 520
+      },
+      "after": 2,
+      "until": 5,
+      "do": [
+        {
+          "type": "spell",
+          "spell": "firerain",
+          "tribe": -1,
+          "at": [
+            110,
+            90
+          ]
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 45,
+        "every": 110
+      },
+      "after": 2,
+      "until": 3,
+      "do": [
+        {
+          "type": "message",
+          "text": "Hill raiders slip down from the south. They make for your worshippers at the reliquary in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 55,
+        "every": 110
+      },
+      "after": 2,
+      "until": 3,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 2,
+          "at": [
+            96,
+            136
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            96,
+            96
+          ],
+          "n": 3,
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 3
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            96,
+            145.5
+          ],
+          "size": [
+            8,
+            2
+          ],
+          "aboveSea": 78,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            96,
+            143.5
+          ],
+          "size": [
+            8,
+            2
+          ],
+          "aboveSea": 70,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            96,
+            141.5
+          ],
+          "size": [
+            8,
+            2
+          ],
+          "aboveSea": 62,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            96,
+            139.5
+          ],
+          "size": [
+            8,
+            2
+          ],
+          "aboveSea": 54,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            96,
+            137.5
+          ],
+          "size": [
+            8,
+            2
+          ],
+          "aboveSea": 46,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            96,
+            135.5
+          ],
+          "size": [
+            8,
+            2
+          ],
+          "aboveSea": 38,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            96,
+            133.5
+          ],
+          "size": [
+            8,
+            2
+          ],
+          "aboveSea": 30,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "reveal",
+          "at": [
+            96,
+            158
+          ],
+          "r": 16
+        },
+        {
+          "type": "message",
+          "text": "The prayer shakes the field and an old ramp rises up the southern hill. The hill tribe comes down for your stone: cut down fourteen of them."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 50
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "message",
+          "text": "Hill raiders gather at the top of the southern ramp. They come for the ward stone in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 60
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 2,
+          "at": [
+            96,
+            150
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            102,
+            92
+          ],
+          "n": 4,
+          "pray": "field_ward",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 170
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "message",
+          "text": "Hill raiders gather at the top of the southern ramp. They come for the ward stone in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 180
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 2,
+          "at": [
+            96,
+            150
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            102,
+            92
+          ],
+          "n": 4,
+          "pray": "field_ward",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 290
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "message",
+          "text": "Hill raiders gather at the top of the southern ramp. They come for the ward stone in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 300
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 2,
+          "at": [
+            96,
+            150
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            102,
+            92
+          ],
+          "n": 4,
+          "pray": "field_ward",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 410
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "message",
+          "text": "Hill raiders gather at the top of the southern ramp. They come for the ward stone in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 420
+      },
+      "after": 3,
+      "until": 4,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 2,
+          "at": [
+            96,
+            150
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            102,
+            92
+          ],
+          "n": 4,
+          "pray": "field_ward",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 4
+      },
+      "do": [
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            146.5,
+            96
+          ],
+          "size": [
+            2,
+            8
+          ],
+          "aboveSea": 94,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            144.5,
+            96
+          ],
+          "size": [
+            2,
+            8
+          ],
+          "aboveSea": 86,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            142.5,
+            96
+          ],
+          "size": [
+            2,
+            8
+          ],
+          "aboveSea": 78,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            140.5,
+            96
+          ],
+          "size": [
+            2,
+            8
+          ],
+          "aboveSea": 70,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            138.5,
+            96
+          ],
+          "size": [
+            2,
+            8
+          ],
+          "aboveSea": 62,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            136.5,
+            96
+          ],
+          "size": [
+            2,
+            8
+          ],
+          "aboveSea": 54,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            134.5,
+            96
+          ],
+          "size": [
+            2,
+            8
+          ],
+          "aboveSea": 46,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            132.5,
+            96
+          ],
+          "size": [
+            2,
+            8
+          ],
+          "aboveSea": 38,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "shape",
+          "shape": "rect",
+          "at": [
+            130.5,
+            96
+          ],
+          "size": [
+            2,
+            8
+          ],
+          "aboveSea": 30,
+          "falloff": 0,
+          "seconds": 16
+        },
+        {
+          "type": "reveal",
+          "at": [
+            162,
+            96
+          ],
+          "r": 20
+        },
+        {
+          "type": "message",
+          "text": "The hill tribe is broken. With a groan the fallen ramp of the eastern bluff rises again. Climb it and burn the rival Hearth."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 20
+      },
+      "after": 4,
+      "do": [
+        {
+          "type": "message",
+          "text": "War horns on the bluff. A war band comes down the new ramp for the ward stone in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 30
+      },
+      "after": 4,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            150,
+            96
+          ]
+        },
+        {
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 2,
+          "tribe": 1,
+          "at": [
+            153,
+            96
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            102,
+            92
+          ],
+          "pray": "field_ward",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 170,
+        "every": 150
+      },
+      "after": 4,
+      "until": 5,
+      "do": [
+        {
+          "type": "message",
+          "text": "Another war band gathers at the top of the bluff ramp. It comes for the ward stone in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 180,
+        "every": 150
+      },
+      "after": 4,
+      "until": 5,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 1,
+          "at": [
+            150,
+            96
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            102,
+            92
+          ],
+          "n": 3,
+          "pray": "field_ward",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 3300
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Five minutes remain."
+        }
+      ]
+    }
+  ]
+}

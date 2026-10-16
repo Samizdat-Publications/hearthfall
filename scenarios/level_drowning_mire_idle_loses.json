@@ -1,0 +1,19 @@
+{
+  "id": "level_drowning_mire_idle_loses",
+  "description": "Campaign level 44 is lost when the player does nothing: with no Boathouse raised, raiders land on the home isle every 150 s from 300 s and burn the Hearth (about tick 6700).",
+  "tags": [
+    "levels"
+  ],
+  "level": "drowning_mire",
+  "runTicks": 9000,
+  "assert": [
+    {
+      "at": 5500,
+      "expr": "!level.lost && level.objectivesDone == 0"
+    },
+    {
+      "at": 9000,
+      "expr": "level.lost && !level.won && level.objectivesDone == 0 && invariants() == 0"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "level_burning_field",
+  "description": "Campaign level 43 is completable: the hard opponent bot for the player raises a Warden Lodge and a Fire Lodge, breaks the eastern guard and takes the ward stone, prays at the reliquary while fire rain falls on the roads, cuts down fourteen of the hill tribe after the south ramp rises, then climbs the bluff ramp and burns the rival Hearth (bot wins about 30000; offsets 0 to 5 win 26900 to 40500).",
+  "tags": [
+    "levels"
+  ],
+  "level": "burning_field",
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "aggressive",
+      "difficulty": "hard",
+      "offset": 1
+    }
+  ],
+  "runTicks": 34000,
+  "assert": [
+    {
+      "at": 2000,
+      "expr": "alive(0) && level.objectivesDone == 0 && events.count('hazardWarn') == 0"
+    },
+    {
+      "at": 6000,
+      "expr": "level.objectivesDone == 2 && alive(1) && alive(2) && !level.won"
+    },
+    {
+      "at": 11000,
+      "expr": "level.objectivesDone == 3 && site('field_ward').by == 0 && alive(1) && alive(2) && !level.won"
+    },
+    {
+      "at": 17000,
+      "expr": "level.objectivesDone == 5 && site('field_reliquary').by == 0 && !alive(2) && alive(1) && events.count('hazardWarn') >= 3 && !level.won"
+    },
+    {
+      "at": 34000,
+      "expr": "level.won && level.objectivesDone == 6 && count(tribe1.hearths) == 0 && events.count('hazardWarn') >= 6 && events.count('levelWon') == 1 && alive(0) && invariants() == 0"
+    }
+  ]
+}

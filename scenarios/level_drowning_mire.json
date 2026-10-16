@@ -1,0 +1,52 @@
+{
+  "id": "level_drowning_mire",
+  "description": "Campaign level 44 is completable: the hard opponent bot for the player raises a Boathouse, clears both wolf dens on the tidal reed isles, prays the seer and ley stones, holds both for 150 s against raider landings while neutral mire swallows the causeway heads, cuts down twelve eastern raiders once their road and ramp rise, then takes the north road and burns the walled Hearth (bot wins about 32400; offsets 0 to 7 win 29550 to 35050).",
+  "tags": [
+    "levels"
+  ],
+  "level": "drowning_mire",
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "aggressive",
+      "difficulty": "hard",
+      "offset": 1
+    }
+  ],
+  "runTicks": 38000,
+  "assert": [
+    {
+      "at": 1500,
+      "expr": "level.objectivesDone == 0 && terrain.isLand([71,152]) && terrain.isLand([61,108]) && alive(1) && alive(2)"
+    },
+    {
+      "at": 2400,
+      "expr": "level.objectivesDone == 0 && !terrain.isLand([71,152]) && events.count('hazardWarn') == 0"
+    },
+    {
+      "at": 6000,
+      "expr": "level.objectivesDone == 1 && alive(1) && alive(2) && !level.won"
+    },
+    {
+      "at": 13000,
+      "expr": "level.objectivesDone == 2 && alive(1) && alive(2) && !level.won"
+    },
+    {
+      "at": 16500,
+      "expr": "level.objectivesDone == 3 && site('mire_seer').by == 0 && site('mire_ley').by == 0 && alive(1) && alive(2)"
+    },
+    {
+      "at": 21000,
+      "expr": "level.objectivesDone == 4 && events.count('hazardWarn') >= 2 && events.count('mired') >= 1 && terrain.walkable([156,152]) && alive(1) && alive(2) && !level.won"
+    },
+    {
+      "at": 27000,
+      "expr": "level.objectivesDone == 5 && alive(1) && !level.won"
+    },
+    {
+      "at": 38000,
+      "expr": "level.won && level.objectivesDone == 6 && count(tribe1.hearths) == 0 && events.count('hazardWarn') >= 6 && events.count('levelWon') == 1 && alive(0) && invariants() == 0"
+    }
+  ]
+}

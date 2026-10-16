@@ -1,0 +1,19 @@
+{
+  "id": "level_four_hearths_idle_loses",
+  "description": "Four Hearths (level 42) with an idle player: the village never grows to 34 followers, the crown stays asleep, and the eastern raiders who land on the southeast shore from minute 7 burn the Hearth (lost near tick 9600).",
+  "tags": [
+    "levels"
+  ],
+  "level": "four_hearths",
+  "runTicks": 13000,
+  "assert": [
+    {
+      "at": 8000,
+      "expr": "!level.lost && !level.won && level.objectivesDone == 0 && events.count('raid') == 0 && site('crown_ley').by == 2"
+    },
+    {
+      "at": 13000,
+      "expr": "level.lost && !level.won && level.objectivesDone == 0 && events.count('raid') >= 1 && events.count('levelLost') == 1 && invariants() == 0"
+    }
+  ]
+}
