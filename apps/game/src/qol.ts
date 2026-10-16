@@ -71,6 +71,11 @@ export interface MatchState {
 }
 
 /** Game speed applies to single player matches and the campaign only (never LAN play or replays). */
+/** S4 L8-B: the lighting preset in force: a level's own mood when the player's setting is "default", else the setting. */
+export function levelLighting(setting: string, level: string | undefined): string {
+  return setting === "default" && level ? level : setting;
+}
+
 export function speedAllowed(s: MatchState): boolean {
   return s.inGame && !s.net && !s.replay && !s.editor && s.humans <= 1;
 }

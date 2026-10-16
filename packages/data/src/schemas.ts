@@ -1812,6 +1812,9 @@ export const LevelSchema = z.strictObject({
   /** campaign order (1 first) */
   order: z.number().int().min(1),
   description: z.string().min(1).max(300),
+  /** S4 L8-B, render only: the lighting mood the level asks for (a wolf night, a storm dusk); the player's
+   * lighting setting "default" follows it, any other setting (and the URL override) wins */
+  lighting: z.enum(["day", "golden", "evening", "night"]).optional(),
   seed: z.number().int(),
   /** a handmade map: the flat generator at landAboveSea (negative for open sea) with painted islands, straits and hills */
   map: z.strictObject({

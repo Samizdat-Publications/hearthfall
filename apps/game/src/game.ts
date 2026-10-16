@@ -88,7 +88,7 @@ import {
   type KV,
   type Settings,
 } from "./storage.ts";
-import { QUICK_SLOT, briefingMessages, edgePan, loadQol, nextSpeed, quickLoadBlock, quickSaveBlock, restartKind, speedAllowed, speedCfg, stepPlan, type MatchState, type SpeedCfg } from "./qol.ts";
+import { QUICK_SLOT, briefingMessages, edgePan, levelLighting, loadQol, nextSpeed, quickLoadBlock, quickSaveBlock, restartKind, speedAllowed, speedCfg, stepPlan, type MatchState, type SpeedCfg } from "./qol.ts";
 import { AudioHooks, MusicDirector, WebAudioPlayer } from "@hearthfall/audio";
 import {
   areaCounts,
@@ -556,7 +556,7 @@ export class Game {
       this.params.tiltshift ?? this.settings.miniature,
     );
     this.renderer.setLighting(
-      this.params.lighting ?? this.settings.lighting,
+      this.params.lighting ?? levelLighting(this.settings.lighting, this.world?.level?.def.lighting),
       // BACKLOG 14b: a rainy match always shows its rain
       this.world?.weather === "rain" ? "rain" : (this.params.weather ?? this.settings.weather),
     );

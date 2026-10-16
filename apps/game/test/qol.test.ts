@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
-import { QUICK_SLOT, SPEED_DEFAULTS, briefingMessages, edgePan, loadQol, nextSpeed, quickLoadBlock, quickSaveBlock, restartKind, speedAllowed, speedCfg, speedLabel, stepPlan, storeQol, type MatchState } from "../src/qol.ts";
+import { QUICK_SLOT, SPEED_DEFAULTS, briefingMessages, edgePan, levelLighting, loadQol, nextSpeed, quickLoadBlock, quickSaveBlock, restartKind, speedAllowed, speedCfg, speedLabel, stepPlan, storeQol, type MatchState } from "../src/qol.ts";
 import { MemoryKV, SLOTS, readSlot, slotMeta, writeSlot } from "../src/storage.ts";
 import { validateUi } from "@hearthfall/data";
 import { loadBasePack } from "../../../tools/harness/datapack.mjs";
@@ -149,5 +149,14 @@ describe("edge scrolling (QoL)", () => {
     const broken = { getItem: () => "{oops", setItem: () => { throw new Error("full"); }, removeItem: () => {} };
     expect(loadQol(broken).edgeScroll).toBe(true);
     expect(storeQol(broken, { edgeScroll: true })).toBe(false);
+  });
+});
+
+describe("level lighting (S4 L8-B)", () => {
+  it("a level's mood applies under the default setting; a chosen setting wins", () => {
+    expect(levelLighting("default", "night")).toBe("night");
+    expect(levelLighting("default", undefined)).toBe("default");
+    expect(levelLighting("golden", "night")).toBe("golden");
+    expect(levelLighting("day", undefined)).toBe("day");
   });
 });
