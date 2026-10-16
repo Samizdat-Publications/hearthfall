@@ -1,0 +1,44 @@
+{
+  "id": "level_storm_coast",
+  "description": "Storm Coast (level 40) won by the hard opponent bot as the player: raises a Boathouse, ferries five worshippers to the seer stone on the outer isle through the squalls that sweep the lane, cuts down sixteen raiders who land on the north and south shores while the raider tribe lives on its sheer sea stack, then ferries waves to the far isle and burns the rival Hearth (bot wins near tick 27700).",
+  "tags": [
+    "levels"
+  ],
+  "level": "storm_coast",
+  "bots": [
+    {
+      "type": "opponent",
+      "tribe": 0,
+      "personality": "aggressive",
+      "difficulty": "hard",
+      "offset": 1
+    }
+  ],
+  "runTicks": 31000,
+  "assert": [
+    {
+      "at": 2500,
+      "expr": "level.objectivesDone == 1 && count(tribe0.boathouses) >= 1 && site('storm_seer').by != 0 && alive(2) && !level.lost"
+    },
+    {
+      "at": 5000,
+      "expr": "level.objectivesDone == 2 && site('storm_seer').by == 0 && alive(2) && !level.lost"
+    },
+    {
+      "at": 9500,
+      "expr": "level.objectivesDone == 2 && alive(2) && !level.lost"
+    },
+    {
+      "at": 14000,
+      "expr": "level.objectivesDone == 3 && alive(1) && alive(2) && count(tribe1.hearths) == 1 && !level.won && !level.lost"
+    },
+    {
+      "at": 24000,
+      "expr": "level.objectivesDone == 3 && count(tribe1.hearths) == 1 && !level.won && !level.lost"
+    },
+    {
+      "at": 31000,
+      "expr": "level.won && level.objectivesDone == 4 && count(tribe1.hearths) == 0 && alive(0) && invariants() == 0"
+    }
+  ]
+}

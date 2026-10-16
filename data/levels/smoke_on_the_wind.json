@@ -1,0 +1,881 @@
+{
+  "$comment": "Chapter 4 level 36. Idea: the mountain is a neutral hazard that hurts everyone, and the prize sits inside its reach. A green valley with a smoking cone east of the player; the summit cone (aboveSea 440) is impassable, so the only land route to the sneaky rival is the south pass at the cone foot (the north strait is water a player can fill with Raise Land). Stage 1 grow to 25 followers while 4 warden raiders come through the pass every 120 s from minute 9 (until 0, so an idle village falls near tick 15000). Stage 2 wakes the dormant flank ley stone, which starts the mountain: two 270 s clocks cast Volcano as tribe -1 just uphill of the stone (gaps of 130 s and 140 s), each warned 10 s before (message plus the hazardWarn ring) and followed 45 s later by a shape that slumps the crater back into the terrace so the stone stays walkable; rival priests (3 wardens, every 90 s) walk into the same fire. Hold the stone 120 s. Stage 3 unlocks the Watchtower; a one shot war band (8 wardens, 2 firecallers) marches 45 s later. Stage 4 burn the rival Hearth (12 wardens, 4 firecallers posted, 3 towers, maxTroops 8, maxPopulation 28, worshipAfterSeconds 3600 so it never races the player). All eruptions, raids and warnings are bounded by until. Measured with the hard aggressive bot at offset 2: stages done at ticks 4745, 8185, 9685, 15005 (offsets 0 to 3 win between about 13500 and 17500). Time limit 1800 s (36000 ticks).",
+  "id": "smoke_on_the_wind",
+  "name": "Smoke on the Wind",
+  "order": 36,
+  "description": "A green valley, and a smoking mountain on its eastern side. Grow your village, take the ley stone on the mountain's flank between its eruptions and keep it from rival priests, raise two Watchtowers at the pass, then cross the pass and burn the rival Hearth beyond the peak.",
+  "seed": 3636,
+  "map": {
+    "generator": "flat",
+    "size": 128,
+    "landAboveSea": -30,
+    "paint": [
+      {
+        "shape": "rect",
+        "at": [
+          64,
+          62
+        ],
+        "size": [
+          116,
+          80
+        ],
+        "aboveSea": 30,
+        "falloff": 5
+      },
+      {
+        "shape": "cone",
+        "at": [
+          86,
+          58
+        ],
+        "r": 34,
+        "aboveSea": 150
+      },
+      {
+        "shape": "cone",
+        "at": [
+          86,
+          58
+        ],
+        "r": 13,
+        "aboveSea": 440
+      },
+      {
+        "shape": "rect",
+        "at": [
+          86,
+          32
+        ],
+        "size": [
+          8,
+          28
+        ],
+        "aboveSea": -22,
+        "falloff": 1
+      },
+      {
+        "shape": "rect",
+        "at": [
+          86,
+          100
+        ],
+        "size": [
+          24,
+          12
+        ],
+        "aboveSea": -20,
+        "falloff": 2
+      },
+      {
+        "shape": "disc",
+        "at": [
+          60,
+          60
+        ],
+        "r": 9,
+        "aboveSea": 60,
+        "falloff": 2
+      },
+      {
+        "shape": "disc",
+        "at": [
+          24,
+          76
+        ],
+        "r": 6,
+        "aboveSea": 44,
+        "falloff": 4
+      },
+      {
+        "shape": "disc",
+        "at": [
+          40,
+          34
+        ],
+        "r": 7,
+        "aboveSea": 48,
+        "falloff": 5
+      }
+    ]
+  },
+  "tribes": [
+    {},
+    {
+      "ai": "sneaky",
+      "difficulty": "hard",
+      "maxTroops": 8,
+      "maxPopulation": 28,
+      "worshipAfterSeconds": 3600,
+      "buildings": [
+        "dwelling",
+        "warden_lodge",
+        "fire_lodge"
+      ],
+      "keepRaiders": true
+    }
+  ],
+  "spells": [
+    "bolt",
+    "raise_land"
+  ],
+  "buildings": [
+    "dwelling",
+    "warden_lodge",
+    "fire_lodge"
+  ],
+  "props": [
+    {
+      "model": "prop.cairn",
+      "at": [
+        56,
+        57
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        56,
+        63
+      ]
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        57,
+        60
+      ],
+      "rot": 0.3
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        55,
+        66
+      ],
+      "rot": 1.2
+    },
+    {
+      "model": "prop.log_a",
+      "at": [
+        52,
+        59
+      ],
+      "rot": 0.9
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        68,
+        84
+      ]
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        70,
+        80
+      ],
+      "rot": 2.1
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        76,
+        90
+      ]
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        14,
+        56
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        16,
+        52
+      ],
+      "rot": 0.4
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        12,
+        60
+      ],
+      "rot": 1.6
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        30,
+        56
+      ]
+    },
+    {
+      "model": "prop.cart",
+      "at": [
+        32,
+        68
+      ],
+      "rot": 0.6
+    },
+    {
+      "model": "prop.pots",
+      "at": [
+        116,
+        62
+      ]
+    },
+    {
+      "model": "prop.woodpile",
+      "at": [
+        106,
+        64
+      ]
+    },
+    {
+      "model": "prop.flowers",
+      "at": [
+        36,
+        50
+      ]
+    },
+    {
+      "model": "prop.flowers",
+      "at": [
+        44,
+        74
+      ]
+    }
+  ],
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        22,
+        62
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        27,
+        60
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        20,
+        68
+      ],
+      "count": 10
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        28,
+        66
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "dwelling",
+      "tribe": 0,
+      "at": [
+        16,
+        66
+      ]
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 0,
+      "at": [
+        30,
+        72
+      ]
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        14,
+        40
+      ],
+      "count": 14,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        16,
+        88
+      ],
+      "count": 14,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        42,
+        46
+      ],
+      "count": 12,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        44,
+        84
+      ],
+      "count": 12,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        34,
+        54
+      ],
+      "count": 4,
+      "spacing": 2
+    },
+    {
+      "spawn": "ley_stone",
+      "tribe": 1,
+      "at": [
+        59,
+        60
+      ],
+      "site": {
+        "tag": "flank_ley",
+        "dormant": true,
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The flank ley is yours and pays mana while you keep it. Rival priests will come for it, and the fire will come for them too."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        100,
+        88
+      ],
+      "count": 8,
+      "spacing": 1.3
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        116,
+        40
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        118,
+        78
+      ],
+      "count": 8,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        112,
+        58
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        114,
+        52
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        116,
+        60
+      ],
+      "count": 10
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 1,
+      "at": [
+        108,
+        46
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        104,
+        66
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        112,
+        72
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        118,
+        64
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        108,
+        62
+      ],
+      "count": 12,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "firecaller",
+      "tribe": 1,
+      "near": [
+        110,
+        66
+      ],
+      "count": 4,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        118,
+        50
+      ],
+      "count": 3,
+      "spacing": 2
+    }
+  ],
+  "objectives": [
+    {
+      "type": "followers",
+      "n": 25,
+      "text": "Raise dwellings and grow your village to 25 followers"
+    },
+    {
+      "type": "hold",
+      "n": 1,
+      "kind": "ley_stone",
+      "seconds": 120,
+      "after": 0,
+      "text": "Pray the ley stone on the mountain's western flank away from the rival between eruptions, then keep it for two minutes against rival priests"
+    },
+    {
+      "type": "build",
+      "building": "watchtower",
+      "n": 2,
+      "after": 1,
+      "text": "Raise two Watchtowers facing the pass south of the peak"
+    },
+    {
+      "type": "destroy",
+      "tribe": 1,
+      "building": "hearth",
+      "after": 2,
+      "text": "Cross the pass around the mountain and burn the rival Hearth beyond the peak"
+    }
+  ],
+  "lose": [
+    {
+      "type": "hearthLost"
+    },
+    {
+      "type": "timeLimit",
+      "seconds": 1800
+    }
+  ],
+  "triggers": [
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "The mountain east of your valley has smoked for a generation. Raise dwellings and grow the village while it sleeps."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 530,
+        "every": 120
+      },
+      "until": 0,
+      "do": [
+        {
+          "type": "message",
+          "text": "Rival raiders slip through the pass under the smoke. They will keep coming while your village stays small."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 540,
+        "every": 120
+      },
+      "until": 0,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 1,
+          "at": [
+            74,
+            86
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            22,
+            62
+          ],
+          "n": 4,
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 0
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "flank_ley"
+        },
+        {
+          "type": "reveal",
+          "at": [
+            59,
+            60
+          ],
+          "r": 10
+        },
+        {
+          "type": "message",
+          "text": "Your hearth smoke rises and the mountain wakes. Its fire burns everyone on the flank, rivals and beasts alike. Take the ley stone there between eruptions."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 25,
+        "every": 270
+      },
+      "after": 0,
+      "until": 3,
+      "do": [
+        {
+          "type": "message",
+          "text": "The mountain rumbles. Fire falls on the western flank in ten seconds: get everyone off the ley stone terrace."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 35,
+        "every": 270
+      },
+      "after": 0,
+      "until": 3,
+      "do": [
+        {
+          "type": "spell",
+          "spell": "volcano",
+          "at": [
+            62,
+            60
+          ],
+          "tribe": -1
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 80,
+        "every": 270
+      },
+      "after": 0,
+      "until": 3,
+      "do": [
+        {
+          "type": "shape",
+          "shape": "disc",
+          "at": [
+            60,
+            60
+          ],
+          "r": 9,
+          "aboveSea": 60,
+          "falloff": 2,
+          "seconds": 15
+        },
+        {
+          "type": "message",
+          "text": "The lava on the flank cools and slumps back into the terrace. The ley stone can be reached again."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 155,
+        "every": 270
+      },
+      "after": 0,
+      "until": 3,
+      "do": [
+        {
+          "type": "message",
+          "text": "The mountain rumbles. Fire falls on the western flank in ten seconds: get everyone off the ley stone terrace."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 165,
+        "every": 270
+      },
+      "after": 0,
+      "until": 3,
+      "do": [
+        {
+          "type": "spell",
+          "spell": "volcano",
+          "at": [
+            62,
+            60
+          ],
+          "tribe": -1
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 210,
+        "every": 270
+      },
+      "after": 0,
+      "until": 3,
+      "do": [
+        {
+          "type": "shape",
+          "shape": "disc",
+          "at": [
+            60,
+            60
+          ],
+          "r": 9,
+          "aboveSea": 60,
+          "falloff": 2,
+          "seconds": 15
+        },
+        {
+          "type": "message",
+          "text": "The lava on the flank cools and slumps back into the terrace. The ley stone can be reached again."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 60,
+        "every": 90
+      },
+      "after": 0,
+      "until": 1,
+      "do": [
+        {
+          "type": "message",
+          "text": "Rival priests slip around the mountain toward the ley stone. Cut them down, or let the fire take them."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 70,
+        "every": 90
+      },
+      "after": 0,
+      "until": 1,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 1,
+          "at": [
+            74,
+            86
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            59,
+            60
+          ],
+          "n": 3,
+          "pray": "flank_ley",
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 1
+      },
+      "do": [
+        {
+          "type": "unlockBuilding",
+          "building": "watchtower"
+        },
+        {
+          "type": "reveal",
+          "at": [
+            84,
+            88
+          ],
+          "r": 14
+        },
+        {
+          "type": "message",
+          "text": "The ley stone holds, and its old keepers teach you the Watchtower. A rival war band gathers beyond the pass: raise two towers facing it."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 35
+      },
+      "after": 1,
+      "do": [
+        {
+          "type": "message",
+          "text": "War drums beyond the pass. The rival war band marches on your valley in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 45
+      },
+      "after": 1,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 8,
+          "tribe": 1,
+          "at": [
+            96,
+            86
+          ]
+        },
+        {
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 2,
+          "tribe": 1,
+          "at": [
+            98,
+            84
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 1,
+          "to": [
+            22,
+            62
+          ],
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 2
+      },
+      "do": [
+        {
+          "type": "reveal",
+          "at": [
+            112,
+            58
+          ],
+          "r": 16
+        },
+        {
+          "type": "message",
+          "text": "Your towers watch the pass. Now cross it, around the mountain's southern foot, and burn the rival Hearth."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1500
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Five minutes remain."
+        }
+      ]
+    }
+  ]
+}

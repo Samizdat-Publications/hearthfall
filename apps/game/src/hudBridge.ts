@@ -1,5 +1,5 @@
 // Builds the HUD view model from the Game each refresh and maps HUD intents to Commands.
-import { SPELL_KEYS, hudModel, mountHud, t, type HudModel, type ObjectiveView, type SpellView, type TroopView } from "@hearthfall/ui";
+import { SPELL_KEYS, hudModel, keyText, mountHud, t, type HudModel, type ObjectiveView, type SpellView, type TroopView } from "@hearthfall/ui";
 import "../../../packages/ui/src/hud.css";
 // S4 L7-F: the UI fonts, bundled (OFL): Alegreya Sans for text, Alegreya Sans SC for labels, Marcellus SC for heads
 import "@fontsource/alegreya-sans/latin-500.css";
@@ -70,8 +70,8 @@ export function hudFor(game: Game): HudModel {
     buildable: bdefs.filter((b) => b.buildable !== false && b.milestone !== "backlog").map((b) => ({ id: b.id, name: title(b.id), wood: b.levels?.[0]?.wood ?? b.wood ?? 0, stone: b.stone ?? 0, key: BUILD_KEYS[b.id] ?? "", locked: tr ? w.economy.buildingLock(tr.index, w.cfg.buildingIndex.get(b.id)!) : null, icon: buildingIcon(b.id) })),
     icons: { mana: resourceIcon("mana"), pop: resourceIcon("population") },
     objectives: objectivesFor(game, nextTier ? { name: title(nextTier.id), followers: nextTier.followers, opens: nextTier.buildings.map(title) } : null),
-    notes: game.notes.filter((n) => n.until > w.tick).map((n) => ({ id: n.id, text: n.text, kind: n.kind, ...(n.at ? { jump: t("alert.jumpHint", { key: game.settings.keymap.lastAlert }) } : {}) })),
-    tip: game.tip ? { label: `Tip ${game.tip.step}/${game.tip.of}:`, text: game.tip.text } : null,
+    notes: game.notes.filter((n) => n.until > w.tick).map((n) => ({ id: n.id, text: keyText(n.text), kind: n.kind, ...(n.at ? { jump: t("alert.jumpHint", { key: game.settings.keymap.lastAlert }) } : {}) })),
+    tip: game.tip ? { label: `Tip ${game.tip.step}/${game.tip.of}:`, text: keyText(game.tip.text) } : null,
     subtitle: game.subtitle && game.subtitle.until > w.tick ? { speaker: game.subtitle.speaker, text: game.subtitle.text } : null,
     box: game.box,
     showHelp: game.showHelp,
@@ -154,7 +154,7 @@ export function levelObjectives(game: Game): ObjectiveView[] {
     // BACKLOG 89: live prayer progress and follower count after authored objective text; BACKLOG 13 the rules progress
     const rl = o.type === "victory" && o.text ? victoryLine(w, game.localTribe) : null;
     const live = done ? "" : o.type === "worship" ? prayerNote(w, o.site, game.localTribe) : o.type === "followers" && o.text ? ` (${w.economy.followers(game.localTribe)})` : rl ? `: ${rl}` : "";
-    out.push({ text: (o.text ?? auto) + live, done, part: `objective-${k}` });
+    out.push({ text: keyText(o.text ?? auto) + live, done, part: `objective-${k}` });
   });
   (lv.def.lose ?? []).forEach((l, k) => {
     if (l.type === "timeLimit") out.push({ text: `Time left: ${left(l.seconds)}`, done: false, part: `lose-${k}` });

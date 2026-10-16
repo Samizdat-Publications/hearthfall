@@ -1,0 +1,19 @@
+{
+  "id": "level_storm_coast_idle_loses",
+  "description": "Storm Coast with an idle player: no Boathouse is raised, so the raider band that lands on the north shore at 300 s marches on the village and burns the Hearth, and the level is lost.",
+  "tags": [
+    "levels"
+  ],
+  "level": "storm_coast",
+  "runTicks": 9000,
+  "assert": [
+    {
+      "at": 5500,
+      "expr": "!level.lost && level.objectivesDone == 0"
+    },
+    {
+      "at": 9000,
+      "expr": "level.lost && !level.won && level.objectivesDone == 0 && invariants() == 0"
+    }
+  ]
+}

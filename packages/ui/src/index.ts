@@ -4,4 +4,4 @@ export { STANCES, areaLine, hudModel, mountHud, type ForgeView, type HudActions,
 export { editorModel, mountEditor, type EditorActions, type EditorView } from "./editor.tsx";
 export { replayModel, mountReplay, type ReplayActions, type ReplayView } from "./replay.tsx";
 export { chapterPick, menuModel, mountMenus, type Choice, type MenuActions, type MenuModel, type Screen, type SettingsPatch, type SettingsView, type SetupPatch, type SetupView, type SlotView, type LevelView } from "./menus.tsx";
-export { locale, missingStrings, pseudoize, setStrings, t, type StringTable } from "./i18n.ts";
+export { keyText, locale, missingStrings, pseudoize, setKeyNames, setStrings, t, type StringTable } from "./i18n.ts";

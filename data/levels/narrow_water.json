@@ -57,13 +57,13 @@
   ],
   "objectives": [
     { "type": "reach", "at": [28, 32], "r": 4, "text": "Walk your Shaper to the eastern shore of the island" },
-    { "type": "build", "building": "dwelling", "n": 2, "after": 0, "text": "Raise two dwellings so the tribe can breed (D places a plan)" },
+    { "type": "build", "building": "dwelling", "n": 2, "after": 0, "text": "Raise two dwellings so the tribe can breed ({key:buildDwelling} places a plan)" },
     { "type": "followers", "n": 14, "after": 1, "text": "Grow the tribe to 14 followers" },
     { "type": "worship", "site": "far_shrine", "after": 2, "text": "Raise Land across the strait and send three followers to the shrine" }
   ],
   "lose": [{ "type": "timeLimit", "seconds": 900 }],
   "triggers": [
-    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "charges", "spell": "raise_land", "n": 2 }, { "type": "message", "text": "Walk the Shaper to the eastern shore. Press S to select her, then right-click to move. Select followers and right-click the shrine to pray." }] },
+    { "when": { "type": "time", "seconds": 1 }, "do": [{ "type": "charges", "spell": "raise_land", "n": 2 }, { "type": "message", "text": "Walk the Shaper to the eastern shore. Press {key:selectShaper} to select her, then right-click to move. Select followers and right-click the shrine to pray." }] },
     { "when": { "type": "objective", "index": 0 }, "do": [{ "type": "message", "text": "Now plan two dwellings near the Hearth. Settlers chop wood and build them." }] },
     { "when": { "type": "objective", "index": 1 }, "do": [{ "type": "message", "text": "Dwellings breed new followers. Keep them stocked with wood and wait for the tribe to grow." }] },
     { "when": { "type": "objective", "index": 2 }, "do": [{ "type": "awaken", "site": "far_shrine" }, { "type": "reveal", "at": [46, 32], "r": 10 }, { "type": "message", "text": "The shrine across the strait is waking. Raise Land from the shore, then select three followers and right-click the shrine to pray." }] },

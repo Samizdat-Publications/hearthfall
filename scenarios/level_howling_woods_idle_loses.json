@@ -1,0 +1,11 @@
+{
+  "id": "level_howling_woods_idle_loses",
+  "description": "The Howling Woods (level 37) is not won by doing nothing: an idle village never clears the birch wood den, so from minute 10 rival wardens climb down from the walled hill every two minutes until the Hearth falls (hearthLost, near tick 14000).",
+  "tags": ["levels"],
+  "level": "howling_woods",
+  "runTicks": 16000,
+  "assert": [
+    { "at": 11000, "expr": "!level.lost && !level.won && level.objectivesDone == 0 && site('old_shrine').by < 0" },
+    { "at": 16000, "expr": "level.lost && !level.won && level.objectivesDone == 0 && events.count('levelLost') == 1 && invariants() == 0" }
+  ]
+}

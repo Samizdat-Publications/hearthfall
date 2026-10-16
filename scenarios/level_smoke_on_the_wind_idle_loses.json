@@ -1,0 +1,11 @@
+{
+  "id": "level_smoke_on_the_wind_idle_loses",
+  "description": "Smoke on the Wind (level 36) is not won by doing nothing: an idle village never reaches 25 followers, so the mountain never wakes and the warden raiders that slip through the pass every two minutes from minute 9 wear it down until the Hearth falls (hearthLost, near tick 15000).",
+  "tags": ["levels"],
+  "level": "smoke_on_the_wind",
+  "runTicks": 17000,
+  "assert": [
+    { "at": 10000, "expr": "!level.lost && !level.won && level.objectivesDone == 0 && events.count('hazardWarn') == 0" },
+    { "at": 17000, "expr": "level.lost && !level.won && level.objectivesDone == 0 && events.count('levelLost') == 1 && invariants() == 0" }
+  ]
+}

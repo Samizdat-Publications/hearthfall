@@ -1,0 +1,901 @@
+{
+  "$comment": "Campaign level 40 (chapter 4, The Wild Heart): an archipelago. Home isle west, a small outer isle with a dormant seer stone in the storm lane, the rival turtle on the far isle east, and a small aggressive raider tribe on a sheer sea stack to the north (aboveSea 340, falloff 12: no shore within the snap radius, so no boat lands there and the raiders live until their stage). Stages: raise a Boathouse (wakes the seer; until then a band of four lands every 120 s from 300 s), ferry five and pray 50 s while a neutral whirlwind sweeps the seer isle and two lightning strikes hit the lane every 110 s (after 0, until 3, warned 10 s ahead), kill sixteen raiders who land north and south every 140 s, then burn the rival Hearth (rival maxTroops 10, four wardens join, smaller north raids every 150 s). Hard bot offset 1 wins at tick 27712 (stages done at 705, 3315, 11365); offsets 2 and 3 win at 18522 and 19974. Time limit 2820 s (56400 ticks, over 2x the bot).",
+  "id": "storm_coast",
+  "name": "Storm Coast",
+  "order": 40,
+  "description": "Squalls walk the sea lane east of your isle, and raiders watch from a sea stack to the north. Raise a Boathouse, ferry followers to the seer stone between storms, beat back the bands that land on your shores, then sail on the far isle and burn the rival Hearth.",
+  "seed": 4007,
+  "weather": "rain",
+  "map": {
+    "generator": "flat",
+    "size": 192,
+    "landAboveSea": -30,
+    "paint": [
+      {
+        "shape": "disc",
+        "at": [
+          46,
+          100
+        ],
+        "r": 19,
+        "aboveSea": 30,
+        "falloff": 5
+      },
+      {
+        "shape": "cone",
+        "at": [
+          34,
+          92
+        ],
+        "r": 7,
+        "aboveSea": 64
+      },
+      {
+        "shape": "disc",
+        "at": [
+          92,
+          92
+        ],
+        "r": 5,
+        "aboveSea": 20,
+        "falloff": 3
+      },
+      {
+        "shape": "disc",
+        "at": [
+          134,
+          100
+        ],
+        "r": 17,
+        "aboveSea": 34,
+        "falloff": 5
+      },
+      {
+        "shape": "disc",
+        "at": [
+          112,
+          24
+        ],
+        "r": 9,
+        "aboveSea": 340,
+        "falloff": 12
+      }
+    ]
+  },
+  "props": [
+    {
+      "model": "prop.woodpile",
+      "at": [
+        48,
+        104
+      ]
+    },
+    {
+      "model": "prop.haystack",
+      "at": [
+        44,
+        102
+      ]
+    },
+    {
+      "model": "prop.cart",
+      "at": [
+        56,
+        108
+      ],
+      "rot": 0.5
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        40,
+        104
+      ],
+      "rot": 0
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        40,
+        100
+      ],
+      "rot": 0
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        64,
+        95
+      ]
+    },
+    {
+      "model": "prop.reeds",
+      "at": [
+        64,
+        105
+      ]
+    },
+    {
+      "model": "prop.log_a",
+      "at": [
+        62,
+        100
+      ],
+      "rot": 1.2
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        90,
+        90
+      ],
+      "rot": 0.3
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        96,
+        95
+      ],
+      "rot": 0.9
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        90,
+        95
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        58,
+        88
+      ]
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        56,
+        112
+      ]
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        125,
+        97
+      ],
+      "rot": 1.57
+    },
+    {
+      "model": "prop.fence",
+      "at": [
+        125,
+        103
+      ],
+      "rot": 1.57
+    },
+    {
+      "model": "prop.pots",
+      "at": [
+        142,
+        96
+      ]
+    },
+    {
+      "model": "prop.ruin_a",
+      "at": [
+        148,
+        104
+      ],
+      "rot": 0.4
+    },
+    {
+      "model": "prop.standing_stone",
+      "at": [
+        110,
+        22
+      ],
+      "rot": 0.2
+    },
+    {
+      "model": "prop.cairn",
+      "at": [
+        115,
+        20
+      ]
+    }
+  ],
+  "tribes": [
+    {},
+    {
+      "ai": "turtle",
+      "difficulty": "normal",
+      "maxTroops": 10,
+      "maxPopulation": 36,
+      "worshipAfterSeconds": 3600,
+      "buildings": [
+        "dwelling",
+        "warden_lodge",
+        "fire_lodge",
+        "watchtower"
+      ]
+    },
+    {
+      "ai": "aggressive",
+      "difficulty": "normal",
+      "maxTroops": 4,
+      "maxPopulation": 14,
+      "worshipAfterSeconds": 3600,
+      "buildings": [
+        "dwelling",
+        "warden_lodge"
+      ]
+    }
+  ],
+  "spells": [
+    "bolt",
+    "hornets",
+    "lightning"
+  ],
+  "buildings": [
+    "dwelling",
+    "watchtower",
+    "warden_lodge",
+    "fire_lodge",
+    "boathouse"
+  ],
+  "setup": [
+    {
+      "spawn": "hearth",
+      "tribe": 0,
+      "at": [
+        52,
+        100
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 0,
+      "at": [
+        56,
+        96
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 0,
+      "near": [
+        46,
+        106
+      ],
+      "count": 14
+    },
+    {
+      "spawn": "warden",
+      "tribe": 0,
+      "near": [
+        58,
+        104
+      ],
+      "count": 4
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 0,
+      "at": [
+        42,
+        108
+      ]
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        32,
+        106
+      ],
+      "count": 16,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        42,
+        86
+      ],
+      "count": 12,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        52,
+        116
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        30,
+        96
+      ],
+      "count": 4,
+      "spacing": 2
+    },
+    {
+      "spawn": "seer_stone",
+      "at": [
+        93,
+        92
+      ],
+      "site": {
+        "tag": "storm_seer",
+        "worshippers": 5,
+        "prayerSeconds": 50,
+        "dormant": true,
+        "aura": {
+          "type": "sight",
+          "amount": 0,
+          "r": 24,
+          "every": 1
+        },
+        "rewards": [
+          {
+            "type": "message",
+            "text": "The seer stone is yours: from the outer isle you watch the whole lane and the raiders' sails."
+          }
+        ]
+      }
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 1,
+      "at": [
+        138,
+        100
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 1,
+      "at": [
+        142,
+        104
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 1,
+      "near": [
+        144,
+        100
+      ],
+      "count": 12
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 1,
+      "at": [
+        140,
+        90
+      ]
+    },
+    {
+      "spawn": "fire_lodge",
+      "tribe": 1,
+      "at": [
+        140,
+        110
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        128,
+        94
+      ]
+    },
+    {
+      "spawn": "watchtower",
+      "tribe": 1,
+      "at": [
+        128,
+        106
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        134,
+        100
+      ],
+      "count": 8,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "firecaller",
+      "tribe": 1,
+      "near": [
+        138,
+        96
+      ],
+      "count": 3,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "warden",
+      "tribe": 1,
+      "near": [
+        124,
+        100
+      ],
+      "count": 4,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        146,
+        90
+      ],
+      "count": 10,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        146,
+        112
+      ],
+      "count": 8,
+      "spacing": 1.2
+    },
+    {
+      "spawn": "rock",
+      "near": [
+        150,
+        100
+      ],
+      "count": 3,
+      "spacing": 2
+    },
+    {
+      "spawn": "hearth",
+      "tribe": 2,
+      "at": [
+        112,
+        24
+      ]
+    },
+    {
+      "spawn": "shaper",
+      "tribe": 2,
+      "at": [
+        115,
+        27
+      ]
+    },
+    {
+      "spawn": "settler",
+      "tribe": 2,
+      "near": [
+        108,
+        26
+      ],
+      "count": 6
+    },
+    {
+      "spawn": "warden_lodge",
+      "tribe": 2,
+      "at": [
+        112,
+        18
+      ]
+    },
+    {
+      "spawn": "warden",
+      "tribe": 2,
+      "near": [
+        112,
+        29
+      ],
+      "count": 3,
+      "stance": "defensive"
+    },
+    {
+      "spawn": "tree",
+      "near": [
+        107,
+        20
+      ],
+      "count": 5,
+      "spacing": 1.3
+    }
+  ],
+  "objectives": [
+    {
+      "type": "build",
+      "building": "boathouse",
+      "n": 1,
+      "text": "Raise a Boathouse on your shore: only boats reach the outer isles"
+    },
+    {
+      "type": "worship",
+      "site": "storm_seer",
+      "after": 0,
+      "text": "Ferry five followers over the storm lane and pray at the seer stone on the outer isle between squalls"
+    },
+    {
+      "type": "kill",
+      "n": 16,
+      "tribe": 2,
+      "after": 1,
+      "text": "Raiders from the sea stack land on your north and south shores: cut down sixteen of them"
+    },
+    {
+      "type": "destroy",
+      "tribe": 1,
+      "building": "hearth",
+      "after": 2,
+      "text": "Sail a war band to the far isle and burn the rival Hearth behind its guards"
+    }
+  ],
+  "lose": [
+    {
+      "type": "hearthLost"
+    },
+    {
+      "type": "timeLimit",
+      "seconds": 2820
+    }
+  ],
+  "triggers": [
+    {
+      "when": {
+        "type": "time",
+        "seconds": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Squalls walk the sea lane east of your isle, and raiders watch from the sea stack to the north. Raise a Boathouse."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 290,
+        "every": 120
+      },
+      "until": 0,
+      "do": [
+        {
+          "type": "message",
+          "text": "Raider sails off the north shore. They come ashore in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 300,
+        "every": 120
+      },
+      "until": 0,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "tribe": 2,
+          "at": [
+            56,
+            86
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            52,
+            100
+          ],
+          "n": 4,
+          "fresh": true
+        },
+        {
+          "type": "message",
+          "text": "Raiders come ashore. They will keep coming while your shore has no Boathouse."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 0
+      },
+      "do": [
+        {
+          "type": "awaken",
+          "site": "storm_seer"
+        },
+        {
+          "type": "reveal",
+          "at": [
+            93,
+            92
+          ],
+          "r": 10
+        },
+        {
+          "type": "message",
+          "text": "A seer stone wakes on the outer isle. Squalls sweep the lane: watch the sky and cross between them."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 50,
+        "every": 110
+      },
+      "after": 0,
+      "until": 3,
+      "do": [
+        {
+          "type": "message",
+          "text": "Thunder in the east: a squall sweeps the seer isle and the lane in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 60,
+        "every": 110
+      },
+      "after": 0,
+      "until": 3,
+      "do": [
+        {
+          "type": "spell",
+          "spell": "whirlwind",
+          "tribe": -1,
+          "at": [
+            93,
+            92
+          ],
+          "from": [
+            102,
+            92
+          ]
+        },
+        {
+          "type": "spell",
+          "spell": "lightning",
+          "tribe": -1,
+          "at": [
+            80,
+            95
+          ]
+        },
+        {
+          "type": "spell",
+          "spell": "lightning",
+          "tribe": -1,
+          "at": [
+            86,
+            99
+          ]
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "The seer shows raider sails leaving the sea stack. Meet every band that lands on your isle."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 30,
+        "every": 140
+      },
+      "after": 1,
+      "until": 2,
+      "do": [
+        {
+          "type": "message",
+          "text": "Raider sails off the north shore. A band lands there in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 40,
+        "every": 140
+      },
+      "after": 1,
+      "until": 2,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 2,
+          "at": [
+            56,
+            86
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            52,
+            100
+          ],
+          "n": 3,
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 100,
+        "every": 140
+      },
+      "after": 1,
+      "until": 2,
+      "do": [
+        {
+          "type": "message",
+          "text": "Raider sails off the south shore. A band lands there in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 110,
+        "every": 140
+      },
+      "after": 1,
+      "until": 2,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 2,
+          "tribe": 2,
+          "at": [
+            54,
+            114
+          ]
+        },
+        {
+          "type": "spawn",
+          "unit": "firecaller",
+          "n": 1,
+          "tribe": 2,
+          "at": [
+            54,
+            114
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            52,
+            100
+          ],
+          "n": 3,
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "objective",
+        "index": 2
+      },
+      "do": [
+        {
+          "type": "reveal",
+          "at": [
+            134,
+            100
+          ],
+          "r": 20
+        },
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 4,
+          "at": [
+            60,
+            100
+          ]
+        },
+        {
+          "type": "message",
+          "text": "The raiders turn back to their rock. Four wardens join you: sail on the far isle and burn the rival Hearth."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 110,
+        "every": 150
+      },
+      "after": 2,
+      "until": 3,
+      "do": [
+        {
+          "type": "message",
+          "text": "Raider sails off the north shore again. A band lands in ten seconds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 120,
+        "every": 150
+      },
+      "after": 2,
+      "until": 3,
+      "do": [
+        {
+          "type": "spawn",
+          "unit": "warden",
+          "n": 3,
+          "tribe": 2,
+          "at": [
+            56,
+            86
+          ]
+        },
+        {
+          "type": "raid",
+          "tribe": 2,
+          "to": [
+            52,
+            100
+          ],
+          "n": 3,
+          "fresh": true
+        }
+      ]
+    },
+    {
+      "when": {
+        "type": "time",
+        "seconds": 2520
+      },
+      "do": [
+        {
+          "type": "message",
+          "text": "Five minutes remain."
+        }
+      ]
+    }
+  ]
+}

@@ -1831,6 +1831,9 @@ export const LevelSchema = z.strictObject({
           width: pos.optional(),
           aboveSea: z.number(),
           falloff: z.number().min(0).optional(),
+          /** S4 L8-B, render only: true marks a smoking crater at `at` (the volcano plume) for a volcano painted
+           * with discs; false keeps a high cone from smoking. Unset: a cone smokes when it is high enough. */
+          vent: z.boolean().optional(),
         }),
       )
       .optional(),

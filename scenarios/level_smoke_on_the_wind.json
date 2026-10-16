@@ -1,0 +1,17 @@
+{
+  "id": "level_smoke_on_the_wind",
+  "description": "Smoke on the Wind (level 36) won by the hard opponent bot as the player: grows the valley village to 25 followers past the pass raiders, prays the flank ley stone away between the mountain's own eruptions and keeps it two minutes against rival priests, raises two Watchtowers before the war band arrives, then crosses the south pass and burns the rival Hearth beyond the peak (bot wins near tick 15005).",
+  "tags": ["levels"],
+  "level": "smoke_on_the_wind",
+  "bots": [
+    { "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 2 }
+  ],
+  "runTicks": 18000,
+  "assert": [
+    { "at": 3000, "expr": "level.objectivesDone == 0 && site('flank_ley').by == 1 && events.count('hazardWarn') == 0 && !level.lost" },
+    { "at": 6000, "expr": "level.objectivesDone == 1 && events.count('hazardWarn') >= 1 && alive(1) && !level.lost" },
+    { "at": 9000, "expr": "level.objectivesDone == 2 && site('flank_ley').by == 0 && alive(1) && !level.won" },
+    { "at": 12000, "expr": "level.objectivesDone == 3 && count(tribe0.watchtowers) >= 1 && alive(1) && !level.won && !level.lost" },
+    { "at": 18000, "expr": "level.won && alive(0) && level.objectivesDone == 4 && events.count('levelWon') == 1 && invariants() == 0" }
+  ]
+}

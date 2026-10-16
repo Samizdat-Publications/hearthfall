@@ -20,6 +20,7 @@ import {
   rimGlowPixels,
   volcanoPuff,
   volcanoVents,
+  addSpellVent,
   type Pose,
 } from "../src/ambient.ts";
 
@@ -87,6 +88,36 @@ describe("volcanoVents", () => {
     // the cap
     expect(volcanoVents(w, { ...V, minAboveSea: 50, vents: 1 })).toHaveLength(1);
     expect(volcanoVents(w, { ...V, vents: 0 })).toHaveLength(0);
+  });
+
+  it("a paint shape marked vent smokes (a disc volcano); vent false keeps a high cone quiet (S4 L8-B)", () => {
+    const marked = make([
+      { shape: "cone", at: [40, 40], r: 14, aboveSea: 300, vent: false },
+      { shape: "disc", at: [50, 14], r: 6, aboveSea: 400, vent: true },
+    ]);
+    const vents = volcanoVents(marked, V);
+    expect(vents.map((v) => [v.x, v.z])).toEqual([[50, 14]]);
+  });
+
+  it("the shipped Ember Crown level smokes from its disc crater (S4 L8-B)", () => {
+    const raw = JSON.parse(readFileSync(fileURLToPath(new URL("../../../data/levels/ember_crown.json", import.meta.url)), "utf8"));
+    const res = validateLevel(raw, pack.files);
+    if (!res.level) throw new Error(JSON.stringify(res.issues));
+    const vents = volcanoVents({ level: { def: res.level } } as unknown as World, V);
+    expect(vents.map((v) => [v.x, v.z])).toEqual([[96, 96]]);
+  });
+
+  it("addSpellVent adds a cast cone once, seam aware, under the cap (S4 L8-B)", () => {
+    const one = addSpellVent([], 10, 10, 64, 3);
+    expect(one).toHaveLength(1);
+    expect(addSpellVent(one, 12, 11, 64, 3)).toBe(one);
+    // across the wrap seam the same spot is still near
+    const seam = addSpellVent([], 63, 5, 64, 3);
+    expect(addSpellVent(seam, 1, 5, 64, 3)).toBe(seam);
+    const two = addSpellVent(one, 30, 30, 64, 3);
+    expect(two).toHaveLength(2);
+    expect(two[1].seed).toBeGreaterThanOrEqual(1000);
+    expect(addSpellVent(two, 50, 50, 64, 2)).toBe(two);
   });
 
   it("a world without a level has no vents", () => {
@@ -209,6 +240,28 @@ describe("AmbientLayer volcano", () => {
     expect(off.group.children).toHaveLength(6);
     draw(off, w, 5);
     expect(off.counts.plume).toBe(0);
+  });
+
+  it("a Volcano cast adds a smoking vent while its scar lasts, any caster; other spells add none (S4 L8-B)", () => {
+    const w = make(PAINT);
+    const amb = volcanic();
+    expect(amb.volcanoes(w)).toHaveLength(1);
+    amb.consume([{ type: "spellCast", tribe: -1, spell: "bolt", x: 20, y: 20 } as never], w);
+    expect(amb.volcanoes(w)).toHaveLength(1);
+    amb.consume([{ type: "spellCast", tribe: -1, spell: "volcano", x: 20, y: 20 } as never], w);
+    amb.consume([{ type: "spellCast", tribe: 1, spell: "volcano", x: 21, y: 20 } as never], w);
+    expect(amb.volcanoes(w).map((v) => [v.x, v.z])).toEqual([[40, 40], [20, 20]]);
+    // scarred ground smokes; once healed the vent goes quiet
+    w.terrain.scar[w.terrain.idx(20, 20)] = 60;
+    draw(amb, w, 5);
+    expect(amb.counts.rims).toBe(2);
+    w.terrain.scar[w.terrain.idx(20, 20)] = 0;
+    draw(amb, w, 6);
+    expect(amb.counts.rims).toBe(1);
+    expect(amb.volcanoes(w)).toHaveLength(1);
+    // a new world forgets the cast vents
+    amb.consume([{ type: "spellCast", tribe: 0, spell: "volcano", x: 20, y: 20 } as never], w);
+    expect(amb.volcanoes(make(PAINT))).toHaveLength(1);
   });
 
   it("the new meshes come after the six existing ones", () => {

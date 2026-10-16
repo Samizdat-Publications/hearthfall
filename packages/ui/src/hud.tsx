@@ -7,6 +7,7 @@
 import { render } from "preact";
 import { useEffect, useRef } from "preact/hooks";
 import { signal } from "@preact/signals";
+import { keyText } from "./i18n.ts";
 
 export interface SpellView {
   id: string;
@@ -262,11 +263,11 @@ function Troops({ t, act, pointing, idle }: { t: TroopView; act: HudActions; poi
               <span class="stance-name">{cap(s)}</span>
             </button>
           ))}
-          <button class="prio" title="Run to the nearest own Watchtower, else the Hearth (R)" onClick={() => act.retreat()}>
+          <button class="prio" title={keyText("Run to the nearest own Watchtower, else the Hearth ({key:retreat})")} onClick={() => act.retreat()}>
             Retreat
           </button>
           {t.canGarrison ? (
-            <button class="prio" title="Garrison in the nearest Watchtower with room (G)" onClick={() => act.garrison()}>
+            <button class="prio" title={keyText("Garrison in the nearest Watchtower with room ({key:garrison})")} onClick={() => act.garrison()}>
               Garrison
             </button>
           ) : null}
@@ -395,7 +396,7 @@ function Hud({ act }: { act: HudActions }) {
       <div class="hud-deco deco-shaper" aria-hidden="true" />
       <div class="hud-deco deco-volcano" aria-hidden="true" />
       <div data-hud="shaper" class={"hud-panel hud-shaper" + (m.shaper.alive ? "" : " dead")}>
-        <button class="portrait-btn" onClick={() => act.selectShaper()} disabled={!m.shaper.alive} title="Center on the Shaper (S selects in place)" aria-label="Select the Shaper">
+        <button class="portrait-btn" onClick={() => act.selectShaper()} disabled={!m.shaper.alive} title={keyText("Center on the Shaper ({key:selectShaper} selects in place)")} aria-label="Select the Shaper">
           <Portrait />
         </button>
         <span class="shaper-name">{m.shaper.alive ? "Shaper" : m.shaper.respawnSec >= 0 ? `back in ${m.shaper.respawnSec}s` : "fallen"}</span>
@@ -435,7 +436,7 @@ function Hud({ act }: { act: HudActions }) {
         <span class="hud-sub">
           tick {m.tick}
           {m.paused ? " | paused" : ""}
-          {m.showHelp ? "" : " | H keys"}
+          {m.showHelp ? "" : keyText(" | {key:help} keys")}
         </span>
         {m.speed ? (
           <span data-ui="speed" class="hud-speed" title="Game speed (- and = keys)">

@@ -1,0 +1,15 @@
+{
+  "id": "level_shaking_plain",
+  "description": "Campaign level 39 is completable: the hard opponent bot for the player grows the village to thirty followers between the quakes, takes the ward and ley stones on the two knolls from their posted guards, holds both for 120 s against the war bands that climb down the rise, then walks up the risen ramp and burns the rival Hearth (bot wins about 25800; offsets 0 to 3 win 18600 to 25800).",
+  "tags": ["levels"],
+  "level": "shaking_plain",
+  "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 1 }],
+  "runTicks": 30000,
+  "assert": [
+    { "at": 6000, "expr": "alive(0) && alive(1) && level.objectivesDone == 0 && !level.won" },
+    { "at": 10000, "expr": "level.objectivesDone == 1 && alive(1) && !level.won" },
+    { "at": 14000, "expr": "level.objectivesDone == 2 && site('ward_knoll').by == 0 && site('ley_knoll').by == 0 && alive(1) && !level.won" },
+    { "at": 22000, "expr": "level.objectivesDone == 3 && alive(1) && !level.won" },
+    { "at": 30000, "expr": "level.won && alive(0) && level.objectivesDone == 4 && events.count('levelWon') == 1 && invariants() == 0" }
+  ]
+}

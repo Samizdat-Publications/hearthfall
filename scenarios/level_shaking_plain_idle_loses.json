@@ -1,0 +1,11 @@
+{
+  "id": "level_shaking_plain_idle_loses",
+  "description": "Campaign level 39 cannot be won idle: the village never grows to thirty, so the scouts that climb down the rise from four minutes keep coming until the Hearth burns and the level is lost.",
+  "tags": ["levels"],
+  "level": "shaking_plain",
+  "bots": [],
+  "runTicks": 10000,
+  "assert": [
+    { "at": 10000, "expr": "level.lost && !level.won && level.objectivesDone == 0 && events.count('levelLost') == 1" }
+  ]
+}

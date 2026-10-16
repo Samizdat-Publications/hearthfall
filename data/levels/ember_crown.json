@@ -11,7 +11,7 @@
     "landAboveSea": 30,
     "paint": [
       { "shape": "disc", "at": [96, 96], "r": 14, "aboveSea": 52, "falloff": 10 },
-      { "shape": "disc", "at": [96, 96], "r": 4, "aboveSea": 48, "falloff": 2 },
+      { "shape": "disc", "at": [96, 96], "r": 4, "aboveSea": 48, "falloff": 2, "vent": true },
       { "shape": "disc", "at": [96, 158], "r": 9, "aboveSea": -30, "falloff": 4 },
       { "shape": "disc", "at": [150, 60], "r": 8, "aboveSea": -30, "falloff": 4 },
       { "shape": "disc", "at": [40, 60], "r": 8, "aboveSea": -30, "falloff": 4 }

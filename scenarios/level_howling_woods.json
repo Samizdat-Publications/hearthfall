@@ -1,0 +1,18 @@
+{
+  "id": "level_howling_woods",
+  "description": "The Howling Woods (level 37) won by the hard opponent bot as the player: clears the birch wood den by the village, prays at the old shrine in the deep woods while a pack wakes beside it, clears two of the dens the prayer wakes, cuts down 12 of the rival war band that climbs down from the walled hill, then takes the stone ramp the rival lowers, fights through the last pack and the hill folk musters, and burns the rival Hearth (bot wins near tick 16720).",
+  "tags": ["levels"],
+  "level": "howling_woods",
+  "bots": [
+    { "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 1 }
+  ],
+  "runTicks": 20000,
+  "assert": [
+    { "at": 3000, "expr": "level.objectivesDone == 0 && site('old_shrine').by < 0 && !terrain.walkable([64,36]) && !level.lost" },
+    { "at": 6000, "expr": "level.objectivesDone == 1 && events.count('denCleared') >= 1 && !level.lost" },
+    { "at": 7500, "expr": "level.objectivesDone == 2 && site('old_shrine').by == 0 && alive(1) && !level.won" },
+    { "at": 8500, "expr": "level.objectivesDone == 3 && events.count('denCleared') >= 3 && alive(1) && !terrain.walkable([64,36])" },
+    { "at": 12000, "expr": "level.objectivesDone == 4 && terrain.walkable([64,36]) && alive(1) && !level.won && !level.lost" },
+    { "at": 20000, "expr": "level.won && alive(0) && level.objectivesDone == 5 && events.count('levelWon') == 1 && invariants() == 0" }
+  ]
+}

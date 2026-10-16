@@ -1,0 +1,16 @@
+{
+  "id": "level_caught_between",
+  "description": "Campaign level 38 is completable: the hard opponent bot for the player grows to ten followers and raises a Warden Lodge, cuts down twelve raiders from the two alternating raid prongs, takes the woken seer stone on the river island from its posted eastern guards, crosses the risen ford to burn the raiders' Hearth, then crosses the risen stream ford to burn the eastern Hearth (bot wins about 24800; offsets 0 to 3 win 20700 to 29700).",
+  "tags": ["levels"],
+  "level": "caught_between",
+  "bots": [{ "type": "opponent", "tribe": 0, "personality": "aggressive", "difficulty": "hard", "offset": 1 }],
+  "runTicks": 28000,
+  "assert": [
+    { "at": 4000, "expr": "alive(0) && level.objectivesDone == 0 && alive(1) && alive(2) && !level.won" },
+    { "at": 7000, "expr": "level.objectivesDone == 1 && alive(2) && !level.won" },
+    { "at": 12500, "expr": "level.objectivesDone == 3 && site('river_seer').by == 0 && alive(1) && alive(2) && !level.won" },
+    { "at": 20000, "expr": "level.objectivesDone == 3 && alive(1) && alive(2) && !level.won" },
+    { "at": 23000, "expr": "level.objectivesDone == 4 && !alive(2) && alive(1) && !level.won" },
+    { "at": 28000, "expr": "level.won && alive(0) && level.objectivesDone == 5 && events.count('levelWon') == 1 && invariants() == 0" }
+  ]
+}

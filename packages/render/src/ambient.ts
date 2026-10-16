@@ -7,7 +7,7 @@
 // world (hashed seeds per entity or anchor), so the shot harness's fixedStep mode (visual time = sim tick
 // time) renders the same pixels for the same tick. Each effect is one instanced mesh with a hard cap.
 import * as THREE from "three";
-import { CAT, type World } from "@hearthfall/sim";
+import { CAT, type SimEvent, type World } from "@hearthfall/sim";
 import { bendMaterial, type BendUniforms } from "./curve.ts";
 import type { UnitLayer } from "./unitsLayer.ts";
 import type { BuildingLayer } from "./buildingsLayer.ts";
@@ -451,8 +451,9 @@ export interface Vent {
 
 /**
  * The volcano vents of a world: the center of every painted cone (level map paint) whose peak stands at least
- * `minAboveSea` height units over the sea, up to `vents`. A world with no level, or generated terrain, has none.
- * TODO: a volcano raised by the Volcano spell or painted as discs (Ember Crown) is not found; it needs a marker in the level data.
+ * `minAboveSea` height units over the sea, and of every paint shape marked `vent` (a volcano painted with discs,
+ * Ember Crown), up to `vents`; `vent: false` keeps a high cone quiet. A world with no level, or generated terrain,
+ * has none. Cones raised by the Volcano spell join at run time (AmbientLayer.consume).
  */
 export function volcanoVents(w: World, L: Pick<VolcanoLook, "minAboveSea" | "vents">): Vent[] {
   const paint = w.level?.def.map.paint;
@@ -460,9 +461,25 @@ export function volcanoVents(w: World, L: Pick<VolcanoLook, "minAboveSea" | "ven
   if (!paint) return out;
   for (let k = 0; k < paint.length && out.length < L.vents; k++) {
     const p = paint[k];
-    if (p.shape === "cone" && p.aboveSea >= L.minAboveSea) out.push({ x: p.at[0], z: p.at[1], seed: k + 1 });
+    if (p.vent === true || (p.vent !== false && p.shape === "cone" && p.aboveSea >= L.minAboveSea)) out.push({ x: p.at[0], z: p.at[1], seed: k + 1 });
   }
   return out;
+}
+
+/**
+ * S4 L8-B: a Volcano spell cast at (x, z) (any caster, a neutral eruption too) adds a vent there unless one already
+ * smokes within `near` cells (seam aware) or `cap` vents are in use. Pure: returns the new list, or `vents` itself.
+ */
+export function addSpellVent(vents: readonly Vent[], x: number, z: number, n: number, cap: number, near = 4): readonly Vent[] {
+  if (vents.length >= cap) return vents;
+  for (const v of vents) {
+    let dx = v.x - x;
+    let dz = v.z - z;
+    dx -= Math.round(dx / n) * n;
+    dz -= Math.round(dz / n) * n;
+    if (dx * dx + dz * dz <= near * near) return vents;
+  }
+  return [...vents, { x, z, seed: 1000 + (Math.abs((Math.round(x) * 73856093) ^ (Math.round(z) * 19349663)) % 997) }];
 }
 
 /**
@@ -563,6 +580,8 @@ export class AmbientLayer {
   private readonly ember: Pose = { phase: 0, dx: 0, dy: 0, dz: 0, r: 0 };
   private readonly puff: Pose = { phase: 0, dx: 0, dy: 0, dz: 0, r: 0 };
   private vents: Vent[] = [];
+  /** S4 L8-B: cones the Volcano spell raised (consume), smoking while their scar lasts */
+  private spellVents: readonly Vent[] = [];
   private ventsFor: World | null = null;
   private readonly glowColor: THREE.Color;
   private readonly tint = new THREE.Color();
@@ -642,16 +661,31 @@ export class AmbientLayer {
     this.fire = 0;
   }
 
-  /** Volcano vents in use (tests, debug); none without a style volcano block. */
+  /** Volcano vents in use (tests, debug): painted ones, then spell-raised ones; none without a style volcano block. */
   volcanoes(w: World): readonly Vent[] {
     this.syncVents(w);
-    return this.vents;
+    return this.spellVents.length ? [...this.vents, ...this.spellVents] : this.vents;
+  }
+
+  /** S4 L8-B: sim events of the tick for world `w`: a Volcano cast adds a smoking vent at its cone (a neutral eruption too). */
+  consume(events: readonly SimEvent[], w: World): void {
+    const V = this.look.volcano;
+    if (!V?.enabled) return;
+    this.syncVents(w);
+    for (const e of events) {
+      if (e.type !== "spellCast" || e.spell !== "volcano") continue;
+      const x = Number(e.x);
+      const z = Number(e.y);
+      if (!Number.isFinite(x) || !Number.isFinite(z)) continue;
+      this.spellVents = addSpellVent([...this.vents, ...this.spellVents], x, z, w.terrain.size, V.vents).slice(this.vents.length);
+    }
   }
 
   private syncVents(w: World): void {
     if (this.ventsFor === w) return;
     this.ventsFor = w;
     this.vents = this.look.volcano?.enabled ? volcanoVents(w, this.look.volcano) : [];
+    this.spellVents = [];
   }
 
   /** Flock anchors in use (tests, debug). */
@@ -864,8 +898,12 @@ export class AmbientLayer {
     const n = T.size;
     let c = 0;
     let r = 0;
-    for (let v = 0; v < this.vents.length; v++) {
-      const a = this.vents[v];
+    // a spell-raised vent goes quiet once its scar has healed
+    if (this.spellVents.length && this.spellVents.some((a) => T.scarAt(((a.x % n) + n) % n, ((a.z % n) + n) % n) <= 0))
+      this.spellVents = this.spellVents.filter((a) => T.scarAt(((a.x % n) + n) % n, ((a.z % n) + n) % n) > 0);
+    const nv = this.vents.length;
+    for (let v = 0; v < nv + this.spellVents.length; v++) {
+      const a = v < nv ? this.vents[v] : this.spellVents[v - nv];
       let ox = a.x - focusX;
       let oz = a.z - focusZ;
       ox -= Math.round(ox / n) * n;

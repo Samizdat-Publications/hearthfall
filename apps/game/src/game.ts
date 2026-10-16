@@ -45,6 +45,8 @@ import { EDITOR_TOOLS, applyTool, draftIssues, draftJson, loadDraft, newDraft, p
 import { DEFAULT_AI } from "./opponents.ts";
 import {
   actionFor,
+  keyText,
+  setKeyNames,
   spellSlot,
   t,
   type KeyAction,
@@ -444,7 +446,15 @@ export class Game {
   lastReplay: Replay | null = null;
   readonly kv: KV;
   readonly persistent: boolean;
-  settings: Settings;
+  private settingsNow!: Settings;
+  /** S4 L8-B: help and level text name the keys in force (`{key:action}`), so a settings change updates the key names */
+  get settings(): Settings {
+    return this.settingsNow;
+  }
+  set settings(s: Settings) {
+    this.settingsNow = s;
+    setKeyNames(s.keymap);
+  }
   /** key action waiting for its new key in the settings screen */
   rebinding: KeyAction | null = null;
   /** set by the menu bridge while a key binding waits for its key */
@@ -1217,7 +1227,7 @@ export class Game {
       const when = triggers[k]?.when;
       return when?.type === "worship" ? (this.world.worship.find(when.site)?.lastBy ?? -1) : 0;
     };
-    return { name: lv.def.name, description: lv.def.description, messages: briefingMessages(lv.def, lv.fired, receiver, this.localTribe) };
+    return { name: lv.def.name, description: keyText(lv.def.description), messages: briefingMessages(lv.def, lv.fired, receiver, this.localTribe).map(keyText) };
   }
 
   /** Open the briefing over the match (from play, or from the pause menu; Back returns there). */

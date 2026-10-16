@@ -730,8 +730,10 @@ export class ThreeRenderer implements Renderer {
     events: readonly import("@hearthfall/sim").SimEvent[],
     timeOf: (e: import("@hearthfall/sim").SimEvent) => number,
   ): void {
-    if (this.world)
+    if (this.world) {
       this.vfx.consume(events, this.world, timeOf, this.palette.heightScale);
+      this.ambient.consume(events, this.world);
+    }
     this.units?.consume(events, timeOf);
   }
 

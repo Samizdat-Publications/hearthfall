@@ -1,0 +1,11 @@
+{
+  "id": "level_caught_between_idle_loses",
+  "description": "Campaign level 38 cannot be won idle: with no Warden Lodge raised, the eastern scouts that come down from the hills at five minutes burn the Hearth and the level is lost.",
+  "tags": ["levels"],
+  "level": "caught_between",
+  "bots": [],
+  "runTicks": 9000,
+  "assert": [
+    { "at": 9000, "expr": "level.lost && !level.won && level.objectivesDone == 0 && events.count('levelLost') == 1" }
+  ]
+}
