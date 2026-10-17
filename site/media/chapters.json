@@ -1,0 +1,30 @@
+{
+  "video": "tour.mp4",
+  "duration": 78.5,
+  "chapters": [
+    {
+      "t": 0,
+      "title": "A village grows"
+    },
+    {
+      "t": 14,
+      "title": "A raid on a Hearth"
+    },
+    {
+      "t": 30,
+      "title": "The Shaper's spells"
+    },
+    {
+      "t": 47.5,
+      "title": "Campaign: Storm Coast"
+    },
+    {
+      "t": 59.5,
+      "title": "Evening firelight"
+    },
+    {
+      "t": 69.5,
+      "title": "Menus and the campaign map"
+    }
+  ]
+}

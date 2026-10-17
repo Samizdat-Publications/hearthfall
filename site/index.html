@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hearthfall</title>
+<meta name="description" content="Hearthfall is a 3D god game in the browser: lead a tribe across a tiny wrapping planet, turn prayers into mana and reshape the land. Built autonomously by Claude Code.">
+<meta property="og:title" content="Hearthfall">
+<meta property="og:description" content="A 3D god game on a tiny wrapping planet. Prayers are your power, the land is your weapon, and the sea is not your friend.">
+<meta property="og:image" content="media/og.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#17110b">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='36' r='22' fill='%232b6f8f'/%3E%3Cpath d='M32 10c6 9 12 14 12 23a12 12 0 0 1-24 0c0-9 6-14 12-23z' fill='%23ff8a3c'/%3E%3C/svg%3E">
+<link rel="preload" href="fonts/marcellus-sc-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+
+<header class="bar">
+  <a class="bar-mark" href="#top">Hearthfall</a>
+  <nav>
+    <a href="#world">The game</a>
+    <a href="#tour">Tour</a>
+    <a href="#made">How it was made</a>
+    <a class="bar-play" href="https://hearthfall.stewartgregerson.workers.dev/">Play</a>
+  </nav>
+</header>
+
+<main id="top">
+
+<section class="hero">
+  <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="media/village.jpg">
+    <source src="media/village.mp4" type="video/mp4">
+  </video>
+  <div class="hero-shade"></div>
+  <div class="hero-copy">
+    <span class="pill" title="Playable end to end, still being built">In development</span>
+    <h1 class="wordmark">Hearthfall</h1>
+    <p class="lede">A god game on a planet the size of a tabletop. Lead a tribe from its Hearth, turn their prayers into power, and reshape the land under your rivals' feet. Mind the water.</p>
+    <div class="cta">
+      <a class="btn btn-ember" href="https://hearthfall.stewartgregerson.workers.dev/">Play in your browser</a>
+      <a class="btn" href="https://github.com/Samizdat-Publications/hearthfall">Source on GitHub</a>
+      <a class="btn btn-quiet" href="#tour">Watch the tour</a>
+    </div>
+    <p class="hero-note">Free, runs in a desktop browser with WebGL2. Mouse and keyboard.</p>
+  </div>
+</section>
+
+<section class="facts" aria-label="At a glance">
+  <div><b>45</b><span>campaign levels in four chapters</span></div>
+  <div><b>18</b><span>spells, some taught only at Reliquaries</span></div>
+  <div><b>3</b><span>rival personalities, four difficulties</span></div>
+  <div><b>2</b><span>players on a LAN, versus or co-op</span></div>
+  <div><b>8</b><span>days from empty folder to chapter 4</span></div>
+</section>
+
+<section class="feature" id="world">
+  <div class="feature-media">
+    <video data-inview muted loop playsinline preload="none" poster="media/evening.jpg"><source src="media/evening.mp4" type="video/mp4"></video>
+  </div>
+  <div class="feature-text">
+    <p class="kicker">Your people are your power</p>
+    <h2>A Hearth, a Shaper, a tribe</h2>
+    <p>Your Shaper is mortal: a single caster who walks the world with her followers. Settlers chop wood and raise huts, and every follower who prays at the Hearth or a shrine feeds the mana you spend on spells. More people means more power, so a growing village is your whole strategy.</p>
+    <p>The world is a small curved planet that wraps at every edge, lit like a tabletop miniature: golden afternoons, evening firelight, rain and night.</p>
+  </div>
+</section>
+
+<section class="feature flip">
+  <div class="feature-media">
+    <video data-inview muted loop playsinline preload="none" poster="media/spells.jpg"><source src="media/spells.mp4" type="video/mp4"></video>
+  </div>
+  <div class="feature-text">
+    <p class="kicker">The land is a weapon</p>
+    <h2>Spells that move the ground</h2>
+    <p>Raise a land bridge across a strait, crack a village with a quake, call a volcano out of a meadow or a rain of fire down on an army. The terrain is fully deformable, and water kills: sink the ground under your enemies and the sea does the rest.</p>
+    <p>Eighteen spells in all, from a simple bolt to wraiths, wards, whirlwinds and floods.</p>
+  </div>
+</section>
+
+<section class="feature">
+  <div class="feature-media">
+    <video data-inview muted loop playsinline preload="none" poster="media/battle.jpg"><source src="media/battle.mp4" type="video/mp4"></video>
+  </div>
+  <div class="feature-text">
+    <p class="kicker">They will come for your Hearth</p>
+    <h2>Rivals with a plan</h2>
+    <p>Train Wardens, Firecallers, Chanters and Shades in a counter triangle, build towers and boats and balloons, and hold the hill shrines. The opponent tribes play aggressive, sneaky or turtle, worship across the water and raid your prayers. This clip is an unscripted AI match: nobody is steering.</p>
+  </div>
+</section>
+
+<section class="feature flip">
+  <div class="feature-media">
+    <video data-inview muted loop playsinline preload="none" poster="media/campaign.jpg"><source src="media/campaign.mp4" type="video/mp4"></video>
+  </div>
+  <div class="feature-text">
+    <p class="kicker">Four chapters</p>
+    <h2>A campaign of 45 levels</h2>
+    <p>The First Fires teach the basics. The Wide Waters take you across the sea. The Far Shores bring tides and causeways. The Wild Heart turns the land itself against you: wolf dens, storms, quakes and eruptions that warn you first, and a finale around a live volcano.</p>
+    <p>Every level is checked by a bot that wins it and an idle player who loses it, so none of them is impossible or free.</p>
+  </div>
+</section>
+
+<section class="feature">
+  <div class="feature-media">
+    <video data-inview muted loop playsinline preload="none" poster="media/menus.jpg"><source src="media/menus.mp4" type="video/mp4"></video>
+  </div>
+  <div class="feature-text">
+    <p class="kicker">And the rest</p>
+    <h2>Skirmish, Forge, editor, replays</h2>
+    <p>Skirmish with victory variants, a Forge phase that lets every tribe shape the map before the match, a map editor, watchable replays, photo mode, records and achievements, LAN versus and co-op (the campaign too), a painted stone interface that scales from 720p to 1440p, and a colorblind palette.</p>
+  </div>
+</section>
+
+<section class="tour" id="tour">
+  <h2>The tour</h2>
+  <p class="sub">78 seconds of the current build, captured by script on a virtual clock. Pick a chapter.</p>
+  <div class="tour-wrap">
+    <video id="tour-video" controls playsinline preload="none" poster="media/tour.jpg"><source src="media/tour.mp4" type="video/mp4"></video>
+    <ol class="chapters" id="chapters"></ol>
+  </div>
+</section>
+
+<section class="made" id="made">
+  <div class="made-intro">
+    <p class="kicker">How it was made</p>
+    <h2>Built by an AI, directed by a person</h2>
+    <p>Hearthfall was written by Claude Code working on its own for days at a time. Stewart Gregerson wrote a kickoff package (design intent, a roadmap of twelve milestones, testing rules, asset budgets) and then mostly stayed out of the way: he chose between art directions, played builds and sent notes, and the agent decided everything else and logged its reasons.</p>
+    <p>The first run went from an empty folder to all twelve milestones in about 26 hours. The game kept growing for a week after that: look passes, the campaign, LAN play, a painted interface.</p>
+  </div>
+
+  <div class="pillars">
+    <div>
+      <h3>Deterministic to the bone</h3>
+      <p>The simulation uses fixed ticks, seeded randomness and an allowlist of math, enforced by a guard on every check. That makes replays exact, lets a bot prove every level winnable, and keeps two computers in lockstep over a LAN.</p>
+    </div>
+    <div>
+      <h3>Tested like a product</h3>
+      <p>668 unit tests, scenario tests, 91 level scenarios, golden replays checked in Node and in Chromium, render benches and 13 sets of screenshot baselines. An AI vision check reads the screenshots for layout problems humans would notice.</p>
+    </div>
+    <div>
+      <h3>Generated, then curated</h3>
+      <p>Gemini painted concepts, icons, interface pieces and the key art. Meshy turned the concepts into low-poly 3D models. ElevenLabs made the sound effects, voices and music. Every model is normalized in Blender and snapped to one palette.</p>
+    </div>
+    <div>
+      <h3>Data first</h3>
+      <p>Units, buildings, spells, AI personalities and all 45 levels live in validated JSON, so new content is data and mods can change the game without code.</p>
+    </div>
+  </div>
+
+  <h3 class="timeline-title">From first pixels to the Wild Heart</h3>
+  <ol class="timeline">
+    <li><img loading="lazy" src="media/making/01-first-pixels.jpg" alt="The first rendered scene: a banded island with four tribe totems"><div><time>Hour 0</time><p>First pixels: proving the GPU renders headless, so every later change can be checked by screenshot.</p></div></li>
+    <li><img loading="lazy" src="media/making/02-art-directions.jpg" alt="Six candidate art directions"><div><time>Hour 1</time><p>Six candidate art directions from Gemini. Crisp flat-shaded polygons won; the tilt-shift miniature came back on day two.</p></div></li>
+    <li><img loading="lazy" src="media/making/03-globe.jpg" alt="The flat map bent into a small round planet"><div><time>Hour 1</time><p>A world on a torus: a wrapping map bent by a shader into a small round planet.</p></div></li>
+    <li><img loading="lazy" src="media/making/04-first-people.jpg" alt="The Shaper and five settlers at the Hearth"><div><time>Hour 2</time><p>People appear: the Shaper and her first settlers pathing over ridges.</p></div></li>
+    <li><img loading="lazy" src="media/making/05-retro-pass.jpg" alt="The first retro pixel render pass"><div><time>Hour 4</time><p>The first retro render pass: chunky pixels, a dithered palette and a firelit Hearth.</p></div></li>
+    <li><img loading="lazy" src="media/making/06-first-raid.jpg" alt="An AI raid reaching the player's Hearth"><div><time>Hour 8</time><p>First raid: the aggressive AI's Wardens reach an idle player's Hearth at minute nine.</p></div></li>
+    <li><img loading="lazy" src="media/making/07-look-v3.jpg" alt="Before and after the miniature look"><div><time>Day 2</time><p>Look v3, the miniature: tilt-shift focus, painted water, thatched huts and lighting presets.</p></div></li>
+    <li><img loading="lazy" src="media/making/08-hud-concept.jpg" alt="Painted HUD concept art"><div><time>Day 5</time><p>Stewart rejected a plain interface and picked this painted Gemini concept instead.</p></div></li>
+    <li><img loading="lazy" src="media/making/09-hud-ember-grove.jpg" alt="The finished painted HUD at 1440p"><div><time>Day 5</time><p>The same night: the Ember Grove HUD built from those painted pieces, fitted to any screen size.</p></div></li>
+    <li><img loading="lazy" src="media/making/10-wild-heart.jpg" alt="A night valley around a live volcano"><div><time>Day 8</time><p>Chapter 4, The Wild Heart: the finale around a live volcano.</p></div></li>
+  </ol>
+</section>
+
+<section class="closer">
+  <img src="media/key-art.jpg" alt="Hearthfall key art: a village on a small round planet with a smoking volcano" loading="lazy">
+  <div>
+    <h2>Light the Hearth</h2>
+    <p>Hearthfall is playable now and still growing. Play it in your browser, or read the code, the design docs and the full development log on GitHub.</p>
+    <div class="cta">
+      <a class="btn btn-ember" href="https://hearthfall.stewartgregerson.workers.dev/">Play Hearthfall</a>
+      <a class="btn" href="https://github.com/Samizdat-Publications/hearthfall">Source on GitHub</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <p>Hearthfall by <a href="https://github.com/Samizdat-Publications">Samizdat Publications</a> (Stewart Gregerson), written with Claude Code. Code under the MIT licence.</p>
+  <p>Models generated with Meshy, images with Google Gemini, sound and music with ElevenLabs. Fonts: Marcellus SC and Alegreya Sans (SIL Open Font License). Built with three.js and Preact.</p>
+  <p>An original game inspired by the tribal god games of the late 1990s; not affiliated with any of them.</p>
+</footer>
+
+<script src="site.js" defer></script>
+</body>
+</html>

@@ -37,3 +37,9 @@ The main menu shows `Build <date> <commit>` (from `buildTag()` in `apps/game/vit
 - Campaign, skirmish against the AI, the map editor, replays, saves and settings.
 - Saves, settings and records live in the browser's storage for that site, so progress on http://127.0.0.1:5182/ does not carry over to the deployed URL.
 - Play together needs the relay from `npm run serve -- --lan` on the home network. Internet play needs a public relay (BACKLOG 15) and is not part of this deploy.
+
+## Landing page (Cloudflare Pages)
+The public landing page lives in `site/` and is served at https://hearthfall-4wn.pages.dev (Pages project `hearthfall`, separate from the game Worker). It links Play to the Worker build and never redeploys it.
+- Re-film the clips: `node tools/showcase/film.mjs [--shot village,battle] [--nobuild]` (masters land in `reports/showcase/film/`, then encode into `site/media/`).
+- Review clips with Gemini: `node --env-file-if-exists=.env tools/showcase/review.mjs <clips>`.
+- Build and deploy: `node tools/showcase/build-site.mjs` then `npx --yes wrangler@4 pages deploy site-dist --project-name hearthfall --branch main`.

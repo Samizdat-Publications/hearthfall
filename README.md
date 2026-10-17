@@ -1,111 +1,69 @@
-# Hearthfall kickoff package
+# Hearthfall
 
-Everything Claude Code needs to build **Hearthfall** (our original shaman god game) unattended for 24+ hours and keep growing it after.
+![Status: in development](https://img.shields.io/badge/status-in%20development-d29922)
 
-## What is in here
+A 3D god game on a tiny wrapping planet: prayers are your power, the land is your weapon, and the sea is not your friend.
 
-| Path | What it is |
+![Hearthfall: a village at golden hour on a small curved planet](docs/media/hero.gif)
+
+**[Landing page](https://hearthfall-4wn.pages.dev)** · **[Play in your browser](https://hearthfall.stewartgregerson.workers.dev/)** · **[How it was made](https://hearthfall-4wn.pages.dev/#made)**
+
+## What it is
+
+You are the Shaper, a mortal caster who leads a tribe out from its Hearth. Settlers gather wood and raise huts, followers pray at the Hearth and at hill shrines, and every prayer becomes mana for spells that move the land: raise a bridge across a strait, sink the ground under an army, crack a village with a quake or call a volcano out of a meadow. Water kills, so the terrain is the real weapon. Rival tribes with their own personalities (aggressive, sneaky, turtle) build, worship across the sea by boat and balloon, and come for your Hearth.
+
+It ships a 45 level campaign in four chapters, skirmish with victory variants, a Forge phase where every tribe shapes the map before the match, a map editor, replays, photo mode, achievements, and LAN play (versus, co-op and the campaign together). It is an original game inspired by the tribal god games of the late 1990s and is not affiliated with any of them.
+
+Status: **in development**. The whole game is playable from the first level to the last, and it is still growing (chapter 4 has only been played by the level bots so far; the live build predates it).
+
+## Screenshots
+
+| | |
 |---|---|
-| `OPENING_PROMPT.md` | The first message to paste into Claude Code, plus the `/goal` line |
-| `CLAUDE.md` | Claude Code's operating manual (loaded every session automatically) |
-| `docs/DESIGN.md` | Game design: pillars, original names, loop, mana, units, buildings, spells, terrain, AI, UI, art |
-| `docs/ARCHITECTURE.md` | Stack, repo layout, deterministic sim, data packs, renderer, debug API, perf budgets |
-| `docs/ROADMAP.md` | Milestones M0 to M11 with exit gates that pass by command |
-| `docs/TESTING.md` | Self-test harness: unit, scenario, golden replay, soak, perf, screenshot checks, flag policy |
-| `docs/ASSETS.md` | Asset pipeline: Gemini, Meshy, Tripo, ElevenLabs, Blender, manifest, budgets |
-| `docs/VISIONQA.md` | OpenAI Decisions API module: probe, checks, calibration, optional move picker |
-| `docs/BACKLOG.md` | Prioritized work after the first 24 hours |
-| `docs/DECISIONS.md` | Decision records (ADR-001: why TypeScript + three.js over Godot) |
-| `docs/PROGRESS.md` | Claude Code's current state and memory across context compactions (history goes to `docs/PROGRESS_LOG.md`) |
-| `docs/research/` | The four research reports behind every decision (mechanics, stack, Decisions API, asset APIs) |
-| `seed-data/` | Starting numbers for units, buildings, spells, balance gates, AI personalities, palette |
-| `.claude/agents/` | Six subagents (cheap models for QA, soaks, docs, assets, research; Opus for milestone review) |
-| `.claude/settings.json` | Permission allowlist so routine commands do not stop the run |
-| `.env.example` | Key names and budget caps |
-| `.gitignore`, `.gitattributes` | Keep `.env` and generated files out of git; LF line endings so data hashes match |
-| `extras/hooks/` | Optional Stop hook that keeps the run going if `/goal` is unavailable |
+| ![Evening firelight over a village](docs/media/evening.jpg) | ![The Shaper casting Volcano](docs/media/spells.jpg) |
+| ![An AI tribe raids a Hearth](docs/media/battle.jpg) | ![Campaign level Storm Coast with the painted HUD](docs/media/campaign.jpg) |
+| ![The Ember Grove HUD at 2560x1440](docs/media/hud.jpg) | ![The main menu over the planet](docs/media/menus.jpg) |
 
-## Launch checklist (about 30 minutes)
+## How it was made
 
-1. **Extract the zip so it creates the project folder.** `hearthfall_kickoff.zip` contains one folder, `Hearthfall`, with everything inside it (including the hidden `.claude` folder). You extract into the **parent** folder `C:\Users\stewa\Documents\Claude`, and the `Hearthfall` folder appears there by itself. Do not create a `Hearthfall` folder first, or you will end up with `Hearthfall\Hearthfall`.
+Hearthfall was built by [Claude Code](https://claude.com/claude-code) working autonomously for days at a time. Stewart Gregerson wrote a kickoff package (design intent, a twelve milestone roadmap with gates that pass by command, testing rules and asset budgets; it is kept in [docs/KICKOFF.md](docs/KICKOFF.md) and [OPENING_PROMPT.md](OPENING_PROMPT.md)) and then acted as director: he chose between art directions, played builds and sent notes, and the agent made every other call and recorded it in [docs/DECISIONS.md](docs/DECISIONS.md). The first run went from an empty folder to all twelve milestones in about 26 hours; the game kept growing for a week after that.
 
-   **Option A, File Explorer:**
-   1. In Downloads, right-click `hearthfall_kickoff.zip` and choose **Extract All...**
-   2. Windows suggests a path ending in `\hearthfall_kickoff`. Replace the whole box with exactly `C:\Users\stewa\Documents\Claude` (otherwise Windows adds an extra `hearthfall_kickoff` folder level).
-   3. Click **Extract**.
+- **Stack:** TypeScript, three.js r186 (WebGL2) with a curved-world vertex bend, Preact for the interface, Vite, Vitest and Playwright. No game engine.
+- **Deterministic simulation:** `packages/sim` runs on fixed ticks with seeded randomness and an allowlist of math functions, enforced by a guard in `npm run check`. Replays are exact, two browsers stay in lockstep on a LAN, and a scripted bot proves every campaign level winnable (91 level scenarios: a bot that wins and an idle player who loses).
+- **Data first:** units, buildings, spells, AI personalities and all 45 levels are validated JSON in `data/` (schemas in [docs/DATA.md](docs/DATA.md)), and mods in `mods/` change the game without code.
+- **Screenshot QA:** 668 unit tests, golden replays in Node and Chromium, render benches and 13 sets of screenshot baselines captured on the GPU headless, with an AI vision check (OpenAI) that reads screenshots for layout problems.
+- **Generated assets:** Gemini painted concepts, icons, spell textures, interface pieces and the key art; Meshy turned the concepts into low-poly 3D models; ElevenLabs made the sound effects, voices and music; a Blender script normalizes every model and snaps it to one palette. The pipeline lives in `tools/assets/` with hard per-provider budgets and a cost ledger.
+- **Media:** the landing page clips are captured by script (`tools/showcase/film.mjs`): the game runs on a virtual clock and is filmed one frame at a time while the AI tribes play themselves, then reviewed by Gemini (`tools/showcase/review.mjs`).
 
-   **Option B, PowerShell:**
+The making-of archive in [making-of/](making-of/) keeps every milestone screenshot, contact sheet and concept image from first pixels onward, and [docs/PROGRESS_LOG.md](docs/PROGRESS_LOG.md) is the full development log.
 
-   ```powershell
-   cd C:\Users\stewa\Documents\Claude
-   Test-Path .\Hearthfall   # must print False; if True, rename the old folder first
-   Expand-Archive -Path "$env:USERPROFILE\Downloads\hearthfall_kickoff.zip" -DestinationPath C:\Users\stewa\Documents\Claude
-   ```
+## Run it locally
 
-   **Check it landed right** (all three lines must match):
+Needs Node.js 22.18 or newer and a desktop browser with WebGL2.
 
-   ```powershell
-   cd C:\Users\stewa\Documents\Claude\Hearthfall
-   Test-Path .\CLAUDE.md               # True
-   Test-Path .\.claude\settings.json   # True
-   Test-Path .\Hearthfall              # False (no doubled folder)
-   ```
+```
+npm install
+npm run build
+npm run serve
+```
 
-   The project root is `C:\Users\stewa\Documents\Claude\Hearthfall`, with `CLAUDE.md`, `README.md`, `docs`, `seed-data` and `.claude` directly inside it. Do not extract into `Documents\Claude\Projects` (that is the junction to `ClaudeProjects`, which is on hold for the folder move) or anywhere under `OneDrive`.
+`npm run serve` serves the production build and prints the local address. `npm run qa:fast` runs the quick checks (types, guards, unit tests); the full suite is `npm run qa` (see [docs/TESTING.md](docs/TESTING.md)). The asset pipeline needs API keys in a local `.env` (names in `.env.example`); the game itself needs none.
 
-2. **Check prerequisites:**
+## Credits
 
-   ```powershell
-   cd C:\Users\stewa\Documents\Claude\Hearthfall
-   node --version     # need v22.18 or newer
-   git --version
-   git config --global user.name    # must print a name
-   git config --global user.email   # must print an email
-   git config --global commit.gpgsign   # must print nothing or false
-   python --version   # need 3.11 or newer
-   & "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe" --version   # optional, assets only
-   ```
+| What | Who | Licence |
+|---|---|---|
+| Code, design docs, data and levels | Claude Code, directed by Stewart Gregerson | MIT (see [LICENSE](LICENSE)) |
+| 3D models (buildings, units, wildlife, props, vehicles) | Generated for this project with [Meshy](https://www.meshy.ai) from Gemini concepts, normalized in Blender | Generated output, used under the [Meshy Terms of Service](https://www.meshy.ai/terms-of-use) |
+| Concept art, icons, spell textures, painted interface pieces, title key art | Generated for this project with [Google Gemini](https://ai.google.dev) image models | Generated output, used under the [Gemini API Additional Terms](https://ai.google.dev/gemini-api/terms) |
+| Sound effects, voices, music | Generated for this project with [ElevenLabs](https://elevenlabs.io) (sound generation, voice design, music) | Generated output, used under the [ElevenLabs Terms of Service](https://elevenlabs.io/terms-of-use) |
+| Marcellus SC font | Brian J. Bonislawsky (Astigmatic), via [Fontsource](https://fontsource.org) | [SIL Open Font License 1.1](https://openfontlicense.org) |
+| Alegreya Sans and Alegreya Sans SC fonts | Juan Pablo del Peral (Huerta Tipográfica), via Fontsource | SIL Open Font License 1.1 |
+| three.js, Preact, Vite and the other npm dependencies | Their authors | Their own licences (mostly MIT), see `package.json` |
+| Screenshot review | OpenAI (VisionQA) and Google Gemini (landing clips) | Review only: no output ships in the game |
 
-   If name or email is empty, set them yourself (`git config --global user.name "Stewart Gregerson"` and your email). Claude Code is told never to touch git config.
+No third-party asset packs are used, and no assets or names from any existing game.
 
-3. **Make the PC hands-free for 24+ hours** (any of these will silently stop the run):
-   - Settings > System > Power: Screen off **Never** and Sleep **Never** while plugged in. You can still switch the monitor itself off.
-   - Settings > Accounts > Sign-in options: "If you've been away, when should Windows require you to sign in again?" **Never**, and no screen saver lock.
-   - Settings > Windows Update: **Pause updates for 1 week** so it cannot restart overnight.
-   - Leave the Claude desktop app open and the PC on the network.
+## Licence
 
-4. **Create `.env`:** in `C:\Users\stewa\Documents\Claude\Hearthfall`, copy `.env.example` to `.env` and paste key values yourself from your existing project `.env` files. Claude Code is told never to read this file. Set `BLENDER_EXE` if Blender lives elsewhere.
-
-5. **Buy the $10 OpenAI credits** before starting; the Decisions cost probe runs in the first couple of hours. Without a key the game still builds; VisionQA just stays off. The ElevenLabs music endpoint needs a paid plan; if it is missing, the pipeline skips music and logs it.
-
-6. **Optional but recommended: tell Auto mode what this project is allowed to do.** Auto mode can fall back to asking permission after repeated safety blocks, which would stall an unattended run. Project settings cannot set this, so it goes in your user settings file `C:\Users\stewa\.claude\settings.json` (create it if missing; if it exists, add the key alongside what is there):
-
-   ```json
-   {
-     "autoMode": {
-       "environment": [
-         "$defaults",
-         "Project C:\\Users\\stewa\\Documents\\Claude\\Hearthfall may call api.openai.com, api.meshy.ai, api.tripo3d.ai, api.elevenlabs.io and generativelanguage.googleapis.com with keys from its own .env, run npm, npx, node, python and git commands inside the project, and install packages from registry.npmjs.org, pypi.org and the Playwright browser download host"
-       ]
-     }
-   }
-   ```
-
-   This is a change to your own Claude Code configuration, so it is your call; the build works without it but is more likely to pause for a click.
-
-7. **Open Claude Code on the project folder** `C:\Users\stewa\Documents\Claude\Hearthfall` (the one that directly contains `CLAUDE.md`, not its parent) in the desktop app Code tab. When creating the thread pick the model (Opus 5.5 recommended for the main session) and **High** effort, since effort can only be set when the thread starts. In the permission mode selector pick **Auto**.
-
-8. **Paste the opening prompt** from `OPENING_PROMPT.md`, then send the `/goal` line as the second message.
-
-9. **Stay for the first 20 to 30 minutes**, until the M0 installs (npm packages, Playwright browser, Python venv) finish and the first commit lands. Approve any permission prompt that is plainly safe (npm, node, python, git commit) with "always allow". After that it should go hands-off. If a browser window flashes open now and then, that is Playwright taking screenshots in headed mode.
-
-## While it runs
-
-- Progress at a glance: `docs/PROGRESS.md` ("Now" section) and `git log --oneline`.
-- Try the game any time: `cd C:\Users\stewa\Documents\Claude\Hearthfall` then `npm run dev` and open the printed `http://127.0.0.1` link.
-- **To stop the run cleanly:** create an empty file named `STOP` in the project folder (the next turn reports it and the goal ends), or type `/goal clear` in the session.
-- Spend tracking: `npm run visionqa:spend` and `tools/assets/ledger.jsonl`.
-
-## What to expect after 24 hours
-
-A playable skirmish on a curved, wrapping planet against three AI personalities, 8 spells including terrain shaping and Volcano, settlers who build and breed, three troop types with a counter triangle, menus and save/load, generated models and audio where budgets allowed (placeholders elsewhere), and a test harness that keeps future changes honest. `docs/PROGRESS.md` will end with a "State of the game" section and the top next items.
+Code is MIT (see [LICENSE](LICENSE)). Third-party assets listed above keep their own licences.

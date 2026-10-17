@@ -1,0 +1,28 @@
+{
+  "name": "Hearthfall",
+  "repo": "hearthfall",
+  "pitch": "A 3D god game on a tiny wrapping planet: prayers are your power, the land is your weapon, and the sea is not your friend.",
+  "status": "in-development",
+  "version": "0.0.1",
+  "kind": "game",
+  "started": "2026-10-08",
+  "updated": "2026-10-17",
+  "tech": ["TypeScript", "three.js", "Preact", "Vite", "Playwright", "Meshy", "Gemini", "ElevenLabs", "Blender"],
+  "links": {
+    "landing": "https://hearthfall-4wn.pages.dev",
+    "play": "https://hearthfall.stewartgregerson.workers.dev/",
+    "devlog": "https://github.com/Samizdat-Publications/hearthfall/blob/master/docs/PROGRESS_LOG.md"
+  },
+  "hero": {
+    "gif": "docs/media/hero.gif",
+    "poster": "site/media/village.jpg",
+    "clip": "site/media/village.mp4"
+  },
+  "credits": [
+    { "what": "Code, design docs, data and levels", "who": "Claude Code, directed by Stewart Gregerson", "licence": "MIT" },
+    { "what": "3D models", "who": "Generated with Meshy from Gemini concepts", "licence": "Meshy Terms of Service" },
+    { "what": "Concept art, icons, textures, interface pieces, key art", "who": "Generated with Google Gemini", "licence": "Gemini API Additional Terms" },
+    { "what": "Sound effects, voices, music", "who": "Generated with ElevenLabs", "licence": "ElevenLabs Terms of Service" },
+    { "what": "Marcellus SC, Alegreya Sans, Alegreya Sans SC fonts", "who": "Astigmatic; Huerta Tipografica", "licence": "SIL OFL 1.1" }
+  ]
+}
